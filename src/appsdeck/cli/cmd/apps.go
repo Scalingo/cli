@@ -15,7 +15,11 @@ var (
 		},
 		Action: func(c *cli.Context) {
 			if c.Bool("list") {
-				apps.List()
+				if err := apps.List(); err != nil {
+					errorQuit(err)
+				}
+			} else {
+				cli.ShowCommandHelp(c, "apps")
 			}
 		},
 	}
