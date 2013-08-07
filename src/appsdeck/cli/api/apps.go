@@ -9,11 +9,7 @@ func AppsList() (*http.Response, error) {
 		"method":   "GET",
 		"endpoint": "/api/apps",
 	}
-	res, err := Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return Do(req)
 }
 
 func AppsShow(app string) (*http.Response, error) {
@@ -21,9 +17,5 @@ func AppsShow(app string) (*http.Response, error) {
 		"method":   "GET",
 		"endpoint": "/api/apps/"+app,
 	}
-	res, err := Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return Do(req)
 }
