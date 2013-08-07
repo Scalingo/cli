@@ -7,7 +7,6 @@ import (
 
 func CurrentApp(appFlag string) string {
 	if appFlag != "<name>" {
-		fmt.Println(appFlag)
 		return appFlag
 	} else if DetectGit() {
 		repoName, err := AppsdeckRepo()
