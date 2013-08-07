@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ConfigDir = ".config/appsdeck"
+	ConfigDir      = ".config/appsdeck"
 	AuthConfigFile = ".config/appsdeck/auth"
 )
 

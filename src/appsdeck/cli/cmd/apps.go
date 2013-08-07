@@ -7,9 +7,9 @@ import (
 
 var (
 	AppsCommand = cli.Command{
-		Name:	"apps",
+		Name:      "apps",
 		ShortName: "a",
-		Usage: "Manage your apps",
+		Usage:     "Manage your apps",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"list", "List your apps"},
 		},
@@ -24,4 +24,3 @@ var (
 		},
 	}
 )
-

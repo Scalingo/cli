@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 )
 
-
 func All() ([]App, error) {
 	res, err := api.AppsList()
 	if err != nil {

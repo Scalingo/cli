@@ -8,7 +8,7 @@ import (
 
 var (
 	LogoutCommand = cli.Command{
-		Name:	"logout",
+		Name:  "logout",
 		Usage: "Logout from Appsdeck",
 		Action: func(c *cli.Context) {
 			if err := auth.DestroyToken(); err != nil {
@@ -18,4 +18,3 @@ var (
 		},
 	}
 )
-

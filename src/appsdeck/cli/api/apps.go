@@ -15,7 +15,7 @@ func AppsList() (*http.Response, error) {
 func AppsShow(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/api/apps/"+app,
+		"endpoint": "/api/apps/" + app,
 	}
 	return Do(req)
 }
