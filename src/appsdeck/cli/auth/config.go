@@ -13,19 +13,18 @@ var (
 )
 
 func init() {
-	auth, err := LoadAuth()
-	api.AuthToken = auth.AuthToken
+	Config, err := LoadAuth()
 	if err != nil {
 		fmt.Println("You need to be authenticated to user Appsdeck client.\nNo account ? → http://appsdeck.eu/users/sign_up")
-		auth, err := Authenticate()
+		Config, err = Authenticate()
 		if err != nil {
 			fmt.Println("An error occured :", err)
 			os.Exit(1)
 		} else {
-			fmt.Printf("Hello %s %s, nice to see you !\n\n", auth.FirstName, auth.LastName)
+			fmt.Printf("Hello %s %s, nice to see you !\n\n", Config.FirstName, Config.LastName)
 		}
 	}
-	Config = auth
+	api.AuthToken = Config.AuthToken
 }
 
 type AuthConfig struct {
