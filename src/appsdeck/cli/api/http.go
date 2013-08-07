@@ -23,6 +23,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	if _, ok := req["params"]; ok {
 		params = req["params"].(map[string]interface{})
 	}
+
 	if AuthToken != "" {
 		params["auth_token"] = AuthToken
 	}
