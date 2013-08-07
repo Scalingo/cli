@@ -15,11 +15,5 @@ func Login(email, password string) (*http.Response, error) {
 			},
 		},
 	}
-
-	res, err := Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	return Do(req)
 }
