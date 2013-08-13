@@ -56,10 +56,14 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	if AuthToken != "" {
-		httpReq.Header.Set("Authorization", "Token token=\""+AuthToken+"\"")
+		AddAuthToken(httpReq)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "application/json")
 	return http.DefaultClient.Do(httpReq)
+}
+
+func AddAuthToken(req *http.Request) {
+	req.Header.Set("Authorization", "Token token=\""+AuthToken+"\"")
 }
