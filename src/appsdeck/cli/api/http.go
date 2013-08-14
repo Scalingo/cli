@@ -1,7 +1,7 @@
 package api
 
 import (
-	"appsdeck/cli/constants"
+	"appsdeck/cli/config"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,7 +14,7 @@ var (
 )
 
 func Do(req map[string]interface{}) (*http.Response, error) {
-	host := constants.Host
+	host := config.C["APPSDECK_API"]
 	if _, ok := req["host"]; ok {
 		host = req["host"].(string)
 	}
