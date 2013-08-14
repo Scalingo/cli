@@ -3,6 +3,7 @@ package apps
 import (
 	"appsdeck/cli/api"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 )

@@ -21,6 +21,10 @@ func Run(app string, command []string) error {
 	runStruct := make(map[string]interface{})
 	ReadJson(res.Body, &runStruct)
 
+	if res.StatusCode == http.StatusUnauthorized {
+		return fmt.Errorf("Not authorized")
+	}
+
 	if _, ok := runStruct["attach"]; !ok {
 		return fmt.Errorf("Unexpected answer from server")
 	}
@@ -29,7 +33,7 @@ func Run(app string, command []string) error {
 	if err != nil {
 		return err
 	}
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("Unauthorized")
 	}
 
