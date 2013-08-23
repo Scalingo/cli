@@ -1,20 +1,23 @@
 package appdetect
 
 import (
+	"appsdeck/cli/debug"
 	"fmt"
 	"os"
 )
 
-func CurrentApp(appFlag string) string {
+func CurrentApp(appFlag string) (repoName string) {
+	repoName = ""
 	if appFlag != "<name>" {
-		return appFlag
+		repoName = appFlag
 	} else if DetectGit() {
-		repoName, err := AppsdeckRepo()
-		if err == nil {
-			return repoName
-		}
+		repoName, _ = AppsdeckRepo()
 	}
-	fmt.Println("Unable to find the repository name, please use --app flag.")
-	os.Exit(1)
-	return ""
+	if repoName == "" {
+		fmt.Println("Unable to find the application name, please use --app flag.")
+		os.Exit(1)
+	} else {
+		debug.Println("[AppDetect] App name is", repoName)
+	}
+	return
 }
