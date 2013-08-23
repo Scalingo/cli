@@ -54,6 +54,9 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 
 	if AuthToken != "" {
 		AddAuthToken(httpReq)
+	} else {
+		// While appsdeck.eu is protected by password
+		httpReq.SetBasicAuth("appsdeck", "bimancighs")
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
