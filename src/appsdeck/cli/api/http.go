@@ -25,10 +25,6 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		params = req["params"].(map[string]interface{})
 	}
 
-	if AuthToken != "" {
-		params["auth_token"] = AuthToken
-	}
-
 	urlWithoutParams := fmt.Sprintf("http://%s%s", host, req["endpoint"].(string))
 
 	var httpReq *http.Request
