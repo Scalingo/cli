@@ -2,6 +2,7 @@ package api
 
 import (
 	"appsdeck/cli/config"
+	"appsdeck/cli/debug"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -61,6 +62,12 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "application/json")
+
+	debug.Printf("[API] %v %v\n", httpReq.Method, httpReq.URL)
+	if len(params) != 0 {
+		debug.Printf("      Params : %v", params)
+	}
+
 	return http.DefaultClient.Do(httpReq)
 }
 

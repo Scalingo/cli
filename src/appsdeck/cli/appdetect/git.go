@@ -1,6 +1,7 @@
 package appdetect
 
 import (
+	"appsdeck/cli/debug"
 	"bufio"
 	"fmt"
 	"os"
@@ -39,6 +40,7 @@ func AppsdeckRepo() (string, error) {
 			if len(found) != 3 {
 				return "", fmt.Errorf("Invalid Appsdeck GIT remote")
 			}
+			debug.Println("[AppDetect] GIT remote found:", strings.TrimSpace(line))
 			return found[2], nil
 		}
 	}

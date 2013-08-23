@@ -96,6 +96,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	if err != httputil.ErrPersistEOF && err != nil {
 		return nil, nil, err
 	}
+
 	connection, _ := conn.Hijack()
 	return res, connection, nil
 }

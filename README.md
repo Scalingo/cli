@@ -33,3 +33,4 @@ Define (example) :
 
 * `APPSDECK_LOG=127.0.0.1:10004`
 * `APPSDECK_API=127.0.0.1:3000`
+* `DEBUG=1`
