@@ -20,8 +20,10 @@ var (
 				if err := apps.LogsStream(currentApp); err != nil {
 					errorQuit(err)
 				}
-			} else if err := apps.Logs(currentApp); err != nil {
-				errorQuit(err)
+			} else if len(c.Args()) == 0 {
+				if err := apps.Logs(currentApp); err != nil {
+					errorQuit(err)
+				}
 			} else {
 				cli.ShowCommandHelp(c, "logs")
 			}
