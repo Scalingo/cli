@@ -17,7 +17,7 @@ func Logs(app string) (*http.Response, error) {
 func LogsStream(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"host":     config.C["APPSDEKC_LOG"],
+		"host":     config.C["APPSDECK_LOG"],
 		"endpoint": "/apps/" + app + "/logs/stream",
 	}
 	return Do(req)
