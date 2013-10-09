@@ -25,10 +25,12 @@ func init() {
 		}
 	}
 	api.AuthToken = Config.AuthToken
+	api.AuthEmail = Config.Email
 }
 
 type AuthConfig struct {
 	AuthToken string `json:"authentication_token"`
+	Email     string `json:"email"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	UserName  string `json:"username"`

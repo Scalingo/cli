@@ -12,10 +12,17 @@ import (
 
 var (
 	AuthToken string
+	AuthEmail string
 )
 
+// Execute an API request and return its response/error
 func Do(req map[string]interface{}) (*http.Response, error) {
+	var httpReq *http.Request
+	var err error
+
 	host := config.C["APPSDECK_API"]
+
+	// If there is a host param, we use this custom host to send the request
 	if _, ok := req["host"]; ok {
 		host = req["host"].(string)
 	}
@@ -25,10 +32,15 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		params = req["params"].(map[string]interface{})
 	}
 
+	// Manage authentication
+	if AuthToken != "" {
+		params["user_email"] = AuthEmail
+		params["user_token"] = AuthToken
+	}
+
 	urlWithoutParams := fmt.Sprintf("http://%s%s", host, req["endpoint"].(string))
 
-	var httpReq *http.Request
-	var err error
+	// Execute the HTTP request according to the HTTP method
 	switch req["method"].(string) {
 	case "POST":
 		buffer, err := json.Marshal(params)
@@ -52,13 +64,6 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		}
 	}
 
-	if AuthToken != "" {
-		AddAuthToken(httpReq)
-	} else {
-		// While appsdeck.eu is protected by password
-		httpReq.SetBasicAuth("appsdeck", "bimancighs")
-	}
-
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "application/json")
 
@@ -68,8 +73,4 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	return http.DefaultClient.Do(httpReq)
-}
-
-func AddAuthToken(req *http.Request) {
-	req.Header.Set("Authorization", "Token token=\""+AuthToken+"\"")
 }

@@ -3,6 +3,8 @@ package apps
 import (
 	"appsdeck/cli/api"
 	"bufio"
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net"
@@ -74,11 +76,20 @@ func Run(app string, command []string) error {
 }
 
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
-	req, err := http.NewRequest("POST", rawUrl, nil)
+	params := map[string]string{
+		"user_email": api.AuthEmail,
+		"user_token": api.AuthToken,
+	}
+	paramsJson, err := json.Marshal(params)
 	if err != nil {
 		return nil, nil, err
 	}
-	api.AddAuthToken(req)
+	paramsReader := bytes.NewReader(paramsJson)
+
+	req, err := http.NewRequest("POST", rawUrl, paramsReader)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
