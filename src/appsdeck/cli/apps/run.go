@@ -36,7 +36,7 @@ func Run(app string, command []string) error {
 		return err
 	}
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("Unauthorized")
+		return fmt.Errorf("Fail to attach: %s", res.Status)
 	}
 
 	sttyArgs := []string{"stty", "-echo", "raw"}
