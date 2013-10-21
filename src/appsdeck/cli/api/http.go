@@ -38,7 +38,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		params["user_token"] = AuthToken
 	}
 
-	urlWithoutParams := fmt.Sprintf("http://%s%s", host, req["endpoint"].(string))
+	urlWithoutParams := fmt.Sprintf("%s%s", host, req["endpoint"].(string))
 
 	// Execute the HTTP request according to the HTTP method
 	switch req["method"].(string) {
@@ -72,5 +72,11 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		debug.Printf("      Params : %v", params)
 	}
 
-	return http.DefaultClient.Do(httpReq)
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: config.TlsConfig,
+		},
+	}
+
+	return client.Do(httpReq)
 }

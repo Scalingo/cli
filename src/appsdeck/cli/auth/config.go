@@ -15,7 +15,7 @@ var (
 func init() {
 	Config, err := LoadAuth()
 	if err != nil {
-		fmt.Println("You need to be authenticated to user Appsdeck client.\nNo account ? → http://appsdeck.eu/users/sign_up")
+		fmt.Println("You need to be authenticated to user Appsdeck client.\nNo account ? → https://appsdeck.eu/users/sign_up")
 		Config, err = Authenticate()
 		if err != nil {
 			fmt.Println("An error occured :", err)
