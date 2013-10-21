@@ -2,6 +2,7 @@ package apps
 
 import (
 	"appsdeck/cli/api"
+	"appsdeck/cli/config"
 	"bufio"
 	"bytes"
 	"crypto/tls"
