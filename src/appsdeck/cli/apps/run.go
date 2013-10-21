@@ -4,6 +4,7 @@ import (
 	"appsdeck/cli/api"
 	"bufio"
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -101,7 +102,8 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 		return nil, nil, err
 	}
 
-	conn := httputil.NewClientConn(dial, nil)
+	tls_conn := tls.Client(dial, config.TlsConfig)
+	conn := httputil.NewClientConn(tls_conn, nil)
 
 	res, err := conn.Do(req)
 	if err != httputil.ErrPersistEOF && err != nil {
