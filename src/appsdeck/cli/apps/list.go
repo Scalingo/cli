@@ -10,7 +10,7 @@ func List() error {
 		return err
 	}
 
-	fmt.Println("List of your apps :\n")
+	fmt.Printf("List of your apps :\n\n")
 	for _, app := range apps {
 		fmt.Println(app)
 	}

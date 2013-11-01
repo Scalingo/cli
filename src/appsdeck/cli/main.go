@@ -2,7 +2,7 @@ package main
 
 import (
 	"appsdeck/cli/cmd"
-	"github.com/Appsdeck/cli"
+	"github.com/codegangsta/cli"
 	"os"
 )
 

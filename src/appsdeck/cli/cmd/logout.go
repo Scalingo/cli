@@ -3,7 +3,7 @@ package cmd
 import (
 	"appsdeck/cli/auth"
 	"fmt"
-	"github.com/Appsdeck/cli"
+	"github.com/codegangsta/cli"
 )
 
 var (

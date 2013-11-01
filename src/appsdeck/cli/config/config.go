@@ -7,7 +7,7 @@ import (
 
 var (
 	TlsConfig *tls.Config
-	C map[string]string
+	C         map[string]string
 
 	defaultValues = map[string]string{
 		"APPSDECK_LOG": "https://logs.appsdeck.eu",

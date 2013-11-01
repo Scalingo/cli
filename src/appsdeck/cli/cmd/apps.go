@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"appsdeck/cli/apps"
-	"github.com/Appsdeck/cli"
+	"github.com/codegangsta/cli"
 )
 
 var (
