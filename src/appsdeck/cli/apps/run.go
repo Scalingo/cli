@@ -3,7 +3,6 @@ package apps
 import (
 	"appsdeck/cli/api"
 	"appsdeck/cli/config"
-	"bufio"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -48,27 +47,8 @@ func Run(app string, command []string) error {
 		return err
 	}
 
-	running := true
-	stdinChan := readerToChan(os.Stdin)
-	socketChan := readerToChan(socket)
-
-	for running {
-		select {
-		case input, ok := <-stdinChan:
-			if ok {
-				fmt.Fprint(socket, input)
-			} else {
-				running = false
-			}
-		case data, ok := <-socketChan:
-			if ok {
-				fmt.Print(data)
-			} else {
-				os.Stdin.Close()
-				running = false
-			}
-		}
-	}
+	go io.Copy(socket, os.Stdout)
+	io.Copy(os.Stdin, socket)
 	socket.Close()
 
 	sttyArgs = []string{"stty", "echo", "cooked"}
@@ -113,22 +93,4 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	connection, _ := conn.Hijack()
 	return res, connection, nil
-}
-
-func readerToChan(in io.Reader) chan string {
-	c := make(chan string, 10)
-	reader := bufio.NewReader(in)
-	go func() {
-		for {
-			r, n, err := reader.ReadRune()
-			if err != nil {
-				close(c)
-				break
-			}
-			if n > 0 {
-				c <- string(r)
-			}
-		}
-	}()
-	return c
 }
