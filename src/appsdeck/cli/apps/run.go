@@ -83,8 +83,15 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 		return nil, nil, err
 	}
 
-	tls_conn := tls.Client(dial, config.TlsConfig)
-	conn := httputil.NewClientConn(tls_conn, nil)
+	var conn *httputil.ClientConn
+	if url.Scheme == "https" {
+		tls_conn := tls.Client(dial, config.TlsConfig)
+		conn = httputil.NewClientConn(tls_conn, nil)
+	} else if url.Scheme == "http" {
+		conn = httputil.NewClientConn(dial, nil)
+	} else {
+		return nil, nil, fmt.Errorf("Invalid scheme format %s", url.Scheme)
+	}
 
 	res, err := conn.Do(req)
 	if err != httputil.ErrPersistEOF && err != nil {
