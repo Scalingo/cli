@@ -1,9 +1,8 @@
 all:
-	go build -o appsdeck appsdeck/cli
+	go build -o appsdeck appsdeck
 
 get:
-	go get github.com/Appsdeck/cli
-	go get code.google.com/p/gopass
+	go get appsdeck
 
 fmt:
 	go fmt ./...
