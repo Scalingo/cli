@@ -22,7 +22,7 @@ var (
 				if err := apps.LogsStream(currentApp); err != nil {
 					errorQuit(err)
 				}
-			} else if len(c.Args()) == 0 || len(c.Args()) == 1 && c.Int("n") != 0 {
+			} else if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
 				if err := apps.Logs(currentApp, c.Int("n")); err != nil {
 					errorQuit(err)
 				}
