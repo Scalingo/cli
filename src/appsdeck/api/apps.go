@@ -20,6 +20,14 @@ func AppsShow(app string) (*http.Response, error) {
 	return Do(req)
 }
 
+func AppsDestroy(id string) (*http.Response, error) {
+	req := map[string]interface{}{
+		"method":   "DELETE",
+		"endpoint": "/api/apps/" + id,
+	}
+	return Do(req)
+}
+
 func AppsCreate(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
@@ -32,4 +40,3 @@ func AppsCreate(app string) (*http.Response, error) {
 	}
 	return Do(req)
 }
-
