@@ -69,6 +69,10 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	res, err := httpclient.Do(httpReq)
+	if err != nil {
+		fmt.Printf("Fail to query %s: %v\n", httpReq.Host, err)
+		os.Exit(1)
+	}
 
 	if res.StatusCode == 500 {
 		fmt.Fprintf(os.Stderr, "Server Internal Error - Our team has been contacted")
