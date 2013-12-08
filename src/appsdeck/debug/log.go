@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	logger = log.New(os.Stderr, "[DEBUG]", log.LstdFlags)
 	Enable bool
 )
 
@@ -17,12 +18,12 @@ func init() {
 
 func Println(vars ...interface{}) {
 	if Enable {
-		log.Println(vars...)
+		logger.Println(vars...)
 	}
 }
 
 func Printf(format string, vars ...interface{}) {
 	if Enable {
-		log.Printf(format, vars...)
+		logger.Printf(format, vars...)
 	}
 }

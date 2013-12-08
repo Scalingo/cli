@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"appsdeck/auth"
+	"appsdeck/session"
 	"fmt"
 	"github.com/codegangsta/cli"
 )
@@ -11,7 +11,7 @@ var (
 		Name:  "logout",
 		Usage: "Logout from Appsdeck",
 		Action: func(c *cli.Context) {
-			if err := auth.DestroyToken(); err != nil {
+			if err := session.DestroyToken(); err != nil {
 				panic(err)
 			}
 			fmt.Println("Appsdeck credentials have been deleted.")

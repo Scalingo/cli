@@ -1,4 +1,5 @@
-appsdeck
+/appsdeck
+*swp
 bin
 pkg
 src/github.com
