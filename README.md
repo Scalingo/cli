@@ -1,5 +1,5 @@
-Appsdeck-CLI
-============
+Appsdeck-CLI v0.2.1
+===================
 
 Command line utility to manage its appsdeck application.
 
@@ -11,7 +11,7 @@ USAGE:
    Appsdeck Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.1
+   0.2.1
 
 COMMANDS:
    logs, l	[-n <nblines> | --stream]
