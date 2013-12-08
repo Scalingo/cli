@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"appsdeck/api"
 	"appsdeck/constants"
 	"encoding/json"
 	"fmt"
@@ -12,8 +11,9 @@ var (
 	Config *AuthConfig
 )
 
-func init() {
-	Config, err := LoadAuth()
+func InitAuth() {
+	var err error
+	Config, err = LoadAuth()
 	if err != nil {
 		fmt.Println("You need to be authenticated to user Appsdeck client.\nNo account ? → https://appsdeck.eu/users/sign_up")
 		Config, err = Authenticate()
@@ -24,8 +24,6 @@ func init() {
 			fmt.Printf("Hello %s %s, nice to see you !\n\n", Config.FirstName, Config.LastName)
 		}
 	}
-	api.AuthToken = Config.AuthToken
-	api.AuthEmail = Config.Email
 }
 
 type AuthConfig struct {

@@ -1,18 +1,25 @@
 package apps
 
 import (
+	"appsdeck/api"
+	"appsdeck/auth"
 	"fmt"
 )
 
 func List() error {
-	apps, err := All()
-	if err != nil {
-		return err
-	}
+	res, _ := api.AppsList()
+	defer res.Body.Close()
 
-	fmt.Printf("List of your apps :\n\n")
+	apps := []App{}
+	ReadJson(res.Body, &apps)
+
+	fmt.Printf("List of your apps :\n")
 	for _, app := range apps {
-		fmt.Println(app)
+		if app.Owner.Email == auth.Config.Email {
+			fmt.Printf("∘ %v —  (owner)\n", app)
+		} else {
+			fmt.Printf("∘ %v —  (collaborator - owned by %s)\n", app, app.Owner.Email)
+		}
 	}
 
 	return nil
