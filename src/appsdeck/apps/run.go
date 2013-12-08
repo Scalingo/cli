@@ -2,6 +2,7 @@ package apps
 
 import (
 	"appsdeck/api"
+	"appsdeck/auth"
 	"appsdeck/config"
 	"bytes"
 	"crypto/tls"
@@ -59,8 +60,8 @@ func Run(app string, command []string) error {
 
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	params := map[string]string{
-		"user_email": api.AuthEmail,
-		"user_token": api.AuthToken,
+		"user_email": auth.Config.Email,
+		"user_token": auth.Config.AuthToken,
 	}
 	paramsJson, err := json.Marshal(params)
 	if err != nil {

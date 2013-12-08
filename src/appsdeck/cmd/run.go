@@ -3,6 +3,7 @@ package cmd
 import (
 	"appsdeck/appdetect"
 	"appsdeck/apps"
+	"appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 
@@ -15,6 +16,7 @@ var (
    environment will be loaded and you can execute any task (example
    'rake' or any database-related task)`,
 		Action: func(c *cli.Context) {
+			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")

@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"appsdeck/api"
 	"code.google.com/p/gopass"
 	"encoding/json"
 	"fmt"
@@ -22,7 +21,7 @@ func Authenticate() (*AuthConfig, error) {
 		return nil, err
 	}
 
-	res, err := api.Login(email, password)
+	res, err := login(email, password)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "appsdeck/auth"
 	"appsdeck/cmd"
 	"fmt"
 	"github.com/codegangsta/cli"
@@ -19,7 +20,9 @@ func main() {
 		cli.ShowAppHelp(c)
 	}
 	app.Commands = []cli.Command{
-		cmd.LogsCommand, cmd.RunCommand, cmd.AppsCommand, cmd.LogoutCommand,
+		cmd.LogsCommand, cmd.RunCommand,
+		cmd.AppsCommand, cmd.LogoutCommand,
+		cmd.CreateCommand, cmd.DestroyCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {
