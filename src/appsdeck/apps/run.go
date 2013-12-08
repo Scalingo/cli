@@ -48,9 +48,8 @@ func Run(app string, command []string) error {
 		return err
 	}
 
-	go io.Copy(os.Stdin, socket)
-	io.Copy(socket, os.Stdout)
-	socket.Close()
+	go io.Copy(socket, os.Stdin)
+	io.Copy(os.Stdout, socket)
 
 	sttyArgs = []string{"stty", "echo", "cooked"}
 	fd = []uintptr{os.Stdout.Fd(), os.Stderr.Fd()}
