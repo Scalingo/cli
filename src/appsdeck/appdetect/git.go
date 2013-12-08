@@ -10,6 +10,18 @@ import (
 	"strings"
 )
 
+func openGitConfig() (*os.File, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	file, err := os.OpenFile(path.Join(cwd, ".git", "config"), os.O_RDWR, 0644)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
+}
+
 func DetectGit() bool {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -22,11 +34,7 @@ func DetectGit() bool {
 }
 
 func AppsdeckRepo() (string, error) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-	file, err := os.OpenFile(path.Join(cwd, ".git", "config"), os.O_RDONLY, 0644)
+	file, err := openGitConfig()
 	if err != nil {
 		return "", err
 	}
@@ -45,4 +53,26 @@ func AppsdeckRepo() (string, error) {
 		}
 	}
 	return "", fmt.Errorf("Appsdeck GIT remote hasn't been found")
+}
+
+func AddRemote(remote string) error {
+	_, err := AppsdeckRepo()
+	if err == nil {
+		return fmt.Errorf("Remote already exists")
+	}
+
+	file, err := openGitConfig()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	file.Seek(0, os.SEEK_END)
+
+	fmt.Fprintf(file,
+		`[remote "appsdeck"]
+	url = %s
+	fetch = +refs/heads/*:refs/remotes/appsdeck/*
+`, remote)
+
+	return nil
 }
