@@ -1,5 +1,5 @@
-Appsdeck-CLI v0.2.2
-===================
+Appsdeck-CLI
+============
 
 Command line utility to manage its appsdeck application.
 
@@ -28,3 +28,12 @@ GLOBAL OPTIONS:
    --help, -h		show help
 
 ```
+
+Dev usage
+---------
+
+Define (example) :
+
+* `APPSDECK_LOG=http://127.0.0.1:10004`
+* `APPSDECK_API=http://127.0.0.1`
+* `DEBUG=1`

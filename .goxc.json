@@ -1,6 +1,6 @@
 {
-	"ArtifactsDest": "",
+	"ArtifactsDest": "bin",
 	"Os": "linux,darwin,freebsd,openbsd",
-	"PackageVersion": "0.2.1",
+	"PackageVersion": "0.2.2",
 	"ConfigVersion": "0.9"
 }
