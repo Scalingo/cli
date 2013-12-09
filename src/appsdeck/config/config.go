@@ -2,6 +2,7 @@ package config
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"os"
 )
 
@@ -28,5 +29,16 @@ func init() {
 	TlsConfig = &tls.Config{}
 	if C["UNSECURE_SSL"] == "true" {
 		TlsConfig.InsecureSkipVerify = true
+	} else {
+		certChain := decodePem(x509Chain)
+		TlsConfig.RootCAs = x509.NewCertPool()
+		for _, cert := range certChain.Certificate {
+			x509Cert, err := x509.ParseCertificate(cert)
+			if err != nil {
+				panic(err)
+			}
+			TlsConfig.RootCAs.AddCert(x509Cert)
+		}
+		TlsConfig.BuildNameToCertificate()
 	}
 }
