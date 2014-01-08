@@ -4,21 +4,48 @@ import (
 	"appsdeck/api"
 	"appsdeck/auth"
 	"appsdeck/config"
+	"appsdeck/term"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"syscall"
+	"strconv"
+	"strings"
 )
 
-func Run(app string, command []string) error {
-	res, err := api.Run(app, command)
+func Run(app string, command []string, cmdEnv []string) error {
+
+	cols, err := term.Cols()
+	if err != nil {
+		log.Fatal(err)
+	}
+	lines, err := term.Lines()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	env := map[string]string{
+		"COLUMNS": strconv.Itoa(cols),
+		"LINES":   strconv.Itoa(lines),
+		"TERM":    os.Getenv("TERM"),
+	}
+
+	for _, cmdVar := range cmdEnv {
+		v := strings.Split(cmdVar, "=")
+		if len(v[0]) == 0 || len(v[1]) == 0 {
+			return fmt.Errorf("Invalid environment")
+		}
+		env[v[0]] = v[1]
+	}
+
+	res, err := api.Run(app, command, env)
 	if err != nil {
 		return err
 	}
@@ -41,19 +68,17 @@ func Run(app string, command []string) error {
 		return fmt.Errorf("Fail to attach: %s", res.Status)
 	}
 
-	sttyArgs := []string{"stty", "-echo", "raw"}
-	fd := []uintptr{os.Stdin.Fd(), os.Stdout.Fd(), os.Stderr.Fd()}
-	_, err = syscall.ForkExec("/bin/stty", sttyArgs, &syscall.ProcAttr{Dir: "", Files: fd})
-	if err != nil {
+	if err := term.MakeRaw(os.Stdin); err != nil {
 		return err
 	}
 
 	go io.Copy(socket, os.Stdin)
 	io.Copy(os.Stdout, socket)
 
-	sttyArgs = []string{"stty", "echo", "cooked"}
-	fd = []uintptr{os.Stdout.Fd(), os.Stderr.Fd()}
-	syscall.ForkExec("/bin/stty", sttyArgs, &syscall.ProcAttr{Dir: "", Files: fd})
+	if err := term.Restore(os.Stdin); err != nil {
+		return err
+	}
+
 	return nil
 }
 
