@@ -1,8 +1,8 @@
 package config
 
 import (
-	"encoding/pem"
 	"crypto/tls"
+	"encoding/pem"
 )
 
 func decodePem(certInput string) tls.Certificate {
