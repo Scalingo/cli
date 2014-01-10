@@ -10,6 +10,7 @@ var (
 	LogoutCommand = cli.Command{
 		Name:  "logout",
 		Usage: "Logout from Appsdeck",
+		Description: "Destroy login information stored on your computer",
 		Action: func(c *cli.Context) {
 			if err := session.DestroyToken(); err != nil {
 				panic(err)

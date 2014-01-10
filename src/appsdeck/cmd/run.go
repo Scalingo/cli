@@ -17,8 +17,10 @@ var (
 			cli.StringSliceFlag{"e", &flag, "Environment variables"},
 		},
 		Description: `Run command in current app context, your application
-   environment will be loaded and you can execute any task (example
-   'rake' or any database-related task)`,
+   environment will be loaded and you can execute any task.
+     Example
+       'appsdeck --app my-app run bundle exec rails console'
+       'appsdeck --app synfony-app run php app/console cache:clear --env=prod'`,
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))

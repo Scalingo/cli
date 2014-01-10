@@ -10,18 +10,12 @@ var (
 	AppsCommand = cli.Command{
 		Name:      "apps",
 		ShortName: "a",
-		Usage:     "Manage your apps",
-		Flags: []cli.Flag{
-			cli.BoolFlag{"list", "List your apps"},
-		},
+		Description: "List your apps and give some details about them",
+		Usage: "List your apps",
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
-			if c.Bool("list") {
-				if err := apps.List(); err != nil {
-					errorQuit(err)
-				}
-			} else {
-				cli.ShowCommandHelp(c, "apps")
+			if err := apps.List(); err != nil {
+				errorQuit(err)
 			}
 		},
 	}
