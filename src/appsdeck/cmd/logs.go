@@ -9,10 +9,13 @@ import (
 
 var (
 	LogsCommand = cli.Command{
-		Name:        "logs",
-		ShortName:   "l",
-		Description: "Get the logs of an application",
-		Usage:       "[-n <nblines> | --stream]",
+		Name:      "logs",
+		ShortName: "l",
+		Usage:     "Get the logs of your applications",
+		Description: `Get the logs of your applications
+   Example:
+     Get 100 lines:  'appsdeck --app my-app logs -n 100'
+     Real-Time logs: 'appsdeck --app my-app logs --stream'`,
 		Flags: []cli.Flag{
 			cli.IntFlag{"n", 20, "Number of log lines to dump"},
 			cli.BoolFlag{"stream", "Stream logs of app, (as \"tail -f\")"},

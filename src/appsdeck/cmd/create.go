@@ -10,8 +10,8 @@ var (
 	CreateCommand = cli.Command{
 		Name:        "create",
 		ShortName:   "c",
-		Description: "Create a new app",
-		Usage:       "appsdeck create <name>",
+		Description: "Create a new app:\n   Example:\n     'appsdeck create mynewapp'",
+		Usage:       "Create a new app",
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
 			if len(c.Args()) != 1 {
