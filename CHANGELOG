@@ -1,0 +1,33 @@
+Changelog
+=========
+
+### v0.2.3
+
+* bugfix: `Input logs weren't HTML-unescaped`
+
+  → The logs arre correctly displayed
+
+* feature: `Environment can be send to custom jobs`
+  
+  → `appsdeck run -e VAR1=VAL1 -e VAR2=VAL2 bundle exec rails console`
+
+* doc: More details about each command and subcommand
+  
+  → `appsdeck help` or `appsdeck <subcmd> help` to see the details
+
+### v0.2.2
+
+* bugfix: `x509: failed to load system roots and no roots provided`
+
+  → Include chain of certificates in the binary
+
+  > It is not possible to access x509 certificates system pool on OS X with a go
+  > application cross-compiled from linux to darwin. Including the needed
+  > chain of certificate is a good way to improve portability.
+
+### v0.2.1
+
+* feature: Add subcommand create, to create application
+* feature: Add subcommand destroy, to definitively delete an application
+
+
