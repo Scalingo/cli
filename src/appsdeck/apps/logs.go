@@ -4,6 +4,7 @@ import (
 	"appsdeck/api"
 	"bufio"
 	"fmt"
+	"html"
 	"io"
 	"io/ioutil"
 	"strconv"
@@ -22,7 +23,7 @@ func Logs(app string, n int) error {
 		return err
 	}
 
-	fmt.Println(string(buffer))
+	fmt.Println(html.UnescapeString(string(buffer)))
 	return nil
 }
 
@@ -36,7 +37,7 @@ func LogsStream(app string) error {
 	reader := bufio.NewReader(res.Body)
 	for line, _, err := reader.ReadLine(); err == nil; line, _, err = reader.ReadLine() {
 		if len(line) != 0 {
-			fmt.Println(string(line))
+			fmt.Println(html.UnescapeString(string(line)))
 		}
 	}
 	if err != io.EOF {
