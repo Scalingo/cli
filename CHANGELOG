@@ -3,9 +3,13 @@ Changelog
 
 ### v0.2.3
 
-* bugfix: `Input logs weren't HTML-unescaped`
+* bugfix: Input logs aren't HTML-unescaped
 
-  → The logs arre correctly displayed
+> The logs are correctly displayed
+
+* bugfix: Copy/Paste is not working correctly with `appsdeck run`
+
+> The size of the terminal is sent to the server, pagers, pastes and completion is now working fine
 
 * feature: `Environment can be send to custom jobs`
   
