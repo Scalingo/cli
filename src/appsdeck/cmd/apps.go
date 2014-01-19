@@ -8,10 +8,10 @@ import (
 
 var (
 	AppsCommand = cli.Command{
-		Name:      "apps",
-		ShortName: "a",
+		Name:        "apps",
+		ShortName:   "a",
 		Description: "List your apps and give some details about them",
-		Usage: "List your apps",
+		Usage:       "List your apps",
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
 			if err := apps.List(); err != nil {

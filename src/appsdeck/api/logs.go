@@ -1,27 +1,26 @@
 package api
 
 import (
-	"appsdeck/config"
 	"net/http"
 )
 
-func Logs(app string, n string) (*http.Response, error) {
+func LogsURL(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"host":     config.C["APPSDECK_LOG"],
-		"endpoint": "/apps/" + app + "/logs",
-		"params": map[string]interface{}{
-			"n": n,
-		},
+		"endpoint": "/api/apps/" + app + "/logs",
 	}
 	return Do(req)
 }
 
-func LogsStream(app string) (*http.Response, error) {
+func Logs(url string, stream bool, n int) (*http.Response, error) {
 	req := map[string]interface{}{
-		"method":   "GET",
-		"host":     config.C["APPSDECK_LOG"],
-		"endpoint": "/apps/" + app + "/logs/stream",
+		"auth":   false,
+		"method": "GET",
+		"url":    url,
+		"params": map[string]interface{}{
+			"stream": stream,
+			"n":      n,
+		},
 	}
 	return Do(req)
 }
