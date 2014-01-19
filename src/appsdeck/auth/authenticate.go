@@ -9,19 +9,19 @@ import (
 )
 
 func Authenticate() (*AuthConfig, error) {
-	fmt.Print("Email : ")
-	var email string
-	_, err := fmt.Scanln(&email)
+	fmt.Print("Username or email: ")
+	var login string
+	_, err := fmt.Scanln(&login)
 	if err != nil {
 		return nil, err
 	}
 
-	password, err := gopass.GetPass("Password : ")
+	password, err := gopass.GetPass("Password: ")
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := login(email, password)
+	res, err := loginUser(login, password)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func Authenticate() (*AuthConfig, error) {
 		}
 		return &authConfig, StoreAuth(&authConfig)
 	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("Wrong email or password.")
+		return nil, fmt.Errorf("Wrong identifier or password.")
 	}
 
 	return nil, fmt.Errorf("Wrong answer from server : %s", res.Status)

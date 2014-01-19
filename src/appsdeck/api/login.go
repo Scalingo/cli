@@ -10,7 +10,7 @@ func Login(email, password string) (*http.Response, error) {
 		"endpoint": "/users/sign_in",
 		"params": map[string]interface{}{
 			"user": map[string]string{
-				"email":    email,
+				"login":    email,
 				"password": password,
 			},
 		},
