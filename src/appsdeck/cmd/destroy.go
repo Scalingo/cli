@@ -11,7 +11,7 @@ var (
 	DestroyCommand = cli.Command{
 		Name:        "destroy",
 		ShortName:   "d",
-		Usage: "Destroy an app /!\\",
+		Usage:       "Destroy an app /!\\",
 		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'appsdeck destroy my-app'",
 		Action: func(c *cli.Context) {
 			auth.InitAuth()

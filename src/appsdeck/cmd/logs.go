@@ -23,12 +23,8 @@ var (
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
-			if c.Bool("stream") {
-				if err := apps.LogsStream(currentApp); err != nil {
-					errorQuit(err)
-				}
-			} else if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
-				if err := apps.Logs(currentApp, c.Int("n")); err != nil {
+			if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
+				if err := apps.Logs(currentApp, c.Bool("stream"), c.Int("n")); err != nil {
 					errorQuit(err)
 				}
 			} else {

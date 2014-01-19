@@ -34,6 +34,6 @@ Dev usage
 
 Define (example) :
 
-* `APPSDECK_LOG=http://127.0.0.1:10004`
-* `APPSDECK_API=http://127.0.0.1`
+* `APPSDECK_API=http://appsdeck.dev`
+* `UNSECURE_SSL=true`
 * `DEBUG=1`

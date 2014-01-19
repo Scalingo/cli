@@ -31,13 +31,20 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		params = req["params"].(map[string]interface{})
 	}
 
-	// Manage authentication
-	if auth.Config.AuthToken != "" {
-		params["user_email"] = auth.Config.Email
-		params["user_token"] = auth.Config.AuthToken
+	// Manage authentication when not specified or when req is true
+	if a, ok := req["auth"]; !ok || a.(bool) {
+		if auth.Config.AuthToken != "" {
+			params["user_email"] = auth.Config.Email
+			params["user_token"] = auth.Config.AuthToken
+		}
 	}
 
-	urlWithoutParams := fmt.Sprintf("%s%s", host, req["endpoint"].(string))
+	var urlWithoutParams string
+	if u, ok := req["url"]; ok {
+		urlWithoutParams = u.(string)
+	} else {
+		urlWithoutParams = fmt.Sprintf("%s%s", host, req["endpoint"].(string))
+	}
 
 	// Execute the HTTP request according to the HTTP method
 	switch req["method"].(string) {
@@ -54,9 +61,16 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	case "GET", "DELETE":
 		values := url.Values{}
 		for key, value := range params {
-			values.Add(key, value.(string))
+			values.Add(key, fmt.Sprintf("%v", value))
 		}
-		urlWithParams := fmt.Sprintf("%s?%s", urlWithoutParams, values.Encode())
+
+		// In the case an url is given, we add the extra parameters
+		var urlWithParams string
+		if _, ok := req["url"]; ok {
+			urlWithParams = fmt.Sprintf("%s&%s", urlWithoutParams, values.Encode())
+		} else {
+			urlWithParams = fmt.Sprintf("%s?%s", urlWithoutParams, values.Encode())
+		}
 		httpReq, err = http.NewRequest(req["method"].(string), urlWithParams, nil)
 		if err != nil {
 			return nil, err

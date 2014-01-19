@@ -3,41 +3,57 @@ package apps
 import (
 	"appsdeck/api"
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"html"
 	"io"
 	"io/ioutil"
-	"strconv"
+	"net/http"
+	"strings"
 )
 
-func Logs(app string, n int) error {
-	nStr := strconv.FormatUint(uint64(n), 10)
-	res, err := api.Logs(app, nStr)
+func Logs(appName string, stream bool, n int) error {
+	res, err := api.LogsURL(appName)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	buffer, err := ioutil.ReadAll(res.Body)
+	if res.StatusCode != 200 {
+		return fmt.Errorf("fail to query logs: %s", res.Status)
+	}
+
+	app := App{}
+	if err = json.NewDecoder(res.Body).Decode(&app); err != nil {
+		return err
+	}
+	fmt.Printf("%+v\n", app)
+
+	res, err = api.Logs(app.LogsURL, stream, n)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(html.UnescapeString(string(buffer)))
+	if !stream {
+		buffer, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(html.UnescapeString(string(buffer)))
+	} else {
+		return streamLogs(res)
+	}
 	return nil
 }
 
-func LogsStream(app string) error {
-	res, err := api.LogsStream(app)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-
+func streamLogs(res *http.Response) error {
+	var err error
 	reader := bufio.NewReader(res.Body)
 	for line, _, err := reader.ReadLine(); err == nil; line, _, err = reader.ReadLine() {
 		if len(line) != 0 {
-			fmt.Println(html.UnescapeString(string(line)))
+			parsedLine := strings.SplitN(string(line), ":", 2)
+			fmt.Println(
+				html.UnescapeString(
+					strings.TrimSpace(parsedLine[1]),
+				),
+			)
 		}
 	}
 	if err != io.EOF {
