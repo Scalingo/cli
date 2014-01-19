@@ -18,7 +18,7 @@ func InitAuth() {
 		fmt.Println("You need to be authenticated to user Appsdeck client.\nNo account ? → https://appsdeck.eu/users/sign_up")
 		Config, err = Authenticate()
 		if err != nil {
-			fmt.Println("An error occured :", err)
+			fmt.Println("An error occured:", err)
 			os.Exit(1)
 		} else {
 			fmt.Printf("Hello %s %s, nice to see you !\n\n", Config.FirstName, Config.LastName)
@@ -42,7 +42,7 @@ func StoreAuth(authConfig *AuthConfig) error {
 				return err
 			}
 		} else {
-			fmt.Errorf("Error reaching config directory : %s", err)
+			fmt.Errorf("Error reaching config directory: %s", err)
 		}
 	}
 

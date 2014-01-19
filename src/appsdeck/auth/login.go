@@ -8,10 +8,10 @@ import (
 	"net/http"
 )
 
-func login(email, passwd string) (*http.Response, error) {
+func loginUser(login, passwd string) (*http.Response, error) {
 	paramsMap := map[string]interface{}{
 		"user": map[string]string{
-			"email":    email,
+			"login":    login,
 			"password": passwd,
 		},
 	}
