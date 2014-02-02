@@ -1,6 +1,16 @@
 Changelog
 =========
 
+
+### v0.3.0
+
+* bugfix: When unauthenticated, `appsdeck logout` creates a panic
+
+> Additional error checking to take care of the case
+
+* feature: Improve security for getting logs, a unique session token is generated to get the logs
+* feature: Logging via Username or Email exactly as https://appsdeck.eu
+
 ### v0.2.3
 
 * bugfix: Input logs aren't HTML-unescaped
