@@ -14,17 +14,16 @@ VERSION:
    0.3.0
 
 COMMANDS:
-   logs, l	[-n <nblines> | --stream]
+   logs, l	Get the logs of your applications
    run, r	Run any command for your app
-   apps, a	Manage your apps
+   apps, a	List your apps
    logout	Logout from Appsdeck
-   create, c	appsdeck create <name>
-   destroy, d	appsdeck destroy <id or canonical name>
+   create, c	Create a new app
+   destroy, d	Destroy an app /!\
    help, h	Shows a list of commands or help for one command
    
 GLOBAL OPTIONS:
    --app '<name>'	Name of the app
-   --version		print the version
+   --version, -v	print the version
    --help, -h		show help
-
 ```
