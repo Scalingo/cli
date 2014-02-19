@@ -15,16 +15,16 @@ var (
 		Description: `Get the logs of your applications
    Example:
      Get 100 lines:  'appsdeck --app my-app logs -n 100'
-     Real-Time logs: 'appsdeck --app my-app logs --stream'`,
+     Real-Time logs: 'appsdeck --app my-app logs -f'`,
 		Flags: []cli.Flag{
-			cli.IntFlag{"n", 20, "Number of log lines to dump"},
-			cli.BoolFlag{"stream", "Stream logs of app, (as \"tail -f\")"},
+			cli.IntFlag{"lines, n", 20, "Number of log lines to dump"},
+			cli.BoolFlag{"follow, f", "Stream logs of app, (as \"tail -f\")"},
 		},
 		Action: func(c *cli.Context) {
 			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
-				if err := apps.Logs(currentApp, c.Bool("stream"), c.Int("n")); err != nil {
+				if err := apps.Logs(currentApp, c.Bool("f"), c.Int("n")); err != nil {
 					errorQuit(err)
 				}
 			} else {

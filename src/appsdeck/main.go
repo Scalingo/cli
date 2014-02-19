@@ -15,7 +15,7 @@ func main() {
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
-		cli.StringFlag{"app", "<name>", "Name of the app"},
+		cli.StringFlag{"app, a", "<name>", "Name of the app"},
 	}
 	app.Action = func(c *cli.Context) {
 		cli.ShowAppHelp(c)

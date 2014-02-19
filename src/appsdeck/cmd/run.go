@@ -14,7 +14,7 @@ var (
 		ShortName: "r",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{"e", &flag, "Environment variables"},
+			cli.StringSliceFlag{"env, e", &flag, "Environment variables"},
 		},
 		Description: `Run command in current app context, your application
    environment will be loaded and you can execute any task.
