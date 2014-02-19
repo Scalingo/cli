@@ -16,8 +16,10 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 func Run(app string, command []string, cmdEnv []string) error {
@@ -72,8 +74,37 @@ func Run(app string, command []string, cmdEnv []string) error {
 		return err
 	}
 
+
+	stopSignalsMonitoring := make(chan bool)
+	defer close(stopSignalsMonitoring)
+
+	go func() {
+		signals := make(chan os.Signal)
+		defer close(signals)
+
+		signal.Notify(signals, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTSTP)
+		for {
+			select {
+			case s := <-signals:
+				switch s {
+					case syscall.SIGINT:
+						socket.Write([]byte{0x03})
+				  case syscall.SIGQUIT:
+						socket.Write([]byte{0x1c})
+					case syscall.SIGTSTP:
+						socket.Write([]byte{0x1a})
+				}
+			case <-stopSignalsMonitoring:
+				signal.Stop(signals)
+				return
+			}
+		}
+	}()
+
 	go io.Copy(socket, os.Stdin)
 	io.Copy(os.Stdout, socket)
+
+	stopSignalsMonitoring <- true
 
 	if err := term.Restore(os.Stdin); err != nil {
 		return err
