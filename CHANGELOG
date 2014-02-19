@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### v0.3.1
+
+* bugfix: Correctly handle signals to remote app during `appsdeck run`
+* feature: Ability to use short or long flags for any flag
+* feature: Rename `logs --stream` to `logs -f|--follow` to respect tail syntax
 
 ### v0.3.0
 
