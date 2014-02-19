@@ -11,7 +11,7 @@ USAGE:
    Appsdeck Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.0
+   0.3.1
 
 COMMANDS:
    logs, l	[-n <nblines> | --stream]
@@ -23,8 +23,8 @@ COMMANDS:
    help, h	Shows a list of commands or help for one command
    
 GLOBAL OPTIONS:
-   --app '<name>'	Name of the app
-   --version		print the version
+   --app, -a '<name>'	Name of the app
+   --version, -ve	print the version
    --help, -h		show help
 
 ```
