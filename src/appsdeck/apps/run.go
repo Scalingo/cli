@@ -62,7 +62,9 @@ func Run(app string, command []string, cmdEnv []string) error {
 		return fmt.Errorf("Unexpected answer from server")
 	}
 
-	res, socket, err := connectToRunServer(runStruct["attach"].(string))
+	runUrl := runStruct["attach"].(string)
+
+	res, socket, err := connectToRunServer(runUrl)
 	if err != nil {
 		return err
 	}
@@ -74,7 +76,6 @@ func Run(app string, command []string, cmdEnv []string) error {
 		return err
 	}
 
-
 	stopSignalsMonitoring := make(chan bool)
 	defer close(stopSignalsMonitoring)
 
@@ -82,17 +83,28 @@ func Run(app string, command []string, cmdEnv []string) error {
 		signals := make(chan os.Signal)
 		defer close(signals)
 
-		signal.Notify(signals, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTSTP)
+		signal.Notify(signals,
+			syscall.SIGINT,
+			syscall.SIGQUIT,
+			syscall.SIGTSTP,
+			syscall.SIGWINCH,
+		)
+
 		for {
 			select {
 			case s := <-signals:
 				switch s {
-					case syscall.SIGINT:
-						socket.Write([]byte{0x03})
-				  case syscall.SIGQUIT:
-						socket.Write([]byte{0x1c})
-					case syscall.SIGTSTP:
-						socket.Write([]byte{0x1a})
+				case syscall.SIGINT:
+					socket.Write([]byte{0x03})
+				case syscall.SIGQUIT:
+					socket.Write([]byte{0x1c})
+				case syscall.SIGTSTP:
+					socket.Write([]byte{0x1a})
+				case syscall.SIGWINCH:
+					err := updateTtySize(runUrl)
+					if err != nil {
+						fmt.Println("WARN: Error when updating terminal size:", err)
+					}
 				}
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
@@ -114,20 +126,11 @@ func Run(app string, command []string, cmdEnv []string) error {
 }
 
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
-	params := map[string]string{
-		"user_email": auth.Config.Email,
-		"user_token": auth.Config.AuthToken,
-	}
-	paramsJson, err := json.Marshal(params)
+	req, err := http.NewRequest("POST", rawUrl, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	paramsReader := bytes.NewReader(paramsJson)
-
-	req, err := http.NewRequest("POST", rawUrl, paramsReader)
-	if err != nil {
-		return nil, nil, err
-	}
+	auth.AddHeaders(req)
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
@@ -156,4 +159,42 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	connection, _ := conn.Hijack()
 	return res, connection, nil
+}
+
+type UpdateTtyParams struct {
+	Width  string `json: "width"`
+	Height string `json: "height"`
+}
+
+func updateTtySize(url string) error {
+	cols, err := term.Cols()
+	if err != nil {
+		return err
+	}
+	lines, err := term.Lines()
+	if err != nil {
+		return err
+	}
+
+	params := UpdateTtyParams{
+		fmt.Sprintf("%d", cols),
+		fmt.Sprintf("%d", lines),
+	}
+	paramsJson, _ := json.Marshal(&params)
+
+	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJson))
+	if err != nil {
+		return err
+	}
+	auth.AddHeaders(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return fmt.Errorf("Invalid error code from run server: %s", res.Status)
+	}
+
+	return nil
 }

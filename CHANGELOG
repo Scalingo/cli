@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v0.3.2
+
+* feature: Dynamically monitor terminal size for foreign application
+
 ### v0.3.1
 
 * bugfix: Correctly handle signals to remote app during `appsdeck run`
