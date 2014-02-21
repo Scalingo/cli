@@ -10,33 +10,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"syscall"
 )
 
 func Run(app string, command []string, cmdEnv []string) error {
-
-	cols, err := term.Cols()
-	if err != nil {
-		log.Fatal(err)
-	}
-	lines, err := term.Lines()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	env := map[string]string{
-		"COLUMNS": strconv.Itoa(cols),
-		"LINES":   strconv.Itoa(lines),
-		"TERM":    os.Getenv("TERM"),
+		"TERM": os.Getenv("TERM"),
 	}
 
 	for _, cmdVar := range cmdEnv {
@@ -90,6 +76,7 @@ func Run(app string, command []string, cmdEnv []string) error {
 			syscall.SIGWINCH,
 		)
 
+		go func() { signals <- syscall.SIGWINCH }()
 		for {
 			select {
 			case s := <-signals:
