@@ -4,6 +4,7 @@ import (
 	"appsdeck/constants"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 )
 
@@ -72,4 +73,9 @@ func LoadAuth() (*AuthConfig, error) {
 	}
 
 	return &authConfig, nil
+}
+
+func AddHeaders(req *http.Request) {
+	req.Header.Add("X-APPSDECK-EMAIL", Config.Email)
+	req.Header.Add("X-APPSDECK-API-TOKEN", Config.AuthToken)
 }
