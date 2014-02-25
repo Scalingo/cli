@@ -4,6 +4,7 @@ import (
 	"appsdeck/api"
 	"appsdeck/auth"
 	"appsdeck/config"
+	"appsdeck/httpclient"
 	"appsdeck/term"
 	"bytes"
 	"crypto/tls"
@@ -174,7 +175,7 @@ func updateTtySize(url string) error {
 		return err
 	}
 	auth.AddHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpclient.Do(req)
 	if err != nil {
 		return err
 	}
