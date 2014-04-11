@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v0.3.3 - 11/04/2014
+
+* Change SSL certificate chain (new certificate -> heartbleed)
+
 ### v0.3.2.1 - 25/02/2014
 
 * fix: [Mac OSX] HTTPS request to update terminal size
