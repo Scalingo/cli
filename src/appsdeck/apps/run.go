@@ -41,8 +41,8 @@ func Run(app string, command []string, cmdEnv []string) error {
 	runStruct := make(map[string]interface{})
 	ReadJson(res.Body, &runStruct)
 
-	if res.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("Not authorized")
+	if res.StatusCode == http.StatusNotFound {
+		return fmt.Errorf("application %s not found", app)
 	}
 
 	if _, ok := runStruct["attach"]; !ok {
