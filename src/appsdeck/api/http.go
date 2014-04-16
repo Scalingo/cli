@@ -89,12 +89,12 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	if res.StatusCode == 500 {
-		fmt.Fprintf(os.Stderr, "Server Internal Error - Our team has been contacted")
+		fmt.Fprintln(os.Stderr, "Server Internal Error - Our team has been contacted")
 		os.Exit(1)
 	}
 
 	if res.StatusCode == 401 {
-		fmt.Fprintf(os.Stderr, "You are not authorized to do this operation")
+		fmt.Fprintln(os.Stderr, "You are not authorized to do this operation")
 		session.DestroyToken()
 		os.Exit(1)
 	}

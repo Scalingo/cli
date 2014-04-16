@@ -6,6 +6,6 @@ import (
 )
 
 func errorQuit(err error) {
-	fmt.Printf("[Error] %s\n", err)
+	fmt.Printf("[Error] %v\n", err)
 	os.Exit(1)
 }
