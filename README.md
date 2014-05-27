@@ -1,4 +1,4 @@
-Appsdeck-CLI v0.3.3
+Appsdeck-CLI v0.3.4
 =====================
 
 Command line utility to manage its appsdeck application.
@@ -11,7 +11,7 @@ USAGE:
    Appsdeck Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.3
+   0.3.4
 
 COMMANDS:
    logs, l	Get the logs of your applications
