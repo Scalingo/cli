@@ -24,7 +24,7 @@ func Create(appName string) {
 	} else if res.StatusCode == 201 {
 		app := App{}
 		ReadJson(res.Body, &app)
-		fmt.Printf("App %s (%s) has been created\n", app.FullName, app.Name)
+		fmt.Printf("App '%s' has been created\n", app.Name)
 		if appdetect.DetectGit() && appdetect.AddRemote(app.GitUrl) == nil {
 			fmt.Printf("Git repository detected: remote appsdeck added\n→ 'git push appsdeck master' to deploy your app\n")
 		} else {

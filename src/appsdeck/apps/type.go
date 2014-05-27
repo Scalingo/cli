@@ -1,15 +1,11 @@
 package apps
 
-import (
-	"fmt"
-	"time"
-)
+import "time"
 
 type App struct {
-	Id       string `json:"_id"`
-	FullName string `json:"fullname"`
-	Name     string `json:"name"`
-	Owner    struct {
+	Id    string `json:"_id"`
+	Name  string `json:"name"`
+	Owner struct {
 		Email string `json:"email"`
 		Id    string `json:"_id"`
 	} `json: "owner"`
@@ -20,5 +16,5 @@ type App struct {
 }
 
 func (app App) String() string {
-	return fmt.Sprintf("%s \"%s\"", app.FullName, app.Name)
+	return app.Name
 }
