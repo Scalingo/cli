@@ -27,7 +27,6 @@ func Logs(appName string, stream bool, n int) error {
 	if err = json.NewDecoder(res.Body).Decode(&app); err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", app)
 
 	res, err = api.Logs(app.LogsURL, stream, n)
 	if err != nil {
@@ -49,6 +48,12 @@ func streamLogs(res *http.Response) error {
 	for line, _, err := reader.ReadLine(); err == nil; line, _, err = reader.ReadLine() {
 		if len(line) != 0 {
 			parsedLine := strings.SplitN(string(line), ":", 2)
+			if len(parsedLine) != 2 {
+				// Invalid content from server, SSE should be
+				// msgname: content
+				// Anything else is wrong
+				continue
+			}
 			fmt.Println(
 				html.UnescapeString(
 					strings.TrimSpace(parsedLine[1]),
