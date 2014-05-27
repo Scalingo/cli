@@ -34,7 +34,7 @@ func AppsCreate(app string) (*http.Response, error) {
 		"endpoint": "/api/apps",
 		"params": map[string]interface{}{
 			"app": map[string]interface{}{
-				"fullname": app,
+				"name": app,
 			},
 		},
 	}
