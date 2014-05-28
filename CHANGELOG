@@ -5,6 +5,7 @@ Changelog
 
 * API Change app/fullname → app/name
 * Logs command → Fix panic when invalid data from server
+* Clarify error when connection to appsdeck-run is blocked by proxy/FW
 
 ### v0.3.3 - 11/04/2014
 
