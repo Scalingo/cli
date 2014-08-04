@@ -1,7 +1,7 @@
 package appdetect
 
 import (
-	"appsdeck/debug"
+	"github.com/Appsdeck/appsdeck/debug"
 	"bufio"
 	"fmt"
 	"os"

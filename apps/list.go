@@ -1,8 +1,8 @@
 package apps
 
 import (
-	"appsdeck/api"
-	"appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Appsdeck/appsdeck/auth"
 	"fmt"
 )
 

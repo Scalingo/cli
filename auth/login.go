@@ -1,11 +1,12 @@
 package auth
 
 import (
-	"appsdeck/config"
-	"appsdeck/httpclient"
 	"bytes"
 	"encoding/json"
 	"net/http"
+
+	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Appsdeck/appsdeck/httpclient"
 )
 
 func loginUser(login, passwd string) (*http.Response, error) {

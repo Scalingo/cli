@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"appsdeck/appdetect"
-	"appsdeck/apps"
-	"appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/appdetect"
+	"github.com/Appsdeck/appsdeck/apps"
+	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 
@@ -17,8 +17,8 @@ var (
      Get 100 lines:  'appsdeck --app my-app logs -n 100'
      Real-Time logs: 'appsdeck --app my-app logs -f'`,
 		Flags: []cli.Flag{
-			cli.IntFlag{"lines, n", 20, "Number of log lines to dump"},
-			cli.BoolFlag{"follow, f", "Stream logs of app, (as \"tail -f\")"},
+			cli.IntFlag{"lines, n", 20, "Number of log lines to dump", ""},
+			cli.BoolFlag{"follow, f", "Stream logs of app, (as \"tail -f\")", ""},
 		},
 		Action: func(c *cli.Context) {
 			auth.InitAuth()

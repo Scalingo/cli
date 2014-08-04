@@ -1,12 +1,13 @@
 package main
 
 import (
-	_ "appsdeck/auth"
-	"appsdeck/cmd"
-	"appsdeck/config"
 	"fmt"
-	"github.com/codegangsta/cli"
 	"os"
+
+	_ "github.com/Appsdeck/appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/cmd"
+	"github.com/Appsdeck/appsdeck/config"
+	"github.com/codegangsta/cli"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
-		cli.StringFlag{"app, a", "<name>", "Name of the app"},
+		cli.StringFlag{"app, a", "<name>", "Name of the app", "APPSDECK_APP"},
 	}
 	app.Action = func(c *cli.Context) {
 		cli.ShowAppHelp(c)

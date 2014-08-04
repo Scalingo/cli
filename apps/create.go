@@ -1,8 +1,8 @@
 package apps
 
 import (
-	"appsdeck/api"
-	"appsdeck/appdetect"
+	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Appsdeck/appsdeck/appdetect"
 	"fmt"
 	"strings"
 )

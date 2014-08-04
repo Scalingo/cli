@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"appsdeck/session"
+	"github.com/Appsdeck/appsdeck/session"
 	"fmt"
 	"github.com/codegangsta/cli"
 )
