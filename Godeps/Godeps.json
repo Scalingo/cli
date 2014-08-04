@@ -1,0 +1,15 @@
+{
+	"ImportPath": "github.com/Appsdeck/appsdeck",
+	"GoVersion": "go1.3",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/gopass",
+			"Rev": "3b39664481b57ad99d34c86bd64090c28eacc7a1"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-16-gaa19913",
+			"Rev": "aa19913be3107ab75ea67a5a88d667d62a69dbbd"
+		}
+	]
+}

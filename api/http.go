@@ -1,17 +1,18 @@
 package api
 
 import (
-	"appsdeck/auth"
-	"appsdeck/config"
-	"appsdeck/debug"
-	"appsdeck/httpclient"
-	"appsdeck/session"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/Appsdeck/appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Appsdeck/appsdeck/debug"
+	"github.com/Appsdeck/appsdeck/httpclient"
+	"github.com/Appsdeck/appsdeck/session"
 )
 
 // Execute an API request and return its response/error

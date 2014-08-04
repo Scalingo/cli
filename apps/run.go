@@ -1,11 +1,6 @@
 package apps
 
 import (
-	"appsdeck/api"
-	"appsdeck/auth"
-	"appsdeck/config"
-	"appsdeck/httpclient"
-	"appsdeck/term"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -19,6 +14,12 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Appsdeck/appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Appsdeck/appsdeck/httpclient"
+	"github.com/Appsdeck/appsdeck/term"
 )
 
 func Run(app string, command []string, cmdEnv []string) error {

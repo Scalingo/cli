@@ -1,8 +1,9 @@
 package httpclient
 
 import (
-	"appsdeck/config"
 	"net/http"
+
+	"github.com/Appsdeck/appsdeck/config"
 )
 
 var (

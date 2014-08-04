@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"appsdeck/appdetect"
-	"appsdeck/apps"
-	"appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/appdetect"
+	"github.com/Appsdeck/appsdeck/apps"
+	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 
@@ -14,7 +14,7 @@ var (
 		ShortName: "r",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{"env, e", &flag, "Environment variables"},
+			cli.StringSliceFlag{"env, e", &flag, "Environment variables", ""},
 		},
 		Description: `Run command in current app context, your application
    environment will be loaded and you can execute any task.

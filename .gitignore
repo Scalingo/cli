@@ -4,3 +4,5 @@ bin
 pkg
 src/github.com
 src/code.google.com
+Godeps/Readme
+Godeps/_workspace

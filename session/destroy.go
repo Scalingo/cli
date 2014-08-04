@@ -1,7 +1,7 @@
 package session
 
 import (
-	"appsdeck/constants"
+	"github.com/Appsdeck/appsdeck/constants"
 	"os"
 )
 

@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"appsdeck/constants"
+	"github.com/Appsdeck/appsdeck/constants"
 	"encoding/json"
 	"fmt"
 	"net/http"

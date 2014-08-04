@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"appsdeck/debug"
+	"github.com/Appsdeck/appsdeck/debug"
 	"bytes"
 	"encoding/json"
 	"io"

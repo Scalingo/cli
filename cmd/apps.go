@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"appsdeck/apps"
-	"appsdeck/auth"
+	"github.com/Appsdeck/appsdeck/apps"
+	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 

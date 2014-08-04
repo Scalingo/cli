@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"appsdeck/api"
+	"github.com/Appsdeck/appsdeck/api"
 	"bufio"
 	"encoding/json"
 	"fmt"
