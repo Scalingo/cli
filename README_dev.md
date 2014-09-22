@@ -11,7 +11,7 @@ USAGE:
    Appsdeck Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.4
+   0.3.5
 
 COMMANDS:
    logs, l	[-n <nblines> | --stream]
