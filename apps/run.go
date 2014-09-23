@@ -23,6 +23,7 @@ import (
 	"github.com/Appsdeck/appsdeck/api"
 	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Appsdeck/appsdeck/debug"
 	"github.com/Appsdeck/appsdeck/httpclient"
 	"github.com/Appsdeck/appsdeck/term"
 	"gopkg.in/errgo.v1"
@@ -55,6 +56,7 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	}
 
 	runUrl := runStruct["attach"].(string)
+	debug.Println("Run Service URL is", runUrl)
 
 	if len(files) > 0 {
 		err := uploadFiles(runUrl+"/files", files)
@@ -159,7 +161,8 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
-		tls_conn := tls.Client(dial, config.TlsConfig)
+		host := strings.Split(url.Host, ":")[0]
+		tls_conn := tls.Client(dial, config.GenTLSConfig(host))
 		conn = httputil.NewClientConn(tls_conn, nil)
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)
@@ -187,8 +190,8 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 }
 
 type UpdateTtyParams struct {
-	Width  string `json: "width"`
-	Height string `json: "height"`
+	Width  string `json:"width"`
+	Height string `json:"height"`
 }
 
 func updateTtySize(url string) error {
@@ -211,6 +214,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return err
 	}
+
 	auth.AddHeaders(req)
 	res, err := httpclient.Do(req)
 	if err != nil {
@@ -243,7 +247,7 @@ func uploadFiles(endpoint string, files []string) error {
 		relPath := file
 		file, err = filepath.Abs(relPath)
 		if err != nil {
-			return fmt.Errorf("impossible to get absolute path of", relPath)
+			return fmt.Errorf("impossible to get absolute path of %s", relPath)
 		}
 		if stat.IsDir() {
 			dir := file
@@ -296,11 +300,11 @@ func createTarArchive(fd *os.File, dir string) error {
 		}
 		tarHeader, err := tar.FileInfoHeader(info, name)
 		if err != nil {
-			return fmt.Errorf("fail to build tar header:", err)
+			return fmt.Errorf("fail to build tar header: %v", err)
 		}
 		err = tarFd.WriteHeader(tarHeader)
 		if err != nil {
-			return fmt.Errorf("fail to write tar header:", err)
+			return fmt.Errorf("fail to write tar header: %v", err)
 		}
 		fileFd, err := os.OpenFile(name, os.O_RDONLY, 0600)
 		if err != nil {
@@ -376,7 +380,9 @@ func uploadFile(endpoint string, file string) error {
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 
 	fmt.Println("Upload", file, "to container.")
-	res, err := http.DefaultClient.Do(req)
+	debug.Println("Endpoint:", req.URL)
+
+	res, err := httpclient.Do(req)
 	if err != nil {
 		return errgo.Mask(err)
 	}

@@ -15,8 +15,8 @@ var (
 		ShortName: "r",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{"env, e", &EnvFlag, "Environment variables", ""},
-			cli.StringSliceFlag{"file, f", &FilesFlag, "Files to upload", ""},
+			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables", EnvVar: ""},
+			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload", EnvVar: ""},
 		},
 		Description: `Run command in current app context, your application
    environment will be loaded and you can execute any task.

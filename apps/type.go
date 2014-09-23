@@ -8,7 +8,7 @@ type App struct {
 	Owner struct {
 		Email string `json:"email"`
 		Id    string `json:"_id"`
-	} `json: "owner"`
+	} `json:"owner"`
 	GitUrl    string    `json:"git_url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"update_at"`

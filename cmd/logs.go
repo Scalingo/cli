@@ -17,8 +17,8 @@ var (
      Get 100 lines:  'appsdeck --app my-app logs -n 100'
      Real-Time logs: 'appsdeck --app my-app logs -f'`,
 		Flags: []cli.Flag{
-			cli.IntFlag{"lines, n", 20, "Number of log lines to dump", ""},
-			cli.BoolFlag{"follow, f", "Stream logs of app, (as \"tail -f\")", ""},
+			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
+			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
 		},
 		Action: func(c *cli.Context) {
 			auth.InitAuth()

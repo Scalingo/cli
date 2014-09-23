@@ -42,3 +42,10 @@ func init() {
 		TlsConfig.BuildNameToCertificate()
 	}
 }
+
+func GenTLSConfig(serverName string) *tls.Config {
+	tlsConfig := &tls.Config{}
+	*tlsConfig = *TlsConfig
+	tlsConfig.ServerName = serverName
+	return tlsConfig
+}
