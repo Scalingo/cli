@@ -22,6 +22,7 @@ func main() {
 		cli.ShowAppHelp(c)
 	}
 	app.Commands = []cli.Command{
+		cmd.ScaleCommand,
 		cmd.LogsCommand, cmd.RunCommand,
 		cmd.AppsCommand, cmd.LogoutCommand,
 		cmd.CreateCommand, cmd.DestroyCommand,

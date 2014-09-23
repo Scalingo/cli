@@ -1,17 +1,22 @@
 package apps
 
 import (
+	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 
@@ -20,19 +25,18 @@ import (
 	"github.com/Appsdeck/appsdeck/config"
 	"github.com/Appsdeck/appsdeck/httpclient"
 	"github.com/Appsdeck/appsdeck/term"
+	"gopkg.in/errgo.v1"
 )
 
-func Run(app string, command []string, cmdEnv []string) error {
-	env := map[string]string{
-		"TERM": os.Getenv("TERM"),
+func Run(app string, command []string, cmdEnv []string, files []string) error {
+	env, err := buildEnv(cmdEnv)
+	if err != nil {
+		return err
 	}
 
-	for _, cmdVar := range cmdEnv {
-		v := strings.Split(cmdVar, "=")
-		if len(v[0]) == 0 || len(v[1]) == 0 {
-			return fmt.Errorf("Invalid environment")
-		}
-		env[v[0]] = v[1]
+	err = validateFiles(files)
+	if err != nil {
+		return err
 	}
 
 	res, err := api.Run(app, command, env)
@@ -51,6 +55,13 @@ func Run(app string, command []string, cmdEnv []string) error {
 	}
 
 	runUrl := runStruct["attach"].(string)
+
+	if len(files) > 0 {
+		err := uploadFiles(runUrl+"/files", files)
+		if err != nil {
+			return err
+		}
+	}
 
 	res, socket, err := connectToRunServer(runUrl)
 	if err != nil {
@@ -112,6 +123,21 @@ func Run(app string, command []string, cmdEnv []string) error {
 	}
 
 	return nil
+}
+
+func buildEnv(cmdEnv []string) (map[string]string, error) {
+	env := map[string]string{
+		"TERM": os.Getenv("TERM"),
+	}
+
+	for _, cmdVar := range cmdEnv {
+		v := strings.Split(cmdVar, "=")
+		if len(v[0]) == 0 || len(v[1]) == 0 {
+			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
+		}
+		env[v[0]] = v[1]
+	}
+	return env, nil
 }
 
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
@@ -195,5 +221,164 @@ func updateTtySize(url string) error {
 		return fmt.Errorf("Invalid error code from run server: %s", res.Status)
 	}
 
+	return nil
+}
+
+func validateFiles(files []string) error {
+	for _, file := range files {
+		_, err := os.Stat(file)
+		if err != nil {
+			return fmt.Errorf("can't upload %s: %v", file, err)
+		}
+	}
+	return nil
+}
+
+func uploadFiles(endpoint string, files []string) error {
+	for _, file := range files {
+		stat, err := os.Stat(file)
+		if err != nil {
+			return fmt.Errorf("can't stat file %s: %v", file, err)
+		}
+		if stat.IsDir() {
+			dir := file
+			file, err = compressDir(dir)
+			if err != nil {
+				return fmt.Errorf("fail to compress directory %s: %v", dir, err)
+			}
+		}
+		err = uploadFile(endpoint, file)
+		if err != nil {
+			return fmt.Errorf("fail to upload file %s: %v", file, err)
+		}
+	}
+	return nil
+}
+
+func compressDir(dir string) (string, error) {
+	tmpDir, err := ioutil.TempDir(os.TempDir(), "job-file")
+	if err != nil {
+		return "", err
+	}
+	fd, err := os.OpenFile(filepath.Join(tmpDir, filepath.Base(dir)+".tar"), os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("Compressing directory", dir, "to", fd.Name())
+
+	err = createTarArchive(fd, dir)
+	if err != nil {
+		return "", err
+	}
+
+	file, err := compressToGzip(fd.Name())
+	if err != nil {
+		return "", err
+	}
+
+	return file, nil
+}
+
+func createTarArchive(fd *os.File, dir string) error {
+	tarFd := tar.NewWriter(fd)
+	defer tarFd.Close()
+	err := filepath.Walk(dir, func(name string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		tarHeader, err := tar.FileInfoHeader(info, name)
+		if err != nil {
+			return fmt.Errorf("fail to build tar header:", err)
+		}
+		err = tarFd.WriteHeader(tarHeader)
+		if err != nil {
+			return fmt.Errorf("fail to write tar header:", err)
+		}
+		fileFd, err := os.OpenFile(name, os.O_RDONLY, 0600)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(tarFd, fileFd)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func compressToGzip(file string) (string, error) {
+	fdSource, err := os.OpenFile(file, os.O_RDONLY, 0600)
+	if err != nil {
+		return "", err
+	}
+	defer fdSource.Close()
+	fdDest, err := os.OpenFile(file+".gz", os.O_CREATE|os.O_WRONLY, 0600)
+	if err != nil {
+		return "", err
+	}
+	defer fdDest.Close()
+	writer := gzip.NewWriter(fdDest)
+	defer writer.Close()
+
+	_, err = io.Copy(writer, fdSource)
+	if err != nil {
+		return "", err
+	}
+
+	return fdDest.Name(), nil
+}
+
+func uploadFile(endpoint string, file string) error {
+	body := new(bytes.Buffer)
+	name := filepath.Base(file)
+	multipartFile := multipart.NewWriter(body)
+	writer, err := multipartFile.CreateFormFile("file", name)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	fd, err := os.OpenFile(file, os.O_RDONLY, 0600)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	_, err = io.Copy(writer, fd)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	err = fd.Close()
+	if err != nil {
+		return err
+	}
+	err = multipartFile.Close()
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", endpoint, body)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+	auth.AddHeaders(req)
+	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
+
+	fmt.Println("Upload", file, "to container.")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		b, _ := ioutil.ReadAll(res.Body)
+		return errgo.Newf("Invalid return code %v (%s)", res.Status, strings.TrimSpace(string(b)))
+	}
 	return nil
 }

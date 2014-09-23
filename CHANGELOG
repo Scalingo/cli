@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### v0.3.5 - 22/09/2014
+
+* Upload files when running custom job
+  > `appsdeck run [--file file1 [--file fileN …]] <cmd>`
+
 ### v0.3.4 - 27/05/2014
 
 * API Change app/fullname → app/name

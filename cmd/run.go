@@ -8,13 +8,15 @@ import (
 )
 
 var (
-	flag       = cli.StringSlice([]string{})
+	EnvFlag    = cli.StringSlice([]string{})
+	FilesFlag  = cli.StringSlice([]string{})
 	RunCommand = cli.Command{
 		Name:      "run",
 		ShortName: "r",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{"env, e", &flag, "Environment variables", ""},
+			cli.StringSliceFlag{"env, e", &EnvFlag, "Environment variables", ""},
+			cli.StringSliceFlag{"file, f", &FilesFlag, "Files to upload", ""},
 		},
 		Description: `Run command in current app context, your application
    environment will be loaded and you can execute any task.
@@ -26,7 +28,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")
-			} else if err := apps.Run(currentApp, c.Args(), c.StringSlice("e")); err != nil {
+			} else if err := apps.Run(currentApp, c.Args(), c.StringSlice("e"), c.StringSlice("f")); err != nil {
 				errorQuit(err)
 			}
 		},
