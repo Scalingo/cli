@@ -240,6 +240,11 @@ func uploadFiles(endpoint string, files []string) error {
 		if err != nil {
 			return fmt.Errorf("can't stat file %s: %v", file, err)
 		}
+		relPath := file
+		file, err = filepath.Abs(relPath)
+		if err != nil {
+			return fmt.Errorf("impossible to get absolute path of", relPath)
+		}
 		if stat.IsDir() {
 			dir := file
 			file, err = compressDir(dir)
