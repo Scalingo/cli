@@ -8,19 +8,23 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/Appsdeck/appsdeck/config"
 	"github.com/Appsdeck/appsdeck/debug"
 	"github.com/Appsdeck/appsdeck/httpclient"
+	"github.com/Appsdeck/appsdeck/io"
 	"github.com/Appsdeck/appsdeck/session"
+	"github.com/Appsdeck/appsdeck/users"
 )
+
+var CurrentUser *users.User
+var Prefix = config.C["API_PREFIX"]
 
 // Execute an API request and return its response/error
 func Do(req map[string]interface{}) (*http.Response, error) {
 	var httpReq *http.Request
 	var err error
 
-	host := config.C["APPSDECK_API"]
+	host := config.C["API_URL"]
 
 	// If there is a host param, we use this custom host to send the request
 	if _, ok := req["host"]; ok {
@@ -32,19 +36,11 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		params = req["params"].(map[string]interface{})
 	}
 
-	// Manage authentication when not specified or when req is true
-	if a, ok := req["auth"]; !ok || a.(bool) {
-		if auth.Config.AuthToken != "" {
-			params["user_email"] = auth.Config.Email
-			params["user_token"] = auth.Config.AuthToken
-		}
-	}
-
 	var urlWithoutParams string
 	if u, ok := req["url"]; ok {
 		urlWithoutParams = u.(string)
 	} else {
-		urlWithoutParams = fmt.Sprintf("%s%s", host, req["endpoint"].(string))
+		urlWithoutParams = fmt.Sprintf("%s%s%s", host, Prefix, req["endpoint"].(string))
 	}
 
 	// Execute the HTTP request according to the HTTP method
@@ -78,9 +74,33 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		}
 	}
 
+	// Manage authentication when not specified or when req is true
+	a, ok := req["auth"]
+	auth := !ok || a.(bool)
+	if auth {
+		user, err := AuthFromConfig()
+		if err != nil {
+			return nil, err
+		}
+		if user == nil {
+			fmt.Println("You need to be authenticated to use Appsdeck client.\nNo account ? → https://appsdeck.eu/users/sign_up")
+			user, err = Auth()
+			if err != nil {
+				return nil, err
+			}
+		}
+		CurrentUser = user
+		httpReq.SetBasicAuth("", CurrentUser.AuthToken)
+	}
+
+	if token, ok := req["token"]; ok {
+		httpReq.SetBasicAuth("", token.(string))
+	}
+
 	debug.Printf("[API] %v %v\n", httpReq.Method, httpReq.URL)
+	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", httpReq.Header), 6))
 	if len(params) != 0 {
-		debug.Printf("      Params : %v", params)
+		debug.Printf(io.Indent("Params : %v", 6), params)
 	}
 
 	res, err := httpclient.Do(httpReq)
@@ -94,7 +114,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		os.Exit(1)
 	}
 
-	if res.StatusCode == 401 {
+	if auth && res.StatusCode == 401 {
 		fmt.Fprintln(os.Stderr, "You are not authorized to do this operation")
 		session.DestroyToken()
 		os.Exit(1)

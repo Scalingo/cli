@@ -1,26 +1,38 @@
 package apps
 
 import (
-	"github.com/Appsdeck/appsdeck/api"
-	"github.com/Appsdeck/appsdeck/auth"
 	"fmt"
+	"os"
+
+	"github.com/Appsdeck/appsdeck/api"
+	"github.com/olekukonko/tablewriter"
 )
 
 func List() error {
-	res, _ := api.AppsList()
+	res, err := api.AppsList()
+	if err != nil {
+		return err
+	}
 	defer res.Body.Close()
 
-	apps := []App{}
-	ReadJson(res.Body, &apps)
+	appsMap := map[string][]App{}
+	err = ReadJson(res.Body, &appsMap)
+	if err != nil {
+		return err
+	}
+	apps := appsMap["apps"]
 
-	fmt.Printf("List of your apps :\n")
+	t := tablewriter.NewWriter(os.Stdout)
+	t.SetHeader([]string{"Name", "Role", "Owner"})
+
 	for _, app := range apps {
-		if app.Owner.Email == auth.Config.Email {
-			fmt.Printf("∘ %v —  (owner)\n", app)
+		if app.Owner.Email == api.CurrentUser.Email {
+			t.Append([]string{app.Name, "owner", "-"})
 		} else {
-			fmt.Printf("∘ %v —  (collaborator - owned by %s)\n", app, app.Owner.Email)
+			t.Append([]string{app.Name, "collaborator", fmt.Sprintf("%s <%s>", app.Owner.Username, app.Owner.Email)})
 		}
 	}
+	t.Render()
 
 	return nil
 }

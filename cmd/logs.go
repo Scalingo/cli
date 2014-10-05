@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/Appsdeck/appsdeck/appdetect"
 	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 
@@ -21,7 +20,6 @@ var (
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
 		},
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
 				if err := apps.Logs(currentApp, c.Bool("f"), c.Int("n")); err != nil {

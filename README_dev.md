@@ -34,6 +34,6 @@ Dev usage
 
 Define (example) :
 
-* `APPSDECK_API=http://appsdeck.dev`
+* `API_URL=http://appsdeck.dev`
 * `UNSECURE_SSL=true`
 * `DEBUG=1`

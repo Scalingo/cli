@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"github.com/Appsdeck/appsdeck/api"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -10,7 +9,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Appsdeck/appsdeck/debug"
 )
+
+type LogsRes struct {
+	App *App `json:"app"`
+}
 
 func Logs(appName string, stream bool, n int) error {
 	res, err := api.LogsURL(appName)
@@ -23,10 +29,18 @@ func Logs(appName string, stream bool, n int) error {
 		return fmt.Errorf("fail to query logs: %s", res.Status)
 	}
 
-	app := App{}
-	if err = json.NewDecoder(res.Body).Decode(&app); err != nil {
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
 		return err
 	}
+
+	debug.Println("[API-Response] ", string(body))
+
+	logsRes := &LogsRes{}
+	if err = json.Unmarshal(body, &logsRes); err != nil {
+		return err
+	}
+	app := logsRes.App
 
 	res, err = api.Logs(app.LogsURL, stream, n)
 	if err != nil {

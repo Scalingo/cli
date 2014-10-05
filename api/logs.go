@@ -7,7 +7,7 @@ import (
 func LogsURL(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/api/apps/" + app + "/logs",
+		"endpoint": "/apps/" + app + "/logs",
 	}
 	return Do(req)
 }

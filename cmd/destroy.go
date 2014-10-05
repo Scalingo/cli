@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
 	"fmt"
+	"github.com/Appsdeck/appsdeck/apps"
 	"github.com/codegangsta/cli"
 )
 
@@ -14,7 +13,6 @@ var (
 		Usage:       "Destroy an app /!\\",
 		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'appsdeck destroy my-app'",
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "destroy")
 			} else {

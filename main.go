@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/Appsdeck/appsdeck/auth"
 	"github.com/Appsdeck/appsdeck/cmd"
 	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Appsdeck/appsdeck/signals"
 	"github.com/codegangsta/cli"
 )
 
@@ -26,7 +26,10 @@ func main() {
 		cmd.LogsCommand, cmd.RunCommand,
 		cmd.AppsCommand, cmd.LogoutCommand,
 		cmd.CreateCommand, cmd.DestroyCommand,
+		cmd.AddonsListCommand, cmd.AddonPlansCommand,
 	}
+
+	go signals.Handle()
 
 	if err := app.Run(os.Args); err != nil {
 		fmt.Println("Fail to run appsdeck", err)

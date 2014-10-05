@@ -21,7 +21,6 @@ import (
 	"syscall"
 
 	"github.com/Appsdeck/appsdeck/api"
-	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/Appsdeck/appsdeck/config"
 	"github.com/Appsdeck/appsdeck/debug"
 	"github.com/Appsdeck/appsdeck/httpclient"
@@ -46,16 +45,19 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	}
 	runStruct := make(map[string]interface{})
 	ReadJson(res.Body, &runStruct)
+	debug.Printf("%+v\n", runStruct)
 
 	if res.StatusCode == http.StatusNotFound {
 		return fmt.Errorf("application %s not found", app)
 	}
 
-	if _, ok := runStruct["attach"]; !ok {
+	container := runStruct["container"].(map[string]interface{})
+
+	if _, ok := container["attach"]; !ok {
 		return fmt.Errorf("Unexpected answer from server")
 	}
 
-	runUrl := runStruct["attach"].(string)
+	runUrl := container["attach"].(string)
 	debug.Println("Run Service URL is", runUrl)
 
 	if len(files) > 0 {
@@ -147,7 +149,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	auth.AddHeaders(req)
+	req.SetBasicAuth("", api.CurrentUser.AuthToken)
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
@@ -214,8 +216,8 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return err
 	}
+	req.SetBasicAuth("", api.CurrentUser.AuthToken)
 
-	auth.AddHeaders(req)
 	res, err := httpclient.Do(req)
 	if err != nil {
 		return err
@@ -376,7 +378,8 @@ func uploadFile(endpoint string, file string) error {
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	auth.AddHeaders(req)
+	req.SetBasicAuth("", api.CurrentUser.AuthToken)
+
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 
 	fmt.Println("Upload", file, "to container.")

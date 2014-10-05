@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/Appsdeck/appsdeck/appdetect"
 	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
 	"github.com/codegangsta/cli"
 )
 
@@ -24,7 +23,6 @@ var (
        'appsdeck --app my-app run bundle exec rails console'
        'appsdeck --app synfony-app run php app/console cache:clear --env=prod'`,
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")

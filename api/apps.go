@@ -7,7 +7,7 @@ import (
 func AppsList() (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/api/apps",
+		"endpoint": "/apps",
 	}
 	return Do(req)
 }
@@ -15,7 +15,7 @@ func AppsList() (*http.Response, error) {
 func AppsShow(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/api/apps/" + app,
+		"endpoint": "/apps/" + app,
 	}
 	return Do(req)
 }
@@ -23,7 +23,7 @@ func AppsShow(app string) (*http.Response, error) {
 func AppsDestroy(id string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "DELETE",
-		"endpoint": "/api/apps/" + id,
+		"endpoint": "/apps/" + id,
 	}
 	return Do(req)
 }
@@ -31,7 +31,7 @@ func AppsDestroy(id string) (*http.Response, error) {
 func AppsCreate(app string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
-		"endpoint": "/api/apps",
+		"endpoint": "/apps",
 		"params": map[string]interface{}{
 			"app": map[string]interface{}{
 				"name": app,
