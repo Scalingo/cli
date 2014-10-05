@@ -12,7 +12,7 @@ var (
 
 	defaultValues = map[string]string{
 		"API_URL":      "https://scalingo-api-production.appsdeck.eu",
-		"API_PREFIX":   "/api",
+		"API_PREFIX":   "/v1",
 		"UNSECURE_SSL": "false",
 	}
 )
