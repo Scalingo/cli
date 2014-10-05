@@ -11,7 +11,7 @@ var (
 	C         map[string]string
 
 	defaultValues = map[string]string{
-		"API_URL":      "https://appsdeck.eu",
+		"API_URL":      "https://scalingo-api-production.appsdeck.eu",
 		"API_PREFIX":   "/api",
 		"UNSECURE_SSL": "false",
 	}
