@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Appsdeck/appsdeck/session"
+	"github.com/Scalingo/cli/session"
 	"fmt"
 	"github.com/codegangsta/cli"
 )

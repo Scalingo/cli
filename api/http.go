@@ -8,12 +8,12 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/Appsdeck/appsdeck/config"
-	"github.com/Appsdeck/appsdeck/debug"
-	"github.com/Appsdeck/appsdeck/httpclient"
-	"github.com/Appsdeck/appsdeck/io"
-	"github.com/Appsdeck/appsdeck/session"
-	"github.com/Appsdeck/appsdeck/users"
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/cli/httpclient"
+	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/session"
+	"github.com/Scalingo/cli/users"
 )
 
 var CurrentUser *users.User

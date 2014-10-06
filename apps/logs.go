@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Appsdeck/appsdeck/api"
-	"github.com/Appsdeck/appsdeck/debug"
+	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/debug"
 )
 
 type LogsRes struct {

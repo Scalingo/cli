@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Appsdeck/appsdeck/constants"
-	"github.com/Appsdeck/appsdeck/users"
+	"github.com/Scalingo/cli/constants"
+	"github.com/Scalingo/cli/users"
 )
 
 func StoreAuth(user *users.User) error {

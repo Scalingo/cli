@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/Appsdeck/appsdeck/apps"
+	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
 

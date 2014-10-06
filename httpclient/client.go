@@ -3,7 +3,7 @@ package httpclient
 import (
 	"net/http"
 
-	"github.com/Appsdeck/appsdeck/config"
+	"github.com/Scalingo/cli/config"
 )
 
 var (

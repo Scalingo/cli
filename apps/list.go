@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Scalingo/cli/api"
 	"github.com/olekukonko/tablewriter"
 )
 

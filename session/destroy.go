@@ -1,7 +1,7 @@
 package session
 
 import (
-	"github.com/Appsdeck/appsdeck/constants"
+	"github.com/Scalingo/cli/constants"
 	"os"
 )
 

@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Appsdeck/appsdeck/api"
-	"github.com/Appsdeck/appsdeck/appdetect"
+	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/appdetect"
 )
 
 func Create(appName string) error {

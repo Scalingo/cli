@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 
-	"github.com/Appsdeck/appsdeck/users"
+	"github.com/Scalingo/cli/users"
 )
 
 type SelfResults struct {

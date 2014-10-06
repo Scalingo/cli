@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Appsdeck/appsdeck/cmd"
-	"github.com/Appsdeck/appsdeck/config"
-	"github.com/Appsdeck/appsdeck/signals"
+	"github.com/Scalingo/cli/cmd"
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/signals"
 	"github.com/codegangsta/cli"
 )
 

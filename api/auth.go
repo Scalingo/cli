@@ -7,8 +7,8 @@ import (
 
 	"code.google.com/p/gopass"
 
-	"github.com/Appsdeck/appsdeck/config"
-	"github.com/Appsdeck/appsdeck/users"
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/users"
 )
 
 type LoginError struct {

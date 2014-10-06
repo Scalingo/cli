@@ -20,11 +20,11 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/Appsdeck/appsdeck/api"
-	"github.com/Appsdeck/appsdeck/config"
-	"github.com/Appsdeck/appsdeck/debug"
-	"github.com/Appsdeck/appsdeck/httpclient"
-	"github.com/Appsdeck/appsdeck/term"
+	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/cli/httpclient"
+	"github.com/Scalingo/cli/term"
 	"gopkg.in/errgo.v1"
 )
 

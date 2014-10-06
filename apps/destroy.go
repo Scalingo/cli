@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"github.com/Appsdeck/appsdeck/api"
+	"github.com/Scalingo/cli/api"
 	"fmt"
 )
 

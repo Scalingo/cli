@@ -1,7 +1,7 @@
 package appdetect
 
 import (
-	"github.com/Appsdeck/appsdeck/debug"
+	"github.com/Scalingo/cli/debug"
 	"fmt"
 	"os"
 )
