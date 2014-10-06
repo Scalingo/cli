@@ -16,7 +16,7 @@ func main() {
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
-		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "APP"},
+		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 	}
 	app.Action = func(c *cli.Context) {
 		cli.ShowAppHelp(c)
