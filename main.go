@@ -27,6 +27,7 @@ func main() {
 		cmd.AppsCommand, cmd.LogoutCommand,
 		cmd.CreateCommand, cmd.DestroyCommand,
 		cmd.AddonsListCommand, cmd.AddonPlansCommand,
+		cmd.AddonResourcesListCommand,
 	}
 
 	go signals.Handle()
