@@ -8,7 +8,7 @@ import (
 var (
 	AddonPlansCommand = cli.Command{
 		Name:        "addon-plans",
-		Description: "List the plans for an addon.\n    Example:\n    appsdeck addon-plans appsdeck-mongo",
+		Description: "List the plans for an addon.\n    Example:\n    scalingo addon-plans scalingo-mongo",
 		Usage:       "List plans",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {

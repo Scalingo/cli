@@ -1,9 +1,10 @@
 package appdetect
 
 import (
-	"github.com/Scalingo/cli/debug"
 	"fmt"
 	"os"
+
+	"github.com/Scalingo/cli/debug"
 )
 
 func CurrentApp(appFlag string) (repoName string) {
@@ -11,7 +12,7 @@ func CurrentApp(appFlag string) (repoName string) {
 	if appFlag != "<name>" {
 		repoName = appFlag
 	} else if DetectGit() {
-		repoName, _ = AppsdeckRepo()
+		repoName, _ = ScalingoRepo()
 	}
 	if repoName == "" {
 		fmt.Println("Unable to find the application name, please use --app flag.")

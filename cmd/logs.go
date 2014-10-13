@@ -13,8 +13,8 @@ var (
 		Usage:     "Get the logs of your applications",
 		Description: `Get the logs of your applications
    Example:
-     Get 100 lines:  'appsdeck --app my-app logs -n 100'
-     Real-Time logs: 'appsdeck --app my-app logs -f'`,
+     Get 100 lines:  'scalingo --app my-app logs -n 100'
+     Real-Time logs: 'scalingo --app my-app logs -f'`,
 		Flags: []cli.Flag{
 			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},

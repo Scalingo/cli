@@ -177,7 +177,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
 				return nil, nil, fmt.Errorf(
-					"Fail to create a secure connection to Appsdeck server\n"+
+					"Fail to create a secure connection to Scalingo server\n"+
 						"The encountered error is: %v (ID: CLI-1001)\n"+
 						"Your firewall or proxy may block the connection to %s",
 					err, url.Host,

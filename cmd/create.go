@@ -9,7 +9,7 @@ var (
 	CreateCommand = cli.Command{
 		Name:        "create",
 		ShortName:   "c",
-		Description: "Create a new app:\n   Example:\n     'appsdeck create mynewapp'",
+		Description: "Create a new app:\n   Example:\n     'scalingo create mynewapp'",
 		Usage:       "Create a new app",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {

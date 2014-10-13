@@ -12,7 +12,7 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Appsdeck Client"
+	app.Name = "Scalingo Client"
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
@@ -33,6 +33,6 @@ func main() {
 	go signals.Handle()
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Println("Fail to run appsdeck", err)
+		fmt.Println("Fail to run scalingo", err)
 	}
 }

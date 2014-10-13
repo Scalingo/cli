@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
@@ -11,7 +12,7 @@ var (
 		Name:        "destroy",
 		ShortName:   "d",
 		Usage:       "Destroy an app /!\\",
-		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'appsdeck destroy my-app'",
+		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "destroy")

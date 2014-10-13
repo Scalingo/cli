@@ -10,7 +10,7 @@ import (
 )
 
 func StoreAuth(user *users.User) error {
-	// Check ~/.config/appsdeck
+	// Check ~/.config/scalingo
 	if _, err := os.Stat(constants.ConfigDir); err != nil {
 		if err, ok := err.(*os.PathError); ok {
 			if err := os.MkdirAll(constants.ConfigDir, 0755); err != nil {

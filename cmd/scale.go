@@ -23,8 +23,8 @@ var (
 // 	Description: `Run command in current app context, your application
 // environment will be loaded and you can execute any task.
 // Example
-// 'appsdeck --app my-app run bundle exec rails console'
-// 'appsdeck --app synfony-app run php app/console cache:clear --env=prod'`,
+// 'scalingo --app my-app run bundle exec rails console'
+// 'scalingo --app synfony-app run php app/console cache:clear --env=prod'`,
 // 	Action: func(c *cli.Context) {
 // 		currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 // 		if len(c.Args()) == 0 {

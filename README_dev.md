@@ -1,25 +1,25 @@
-Appsdeck-CLI
+Scalingo-CLI
 ============
 
-Command line utility to manage its appsdeck application.
+Command line utility to manage its Scalingo apps.
 
 ```
 NAME:
-   Appsdeck Client - Manage your apps and containers
+   Scalingo Client - Manage your apps and containers
 
 USAGE:
-   Appsdeck Client [global options] command [command options] [arguments...]
+   Scalingo Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.5
+   0.5.0
 
 COMMANDS:
    logs, l	[-n <nblines> | --stream]
    run, r	Run any command for your app
    apps, a	Manage your apps
-   logout	Logout from Appsdeck
-   create, c	appsdeck create <name>
-   destroy, d	appsdeck destroy <id or canonical name>
+   logout	Logout from Scalingo
+   create, c	scalingo create <name>
+   destroy, d	scalingo destroy <id or canonical name>
    help, h	Shows a list of commands or help for one command
    
 GLOBAL OPTIONS:
@@ -34,6 +34,6 @@ Dev usage
 
 Define (example) :
 
-* `API_URL=http://appsdeck.dev`
+* `API_URL=http://scalingo.dev`
 * `UNSECURE_SSL=true`
 * `DEBUG=1`

@@ -1,13 +1,14 @@
 package appdetect
 
 import (
-	"github.com/Scalingo/cli/debug"
 	"bufio"
 	"fmt"
 	"os"
 	"path"
 	"regexp"
 	"strings"
+
+	"github.com/Scalingo/cli/debug"
 )
 
 func openGitConfig() (*os.File, error) {
@@ -33,7 +34,7 @@ func DetectGit() bool {
 	return true
 }
 
-func AppsdeckRepo() (string, error) {
+func ScalingoRepo() (string, error) {
 	file, err := openGitConfig()
 	if err != nil {
 		return "", err
@@ -42,21 +43,21 @@ func AppsdeckRepo() (string, error) {
 
 	reader := bufio.NewReader(file)
 	for line, err := reader.ReadString('\n'); err == nil; line, err = reader.ReadString('\n') {
-		if strings.Contains(line, "url = git@appsdeck") {
-			re := regexp.MustCompile(".*url = git@appsdeck.(eu|dev):(?P<repo>.*).git")
+		if strings.Contains(line, "url = git@appsdeck") || strings.Contains(line, "url = git@scalingo") {
+			re := regexp.MustCompile(".*url = git@(appsdeck|scalingo).(com|eu|dev):(?P<repo>.*).git")
 			found := re.FindStringSubmatch(line)
 			if len(found) != 3 {
-				return "", fmt.Errorf("Invalid Appsdeck GIT remote")
+				return "", fmt.Errorf("Invalid ScalingoGIT remote")
 			}
 			debug.Println("[AppDetect] GIT remote found:", strings.TrimSpace(line))
 			return found[2], nil
 		}
 	}
-	return "", fmt.Errorf("Appsdeck GIT remote hasn't been found")
+	return "", fmt.Errorf("Scalingo GIT remote hasn't been found")
 }
 
 func AddRemote(remote string) error {
-	_, err := AppsdeckRepo()
+	_, err := ScalingoRepo()
 	if err == nil {
 		return fmt.Errorf("Remote already exists")
 	}
@@ -69,9 +70,9 @@ func AddRemote(remote string) error {
 	file.Seek(0, os.SEEK_END)
 
 	fmt.Fprintf(file,
-		`[remote "appsdeck"]
+		`[remote "scalingo"]
 	url = %s
-	fetch = +refs/heads/*:refs/remotes/appsdeck/*
+	fetch = +refs/heads/*:refs/remotes/scalingo/*
 `, remote)
 
 	return nil

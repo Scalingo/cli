@@ -83,7 +83,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 			return nil, err
 		}
 		if user == nil {
-			fmt.Println("You need to be authenticated to use Appsdeck client.\nNo account ? → https://appsdeck.eu/users/sign_up")
+			fmt.Println("You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
 			user, err = Auth()
 			if err != nil {
 				return nil, err

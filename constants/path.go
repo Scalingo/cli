@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ConfigDir      = ".config/appsdeck"
-	AuthConfigFile = ".config/appsdeck/auth"
+	ConfigDir      = ".config/scalingo"
+	AuthConfigFile = ".config/scalingo/auth"
 )
 
 func init() {
