@@ -19,7 +19,7 @@ var (
 			} else {
 				var validationName string
 				appName := c.Args()[0]
-				fmt.Printf("/!\\ Your going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
+				fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 				fmt.Scan(&validationName)
 				if validationName == appName {
 					apps.Destroy(appName)
