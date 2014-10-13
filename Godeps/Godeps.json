@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
-	"GoVersion": "go1.3",
+	"GoVersion": "go1.3.3",
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/gopass",
@@ -10,6 +10,14 @@
 			"ImportPath": "github.com/codegangsta/cli",
 			"Comment": "1.2.0-16-gaa19913",
 			"Rev": "aa19913be3107ab75ea67a5a88d667d62a69dbbd"
+		},
+		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
+			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+		},
+		{
+			"ImportPath": "gopkg.in/errgo.v1",
+			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
 		}
 	]
 }
