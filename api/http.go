@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,13 +46,17 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 
 	// Execute the HTTP request according to the HTTP method
 	switch req["method"].(string) {
+	case "PATCH":
+		fallthrough
 	case "POST":
+		fallthrough
+	case "WITH_BODY":
 		buffer, err := json.Marshal(params)
 		if err != nil {
 			return nil, err
 		}
 		reader := bytes.NewReader(buffer)
-		httpReq, err = http.NewRequest("POST", urlWithoutParams, reader)
+		httpReq, err = http.NewRequest(req["method"].(string), urlWithoutParams, reader)
 		if err != nil {
 			return nil, err
 		}
@@ -121,4 +126,15 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	return res, err
+}
+
+func ParseJSON(res *http.Response, data interface{}) error {
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	debug.Println(string(body))
+
+	return json.Unmarshal(body, data)
 }
