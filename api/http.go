@@ -20,6 +20,17 @@ import (
 var CurrentUser *users.User
 var Prefix = config.C["API_PREFIX"]
 
+type Statuses []int
+
+func (statuses Statuses) Contains(status int) bool {
+	for _, s := range statuses {
+		if s == status {
+			return true
+		}
+	}
+	return false
+}
+
 // Execute an API request and return its response/error
 func Do(req map[string]interface{}) (*http.Response, error) {
 	var httpReq *http.Request
@@ -123,6 +134,10 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		fmt.Fprintln(os.Stderr, "You are not authorized to do this operation")
 		session.DestroyToken()
 		os.Exit(1)
+	}
+
+	if _, ok := req["expected"]; ok && !req["expected"].(Statuses).Contains(res.StatusCode) {
+		return nil, fmt.Errorf("Invalid status from server: %v", res.Status)
 	}
 
 	return res, err

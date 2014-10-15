@@ -26,6 +26,7 @@ func main() {
 		cmd.LogsCommand, cmd.RunCommand,
 		cmd.AppsCommand, cmd.LogoutCommand,
 		cmd.CreateCommand, cmd.DestroyCommand,
+		cmd.EnvCommand, cmd.EnvSetCommand, cmd.EnvUnsetCommand,
 		cmd.AddonsListCommand, cmd.AddonPlansCommand,
 		cmd.AddonResourcesListCommand,
 	}
