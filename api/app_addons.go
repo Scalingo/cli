@@ -1,7 +1,5 @@
 package api
 
-import "errors"
-
 type AddonResource struct {
 	ID         string `json:"id"`
 	ResourceID string `json:"resource_id"`
@@ -27,6 +25,7 @@ func AddonResourcesList(app string) ([]*AddonResource, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
 		"endpoint": "/apps/" + app + "/addons",
+		"expected": Statuses{200},
 	}
 	res, err := Do(req)
 	if err != nil {
@@ -50,16 +49,13 @@ func AddonResourceProvision(app, addon, planID string) (*ProvisionAddonResourceP
 			"addon_id": addon,
 			"plan_id":  planID,
 		},
+		"expected": Statuses{201},
 	}
 	res, err := Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
-
-	if res.StatusCode != 201 {
-		return nil, errors.New("invalid status code from server: " + res.Status)
-	}
 
 	var params *ProvisionAddonResourceParams
 	err = ParseJSON(res, &params)
@@ -74,16 +70,13 @@ func AddonResourceDestroy(app, addonResourceID string) error {
 	req := map[string]interface{}{
 		"method":   "DELETE",
 		"endpoint": "/apps/" + app + "/addons/" + addonResourceID,
+		"expected": Statuses{204},
 	}
 	res, err := Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
-
-	if res.StatusCode != 204 {
-		return errors.New("invalid status code fomr server: " + res.Status)
-	}
 
 	return nil
 }
@@ -95,16 +88,13 @@ func AddonResourceUpgrade(app, addonResourceID, planID string) (*UpgradeAddonRes
 		"params": map[string]interface{}{
 			"plan_id": planID,
 		},
+		"expected": Statuses{200},
 	}
 	res, err := Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		return nil, errors.New("invalid status code from server: " + res.Status)
-	}
 
 	var params *UpgradeAddonResourceParams
 	err = ParseJSON(res, &params)

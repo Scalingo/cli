@@ -13,6 +13,7 @@ func Run(app string, command []string, env map[string]string) (*http.Response, e
 			"command": strings.Join(command, " "),
 			"env":     env,
 		},
+		"expected": Statuses{200},
 	}
 	return Do(req)
 }

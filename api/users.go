@@ -14,6 +14,7 @@ func Self() (*users.User, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
 		"endpoint": "/users/self",
+		"expected": Statuses{200},
 	}
 	res, err := Do(req)
 	if err != nil {

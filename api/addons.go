@@ -1,10 +1,6 @@
 package api
 
-import (
-	"encoding/json"
-	"errors"
-	"net/http"
-)
+import "net/http"
 
 type Plan struct {
 	ID          string `json:"id"`
@@ -23,6 +19,7 @@ func AddonsList() (*http.Response, error) {
 		"auth":     false,
 		"method":   "GET",
 		"endpoint": "/addons",
+		"expected": Statuses{200},
 	}
 	return Do(req)
 }
@@ -32,6 +29,7 @@ func AddonPlansList(addon string) ([]*Plan, error) {
 		"auth":     false,
 		"method":   "GET",
 		"endpoint": "/addons/" + addon + "/plans",
+		"expected": Statuses{200},
 	}
 	res, err := Do(req)
 	if err != nil {
@@ -39,12 +37,8 @@ func AddonPlansList(addon string) ([]*Plan, error) {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return nil, errors.New("addon " + addon + " not found.")
-	}
-
 	var params PlansParams
-	err = json.NewDecoder(res.Body).Decode(&params)
+	err = ParseJSON(res, &params)
 	if err != nil {
 		return nil, err
 	}
