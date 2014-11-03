@@ -7,6 +7,10 @@
 			"Rev": "3b39664481b57ad99d34c86bd64090c28eacc7a1"
 		},
 		{
+			"ImportPath": "github.com/Soulou/errgo-rollbar",
+			"Rev": "2f7de2c8755a840bfcf34b2b6508e86eba0fbccc"
+		},
+		{
 			"ImportPath": "github.com/codegangsta/cli",
 			"Comment": "1.2.0-16-gaa19913",
 			"Rev": "aa19913be3107ab75ea67a5a88d667d62a69dbbd"
@@ -14,6 +18,11 @@
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+		},
+		{
+			"ImportPath": "github.com/stvp/rollbar",
+			"Comment": "v0.2.0-2-g14b7f64",
+			"Rev": "14b7f642b7f2f66b9322ffb89e787d7e23d338f4"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",
