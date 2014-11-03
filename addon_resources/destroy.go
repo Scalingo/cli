@@ -1,23 +1,23 @@
 package addon_resources
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 func Destroy(app, resourceID string) error {
 	if app == "" {
-		return errors.New("no app defined")
+		return errgo.New("no app defined")
 	} else if resourceID == "" {
-		return errors.New("no addon ID defined")
+		return errgo.New("no addon ID defined")
 	}
 
 	addonResource, err := checkAddonResourceExist(app, resourceID)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	io.Status("Destroy", resourceID)
@@ -30,12 +30,12 @@ func Destroy(app, resourceID string) error {
 	fmt.Scan(&validationName)
 
 	if validationName != resourceID {
-		return fmt.Errorf("'%s' is not '%s', aborting…\n", validationName, resourceID)
+		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, resourceID)
 	}
 
 	err = api.AddonResourceDestroy(app, addonResource.ID)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	io.Status("Addon", resourceID, "has been destroyed")
@@ -45,12 +45,12 @@ func Destroy(app, resourceID string) error {
 func checkAddonResourceExist(app, resourceID string) (*api.AddonResource, error) {
 	resources, err := api.AddonResourcesList(app)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	for _, r := range resources {
 		if resourceID == r.ResourceID {
 			return r, nil
 		}
 	}
-	return nil, errors.New("Resource ID " + resourceID + " doesn't exist for app " + app)
+	return nil, errgo.New("Resource ID " + resourceID + " doesn't exist for app " + app)
 }

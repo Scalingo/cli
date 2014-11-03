@@ -22,7 +22,10 @@ var (
 				fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 				fmt.Scan(&validationName)
 				if validationName == appName {
-					apps.Destroy(appName)
+					err := apps.Destroy(appName)
+					if err != nil {
+						errorQuit(err)
+					}
 				} else {
 					fmt.Printf("'%s' is not '%s', aborting…\n", validationName, appName)
 				}

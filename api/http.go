@@ -15,6 +15,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/cli/users"
+	"gopkg.in/errgo.v1"
 )
 
 var CurrentUser *users.User
@@ -66,12 +67,12 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	case "WITH_BODY":
 		buffer, err := json.Marshal(params)
 		if err != nil {
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 		reader := bytes.NewReader(buffer)
 		httpReq, err = http.NewRequest(req["method"].(string), urlWithoutParams, reader)
 		if err != nil {
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 	case "GET", "DELETE":
 		values := url.Values{}
@@ -88,7 +89,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		}
 		httpReq, err = http.NewRequest(req["method"].(string), urlWithParams, nil)
 		if err != nil {
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 	}
 
@@ -98,13 +99,13 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	if auth {
 		user, err := AuthFromConfig()
 		if err != nil {
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 		if user == nil {
 			fmt.Println("You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
 			user, err = Auth()
 			if err != nil {
-				return nil, err
+				return nil, errgo.Mask(err, errgo.Any)
 			}
 		}
 		CurrentUser = user
@@ -125,28 +126,37 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		os.Exit(1)
 	}
 
+	if _, ok := req["expected"]; ok && req["expected"].(Statuses).Contains(res.StatusCode) {
+		return res, nil
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode == 422 {
+		var unprocessableError *UnprocessableEntity
+		err = ParseJSON(res, &unprocessableError)
+		if err != nil {
+			return nil, errgo.Mask(err, errgo.Any)
+		}
+		return nil, errgo.Mask(unprocessableError, errgo.Any)
+	}
+
 	if res.StatusCode == 500 {
-		fmt.Fprintln(os.Stderr, "Server Internal Error - Our team has been contacted")
-		os.Exit(1)
+		return nil, NewRequestFailedError("server internal error - our team has been notified", req)
 	}
 
 	if auth && res.StatusCode == 401 {
-		fmt.Fprintln(os.Stderr, "You are not authorized to do this operation")
 		session.DestroyToken()
-		os.Exit(1)
+		return nil, NewRequestFailedError("unauthorized - you are not authorized to do this operation", req)
 	}
 
-	if _, ok := req["expected"]; ok && !req["expected"].(Statuses).Contains(res.StatusCode) {
-		return nil, fmt.Errorf("Invalid status from server: %v", res.Status)
-	}
-
-	return res, err
+	return nil, NewRequestFailedError(fmt.Sprintf("invalid status from server: %v", res.Status), req)
 }
 
 func ParseJSON(res *http.Response, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	debug.Println(string(body))

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/Scalingo/cli/users"
+	"gopkg.in/errgo.v1"
 )
 
 type SelfResults struct {
@@ -18,13 +19,13 @@ func Self() (*users.User, error) {
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 	var u *users.User
 	err = json.NewDecoder(res.Body).Decode(&u)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return u, nil
 }

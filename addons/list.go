@@ -6,6 +6,7 @@ import (
 
 	"github.com/Scalingo/cli/api"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 )
 
 type Addon struct {
@@ -21,14 +22,14 @@ type ListParams struct {
 func List() error {
 	res, err := api.AddonsList()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params ListParams
 	err = json.NewDecoder(res.Body).Decode(&params)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

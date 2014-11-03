@@ -9,16 +9,17 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/debug"
+	"gopkg.in/errgo.v1"
 )
 
 func openGitConfig() (*os.File, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	file, err := os.OpenFile(path.Join(cwd, ".git", "config"), os.O_RDWR, 0644)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return file, nil
 }
@@ -37,7 +38,7 @@ func DetectGit() bool {
 func ScalingoRepo() (string, error) {
 	file, err := openGitConfig()
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 	defer file.Close()
 
@@ -47,24 +48,24 @@ func ScalingoRepo() (string, error) {
 			re := regexp.MustCompile(".*url = git@(appsdeck|scalingo).(com|eu|dev):(?P<repo>.*).git")
 			found := re.FindStringSubmatch(line)
 			if len(found) != 3 {
-				return "", fmt.Errorf("Invalid ScalingoGIT remote")
+				return "", errgo.Newf("Invalid ScalingoGIT remote")
 			}
 			debug.Println("[AppDetect] GIT remote found:", strings.TrimSpace(line))
 			return found[2], nil
 		}
 	}
-	return "", fmt.Errorf("Scalingo GIT remote hasn't been found")
+	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
 }
 
 func AddRemote(remote string) error {
 	_, err := ScalingoRepo()
 	if err == nil {
-		return fmt.Errorf("Remote already exists")
+		return errgo.Notef(err, "remote already exists")
 	}
 
 	file, err := openGitConfig()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer file.Close()
 	file.Seek(0, os.SEEK_END)

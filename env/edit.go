@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/api"
+	"gopkg.in/errgo.v1"
 )
 
 var (
@@ -21,7 +22,7 @@ var (
 func Add(app string, params []string) error {
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
-			return fmt.Errorf("'%s' is invalid: %s", param, err)
+			return errgo.Newf("'%s' is invalid: %s", param, err)
 		}
 	}
 
@@ -29,15 +30,13 @@ func Add(app string, params []string) error {
 		name, value := parseVariable(param)
 		_, code, err := api.VariableSet(app, name, value)
 		if err != nil {
-			return err
+			return errgo.Mask(err, errgo.Any)
 		}
 
 		if code == 201 {
 			fmt.Printf("%s has been set to %s.\n", name, value)
 		} else if code == 200 {
 			fmt.Printf("%s has been updated to %s.\n", name, value)
-		} else {
-			return fmt.Errorf("invalid return code %v\n", code)
 		}
 	}
 
@@ -47,7 +46,7 @@ func Add(app string, params []string) error {
 func Delete(app string, varNames []string) error {
 	vars, err := api.VariablesList(app)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	var varsToUnset api.Variables
@@ -55,7 +54,7 @@ func Delete(app string, varNames []string) error {
 	for _, varName := range varNames {
 		v, ok := vars.Contains(varName)
 		if !ok {
-			return fmt.Errorf("%s variable does not exist", varName)
+			return errgo.Newf("%s variable does not exist", varName)
 		}
 		varsToUnset = append(varsToUnset, v)
 	}
@@ -63,7 +62,7 @@ func Delete(app string, varNames []string) error {
 	for _, v := range varsToUnset {
 		err := api.VariableUnset(app, v.ID)
 		if err != nil {
-			return err
+			return errgo.Mask(err, errgo.Any)
 		}
 		fmt.Printf("%s has been unset.\n", v.Name)
 	}

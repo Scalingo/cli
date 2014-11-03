@@ -4,6 +4,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"os"
+
+	"github.com/stvp/rollbar"
 )
 
 var (
@@ -11,9 +13,10 @@ var (
 	C         map[string]string
 
 	defaultValues = map[string]string{
-		"API_URL":      "https://scalingo-api-production.appsdeck.eu",
-		"API_PREFIX":   "/v1",
-		"UNSECURE_SSL": "false",
+		"API_URL":       "https://scalingo-api-production.appsdeck.eu",
+		"API_PREFIX":    "/v1",
+		"UNSECURE_SSL":  "false",
+		"ROLLBAR_TOKEN": "",
 	}
 )
 
@@ -26,9 +29,12 @@ func init() {
 		}
 	}
 
+	rollbar.Token = C["ROLLBAR_TOKEN"]
+
 	TlsConfig = &tls.Config{}
 	if C["UNSECURE_SSL"] == "true" {
 		TlsConfig.InsecureSkipVerify = true
+		TlsConfig.MinVersion = tls.VersionTLS10
 	} else {
 		certChain := decodePem(x509Chain)
 		TlsConfig.RootCAs = x509.NewCertPool()
