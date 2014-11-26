@@ -43,9 +43,11 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		host = req["host"].(string)
 	}
 
-	params := make(map[string]interface{})
+	var params interface{}
 	if _, ok := req["params"]; ok {
-		params = req["params"].(map[string]interface{})
+		params = req["params"]
+	} else {
+		params = make(map[string]interface{})
 	}
 
 	var urlWithoutParams string
@@ -73,7 +75,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 		}
 	case "GET", "DELETE":
 		values := url.Values{}
-		for key, value := range params {
+		for key, value := range params.(map[string]interface{}) {
 			values.Add(key, fmt.Sprintf("%v", value))
 		}
 
@@ -115,9 +117,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 
 	debug.Printf("[API] %v %v\n", httpReq.Method, httpReq.URL)
 	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", httpReq.Header), 6))
-	if len(params) != 0 {
-		debug.Printf(io.Indent("Params : %v", 6), params)
-	}
+	debug.Printf(io.Indent("Params : %v", 6), params)
 
 	res, err := httpclient.Do(httpReq)
 	if err != nil {
