@@ -4,6 +4,15 @@ import (
 	"net/http"
 )
 
+type ContainerType struct {
+	Name   string `json:"name"`
+	Amount int    `json:"amount"`
+}
+
+type AppsScaleParams struct {
+	Scale []ContainerType `json:"scale"`
+}
+
 func AppsList() (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
@@ -41,6 +50,16 @@ func AppsCreate(app string) (*http.Response, error) {
 			},
 		},
 		"expected": Statuses{201},
+	}
+	return Do(req)
+}
+
+func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
+	req := map[string]interface{}{
+		"method":   "POST",
+		"endpoint": "/apps/" + app + "/scale",
+		"params":   params,
+		"expected": Statuses{202},
 	}
 	return Do(req)
 }
