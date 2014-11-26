@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"time"
 )
 
 type ContainerType struct {
@@ -11,6 +12,27 @@ type ContainerType struct {
 
 type AppsScaleParams struct {
 	Scale []ContainerType `json:"scale"`
+}
+
+type App struct {
+	Id    string `json:"_id"`
+	Name  string `json:"name"`
+	Owner struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	} `json:"owner"`
+	GitUrl    string    `json:"git_url"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"update_at"`
+	LogsURL   string    `json:"logs_url"`
+}
+
+func (app App) String() string {
+	return app.Name
+}
+
+type CreateAppParams struct {
+	App *App `json:"app"`
 }
 
 func AppsList() (*http.Response, error) {
@@ -36,6 +58,15 @@ func AppsDestroy(id string) (*http.Response, error) {
 		"method":   "DELETE",
 		"endpoint": "/apps/" + id,
 		"expected": Statuses{204},
+	}
+	return Do(req)
+}
+
+func AppsRestart(app string) (*http.Response, error) {
+	req := map[string]interface{}{
+		"method":   "POST",
+		"endpoint": "/apps/" + app + "/restart",
+		"expected": Statuses{200},
 	}
 	return Do(req)
 }
