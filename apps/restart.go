@@ -6,9 +6,9 @@ import (
 )
 
 func Restart(app string, args []string) error {
-	scope := api.AppRestartScope(args)
+	params := api.AppsRestartParams{args}
 
-	res, err := api.AppsRestart(app, scope)
+	res, err := api.AppsRestart(app, &params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

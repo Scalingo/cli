@@ -14,6 +14,10 @@ type AppsScaleParams struct {
 	Scale []ContainerType `json:"scale"`
 }
 
+type AppsRestartParams struct {
+	Scope []string `json:"scope"`
+}
+
 type App struct {
 	Id    string `json:"_id"`
 	Name  string `json:"name"`
@@ -62,11 +66,12 @@ func AppsDestroy(id string) (*http.Response, error) {
 	return Do(req)
 }
 
-func AppsRestart(app string) (*http.Response, error) {
+func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
 		"endpoint": "/apps/" + app + "/restart",
 		"expected": Statuses{200},
+		"params":   scope,
 	}
 	return Do(req)
 }
