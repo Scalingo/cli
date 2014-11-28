@@ -70,7 +70,7 @@ func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
 		"endpoint": "/apps/" + app + "/restart",
-		"expected": Statuses{200},
+		"expected": Statuses{202},
 		"params":   scope,
 	}
 	return Do(req)
