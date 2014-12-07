@@ -19,7 +19,7 @@ import (
 )
 
 var CurrentUser *users.User
-var Prefix = config.C["API_PREFIX"]
+var Prefix = config.C.ApiPrefix
 
 type Statuses []int
 
@@ -37,7 +37,7 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	var httpReq *http.Request
 	var err error
 
-	host := config.C["API_URL"]
+	host := config.C.ApiUrl
 
 	// If there is a host param, we use this custom host to send the request
 	if _, ok := req["host"]; ok {

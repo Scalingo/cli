@@ -4,16 +4,15 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/Scalingo/cli/constants"
 	"github.com/Scalingo/cli/users"
 	"gopkg.in/errgo.v1"
 )
 
 func StoreAuth(user *users.User) error {
 	// Check ~/.config/scalingo
-	if _, err := os.Stat(constants.ConfigDir); err != nil {
+	if _, err := os.Stat(C.ConfigDir); err != nil {
 		if err, ok := err.(*os.PathError); ok {
-			if err := os.MkdirAll(constants.ConfigDir, 0755); err != nil {
+			if err := os.MkdirAll(C.ConfigDir, 0755); err != nil {
 				return errgo.Mask(err, errgo.Any)
 			}
 		} else {
@@ -21,7 +20,7 @@ func StoreAuth(user *users.User) error {
 		}
 	}
 
-	file, err := os.OpenFile(constants.AuthConfigFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
+	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -35,7 +34,7 @@ func StoreAuth(user *users.User) error {
 }
 
 func LoadAuth() (*users.User, error) {
-	file, err := os.OpenFile(constants.AuthConfigFile, os.O_RDONLY, 0644)
+	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0644)
 	if os.IsNotExist(err) {
 		return nil, nil
 	}
