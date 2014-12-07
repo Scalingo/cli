@@ -1,3 +1,8 @@
+0.3.0 - October 30th, 2014
+==========================
+
+* Added support for passing custom fields to Rollbar. Thanks @Soulou!
+
 0.2.0 - September 30th, 2014
 ============================
 

@@ -21,8 +21,8 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.2.0-2-g14b7f64",
-			"Rev": "14b7f642b7f2f66b9322ffb89e787d7e23d338f4"
+			"Comment": "v0.2.0-5-g577c16a",
+			"Rev": "577c16aeea588fc85d4302791c1bdb746849cffa"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",

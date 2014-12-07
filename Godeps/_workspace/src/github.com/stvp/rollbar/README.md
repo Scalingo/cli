@@ -46,7 +46,7 @@ variable to `go test`:
 
     TOKEN=f0df01587b8f76b2c217af34c479f9ea go test
 
-And verify the reported errors manually.
+And verify the reported errors manually in the Rollbar dashboard.
 
 Contributors
 ============
@@ -56,3 +56,4 @@ A big thank you to everyone who has contributed pull requests and bug reports:
 * @kjk
 * @Soulou
 * @paulmach
+
