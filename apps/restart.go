@@ -7,7 +7,7 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Restart(app string, args []string) error {
+func Restart(app string, sync bool, args []string) error {
 	params := api.AppsRestartParams{args}
 
 	res, err := api.AppsRestart(app, &params)
@@ -16,7 +16,16 @@ func Restart(app string, args []string) error {
 	}
 	res.Body.Close()
 
-	fmt.Printf("You application is being restarted\n")
+	if !sync {
+		fmt.Println("You application is being restarted.")
+		return nil
+	}
 
+	err = handleOperation(app, res)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	fmt.Println("Your application has been restarted.")
 	return nil
 }

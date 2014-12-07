@@ -16,7 +16,7 @@ type ScaleRes struct {
 	ContainerTypes []api.ContainerType `json:"container_types"`
 }
 
-func Scale(app string, types []string) error {
+func Scale(app string, sync bool, types []string) error {
 	scaleParams := &api.AppsScaleParams{}
 
 	for _, t := range types {
@@ -48,5 +48,16 @@ func Scale(app string, types []string) error {
 	for _, ct := range scaleRes.ContainerTypes {
 		fmt.Println(io.Indent(fmt.Sprintf("%s: %d", ct.Name, ct.Amount), 2))
 	}
+
+	if !sync {
+		return nil
+	}
+
+	err = handleOperation(app, res)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	fmt.Println("Your application has been scaled.")
 	return nil
 }

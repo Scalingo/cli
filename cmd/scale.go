@@ -17,6 +17,7 @@ var (
 	ScaleCommand = cli.Command{
 		Name:      "scale",
 		ShortName: "s",
+		Flags:     []cli.Flag{cli.BoolFlag{Name: "sync, s", Usage: "Do the scaling synchronously", EnvVar: ""}},
 		Usage:     "Scale your application instantly",
 		Description: `Scale your application processes.
    Example
@@ -26,7 +27,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "scale")
-			} else if err := apps.Scale(currentApp, c.Args()); err != nil {
+			} else if err := apps.Scale(currentApp, c.Bool("sync"), c.Args()); err != nil {
 				errorQuit(err)
 			}
 		},
