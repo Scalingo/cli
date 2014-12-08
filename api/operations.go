@@ -1,8 +1,6 @@
 package api
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -37,12 +35,8 @@ func OperationsShow(app string, opID string) (*Operation, error) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
 	opRes := OperationResponse{}
-	err = json.Unmarshal(body, &opRes)
+	err = ParseJSON(res, &opRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

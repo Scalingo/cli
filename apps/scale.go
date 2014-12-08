@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
@@ -39,7 +38,7 @@ func Scale(app string, sync bool, types []string) error {
 	defer res.Body.Close()
 
 	var scaleRes ScaleRes
-	err = json.NewDecoder(res.Body).Decode(&scaleRes)
+	err = api.ParseJSON(res, &scaleRes)
 	if err != nil {
 		return errgo.Mask(err)
 	}
