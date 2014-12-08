@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"github.com/Appsdeck/appsdeck/api"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -10,27 +9,43 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/debug"
+	"gopkg.in/errgo.v1"
 )
+
+type LogsRes struct {
+	App *api.App `json:"app"`
+}
 
 func Logs(appName string, stream bool, n int) error {
 	res, err := api.LogsURL(appName)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return fmt.Errorf("fail to query logs: %s", res.Status)
+		return errgo.Newf("fail to query logs: %s", res.Status)
 	}
 
-	app := App{}
-	if err = json.NewDecoder(res.Body).Decode(&app); err != nil {
-		return err
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
 	}
+
+	debug.Println("[API-Response] ", string(body))
+
+	logsRes := &LogsRes{}
+	if err = json.Unmarshal(body, &logsRes); err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	app := logsRes.App
 
 	res, err = api.Logs(app.LogsURL, stream, n)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	if !stream {
@@ -62,7 +77,7 @@ func streamLogs(res *http.Response) error {
 		}
 	}
 	if err != io.EOF {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }

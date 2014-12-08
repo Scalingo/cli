@@ -3,32 +3,69 @@ package config
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"os"
+	"path/filepath"
+
+	"github.com/Scalingo/envconfig"
+	"github.com/stvp/rollbar"
 )
 
-var (
-	TlsConfig *tls.Config
-	C         map[string]string
+type Config struct {
+	ApiUrl       string
+	ApiPrefix    string
+	UnsecureUrl  bool
+	RollbarToken string
+	ConfigDir    string
+	AuthFile     string
+	LogFile      string
+}
 
-	defaultValues = map[string]string{
-		"APPSDECK_LOG": "https://logs.appsdeck.eu",
-		"APPSDECK_API": "https://appsdeck.eu",
-		"UNSECURE_SSL": "false",
+var (
+	env = map[string]string{
+		"API_URL":       "https://scalingo-api-production.appsdeck.eu",
+		"API_PREFIX":    "/v1",
+		"UNSECURE_SSL":  "false",
+		"ROLLBAR_TOKEN": "",
+		"CONFIG_DIR":    ".config/scalingo",
+		"AUTH_FILE":     "auth",
+		"LOG_FILE":      "local.log",
 	}
+	C         Config
+	TlsConfig *tls.Config
 )
 
 func init() {
-	C = make(map[string]string)
-	for varName, defaultValue := range defaultValues {
-		C[varName] = os.Getenv(varName)
-		if C[varName] == "" {
-			C[varName] = defaultValue
+	home := os.Getenv("HOME")
+	if home == "" {
+		panic("The HOME environment variable must be defined")
+	}
+
+	env["CONFIG_DIR"] = filepath.Join(home, env["CONFIG_DIR"])
+	env["AUTH_FILE"] = filepath.Join(env["CONFIG_DIR"], env["AUTH_FILE"])
+	env["LOG_FILE"] = filepath.Join(env["CONFIG_DIR"], env["LOG_FILE"])
+
+	for k := range env {
+		vEnv := os.Getenv(k)
+		if vEnv == "" {
+			os.Setenv(k, env[k])
 		}
 	}
 
+	envconfig.Process("", &C)
+
+	logFile, err := os.OpenFile(C.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
+	}
+
+	rollbar.Token = C.RollbarToken
+	rollbar.ErrorWriter = logFile
+
 	TlsConfig = &tls.Config{}
-	if C["UNSECURE_SSL"] == "true" {
+	if C.UnsecureUrl {
 		TlsConfig.InsecureSkipVerify = true
+		TlsConfig.MinVersion = tls.VersionTLS10
 	} else {
 		certChain := decodePem(x509Chain)
 		TlsConfig.RootCAs = x509.NewCertPool()

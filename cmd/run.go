@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"github.com/Appsdeck/appsdeck/appdetect"
-	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
+	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
 
@@ -21,10 +20,9 @@ var (
 		Description: `Run command in current app context, your application
    environment will be loaded and you can execute any task.
      Example
-       'appsdeck --app my-app run bundle exec rails console'
-       'appsdeck --app synfony-app run php app/console cache:clear --env=prod'`,
+       'scalingo --app my-app run bundle exec rails console'
+       'scalingo --app synfony-app run php app/console cache:clear --env=prod'`,
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")

@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
 	"fmt"
+
+	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
 
@@ -12,18 +12,20 @@ var (
 		Name:        "destroy",
 		ShortName:   "d",
 		Usage:       "Destroy an app /!\\",
-		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'appsdeck destroy my-app'",
+		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'",
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "destroy")
 			} else {
 				var validationName string
 				appName := c.Args()[0]
-				fmt.Printf("/!\\ Your going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
+				fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 				fmt.Scan(&validationName)
 				if validationName == appName {
-					apps.Destroy(appName)
+					err := apps.Destroy(appName)
+					if err != nil {
+						errorQuit(err)
+					}
 				} else {
 					fmt.Printf("'%s' is not '%s', aborting…\n", validationName, appName)
 				}

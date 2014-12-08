@@ -1,18 +1,20 @@
 package apps
 
 import (
-	"github.com/Appsdeck/appsdeck/debug"
 	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
+
+	"github.com/Scalingo/cli/debug"
+	"gopkg.in/errgo.v1"
 )
 
 func ReadJson(body io.ReadCloser, out interface{}) error {
 	defer body.Close()
 	buffer, err := ioutil.ReadAll(body)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	if debug.Enable {
@@ -22,7 +24,7 @@ func ReadJson(body io.ReadCloser, out interface{}) error {
 	}
 
 	if err := json.Unmarshal(buffer, out); err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }

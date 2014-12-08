@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"github.com/Appsdeck/appsdeck/appdetect"
-	"github.com/Appsdeck/appsdeck/apps"
-	"github.com/Appsdeck/appsdeck/auth"
+	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
 
@@ -14,14 +13,13 @@ var (
 		Usage:     "Get the logs of your applications",
 		Description: `Get the logs of your applications
    Example:
-     Get 100 lines:  'appsdeck --app my-app logs -n 100'
-     Real-Time logs: 'appsdeck --app my-app logs -f'`,
+     Get 100 lines:  'scalingo --app my-app logs -n 100'
+     Real-Time logs: 'scalingo --app my-app logs -f'`,
 		Flags: []cli.Flag{
 			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
 		},
 		Action: func(c *cli.Context) {
-			auth.InitAuth()
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) == 0 || len(c.Args()) == 2 && c.Int("n") != 0 {
 				if err := apps.Logs(currentApp, c.Bool("f"), c.Int("n")); err != nil {
