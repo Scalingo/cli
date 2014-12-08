@@ -1,5 +1,5 @@
 {
-	"ImportPath": 	"github.com/Scalingo/cli/scalingo",
+	"ImportPath": "github.com/Scalingo/cli/scalingo",
 	"GoVersion": "go1.3.3",
 	"Deps": [
 		{
@@ -26,8 +26,8 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.2.0-5-g577c16a",
-			"Rev": "577c16aeea588fc85d4302791c1bdb746849cffa"
+			"Comment": "v0.2.0-8-gc11842b",
+			"Rev": "c11842b5514e351db3239034d0e0da7b2f2a165c"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",

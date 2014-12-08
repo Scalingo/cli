@@ -305,6 +305,6 @@ func post(body map[string]interface{}) {
 func stderr(format string, args ...interface{}) {
 	if ErrorWriter != nil {
 		format = "Rollbar error: " + format + "\n"
-		fmt.Fprintf(os.Stderr, format, args...)
+		fmt.Fprintf(ErrorWriter, format, args...)
 	}
 }
