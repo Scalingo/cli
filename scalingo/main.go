@@ -30,6 +30,8 @@ func main() {
 		cmd.EnvCommand, cmd.EnvSetCommand, cmd.EnvUnsetCommand,
 		cmd.AddonsListCommand, cmd.AddonPlansCommand,
 		cmd.AddonResourcesListCommand,
+		cmd.ListSSHKeyCommand, cmd.AddSSHKeyCommand,
+		cmd.RemoveSSHKeyCommand,
 	}
 
 	go signals.Handle()

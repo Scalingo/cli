@@ -31,7 +31,7 @@ var (
 		"AUTH_FILE":     "auth",
 		"LOG_FILE":      "local.log",
 	}
-	C         *Config
+	C         Config
 	TlsConfig *tls.Config
 )
 
@@ -42,15 +42,15 @@ func init() {
 	}
 
 	env["CONFIG_DIR"] = filepath.Join(home, env["CONFIG_DIR"])
+	env["AUTH_FILE"] = filepath.Join(env["CONFIG_DIR"], env["AUTH_FILE"])
+	env["LOG_FILE"] = filepath.Join(env["CONFIG_DIR"], env["LOG_FILE"])
+
 	for k := range env {
 		vEnv := os.Getenv(k)
 		if vEnv == "" {
 			os.Setenv(k, env[k])
 		}
 	}
-
-	env["AUTH_FILE"] = filepath.Join(env["CONFIG_DIR"], env["AUTH_FILE"])
-	env["LOG_FILE"] = filepath.Join(env["CONFIG_DIR"], env["LOG_FILE"])
 
 	envconfig.Process("", &C)
 
