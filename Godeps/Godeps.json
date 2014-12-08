@@ -1,10 +1,19 @@
 {
-	"ImportPath": "github.com/Scalingo/cli",
+	"ImportPath": "github.com/Scalingo/cli/scalingo",
 	"GoVersion": "go1.3.3",
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/gopass",
 			"Rev": "3b39664481b57ad99d34c86bd64090c28eacc7a1"
+		},
+		{
+			"ImportPath": "github.com/Scalingo/envconfig",
+			"Comment": "v1.0.0-3-g8eb48cc",
+			"Rev": "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
+		},
+		{
+			"ImportPath": "github.com/Soulou/errgo-rollbar",
+			"Rev": "2f7de2c8755a840bfcf34b2b6508e86eba0fbccc"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
@@ -14,6 +23,11 @@
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+		},
+		{
+			"ImportPath": "github.com/stvp/rollbar",
+			"Comment": "v0.2.0-8-gc11842b",
+			"Rev": "c11842b5514e351db3239034d0e0da7b2f2a165c"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",

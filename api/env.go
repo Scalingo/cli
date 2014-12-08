@@ -1,5 +1,7 @@
 package api
 
+import "gopkg.in/errgo.v1"
+
 const (
 	EnvNameMaxLength  = 64
 	EnvValueMaxLength = 1024
@@ -38,14 +40,14 @@ func VariablesList(app string) (Variables, error) {
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params VariablesListParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return params.Variables, nil
@@ -65,14 +67,14 @@ func VariableSet(app string, name string, value string) (*Variable, int, error) 
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params VariableSetParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
 
 	return params.Variable, res.StatusCode, nil
@@ -86,7 +88,7 @@ func VariableUnset(app string, id string) error {
 	}
 	_, err := Do(req)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }

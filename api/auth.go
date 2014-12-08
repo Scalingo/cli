@@ -9,6 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/users"
+	"gopkg.in/errgo.v1"
 )
 
 type LoginError struct {
@@ -23,7 +24,7 @@ func (err *LoginError) Error() string {
 func AuthFromConfig() (*users.User, error) {
 	user, err := config.LoadAuth()
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return user, nil
 }
@@ -40,13 +41,13 @@ func Auth() (*users.User, error) {
 		}
 	}
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	fmt.Printf("Hello %s, nice to see you !\n\n", user.Username)
 	err = config.StoreAuth(user)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return user, nil
@@ -61,18 +62,18 @@ func tryAuth() (*users.User, error) {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 	}
 
 	password, err := gopass.GetPass("Password: ")
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	user, err := AuthUser(login, password)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return user, nil
@@ -81,7 +82,7 @@ func tryAuth() (*users.User, error) {
 func AuthUser(login, passwd string) (*users.User, error) {
 	res, err := Login(login, passwd)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
@@ -89,9 +90,9 @@ func AuthUser(login, passwd string) (*users.User, error) {
 		var lErr *LoginError
 		err = json.NewDecoder(res.Body).Decode(&lErr)
 		if err != nil {
-			return nil, err
+			return nil, errgo.Mask(err, errgo.Any)
 		}
-		return nil, lErr
+		return nil, errgo.Mask(lErr, errgo.Any)
 	}
 	if res.StatusCode != 201 {
 		return nil, fmt.Errorf("%s %v invalid status %s", res.Request.Method, res.Request.URL, res.Status)
@@ -101,7 +102,7 @@ func AuthUser(login, passwd string) (*users.User, error) {
 
 	err = json.NewDecoder(res.Body).Decode(&tokenMap)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	token := tokenMap["authentication_token"]
@@ -111,22 +112,19 @@ func AuthUser(login, passwd string) (*users.User, error) {
 		"token":    token,
 		"method":   "GET",
 		"endpoint": "/users/self",
+		"expected": Statuses{200},
 	}
 
 	res, err = Do(params)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("%s %v invalid status %s", res.Request.Method, res.Request.URL, res.Status)
-	}
 
 	var selfRes *SelfResults
 	err = json.NewDecoder(res.Body).Decode(&selfRes)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	selfRes.User.AuthToken = token
 

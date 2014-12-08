@@ -1,34 +1,33 @@
 package addon_resources
 
 import (
-	"errors"
-
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 func Upgrade(app, resourceID, plan string) error {
 	if app == "" {
-		return errors.New("no app defined")
+		return errgo.New("no app defined")
 	} else if resourceID == "" {
-		return errors.New("no addon ID defined")
+		return errgo.New("no addon ID defined")
 	} else if plan == "" {
-		return errors.New("no plan defined")
+		return errgo.New("no plan defined")
 	}
 
 	addonResource, err := checkAddonResourceExist(app, resourceID)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	planID, err := checkPlanExist(addonResource.Addon, plan)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	params, err := api.AddonResourceUpgrade(app, addonResource.ID, planID)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	io.Status("Addon", resourceID, "has been upgraded")

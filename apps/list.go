@@ -6,19 +6,20 @@ import (
 
 	"github.com/Scalingo/cli/api"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 )
 
 func List() error {
 	res, err := api.AppsList()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
-	appsMap := map[string][]App{}
+	appsMap := map[string][]*api.App{}
 	err = ReadJson(res.Body, &appsMap)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	apps := appsMap["apps"]
 

@@ -31,30 +31,30 @@ import (
 func Run(app string, command []string, cmdEnv []string, files []string) error {
 	env, err := buildEnv(cmdEnv)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	err = validateFiles(files)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	res, err := api.Run(app, command, env)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	runStruct := make(map[string]interface{})
 	ReadJson(res.Body, &runStruct)
 	debug.Printf("%+v\n", runStruct)
 
 	if res.StatusCode == http.StatusNotFound {
-		return fmt.Errorf("application %s not found", app)
+		return errgo.Newf("application %s not found", app)
 	}
 
 	container := runStruct["container"].(map[string]interface{})
 
 	if _, ok := container["attach"]; !ok {
-		return fmt.Errorf("Unexpected answer from server")
+		return errgo.New("unexpected answer from server")
 	}
 
 	runUrl := container["attach"].(string)
@@ -69,14 +69,14 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 
 	res, socket, err := connectToRunServer(runUrl)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("Fail to attach: %s", res.Status)
+		return errgo.Newf("Fail to attach: %s", res.Status)
 	}
 
 	if err := term.MakeRaw(os.Stdin); err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	stopSignalsMonitoring := make(chan bool)
@@ -123,7 +123,7 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	stopSignalsMonitoring <- true
 
 	if err := term.Restore(os.Stdin); err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	return nil
@@ -147,18 +147,18 @@ func buildEnv(cmdEnv []string) (map[string]string, error) {
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	req, err := http.NewRequest("POST", rawUrl, nil)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 	req.SetBasicAuth("", api.CurrentUser.AuthToken)
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
 	dial, err := net.Dial("tcp", url.Host)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
 	var conn *httputil.ClientConn
@@ -169,14 +169,14 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)
 	} else {
-		return nil, nil, fmt.Errorf("Invalid scheme format %s", url.Scheme)
+		return nil, nil, errgo.Newf("Invalid scheme format %s", url.Scheme)
 	}
 
 	res, err := conn.Do(req)
 	if err != httputil.ErrPersistEOF && err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
-				return nil, nil, fmt.Errorf(
+				return nil, nil, errgo.Newf(
 					"Fail to create a secure connection to Scalingo server\n"+
 						"The encountered error is: %v (ID: CLI-1001)\n"+
 						"Your firewall or proxy may block the connection to %s",
@@ -184,7 +184,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 				)
 			}
 		}
-		return nil, nil, err
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
 	connection, _ := conn.Hijack()
@@ -199,11 +199,11 @@ type UpdateTtyParams struct {
 func updateTtySize(url string) error {
 	cols, err := term.Cols()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	lines, err := term.Lines()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	params := UpdateTtyParams{
@@ -214,17 +214,17 @@ func updateTtySize(url string) error {
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJson))
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	req.SetBasicAuth("", api.CurrentUser.AuthToken)
 
 	res, err := httpclient.Do(req)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return fmt.Errorf("Invalid error code from run server: %s", res.Status)
+		return errgo.Newf("Invalid error code from run server: %s", res.Status)
 	}
 
 	return nil
@@ -234,7 +234,7 @@ func validateFiles(files []string) error {
 	for _, file := range files {
 		_, err := os.Stat(file)
 		if err != nil {
-			return fmt.Errorf("can't upload %s: %v", file, err)
+			return errgo.Notef(err, "can't upload %s", file)
 		}
 	}
 	return nil
@@ -244,23 +244,23 @@ func uploadFiles(endpoint string, files []string) error {
 	for _, file := range files {
 		stat, err := os.Stat(file)
 		if err != nil {
-			return fmt.Errorf("can't stat file %s: %v", file, err)
+			return errgo.Notef(err, "can't stat file %s", file)
 		}
 		relPath := file
 		file, err = filepath.Abs(relPath)
 		if err != nil {
-			return fmt.Errorf("impossible to get absolute path of %s", relPath)
+			return errgo.Notef(err, "impossible to get absolute path of %s", relPath)
 		}
 		if stat.IsDir() {
 			dir := file
 			file, err = compressDir(dir)
 			if err != nil {
-				return fmt.Errorf("fail to compress directory %s: %v", dir, err)
+				return errgo.Notef(err, "fail to compress directory %s", dir)
 			}
 		}
 		err = uploadFile(endpoint, file)
 		if err != nil {
-			return fmt.Errorf("fail to upload file %s: %v", file, err)
+			return errgo.Notef(err, "fail to upload file %s", file)
 		}
 	}
 	return nil
@@ -269,22 +269,22 @@ func uploadFiles(endpoint string, files []string) error {
 func compressDir(dir string) (string, error) {
 	tmpDir, err := ioutil.TempDir(os.TempDir(), "job-file")
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 	fd, err := os.OpenFile(filepath.Join(tmpDir, filepath.Base(dir)+".tar"), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 	fmt.Println("Compressing directory", dir, "to", fd.Name())
 
 	err = createTarArchive(fd, dir)
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 
 	file, err := compressToGzip(fd.Name())
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 
 	return file, nil
@@ -295,7 +295,7 @@ func createTarArchive(fd *os.File, dir string) error {
 	defer tarFd.Close()
 	err := filepath.Walk(dir, func(name string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return errgo.Mask(err, errgo.Any)
 		}
 		if info.IsDir() {
 			return nil
@@ -310,16 +310,16 @@ func createTarArchive(fd *os.File, dir string) error {
 		}
 		fileFd, err := os.OpenFile(name, os.O_RDONLY, 0600)
 		if err != nil {
-			return err
+			return errgo.Mask(err, errgo.Any)
 		}
 		_, err = io.Copy(tarFd, fileFd)
 		if err != nil {
-			return err
+			return errgo.Mask(err, errgo.Any)
 		}
 		return nil
 	})
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }
@@ -327,12 +327,12 @@ func createTarArchive(fd *os.File, dir string) error {
 func compressToGzip(file string) (string, error) {
 	fdSource, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 	defer fdSource.Close()
 	fdDest, err := os.OpenFile(file+".gz", os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 	defer fdDest.Close()
 	writer := gzip.NewWriter(fdDest)
@@ -340,7 +340,7 @@ func compressToGzip(file string) (string, error) {
 
 	_, err = io.Copy(writer, fdSource)
 	if err != nil {
-		return "", err
+		return "", errgo.Mask(err, errgo.Any)
 	}
 
 	return fdDest.Name(), nil
@@ -352,31 +352,31 @@ func uploadFile(endpoint string, file string) error {
 	multipartFile := multipart.NewWriter(body)
 	writer, err := multipartFile.CreateFormFile("file", name)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	fd, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	_, err = io.Copy(writer, fd)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	err = fd.Close()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	err = multipartFile.Close()
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	req, err := http.NewRequest("POST", endpoint, body)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Mask(err, errgo.Any)
 	}
 	req.SetBasicAuth("", api.CurrentUser.AuthToken)
 
@@ -387,7 +387,7 @@ func uploadFile(endpoint string, file string) error {
 
 	res, err := httpclient.Do(req)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {

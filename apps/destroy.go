@@ -1,20 +1,19 @@
 package apps
 
 import (
-	"github.com/Scalingo/cli/api"
 	"fmt"
+
+	"github.com/Scalingo/cli/api"
+	"gopkg.in/errgo.v1"
 )
 
-func Destroy(id string) {
+func Destroy(id string) error {
 	res, err := api.AppsDestroy(id)
 	if err != nil {
-		fmt.Println("Fail to create app:", err)
+		return errgo.Notef(err, "fail to create app")
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == 404 {
-		fmt.Printf("App identified by %v has not been found\n", id)
-	} else if res.StatusCode == 204 {
-		fmt.Printf("App %s has been deleted\n", id)
-	}
+	fmt.Printf("App %s has been deleted\n", id)
+	return nil
 }

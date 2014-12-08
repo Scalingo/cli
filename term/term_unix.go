@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"gopkg.in/errgo.v1"
 )
 
 // IsTerminal returns true if f is a terminal.
@@ -27,7 +29,7 @@ func Restore(f *os.File) error {
 func Cols() (int, error) {
 	cols, err := tput("cols")
 	if err != nil {
-		return 0, err
+		return 0, errgo.Mask(err, errgo.Any)
 	}
 	return strconv.Atoi(cols)
 }
@@ -35,7 +37,7 @@ func Cols() (int, error) {
 func Lines() (int, error) {
 	cols, err := tput("lines")
 	if err != nil {
-		return 0, err
+		return 0, errgo.Mask(err, errgo.Any)
 	}
 	return strconv.Atoi(cols)
 }

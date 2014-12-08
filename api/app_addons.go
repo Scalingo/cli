@@ -1,5 +1,7 @@
 package api
 
+import "gopkg.in/errgo.v1"
+
 type AddonResource struct {
 	ID         string `json:"id"`
 	ResourceID string `json:"resource_id"`
@@ -29,14 +31,14 @@ func AddonResourcesList(app string) ([]*AddonResource, error) {
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params ListAddonResourcesParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return params.AddonResources, nil
 }
@@ -53,14 +55,14 @@ func AddonResourceProvision(app, addon, planID string) (*ProvisionAddonResourceP
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params *ProvisionAddonResourceParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return params, nil
@@ -74,7 +76,7 @@ func AddonResourceDestroy(app, addonResourceID string) error {
 	}
 	res, err := Do(req)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
@@ -92,14 +94,14 @@ func AddonResourceUpgrade(app, addonResourceID, planID string) (*UpgradeAddonRes
 	}
 	res, err := Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params *UpgradeAddonResourceParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return params, nil

@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 	"time"
+
+	"gopkg.in/errgo.v1"
 )
 
 type ContainerType struct {
@@ -76,7 +78,7 @@ func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	return Do(req)
 }
 
-func AppsCreate(app string) (*http.Response, error) {
+func AppsCreate(app string) (*App, int, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
 		"endpoint": "/apps",
@@ -87,7 +89,19 @@ func AppsCreate(app string) (*http.Response, error) {
 		},
 		"expected": Statuses{201},
 	}
-	return Do(req)
+	res, err := Do(req)
+	if err != nil {
+		return nil, 0, errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	var params *CreateAppParams
+	err = ParseJSON(res, &params)
+	if err != nil {
+		return nil, res.StatusCode, errgo.Mask(err, errgo.Any)
+	}
+
+	return params.App, res.StatusCode, nil
 }
 
 func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {

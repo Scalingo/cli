@@ -5,12 +5,13 @@ import (
 
 	"github.com/Scalingo/cli/api"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 )
 
 func List(app string) error {
 	resources, err := api.AddonResourcesList(app)
 	if err != nil {
-		return err
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
