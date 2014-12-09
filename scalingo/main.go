@@ -22,15 +22,37 @@ func main() {
 		cli.ShowAppHelp(c)
 	}
 	app.Commands = []cli.Command{
-		cmd.LogsCommand, cmd.RunCommand,
-		cmd.AppsCommand, cmd.LogoutCommand,
-		cmd.CreateCommand, cmd.DestroyCommand,
-		cmd.ScaleCommand, cmd.RestartCommand,
-		cmd.EnvCommand, cmd.EnvSetCommand, cmd.EnvUnsetCommand,
-		cmd.AddonsListCommand, cmd.AddonPlansCommand,
+		// Apps
+		cmd.AppsCommand,
+		cmd.CreateCommand,
+		cmd.DestroyCommand,
+
+		// Apps Actions
+		cmd.LogsCommand,
+		cmd.RunCommand,
+
+		// Apps Process Actions
+		cmd.PsCommand,
+		cmd.ScaleCommand,
+		cmd.RestartCommand,
+
+		// Environment
+		cmd.EnvCommand,
+		cmd.EnvSetCommand,
+		cmd.EnvUnsetCommand,
+
+		// Addons
+		cmd.AddonsListCommand,
+		cmd.AddonPlansCommand,
 		cmd.AddonResourcesListCommand,
-		cmd.ListSSHKeyCommand, cmd.AddSSHKeyCommand,
+
+		// SSH keys
+		cmd.ListSSHKeyCommand,
+		cmd.AddSSHKeyCommand,
 		cmd.RemoveSSHKeyCommand,
+
+		// Misc
+		cmd.LogoutCommand,
 	}
 
 	go signals.Handle()

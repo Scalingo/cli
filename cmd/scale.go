@@ -6,13 +6,6 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-// import (
-// 	"github.com/Scalingo/cli/appdetect"
-// 	"github.com/Scalingo/cli/apps"
-// 	"github.com/Scalingo/cli/auth"
-// 	"github.com/codegangsta/cli"
-// )
-
 var (
 	ScaleCommand = cli.Command{
 		Name:      "scale",
