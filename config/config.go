@@ -62,6 +62,8 @@ func init() {
 	}
 
 	rollbar.Token = C.RollbarToken
+	rollbar.Platform = "client"
+	rollbar.Environment = "production"
 	rollbar.ErrorWriter = logFile
 
 	TlsConfig = &tls.Config{}
