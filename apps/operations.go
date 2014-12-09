@@ -50,7 +50,7 @@ func handleOperation(app string, res *http.Response) error {
 			return errgo.Mask(err)
 		case <-done:
 			if op.Status == "done" {
-				fmt.Println("\bDone in", op.ElapsedDuration(), "seconds")
+				fmt.Printf("\bDone in %.3f seconds\n", op.ElapsedDuration())
 				return nil
 			} else if op.Status == "error" {
 				fmt.Printf("\bOperation '%s' failed, an error occured: %v\n", op.Type, op.Error)

@@ -32,6 +32,7 @@ func main() {
 		cmd.RunCommand,
 
 		// Apps Process Actions
+		cmd.PsCommand,
 		cmd.ScaleCommand,
 		cmd.RestartCommand,
 

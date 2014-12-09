@@ -16,6 +16,10 @@ type AppsScaleParams struct {
 	Processes []Process `json:"processes"`
 }
 
+type AppsPsRes struct {
+	Processes []Process `json:"processes"`
+}
+
 type AppsRestartParams struct {
 	Scope []string `json:"scope"`
 }
@@ -102,6 +106,26 @@ func AppsCreate(app string) (*App, int, error) {
 	}
 
 	return params.App, res.StatusCode, nil
+}
+
+func AppsPs(app string) ([]Process, error) {
+	req := map[string]interface{}{
+		"method":   "GET",
+		"endpoint": "/apps/" + app + "/processes",
+		"expected": Statuses{200},
+	}
+	res, err := Do(req)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	var processesRes AppsPsRes
+	err = ParseJSON(res, &processesRes)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	return processesRes.Processes, nil
 }
 
 func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
