@@ -46,6 +46,9 @@ func main() {
 		cmd.AddonPlansCommand,
 		cmd.AddonResourcesListCommand,
 
+		// DB Access
+		cmd.DbTunnelCommand,
+
 		// SSH keys
 		cmd.ListSSHKeyCommand,
 		cmd.AddSSHKeyCommand,

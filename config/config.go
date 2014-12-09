@@ -14,7 +14,8 @@ import (
 type Config struct {
 	ApiUrl       string
 	ApiPrefix    string
-	UnsecureUrl  bool
+	SshHost      string
+	UnsecureSsl  bool
 	RollbarToken string
 	ConfigDir    string
 	AuthFile     string
@@ -24,6 +25,7 @@ type Config struct {
 var (
 	env = map[string]string{
 		"API_URL":       "https://scalingo-api-production.appsdeck.eu",
+		"SSH_HOST":      "appsdeck.eu:22",
 		"API_PREFIX":    "/v1",
 		"UNSECURE_SSL":  "false",
 		"ROLLBAR_TOKEN": "",
@@ -63,7 +65,7 @@ func init() {
 	rollbar.ErrorWriter = logFile
 
 	TlsConfig = &tls.Config{}
-	if C.UnsecureUrl {
+	if C.UnsecureSsl {
 		TlsConfig.InsecureSkipVerify = true
 		TlsConfig.MinVersion = tls.VersionTLS10
 	} else {
