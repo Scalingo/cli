@@ -82,9 +82,9 @@ func VariableSet(app string, name string, value string) (*Variable, int, error) 
 
 func VariableUnset(app string, id string) error {
 	req := map[string]interface{}{
-		"method":    "DELETE",
-		"endpoint":  "/apps/" + app + "/variables/" + id,
-		"exepected": Statuses{204},
+		"method":   "DELETE",
+		"endpoint": "/apps/" + app + "/variables/" + id,
+		"expected": Statuses{204},
 	}
 	_, err := Do(req)
 	if err != nil {
