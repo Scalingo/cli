@@ -12,7 +12,7 @@ import (
 )
 
 type ScaleRes struct {
-	ContainerTypes []api.ContainerType `json:"container_types"`
+	Processes []api.Process `json:"processes"`
 }
 
 func Scale(app string, sync bool, types []string) error {
@@ -28,7 +28,7 @@ func Scale(app string, sync bool, types []string) error {
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
-		scaleParams.Scale = append(scaleParams.Scale, api.ContainerType{Name: typeName, Amount: int(amount)})
+		scaleParams.Scale = append(scaleParams.Scale, api.Process{Name: typeName, Amount: int(amount)})
 	}
 
 	res, err := api.AppsScale(app, scaleParams)
@@ -44,7 +44,7 @@ func Scale(app string, sync bool, types []string) error {
 	}
 
 	fmt.Printf("You application is being scaled to:\n")
-	for _, ct := range scaleRes.ContainerTypes {
+	for _, ct := range scaleRes.Processes {
 		fmt.Println(io.Indent(fmt.Sprintf("%s: %d", ct.Name, ct.Amount), 2))
 	}
 

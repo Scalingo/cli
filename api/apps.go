@@ -7,13 +7,13 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type ContainerType struct {
+type Process struct {
 	Name   string `json:"name"`
 	Amount int    `json:"amount"`
 }
 
 type AppsScaleParams struct {
-	Scale []ContainerType `json:"scale"`
+	Processes []Process `json:"processes"`
 }
 
 type AppsRestartParams struct {
