@@ -7,7 +7,9 @@ import (
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
+	"github.com/Scalingo/cli/update"
 	"github.com/codegangsta/cli"
+	"github.com/stvp/rollbar"
 )
 
 func main() {
@@ -54,11 +56,26 @@ func main() {
 		cmd.AddSSHKeyCommand,
 		cmd.RemoveSSHKeyCommand,
 
-		// Misc
+		// Sessions
 		cmd.LogoutCommand,
+		// cmd.SignUp,
+
+		// Version
+		cmd.VersionCommand,
+		cmd.UpdateCommand,
 	}
 
 	go signals.Handle()
+
+	if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
+		err := update.Check()
+		if err != nil {
+			rollbar.Error(rollbar.ERR, err)
+		}
+		return
+	} else {
+		defer update.Check()
+	}
 
 	if err := app.Run(os.Args); err != nil {
 		fmt.Println("Fail to run scalingo", err)
