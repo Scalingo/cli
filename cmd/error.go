@@ -53,6 +53,13 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
+	if api.IsRequestFailedError(errgo.Cause(err)) {
+		code := errgo.Cause(err).(*api.RequestFailedError).Code
+		if code == 401 {
+			session.DestroyToken()
+		}
+	}
+
 	newReportError(err).Report()
 	rollbar.Wait()
 	fmt.Printf("[Error] %v\n", err)

@@ -8,12 +8,13 @@ import (
 )
 
 type RequestFailedError struct {
+	Code    int
 	Message string
 	Req     *http.Request
 }
 
-func NewRequestFailedError(msg string, req *http.Request) *RequestFailedError {
-	return &RequestFailedError{msg, req}
+func NewRequestFailedError(code int, msg string, req *http.Request) *RequestFailedError {
+	return &RequestFailedError{code, msg, req}
 }
 
 func (err *RequestFailedError) Error() string {

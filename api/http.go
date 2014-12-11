@@ -142,15 +142,14 @@ func Do(req map[string]interface{}) (*http.Response, error) {
 	}
 
 	if res.StatusCode == 500 {
-		return nil, NewRequestFailedError("server internal error - our team has been notified", httpReq)
+		return nil, NewRequestFailedError(res.StatusCode, "server internal error - our team has been notified", httpReq)
 	}
 
 	if auth && res.StatusCode == 401 {
-		session.DestroyToken()
-		return nil, NewRequestFailedError("unauthorized - you are not authorized to do this operation", httpReq)
+		return nil, NewRequestFailedError(res.StatusCode, "unauthorized - you are not authorized to do this operation", httpReq)
 	}
 
-	return nil, NewRequestFailedError(fmt.Sprintf("invalid status from server: %v", res.Status), httpReq)
+	return nil, NewRequestFailedError(res.StatusCode, fmt.Sprintf("invalid status from server: %v", res.Status), httpReq)
 }
 
 func ParseJSON(res *http.Response, data interface{}) error {
