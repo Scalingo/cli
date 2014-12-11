@@ -58,7 +58,7 @@ func main() {
 
 		// Sessions
 		cmd.LogoutCommand,
-		// cmd.SignUp,
+		cmd.SignUpCommand,
 
 		// Version
 		cmd.VersionCommand,
