@@ -13,7 +13,6 @@ import (
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/cli/users"
 	"gopkg.in/errgo.v1"
 )

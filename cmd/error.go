@@ -11,6 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/cli/users"
 	"github.com/Soulou/errgo-rollbar"
 	"github.com/stvp/rollbar"

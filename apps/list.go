@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/io"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
@@ -22,6 +23,11 @@ func List() error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	apps := appsMap["apps"]
+
+	if len(apps) == 0 {
+		fmt.Println(io.Indent("\nYou haven't created any app yet, create your first application using:\n→ scalingo create <app_name>\n", 2))
+		return nil
+	}
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"Name", "Role", "Owner"})
