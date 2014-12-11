@@ -2,11 +2,18 @@ package config
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/Scalingo/cli/users"
 	"gopkg.in/errgo.v1"
 )
+
+type AuthConfigData struct {
+	LastUpdate        time.Time              `json:"last_update"`
+	AuthConfigPerHost map[string]*users.User `json:"auth_config_data"`
+}
 
 func StoreAuth(user *users.User) error {
 	// Check ~/.config/scalingo
@@ -20,6 +27,25 @@ func StoreAuth(user *users.User) error {
 		}
 	}
 
+	content, err := ioutil.ReadFile(C.AuthFile)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	var authConfig AuthConfigData
+	err = json.Unmarshal(content, &authConfig)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	// For backward compatiblity
+	if authConfig.AuthConfigPerHost == nil {
+		authConfig.AuthConfigPerHost = make(map[string]*users.User)
+	}
+
+	authConfig.AuthConfigPerHost[C.apiHost] = user
+	authConfig.LastUpdate = time.Now()
+
 	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -27,7 +53,7 @@ func StoreAuth(user *users.User) error {
 	defer file.Close()
 
 	enc := json.NewEncoder(file)
-	if err := enc.Encode(user); err != nil {
+	if err := enc.Encode(authConfig); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
@@ -42,11 +68,15 @@ func LoadAuth() (*users.User, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	var user *users.User
+	var authConfig AuthConfigData
 	dec := json.NewDecoder(file)
-	if err := dec.Decode(&user); err != nil {
+	if err := dec.Decode(&authConfig); err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return user, nil
+	if user, ok := authConfig.AuthConfigPerHost[C.apiHost]; !ok {
+		return nil, nil
+	} else {
+		return user, nil
+	}
 }

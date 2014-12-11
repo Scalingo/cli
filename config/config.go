@@ -4,8 +4,10 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/Scalingo/envconfig"
 	"github.com/stvp/rollbar"
@@ -13,6 +15,7 @@ import (
 
 type Config struct {
 	ApiUrl       string
+	apiHost      string
 	ApiPrefix    string
 	SshHost      string
 	UnsecureSsl  bool
@@ -60,6 +63,13 @@ func init() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
 	}
+
+	u, err := url.Parse(C.ApiUrl)
+	if err != nil {
+		panic("API_URL is not a valid URL " + err.Error())
+	}
+
+	C.apiHost = strings.Split(u.Host, ":")[0]
 
 	rollbar.Token = C.RollbarToken
 	rollbar.Platform = "client"
