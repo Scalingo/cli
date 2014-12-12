@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 	"strings"
@@ -35,9 +34,9 @@ type UnprocessableEntity struct {
 }
 
 func (err *UnprocessableEntity) Error() string {
-	b := new(bytes.Buffer)
+	errArray := make([]string, 0, len(err.Errors))
 	for attr, attrErrs := range err.Errors {
-		b.WriteString(fmt.Sprintf("%s → %s\n", attr, strings.Join(attrErrs, ", ")))
+		errArray = append(errArray, fmt.Sprintf("%s → %s", attr, strings.Join(attrErrs, ", ")))
 	}
-	return b.String()
+	return strings.Join(errArray, "\n")
 }

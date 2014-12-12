@@ -9,7 +9,7 @@ import (
 var (
 	EnvCommand = cli.Command{
 		Name:  "env",
-		Usage: "Manage the environment of your apps",
+		Usage: "Display the environment of your apps",
 		Description: `List all the environment variables:
 
     $ scalingo -a myapp env

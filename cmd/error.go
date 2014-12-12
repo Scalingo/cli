@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 	"os/user"
-	"runtime"
 	"strings"
 	"time"
+	"runtime"
 
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"

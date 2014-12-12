@@ -27,20 +27,20 @@ func StoreAuth(user *users.User) error {
 		}
 	}
 
-	content, err := ioutil.ReadFile(C.AuthFile)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
 	var authConfig AuthConfigData
-	err = json.Unmarshal(content, &authConfig)
-	if err != nil {
-		return errgo.Mask(err)
-	}
+	content, err := ioutil.ReadFile(C.AuthFile)
+	if err == nil || (err != nil && os.IsNotExist(err)) {
+		err = json.Unmarshal(content, &authConfig)
+		if err != nil {
+			return errgo.Mask(err)
+		}
 
-	// For backward compatiblity
-	if authConfig.AuthConfigPerHost == nil {
-		authConfig.AuthConfigPerHost = make(map[string]*users.User)
+		// For backward compatiblity
+		if authConfig.AuthConfigPerHost == nil {
+			authConfig.AuthConfigPerHost = make(map[string]*users.User)
+		}
+	} else {
+		return errgo.Mask(err)
 	}
 
 	authConfig.AuthConfigPerHost[C.apiHost] = user

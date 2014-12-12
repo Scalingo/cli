@@ -43,6 +43,12 @@ func main() {
 		cmd.EnvSetCommand,
 		cmd.EnvUnsetCommand,
 
+		// Domains
+		cmd.DomainsListCommand,
+		cmd.DomainsAddCommand,
+		cmd.DomainsRemoveCommand,
+		// cmd.DomainsSSLCommand,
+
 		// Addons
 		cmd.AddonsListCommand,
 		cmd.AddonPlansCommand,

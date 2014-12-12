@@ -10,7 +10,7 @@ var (
 	RestartCommand = cli.Command{
 		Name:  "restart",
 		Usage: "Restart processes of your app",
-		Flags: []cli.Flag{cli.BoolFlag{Name: "sync, s", Usage: "Do the restart synchronously", EnvVar: ""}},
+		Flags: []cli.Flag{cli.BoolFlag{Name: "synchronous", Usage: "Do the restart synchronously", EnvVar: ""}},
 		Description: `Restart one or several process or your application:
 	Example
 	  ## Restart all the processes
@@ -21,7 +21,7 @@ var (
 	  scalingo --app my-app restart web-1`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
-			if err := apps.Restart(currentApp, c.Bool("sync"), c.Args()); err != nil {
+			if err := apps.Restart(currentApp, c.Bool("synchronous"), c.Args()); err != nil {
 				errorQuit(err)
 			}
 		},
