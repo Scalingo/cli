@@ -18,7 +18,7 @@ func Check() error {
 	version := config.Version
 
 	if strings.HasSuffix(version, "dev") {
-		fmt.Println("No update checking, dev version:", version)
+		fmt.Println("\nNo update checking, dev version:", version)
 		return nil
 	}
 
@@ -31,7 +31,7 @@ func Check() error {
 		return nil
 	}
 
-	fmt.Printf("Your Scalingo client (%s) is obsolete, some feature may not work correctly, please update to '%s'\n", version, lastVersion)
+	fmt.Printf("\nYour Scalingo client (%s) is obsolete, some feature may not work correctly, please update to '%s'\n", version, lastVersion)
 	return nil
 }
 
