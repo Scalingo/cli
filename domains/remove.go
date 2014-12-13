@@ -7,14 +7,9 @@ import (
 )
 
 func Remove(app string, domain string) error {
-	domains, err := api.DomainsList(app)
+	d, err := findDomain(app, domain)
 	if err != nil {
 		return errgo.Mask(err)
-	}
-
-	d := findDomain(domains, domain)
-	if d == nil {
-		return errgo.New("no such domain")
 	}
 
 	err = api.DomainsRemove(app, d.ID)
@@ -26,11 +21,16 @@ func Remove(app string, domain string) error {
 	return nil
 }
 
-func findDomain(domains []api.Domain, domain string) *api.Domain {
+func findDomain(app string, domain string) (*api.Domain, error) {
+	domains, err := api.DomainsList(app)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
 	for _, d := range domains {
 		if d.Name == domain {
-			return &d
+			return &d, nil
 		}
 	}
-	return nil
+	return nil, errgo.New("no such domain")
 }

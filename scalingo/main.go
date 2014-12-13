@@ -47,7 +47,7 @@ func main() {
 		cmd.DomainsListCommand,
 		cmd.DomainsAddCommand,
 		cmd.DomainsRemoveCommand,
-		// cmd.DomainsSSLCommand,
+		cmd.DomainsSSLCommand,
 
 		// Addons
 		cmd.AddonsListCommand,
