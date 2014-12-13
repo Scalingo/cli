@@ -83,3 +83,30 @@ func DomainsRemove(app string, id string) error {
 	res.Body.Close()
 	return nil
 }
+
+func DomainsUpdate(app, id, cert, key string) (Domain, error) {
+	req := map[string]interface{}{
+		"method":   "PATCH",
+		"endpoint": "/apps/" + app + "/urls/" + id,
+		"expected": Statuses{200},
+		"params": map[string]interface{}{
+			"url": map[string]interface{}{
+				"tlscert": cert,
+				"tlskey":  key,
+			},
+		},
+	}
+
+	res, err := Do(req)
+	if err != nil {
+		return Domain{}, errgo.Mask(err)
+	}
+
+	var domain Domain
+	err = ParseJSON(res, &domain)
+	if err != nil {
+		return Domain{}, nil
+	}
+
+	return domain, nil
+}
