@@ -64,11 +64,14 @@ func AppsShow(app string) (*http.Response, error) {
 	return Do(req)
 }
 
-func AppsDestroy(id string) (*http.Response, error) {
+func AppsDestroy(name string, currentName string) (*http.Response, error) {
 	req := map[string]interface{}{
 		"method":   "DELETE",
-		"endpoint": "/apps/" + id,
+		"endpoint": "/apps/" + name,
 		"expected": Statuses{204},
+		"params": map[string]interface{}{
+			"current_name": currentName,
+		},
 	}
 	return Do(req)
 }

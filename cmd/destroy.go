@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Scalingo/cli/apps"
 	"github.com/codegangsta/cli"
 )
@@ -17,17 +15,9 @@ var (
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "destroy")
 			} else {
-				var validationName string
-				appName := c.Args()[0]
-				fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
-				fmt.Scan(&validationName)
-				if validationName == appName {
-					err := apps.Destroy(appName)
-					if err != nil {
-						errorQuit(err)
-					}
-				} else {
-					fmt.Printf("'%s' is not '%s', aborting…\n", validationName, appName)
+				err := apps.Destroy(c.Args()[0])
+				if err != nil {
+					errorQuit(err)
 				}
 			}
 		},

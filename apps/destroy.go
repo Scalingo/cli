@@ -4,16 +4,24 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/io"
 	"gopkg.in/errgo.v1"
 )
 
-func Destroy(id string) error {
-	res, err := api.AppsDestroy(id)
+func Destroy(appName string) error {
+	var validationName string
+	fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
+	fmt.Scan(&validationName)
+	if validationName != appName {
+		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
+	}
+
+	res, err := api.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to create app")
 	}
 	defer res.Body.Close()
 
-	fmt.Printf("App %s has been deleted\n", id)
+	io.Status("App " + appName + " has been deleted")
 	return nil
 }
