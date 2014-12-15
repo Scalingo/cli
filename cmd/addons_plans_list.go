@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	AddonPlansCommand = cli.Command{
-		Name:        "addon-plans",
+	AddonsPlansCommand = cli.Command{
+		Name:        "addons-plans",
 		Description: "List the plans for an addon.\n    Example:\n    scalingo addon-plans scalingo-mongo",
 		Usage:       "List plans",
 		Action: func(c *cli.Context) {

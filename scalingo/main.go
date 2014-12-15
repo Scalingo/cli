@@ -50,9 +50,9 @@ func main() {
 		cmd.DomainsSSLCommand,
 
 		// Addons
-		cmd.AddonsListCommand,
-		cmd.AddonPlansCommand,
 		cmd.AddonResourcesListCommand,
+		cmd.AddonsListCommand,
+		cmd.AddonsPlansCommand,
 
 		// DB Access
 		cmd.DbTunnelCommand,
