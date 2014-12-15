@@ -23,7 +23,7 @@ func Ps(app string) error {
 		if ct.Command != "" {
 			t.Append([]string{ct.Name, amount, "`" + ct.Command + "`"})
 		} else {
-			t.Append([]string{ct.Name, amount, "- default -"})
+			t.Append([]string{ct.Name, amount, "-"})
 		}
 	}
 
