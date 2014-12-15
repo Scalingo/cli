@@ -84,7 +84,7 @@ func DomainsRemove(app string, id string) error {
 	return nil
 }
 
-func DomainsUpdate(app, id, cert, key string) (Domain, error) {
+func DomainsUpdate(app, id, cert, key string) (*Domain, error) {
 	req := map[string]interface{}{
 		"method":   "PATCH",
 		"endpoint": "/apps/" + app + "/urls/" + id,
@@ -99,14 +99,14 @@ func DomainsUpdate(app, id, cert, key string) (Domain, error) {
 
 	res, err := Do(req)
 	if err != nil {
-		return Domain{}, errgo.Mask(err)
+		return nil, errgo.Mask(err)
 	}
 
-	var domain Domain
-	err = ParseJSON(res, &domain)
+	var domainRes DomainRes
+	err = ParseJSON(res, &domainRes)
 	if err != nil {
-		return Domain{}, nil
+		return nil, nil
 	}
 
-	return domain, nil
+	return &domainRes.Domain, nil
 }

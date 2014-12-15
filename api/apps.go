@@ -8,8 +8,9 @@ import (
 )
 
 type Process struct {
-	Name   string `json:"name"`
-	Amount int    `json:"amount"`
+	Name    string `json:"name"`
+	Amount  int    `json:"amount"`
+	Command string `json:"command"`
 }
 
 type AppsScaleParams struct {

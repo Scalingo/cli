@@ -32,10 +32,11 @@ func EnableSSL(app, domain, certPath, keyPath string) error {
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	_, err = api.DomainsUpdate(app, d.ID, string(certContent), string(keyContent))
+	d, err = api.DomainsUpdate(app, d.ID, string(certContent), string(keyContent))
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
+	io.Status("The certificate and key have been installed for " + d.Name + " (Validity: " + d.Validity.UTC().String() + ")")
 	return nil
 }

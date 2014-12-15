@@ -2,9 +2,10 @@ package apps
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Scalingo/cli/api"
-	"github.com/Scalingo/cli/io"
+	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
 
@@ -14,9 +15,18 @@ func Ps(app string) error {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("Application processes:\n")
+	t := tablewriter.NewWriter(os.Stdout)
+	t.SetHeader([]string{"Name", "Amount", "Command"})
+
 	for _, ct := range processes {
-		fmt.Println(io.Indent(fmt.Sprintf("%s: %d", ct.Name, ct.Amount), 2))
+		amount := fmt.Sprintf("%d", ct.Amount)
+		if ct.Command != "" {
+			t.Append([]string{ct.Name, amount, "`" + ct.Command + "`"})
+		} else {
+			t.Append([]string{ct.Name, amount, "- default -"})
+		}
 	}
+
+	t.Render()
 	return nil
 }
