@@ -9,7 +9,7 @@
   },
   "PackageVersion": "1.0.0-alpha1",
   "ConfigVersion": "0.9",
-  "OutPath": "{{.Dest}}{{.PS}}{{.Version}}{{.PS}}{{.Os}}-{{.Arch}}",
+  "OutPath": "{{.Dest}}{{.PS}}{{.Version}}-{{.Os}}-{{.Arch}}{{.PS}}{{.AppName}}{{.Ext}}",
   "Env": [
     "GOPATH={{.Env.GOPATH}}{{.PS}}src{{.PS}}github.com{{.PS}}Scalingo{{.PS}}cli{{.PS}}Godeps{{.PS}}_workspace{{.PLS}}{{.Env.GOPATH}}"
   ]
