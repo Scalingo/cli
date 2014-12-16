@@ -1,4 +1,5 @@
 {
+  "AppName": "scalingo",
   "ArtifactsDest": "bin",
   "Arch": "386,amd64",
   "BuildConstraints": "windows linux darwin freebsd openbsd",
