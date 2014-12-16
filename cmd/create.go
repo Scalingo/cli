@@ -8,6 +8,7 @@ import (
 var (
 	CreateCommand = cli.Command{
 		Name:        "create",
+		Category:    "Global",
 		ShortName:   "c",
 		Description: "Create a new app:\n   Example:\n     'scalingo create mynewapp'",
 		Usage:       "Create a new app",

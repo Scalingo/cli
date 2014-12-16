@@ -8,6 +8,7 @@ import (
 var (
 	DestroyCommand = cli.Command{
 		Name:        "destroy",
+		Category:    "Global",
 		ShortName:   "d",
 		Usage:       "Destroy an app /!\\",
 		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'",

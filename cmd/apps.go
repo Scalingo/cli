@@ -8,6 +8,7 @@ import (
 var (
 	AppsCommand = cli.Command{
 		Name:        "apps",
+		Category:    "Global",
 		ShortName:   "a",
 		Description: "List your apps and give some details about them",
 		Usage:       "List your apps",

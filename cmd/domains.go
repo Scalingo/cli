@@ -8,8 +8,9 @@ import (
 
 var (
 	DomainsListCommand = cli.Command{
-		Name:  "domains",
-		Usage: "List the domains of an application",
+		Name:     "domains",
+		Category: "Custom Domains",
+		Usage:    "List the domains of an application",
 		Description: `List all the custom domains of an application:
 
     $ scalingo -a myapp domains
@@ -32,8 +33,9 @@ var (
 	}
 
 	DomainsAddCommand = cli.Command{
-		Name:  "domains-add",
-		Usage: "Add a custom domain to an application",
+		Name:     "domains-add",
+		Category: "Custom Domains",
+		Usage:    "Add a custom domain to an application",
 		Description: `Add a custom domain to an application:
 
     $ scalingo -a myapp domains-add example.com
@@ -56,8 +58,9 @@ var (
 	}
 
 	DomainsRemoveCommand = cli.Command{
-		Name:  "domains-remove",
-		Usage: "Remove a custom domain from an application",
+		Name:     "domains-remove",
+		Category: "Custom Domains",
+		Usage:    "Remove a custom domain from an application",
 		Description: `Remove a custom domain from an application:
 
     $ scalingo -a myapp domains-remove example.com
@@ -80,8 +83,9 @@ var (
 	}
 
 	DomainsSSLCommand = cli.Command{
-		Name:  "domains-ssl",
-		Usage: "Enable or disable SSL for your custom domains",
+		Name:     "domains-ssl",
+		Category: "Custom Domains",
+		Usage:    "Enable or disable SSL for your custom domains",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
 			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},

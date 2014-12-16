@@ -15,8 +15,11 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "Scalingo Client"
+	app.Author = "Scalingo Team"
+	app.Email = "hello@scalingo.com"
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
+	app.CategorizedHelp = true
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 	}

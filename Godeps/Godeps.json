@@ -17,8 +17,8 @@
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
-			"Comment": "1.2.0-50-ga14c5b4",
-			"Rev": "a14c5b47c7efa4ff80cc42e1079a34b4756f2311"
+			"Comment": "1.2.0-51-g66438f3",
+			"Rev": "66438f3f92f40b42110369ef3155976a9eceeef0"
 		},
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",

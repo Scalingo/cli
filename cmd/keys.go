@@ -7,8 +7,9 @@ import (
 
 var (
 	ListSSHKeyCommand = cli.Command{
-		Name:  "keys",
-		Usage: "List your SSH public keys",
+		Name:     "keys",
+		Category: "Public SSH Keys",
+		Usage:    "List your SSH public keys",
 		Description: `List all the public SSH keys associated with your account:
 
     $ scalingo keys
@@ -24,8 +25,9 @@ var (
 	}
 
 	AddSSHKeyCommand = cli.Command{
-		Name:  "keys-add",
-		Usage: "Add a public SSH key to deploy your apps",
+		Name:     "keys-add",
+		Category: "Public SSH Keys",
+		Usage:    "Add a public SSH key to deploy your apps",
 		Description: `Add a public SSH key:
 
     $ scalingo keys-add keyname /path/to/key
@@ -45,8 +47,9 @@ var (
 	}
 
 	RemoveSSHKeyCommand = cli.Command{
-		Name:  "keys-remove",
-		Usage: "Remove a public SSH key",
+		Name:     "keys-remove",
+		Category: "Public SSH Keys",
+		Usage:    "Remove a public SSH key",
 		Description: `Remove a public SSH key:
 
     $ scalingo keys-remove keyname

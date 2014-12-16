@@ -10,6 +10,7 @@ var (
 	ScaleCommand = cli.Command{
 		Name:      "scale",
 		ShortName: "s",
+		Category:  "App Management",
 		Flags:     []cli.Flag{cli.BoolFlag{Name: "synchronous", Usage: "Do the scaling synchronously", EnvVar: ""}},
 		Usage:     "Scale your application instantly",
 		Description: `Scale your application processes.

@@ -7,8 +7,9 @@ import (
 
 var (
 	UpdateCommand = cli.Command{
-		Name:  "update",
-		Usage: "Update 'scalingo' client",
+		Name:     "update",
+		Category: "CLI Internals",
+		Usage:    "Update 'scalingo' client",
 		Description: `Update 'scalingo' client
    Example
      'scalingo update'`,

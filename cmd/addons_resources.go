@@ -8,8 +8,9 @@ import (
 
 var (
 	AddonResourcesListCommand = cli.Command{
-		Name:  "addons",
-		Usage: "List used addons",
+		Name:     "addons",
+		Category: "Addons",
+		Usage:    "List used addons",
 		Description: ` List all addons used by your app:
     $ scalingo -a myapp addons
 

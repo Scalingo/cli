@@ -8,9 +8,10 @@ import (
 
 var (
 	RestartCommand = cli.Command{
-		Name:  "restart",
-		Usage: "Restart processes of your app",
-		Flags: []cli.Flag{cli.BoolFlag{Name: "synchronous", Usage: "Do the restart synchronously", EnvVar: ""}},
+		Name:     "restart",
+		Category: "App Management",
+		Usage:    "Restart processes of your app",
+		Flags:    []cli.Flag{cli.BoolFlag{Name: "synchronous", Usage: "Do the restart synchronously", EnvVar: ""}},
 		Description: `Restart one or several process or your application:
 	Example
 	  ## Restart all the processes

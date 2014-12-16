@@ -7,8 +7,9 @@ import (
 
 var (
 	SignUpCommand = cli.Command{
-		Name:  "signup",
-		Usage: "Create your account of Scalingo",
+		Name:     "signup",
+		Category: "Global",
+		Usage:    "Create your account of Scalingo",
 		Description: `
    Example
      'scalingo signup'`,

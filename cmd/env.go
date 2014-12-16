@@ -8,8 +8,9 @@ import (
 
 var (
 	EnvCommand = cli.Command{
-		Name:  "env",
-		Usage: "Display the environment of your apps",
+		Name:     "env",
+		Category: "Environment",
+		Usage:    "Display the environment of your apps",
 		Description: `List all the environment variables:
 
     $ scalingo -a myapp env
@@ -32,8 +33,9 @@ var (
 	}
 
 	EnvSetCommand = cli.Command{
-		Name:  "env-set",
-		Usage: "Set the environment variables of your apps",
+		Name:     "env-set",
+		Category: "Environment",
+		Usage:    "Set the environment variables of your apps",
 		Description: `Set variables:
 
     $ scalingo -a myapp env-set VAR1=VAL1 VAR2=VAL2
@@ -55,8 +57,9 @@ var (
 	}
 
 	EnvUnsetCommand = cli.Command{
-		Name:  "env-unset",
-		Usage: "Unset environment variables of your apps",
+		Name:     "env-unset",
+		Category: "Environment",
+		Usage:    "Unset environment variables of your apps",
 		Description: `Unset variables:
 
     $ scalingo -a myapp env-unset VAR1 VAR2

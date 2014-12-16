@@ -12,6 +12,7 @@ var (
 	RunCommand = cli.Command{
 		Name:      "run",
 		ShortName: "r",
+		Category:  "App Management",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables", EnvVar: ""},

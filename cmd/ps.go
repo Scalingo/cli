@@ -8,8 +8,9 @@ import (
 
 var (
 	PsCommand = cli.Command{
-		Name:  "ps",
-		Usage: "Display your application running processes",
+		Name:     "ps",
+		Category: "App Management",
+		Usage:    "Display your application running processes",
 		Description: `Display your application processes
 	Example
 	  'scalingo --app my-app ps'`,

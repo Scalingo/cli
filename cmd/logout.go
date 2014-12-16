@@ -10,6 +10,7 @@ import (
 var (
 	LogoutCommand = cli.Command{
 		Name:        "logout",
+		Category:    "Global",
 		Usage:       "Logout from Scalingo",
 		Description: "Destroy login information stored on your computer",
 		Action: func(c *cli.Context) {
