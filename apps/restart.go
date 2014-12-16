@@ -8,7 +8,7 @@ import (
 )
 
 func Restart(app string, sync bool, args []string) error {
-	params := api.AppsRestartParams{args}
+	params := api.AppsRestartParams{Scope: args}
 
 	res, err := api.AppsRestart(app, &params)
 	if err != nil {

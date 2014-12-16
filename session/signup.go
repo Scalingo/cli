@@ -3,8 +3,8 @@ package session
 import (
 	"fmt"
 
-	"code.google.com/p/gopass"
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/term"
 	"gopkg.in/errgo.v1"
 )
 
@@ -17,12 +17,12 @@ func SignUp() error {
 		return errgo.Mask(err)
 	}
 
-	password, err := gopass.GetPass("Password: ")
+	password, err := term.Password("Password: ")
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	password_confirmation, err := gopass.GetPass("Password validation: ")
+	password_confirmation, err := term.Password("Password validation: ")
 	if err != nil {
 		return errgo.Mask(err)
 	}

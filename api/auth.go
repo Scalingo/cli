@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"code.google.com/p/gopass"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/cli/users"
 	"gopkg.in/errgo.v1"
 )
@@ -66,7 +65,7 @@ func tryAuth() (*users.User, error) {
 		}
 	}
 
-	password, err := gopass.GetPass("Password: ")
+	password, err := term.Password("Password: ")
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

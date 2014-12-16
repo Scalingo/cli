@@ -63,6 +63,4 @@ func handleOperation(app string, res *http.Response) error {
 		time.Sleep(100 * time.Millisecond)
 		fmt.Printf("\b%c", r)
 	}
-
-	return nil
 }

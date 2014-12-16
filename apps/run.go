@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,9 +17,9 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
@@ -83,33 +82,14 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	defer close(stopSignalsMonitoring)
 
 	go func() {
-		signals := make(chan os.Signal)
+		signals := run.NotifiedSignals()
 		defer close(signals)
 
-		signal.Notify(signals,
-			syscall.SIGINT,
-			syscall.SIGQUIT,
-			syscall.SIGTSTP,
-			syscall.SIGWINCH,
-		)
-
-		go func() { signals <- syscall.SIGWINCH }()
+		go run.NofityTermSizeUpdate(signals)
 		for {
 			select {
 			case s := <-signals:
-				switch s {
-				case syscall.SIGINT:
-					socket.Write([]byte{0x03})
-				case syscall.SIGQUIT:
-					socket.Write([]byte{0x1c})
-				case syscall.SIGTSTP:
-					socket.Write([]byte{0x1a})
-				case syscall.SIGWINCH:
-					err := updateTtySize(runUrl)
-					if err != nil {
-						fmt.Println("WARN: Error when updating terminal size:", err)
-					}
-				}
+				run.HandleSignal(s, socket, runUrl)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
@@ -189,45 +169,6 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	connection, _ := conn.Hijack()
 	return res, connection, nil
-}
-
-type UpdateTtyParams struct {
-	Width  string `json:"width"`
-	Height string `json:"height"`
-}
-
-func updateTtySize(url string) error {
-	cols, err := term.Cols()
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	lines, err := term.Lines()
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	params := UpdateTtyParams{
-		fmt.Sprintf("%d", cols),
-		fmt.Sprintf("%d", lines),
-	}
-	paramsJson, _ := json.Marshal(&params)
-
-	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJson))
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	req.SetBasicAuth("", api.CurrentUser.AuthToken)
-
-	res, err := httpclient.Do(req)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		return errgo.Newf("Invalid error code from run server: %s", res.Status)
-	}
-
-	return nil
 }
 
 func validateFiles(files []string) error {

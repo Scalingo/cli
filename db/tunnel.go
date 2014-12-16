@@ -77,8 +77,6 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 		}
 		go handleConnToTunnel(client, dbUrl, connToTunnel, errs)
 	}
-
-	return nil
 }
 
 func dbEnvVarValue(dbEnvVar string, environ api.Variables) string {
