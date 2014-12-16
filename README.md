@@ -1,7 +1,5 @@
-Scalingo-CLI v0.5.0
-===================
-
-Command line utility to manage its Scalingo apps.
+Scalingo-CLI v1.0.0-dev
+=======================
 
 ```
 NAME:
@@ -11,19 +9,54 @@ USAGE:
    Scalingo Client [global options] command [command options] [arguments...]
 
 VERSION:
-   0.5.0
+   1.0.0-dev
+
+AUTHOR:
+  Scalingo Team - <hello@scalingo.com>
 
 COMMANDS:
-   logs, l	Get the logs of your applications
-   run, r	Run any command for your app
-   apps, a	List your apps
-   logout	Logout from Scalingo
-   create, c	Create a new app
-   destroy, d	Destroy an app /!\
-   help, h	Shows a list of commands or help for one command
-   
+  Addons:
+    addons		List used addons
+    addons-list		List all addons
+    addons-plans	List plans
+
+  App Management:
+    logs, l	Get the logs of your applications
+    run, r	Run any command for your app
+    ps		Display your application running processes
+    scale, s	Scale your application instantly
+    restart	Restart processes of your app
+    db-tunnel	Create an encrypted connection to access your database
+
+  CLI Internals:
+    version	Display current version
+    update	Update 'scalingo' client
+
+  Custom Domains:
+    domains		List the domains of an application
+    domains-add		Add a custom domain to an application
+    domains-remove	Remove a custom domain from an application
+    domains-ssl		Enable or disable SSL for your custom domains
+
+  Environment:
+    env		Display the environment of your apps
+    env-set	Set the environment variables of your apps
+    env-unset	Unset environment variables of your apps
+
+  Global:
+    apps, a	List your apps
+    create, c	Create a new app
+    destroy, d	Destroy an app /!\
+    logout	Logout from Scalingo
+    signup	Create your account of Scalingo
+
+  Public SSH Keys:
+    keys	List your SSH public keys
+    keys-add	Add a public SSH key to deploy your apps
+    keys-remove	Remove a public SSH key
+
 GLOBAL OPTIONS:
-   --app, -a '<name>'	Name of the app
-   --version, -v	print the version
+   --app, -a '<name>'	Name of the app [$SCALINGO_APP]
    --help, -h		show help
+   --version, -v	print the version
 ```
