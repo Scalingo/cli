@@ -30,7 +30,7 @@ func StoreAuth(user *users.User) error {
 	var authConfig AuthConfigData
 	authConfig.AuthConfigPerHost = make(map[string]*users.User)
 	content, err := ioutil.ReadFile(C.AuthFile)
-	if err == nil || (err != nil && os.IsNotExist(err)) {
+	if err == nil {
 		err = json.Unmarshal(content, &authConfig)
 		if err != nil {
 			return errgo.Mask(err)
