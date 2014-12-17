@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"gopkg.in/errgo.v1"
 )
 
@@ -31,7 +32,9 @@ func Check() error {
 		return nil
 	}
 
-	fmt.Printf("\nYour Scalingo client (%s) is obsolete, some feature may not work correctly, please update to '%s'\n", version, lastVersion)
+	io.Statusf(`Your Scalingo client (%s) is out-of-date: some features may not work correctly.
+	Please update to '%s': https://github.com/Scalingo/cli/releases/tag/%s
+`, version, lastVersion, lastVersion)
 	return nil
 }
 

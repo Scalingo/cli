@@ -1,5 +1,5 @@
-Scalingo-CLI v1.0.0-dev
-=======================
+Scalingo-CLI v1.0.0-alpha2
+==========================
 
 ```
 NAME:
@@ -9,14 +9,19 @@ USAGE:
    Scalingo Client [global options] command [command options] [arguments...]
 
 VERSION:
-   1.0.0-dev
+   1.0.0-alpha2
 
 AUTHOR:
   Scalingo Team - <hello@scalingo.com>
 
 COMMANDS:
   Addons:
-    addons		List used addons
+    addons		List used add-ons
+    addons-add		Provision an add-on for your application
+    addons-remove	Remove an existing addon from your app
+    addons-upgrade	Upgrade or downgrade an add-on attached to your app
+
+  Addons - Global:
     addons-list		List all addons
     addons-plans	List plans
 
