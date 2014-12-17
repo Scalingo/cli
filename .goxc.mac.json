@@ -2,7 +2,7 @@
   "AppName": "scalingo",
   "ArtifactsDest": "bin",
   "Arch": "386,amd64",
-  "BuildConstraints": "windows linux freebsd openbsd",
+  "BuildConstraints": "darwin",
   "Resources": {
    "Include": "INSTALL*,README.md,LICENSE*",
    "Exclude": "*.go"

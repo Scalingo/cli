@@ -51,6 +51,10 @@ goxc_flags="-pv $VERSION"
 if [ -n $dev_tag ] ; then
   goxc_flags="${goxc_flags} -pr $dev_tag"
 fi
+if uname -a | grep -q Darwin ; then
+  goxc_flags="${goxc_flags} -c .goxc.mac.json"
+fi
+
 goxc $goxc_flags
 
 git checkout master
