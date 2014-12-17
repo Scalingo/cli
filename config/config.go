@@ -59,6 +59,12 @@ func init() {
 
 	envconfig.Process("", &C)
 
+	err := os.MkdirAll(C.ConfigDir, 0755)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v", err)
+		os.Exit(1)
+	}
+
 	logFile, err := os.OpenFile(C.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
