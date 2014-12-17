@@ -8,7 +8,7 @@ import (
 var (
 	AddonsListCommand = cli.Command{
 		Name:        "addons-list",
-		Category:    "Addons",
+		Category:    "Addons - Global",
 		Description: "List all addons you can add to your app.",
 		Usage:       "List all addons",
 		Action: func(c *cli.Context) {
