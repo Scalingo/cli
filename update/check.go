@@ -46,5 +46,5 @@ func getLastVersion() (string, error) {
 		return "", errgo.Mask(err)
 	}
 
-	return string(body), nil
+	return strings.TrimSpace(string(body)), nil
 }
