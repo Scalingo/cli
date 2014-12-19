@@ -23,7 +23,7 @@ var (
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "ps")
+				cli.ShowCommandHelp(c, "db-tunnel")
 			} else if err := db.Tunnel(currentApp, c.Args()[0], c.String("identity"), c.Int("port")); err != nil {
 				errorQuit(err)
 			}
