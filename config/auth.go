@@ -45,6 +45,7 @@ func LoadAuth() (*users.User, error) {
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
+	defer file.Close()
 
 	var authConfig AuthConfigData
 	dec := json.NewDecoder(file)
