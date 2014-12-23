@@ -2,6 +2,7 @@ cli
 *swp
 bin
 pkg
+scalingo/scalingo
 src/github.com
 src/code.google.com
 Godeps/Readme
