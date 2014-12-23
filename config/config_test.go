@@ -1,11 +1,14 @@
 package config
 
-import "os"
+import (
+	"os"
+	"path/filepath"
+)
 
 var (
 	testConfig = Config{
 		apiHost:  "scalingo.dev",
-		AuthFile: "/tmp/test-scalingo-auth",
+		AuthFile: filepath.Join(os.TempDir(), "test-scalingo-auth"),
 	}
 )
 
