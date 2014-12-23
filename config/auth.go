@@ -16,26 +16,8 @@ type AuthConfigData struct {
 }
 
 func StoreAuth(user *users.User) error {
-	// Check ~/.config/scalingo
-	if _, err := os.Stat(C.ConfigDir); err != nil {
-		if err, ok := err.(*os.PathError); ok {
-			if err := os.MkdirAll(C.ConfigDir, 0755); err != nil {
-				return errgo.Mask(err, errgo.Any)
-			}
-		} else {
-			return errgo.Notef(err, "error reaching config directory")
-		}
-	}
-
-	var authConfig AuthConfigData
-	authConfig.AuthConfigPerHost = make(map[string]*users.User)
-	content, err := ioutil.ReadFile(C.AuthFile)
-	if err == nil {
-		err = json.Unmarshal(content, &authConfig)
-		if err != nil {
-			return errgo.Mask(err)
-		}
-	} else if err != nil && !os.IsNotExist(err) {
+	authConfig, err := existingAuth()
+	if err != nil {
 		return errgo.Mask(err)
 	}
 
@@ -75,4 +57,18 @@ func LoadAuth() (*users.User, error) {
 	} else {
 		return user, nil
 	}
+}
+
+func existingAuth() (*AuthConfigData, error) {
+	authConfig := &AuthConfigData{}
+	content, err := ioutil.ReadFile(C.AuthFile)
+	if err == nil {
+		// We don't care of the error
+		json.Unmarshal(content, &authConfig)
+	} else if os.IsNotExist(err) {
+		authConfig.AuthConfigPerHost = make(map[string]*users.User)
+	} else {
+		return nil, errgo.Mask(err)
+	}
+	return authConfig, nil
 }
