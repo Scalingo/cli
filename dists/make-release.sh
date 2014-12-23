@@ -51,8 +51,14 @@ goxc_flags="-pv $VERSION"
 if [ -n $dev_tag ] ; then
   goxc_flags="${goxc_flags} -pr $dev_tag"
 fi
-if uname -a | grep -q Darwin ; then
-  goxc_flags="${goxc_flags} -c .goxc.mac.json"
+if uname -a | grep -iq Linux ; then
+  goxc_flags="${goxc_flags} -bc linux,freebsd,openbsd"
+fi
+if uname -a | grep -iq Darwin ; then
+  goxc_flags="${goxc_flags} -bc darwin"
+fi
+if uname -a | grep -iq Mingw ; then
+  goxc_flags="${goxc_flags} -bc windows"
 fi
 
 goxc $goxc_flags
