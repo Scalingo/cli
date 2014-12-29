@@ -15,7 +15,7 @@ type KeyIndex struct {
 func KeysList() ([]Key, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/keys",
+		"endpoint": "/account/keys",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
@@ -36,7 +36,7 @@ func KeysList() ([]Key, error) {
 func KeysAdd(name string, content string) (*Key, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
-		"endpoint": "/keys",
+		"endpoint": "/account/keys",
 		"params": map[string]interface{}{
 			"key": map[string]interface{}{
 				"name":    name,
@@ -63,7 +63,7 @@ func KeysAdd(name string, content string) (*Key, error) {
 func KeysDelete(id string) error {
 	req := map[string]interface{}{
 		"method":   "DELETE",
-		"endpoint": "/keys/" + id,
+		"endpoint": "/account/keys/" + id,
 		"expected": Statuses{204},
 	}
 	res, err := Do(req)
