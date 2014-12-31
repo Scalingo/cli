@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -24,6 +25,8 @@ type Config struct {
 	ConfigDir    string
 	AuthFile     string
 	LogFile      string
+	logFile      *os.File
+	logger       *log.Logger
 }
 
 var (
@@ -66,10 +69,11 @@ func init() {
 		os.Exit(1)
 	}
 
-	logFile, err := os.OpenFile(C.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	C.logFile, err = os.OpenFile(C.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
 	}
+	C.logger = log.New(c.logFile, "", log.LstdFlags)
 
 	u, err := url.Parse(C.ApiUrl)
 	if err != nil {
@@ -81,7 +85,7 @@ func init() {
 	rollbar.Token = C.RollbarToken
 	rollbar.Platform = "client"
 	rollbar.Environment = "production"
-	rollbar.ErrorWriter = logFile
+	rollbar.ErrorWriter = C.logFile
 
 	TlsConfig = &tls.Config{}
 	if C.UnsecureSsl {

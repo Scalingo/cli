@@ -13,7 +13,19 @@ import (
 
 var (
 	lastVersionURL = "https://raw.githubusercontent.com/Scalingo/appsdeck-executables/master/latest"
+	lastVersion    = ""
+	gotLastVersion = make(chan struct{})
 )
+
+func init() {
+	go func() {
+		lastVersion, err := getLastVersion()
+		if err != nil {
+			C.logger.Println(err)
+		}
+		gotLastVersion <- struct{}{}
+	}()
+}
 
 func Check() error {
 	version := config.Version
@@ -23,11 +35,7 @@ func Check() error {
 		return nil
 	}
 
-	lastVersion, err := getLastVersion()
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
+	<-gotLastVersion
 	if version == lastVersion {
 		return nil
 	}
