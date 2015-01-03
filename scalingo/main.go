@@ -69,6 +69,7 @@ func main() {
 		cmd.RemoveSSHKeyCommand,
 
 		// Sessions
+		cmd.LoginCommand,
 		cmd.LogoutCommand,
 		cmd.SignUpCommand,
 

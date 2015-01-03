@@ -26,7 +26,7 @@ type Config struct {
 	AuthFile     string
 	LogFile      string
 	logFile      *os.File
-	logger       *log.Logger
+	Logger       *log.Logger
 }
 
 var (
@@ -73,7 +73,7 @@ func init() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
 	}
-	C.logger = log.New(c.logFile, "", log.LstdFlags)
+	C.Logger = log.New(C.logFile, "", log.LstdFlags)
 
 	u, err := url.Parse(C.ApiUrl)
 	if err != nil {

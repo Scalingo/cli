@@ -19,9 +19,10 @@ var (
 
 func init() {
 	go func() {
-		lastVersion, err := getLastVersion()
+		var err error
+		lastVersion, err = getLastVersion()
 		if err != nil {
-			C.logger.Println(err)
+			config.C.Logger.Println(err)
 		}
 		gotLastVersion <- struct{}{}
 	}()

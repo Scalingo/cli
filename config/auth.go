@@ -24,17 +24,7 @@ func StoreAuth(user *users.User) error {
 	authConfig.AuthConfigPerHost[C.apiHost] = user
 	authConfig.LastUpdate = time.Now()
 
-	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	defer file.Close()
-
-	enc := json.NewEncoder(file)
-	if err := enc.Encode(authConfig); err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	return nil
+	return writeAuthFile(authConfig)
 }
 
 func LoadAuth() (*users.User, error) {
@@ -58,6 +48,33 @@ func LoadAuth() (*users.User, error) {
 	} else {
 		return user, nil
 	}
+}
+
+func RemoveAuth() error {
+	authConfig, err := existingAuth()
+	if err != nil {
+		return errgo.Mask(err)
+	}
+	if _, ok := authConfig.AuthConfigPerHost[C.apiHost]; ok {
+		delete(authConfig.AuthConfigPerHost, C.apiHost)
+	}
+
+	return writeAuthFile(authConfig)
+}
+
+func writeAuthFile(auth *AuthConfigData) error {
+	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer file.Close()
+
+	enc := json.NewEncoder(file)
+	if err := enc.Encode(auth); err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	return nil
+
 }
 
 func existingAuth() (*AuthConfigData, error) {

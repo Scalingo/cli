@@ -1,75 +1,25 @@
 Changelog
 =========
 
-### v0.3.5 - 22/09/2014
+### v1.0.0-alpha4 - ToBeReleased
 
-* Upload files when running custom job
-  > `appsdeck run [--file file1 [--file fileN …]] <cmd>`
+* Rename `Processes` to `Containers` to fit the API
+* Login command
+* Clean credentials deletion for multiple APIs (dev feature)
 
-### v0.3.4 - 27/05/2014
+### v1.0.0-alpha3 - 21/12/2014
 
-* API Change app/fullname → app/name
-* Logs command → Fix panic when invalid data from server
-* Clarify error when connection to appsdeck-run is blocked by proxy/FW
+* Fix credential storage issue #72 #73
+* Fix wrong help for command db-tunnel #74
+* Fix logfile open operation on MacOS #70
+* Build Windows version on Windows with CGO #71
+* Build Mac OS verison on Mac OS with CGO #71
 
-### v0.3.3 - 11/04/2014
+### v1.0.0-alpha2 - 15/12/2014
 
-* Change SSL certificate chain (new certificate -> heartbleed)
+* Move addons subcommands at top level for better visibility
 
-### v0.3.2.1 - 25/02/2014
+### v1.0.0-alpha1 - 14/12/2014
 
-* fix: [Mac OSX] HTTPS request to update terminal size
-
-### v0.3.2 - 21/02/2014
-
-* feature: Dynamically monitor terminal size for foreign application
-
-### v0.3.1 - 19/02/2014
-
-* bugfix: Correctly handle signals to remote app during `appsdeck run`
-* feature: Ability to use short or long flags for any flag
-* feature: Rename `logs --stream` to `logs -f|--follow` to respect tail syntax
-
-### v0.3.0
-
-* bugfix: When unauthenticated, `appsdeck logout` creates a panic
-
-> Additional error checking to take care of the case
-
-* feature: Improve security for getting logs, a unique session token is generated to get the logs
-* feature: Logging via Username or Email exactly as https://appsdeck.eu
-
-### v0.2.3
-
-* bugfix: Input logs aren't HTML-unescaped
-
-> The logs are correctly displayed
-
-* bugfix: Copy/Paste is not working correctly with `appsdeck run`
-
-> The size of the terminal is sent to the server, pagers, pastes and completion is now working fine
-
-* feature: `Environment can be send to custom jobs`
-  
-  → `appsdeck run -e VAR1=VAL1 -e VAR2=VAL2 bundle exec rails console`
-
-* doc: More details about each command and subcommand
-  
-  → `appsdeck help` or `appsdeck <subcmd> help` to see the details
-
-### v0.2.2
-
-* bugfix: `x509: failed to load system roots and no roots provided`
-
-  → Include chain of certificates in the binary
-
-  > It is not possible to access x509 certificates system pool on OS X with a go
-  > application cross-compiled from linux to darwin. Including the needed
-  > chain of certificate is a good way to improve portability.
-
-### v0.2.1
-
-* feature: Add subcommand create, to create application
-* feature: Add subcommand destroy, to definitively delete an application
-
-
+* Initial release
+* Opensourcing of the project
