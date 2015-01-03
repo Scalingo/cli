@@ -2,6 +2,7 @@ package apps
 
 import (
 	"fmt"
+
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
 	"gopkg.in/errgo.v1"
@@ -12,7 +13,7 @@ import (
 )
 
 type ScaleRes struct {
-	Processes []api.Process `json:"processes"`
+	Containers []api.Container `json:"containers"`
 }
 
 func Scale(app string, sync bool, types []string) error {
@@ -28,7 +29,7 @@ func Scale(app string, sync bool, types []string) error {
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
-		scaleParams.Processes = append(scaleParams.Processes, api.Process{Name: typeName, Amount: int(amount)})
+		scaleParams.Containers = append(scaleParams.Containers, api.Container{Name: typeName, Amount: int(amount)})
 	}
 
 	res, err := api.AppsScale(app, scaleParams)
@@ -44,7 +45,7 @@ func Scale(app string, sync bool, types []string) error {
 	}
 
 	fmt.Printf("You application is being scaled to:\n")
-	for _, ct := range scaleRes.Processes {
+	for _, ct := range scaleRes.Containers {
 		fmt.Println(io.Indent(fmt.Sprintf("%s: %d", ct.Name, ct.Amount), 2))
 	}
 

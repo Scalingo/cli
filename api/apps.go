@@ -7,18 +7,18 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type Process struct {
+type Container struct {
 	Name    string `json:"name"`
 	Amount  int    `json:"amount"`
 	Command string `json:"command"`
 }
 
 type AppsScaleParams struct {
-	Processes []Process `json:"processes"`
+	Containers []Container `json:"containers"`
 }
 
 type AppsPsRes struct {
-	Processes []Process `json:"processes"`
+	Containers []Container `json:"containers"`
 }
 
 type AppsRestartParams struct {
@@ -112,10 +112,10 @@ func AppsCreate(app string) (*App, int, error) {
 	return params.App, res.StatusCode, nil
 }
 
-func AppsPs(app string) ([]Process, error) {
+func AppsPs(app string) ([]Container, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/apps/" + app + "/processes",
+		"endpoint": "/apps/" + app + "/containers",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
@@ -123,13 +123,13 @@ func AppsPs(app string) ([]Process, error) {
 		return nil, errgo.Mask(err)
 	}
 
-	var processesRes AppsPsRes
-	err = ParseJSON(res, &processesRes)
+	var containersRes AppsPsRes
+	err = ParseJSON(res, &containersRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 
-	return processesRes.Processes, nil
+	return containersRes.Containers, nil
 }
 
 func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
