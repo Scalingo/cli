@@ -17,6 +17,16 @@ main() {
     echo -en " /!\\   $*"
   }
 
+  clean_install() {
+    tmpdir=$1
+
+    rm -r $tmpdir
+    # If installed through one line install, remove script
+    if [ "x$0" = "xinstall" ] ; then
+      rm "$0"
+    fi
+  }
+
   if [ "x$DEBUG" = "xtrue" ] ; then
     set -x
   fi
@@ -49,6 +59,7 @@ main() {
   esac
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
+  trap "clean_install ${tmpdir}" EXIT
   version=$(curl -s https://raw.githubusercontent.com/Scalingo/appsdeck-executables/master/latest | tr -d ' \t\n')
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
@@ -86,7 +97,6 @@ main() {
 
     if [ "x$input" = "xn" ] ; then
       status "Aborting...\n"
-      rm -r ${tmpdir}
       exit -1
     fi
   fi
@@ -104,8 +114,6 @@ main() {
   else
     status "Installation completed, the command 'scalingo' is available.\n"
   fi
-
-  rm -r ${tmpdir}
 }
 
 # Avoid error if download failure
