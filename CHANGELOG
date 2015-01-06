@@ -6,6 +6,7 @@ Changelog
 * Rename `Processes` to `Containers` to fit the API
 * Login command
 * Clean credentials deletion for multiple APIs (dev feature)
+* Do not encode HTML entities (logs server don't escape html entities anymore)
 
 ### v1.0.0-alpha3 - 21/12/2014
 

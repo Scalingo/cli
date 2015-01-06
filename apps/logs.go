@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"html"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -50,7 +49,7 @@ func Logs(appName string, stream bool, n int) error {
 
 	if !stream {
 		buffer, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(html.UnescapeString(string(buffer)))
+		fmt.Println(string(buffer))
 	} else {
 		return streamLogs(res)
 	}
@@ -70,9 +69,7 @@ func streamLogs(res *http.Response) error {
 				continue
 			}
 			fmt.Println(
-				html.UnescapeString(
-					strings.TrimSpace(parsedLine[1]),
-				),
+				strings.TrimSpace(parsedLine[1]),
 			)
 		}
 	}
