@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/addon_resources"
+	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/codegangsta/cli"
 )
 
 var (
-	AddonResourcesListCommand = cli.Command{
+	AddonsListCommand = cli.Command{
 		Name:     "addons",
 		Category: "Addons",
 		Usage:    "List used add-ons",
@@ -20,7 +20,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			var err error
 			if len(c.Args()) == 0 {
-				err = addon_resources.List(currentApp)
+				err = addons.List(currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "addons")
 			}
@@ -30,7 +30,7 @@ var (
 			}
 		},
 	}
-	AddonResourcesAddCommand = cli.Command{
+	AddonsAddCommand = cli.Command{
 		Name:     "addons-add",
 		Category: "Addons",
 		Usage:    "Provision an add-on for your application",
@@ -43,7 +43,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			var err error
 			if len(c.Args()) == 2 {
-				err = addon_resources.Provision(currentApp, c.Args()[0], c.Args()[1])
+				err = addons.Provision(currentApp, c.Args()[0], c.Args()[1])
 			} else {
 				cli.ShowCommandHelp(c, "addons-add")
 			}
@@ -52,7 +52,7 @@ var (
 			}
 		},
 	}
-	AddonResourcesRemoveCommand = cli.Command{
+	AddonsRemoveCommand = cli.Command{
 		Name:     "addons-remove",
 		Category: "Addons",
 		Usage:    "Remove an existing addon from your app",
@@ -65,7 +65,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			var err error
 			if len(c.Args()) == 1 {
-				err = addon_resources.Destroy(currentApp, c.Args()[0])
+				err = addons.Destroy(currentApp, c.Args()[0])
 			} else {
 				cli.ShowCommandHelp(c, "addons-remove")
 			}
@@ -74,7 +74,7 @@ var (
 			}
 		},
 	}
-	AddonResourcesUpgradeCommand = cli.Command{
+	AddonsUpgradeCommand = cli.Command{
 		Name:     "addons-upgrade",
 		Category: "Addons",
 		Usage:    "Upgrade or downgrade an add-on attached to your app",
@@ -87,7 +87,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			var err error
 			if len(c.Args()) == 2 {
-				err = addon_resources.Upgrade(currentApp, c.Args()[0], c.Args()[1])
+				err = addons.Upgrade(currentApp, c.Args()[0], c.Args()[1])
 			} else {
 				cli.ShowCommandHelp(c, "addons-upgrade")
 			}

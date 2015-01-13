@@ -1,4 +1,4 @@
-package addon_resources
+package addons
 
 import (
 	"github.com/Scalingo/cli/api"
@@ -15,17 +15,17 @@ func Upgrade(app, resourceID, plan string) error {
 		return errgo.New("no plan defined")
 	}
 
-	addonResource, err := checkAddonResourceExist(app, resourceID)
+	addon, err := checkAddonExist(app, resourceID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	planID, err := checkPlanExist(addonResource.Addon, plan)
+	planID, err := checkPlanExist(addon.AddonProvider.Name, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := api.AddonResourceUpgrade(app, addonResource.ID, planID)
+	params, err := api.AddonUpgrade(app, addon.ID, planID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

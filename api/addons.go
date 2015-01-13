@@ -1,38 +1,30 @@
 package api
 
-import (
-	"net/http"
+import "gopkg.in/errgo.v1"
 
-	"gopkg.in/errgo.v1"
-)
-
-type Plan struct {
-	ID          string `json:"id"`
-	LogoURL     string `json:"logo_url"`
-	DisplayName string `json:"display_name"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type Addon struct {
+	ID            string         `json:"id"`
+	ResourceID    string         `json:"resource_id"`
+	Plan          *Plan          `json:"plan"`
+	AddonProvider *AddonProvider `json:"addon_provider"`
 }
 
-type PlansParams struct {
-	Plans []*Plan `json:"plans"`
+type ListAddonsParams struct {
+	Addons []*Addon `json:"addons"`
 }
 
-func AddonsList() (*http.Response, error) {
+type ProvisionAddonParams struct {
+	Addon     *Addon   `json:"addon"`
+	Message   string   `json:"message"`
+	Variables []string `json:"variables"`
+}
+
+type UpgradeAddonParams ProvisionAddonParams
+
+func AddonsList(app string) ([]*Addon, error) {
 	req := map[string]interface{}{
-		"auth":     false,
 		"method":   "GET",
-		"endpoint": "/addons",
-		"expected": Statuses{200},
-	}
-	return Do(req)
-}
-
-func AddonPlansList(addon string) ([]*Plan, error) {
-	req := map[string]interface{}{
-		"auth":     false,
-		"method":   "GET",
-		"endpoint": "/addons/" + addon + "/plans",
+		"endpoint": "/apps/" + app + "/addons",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
@@ -41,11 +33,74 @@ func AddonPlansList(addon string) ([]*Plan, error) {
 	}
 	defer res.Body.Close()
 
-	var params PlansParams
+	var params ListAddonsParams
+	err = ParseJSON(res, &params)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	return params.Addons, nil
+}
+
+func AddonProvision(app, addon, planID string) (*ProvisionAddonParams, error) {
+	req := map[string]interface{}{
+		"method":   "POST",
+		"endpoint": "/apps/" + app + "/addons",
+		"params": map[string]interface{}{
+			"addon_id": addon,
+			"plan_id":  planID,
+		},
+		"expected": Statuses{201},
+	}
+	res, err := Do(req)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	var params *ProvisionAddonParams
 	err = ParseJSON(res, &params)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return params.Plans, nil
+	return params, nil
+}
+
+func AddonDestroy(app, addonID string) error {
+	req := map[string]interface{}{
+		"method":   "DELETE",
+		"endpoint": "/apps/" + app + "/addons/" + addonID,
+		"expected": Statuses{204},
+	}
+	res, err := Do(req)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	return nil
+}
+
+func AddonUpgrade(app, addonID, planID string) (*UpgradeAddonParams, error) {
+	req := map[string]interface{}{
+		"method":   "PATCH",
+		"endpoint": "/apps/" + app + "/addons/" + addonID,
+		"params": map[string]interface{}{
+			"plan_id": planID,
+		},
+		"expected": Statuses{200},
+	}
+	res, err := Do(req)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	var params *UpgradeAddonParams
+	err = ParseJSON(res, &params)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return params, nil
 }

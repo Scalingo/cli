@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/addons"
+	"github.com/Scalingo/cli/addon_providers"
 	"github.com/codegangsta/cli"
 )
 
 var (
-	AddonsPlansCommand = cli.Command{
+	AddonProvidersPlansCommand = cli.Command{
 		Name:        "addons-plans",
 		Category:    "Addons - Global",
 		Description: "List the plans for an addon.\n    Example:\n    scalingo addon-plans scalingo-mongo",
@@ -16,7 +16,7 @@ var (
 				cli.ShowCommandHelp(c, "addon-plans")
 				return
 			}
-			if err := addons.Plans(c.Args()[0]); err != nil {
+			if err := addon_providers.Plans(c.Args()[0]); err != nil {
 				errorQuit(err)
 			}
 		},

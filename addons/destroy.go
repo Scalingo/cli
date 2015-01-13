@@ -1,4 +1,4 @@
-package addon_resources
+package addons
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ func Destroy(app, resourceID string) error {
 		return errgo.New("no addon ID defined")
 	}
 
-	addonResource, err := checkAddonResourceExist(app, resourceID)
+	addon, err := checkAddonExist(app, resourceID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -33,7 +33,7 @@ func Destroy(app, resourceID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, resourceID)
 	}
 
-	err = api.AddonResourceDestroy(app, addonResource.ID)
+	err = api.AddonDestroy(app, addon.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -42,8 +42,8 @@ func Destroy(app, resourceID string) error {
 	return nil
 }
 
-func checkAddonResourceExist(app, resourceID string) (*api.AddonResource, error) {
-	resources, err := api.AddonResourcesList(app)
+func checkAddonExist(app, resourceID string) (*api.Addon, error) {
+	resources, err := api.AddonsList(app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

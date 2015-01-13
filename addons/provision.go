@@ -1,4 +1,4 @@
-package addon_resources
+package addons
 
 import (
 	"errors"
@@ -22,13 +22,13 @@ func Provision(app, addon, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := api.AddonResourceProvision(app, addon, planID)
+	params, err := api.AddonProvision(app, addon, planID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
 	io.Status("Addon", addon, "has been provisionned")
-	io.Info("Resource ID:", params.AddonResource.ResourceID)
+	io.Info("ID:", params.Addon.ResourceID)
 	if len(params.Variables) > 0 {
 		io.Info("Modified variables:", params.Variables)
 	}
@@ -39,7 +39,7 @@ func Provision(app, addon, plan string) error {
 }
 
 func checkPlanExist(addon, plan string) (string, error) {
-	plans, err := api.AddonPlansList(addon)
+	plans, err := api.AddonProviderPlansList(addon)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}

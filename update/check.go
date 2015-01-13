@@ -24,7 +24,7 @@ func init() {
 		if err != nil {
 			config.C.Logger.Println(err)
 		}
-		gotLastVersion <- struct{}{}
+		close(gotLastVersion)
 	}()
 }
 

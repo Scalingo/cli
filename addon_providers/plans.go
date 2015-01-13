@@ -1,4 +1,4 @@
-package addons
+package addon_providers
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 )
 
 func Plans(addon string) error {
-	plans, err := api.AddonPlansList(addon)
+	plans, err := api.AddonProviderPlansList(addon)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
