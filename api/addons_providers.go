@@ -32,7 +32,7 @@ func AddonProvidersList() ([]*AddonProvider, error) {
 	req := map[string]interface{}{
 		"auth":     false,
 		"method":   "GET",
-		"endpoint": "/addon-providers",
+		"endpoint": "/addon_providers",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
@@ -54,7 +54,7 @@ func AddonProviderPlansList(addon string) ([]*Plan, error) {
 	req := map[string]interface{}{
 		"auth":     false,
 		"method":   "GET",
-		"endpoint": "/addon-providers/" + addon + "/plans",
+		"endpoint": "/addon_providers/" + addon + "/plans",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
