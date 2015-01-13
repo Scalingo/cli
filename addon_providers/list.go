@@ -17,7 +17,7 @@ func List() error {
 	t.SetHeader([]string{"ID", "Name"})
 
 	for _, addon := range addonProviders {
-		t.Append([]string{addon.NameParam, addon.Name})
+		t.Append([]string{addon.ID, addon.Name})
 	}
 
 	t.Render()

@@ -20,3 +20,7 @@ func Info(args ...interface{}) {
 	fmt.Print("       ")
 	fmt.Println(args...)
 }
+
+func Infof(format string, args ...interface{}) {
+	fmt.Printf("       "+format, args...)
+}

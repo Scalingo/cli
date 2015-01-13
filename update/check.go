@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	lastVersionURL = "https://raw.githubusercontent.com/Scalingo/appsdeck-executables/master/latest"
+	lastVersionURL = "http://cli-dl.scalingo.io/version"
 	lastVersion    = ""
 	gotLastVersion = make(chan struct{})
 )
@@ -41,9 +41,8 @@ func Check() error {
 		return nil
 	}
 
-	io.Statusf(`Your Scalingo client (%s) is out-of-date: some features may not work correctly.
-	Please update to '%s': https://github.com/Scalingo/cli/releases/tag/%s
-`, version, lastVersion, lastVersion)
+	io.Statusf("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n", version)
+	io.Infof("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n", lastVersion)
 	return nil
 }
 

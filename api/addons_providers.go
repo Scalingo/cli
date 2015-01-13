@@ -19,9 +19,9 @@ type PlansParams struct {
 }
 
 type AddonProvider struct {
-	LogoURL   string `json:"logo_url"`
-	Name      string `json:"name"`
-	NameParam string `json:"name_param"`
+	ID      string `json:"id"`
+	LogoURL string `json:"logo_url"`
+	Name    string `json:"name"`
 }
 
 type ListParams struct {
