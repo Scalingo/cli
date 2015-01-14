@@ -14,17 +14,17 @@ type Domain struct {
 }
 
 type DomainsRes struct {
-	Domains []Domain `json:"urls"`
+	Domains []Domain `json:"domains"`
 }
 
 type DomainRes struct {
-	Domain Domain `json:"url"`
+	Domain Domain `json:"domain"`
 }
 
 func DomainsList(app string) ([]Domain, error) {
 	req := map[string]interface{}{
 		"method":   "GET",
-		"endpoint": "/apps/" + app + "/urls",
+		"endpoint": "/apps/" + app + "/domains",
 		"expected": Statuses{200},
 	}
 	res, err := Do(req)
@@ -45,10 +45,10 @@ func DomainsList(app string) ([]Domain, error) {
 func DomainsAdd(app string, name string) (Domain, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
-		"endpoint": "/apps/" + app + "/urls",
+		"endpoint": "/apps/" + app + "/domains",
 		"expected": Statuses{201},
 		"params": map[string]interface{}{
-			"url": map[string]interface{}{
+			"domain": map[string]interface{}{
 				"name": name,
 			},
 		},
@@ -72,7 +72,7 @@ func DomainsAdd(app string, name string) (Domain, error) {
 func DomainsRemove(app string, id string) error {
 	req := map[string]interface{}{
 		"method":   "DELETE",
-		"endpoint": "/apps/" + app + "/urls/" + id,
+		"endpoint": "/apps/" + app + "/domains/" + id,
 		"expected": Statuses{204},
 	}
 
@@ -87,10 +87,10 @@ func DomainsRemove(app string, id string) error {
 func DomainsUpdate(app, id, cert, key string) (*Domain, error) {
 	req := map[string]interface{}{
 		"method":   "PATCH",
-		"endpoint": "/apps/" + app + "/urls/" + id,
+		"endpoint": "/apps/" + app + "/domains/" + id,
 		"expected": Statuses{200},
 		"params": map[string]interface{}{
-			"url": map[string]interface{}{
+			"domain": map[string]interface{}{
 				"tlscert": cert,
 				"tlskey":  key,
 			},
