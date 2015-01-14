@@ -7,6 +7,8 @@ type Addon struct {
 	ResourceID    string         `json:"resource_id"`
 	Plan          *Plan          `json:"plan"`
 	AddonProvider *AddonProvider `json:"addon_provider"`
+	Message       string         `json:"message,omitempty"`
+	Variables     []string       `json:"variables,omitempty"`
 }
 
 type ListAddonsParams struct {
@@ -14,9 +16,7 @@ type ListAddonsParams struct {
 }
 
 type ProvisionAddonParams struct {
-	Addon     *Addon   `json:"addon"`
-	Message   string   `json:"message"`
-	Variables []string `json:"variables"`
+	Addon *Addon `json:"addon"`
 }
 
 type UpgradeAddonParams ProvisionAddonParams
@@ -46,8 +46,10 @@ func AddonProvision(app, addon, planID string) (*ProvisionAddonParams, error) {
 		"method":   "POST",
 		"endpoint": "/apps/" + app + "/addons",
 		"params": map[string]interface{}{
-			"addon_id": addon,
-			"plan_id":  planID,
+			"addon": map[string]interface{}{
+				"addon_provider_id": addon,
+				"plan_id":           planID,
+			},
 		},
 		"expected": Statuses{201},
 	}
@@ -86,7 +88,9 @@ func AddonUpgrade(app, addonID, planID string) (*UpgradeAddonParams, error) {
 		"method":   "PATCH",
 		"endpoint": "/apps/" + app + "/addons/" + addonID,
 		"params": map[string]interface{}{
-			"plan_id": planID,
+			"addon": map[string]interface{}{
+				"plan_id": planID,
+			},
 		},
 		"expected": Statuses{200},
 	}
