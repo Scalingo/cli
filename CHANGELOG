@@ -8,6 +8,7 @@ Changelog
 * `logout`: Clean credentials deletion for multiple APIs (dev feature)
 * `logs`: Do not encode HTML entities (logs server don't escape html entities anymore)
 * `addons-*`: Adapt to new addons API endpoints
+* `domains-*`: Adapt to new domains API endpoints
 * `db-tunnel`: Handle encrypted SSH key
 
 ### v1.0.0-alpha3 - 21/12/2014
