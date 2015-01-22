@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/des"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/pem"
@@ -111,23 +112,46 @@ func sshPrivateKey(path string) (ssh.Signer, error) {
 			"Failed to read key '%s': no key found", path)
 	}
 	if block.Headers["Proc-Type"] == "4,ENCRYPTED" {
+		var decryptedKey []byte
 		splitCipher := strings.Split(block.Headers["DEK-Info"], ",")
-		cipherType, iv := splitCipher[0], strings.TrimSpace(splitCipher[1])
+		cipherType, ivStr := splitCipher[0], strings.TrimSpace(splitCipher[1])
+
+		iv, err := hex.DecodeString(ivStr)
+		if err != nil {
+			return nil, errgo.Mask(err)
+		}
 		switch cipherType {
+		case "DES-EDE3-CBC":
+			password, err := term.Password("Encrypted SSH Key, password: ")
+			if err != nil {
+				return nil, errgo.Mask(err)
+			}
+
+			key := genDES3Key(password, iv)
+			decryptedKey, err = decryptKey(block.Bytes, iv, key, des.NewTripleDESCipher)
+			if err != nil {
+				return nil, errgo.Newf("Key is tagged DES-ECE3-CBC, but is not: %v", err)
+			}
 		case "AES-128-CBC":
-			decryptedKey, err := decryptAES128Key(block.Bytes, iv)
+			password, err := term.Password("Encrypted SSH Key, password: ")
+			if err != nil {
+				return nil, errgo.Mask(err)
+			}
+
+			key := genAESKey(password, iv)
+			decryptedKey, err = decryptKey(block.Bytes, iv, key, aes.NewCipher)
 			if err != nil {
 				return nil, errgo.Newf("Key is tagged AES-128-CBC, but is not: %v", err)
 			}
-			decryptedBlock := &pem.Block{}
-			decryptedBlock.Type = block.Type
-			decryptedBlock.Bytes = decryptedKey
-			privateKey = pem.EncodeToMemory(decryptedBlock)
 		default:
 			return nil, fmt.Errorf(
 				"Failed to read key '%s': password protected keys with '%s' are\n"+
 					"not supported. Please decrypt the key prior to use.", path, cipherType)
 		}
+		decryptedBlock := &pem.Block{}
+		decryptedBlock.Type = block.Type
+		decryptedBlock.Bytes = decryptedKey
+		privateKey = pem.EncodeToMemory(decryptedBlock)
 	}
 
 	privateKeySigner, err := ssh.ParsePrivateKey(privateKey)
@@ -138,33 +162,34 @@ func sshPrivateKey(path string) (ssh.Signer, error) {
 	return privateKeySigner, nil
 }
 
-func decryptAES128Key(payload []byte, iv string) ([]byte, error) {
-	password, err := term.Password("Encrypted SSH Key, password: ")
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-
-	ivBytes, err := hex.DecodeString(iv)
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-
-	key := append([]byte(password), ivBytes[0:8]...)
+func genDES3Key(passphrase string, iv []byte) []byte {
+	key := append([]byte(passphrase), iv[0:8]...)
 	keyHash := md5.New()
-	_, err = keyHash.Write(key)
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-	keyHashed := keyHash.Sum(nil)
+	keyHash.Write(key)
+	d1 := keyHash.Sum(nil)
+	key = append(d1, []byte(passphrase)...)
+	key = append(key, iv[0:8]...)
+	keyHash = md5.New()
+	keyHash.Write(key)
+	return append(d1, keyHash.Sum(nil)[0:8]...)
+}
 
+func genAESKey(passphrase string, iv []byte) []byte {
+	key := append([]byte(passphrase), iv[0:8]...)
+	keyHash := md5.New()
+	keyHash.Write(key)
+	return keyHash.Sum(nil)
+}
+
+func decryptKey(payload []byte, iv []byte, key []byte, newCypherFunc func([]byte) (cipher.Block, error)) ([]byte, error) {
 	decryptedPayload := make([]byte, len(payload))
-	block, err := aes.NewCipher(keyHashed)
+	block, err := newCypherFunc(key)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	decrypter := cipher.NewCBCDecrypter(block, ivBytes)
+	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypter.CryptBlocks(decryptedPayload, payload)
-	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x08\x0a")
+	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x02\x08\x09\x0a")
 	return decryptedPayload, nil
 }
 
