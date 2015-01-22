@@ -117,7 +117,7 @@ func sshPrivateKey(path string) (ssh.Signer, error) {
 		case "AES-128-CBC":
 			decryptedKey, err := decryptAES128Key(block.Bytes, iv)
 			if err != nil {
-				return nil, errgo.Mask(err)
+				return nil, errgo.Newf("Key is tagged AES-128-CBC, but is not: %v", err)
 			}
 			decryptedBlock := &pem.Block{}
 			decryptedBlock.Type = block.Type
@@ -132,7 +132,7 @@ func sshPrivateKey(path string) (ssh.Signer, error) {
 
 	privateKeySigner, err := ssh.ParsePrivateKey(privateKey)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Newf("Invalid SSH key or password: %v", err)
 	}
 
 	return privateKeySigner, nil
@@ -164,7 +164,7 @@ func decryptAES128Key(payload []byte, iv string) ([]byte, error) {
 	}
 	decrypter := cipher.NewCBCDecrypter(block, ivBytes)
 	decrypter.CryptBlocks(decryptedPayload, payload)
-	decryptedPayload = bytes.TrimRight(decryptedPayload, "\n")
+	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x08\x0a")
 	return decryptedPayload, nil
 }
 

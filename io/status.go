@@ -2,6 +2,11 @@ package io
 
 import "fmt"
 
+func Error(args ...interface{}) {
+	fmt.Print(" !     ")
+	fmt.Println(args...)
+}
+
 func Warning(args ...interface{}) {
 	fmt.Print("  /!\\  ")
 	fmt.Println(args...)

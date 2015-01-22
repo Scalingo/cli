@@ -36,7 +36,7 @@ type UnprocessableEntity struct {
 func (err *UnprocessableEntity) Error() string {
 	errArray := make([]string, 0, len(err.Errors))
 	for attr, attrErrs := range err.Errors {
-		errArray = append(errArray, fmt.Sprintf("%s → %s", attr, strings.Join(attrErrs, ", ")))
+		errArray = append(errArray, fmt.Sprintf("* %s → %s", attr, strings.Join(attrErrs, ", ")))
 	}
 	return strings.Join(errArray, "\n")
 }

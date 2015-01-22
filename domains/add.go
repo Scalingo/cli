@@ -6,8 +6,13 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Add(app string, domain string) error {
-	d, err := api.DomainsAdd(app, domain)
+func Add(app string, domain string, cert string, key string) error {
+	certContent, keyContent, err := validateSSL(cert, key)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	d, err := api.DomainsAdd(app, &api.DomainCreate{domain, certContent, keyContent})
 	if err != nil {
 		return errgo.Mask(err)
 	}

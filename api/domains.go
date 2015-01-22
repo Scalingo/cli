@@ -13,6 +13,12 @@ type Domain struct {
 	Validity time.Time `json:"validity"`
 }
 
+type DomainCreate struct {
+	Name    string `json:"name"`
+	TlsCert string `json:"tlscert,omitempty"`
+	TlsKey  string `json:"tlskey,omitempty"`
+}
+
 type DomainsRes struct {
 	Domains []Domain `json:"domains"`
 }
@@ -42,15 +48,13 @@ func DomainsList(app string) ([]Domain, error) {
 	return domainRes.Domains, nil
 }
 
-func DomainsAdd(app string, name string) (Domain, error) {
+func DomainsAdd(app string, d *DomainCreate) (Domain, error) {
 	req := map[string]interface{}{
 		"method":   "POST",
 		"endpoint": "/apps/" + app + "/domains",
 		"expected": Statuses{201},
 		"params": map[string]interface{}{
-			"domain": map[string]interface{}{
-				"name": name,
-			},
+			"domain": d,
 		},
 	}
 

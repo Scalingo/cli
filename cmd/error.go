@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"runtime"
 	"strings"
 	"time"
-	"runtime"
 
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/cli/users"
 	"github.com/Soulou/errgo-rollbar"
@@ -63,7 +64,8 @@ func errorQuit(err error) {
 
 	newReportError(err).Report()
 	rollbar.Wait()
-	fmt.Printf("[Error] %v\n", err)
+	io.Error("An error occured:")
+	fmt.Println(io.Indent(err.Error(), 7))
 	os.Exit(1)
 }
 

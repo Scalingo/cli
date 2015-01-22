@@ -10,6 +10,9 @@ func Indent(data string, level int) string {
 	lines := strings.Split(data, "\n")
 	buffer := new(bytes.Buffer)
 	for i, line := range lines {
+		if i == len(lines)-1 && line == "" {
+			continue
+		}
 		if i == len(lines)-1 {
 			buffer.WriteString(indent + line)
 		} else {

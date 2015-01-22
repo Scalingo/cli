@@ -36,6 +36,10 @@ var (
 		Name:     "domains-add",
 		Category: "Custom Domains",
 		Usage:    "Add a custom domain to an application",
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
+			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
+		},
 		Description: `Add a custom domain to an application:
 
     $ scalingo -a myapp domains-add example.com
@@ -46,7 +50,7 @@ var (
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			var err error
 			if len(c.Args()) == 1 {
-				err = domains.Add(currentApp, c.Args()[0])
+				err = domains.Add(currentApp, c.Args()[0], c.String("cert"), c.String("key"))
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
 			}

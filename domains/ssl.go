@@ -24,19 +24,40 @@ func DisableSSL(app string, domain string) error {
 
 func EnableSSL(app, domain, certPath, keyPath string) error {
 	d, err := findDomain(app, domain)
-	certContent, err := ioutil.ReadFile(certPath)
+	certContent, keyContent, err := validateSSL(certPath, keyPath)
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	keyContent, err := ioutil.ReadFile(keyPath)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-	d, err = api.DomainsUpdate(app, d.ID, string(certContent), string(keyContent))
+
+	d, err = api.DomainsUpdate(app, d.ID, certContent, keyContent)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
 	io.Status("The certificate and key have been installed for " + d.Name + " (Validity: " + d.Validity.UTC().String() + ")")
 	return nil
+}
+
+func validateSSL(cert, key string) (string, string, error) {
+	if cert == "" && key == "" {
+		return "", "", nil
+	}
+
+	if cert == "" && key != "" {
+		return "", "", errgo.New("--cert <certificate path> should be defined")
+	}
+
+	if key == "" && cert != "" {
+		return "", "", errgo.New("--key <key path> should be defined")
+	}
+
+	certContent, err := ioutil.ReadFile(cert)
+	if err != nil {
+		return "", "", errgo.Mask(err)
+	}
+	keyContent, err := ioutil.ReadFile(key)
+	if err != nil {
+		return "", "", errgo.Mask(err)
+	}
+	return string(certContent), string(keyContent), nil
 }
