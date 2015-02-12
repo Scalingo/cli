@@ -7,8 +7,6 @@ type Addon struct {
 	ResourceID    string         `json:"resource_id"`
 	Plan          *Plan          `json:"plan"`
 	AddonProvider *AddonProvider `json:"addon_provider"`
-	Message       string         `json:"message,omitempty"`
-	Variables     []string       `json:"variables,omitempty"`
 }
 
 type ListAddonsParams struct {
@@ -16,7 +14,9 @@ type ListAddonsParams struct {
 }
 
 type ProvisionAddonParams struct {
-	Addon *Addon `json:"addon"`
+	Addon     *Addon   `json:"addon"`
+	Message   string   `json:"message,omitempty"`
+	Variables []string `json:"variables,omitempty"`
 }
 
 type UpgradeAddonParams ProvisionAddonParams

@@ -31,11 +31,11 @@ func Upgrade(app, resourceID, plan string) error {
 	}
 
 	io.Status("Addon", resourceID, "has been upgraded")
-	if len(params.Addon.Variables) > 0 {
-		io.Info("Modified variables:", params.Addon.Variables)
+	if len(params.Variables) > 0 {
+		io.Info("Modified variables:", params.Variables)
 	}
-	if len(params.Addon.Message) > 0 {
-		io.Info("Message from addon provider:", params.Addon.Message)
+	if len(params.Message) > 0 {
+		io.Info("Message from addon provider:", params.Message)
 	}
 	return nil
 }
