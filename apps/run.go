@@ -50,23 +50,21 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 		return errgo.Newf("application %s not found", app)
 	}
 
-	container := runStruct["container"].(map[string]interface{})
-
-	if _, ok := container["attach"]; !ok {
+	attachURL, ok := runStruct["attach_url"].(string)
+	if !ok {
 		return errgo.New("unexpected answer from server")
 	}
 
-	runUrl := container["attach"].(string)
-	debug.Println("Run Service URL is", runUrl)
+	debug.Println("Run Service URL is", attachURL)
 
 	if len(files) > 0 {
-		err := uploadFiles(runUrl+"/files", files)
+		err := uploadFiles(attachURL+"/files", files)
 		if err != nil {
 			return err
 		}
 	}
 
-	res, socket, err := connectToRunServer(runUrl)
+	res, socket, err := connectToRunServer(attachURL)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -89,7 +87,7 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 		for {
 			select {
 			case s := <-signals:
-				run.HandleSignal(s, socket, runUrl)
+				run.HandleSignal(s, socket, attachURL)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
