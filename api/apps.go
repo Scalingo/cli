@@ -35,7 +35,6 @@ type App struct {
 	GitUrl    string    `json:"git_url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"update_at"`
-	LogsURL   string    `json:"logs_url"`
 }
 
 func (app App) String() string {

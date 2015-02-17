@@ -15,7 +15,8 @@ import (
 )
 
 type LogsRes struct {
-	App *api.App `json:"app"`
+	LogsURL string   `json:"logs_url"`
+	App     *api.App `json:"app"`
 }
 
 func Logs(appName string, stream bool, n int) error {
@@ -40,9 +41,8 @@ func Logs(appName string, stream bool, n int) error {
 	if err = json.Unmarshal(body, &logsRes); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	app := logsRes.App
 
-	res, err = api.Logs(app.LogsURL, stream, n)
+	res, err = api.Logs(logsRes.LogsURL, stream, n)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
