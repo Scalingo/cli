@@ -123,7 +123,7 @@ func buildEnv(cmdEnv []string) (map[string]string, error) {
 }
 
 func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
-	req, err := http.NewRequest("POST", rawUrl, nil)
+	req, err := http.NewRequest("CONNECT", rawUrl, nil)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
