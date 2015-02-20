@@ -19,7 +19,7 @@ var (
 		},
 		Description: `Create an SSH-encrypted connection to access your database locally
 	Example
-	  'scalingo --app my-app db-tunnel APPSDECK_MONGO_URL'`,
+	  'scalingo --app my-app db-tunnel SCALINGO_MONGO_URL'`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
 			if len(c.Args()) != 1 {
