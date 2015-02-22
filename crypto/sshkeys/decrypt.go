@@ -103,6 +103,8 @@ func decryptKey(payload []byte, iv []byte, key []byte, newCypherFunc func([]byte
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypter.CryptBlocks(decryptedPayload, payload)
 	debug.Println("End of private key payload:", decryptedPayload[len(decryptedPayload)-50:])
+	debug.Println("Length of payload:", len(decryptedPayload))
 	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x02\x03\x08\x09\x0a")
+	debug.Println("Length of payload after trimming:", len(decryptedPayload))
 	return decryptedPayload, nil
 }

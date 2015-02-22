@@ -1,9 +1,11 @@
 package sshkeys
 
 import (
+	"encoding/asn1"
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
@@ -36,6 +38,14 @@ func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 
 	signer, err := privateKey.Signer()
 	if err != nil {
+		if err, ok := err.(asn1.StructuralError); ok && strings.HasPrefix(err.Msg, "tags don't match") || err.Msg == "length too large" {
+			return nil, errgo.Newf("Fail to decrypt SSH key, invalid password.")
+		}
+		if err, ok := err.(asn1.SyntaxError); ok && err.Msg == "trailing data" {
+			return nil, errgo.Newf("The password was OK, but something went wrong.\n" +
+				"Please re-run the command with the environment variable DEBUG=1 " +
+				"and create an issue with the command output: https://github.com/Scalingo/cli/issues")
+		}
 		return nil, errgo.Newf("Invalid SSH key or password: %v", err)
 	}
 
