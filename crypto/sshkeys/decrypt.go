@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/term"
 	"gopkg.in/errgo.v1"
 )
@@ -101,6 +102,7 @@ func decryptKey(payload []byte, iv []byte, key []byte, newCypherFunc func([]byte
 	}
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypter.CryptBlocks(decryptedPayload, payload)
+	debug.Println("End of private key payload:", decryptedPayload[len(decryptedPayload)-50:])
 	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x02\x08\x09\x0a")
 	return decryptedPayload, nil
 }
