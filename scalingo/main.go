@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
-	"github.com/codegangsta/cli"
+	"github.com/Scalingo/codegangsta-cli"
 	"github.com/stvp/rollbar"
 )
 

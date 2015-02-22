@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/domains"
-	"github.com/codegangsta/cli"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/codegangsta/cli"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (

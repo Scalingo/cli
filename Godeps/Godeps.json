@@ -1,10 +1,18 @@
 {
-	"ImportPath": "github.com/Scalingo/cli/scalingo",
-	"GoVersion": "go1.3.3",
+	"ImportPath": "github.com/Scalingo/cli",
+	"GoVersion": "go1.4",
+	"Packages": [
+		"github.com/Scalingo/cli/scalingo"
+	],
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/gopass",
 			"Rev": "3b39664481b57ad99d34c86bd64090c28eacc7a1"
+		},
+		{
+			"ImportPath": "github.com/Scalingo/codegangsta-cli",
+			"Comment": "1.2.0-51-g66438f3",
+			"Rev": "66438f3f92f40b42110369ef3155976a9eceeef0"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/envconfig",
@@ -16,9 +24,9 @@
 			"Rev": "2f7de2c8755a840bfcf34b2b6508e86eba0fbccc"
 		},
 		{
-			"ImportPath": "github.com/codegangsta/cli",
-			"Comment": "1.2.0-51-g66438f3",
-			"Rev": "66438f3f92f40b42110369ef3155976a9eceeef0"
+			"ImportPath": "github.com/heroku/hk/term",
+			"Comment": "v20140604-24-g9529c56",
+			"Rev": "9529c565876399db5b99c815664845ace7f6fd1a"
 		},
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
@@ -28,6 +36,11 @@
 			"ImportPath": "github.com/stvp/rollbar",
 			"Comment": "v0.2.0-10-g292188c",
 			"Rev": "292188c2b3067786458d2dac9cea1b61c3661063"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh",
+			"Comment": "null-236",
+			"Rev": "69e2a90ed92d03812364aeb947b7068dc42e561e"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",
