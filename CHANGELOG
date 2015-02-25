@@ -1,7 +1,12 @@
 Changelog
 =========
 
-### v1.0.0-alpha4 - ToBeReleased
+### v1.0.0-beta1 - ToBeReleased
+
+* Use SSH agent if possible to get SSH credentials
+* Correcty handle encrypted SSH keys (AES-CBC and DES-ECE2)
+
+### v1.0.0-alpha4 - 22/01/2014
 
 * Rename `Processes` to `Containers` to fit the API
 * `new-command`: `login` command

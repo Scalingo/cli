@@ -36,19 +36,38 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 	}
 	fmt.Printf("Building tunnel to %s\n", dbUrl.Host)
 
-	privateKey, err := sshkeys.ReadPrivateKey(identity)
-	if err != nil {
-		return errgo.Mask(err)
+	var privateKeys []ssh.Signer
+	if identity == "ssh-agent" {
+		var agentConnection io.Closer
+		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
+		if err != nil {
+			return errgo.Mask(err)
+		}
+		defer agentConnection.Close()
+	} else {
+		privateKey, err := sshkeys.ReadPrivateKey(identity)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+		privateKeys = append(privateKeys, privateKey)
 	}
 
-	sshConfig := &ssh.ClientConfig{
-		User: "git",
-		Auth: []ssh.AuthMethod{ssh.PublicKeys(privateKey)},
-	}
+	var client *ssh.Client
+	for _, privateKey := range privateKeys {
+		sshConfig := &ssh.ClientConfig{
+			User: "git",
+			Auth: []ssh.AuthMethod{ssh.PublicKeys(privateKey)},
+		}
 
-	client, err := ssh.Dial("tcp", config.C.SshHost, sshConfig)
-	if err != nil {
-		return errgo.Mask(err)
+		client, err = ssh.Dial("tcp", config.C.SshHost, sshConfig)
+		if err == nil {
+			break
+		} else {
+			config.C.Logger.Println("Fail to connect to the SSH server", err)
+		}
+	}
+	if client == nil {
+		return errgo.Newf("Unable to connect to our SSH server: %v", err)
 	}
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", port))
