@@ -14,7 +14,7 @@ var (
 		Name:     "db-tunnel",
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
-		Flags: []cli.Flag{
+		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: defaultKeyPath, EnvVar: ""},
 			cli.IntFlag{Name: "port, p", Usage: "Local port to bind", Value: 0, EnvVar: ""},
 		},
@@ -22,7 +22,7 @@ var (
 	Example
 	  'scalingo --app my-app db-tunnel SCALINGO_MONGO_URL'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var sshIdentity string
 			if c.String("identity") == defaultKeyPath && os.Getenv("SSH_AUTH_SOCK") != "" {
 				sshIdentity = "ssh-agent"

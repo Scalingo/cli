@@ -10,6 +10,7 @@ var (
 	DomainsListCommand = cli.Command{
 		Name:     "domains",
 		Category: "Custom Domains",
+		Flags:    []cli.Flag{appFlag},
 		Usage:    "List the domains of an application",
 		Description: `List all the custom domains of an application:
 
@@ -18,7 +19,7 @@ var (
     # See also commands 'domains-add' and 'domains-remove'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = domains.List(currentApp)
@@ -36,7 +37,7 @@ var (
 		Name:     "domains-add",
 		Category: "Custom Domains",
 		Usage:    "Add a custom domain to an application",
-		Flags: []cli.Flag{
+		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
 			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
 		},
@@ -47,7 +48,7 @@ var (
     # See also commands 'domains' and 'domains-remove'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
 				err = domains.Add(currentApp, c.Args()[0], c.String("cert"), c.String("key"))
@@ -64,6 +65,7 @@ var (
 	DomainsRemoveCommand = cli.Command{
 		Name:     "domains-remove",
 		Category: "Custom Domains",
+		Flags:    []cli.Flag{appFlag},
 		Usage:    "Remove a custom domain from an application",
 		Description: `Remove a custom domain from an application:
 
@@ -72,7 +74,7 @@ var (
     # See also commands 'domains' and 'domains-add'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
 				err = domains.Remove(currentApp, c.Args()[0])
@@ -90,7 +92,7 @@ var (
 		Name:     "domains-ssl",
 		Category: "Custom Domains",
 		Usage:    "Enable or disable SSL for your custom domains",
-		Flags: []cli.Flag{
+		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
 			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
 		},
@@ -103,7 +105,7 @@ var (
 		# See also commands 'domains' and 'domains-add'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 2 && c.Args()[1] == "disable" {
 				err = domains.DisableSSL(currentApp, c.Args()[0])

@@ -14,7 +14,7 @@ var (
 		ShortName: "r",
 		Category:  "App Management",
 		Usage:     "Run any command for your app",
-		Flags: []cli.Flag{
+		Flags: []cli.Flag{appFlag,
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables", EnvVar: ""},
 			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload", EnvVar: ""},
 		},
@@ -24,7 +24,7 @@ var (
        'scalingo --app my-app run bundle exec rails console'
        'scalingo --app synfony-app run php app/console cache:clear --env=prod'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")
 			} else if err := apps.Run(currentApp, c.Args(), c.StringSlice("e"), c.StringSlice("f")); err != nil {

@@ -5,20 +5,25 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
-func CurrentApp(appFlag string) (repoName string) {
-	repoName = ""
-	if appFlag != "<name>" {
-		repoName = appFlag
+func CurrentApp(c *cli.Context) string {
+	var repoName string
+	if os.Getenv("SCALINGO_APP") != "" {
+		repoName = os.Getenv("SCALINGO_APP")
+	} else if c.GlobalString("app") != "<name>" {
+		repoName = c.GlobalString("app")
+	} else if c.String("app") != "<name>" {
+		repoName = c.String("app")
 	} else if DetectGit() {
 		repoName, _ = ScalingoRepo()
 	}
 	if repoName == "" {
 		fmt.Println("Unable to find the application name, please use --app flag.")
 		os.Exit(1)
-	} else {
-		debug.Println("[AppDetect] App name is", repoName)
 	}
-	return
+
+	debug.Println("[AppDetect] App name is", repoName)
+	return repoName
 }

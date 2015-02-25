@@ -10,6 +10,7 @@ var (
 	EnvCommand = cli.Command{
 		Name:     "env",
 		Category: "Environment",
+		Flags:    []cli.Flag{appFlag},
 		Usage:    "Display the environment of your apps",
 		Description: `List all the environment variables:
 
@@ -18,7 +19,7 @@ var (
     # See also commands 'env-set' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = env.Display(currentApp)
@@ -35,6 +36,7 @@ var (
 	EnvSetCommand = cli.Command{
 		Name:     "env-set",
 		Category: "Environment",
+		Flags:    []cli.Flag{appFlag},
 		Usage:    "Set the environment variables of your apps",
 		Description: `Set variables:
 
@@ -43,7 +45,7 @@ var (
     # See also commands 'env' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) > 0 {
 				err = env.Add(currentApp, c.Args())
@@ -59,6 +61,7 @@ var (
 	EnvUnsetCommand = cli.Command{
 		Name:     "env-unset",
 		Category: "Environment",
+		Flags:    []cli.Flag{appFlag},
 		Usage:    "Unset environment variables of your apps",
 		Description: `Unset variables:
 
@@ -67,7 +70,7 @@ var (
     # See also commands 'env' and 'env-set'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c.GlobalString("app"))
+			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) > 0 {
 				err = env.Delete(currentApp, c.Args())
