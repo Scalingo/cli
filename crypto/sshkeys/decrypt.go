@@ -1,7 +1,6 @@
 package sshkeys
 
 import (
-	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
@@ -104,7 +103,13 @@ func decryptKey(payload []byte, iv []byte, key []byte, newCypherFunc func([]byte
 	decrypter.CryptBlocks(decryptedPayload, payload)
 	debug.Println("End of private key payload:", decryptedPayload[len(decryptedPayload)-50:])
 	debug.Println("Length of payload:", len(decryptedPayload))
-	decryptedPayload = bytes.TrimRight(decryptedPayload, "\x02\x03\x08\x09\x0a")
+	decryptedPayload = PKCS5Or7Unpadding(decryptedPayload)
 	debug.Println("Length of payload after trimming:", len(decryptedPayload))
 	return decryptedPayload, nil
+}
+
+func PKCS5Or7Unpadding(src []byte) []byte {
+	length := len(src)
+	unpadding := int(src[length-1])
+	return src[:(length - unpadding)]
 }
