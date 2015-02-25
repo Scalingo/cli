@@ -3,8 +3,10 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Ctrl^C doesn't kill an `run` command anymore - Fixed #83
+* --app flag can be written everywhere in the command line - Fixed #10
 * Use SSH agent if possible to get SSH credentials
-* Correcty handle encrypted SSH keys (AES-CBC and DES-ECE2)
+* Correcty handle encrypted SSH keys (AES-CBC and DES-ECE2) - Fixed #76, #77
 
 ### v1.0.0-alpha4 - 22/01/2014
 

@@ -23,6 +23,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
+	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
 	"gopkg.in/errgo.v1"
 )
@@ -80,6 +81,7 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	defer close(stopSignalsMonitoring)
 
 	go func() {
+		signals.CatchQuitSignals = false
 		signals := run.NotifiedSignals()
 		defer close(signals)
 
