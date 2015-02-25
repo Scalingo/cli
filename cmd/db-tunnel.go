@@ -18,9 +18,24 @@ var (
 			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: defaultKeyPath, EnvVar: ""},
 			cli.IntFlag{Name: "port, p", Usage: "Local port to bind", Value: 0, EnvVar: ""},
 		},
-		Description: `Create an SSH-encrypted connection to access your database locally
-	Example
-	  'scalingo --app my-app db-tunnel SCALINGO_MONGO_URL'`,
+		Description: `Create an SSH-encrypted connection to access your database locally. This
+   action authenticate you thanks to your SSH key (exactly the same as a 'git
+   push' operation).
+
+   We are looking if an SSH-agent is running on your host, otherwise we are
+   using the SSH key '$HOME/.ssh/id_rsa'. You can specify a precise SSH key
+   you want to use to authenticate thanks to the '-i' flag.
+
+   The command take one argument which is, either the name of an environment
+   variable or it value, containing the connection URL to your database.
+
+   Then, a tunnel is built and the command will display a port which has been
+   allocated for local usage, example: "localhost:58000", if you want the
+   database with a specific port, user the '-p' option.
+
+   Example
+     'scalingo -a my-app db-tunnel SCALINGO_MONGO_URL'
+     'scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key -p 5432 DATABASE_URL'`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var sshIdentity string
