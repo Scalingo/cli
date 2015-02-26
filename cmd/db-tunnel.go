@@ -15,27 +15,41 @@ var (
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: defaultKeyPath, EnvVar: ""},
 			cli.IntFlag{Name: "port, p", Usage: "Local port to bind", Value: 0, EnvVar: ""},
+			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: defaultKeyPath, EnvVar: ""},
 		},
-		Description: `Create an SSH-encrypted connection to access your database locally. This
-   action authenticate you thanks to your SSH key (exactly the same as a 'git
-   push' operation).
+		Description: `Create an SSH-encrypted connection to access your Scalingo database locally.
+
+   This command works for all the database addons provided by Scalingo. MySQL,
+   PostgreSQL, MongoDB, Redis or Elasticsearch. This action authenticates you
+   thanks to your SSH key (exactly the same as a 'git push' operation).
+
+   The command takes one argument which is, either the name of an environment
+   variable of your app, or its value containing the connection URL to your
+   database.
+
+   Example
+     $ scalingo -a my-app db-tunnel SCALINGO_MONGO_URL
+     $ scalingo -a my-app db-tunnel mongodb://user:pass@host:port/db
+
+   Once the tunnel is built, the port which has been allocated will be
+   displayed, example: "localhost:58000". You can choose this port
+   manually with the '-p' option.
+
+   Example
+     $ scalingo -a my-app db-tunnel -p 20000 MONGO_URL
+     Building tunnel to my-app-1.mongo.dbs.scalingo.com:12345
+     You can access your database on '127.0.0.1:20000'
+
+     $ mongo -u <user> -p <pass> 127.0.0.1:20000/my-app-1
+     >
 
    We are looking if an SSH-agent is running on your host, otherwise we are
    using the SSH key '$HOME/.ssh/id_rsa'. You can specify a precise SSH key
    you want to use to authenticate thanks to the '-i' flag.
 
-   The command take one argument which is, either the name of an environment
-   variable or it value, containing the connection URL to your database.
-
-   Then, a tunnel is built and the command will display a port which has been
-   allocated for local usage, example: "localhost:58000", if you want the
-   database with a specific port, user the '-p' option.
-
    Example
-     'scalingo -a my-app db-tunnel SCALINGO_MONGO_URL'
-     'scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key -p 5432 DATABASE_URL'`,
+     $ scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var sshIdentity string
