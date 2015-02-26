@@ -33,12 +33,10 @@ type VariableSetParams struct {
 }
 
 func VariablesList(app string) (Variables, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/variables",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/variables",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -54,18 +52,18 @@ func VariablesList(app string) (Variables, error) {
 }
 
 func VariableSet(app string, name string, value string) (*Variable, int, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps/" + app + "/variables",
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/variables",
+		Params: map[string]interface{}{
 			"variable": map[string]string{
 				"name":  name,
 				"value": value,
 			},
 		},
-		"expected": Statuses{200, 201},
+		Expected: Statuses{200, 201},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
@@ -81,12 +79,12 @@ func VariableSet(app string, name string, value string) (*Variable, int, error) 
 }
 
 func VariableUnset(app string, id string) error {
-	req := map[string]interface{}{
-		"method":   "DELETE",
-		"endpoint": "/apps/" + app + "/variables/" + id,
-		"expected": Statuses{204},
+	req := &APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/variables/" + id,
+		Expected: Statuses{204},
 	}
-	_, err := Do(req)
+	_, err := req.Do()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

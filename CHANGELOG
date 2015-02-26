@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Rewrite API client package, remove unsage code. - Fixed #80
 * Ctrl^C doesn't kill an `run` command anymore - Fixed #83
 * --app flag can be written everywhere in the command line - Fixed #10
 * Use SSH agent if possible to get SSH credentials

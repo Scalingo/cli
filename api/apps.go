@@ -46,57 +46,53 @@ type CreateAppParams struct {
 }
 
 func AppsList() (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps",
 	}
-	return Do(req)
+	return req.Do()
 }
 
 func AppsShow(app string) (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app,
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app,
 	}
-	return Do(req)
+	return req.Do()
 }
 
 func AppsDestroy(name string, currentName string) (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "DELETE",
-		"endpoint": "/apps/" + name,
-		"expected": Statuses{204},
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + name,
+		Expected: Statuses{204},
+		Params: map[string]interface{}{
 			"current_name": currentName,
 		},
 	}
-	return Do(req)
+	return req.Do()
 }
 
 func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps/" + app + "/restart",
-		"expected": Statuses{202},
-		"params":   scope,
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/restart",
+		Expected: Statuses{202},
+		Params:   scope,
 	}
-	return Do(req)
+	return req.Do()
 }
 
 func AppsCreate(app string) (*App, int, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps",
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps",
+		Expected: Statuses{201},
+		Params: map[string]interface{}{
 			"app": map[string]interface{}{
 				"name": app,
 			},
 		},
-		"expected": Statuses{201},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
@@ -112,12 +108,10 @@ func AppsCreate(app string) (*App, int, error) {
 }
 
 func AppsPs(app string) ([]Container, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/containers",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/containers",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -132,11 +126,11 @@ func AppsPs(app string) ([]Container, error) {
 }
 
 func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps/" + app + "/scale",
-		"params":   params,
-		"expected": Statuses{202},
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/scale",
+		Params:   params,
+		Expected: Statuses{202},
 	}
-	return Do(req)
+	return req.Do()
 }

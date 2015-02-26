@@ -5,24 +5,20 @@ import (
 )
 
 func LogsURL(app string) (*http.Response, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/logs",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/logs",
 	}
-	return Do(req)
+	return req.Do()
 }
 
 func Logs(url string, stream bool, n int) (*http.Response, error) {
-	req := map[string]interface{}{
-		"auth":   false,
-		"method": "GET",
-		"url":    url,
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		NoAuth: true,
+		URL:    url,
+		Params: map[string]interface{}{
 			"stream": stream,
 			"n":      n,
 		},
-		"expected": Statuses{200},
 	}
-	return Do(req)
+	return req.Do()
 }

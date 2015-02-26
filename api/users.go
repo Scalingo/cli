@@ -12,12 +12,10 @@ type SelfResults struct {
 }
 
 func Self() (*users.User, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/users/self",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/users/self",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

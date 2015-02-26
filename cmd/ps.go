@@ -10,8 +10,8 @@ var (
 	PsCommand = cli.Command{
 		Name:     "ps",
 		Category: "App Management",
-		Flags:    []cli.Flag{appFlag},
 		Usage:    "Display your application running processes",
+		Flags:    []cli.Flag{appFlag},
 		Description: `Display your application processes
 	Example
 	  'scalingo --app my-app ps'`,

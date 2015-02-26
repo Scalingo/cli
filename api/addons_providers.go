@@ -29,13 +29,11 @@ type ListParams struct {
 }
 
 func AddonProvidersList() ([]*AddonProvider, error) {
-	req := map[string]interface{}{
-		"auth":     false,
-		"method":   "GET",
-		"endpoint": "/addon_providers",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		NoAuth:   true,
+		Endpoint: "/addon_providers",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -51,13 +49,11 @@ func AddonProvidersList() ([]*AddonProvider, error) {
 }
 
 func AddonProviderPlansList(addon string) ([]*Plan, error) {
-	req := map[string]interface{}{
-		"auth":     false,
-		"method":   "GET",
-		"endpoint": "/addon_providers/" + addon + "/plans",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		NoAuth:   true,
+		Endpoint: "/addon_providers/" + addon + "/plans",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
