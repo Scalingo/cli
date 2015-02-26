@@ -101,6 +101,9 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 
 func dbEnvVarValue(dbEnvVar string, environ api.Variables) string {
 	for _, env := range environ {
+		if env.Value == dbEnvVar {
+			return dbEnvVar
+		}
 		if env.Name == dbEnvVar {
 			return env.Value
 		}
