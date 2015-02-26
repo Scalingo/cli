@@ -24,12 +24,10 @@ func (op *Operation) ElapsedDuration() float64 {
 }
 
 func OperationsShow(app string, opID string) (*Operation, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/operations/" + opID,
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/operations/" + opID,
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

@@ -22,12 +22,10 @@ type ProvisionAddonParams struct {
 type UpgradeAddonParams ProvisionAddonParams
 
 func AddonsList(app string) ([]*Addon, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/addons",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/addons",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -42,18 +40,18 @@ func AddonsList(app string) ([]*Addon, error) {
 }
 
 func AddonProvision(app, addon, planID string) (*ProvisionAddonParams, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps/" + app + "/addons",
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/addons",
+		Expected: Statuses{201},
+		Params: map[string]interface{}{
 			"addon": map[string]interface{}{
 				"addon_provider_id": addon,
 				"plan_id":           planID,
 			},
 		},
-		"expected": Statuses{201},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -69,12 +67,12 @@ func AddonProvision(app, addon, planID string) (*ProvisionAddonParams, error) {
 }
 
 func AddonDestroy(app, addonID string) error {
-	req := map[string]interface{}{
-		"method":   "DELETE",
-		"endpoint": "/apps/" + app + "/addons/" + addonID,
-		"expected": Statuses{204},
+	req := &APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/addons/" + addonID,
+		Expected: Statuses{204},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -84,17 +82,16 @@ func AddonDestroy(app, addonID string) error {
 }
 
 func AddonUpgrade(app, addonID, planID string) (*UpgradeAddonParams, error) {
-	req := map[string]interface{}{
-		"method":   "PATCH",
-		"endpoint": "/apps/" + app + "/addons/" + addonID,
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "PATCH",
+		Endpoint: "/apps/" + app + "/addons" + addonID,
+		Params: map[string]interface{}{
 			"addon": map[string]interface{}{
 				"plan_id": planID,
 			},
 		},
-		"expected": Statuses{200},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

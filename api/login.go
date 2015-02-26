@@ -5,17 +5,17 @@ import (
 )
 
 func Login(email, password string) (*http.Response, error) {
-	req := map[string]interface{}{
-		"auth":     false,
-		"method":   "POST",
-		"endpoint": "/users/sign_in",
-		"expected": Statuses{201, 401},
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		NoAuth:   true,
+		Method:   "POST",
+		Endpoint: "/users/sign_in",
+		Expected: Statuses{201, 401},
+		Params: map[string]interface{}{
 			"user": map[string]string{
 				"login":    email,
 				"password": password,
 			},
 		},
 	}
-	return Do(req)
+	return req.Do()
 }

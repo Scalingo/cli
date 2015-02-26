@@ -13,12 +13,10 @@ type KeyIndex struct {
 }
 
 func KeysList() ([]Key, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/account/keys",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/account/keys",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -34,18 +32,18 @@ func KeysList() ([]Key, error) {
 }
 
 func KeysAdd(name string, content string) (*Key, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/account/keys",
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/account/keys",
+		Params: map[string]interface{}{
 			"key": map[string]interface{}{
 				"name":    name,
 				"content": content,
 			},
 		},
-		"expected": Statuses{201},
+		Expected: Statuses{201},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -61,12 +59,12 @@ func KeysAdd(name string, content string) (*Key, error) {
 }
 
 func KeysDelete(id string) error {
-	req := map[string]interface{}{
-		"method":   "DELETE",
-		"endpoint": "/account/keys/" + id,
-		"expected": Statuses{204},
+	req := &APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/account/keys/" + id,
+		Expected: Statuses{204},
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return errgo.Mask(err)
 	}

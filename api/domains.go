@@ -28,12 +28,10 @@ type DomainRes struct {
 }
 
 func DomainsList(app string) ([]Domain, error) {
-	req := map[string]interface{}{
-		"method":   "GET",
-		"endpoint": "/apps/" + app + "/domains",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/domains",
 	}
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -49,16 +47,16 @@ func DomainsList(app string) ([]Domain, error) {
 }
 
 func DomainsAdd(app string, d *DomainCreate) (Domain, error) {
-	req := map[string]interface{}{
-		"method":   "POST",
-		"endpoint": "/apps/" + app + "/domains",
-		"expected": Statuses{201},
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/domains",
+		Expected: Statuses{201},
+		Params: map[string]interface{}{
 			"domain": d,
 		},
 	}
 
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return Domain{}, errgo.Mask(err)
 	}
@@ -74,13 +72,13 @@ func DomainsAdd(app string, d *DomainCreate) (Domain, error) {
 }
 
 func DomainsRemove(app string, id string) error {
-	req := map[string]interface{}{
-		"method":   "DELETE",
-		"endpoint": "/apps/" + app + "/domains/" + id,
-		"expected": Statuses{204},
+	req := &APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/domains/" + id,
+		Expected: Statuses{204},
 	}
 
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -89,11 +87,10 @@ func DomainsRemove(app string, id string) error {
 }
 
 func DomainsUpdate(app, id, cert, key string) (*Domain, error) {
-	req := map[string]interface{}{
-		"method":   "PATCH",
-		"endpoint": "/apps/" + app + "/domains/" + id,
-		"expected": Statuses{200},
-		"params": map[string]interface{}{
+	req := &APIRequest{
+		Method:   "PATCH",
+		Endpoint: "/apps/" + app + "/domains/" + id,
+		Params: map[string]interface{}{
 			"domain": map[string]interface{}{
 				"tlscert": cert,
 				"tlskey":  key,
@@ -101,7 +98,7 @@ func DomainsUpdate(app, id, cert, key string) (*Domain, error) {
 		},
 	}
 
-	res, err := Do(req)
+	res, err := req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

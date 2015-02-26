@@ -3,6 +3,8 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* More documentation for the `run` command - Fixed #79
+* Rewrite API client package, remove unsage code - Fixed #80
 * Allow environment variable name or value for `db-tunnel` as argument
 * Extended help for `db-tunnel` - Fixed #85
 * Ctrl^C doesn't kill an `run` command anymore - Fixed #83

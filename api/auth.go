@@ -106,15 +106,13 @@ func AuthUser(login, passwd string) (*users.User, error) {
 
 	token := tokenMap["authentication_token"]
 
-	params := map[string]interface{}{
-		"auth":     false,
-		"token":    token,
-		"method":   "GET",
-		"endpoint": "/users/self",
-		"expected": Statuses{200},
+	req := &APIRequest{
+		NoAuth:   true,
+		Token:    token,
+		Endpoint: "/users/self",
 	}
 
-	res, err = Do(params)
+	res, err = req.Do()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
