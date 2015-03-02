@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
@@ -17,14 +16,6 @@ import (
 	"github.com/Scalingo/cli/users"
 	"gopkg.in/errgo.v1"
 )
-
-type AppNotFound struct {
-	App string
-}
-
-func (err *AppNotFound) Error() string {
-	return fmt.Sprintf("Application '%s' has not been found, have you done a typo?", err.App)
-}
 
 type APIRequest struct {
 	NoAuth   bool
@@ -90,17 +81,6 @@ func (req *APIRequest) Do() (*http.Response, error) {
 	}
 
 	var httpReq *http.Request
-
-	if req.isAppRelated() {
-		ok, err := req.checkAppExist()
-		if err != nil {
-			return nil, errgo.Mask(err)
-		}
-		if !ok {
-			return nil, &AppNotFound{req.getApp()}
-		}
-	}
-
 	// Execute the HTTP request according to the HTTP method
 	switch req.Method {
 	case "PATCH":
@@ -144,6 +124,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		return res, nil
 	}
 
+	// res.Body should be closed by caller except in errors
 	defer res.Body.Close()
 
 	if res.StatusCode == 422 {
@@ -153,17 +134,20 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 		return nil, errgo.Mask(unprocessableError, errgo.Any)
-	}
-
-	if res.StatusCode == 500 {
-		return nil, NewRequestFailedError(res.StatusCode, "server internal error - our team has been notified", httpReq)
-	}
-
-	if req.Token != "" && res.StatusCode == 401 {
+	} else if res.StatusCode == 404 {
+		notFoundErr := &NotFoundError{}
+		err := ParseJSON(res, &notFoundErr)
+		if err != nil {
+			return nil, errgo.Newf("Fail to parse JSON in error body %v", err)
+		}
+		return nil, errgo.Mask(notFoundErr, errgo.Any)
+	} else if req.Token != "" && res.StatusCode == 401 {
 		return nil, NewRequestFailedError(res.StatusCode, "unauthorized - you are not authorized to do this operation", httpReq)
+	} else if res.StatusCode == 500 {
+		return nil, NewRequestFailedError(res.StatusCode, "server internal error - our team has been notified", httpReq)
+	} else {
+		return nil, NewRequestFailedError(res.StatusCode, fmt.Sprintf("invalid status from server: %v", res.Status), httpReq)
 	}
-
-	return nil, NewRequestFailedError(res.StatusCode, fmt.Sprintf("invalid status from server: %v", res.Status), httpReq)
 }
 
 func ParseJSON(res *http.Response, data interface{}) error {
@@ -175,28 +159,4 @@ func ParseJSON(res *http.Response, data interface{}) error {
 	debug.Println(string(body))
 
 	return json.Unmarshal(body, data)
-}
-
-func (req *APIRequest) isAppRelated() bool {
-	return strings.HasPrefix(req.Endpoint, "/apps/")
-}
-
-func (req *APIRequest) getApp() string {
-	if req.isAppRelated() {
-		return strings.Split(req.Endpoint, "/")[2]
-	}
-	return ""
-}
-
-func (req *APIRequest) checkAppExist() (bool, error) {
-	r, err := http.NewRequest("HEAD", req.URL+"/apps/"+req.getApp(), nil)
-	if err != nil {
-		return false, errgo.Mask(err, errgo.Any)
-	}
-	r.SetBasicAuth("", req.Token)
-	res, err := http.DefaultClient.Do(r)
-	if err != nil {
-		return false, errgo.Mask(err, errgo.Any)
-	}
-	return res.StatusCode == 200, nil
 }

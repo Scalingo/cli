@@ -32,5 +32,5 @@ func findDomain(app string, domain string) (*api.Domain, error) {
 			return &d, nil
 		}
 	}
-	return nil, errgo.New("no such domain")
+	return nil, errgo.New("There is no such domain, please ensure you've added it correctly.\nhttps://my.scalingo.com/apps/" + app + "/domains")
 }

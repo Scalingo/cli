@@ -2,6 +2,7 @@ package addons
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
@@ -47,10 +48,12 @@ func checkAddonExist(app, resourceID string) (*api.Addon, error) {
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
+	addonList := []string{}
 	for _, r := range resources {
+		addonList = append(addonList, r.ResourceID+" ("+r.AddonProvider.Name+")")
 		if resourceID == r.ResourceID {
 			return r, nil
 		}
 	}
-	return nil, errgo.New("Resource ID " + resourceID + " doesn't exist for app " + app)
+	return nil, errgo.Newf("Addon "+resourceID+" doesn't exist for app "+app+"\nExisting addons:\n  - %v", strings.Join(addonList, "\n  - "))
 }

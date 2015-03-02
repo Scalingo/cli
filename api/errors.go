@@ -6,6 +6,21 @@ import (
 	"strings"
 )
 
+type NotFoundError struct {
+	Resource string `json:"resource"`
+	Err      string `json:"error"`
+}
+
+func (err *NotFoundError) Error() string {
+	if err.Resource == "app" {
+		return fmt.Sprintf("The application has not been found, have you done a typo?")
+	} else if err.Resource == "container_type" {
+		return fmt.Sprintf("This type of container has not been found, please ensure it is present in your Procfile\n→ http://doc.scalingo.com/internals/procfile")
+	} else {
+		return fmt.Sprintf("The %s has not been found", err.Resource)
+	}
+}
+
 type RequestFailedError struct {
 	Code    int
 	Message string
