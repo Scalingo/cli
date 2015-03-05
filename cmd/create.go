@@ -16,7 +16,10 @@ var (
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "create")
 			} else {
-				apps.Create(c.Args()[0])
+				err := apps.Create(c.Args()[0])
+				if err != nil {
+					errorQuit(err)
+				}
 			}
 		},
 	}

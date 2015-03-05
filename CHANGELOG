@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Correctly handle 402 errors (payment method required) #90
 * Project is go gettable `go get github.com/Scalingo/cli`
 * Fix GIT remote detection #89
 * Correctly handle 404 Error, display clearer messages #91

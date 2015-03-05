@@ -9,16 +9,9 @@ import (
 )
 
 func Create(appName string) error {
-	app, code, err := api.AppsCreate(appName)
+	app, err := api.AppsCreate(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
-	}
-
-	if code == 422 {
-		fmt.Printf("Fail to create app %s\n%v", app, err)
-		if err != nil {
-			return errgo.Mask(err, errgo.Any)
-		}
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)

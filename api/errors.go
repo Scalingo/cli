@@ -6,6 +6,15 @@ import (
 	"strings"
 )
 
+type PaymentRequiredError struct {
+	ErrMessage string `json:"error"`
+	URL        string `json:"url"`
+}
+
+func (err *PaymentRequiredError) Error() string {
+	return fmt.Sprintf("%v\n→ %v", err.ErrMessage, err.URL)
+}
+
 type NotFoundError struct {
 	Resource string `json:"resource"`
 	Err      string `json:"error"`

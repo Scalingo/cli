@@ -29,8 +29,7 @@ type APIRequest struct {
 
 func (req *APIRequest) FillDefaultValues() error {
 	if req.URL == "" {
-		host := config.C.ApiUrl
-		req.URL = fmt.Sprintf("%s%s", host, Prefix)
+		req.URL = fmt.Sprintf("%s%s", config.C.ApiUrl, config.C.ApiPrefix)
 	}
 	if req.Method == "" {
 		req.Method = "GET"
@@ -60,7 +59,6 @@ func (req *APIRequest) FillDefaultValues() error {
 }
 
 var CurrentUser *users.User
-var Prefix = config.C.ApiPrefix
 
 type Statuses []int
 
@@ -80,12 +78,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	var fullEndpoint string
-	if req.Endpoint == "" {
-		fullEndpoint = req.URL
-	} else {
-		fullEndpoint = req.URL + "/" + req.Endpoint
-	}
+	endpoint := req.URL + req.Endpoint
 
 	var httpReq *http.Request
 	// Execute the HTTP request according to the HTTP method
@@ -100,7 +93,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 		reader := bytes.NewReader(buffer)
-		httpReq, err = http.NewRequest(req.Method, fullEndpoint, reader)
+		httpReq, err = http.NewRequest(req.Method, endpoint, reader)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
@@ -109,8 +102,8 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		for key, value := range req.Params.(map[string]interface{}) {
 			values.Add(key, fmt.Sprintf("%v", value))
 		}
-		fullEndpoint = fmt.Sprintf("%s?%s", fullEndpoint, values.Encode())
-		httpReq, err = http.NewRequest(req.Method, fullEndpoint, nil)
+		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
+		httpReq, err = http.NewRequest(req.Method, endpoint, nil)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
@@ -145,9 +138,16 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		notFoundErr := &NotFoundError{}
 		err := ParseJSON(res, &notFoundErr)
 		if err != nil {
-			return nil, errgo.Newf("Fail to parse JSON in error body %v", err)
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 		return nil, errgo.Mask(notFoundErr, errgo.Any)
+	} else if res.StatusCode == 402 {
+		paymentRequiredErr := &PaymentRequiredError{}
+		err := ParseJSON(res, &paymentRequiredErr)
+		if err != nil {
+			return nil, errgo.Mask(err, errgo.Any)
+		}
+		return nil, errgo.Mask(paymentRequiredErr, errgo.Any)
 	} else if req.Token != "" && res.StatusCode == 401 {
 		return nil, NewRequestFailedError(res.StatusCode, "unauthorized - you are not authorized to do this operation", httpReq)
 	} else if res.StatusCode == 500 {
@@ -160,10 +160,15 @@ func (req *APIRequest) Do() (*http.Response, error) {
 func ParseJSON(res *http.Response, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Newf("fail to read body of request %v, %v", res.Request, err)
 	}
 
 	debug.Println(string(body))
 
-	return json.Unmarshal(body, data)
+	err = json.Unmarshal(body, data)
+	if err != nil {
+		return errgo.Newf("fail to parse JSON of request %v, %v", res.Request, err)
+	}
+
+	return nil
 }

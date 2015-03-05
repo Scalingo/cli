@@ -81,7 +81,7 @@ func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	return req.Do()
 }
 
-func AppsCreate(app string) (*App, int, error) {
+func AppsCreate(app string) (*App, error) {
 	req := &APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps",
@@ -94,17 +94,17 @@ func AppsCreate(app string) (*App, int, error) {
 	}
 	res, err := req.Do()
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params *CreateAppParams
 	err = ParseJSON(res, &params)
 	if err != nil {
-		return nil, res.StatusCode, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return params.App, res.StatusCode, nil
+	return params.App, nil
 }
 
 func AppsPs(app string) ([]Container, error) {
