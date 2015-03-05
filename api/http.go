@@ -80,6 +80,13 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
+	var fullEndpoint string
+	if req.Endpoint == "" {
+		fullEndpoint = req.URL
+	} else {
+		fullEndpoint = req.URL + "/" + req.Endpoint
+	}
+
 	var httpReq *http.Request
 	// Execute the HTTP request according to the HTTP method
 	switch req.Method {
@@ -93,7 +100,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 		reader := bytes.NewReader(buffer)
-		httpReq, err = http.NewRequest(req.Method, req.URL+"/"+req.Endpoint, reader)
+		httpReq, err = http.NewRequest(req.Method, fullEndpoint, reader)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
@@ -102,8 +109,8 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		for key, value := range req.Params.(map[string]interface{}) {
 			values.Add(key, fmt.Sprintf("%v", value))
 		}
-		req.Endpoint = fmt.Sprintf("%s?%s", req.Endpoint, values.Encode())
-		httpReq, err = http.NewRequest(req.Method, req.URL+"/"+req.Endpoint, nil)
+		fullEndpoint = fmt.Sprintf("%s?%s", fullEndpoint, values.Encode())
+		httpReq, err = http.NewRequest(req.Method, fullEndpoint, nil)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}

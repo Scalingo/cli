@@ -2,6 +2,9 @@ package api
 
 import (
 	"net/http"
+	"net/url"
+
+	"gopkg.in/errgo.v1"
 )
 
 func LogsURL(app string) (*http.Response, error) {
@@ -11,11 +14,17 @@ func LogsURL(app string) (*http.Response, error) {
 	return req.Do()
 }
 
-func Logs(url string, stream bool, n int) (*http.Response, error) {
+func Logs(logsURL string, stream bool, n int) (*http.Response, error) {
+	u, err := url.Parse(logsURL)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
 	req := &APIRequest{
-		NoAuth: true,
-		URL:    url,
+		NoAuth:   true,
+		URL:      u.Scheme + "://" + u.Host,
+		Endpoint: u.Path,
 		Params: map[string]interface{}{
+			"token":  u.Query().Get("token"),
 			"stream": stream,
 			"n":      n,
 		},
