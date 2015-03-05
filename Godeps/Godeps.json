@@ -20,6 +20,10 @@
 			"Rev": "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 		},
 		{
+			"ImportPath": "github.com/Scalingo/go-gitremote",
+			"Rev": "97b505dac0c3696d7395d6627494ec105a69280f"
+		},
+		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
 			"Rev": "2f7de2c8755a840bfcf34b2b6508e86eba0fbccc"
 		},

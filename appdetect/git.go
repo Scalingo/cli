@@ -1,28 +1,15 @@
 package appdetect
 
 import (
-	"bufio"
-	"fmt"
 	"os"
 	"path"
-	"regexp"
+	"path/filepath"
 	"strings"
 
 	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-gitremote"
 	"gopkg.in/errgo.v1"
 )
-
-func openGitConfig() (*os.File, error) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	file, err := os.OpenFile(path.Join(cwd, ".git", "config"), os.O_RDWR, 0644)
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	return file, nil
-}
 
 func DetectGit() bool {
 	cwd, err := os.Getwd()
@@ -36,45 +23,30 @@ func DetectGit() bool {
 }
 
 func ScalingoRepo() (string, error) {
-	file, err := openGitConfig()
+	remotes, err := gitremote.List(".")
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", err
 	}
-	defer file.Close()
-
-	reader := bufio.NewReader(file)
-	for line, err := reader.ReadString('\n'); err == nil; line, err = reader.ReadString('\n') {
-		if strings.Contains(line, "url = git@appsdeck") || strings.Contains(line, "url = git@scalingo") {
-			re := regexp.MustCompile(".*url = git@(appsdeck|scalingo).(com|eu|dev):(?P<repo>.*).git")
-			found := re.FindStringSubmatch(line)
-			if len(found) != 3 {
-				return "", errgo.Newf("Invalid ScalingoGIT remote")
-			}
-			debug.Println("[AppDetect] GIT remote found:", strings.TrimSpace(line))
-			return found[2], nil
+	for _, remote := range remotes {
+		if remote.Name == "scalingo" {
+			debug.Println("[AppDetect] GIT remote found:", remote)
+			return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
 		}
 	}
 	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
 }
 
-func AddRemote(remote string) error {
-	_, err := ScalingoRepo()
-	if err == nil {
-		return errgo.Notef(err, "remote already exists")
+func AddRemote(url string) error {
+	remote := &gitremote.Remote{
+		Name: "scalingo",
+		URL:  url,
 	}
 
-	file, err := openGitConfig()
+	config := gitremote.New(".")
+	err := config.Add(remote)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Mask(err)
 	}
-	defer file.Close()
-	file.Seek(0, os.SEEK_END)
-
-	fmt.Fprintf(file,
-		`[remote "scalingo"]
-	url = %s
-	fetch = +refs/heads/*:refs/remotes/scalingo/*
-`, remote)
 
 	return nil
 }
