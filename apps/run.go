@@ -18,6 +18,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
@@ -25,7 +26,6 @@ import (
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
-	"gopkg.in/errgo.v1"
 )
 
 func Run(app string, command []string, cmdEnv []string, files []string) error {

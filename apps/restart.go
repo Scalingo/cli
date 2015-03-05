@@ -3,8 +3,8 @@ package apps
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
-	"gopkg.in/errgo.v1"
 )
 
 func Restart(app string, sync bool, args []string) error {

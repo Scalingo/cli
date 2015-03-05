@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (

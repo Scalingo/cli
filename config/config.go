@@ -11,8 +11,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Scalingo/envconfig"
-	"github.com/stvp/rollbar"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/envconfig"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 )
 
 type Config struct {

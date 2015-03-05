@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
-	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (

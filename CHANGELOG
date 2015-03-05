@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Project is go gettable `go get github.com/Scalingo/cli`
 * Fix GIT remote detection #89
 * Correctly handle 404 Error, display clearer messages #91
 * More documentation for the `run` command - Fixed #79

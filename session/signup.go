@@ -3,9 +3,9 @@ package session
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/term"
-	"gopkg.in/errgo.v1"
 )
 
 func SignUp() error {

@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
 
 func ReadPrivateKey(path string) (ssh.Signer, error) {

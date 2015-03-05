@@ -9,12 +9,12 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/users"
-	"gopkg.in/errgo.v1"
 )
 
 type APIRequest struct {

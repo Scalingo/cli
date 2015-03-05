@@ -7,12 +7,11 @@ import (
 	"net/url"
 	"sync"
 
-	"golang.org/x/crypto/ssh"
-
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
-	"gopkg.in/errgo.v1"
 )
 
 var (

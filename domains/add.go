@@ -1,9 +1,9 @@
 package domains
 
 import (
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 func Add(app string, domain string, cert string, key string) error {

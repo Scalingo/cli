@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/debug"
-	"github.com/Scalingo/codegangsta-cli"
 )
 
 func CurrentApp(c *cli.Context) string {

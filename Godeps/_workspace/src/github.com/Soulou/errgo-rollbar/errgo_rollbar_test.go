@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stvp/rollbar"
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
 
 func init() {

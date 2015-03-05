@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/users"
-	"gopkg.in/errgo.v1"
 )
 
 type SelfResults struct {

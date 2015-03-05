@@ -3,7 +3,7 @@ package sshkeys
 import (
 	"encoding/pem"
 
-	"golang.org/x/crypto/ssh"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
 )
 
 var (

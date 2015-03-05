@@ -3,9 +3,9 @@ package addon_providers
 import (
 	"os"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
-	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 )
 
 func Plans(addon string) error {

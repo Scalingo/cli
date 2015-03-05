@@ -7,7 +7,7 @@ package agent
 import (
 	"testing"
 
-	"golang.org/x/crypto/ssh"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
 )
 
 func TestServer(t *testing.T) {

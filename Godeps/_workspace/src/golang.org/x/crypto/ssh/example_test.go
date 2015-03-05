@@ -12,8 +12,8 @@ import (
 	"net"
 	"net/http"
 
-	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
 )
 
 func ExampleNewServerConn() {

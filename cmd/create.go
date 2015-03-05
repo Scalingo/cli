@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
