@@ -2,13 +2,19 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/cli/users"
+)
+
+var (
+	LoginAbortedErr = errors.New("canceled by user.")
 )
 
 type LoginError struct {
@@ -40,6 +46,8 @@ func Auth() (*users.User, error) {
 		user, err = tryAuth()
 		if err == nil {
 			break
+		} else if errgo.Cause(err) == io.EOF {
+			return nil, LoginAbortedErr
 		} else {
 			fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
 		}

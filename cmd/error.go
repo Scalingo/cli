@@ -55,6 +55,11 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
+	if errgo.Cause(err) == api.LoginAbortedErr {
+		fmt.Printf("... %v\n", err)
+		os.Exit(1)
+	}
+
 	if api.IsRequestFailedError(errgo.Cause(err)) {
 		code := errgo.Cause(err).(*api.RequestFailedError).Code
 		if code == 401 {
