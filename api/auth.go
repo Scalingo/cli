@@ -16,6 +16,11 @@ type LoginError struct {
 	Message string `json:"message"`
 }
 
+type LoginResponse struct {
+	AuthenticationToken string      `json:"authentication_token"`
+	User                *users.User `json:"user"`
+}
+
 func (err *LoginError) Error() string {
 	return err.Message
 }
@@ -97,33 +102,13 @@ func AuthUser(login, passwd string) (*users.User, error) {
 		return nil, fmt.Errorf("%s %v invalid status %s", res.Request.Method, res.Request.URL, res.Status)
 	}
 
-	var tokenMap map[string]string
+	loginRes := &LoginResponse{}
 
-	err = json.NewDecoder(res.Body).Decode(&tokenMap)
+	err = json.NewDecoder(res.Body).Decode(&loginRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	token := tokenMap["authentication_token"]
-
-	req := &APIRequest{
-		NoAuth:   true,
-		Token:    token,
-		Endpoint: "/users/self",
-	}
-
-	res, err = req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	defer res.Body.Close()
-
-	var selfRes *SelfResults
-	err = json.NewDecoder(res.Body).Decode(&selfRes)
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	selfRes.User.AuthToken = token
-
-	return selfRes.User, nil
+	loginRes.User.AuthToken = loginRes.AuthenticationToken
+	return loginRes.User, nil
 }
