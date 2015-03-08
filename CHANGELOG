@@ -1,7 +1,11 @@
 Changelog
 =========
 
-### v1.0.0-beta1 - ToBeReleased
+### v1.0.0-beta2 - ToBeReleased
+
+* Correctly handle db-tunnel when alias is given as argument - Fixed #93
+
+### v1.0.0-beta1 - 08/03/2015
 
 * Windows, password: don't display password in clear
 * Windows, db-tunnel: Correctly handle SSH key path with -i flag
