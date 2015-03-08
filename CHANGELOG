@@ -3,7 +3,8 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
-* Send OS to one-off containers (for prompt handling, Windows-only)
+* Windows, db-tunnel: Correctly handle SSH key path with -i flag
+* Send OS to one-off containers (for prompt handling, useful for Windows)
 * Fix EOF error when writing the password
 * Fix authentication request to adapt the API
 * Correctly handle 402 errors (payment method required) #90

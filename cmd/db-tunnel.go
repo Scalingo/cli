@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	defaultKeyPath  = config.HomeDir() + "/.ssh/id_rsa"
+	defaultKeyPath  = filepath.Join(config.HomeDir(), ".ssh", "id_rsa")
 	DbTunnelCommand = cli.Command{
 		Name:     "db-tunnel",
 		Category: "App Management",
