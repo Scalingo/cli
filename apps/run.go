@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
@@ -111,7 +112,8 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 
 func buildEnv(cmdEnv []string) (map[string]string, error) {
 	env := map[string]string{
-		"TERM": os.Getenv("TERM"),
+		"TERM":      os.Getenv("TERM"),
+		"CLIENT_OS": runtime.GOOS,
 	}
 
 	for _, cmdVar := range cmdEnv {

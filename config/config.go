@@ -45,7 +45,7 @@ var (
 )
 
 func init() {
-	home := homeDir()
+	home := HomeDir()
 	if home == "" {
 		panic("The HOME environment variable must be defined")
 	}
@@ -112,7 +112,7 @@ func GenTLSConfig(serverName string) *tls.Config {
 	return tlsConfig
 }
 
-func homeDir() string {
+func HomeDir() string {
 	if runtime.GOOS == "windows" {
 		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
 		if home == "" {

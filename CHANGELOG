@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Send OS to one-off containers (for prompt handling, Windows-only)
 * Fix EOF error when writing the password
 * Fix authentication request to adapt the API
 * Correctly handle 402 errors (payment method required) #90
