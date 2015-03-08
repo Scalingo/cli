@@ -33,8 +33,19 @@ type VariableSetParams struct {
 }
 
 func VariablesList(app string) (Variables, error) {
+	return variableList(app, true)
+}
+
+func VariablesListWithoutAlias(app string) (Variables, error) {
+	return variableList(app, false)
+}
+
+func variableList(app string, aliases bool) (Variables, error) {
 	req := &APIRequest{
 		Endpoint: "/apps/" + app + "/variables",
+		Params: map[string]interface{}{
+			"aliases": aliases,
+		},
 	}
 	res, err := req.Do()
 	if err != nil {

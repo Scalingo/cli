@@ -20,7 +20,7 @@ var (
 )
 
 func Tunnel(app string, dbEnvVar string, identity string, port int) error {
-	environ, err := api.VariablesList(app)
+	environ, err := api.VariablesListWithoutAlias(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}
