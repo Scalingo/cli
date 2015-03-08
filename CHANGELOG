@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta1 - ToBeReleased
 
+* Windows, password: don't display password in clear
 * Windows, db-tunnel: Correctly handle SSH key path with -i flag
 * Send OS to one-off containers (for prompt handling, useful for Windows)
 * Fix EOF error when writing the password
