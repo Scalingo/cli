@@ -12,6 +12,7 @@ import (
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
+	"github.com/Scalingo/cli/debug"
 )
 
 var (
@@ -48,6 +49,7 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 		if err != nil {
 			return errgo.Mask(err)
 		}
+		debug.Println("Identity used:", identity)
 		privateKeys = append(privateKeys, privateKey)
 	}
 
