@@ -1,31 +1,32 @@
 package term
 
 import (
-    "gopkg.in/errgo.v1"
-	"fmt"
-	"unsafe"
-	"syscall"
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"syscall"
 	"unicode/utf8"
+	"unsafe"
+
+	"gopkg.in/errgo.v1"
 )
 
 type wBool uint16
 
 type inputRecord struct {
-  EventType uint16
-  Unknown1 uint16
-  KeyDown wBool
-  RepeatCount uint16
-  Unknown2 uint16
-  VirtualKeyCode uint16
-  VirtualScanCode uint16
-  UnicodeChar [2]byte
-  ControlKeyState uint16
+	EventType       uint16
+	Unknown1        uint16
+	KeyDown         wBool
+	RepeatCount     uint16
+	Unknown2        uint16
+	VirtualKeyCode  uint16
+	VirtualScanCode uint16
+	UnicodeChar     [2]byte
+	ControlKeyState uint16
 }
 
 const (
-    inputRecordSize = unsafe.Sizeof(inputRecord{})
+	inputRecordSize = unsafe.Sizeof(inputRecord{})
 )
 
 var (
@@ -61,23 +62,23 @@ func getChar() (rune, error) {
 	if errno != 0 {
 		return 0, fmt.Errorf("Fail to get terminal handle (%v)", errno)
 	}
-		
+
 	var buffer [inputRecordSize]byte
 	var nbEvents int32
-	_, _, errno = syscall.Syscall6(uintptr(readConsoleInput), uintptr(4), handlePtr, uintptr(unsafe.Pointer(&buffer[0])), uintptr(1), uintptr(unsafe.Pointer(&nbEvents)), 0, 0);
+	_, _, errno = syscall.Syscall6(uintptr(readConsoleInput), uintptr(4), handlePtr, uintptr(unsafe.Pointer(&buffer[0])), uintptr(1), uintptr(unsafe.Pointer(&nbEvents)), 0, 0)
 	if errno != 0 {
-		return 0, fmt.Errorf("Fail to get terminal handle (%v)", errno)
+		return 0, fmt.Errorf("Fail to read character with win#ReadConsoleInput (%v)", errno)
 	}
 	b := bytes.NewBuffer(buffer[:])
 	input := &inputRecord{}
 	err := binary.Read(b, binary.LittleEndian, input)
 	if err != nil {
-	  return 0, errgo.Mask(err, errgo.Any)
+		return 0, errgo.Mask(err, errgo.Any)
 	}
 	// Remove keyUp events, take only keyboard event, and ctrl/alt/cap keys
 	char, _ := utf8.DecodeRune(input.UnicodeChar[:])
 	if input.KeyDown == 0 || input.EventType != 1 || char == 0 {
-	  return getChar()
+		return getChar()
 	}
 	return char, nil
 }
