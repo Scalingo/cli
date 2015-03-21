@@ -51,7 +51,15 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
-				err = domains.Add(currentApp, c.Args()[0], c.String("cert"), c.String("key"))
+				cert := c.String("cert")
+				if cert == "domain.crt" {
+					cert = ""
+				}
+				key := c.String("key")
+				if key == "domain.key" {
+					key = ""
+				}
+				err = domains.Add(currentApp, c.Args()[0], cert, key)
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
 			}

@@ -3,6 +3,7 @@ Changelog
 
 ### v1.0.0-beta2 - ToBeReleased
 
+* Fix domain-add issue. (error about domain.crt file) - Fixed #98
 * Correctly handle db-tunnel when alias is given as argument - Fixed #93
 
 ### v1.0.0-beta1 - 08/03/2015
