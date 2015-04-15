@@ -1,7 +1,7 @@
 Changelog
 =========
 
-### v1.0.0-rc1 - ToBeReleased
+### v1.0.0-rc1 - 15/04/2015
 
 * [Feature] Modify size of containers with `scalingo scale` - #102
 * [Bugfix] Fix ssh-agent error when no private key is available - Fixed #100

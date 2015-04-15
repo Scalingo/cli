@@ -1,4 +1,4 @@
-Scalingo-CLI v1.0.0-beta1
+Scalingo-CLI v1.0.0-rc1
 ==========================
 
 ```
@@ -9,7 +9,7 @@ USAGE:
    Scalingo Client [global options] command [command options] [arguments...]
 
 VERSION:
-   1.0.0-beta1
+   1.0.0-rc1
 
 AUTHOR:
   Scalingo Team - <hello@scalingo.com>
