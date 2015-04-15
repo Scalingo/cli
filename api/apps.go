@@ -11,6 +11,7 @@ type Container struct {
 	Name    string `json:"name"`
 	Amount  int    `json:"amount"`
 	Command string `json:"command"`
+	Size    string `json:"size"`
 }
 
 type AppsScaleParams struct {

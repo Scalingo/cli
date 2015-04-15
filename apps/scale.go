@@ -17,19 +17,24 @@ type ScaleRes struct {
 }
 
 func Scale(app string, sync bool, types []string) error {
+	var size string
 	scaleParams := &api.AppsScaleParams{}
 
 	for _, t := range types {
 		splitT := strings.Split(t, ":")
-		if len(splitT) != 2 {
-			return errgo.Newf("%s is invalid, format is <type>:<amount>", t)
+		if len(splitT) != 2 && len(splitT) != 3 {
+			return errgo.Newf("%s is invalid, format is <type>:<amount>[:<size>]", t)
 		}
 		typeName, typeAmount := splitT[0], splitT[1]
+		if len(splitT) == 3 {
+			size = splitT[2]
+		}
+
 		amount, err := strconv.ParseInt(typeAmount, 10, 32)
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
-		scaleParams.Containers = append(scaleParams.Containers, api.Container{Name: typeName, Amount: int(amount)})
+		scaleParams.Containers = append(scaleParams.Containers, api.Container{Name: typeName, Amount: int(amount), Size: size})
 	}
 
 	res, err := api.AppsScale(app, scaleParams)
@@ -46,7 +51,7 @@ func Scale(app string, sync bool, types []string) error {
 
 	fmt.Printf("You application is being scaled to:\n")
 	for _, ct := range scaleRes.Containers {
-		fmt.Println(io.Indent(fmt.Sprintf("%s: %d", ct.Name, ct.Amount), 2))
+		fmt.Println(io.Indent(fmt.Sprintf("%s: %d - %s", ct.Name, ct.Amount, ct.Size), 2))
 	}
 
 	if !sync {
