@@ -1,10 +1,12 @@
 Changelog
 =========
 
-### v1.0.0-beta2 - ToBeReleased
+### v1.0.0-rc1 - ToBeReleased
 
-* Fix domain-add issue. (error about domain.crt file) - Fixed #98
-* Correctly handle db-tunnel when alias is given as argument - Fixed #93
+* [Feature] Modify size of containers with `scalingo scale` - #102
+* [Bugfix] Fix ssh-agent error when no private key is available - Fixed #100
+* [Bugfix] Fix domain-add issue. (error about domain.crt file) - Fixed #98
+* [Bugfix] Correctly handle db-tunnel when alias is given as argument - Fixed #93
 
 ### v1.0.0-beta1 - 08/03/2015
 
