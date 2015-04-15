@@ -44,14 +44,18 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 			return errgo.Mask(err)
 		}
 		defer agentConnection.Close()
-	} else {
+	}
+
+	if len(privateKeys) == 0 {
+		identity = sshkeys.DefaultKeyPath
 		privateKey, err := sshkeys.ReadPrivateKey(identity)
 		if err != nil {
 			return errgo.Mask(err)
 		}
-		debug.Println("Identity used:", identity)
 		privateKeys = append(privateKeys, privateKey)
 	}
+
+	debug.Println("Identity used:", identity)
 
 	var client *ssh.Client
 	for _, privateKey := range privateKeys {
@@ -68,7 +72,7 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 		}
 	}
 	if client == nil {
-		return errgo.Newf("Unable to connect to our SSH server: %v", err)
+		return errgo.Newf("No authentication method has succeeded, please use the flag '-i /path/to/private/key' to specify your private key")
 	}
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", port))

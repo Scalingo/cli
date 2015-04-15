@@ -5,10 +5,16 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
+)
+
+var (
+	DefaultKeyPath = filepath.Join(config.HomeDir(), ".ssh", "id_rsa")
 )
 
 func ReadPrivateKey(path string) (ssh.Signer, error) {
