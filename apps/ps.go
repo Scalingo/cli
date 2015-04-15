@@ -16,14 +16,14 @@ func Ps(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "Amount", "Command"})
+	t.SetHeader([]string{"Name", "Amount", "Size", "Command"})
 
 	for _, ct := range processes {
 		amount := fmt.Sprintf("%d", ct.Amount)
 		if ct.Command != "" {
-			t.Append([]string{ct.Name, amount, "`" + ct.Command + "`"})
+			t.Append([]string{ct.Name, amount, ct.Size, "`" + ct.Command + "`"})
 		} else {
-			t.Append([]string{ct.Name, amount, "-"})
+			t.Append([]string{ct.Name, amount, ct.Size, "-"})
 		}
 	}
 

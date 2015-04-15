@@ -16,7 +16,8 @@ var (
 		Description: `Scale your application processes.
    Example
      'scalingo --app my-app scale web:2 worker:1'
-     'scalingo --app my-app scale web:1 worker:0'`,
+     'scalingo --app my-app scale web:1 worker:0'
+     'scalingo --app my-app scale web:1:XL'`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
