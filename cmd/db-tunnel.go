@@ -2,23 +2,21 @@ package cmd
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
-	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
 )
 
 var (
-	defaultKeyPath  = filepath.Join(config.HomeDir(), ".ssh", "id_rsa")
 	DbTunnelCommand = cli.Command{
 		Name:     "db-tunnel",
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
 		Flags: []cli.Flag{appFlag,
 			cli.IntFlag{Name: "port, p", Usage: "Local port to bind", Value: 0, EnvVar: ""},
-			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: defaultKeyPath, EnvVar: ""},
+			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: "", EnvVar: ""},
 		},
 		Description: `Create an SSH-encrypted connection to access your Scalingo database locally.
 
@@ -55,8 +53,10 @@ var (
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var sshIdentity string
-			if c.String("identity") == defaultKeyPath && os.Getenv("SSH_AUTH_SOCK") != "" {
+			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {
 				sshIdentity = "ssh-agent"
+			} else if c.String("identity") == "" {
+				sshIdentity = sshkeys.DefaultKeyPath
 			} else {
 				sshIdentity = c.String("identity")
 			}
