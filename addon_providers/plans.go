@@ -17,7 +17,7 @@ func Plans(addon string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"ID", "Name", "Description"})
 	for _, plan := range plans {
-		t.Append([]string{plan.Name, plan.DisplayName, plan.Description})
+		t.Append([]string{plan.Name, plan.DisplayName, plan.ShortDescription})
 	}
 	t.Render()
 	return nil
