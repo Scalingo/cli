@@ -53,7 +53,7 @@ COMMANDS:
     create, c	Create a new app
     destroy, d	Destroy an app /!\
     logout	Logout from Scalingo
-    signup	Create your account of Scalingo
+    signup	Create your Scalingo account
 
   Public SSH Keys:
     keys	List your SSH public keys
