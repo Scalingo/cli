@@ -49,7 +49,7 @@ func Scale(app string, sync bool, types []string) error {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("You application is being scaled to:\n")
+	fmt.Printf("Your application is being scaled to:\n")
 	for _, ct := range scaleRes.Containers {
 		fmt.Println(io.Indent(fmt.Sprintf("%s: %d - %s", ct.Name, ct.Amount, ct.Size), 2))
 	}
