@@ -17,7 +17,7 @@ func Restart(app string, sync bool, args []string) error {
 	res.Body.Close()
 
 	if !sync {
-		fmt.Println("You application is being restarted.")
+		fmt.Println("Your application is being restarted.")
 		return nil
 	}
 

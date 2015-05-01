@@ -9,7 +9,7 @@ var (
 	SignUpCommand = cli.Command{
 		Name:     "signup",
 		Category: "Global",
-		Usage:    "Create your account of Scalingo",
+		Usage:    "Create your Scalingo account",
 		Description: `
    Example
      'scalingo signup'`,
