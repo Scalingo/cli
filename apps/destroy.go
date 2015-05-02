@@ -18,7 +18,7 @@ func Destroy(appName string) error {
 
 	res, err := api.AppsDestroy(appName, validationName)
 	if err != nil {
-		return errgo.Notef(err, "fail to create app")
+		return errgo.Notef(err, "fail to destroy app")
 	}
 	defer res.Body.Close()
 

@@ -21,6 +21,7 @@ func Logs(logsURL string, stream bool, n int) (*http.Response, error) {
 	}
 	req := &APIRequest{
 		NoAuth:   true,
+		Expected: Statuses{200, 404},
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]interface{}{

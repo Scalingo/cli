@@ -1,6 +1,12 @@
 Changelog
 =========
 
+### v1.0.0-rc2 - 21/04/2015
+
+* [Proxy] Add documentation about how to use a HTTPS proxy
+* [SSL] Embed Scalingo new SSL certificate SHA-256 only
+* [Logs] No more weird error message when no log is available for an app
+
 ### v1.0.0-rc1 - 15/04/2015
 
 * [Feature] Modify size of containers with `scalingo scale` - #102

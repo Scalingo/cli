@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -12,6 +11,7 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/cli/io"
 )
 
 type LogsRes struct {
@@ -45,6 +45,11 @@ func Logs(appName string, stream bool, n int) error {
 	res, err = api.Logs(logsRes.LogsURL, stream, n)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
+	}
+
+	if res.StatusCode == 404 {
+		io.Error("There is not log for this application.")
+		return nil
 	}
 
 	if !stream {
