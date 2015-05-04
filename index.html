@@ -111,9 +111,9 @@ The command is now available on your system.
 </p>
 <pre><code>scalingo -a &lt;app&gt; &lt;command&gt; [--command-flags] &lt;arg1&gt; &lt;arg2&gt; … &lt;argn&gt;</code></pre>
 <div class='usage'><div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Create new apps</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>create</span></code><div class='examples'><pre><code>scalingo create my-new-app</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Setup your account SSH keys</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>keys</span>|<span class='subcmd'>keys-add</span>|<span class='subcmd'>keys-remove</span></code><div class='examples'><pre><code>scalingo -a myapp keys
-scalingo -a myapp keys-add "Laptop SSH key" $HOME/.ssh/id_rsa.pub
-scalingo -a myapp keys-remove "Laptop SSH key"</code></pre></div></div></div>
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Setup your account SSH keys</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>keys</span>|<span class='subcmd'>keys-add</span>|<span class='subcmd'>keys-remove</span></code><div class='examples'><pre><code>scalingo keys
+scalingo keys-add "Laptop SSH key" $HOME/.ssh/id_rsa.pub
+scalingo keys-remove "Laptop SSH key"</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Configure their environment</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>env</span>|<span class='subcmd'>env-set</span>|<span class='subcmd'>env-unset</span></code><div class='examples'><pre><code>scalingo -a myapp env
 scalingo -a myapp env-set NODE_ENV=production
 scalingo -a myapp env-unset NODE_ENV</code></pre></div></div></div>
