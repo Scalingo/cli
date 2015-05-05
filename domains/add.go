@@ -12,7 +12,12 @@ func Add(app string, domain string, cert string, key string) error {
 		return errgo.Mask(err)
 	}
 
-	d, err := api.DomainsAdd(app, &api.DomainCreate{domain, certContent, keyContent})
+	d, err := api.DomainsAdd(app, api.Domain{
+		Name:    domain,
+		TlsCert: certContent,
+		TlsKey:  keyContent,
+	})
+
 	if err != nil {
 		return errgo.Mask(err)
 	}

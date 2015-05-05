@@ -24,6 +24,10 @@ func DisableSSL(app string, domain string) error {
 
 func EnableSSL(app, domain, certPath, keyPath string) error {
 	d, err := findDomain(app, domain)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
 	certContent, keyContent, err := validateSSL(certPath, keyPath)
 	if err != nil {
 		return errgo.Mask(err)

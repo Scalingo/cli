@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
@@ -98,9 +99,9 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 	case "GET", "DELETE":
-		values := url.Values{}
-		for key, value := range req.Params.(map[string]interface{}) {
-			values.Add(key, fmt.Sprintf("%v", value))
+		values, err := req.BuildQueryFromParams()
+		if err != nil {
+			return nil, errgo.Mask(err, errgo.Any)
 		}
 		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
 		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, nil)
@@ -141,4 +142,20 @@ func ParseJSON(res *http.Response, data interface{}) error {
 	}
 
 	return nil
+}
+
+func (req *APIRequest) BuildQueryFromParams() (url.Values, error) {
+	values := url.Values{}
+	if reflect.TypeOf(req.Params).Kind() != reflect.Map {
+		return nil, errgo.Newf("%#v is not a map", req.Params)
+	}
+	if reflect.TypeOf(req.Params).Key().Kind() != reflect.String {
+		return nil, errgo.Newf("%#v is not a map of string", req.Params)
+	}
+	value := reflect.ValueOf(req.Params)
+	for _, key := range value.MapKeys() {
+		value := value.MapIndex(key)
+		values.Add(fmt.Sprintf("%v", key), fmt.Sprintf("%v", value.Interface()))
+	}
+	return values, nil
 }
