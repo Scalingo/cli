@@ -15,7 +15,7 @@ var (
 		Description: ` Run an interactive console with your MongoDB addon.
     $ scalingo -a myapp mongo-console
 
-		# See also 'redis-console' and 'mysql-console'
+    # See also 'redis-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

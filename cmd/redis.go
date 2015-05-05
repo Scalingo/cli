@@ -15,7 +15,7 @@ var (
 		Description: ` Run an interactive console with your redis addon.
     $ scalingo -a myapp redis-console
 
-		# See also 'mongo-console' and 'mysql-console'
+    # See also 'mongo-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

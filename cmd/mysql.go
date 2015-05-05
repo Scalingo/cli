@@ -15,7 +15,7 @@ var (
 		Description: ` Run an interactive console with your MySQL addon.
     $ scalingo -a myapp mysql-console
 
-		# See also 'mongo-console' and 'pgsql-console'
+    # See also 'mongo-console' and 'pgsql-console'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

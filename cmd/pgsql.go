@@ -15,7 +15,7 @@ var (
 		Description: ` Run an interactive console with your PostgreSQL addon.
     $ scalingo -a myapp pgsql-console
 
-		# See also 'mongo-console' and 'mysql-console'
+    # See also 'mongo-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
