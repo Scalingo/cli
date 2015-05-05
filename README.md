@@ -1,5 +1,20 @@
 Scalingo-CLI v1.0.0-rc1
-==========================
+=======================
+
+This repository contains the command line utility for the public PaaS Scalingo
+
+https://scalingo.com
+
+## Run behind a proxy
+
+You have to setup the following environment variables:
+
+```
+HTTP_PROXY=http://<proxy host>:<proxy port>
+HTTPS_PROXY=https://<proxy host>:<proxy port>
+```
+
+## Command help
 
 ```
 NAME:
