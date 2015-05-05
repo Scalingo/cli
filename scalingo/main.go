@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 )
 
 func main() {
@@ -62,6 +62,10 @@ func main() {
 
 		// DB Access
 		cmd.DbTunnelCommand,
+		cmd.RedisConsoleCommand,
+		cmd.MongoConsoleCommand,
+		cmd.MySQLConsoleCommand,
+		cmd.PgSQLConsoleCommand,
 
 		// SSH keys
 		cmd.ListSSHKeyCommand,
