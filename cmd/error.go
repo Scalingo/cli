@@ -85,7 +85,7 @@ func newReportError(err error) *ReportError {
 	}
 
 	if api.IsRequestFailedError(errgo.Cause(err)) {
-		r.FailedRequest = errgo.Cause(err).(*api.RequestFailedError).Req
+		r.FailedRequest = errgo.Cause(err).(*api.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r

@@ -17,15 +17,20 @@ import (
 	"github.com/Scalingo/cli/users"
 )
 
+var CurrentUser *users.User
+
 type APIRequest struct {
-	NoAuth   bool
-	URL      string
-	Method   string
-	Endpoint string
-	Token    string
-	Expected Statuses
-	Params   interface{}
+	NoAuth      bool
+	URL         string
+	Method      string
+	Endpoint    string
+	Token       string
+	Expected    Statuses
+	Params      interface{}
+	HTTPRequest *http.Request
 }
+
+type Statuses []int
 
 func (req *APIRequest) FillDefaultValues() error {
 	if req.URL == "" {
@@ -58,10 +63,6 @@ func (req *APIRequest) FillDefaultValues() error {
 	return nil
 }
 
-var CurrentUser *users.User
-
-type Statuses []int
-
 func (statuses Statuses) Contains(status int) bool {
 	for _, s := range statuses {
 		if s == status {
@@ -80,7 +81,6 @@ func (req *APIRequest) Do() (*http.Response, error) {
 
 	endpoint := req.URL + req.Endpoint
 
-	var httpReq *http.Request
 	// Execute the HTTP request according to the HTTP method
 	switch req.Method {
 	case "PATCH":
@@ -93,7 +93,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 		reader := bytes.NewReader(buffer)
-		httpReq, err = http.NewRequest(req.Method, endpoint, reader)
+		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, reader)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
@@ -103,20 +103,20 @@ func (req *APIRequest) Do() (*http.Response, error) {
 			values.Add(key, fmt.Sprintf("%v", value))
 		}
 		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
-		httpReq, err = http.NewRequest(req.Method, endpoint, nil)
+		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, nil)
 		if err != nil {
 			return nil, errgo.Mask(err, errgo.Any)
 		}
 	}
 
-	debug.Printf("[API] %v %v\n", httpReq.Method, httpReq.URL)
-	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", httpReq.Header), 6))
+	debug.Printf("[API] %v %v\n", req.HTTPRequest.Method, req.HTTPRequest.URL)
+	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", req.HTTPRequest.Header), 6))
 	debug.Printf(io.Indent("Params : %v", 6), req.Params)
 
-	httpReq.SetBasicAuth("", req.Token)
-	res, err := httpclient.Do(httpReq)
+	req.HTTPRequest.SetBasicAuth("", req.Token)
+	res, err := httpclient.Do(req.HTTPRequest)
 	if err != nil {
-		fmt.Printf("Fail to query %s: %v\n", httpReq.Host, err)
+		fmt.Printf("Fail to query %s: %v\n", req.HTTPRequest.Host, err)
 		os.Exit(1)
 	}
 
@@ -124,37 +124,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 		return res, nil
 	}
 
-	// res.Body should be closed by caller except in errors
-	defer res.Body.Close()
-
-	if res.StatusCode == 422 {
-		var unprocessableError *UnprocessableEntity
-		err = ParseJSON(res, &unprocessableError)
-		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
-		}
-		return nil, errgo.Mask(unprocessableError, errgo.Any)
-	} else if res.StatusCode == 404 {
-		notFoundErr := &NotFoundError{}
-		err := ParseJSON(res, &notFoundErr)
-		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
-		}
-		return nil, errgo.Mask(notFoundErr, errgo.Any)
-	} else if res.StatusCode == 402 {
-		paymentRequiredErr := &PaymentRequiredError{}
-		err := ParseJSON(res, &paymentRequiredErr)
-		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
-		}
-		return nil, errgo.Mask(paymentRequiredErr, errgo.Any)
-	} else if req.Token != "" && res.StatusCode == 401 {
-		return nil, NewRequestFailedError(res.StatusCode, "unauthorized - you are not authorized to do this operation", httpReq)
-	} else if res.StatusCode == 500 {
-		return nil, NewRequestFailedError(res.StatusCode, "server internal error - our team has been notified", httpReq)
-	} else {
-		return nil, NewRequestFailedError(res.StatusCode, fmt.Sprintf("invalid status from server: %v", res.Status), httpReq)
-	}
+	return nil, NewRequestFailedError(res, req)
 }
 
 func ParseJSON(res *http.Response, data interface{}) error {

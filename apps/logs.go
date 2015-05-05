@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	stdio "io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -78,7 +79,7 @@ func streamLogs(res *http.Response) error {
 			)
 		}
 	}
-	if err != io.EOF {
+	if err != stdio.EOF {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
