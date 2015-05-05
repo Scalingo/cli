@@ -24,7 +24,7 @@ func (vs Variables) Contains(name string) (*Variable, bool) {
 	return nil, false
 }
 
-type VariablesListParams struct {
+type VariablesRes struct {
 	Variables Variables `json:"variables"`
 }
 
@@ -41,25 +41,12 @@ func VariablesListWithoutAlias(app string) (Variables, error) {
 }
 
 func variableList(app string, aliases bool) (Variables, error) {
-	req := &APIRequest{
-		Endpoint: "/apps/" + app + "/variables",
-		Params: map[string]interface{}{
-			"aliases": aliases,
-		},
-	}
-	res, err := req.Do()
+	var variablesRes VariablesRes
+	err := subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-	defer res.Body.Close()
-
-	var params VariablesListParams
-	err = ParseJSON(res, &params)
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-
-	return params.Variables, nil
+	return variablesRes.Variables, nil
 }
 
 func VariableSet(app string, name string, value string) (*Variable, int, error) {
@@ -90,14 +77,5 @@ func VariableSet(app string, name string, value string) (*Variable, int, error) 
 }
 
 func VariableUnset(app string, id string) error {
-	req := &APIRequest{
-		Method:   "DELETE",
-		Endpoint: "/apps/" + app + "/variables/" + id,
-		Expected: Statuses{204},
-	}
-	_, err := req.Do()
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	return nil
+	return subresourceDelete(app, "variables", id)
 }
