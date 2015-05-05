@@ -52,6 +52,11 @@ func main() {
 		cmd.DomainsRemoveCommand,
 		cmd.DomainsSSLCommand,
 
+		// Collaborators
+		cmd.CollaboratorsListCommand,
+		cmd.CollaboratorsAddCommand,
+		cmd.CollaboratorsRemoveCommand,
+
 		// Addons
 		cmd.AddonProvidersListCommand,
 		cmd.AddonProvidersPlansCommand,
