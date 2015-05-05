@@ -16,6 +16,23 @@ type ScaleRes struct {
 	Containers []api.Container `json:"containers"`
 }
 
+type ScaleUnprocessableEntity struct {
+	Errors map[string]map[string][]string `json:"errors"`
+}
+
+func (err ScaleUnprocessableEntity) Error() string {
+	var errMsg string
+	for typ, errors := range err.Errors {
+		errArray := make([]string, 0, len(err.Errors))
+		errType := fmt.Sprintf("Container type '%v' is invalid:\n", typ)
+		for attr, attrErrs := range errors {
+			errArray = append(errArray, fmt.Sprintf("  %s → %s", attr, strings.Join(attrErrs, ", ")))
+		}
+		errMsg += errType + strings.Join(errArray, "\n")
+	}
+	return errMsg
+}
+
 func Scale(app string, sync bool, types []string) error {
 	var size string
 	scaleParams := &api.AppsScaleParams{}
@@ -42,6 +59,15 @@ func Scale(app string, sync bool, types []string) error {
 		return errgo.Mask(err)
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == 422 {
+		var scaleUnprocessableEntity ScaleUnprocessableEntity
+		err = api.ParseJSON(res, &scaleUnprocessableEntity)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+		return scaleUnprocessableEntity
+	}
 
 	var scaleRes ScaleRes
 	err = api.ParseJSON(res, &scaleRes)

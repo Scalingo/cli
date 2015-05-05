@@ -126,12 +126,20 @@ func AppsPs(app string) ([]Container, error) {
 	return containersRes.Containers, nil
 }
 
+// Handling 422 error as not a standard 422 error
+// {
+//    "errors": {
+//       "web": {
+//          "amount": ["is negative"]
+//       }
+//    }
+// }
 func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
 	req := &APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scale",
 		Params:   params,
-		Expected: Statuses{202},
+		Expected: Statuses{202, 422},
 	}
 	return req.Do()
 }
