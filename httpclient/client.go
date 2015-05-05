@@ -9,6 +9,7 @@ import (
 var (
 	client = &http.Client{
 		Transport: &http.Transport{
+			Proxy:           http.ProxyFromEnvironment,
 			TLSClientConfig: config.TlsConfig,
 		},
 	}
