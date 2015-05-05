@@ -2,7 +2,6 @@ package config
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"fmt"
 	"log"
 	"net/url"
@@ -91,25 +90,7 @@ func init() {
 	if C.UnsecureSsl {
 		TlsConfig.InsecureSkipVerify = true
 		TlsConfig.MinVersion = tls.VersionTLS10
-	} else {
-		certChain := decodePem(x509Chain)
-		TlsConfig.RootCAs = x509.NewCertPool()
-		for _, cert := range certChain.Certificate {
-			x509Cert, err := x509.ParseCertificate(cert)
-			if err != nil {
-				panic(err)
-			}
-			TlsConfig.RootCAs.AddCert(x509Cert)
-		}
-		TlsConfig.BuildNameToCertificate()
 	}
-}
-
-func GenTLSConfig(serverName string) *tls.Config {
-	tlsConfig := &tls.Config{}
-	*tlsConfig = *TlsConfig
-	tlsConfig.ServerName = serverName
-	return tlsConfig
 }
 
 func HomeDir() string {
