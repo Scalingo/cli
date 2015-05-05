@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
-	"gopkg.in/errgo.v1"
 )
 
 func dbURL(app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {

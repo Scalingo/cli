@@ -5,8 +5,8 @@ import (
 	"io"
 	"net"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/apps"
-	"gopkg.in/errgo.v1"
 )
 
 func RedisConsole(app string) error {

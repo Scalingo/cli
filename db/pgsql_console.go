@@ -3,12 +3,12 @@ package db
 import (
 	"net"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 	"github.com/Scalingo/cli/apps"
-	"gopkg.in/errgo.v1"
 )
 
 func PgSQLConsole(app string) error {
-	// "mysql2://" for ruby driver 'mysql2'
+
 	postgreSQLURL, user, password, err := dbURL(app, "POSTGRESQL", []string{"postgres://"})
 	if err != nil {
 		return errgo.Mask(err)

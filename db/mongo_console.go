@@ -1,12 +1,12 @@
 package db
 
 import (
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 	"github.com/Scalingo/cli/apps"
-	"gopkg.in/errgo.v1"
 )
 
 func MongoConsole(app string) error {
-	// "mysql2://" for ruby driver 'mysql2'
+
 	mongoURL, user, password, err := dbURL(app, "MONGO", []string{"mongodb://"})
 	if err != nil {
 		return errgo.Mask(err)

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 	"github.com/Scalingo/cli/apps"
-	"gopkg.in/errgo.v1"
 )
 
 func MySQLConsole(app string) error {
-	// "mysql2://" for ruby driver 'mysql2'
+
 	mySQLURL, user, password, err := dbURL(app, "MYSQL", []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
