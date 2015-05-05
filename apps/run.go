@@ -29,18 +29,40 @@ import (
 	"github.com/Scalingo/cli/term"
 )
 
-func Run(app string, command []string, cmdEnv []string, files []string) error {
-	env, err := buildEnv(cmdEnv)
+type RunOpts struct {
+	App            string
+	Cmd            []string
+	CmdEnv         []string
+	Files          []string
+	StdinCopyFunc  func(io.Writer, io.Reader) (int64, error)
+	StdoutCopyFunc func(io.Writer, io.Reader) (int64, error)
+}
+
+func Run(opts RunOpts) error {
+	if opts.CmdEnv == nil {
+		opts.CmdEnv = []string{}
+	}
+	if opts.Files == nil {
+		opts.Files = []string{}
+	}
+	if opts.StdinCopyFunc == nil {
+		opts.StdinCopyFunc = io.Copy
+	}
+	if opts.StdoutCopyFunc == nil {
+		opts.StdoutCopyFunc = io.Copy
+	}
+
+	env, err := buildEnv(opts.CmdEnv)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	err = validateFiles(files)
+	err = validateFiles(opts.Files)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := api.Run(app, command, env)
+	res, err := api.Run(opts.App, opts.Cmd, env)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -49,7 +71,7 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 	debug.Printf("%+v\n", runStruct)
 
 	if res.StatusCode == http.StatusNotFound {
-		return errgo.Newf("application %s not found", app)
+		return errgo.Newf("application %s not found", opts.App)
 	}
 
 	attachURL, ok := runStruct["attach_url"].(string)
@@ -59,8 +81,8 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 
 	debug.Println("Run Service URL is", attachURL)
 
-	if len(files) > 0 {
-		err := uploadFiles(attachURL+"/files", files)
+	if len(opts.Files) > 0 {
+		err := uploadFiles(attachURL+"/files", opts.Files)
 		if err != nil {
 			return err
 		}
@@ -98,8 +120,8 @@ func Run(app string, command []string, cmdEnv []string, files []string) error {
 		}
 	}()
 
-	go io.Copy(socket, os.Stdin)
-	io.Copy(os.Stdout, socket)
+	go opts.StdinCopyFunc(socket, os.Stdin)
+	_, err = opts.StdinCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
 
@@ -145,7 +167,10 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
-		tls_conn := tls.Client(dial, config.TlsConfig)
+		host := strings.Split(url.Host, ":")[0]
+		config := *config.TlsConfig
+		config.ServerName = host
+		tls_conn := tls.Client(dial, &config)
 		conn = httputil.NewClientConn(tls_conn, nil)
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)

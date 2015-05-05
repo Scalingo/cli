@@ -41,9 +41,15 @@ var (
      scalingo run -f mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
+			opts := apps.RunOpts{
+				App:    currentApp,
+				Cmd:    c.Args(),
+				CmdEnv: c.StringSlice("e"),
+				Files:  c.StringSlice("f"),
+			}
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")
-			} else if err := apps.Run(currentApp, c.Args(), c.StringSlice("e"), c.StringSlice("f")); err != nil {
+			} else if err := apps.Run(opts); err != nil {
 				errorQuit(err)
 			}
 		},
