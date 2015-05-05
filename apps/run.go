@@ -145,8 +145,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
-		host := strings.Split(url.Host, ":")[0]
-		tls_conn := tls.Client(dial, config.GenTLSConfig(host))
+		tls_conn := tls.Client(dial, config.TlsConfig)
 		conn = httputil.NewClientConn(tls_conn, nil)
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)
