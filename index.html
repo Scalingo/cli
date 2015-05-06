@@ -117,22 +117,32 @@ scalingo keys-remove "Laptop SSH key"</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Configure their environment</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>env</span>|<span class='subcmd'>env-set</span>|<span class='subcmd'>env-unset</span></code><div class='examples'><pre><code>scalingo -a myapp env
 scalingo -a myapp env-set NODE_ENV=production
 scalingo -a myapp env-unset NODE_ENV</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Configure custom domain names</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>domains</span>|<span class='subcmd'>domains-add</span>|<span class='subcmd'>domains-remove</span>|<span class='subcmd'>domains-ssl</span></code><div class='examples'><pre><code>scalingo -a myapp domains
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Configure custom domain names</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>domains</span>|<span class='subcmd'>domains-add</span>|<span class='subcmd'>domains-ssl</span>|<span class='subcmd'>domains-remove</span></code><div class='examples'><pre><code>scalingo -a myapp domains
 scalingo -a myapp domains-add example.com
-scalingo -a myapp domains-remove example.com
-scalingo -a myapp domains-ssl example.com --cert file.crt --key file.key</code></pre></div></div></div>
+scalingo -a myapp domains-ssl example.com --cert file.crt --key file.key
+scalingo -a myapp domains-remove example.com</code></pre></div></div></div>
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Manage collaborators of the application</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>collaborators</span>|<span class='subcmd'>collaborators-add</span>|<span class='subcmd'>collaborators-remove</span></code><div class='examples'><pre><code>scalingo -a myapp collaborators
+scalingo -a myapp collaborators-add user@example.com
+scalingo -a myapp collaborators-remove user@example.com</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>List existing addons and plans</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>addons-list</span>|<span class='subcmd'>addons-plans</span></code><div class='examples'><pre><code>scalingo addons-list
 scalingo addons-plans scalingo-mongodb</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Manage addons of your applications</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>addons</span>|<span class='subcmd'>addons-add</span>|<span class='subcmd'>addons-remove</span>|<span class='subcmd'>addons-upgrade</span></code><div class='examples'><pre><code>scalingo -a myapp addons
 scalingo -a myapp addons-add scalingo-mongodb 1
 scalingo -a myapp addons-remove myapp_12345
 scalingo -a myapp addons-upgrade myapp_12345 2</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Watch the logs</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>logs</span></code><div class='examples'><pre><code>scalingo -a myapp logs -f</code></pre></div></div></div>
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Read and watch the logs</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>logs</span></code><div class='examples'><pre><code>scalingo -a myapp logs -n 1000
+scalingo -a myapp logs -f</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Run custom job</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>run</span></code><div class='examples'><pre><code>scalingo -a myapp run bundle exec rails console</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Access your database</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>db-tunnel</span></code><div class='examples'><pre><code>scalingo -a myapp db-tunnel SCALINGO_MONGODB_URL</code></pre></div></div></div>
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Access your database</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>mongo-console</span>|<span class='subcmd'>redis-console</span>|<span class='subcmd'>mysql-console</span>|<span class='subcmd'>pgsql-console</span>|<span class='subcmd'>db-tunnel</span></code><div class='examples'><pre><code>scalingo -a myapp mongo-console
+scalingo -a myapp redis-console
+scalingo -a myapp mysql-console
+scalingo -a myapp pgsql-console
+scalingo -a myapp db-tunnel MONGO_URL</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Manage containers, scale</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>ps</span>|<span class='subcmd'>restart</span>|<span class='subcmd'>scale</span></code><div class='examples'><pre><code>scalingo -a myapp ps
 scalingo -a myapp restart web:1
-scalingo -a myapp scale worker:2</code></pre></div></div></div></div>
+scalingo -a myapp scale web:2
+scalingo -a myapp scale worker:2:L
+scalingo -a myapp scale clock:0</code></pre></div></div></div></div>
 </div>
 </div>
 </div>
@@ -173,6 +183,20 @@ remote of your GIT repository
 Changelog
 <a href='#Changelog' name='Changelog'></a>
 </h1>
+</div>
+<div class='col-xs-12'>
+<strong>1.0.0</strong>
+<ul>
+<li>[Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis <a href="https://github.com/Scalingo/cli/issues/111">#111</a></li>
+<li>[Feature - Collaborators] Handle collaborators directly from the command line client <a href="https://github.com/Scalingo/cli/issues/113">#113</a></li>
+<li>[Feature - Proxy] Add support and documentation about how to use a HTTPS proxy <a href="https://github.com/Scalingo/cli/issues/104"><a href="https://github.com/Scalingo/cli/issues/10">#10</a>4</a> <a href="https://github.com/Scalingo/cli/issues/110">#110</a></li>
+<li>[Refactoring - API calls] Completely refactor error management for Scalingo API calls <a href="https://github.com/Scalingo/cli/issues/112">#112</a></li>
+<li>[Improvement - SSL] Embed Scalingo new SSL certificate SHA-256 only <a href="https://github.com/Scalingo/cli/issues/109"><a href="https://github.com/Scalingo/cli/issues/10">#10</a>9</a></li>
+<li>[Bugfix - Macos] <a href="https://github.com/Scalingo/cli/issues/105"><a href="https://github.com/Scalingo/cli/issues/10">#10</a>5</a> <a href="https://github.com/Scalingo/cli/issues/114">#114</a></li>
+<li>[Bugfix - Logs] No more weird error message when no log is available for an app <a href="https://github.com/Scalingo/cli/issues/108"><a href="https://github.com/Scalingo/cli/issues/10">#10</a>8</a></li>
+<li>[Bugfix - Logs] Use of websocket for log streaming <a href="https://github.com/Scalingo/cli/issues/86">#86</a> <a href="https://github.com/Scalingo/cli/issues/115">#115</a> <a href="https://github.com/Scalingo/cli/issues/116">#116</a></li>
+<li>[Bugfix - Windows] Babun shell compatibility <a href="https://github.com/Scalingo/cli/issues/106"><a href="https://github.com/Scalingo/cli/issues/10">#10</a>6</a></li>
+</ul>
 </div>
 <div class='col-xs-12'>
 <strong>1.0.0-rc1</strong>
