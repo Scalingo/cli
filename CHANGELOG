@@ -1,18 +1,23 @@
 Changelog
 =========
 
-### v1.0.0-rc2 - 21/04/2015
+### v1.0.0 - 06/05/2015
 
-* [Proxy] Add documentation about how to use a HTTPS proxy
-* [SSL] Embed Scalingo new SSL certificate SHA-256 only
-* [Logs] No more weird error message when no log is available for an app
+* [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis #111 
+* [Feature - Collaborators] Handle collaborators directly from the command line client #113
+* [Feature - Proxy] Add support and documentation about how to use a HTTPS proxy #104 #110
+* [Refactoring - API calls] Completely refactor error management for Scalingo API calls #112
+* [Improvement - SSL] Embed Scalingo new SSL certificate SHA-256 only #109
+* [Bugfix - Macos] #105 #114
+* [Bugfix - Logs] No more weird error message when no log is available for an app #108
+* [Bugfix - Logs] Use of websocket for log streaming #86 #115 #116
 
 ### v1.0.0-rc1 - 15/04/2015
 
 * [Feature] Modify size of containers with `scalingo scale` - #102
 * [Bugfix] Fix ssh-agent error when no private key is available - Fixed #100
 * [Bugfix] Fix domain-add issue. (error about domain.crt file) - Fixed #98
-* [BugFix] Fix addon plans description, no more HTML in them  - #96
+* [Bugfix] Fix addon plans description, no more HTML in them  - #96
 * [Bugfix] Correctly handle db-tunnel when alias is given as argument - Fixed #93
 
 ### v1.0.0-beta1 - 08/03/2015
