@@ -11,6 +11,7 @@ Changelog
 * [Bugfix - Macos] #105 #114
 * [Bugfix - Logs] No more weird error message when no log is available for an app #108
 * [Bugfix - Logs] Use of websocket for log streaming #86 #115 #116
+* [Bugfix - Windows] Babun shell compatibility #106
 
 ### v1.0.0-rc1 - 15/04/2015
 
