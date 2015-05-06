@@ -46,6 +46,10 @@
 			"Rev": "1351f936d976c60a0a48d728281922cf63eafb8d"
 		},
 		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "5058c78c3627b31e484a81463acd51c7cecc06f3"
+		},
+		{
 			"ImportPath": "gopkg.in/errgo.v1",
 			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
 		}

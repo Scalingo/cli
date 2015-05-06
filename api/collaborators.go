@@ -1,6 +1,6 @@
 package api
 
-import "gopkg.in/errgo.v1"
+import "github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 
 type Collaborator struct {
 	ID       string `json:"id"`
