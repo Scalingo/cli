@@ -10,8 +10,8 @@ https://scalingo.com
 You have to setup the following environment variables:
 
 ```
-HTTP_PROXY=http://<proxy host>:<proxy port>
-HTTPS_PROXY=https://<proxy host>:<proxy port>
+http_proxy=http://<proxy host>:<proxy port>
+https_proxy=https://<proxy host>:<proxy port>
 ```
 
 ## Command help
