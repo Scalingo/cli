@@ -1,6 +1,7 @@
 package term
 
 import (
+	"os"
 	"bytes"
 	"encoding/binary"
 	"fmt"
@@ -41,6 +42,11 @@ func Password(prompt string) (string, error) {
 	fmt.Print(prompt)
 
 	var pass string
+	if os.Getenv("BABUN_HOME") != "" {
+		fmt.Scanf("%s", &pass)
+		return pass, nil
+	}
+	
 	var c rune
 	for c != '\r' {
 		var err error
