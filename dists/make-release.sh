@@ -18,6 +18,7 @@ while getopts v:d: OPT; do
       VERSION=$OPTARG
       ;;
     d)
+      echo "HELLO"
       DEV_MODE=1
       PRE_VERSION=$OPTARG
       ;;
@@ -36,8 +37,8 @@ if [ $DEV_MODE -eq 1 ] ; then
   dev_tag="dev-${ref:0:10}"
 fi
 
-if [ -n $PRE_VERSION ] ; then
-  dev_tag="$PRE_VERSION"
+if [ -n "${PRE_VERSION}" ] ; then
+  dev_tag="${PRE_VERSION}"
 fi
 
 echo "tag: $tag"
@@ -48,7 +49,7 @@ git rebase master
 ensure_goxc_installation
 
 goxc_flags="-pv $VERSION"
-if [ -n $dev_tag ] ; then
+if [ -n "${dev_tag}" ] ; then
   goxc_flags="${goxc_flags} -pr $dev_tag"
 fi
 if uname -a | grep -iq Linux ; then
