@@ -92,11 +92,19 @@ func newReportError(err error) *ReportError {
 }
 
 func newSysinfo() Sysinfo {
-	u, _ := user.Current()
+	var username string
+	u, err := user.Current()
+	if err != nil {
+		username = "n/a"
+		rollbar.Error(rollbar.WARN, err)
+	} else {
+		username = u.Username
+	}
+
 	s := Sysinfo{
 		OS:        runtime.GOOS,
 		Arch:      runtime.GOARCH,
-		Username:  u.Username,
+		Username:  username,
 		GoVersion: runtime.Version(),
 	}
 	return s
