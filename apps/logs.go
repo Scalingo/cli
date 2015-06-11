@@ -111,13 +111,13 @@ func streamLogs(logsRawURL string) error {
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
+		debug.Println(string(buffer[:n]))
 		err = json.Unmarshal(buffer[:n], &event)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errgo.Notef(err, "invalid JSON %v", string(buffer[:n]))
 		}
 		switch event.Type {
 		case "ping":
-			debug.Println("> ", event.Timestamp)
 		case "log":
 			fmt.Println(strings.TrimSpace(event.Log))
 		}
