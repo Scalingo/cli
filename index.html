@@ -130,14 +130,23 @@ scalingo addons-plans scalingo-mongodb</code></pre></div></div></div>
 scalingo -a myapp addons-add scalingo-mongodb 1
 scalingo -a myapp addons-remove myapp_12345
 scalingo -a myapp addons-upgrade myapp_12345 2</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Read and watch the logs</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>logs</span></code><div class='examples'><pre><code>scalingo -a myapp logs -n 1000
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Read and watch the logs</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>logs</span></code><div class='examples'><pre><code># Display the last 1000 lines of log
+scalingo -a myapp logs -n 1000
+
+# Follow the logs of your application in real-time
 scalingo -a myapp logs -f</code></pre></div></div></div>
-<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Run custom job</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>run</span></code><div class='examples'><pre><code>scalingo -a myapp run bundle exec rails console</code></pre></div></div></div>
+<div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Run custom job</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>run</span></code><div class='examples'><pre><code>scalingo -a myapp run bundle exec rails console
+
+# Define custom environment variables into the one-off container
+scalingo -a myapp run --env CUSTOM_ENV=value --env ENV_EXAMPLE=custom
+
+# Upload a file to the one-off container (target is /tmp/uploads)
+scalingo -a myapp run --file ./dump.sql</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Access your database</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>mongo-console</span>|<span class='subcmd'>redis-console</span>|<span class='subcmd'>mysql-console</span>|<span class='subcmd'>pgsql-console</span>|<span class='subcmd'>db-tunnel</span></code><div class='examples'><pre><code>scalingo -a myapp mongo-console
 scalingo -a myapp redis-console
 scalingo -a myapp mysql-console
 scalingo -a myapp pgsql-console
-scalingo -a myapp db-tunnel MONGO_URL</code></pre></div></div></div>
+<br># Build an encrypted tunnel to access your database<br>scalingo -a myapp db-tunnel MONGO_URL</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Manage containers, scale</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>ps</span>|<span class='subcmd'>restart</span>|<span class='subcmd'>scale</span></code><div class='examples'><pre><code>scalingo -a myapp ps
 scalingo -a myapp restart web:1
 scalingo -a myapp scale web:2
