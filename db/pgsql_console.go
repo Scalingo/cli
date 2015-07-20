@@ -33,7 +33,7 @@ func PgSQLConsole(app string) error {
 
 	err = apps.Run(opts)
 	if err != nil {
-		return errgo.Newf("Fail to run redis console: %v", err)
+		return errgo.Newf("Fail to run PostgreSQL console: %v", err)
 	}
 
 	return nil

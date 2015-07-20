@@ -64,7 +64,7 @@ func init() {
 
 	err := os.MkdirAll(C.ConfigDir, 0755)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v", err)
+		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v\n", err)
 		os.Exit(1)
 	}
 
