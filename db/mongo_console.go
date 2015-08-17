@@ -7,7 +7,7 @@ import (
 
 func MongoConsole(app string) error {
 
-	mongoURL, user, password, err := dbURL(app, "MONGO", []string{"mongodb://"})
+	mongoURL, user, password, err := dbURL(app, "SCALINGO_MONGO", []string{"mongodb://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
