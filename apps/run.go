@@ -140,7 +140,7 @@ func buildEnv(cmdEnv []string) (map[string]string, error) {
 
 	for _, cmdVar := range cmdEnv {
 		v := strings.Split(cmdVar, "=")
-		if len(v[0]) == 0 || len(v[1]) == 0 {
+		if len(v) != 2 || len(v[0]) == 0 || len(v[1]) == 0 {
 			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
 		}
 		env[v[0]] = v[1]
