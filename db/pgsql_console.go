@@ -9,7 +9,7 @@ import (
 
 func PgSQLConsole(app string) error {
 
-	postgreSQLURL, user, password, err := dbURL(app, "POSTGRESQL", []string{"postgres://"})
+	postgreSQLURL, user, password, err := dbURL(app, "SCALINGO_POSTGRESQL", []string{"postgres://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

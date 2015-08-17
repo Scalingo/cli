@@ -10,7 +10,7 @@ import (
 
 func MySQLConsole(app string) error {
 
-	mySQLURL, user, password, err := dbURL(app, "MYSQL", []string{"mysql://", "mysql2://"})
+	mySQLURL, user, password, err := dbURL(app, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

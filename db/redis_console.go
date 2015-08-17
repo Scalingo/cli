@@ -10,7 +10,7 @@ import (
 )
 
 func RedisConsole(app string) error {
-	redisURL, _, password, err := dbURL(app, "REDIS", []string{"redis://"})
+	redisURL, _, password, err := dbURL(app, "SCALINGO_REDIS", []string{"redis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
