@@ -20,7 +20,7 @@ var (
 		Flags: []cli.Flag{appFlag,
 			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
-			cli.StringFlag{Name: "filter, F", Usage: "Filter process that will be displayed", EnvVar: ""},
+			cli.StringFlag{Name: "filter, F", Usage: "Filter containers logs that will be displayed", EnvVar: ""},
 		},
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
