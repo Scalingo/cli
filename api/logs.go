@@ -14,7 +14,7 @@ func LogsURL(app string) (*http.Response, error) {
 	return req.Do()
 }
 
-func Logs(logsURL string, n int) (*http.Response, error) {
+func Logs(logsURL string, n int, filter string) (*http.Response, error) {
 	u, err := url.Parse(logsURL)
 	if err != nil {
 		return nil, errgo.Mask(err)
@@ -25,8 +25,9 @@ func Logs(logsURL string, n int) (*http.Response, error) {
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]interface{}{
-			"token": u.Query().Get("token"),
-			"n":     n,
+			"token":  u.Query().Get("token"),
+			"n":      n,
+			"filter": filter,
 		},
 	}
 	return req.Do()
