@@ -30,6 +30,11 @@ type LogsRes struct {
 }
 
 func Logs(appName string, stream bool, n int, filter string) error {
+	err := checkFilter(appName, filter)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
 	res, err := api.LogsURL(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -125,6 +130,38 @@ func streamLogs(logsRawURL string, filter string) error {
 		case "ping":
 		case "log":
 			fmt.Println(strings.TrimSpace(event.Log))
+		}
+	}
+
+	return nil
+}
+
+func checkFilter(appName string, filter string) error {
+	if filter != "" {
+		processes, err := api.AppsPs(appName)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+
+		filters := strings.Split(filter, "|")
+		for _, f := range filters {
+
+			ctName := ""
+			for _, ct := range processes {
+
+				ctName = ct.Name
+				if strings.HasPrefix(f, ctName+"-") || f == ctName {
+					break
+				}
+			}
+			if !strings.HasPrefix(f, ctName+"-") && f != ctName {
+				return errgo.Newf(
+					"%s is not a valid container filter\n\nEXAMPLES:\n"+
+						"\"scalingo logs -F web\": logs of every web containers\n"+
+						"\"scalingo logs -F web-1\": logs of web container 1\n"+
+						"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
+					f)
+			}
 		}
 	}
 
