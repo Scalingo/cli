@@ -29,7 +29,7 @@ type LogsRes struct {
 	App     *api.App `json:"app"`
 }
 
-func Logs(appName string, stream bool, n int) error {
+func Logs(appName string, stream bool, n int, filter string) error {
 	res, err := api.LogsURL(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -52,20 +52,20 @@ func Logs(appName string, stream bool, n int) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	if err = dumpLogs(logsRes.LogsURL, n); err != nil {
+	if err = dumpLogs(logsRes.LogsURL, n, filter); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
 	if stream {
-		if err = streamLogs(logsRes.LogsURL); err != nil {
+		if err = streamLogs(logsRes.LogsURL, filter); err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
 	}
 	return nil
 }
 
-func dumpLogs(logsURL string, n int) error {
-	res, err := api.Logs(logsURL, n)
+func dumpLogs(logsURL string, n int, filter string) error {
+	res, err := api.Logs(logsURL, n, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -84,7 +84,7 @@ func dumpLogs(logsURL string, n int) error {
 	return nil
 }
 
-func streamLogs(logsRawURL string) error {
+func streamLogs(logsRawURL string, filter string) error {
 	var (
 		err    error
 		buffer [2048]byte
@@ -101,7 +101,12 @@ func streamLogs(logsRawURL string) error {
 		logsURL.Scheme = "ws"
 	}
 
-	conn, err := websocket.Dial(logsURL.String()+"&stream=true", "", "http://scalingo-cli.local/"+config.Version)
+	logsURLString := fmt.Sprintf("%s&stream=true", logsURL.String())
+	if filter != "" {
+		logsURLString = fmt.Sprintf("%s&filter=%s", logsURLString, filter)
+	}
+
+	conn, err := websocket.Dial(logsURLString, "", "http://scalingo-cli.local/"+config.Version)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
