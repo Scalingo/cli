@@ -146,22 +146,21 @@ func checkFilter(appName string, filter string) error {
 		filters := strings.Split(filter, "|")
 		for _, f := range filters {
 
-			tmpFilter := ""
+			ctName := ""
 			for _, ct := range processes {
 
-				for i := ct.Amount; i > 0 && f != tmpFilter; i-- {
-					if strings.Contains(f, "-") {
-						tmpFilter = fmt.Sprintf("%s-%d", ct.Name, i)
-					} else {
-						tmpFilter = ct.Name
-					}
-				}
-				if tmpFilter == f {
+				ctName = ct.Name
+				if strings.HasPrefix(f, ctName+"-") || f == ctName {
 					break
 				}
 			}
-			if tmpFilter != f {
-				return errgo.Newf("%s is not a valid container type", f)
+			if !strings.HasPrefix(f, ctName+"-") && f != ctName {
+				return errgo.Newf(
+					"%s is not a valid container filter\n\nEXAMPLES:\n"+
+						"\"scalingo logs -F web\": logs of every web containers\n"+
+						"\"scalingo logs -F web-1\": logs of web container 1\n"+
+						"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
+					f)
 			}
 		}
 	}
