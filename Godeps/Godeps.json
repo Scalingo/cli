@@ -11,8 +11,8 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/codegangsta-cli",
-			"Comment": "1.2.0-51-g66438f3",
-			"Rev": "66438f3f92f40b42110369ef3155976a9eceeef0"
+			"Comment": "1.2.0-140-g5d938cb",
+			"Rev": "5d938cb0fd3254203b368ff239ce80b179d164b0"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/envconfig",
