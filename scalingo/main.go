@@ -24,9 +24,8 @@ func main() {
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
 	}
-	app.Action = func(c *cli.Context) {
-		cli.ShowAppHelp(c)
-	}
+	app.EnableBashCompletion = true
+	app.Action = cmd.HelpCommand.Action
 	app.Commands = []cli.Command{
 		// Apps
 		cmd.AppsCommand,
@@ -86,6 +85,9 @@ func main() {
 		// Version
 		cmd.VersionCommand,
 		cmd.UpdateCommand,
+
+		// Help
+		cmd.HelpCommand,
 	}
 
 	go signals.Handle()

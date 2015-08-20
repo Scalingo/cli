@@ -4,6 +4,7 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
 var (
@@ -53,6 +54,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.AddonsAddAutoComplete(c)
+		},
 	}
 	AddonsRemoveCommand = cli.Command{
 		Name:     "addons-remove",
@@ -75,6 +79,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.AddonsRemoveAutoComplete(c)
 		},
 	}
 	AddonsUpgradeCommand = cli.Command{

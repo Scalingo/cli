@@ -5,5 +5,9 @@ import (
 )
 
 var (
-	appFlag = cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the current app"}
+	appFlag = cli.StringFlag{
+		Name:  "app, a",
+		Value: "<name>",
+		Usage: "Name of the current app",
+	}
 )
