@@ -17,9 +17,11 @@ func CurrentAppCompletion(c *cli.Context) string {
 				}
 			}
 		}
-	} else if appdetect.DetectGit() {
+	}
+	if appName == "" && appdetect.DetectGit() {
 		appName, _ = appdetect.ScalingoRepo()
-	} else if os.Getenv("SCALINGO_APP") != "" {
+	}
+	if appName == "" && os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
 	}
 	return appName
