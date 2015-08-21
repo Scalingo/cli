@@ -19,7 +19,7 @@ var (
      Get lines with filter:
        'scalingo --app my-app logs -F web'
        'scalingo --app my-app logs -F web-1'
-       'scalingo --app my-app logs --follow -F worker|clock'`,
+       'scalingo --app my-app logs --follow -F \"worker|clock\"'`,
 		Flags: []cli.Flag{appFlag,
 			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},

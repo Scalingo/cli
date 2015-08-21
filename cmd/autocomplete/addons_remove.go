@@ -8,7 +8,12 @@ import (
 )
 
 func AddonsRemoveAutoComplete(c *cli.Context) error {
-	resources, err := api.AddonsList(CurrentAppCompletion(c))
+	appName := CurrentAppCompletion(c)
+	if appName == "" {
+		return nil
+	}
+
+	resources, err := api.AddonsList(appName)
 	if err == nil {
 
 		for _, resource := range resources {

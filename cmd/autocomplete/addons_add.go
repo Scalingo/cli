@@ -9,8 +9,12 @@ import (
 )
 
 func AddonsAddAutoComplete(c *cli.Context) error {
-	resources, err := api.AddonsList(CurrentAppCompletion(c))
+	appName := CurrentAppCompletion(c)
+	if appName == "" {
+		return nil
+	}
 
+	resources, err := api.AddonsList(appName)
 	if len(os.Args) > 1 && err == nil {
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonNameSet := false

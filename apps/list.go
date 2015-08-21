@@ -11,18 +11,10 @@ import (
 )
 
 func List() error {
-	res, err := api.AppsList()
+	apps, err := api.AppsList()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	defer res.Body.Close()
-
-	appsMap := map[string][]*api.App{}
-	err = ReadJson(res.Body, &appsMap)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	apps := appsMap["apps"]
 
 	if len(apps) == 0 {
 		fmt.Println(io.Indent("\nYou haven't created any app yet, create your first application using:\n→ scalingo create <app_name>\n", 2))

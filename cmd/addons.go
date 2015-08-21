@@ -106,5 +106,8 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.AddonsUpgradeAutoComplete(c)
+		},
 	}
 )

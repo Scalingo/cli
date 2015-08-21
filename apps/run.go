@@ -67,7 +67,7 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	runStruct := make(map[string]interface{})
-	ReadJson(res.Body, &runStruct)
+	api.ParseJSON(res, &runStruct)
 	debug.Printf("%+v\n", runStruct)
 
 	if res.StatusCode == http.StatusNotFound {

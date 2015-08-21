@@ -9,16 +9,17 @@ import (
 )
 
 func ScaleAutoComplete(c *cli.Context) error {
-
 	appName := CurrentAppCompletion(c)
-	if appName != "" {
-		processes, err := api.AppsPs(appName)
-		if err != nil {
-			return errgo.Mask(err)
-		}
-		for _, ct := range processes {
-			fmt.Println(fmt.Sprintf("%s:%d:%s", ct.Name, ct.Amount, ct.Size))
-		}
+	if appName == "" {
+		return nil
+	}
+
+	processes, err := api.AppsPs(appName)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+	for _, ct := range processes {
+		fmt.Println(fmt.Sprintf("%s:%d:%s", ct.Name, ct.Amount, ct.Size))
 	}
 
 	return nil
