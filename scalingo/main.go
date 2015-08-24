@@ -137,14 +137,23 @@ func main() {
 
 	go signals.Handle()
 
-	if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
-		err := update.Check()
-		if err != nil {
-			rollbar.Error(rollbar.ERR, err)
+	bashComplete := false
+	for i := range os.Args {
+		if strings.Contains(os.Args[i], "generate-bash-completion") {
+			bashComplete = true
 		}
-		return
-	} else {
-		defer update.Check()
+	}
+
+	if !bashComplete {
+		if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
+			err := update.Check()
+			if err != nil {
+				rollbar.Error(rollbar.ERR, err)
+			}
+			return
+		} else {
+			defer update.Check()
+		}
 	}
 
 	if err := app.Run(os.Args); err != nil {
