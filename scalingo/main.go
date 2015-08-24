@@ -33,7 +33,6 @@ func DefaultAction(c *cli.Context) {
 			}
 		}
 	}
-	os.Exit(0)
 }
 
 func ScalingoAppComplete(c *cli.Context) {
