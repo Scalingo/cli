@@ -8,10 +8,33 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/cmd"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
 )
+
+func DefaultAction(c *cli.Context) {
+	completeMode := false
+
+	for i := range os.Args {
+		if strings.Contains(os.Args[i], "generate-bash-completion") {
+			completeMode = true
+			break
+		}
+	}
+
+	if !completeMode {
+		cmd.HelpCommand.Action(c)
+	} else {
+		for i := range os.Args {
+			if autocomplete.FlagsAutoComplete(c, os.Args[i]) {
+				break
+			}
+		}
+	}
+	os.Exit(0)
+}
 
 func ScalingoAppComplete(c *cli.Context) {
 
@@ -46,10 +69,10 @@ func main() {
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
 	}
 	app.EnableBashCompletion = true
-	app.Action = cmd.HelpCommand.Action
 	app.BashComplete = func(c *cli.Context) {
 		ScalingoAppComplete(c)
 	}
+	app.Action = DefaultAction
 	app.Commands = []cli.Command{
 		// Apps
 		cmd.AppsCommand,
@@ -107,7 +130,6 @@ func main() {
 		cmd.SignUpCommand,
 
 		// Version
-		cmd.VersionCommand,
 		cmd.UpdateCommand,
 
 		// Help
