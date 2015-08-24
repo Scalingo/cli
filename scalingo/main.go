@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
@@ -11,6 +12,26 @@ import (
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
 )
+
+func ScalingoAppComplete(c *cli.Context) {
+
+	for _, flag := range c.App.Flags {
+		names := strings.Split(cli.GetFlagName(flag), ",")
+		for i := range names {
+			if i == 0 {
+				fmt.Fprintln(c.App.Writer, "--"+names[i])
+			} else {
+				fmt.Fprintln(c.App.Writer, "-"+strings.TrimSpace(names[i]))
+			}
+		}
+	}
+
+	for _, command := range c.App.Commands {
+		for _, name := range command.Names() {
+			fmt.Fprintln(c.App.Writer, name)
+		}
+	}
+}
 
 func main() {
 	app := cli.NewApp()
@@ -26,6 +47,9 @@ func main() {
 	}
 	app.EnableBashCompletion = true
 	app.Action = cmd.HelpCommand.Action
+	app.BashComplete = func(c *cli.Context) {
+		ScalingoAppComplete(c)
+	}
 	app.Commands = []cli.Command{
 		// Apps
 		cmd.AppsCommand,
