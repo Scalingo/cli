@@ -27,10 +27,9 @@ func DefaultAction(c *cli.Context) {
 	if !completeMode {
 		cmd.HelpCommand.Action(c)
 	} else {
-		for i := range os.Args {
-			if autocomplete.FlagsAutoComplete(c, os.Args[i]) {
-				break
-			}
+		i := len(os.Args) - 2
+		if i > 0 {
+			autocomplete.FlagsAutoComplete(c, os.Args[i])
 		}
 	}
 }
@@ -72,67 +71,17 @@ func main() {
 		ScalingoAppComplete(c)
 	}
 	app.Action = DefaultAction
-	app.Commands = []cli.Command{
-		// Apps
-		cmd.AppsCommand,
-		cmd.CreateCommand,
-		cmd.DestroyCommand,
 
-		// Apps Actions
-		cmd.LogsCommand,
-		cmd.RunCommand,
-
-		// Apps Process Actions
-		cmd.PsCommand,
-		cmd.ScaleCommand,
-		cmd.RestartCommand,
-
-		// Environment
-		cmd.EnvCommand,
-		cmd.EnvSetCommand,
-		cmd.EnvUnsetCommand,
-
-		// Domains
-		cmd.DomainsListCommand,
-		cmd.DomainsAddCommand,
-		cmd.DomainsRemoveCommand,
-		cmd.DomainsSSLCommand,
-
-		// Collaborators
-		cmd.CollaboratorsListCommand,
-		cmd.CollaboratorsAddCommand,
-		cmd.CollaboratorsRemoveCommand,
-
-		// Addons
-		cmd.AddonProvidersListCommand,
-		cmd.AddonProvidersPlansCommand,
-		cmd.AddonsListCommand,
-		cmd.AddonsAddCommand,
-		cmd.AddonsRemoveCommand,
-		cmd.AddonsUpgradeCommand,
-
-		// DB Access
-		cmd.DbTunnelCommand,
-		cmd.RedisConsoleCommand,
-		cmd.MongoConsoleCommand,
-		cmd.MySQLConsoleCommand,
-		cmd.PgSQLConsoleCommand,
-
-		// SSH keys
-		cmd.ListSSHKeyCommand,
-		cmd.AddSSHKeyCommand,
-		cmd.RemoveSSHKeyCommand,
-
-		// Sessions
-		cmd.LoginCommand,
-		cmd.LogoutCommand,
-		cmd.SignUpCommand,
-
-		// Version
-		cmd.UpdateCommand,
-
-		// Help
-		cmd.HelpCommand,
+	// Commands
+	for _, command := range cmd.Commands {
+		oldFunc := command.BashComplete
+		command.BashComplete = func(c *cli.Context) {
+			n := len(os.Args) - 2
+			if n > 0 && !autocomplete.FlagsAutoComplete(c, os.Args[n]) && oldFunc != nil {
+				oldFunc(c)
+			}
+		}
+		app.Commands = append(app.Commands, command)
 	}
 
 	go signals.Handle()
