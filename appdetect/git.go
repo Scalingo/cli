@@ -11,19 +11,22 @@ import (
 	"github.com/Scalingo/cli/debug"
 )
 
-func DetectGit() bool {
+func DetectGit() (string, bool) {
 	cwd, err := os.Getwd()
 	if err != nil {
-		return false
+		return "", false
 	}
-	if _, err := os.Stat(path.Join(cwd, ".git")); err != nil {
-		return false
+	for cwd != "/" {
+		if _, err := os.Stat(path.Join(cwd, ".git")); err == nil {
+			return cwd, true
+		}
+		cwd = filepath.Dir(cwd)
 	}
-	return true
+	return "", false
 }
 
-func ScalingoRepo() (string, error) {
-	remotes, err := gitremote.List(".")
+func ScalingoRepo(directory string) (string, error) {
+	remotes, err := gitremote.List(directory)
 	if err != nil {
 		return "", err
 	}

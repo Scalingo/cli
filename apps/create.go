@@ -15,7 +15,7 @@ func Create(appName string) error {
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)
-	if appdetect.DetectGit() && appdetect.AddRemote(app.GitUrl) == nil {
+	if _, ok := appdetect.DetectGit(); ok && appdetect.AddRemote(app.GitUrl) == nil {
 		fmt.Printf("Git repository detected: remote scalingo added\n→ 'git push scalingo master' to deploy your app\n")
 	} else {
 		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add scalingo %s\n→ git push scalingo master\n", app.GitUrl)

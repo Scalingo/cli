@@ -10,14 +10,14 @@ import (
 
 func CurrentApp(c *cli.Context) string {
 	var repoName string
-	if os.Getenv("SCALINGO_APP") != "" {
-		repoName = os.Getenv("SCALINGO_APP")
-	} else if c.GlobalString("app") != "<name>" {
+	if c.GlobalString("app") != "<name>" {
 		repoName = c.GlobalString("app")
 	} else if c.String("app") != "<name>" {
 		repoName = c.String("app")
-	} else if DetectGit() {
-		repoName, _ = ScalingoRepo()
+	} else if os.Getenv("SCALINGO_APP") != "" {
+		repoName = os.Getenv("SCALINGO_APP")
+	} else if dir, ok := DetectGit(); ok {
+		repoName, _ = ScalingoRepo(dir)
 	}
 	if repoName == "" {
 		fmt.Println("Unable to find the application name, please use --app flag.")
