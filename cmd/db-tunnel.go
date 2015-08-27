@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
 )
@@ -65,6 +66,10 @@ var (
 			} else if err := db.Tunnel(currentApp, c.Args()[0], sshIdentity, c.Int("port")); err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")
+			autocomplete.DbTunnelAutoComplete(c)
 		},
 	}
 )

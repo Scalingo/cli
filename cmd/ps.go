@@ -4,6 +4,7 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
 var (
@@ -22,6 +23,9 @@ var (
 			} else if err := apps.Ps(currentApp); err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "ps")
 		},
 	}
 )

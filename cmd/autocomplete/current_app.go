@@ -10,19 +10,19 @@ import (
 func CurrentAppCompletion(c *cli.Context) string {
 	appName := ""
 	if len(os.Args) >= 2 {
-		for a := range os.Args {
-			if a < len(os.Args) && (os.Args[a] == "-a" || os.Args[a] == "-app") {
-				if (a + 1) < len(os.Args) {
-					appName = os.Args[a+1]
+		for i := range os.Args {
+			if i < len(os.Args) && (os.Args[i] == "-a" || os.Args[i] == "--app") {
+				if (i+1) < len(os.Args) && os.Args[i+1] != "" {
+					return os.Args[i+1]
 				}
 			}
 		}
 	}
-	if appName == "" && appdetect.DetectGit() {
-		appName, _ = appdetect.ScalingoRepo()
-	}
 	if appName == "" && os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
+	}
+	if dir, ok := appdetect.DetectGit(); appName == "" && ok {
+		appName, _ = appdetect.ScalingoRepo(dir, c.GlobalString("remote"))
 	}
 	return appName
 }

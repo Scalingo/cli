@@ -31,6 +31,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons")
+		},
 	}
 	AddonsAddCommand = cli.Command{
 		Name:     "addons-add",
@@ -55,6 +58,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons-add")
 			autocomplete.AddonsAddAutoComplete(c)
 		},
 	}
@@ -81,6 +85,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons-remove")
 			autocomplete.AddonsRemoveAutoComplete(c)
 		},
 	}
@@ -107,6 +112,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons-upgrade")
 			autocomplete.AddonsUpgradeAutoComplete(c)
 		},
 	}

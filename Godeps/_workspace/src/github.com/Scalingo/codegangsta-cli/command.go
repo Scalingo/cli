@@ -74,6 +74,12 @@ func (c Command) Run(ctx *Context) error {
 	set := flagSet(c.Name, c.Flags)
 	set.SetOutput(ioutil.Discard)
 
+	context := NewContext(ctx.App, set, ctx)
+
+	if checkCommandCompletions(context, c.Name) {
+		return nil
+	}
+
 	firstFlagIndex := -1
 	terminatorIndex := -1
 	for index, arg := range ctx.Args() {
@@ -117,11 +123,6 @@ func (c Command) Run(ctx *Context) error {
 		fmt.Fprintln(ctx.App.Writer)
 		ShowCommandHelp(ctx, c.Name)
 		return nerr
-	}
-	context := NewContext(ctx.App, set, ctx)
-
-	if checkCommandCompletions(context, c.Name) {
-		return nil
 	}
 
 	if checkCommandHelp(context, c.Name) {

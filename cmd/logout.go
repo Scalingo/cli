@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/session"
 )
 
@@ -18,6 +19,9 @@ var (
 				panic(err)
 			}
 			fmt.Println("Scalingo credentials have been deleted.")
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "logout")
 		},
 	}
 )

@@ -23,6 +23,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys")
+		},
 	}
 
 	AddSSHKeyCommand = cli.Command{
@@ -44,6 +47,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys-add")
 		},
 	}
 
@@ -68,6 +74,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
 			autocomplete.KeysRemoveAutoComplete(c)
 		},
 	}

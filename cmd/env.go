@@ -32,6 +32,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env")
+		},
 	}
 
 	EnvSetCommand = cli.Command{
@@ -56,6 +59,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env-set")
 		},
 	}
 
@@ -83,6 +89,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env-unset")
 			autocomplete.EnvUnsetAutoComplete(c)
 		},
 	}

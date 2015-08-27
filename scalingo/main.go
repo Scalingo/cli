@@ -36,16 +36,7 @@ func DefaultAction(c *cli.Context) {
 
 func ScalingoAppComplete(c *cli.Context) {
 
-	for _, flag := range c.App.Flags {
-		names := strings.Split(cli.GetFlagName(flag), ",")
-		for i := range names {
-			if i == 0 {
-				fmt.Fprintln(c.App.Writer, "--"+names[i])
-			} else {
-				fmt.Fprintln(c.App.Writer, "-"+strings.TrimSpace(names[i]))
-			}
-		}
-	}
+	autocomplete.DisplayFlags(c.App.Flags)
 
 	for _, command := range c.App.Commands {
 		for _, name := range command.Names() {

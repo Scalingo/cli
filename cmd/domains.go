@@ -32,6 +32,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "domains")
+		},
 	}
 
 	DomainsAddCommand = cli.Command{
@@ -69,6 +72,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "domains-add")
+		},
 	}
 
 	DomainsRemoveCommand = cli.Command{
@@ -96,6 +102,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "domains-remove")
 			autocomplete.DomainsRemoveAutoComplete(c)
 		},
 	}
@@ -129,6 +136,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "domains-ssl")
 		},
 	}
 )
