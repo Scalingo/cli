@@ -4,6 +4,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-gitremote"
@@ -25,16 +26,22 @@ func DetectGit() (string, bool) {
 	return "", false
 }
 
-func ScalingoRepo(directory string) (string, error) {
+func ScalingoRepo(directory string, remoteName string) (string, error) {
 	remotes, err := gitremote.List(directory)
 	if err != nil {
 		return "", err
 	}
-	for _, remote := range remotes {
-		if remote.Name == "scalingo" {
-			debug.Println("[AppDetect] GIT remote found:", remote)
-			return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
+	for i := 0; i < 2; i++ {
+		for _, remote := range remotes {
+			if remote.Name == remoteName {
+				matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remote.URL))
+				if err == nil && matched {
+					debug.Println("[AppDetect] GIT remote found:", remote)
+					return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
+				}
+			}
 		}
+		remoteName = "scalingo-" + remoteName
 	}
 	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
 }

@@ -22,6 +22,7 @@ func main() {
 	app.CategorizedHelp = true
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
+		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
 	}
 	app.Action = func(c *cli.Context) {
 		cli.ShowAppHelp(c)
