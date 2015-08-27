@@ -39,9 +39,9 @@ func ScalingoRepo(directory string) (string, error) {
 	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
 }
 
-func AddRemote(url string) error {
+func AddRemote(url string, name string) error {
 	remote := &gitremote.Remote{
-		Name: "scalingo",
+		Name: name,
 		URL:  url,
 	}
 
