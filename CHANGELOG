@@ -5,6 +5,9 @@ Changelog
 
 * [Feature - CLI] Add -r/--remote flag to specify a GIT remote instead of an app name #89
 * [Feature - CLI] Add -r/--remote flag to the `create` subcommand to specify an alternative git remote name (default is `scalingo`) #129
+* [Feature - Log] Add -F/--filter flag to filter log output by container types #118
+* [Bugfix - Run] Fix parsing of environment variables (flag -e) #119
+* [Bugfix - Mongo Console] Do not try to connect to the oplog user anymore (when enabled) #117
 
 ### v1.0.0 - 06/05/2015
 
