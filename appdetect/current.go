@@ -17,7 +17,7 @@ func CurrentApp(c *cli.Context) string {
 	} else if os.Getenv("SCALINGO_APP") != "" {
 		repoName = os.Getenv("SCALINGO_APP")
 	} else if dir, ok := DetectGit(); ok {
-		repoName, _ = ScalingoRepo(dir)
+		repoName, _ = ScalingoRepo(dir, c.GlobalString("remote"))
 	}
 	if repoName == "" {
 		fmt.Println("Unable to find the application name, please use --app flag.")

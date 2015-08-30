@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### v1.1.0 - ToBeReleased
+
+* [Feature - CLI] Add -r/--remote flag to specify a GIT remote instead of an app name #89
+* [Feature - CLI] Add -r/--remote flag to the `create` subcommand to specify an alternative git remote name (default is `scalingo`) #129
+
 ### v1.0.0 - 06/05/2015
 
 * [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis #111 
