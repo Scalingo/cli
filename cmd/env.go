@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/env"
 )
 
@@ -31,6 +32,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env")
+		},
 	}
 
 	EnvSetCommand = cli.Command{
@@ -56,6 +60,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env-set")
+		},
 	}
 
 	EnvUnsetCommand = cli.Command{
@@ -80,6 +87,10 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env-unset")
+			autocomplete.EnvUnsetAutoComplete(c)
 		},
 	}
 )

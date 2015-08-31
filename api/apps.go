@@ -46,11 +46,23 @@ type CreateAppParams struct {
 	App *App `json:"app"`
 }
 
-func AppsList() (*http.Response, error) {
+func AppsList() ([]*App, error) {
 	req := &APIRequest{
 		Endpoint: "/apps",
 	}
-	return req.Do()
+
+	res, err := req.Do()
+	if err != nil {
+		return []*App{}, errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	appsMap := map[string][]*App{}
+	err = ParseJSON(res, &appsMap)
+	if err != nil {
+		return []*App{}, errgo.Mask(err, errgo.Any)
+	}
+	return appsMap["apps"], nil
 }
 
 func AppsShow(app string) (*http.Response, error) {

@@ -4,13 +4,13 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
 var (
 	DestroyCommand = cli.Command{
 		Name:        "destroy",
 		Category:    "Global",
-		ShortName:   "d",
 		Flags:       []cli.Flag{appFlag},
 		Usage:       "Destroy an app /!\\",
 		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'",
@@ -24,6 +24,9 @@ var (
 					errorQuit(err)
 				}
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "destroy")
 		},
 	}
 )

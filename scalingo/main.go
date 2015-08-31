@@ -3,14 +3,47 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/cmd"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
 )
+
+func DefaultAction(c *cli.Context) {
+	completeMode := false
+
+	for i := range os.Args {
+		if strings.Contains(os.Args[i], "generate-bash-completion") {
+			completeMode = true
+			break
+		}
+	}
+
+	if !completeMode {
+		cmd.HelpCommand.Action(c)
+	} else {
+		i := len(os.Args) - 2
+		if i > 0 {
+			autocomplete.FlagsAutoComplete(c, os.Args[i])
+		}
+	}
+}
+
+func ScalingoAppComplete(c *cli.Context) {
+
+	autocomplete.DisplayFlags(c.App.Flags)
+
+	for _, command := range c.App.Commands {
+		for _, name := range command.Names() {
+			fmt.Fprintln(c.App.Writer, name)
+		}
+	}
+}
 
 func main() {
 	app := cli.NewApp()
@@ -24,80 +57,43 @@ func main() {
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
 	}
-	app.Action = func(c *cli.Context) {
-		cli.ShowAppHelp(c)
+	app.EnableBashCompletion = true
+	app.BashComplete = func(c *cli.Context) {
+		ScalingoAppComplete(c)
 	}
-	app.Commands = []cli.Command{
-		// Apps
-		cmd.AppsCommand,
-		cmd.CreateCommand,
-		cmd.DestroyCommand,
+	app.Action = DefaultAction
 
-		// Apps Actions
-		cmd.LogsCommand,
-		cmd.RunCommand,
-
-		// Apps Process Actions
-		cmd.PsCommand,
-		cmd.ScaleCommand,
-		cmd.RestartCommand,
-
-		// Environment
-		cmd.EnvCommand,
-		cmd.EnvSetCommand,
-		cmd.EnvUnsetCommand,
-
-		// Domains
-		cmd.DomainsListCommand,
-		cmd.DomainsAddCommand,
-		cmd.DomainsRemoveCommand,
-		cmd.DomainsSSLCommand,
-
-		// Collaborators
-		cmd.CollaboratorsListCommand,
-		cmd.CollaboratorsAddCommand,
-		cmd.CollaboratorsRemoveCommand,
-
-		// Addons
-		cmd.AddonProvidersListCommand,
-		cmd.AddonProvidersPlansCommand,
-		cmd.AddonsListCommand,
-		cmd.AddonsAddCommand,
-		cmd.AddonsRemoveCommand,
-		cmd.AddonsUpgradeCommand,
-
-		// DB Access
-		cmd.DbTunnelCommand,
-		cmd.RedisConsoleCommand,
-		cmd.MongoConsoleCommand,
-		cmd.MySQLConsoleCommand,
-		cmd.PgSQLConsoleCommand,
-
-		// SSH keys
-		cmd.ListSSHKeyCommand,
-		cmd.AddSSHKeyCommand,
-		cmd.RemoveSSHKeyCommand,
-
-		// Sessions
-		cmd.LoginCommand,
-		cmd.LogoutCommand,
-		cmd.SignUpCommand,
-
-		// Version
-		cmd.VersionCommand,
-		cmd.UpdateCommand,
+	// Commands
+	for _, command := range cmd.Commands {
+		oldFunc := command.BashComplete
+		command.BashComplete = func(c *cli.Context) {
+			n := len(os.Args) - 2
+			if n > 0 && !autocomplete.FlagsAutoComplete(c, os.Args[n]) && oldFunc != nil {
+				oldFunc(c)
+			}
+		}
+		app.Commands = append(app.Commands, command)
 	}
 
 	go signals.Handle()
 
-	if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
-		err := update.Check()
-		if err != nil {
-			rollbar.Error(rollbar.ERR, err)
+	bashComplete := false
+	for i := range os.Args {
+		if strings.Contains(os.Args[i], "generate-bash-completion") {
+			bashComplete = true
 		}
-		return
-	} else {
-		defer update.Check()
+	}
+
+	if !bashComplete {
+		if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
+			err := update.Check()
+			if err != nil {
+				rollbar.Error(rollbar.ERR, err)
+			}
+			return
+		} else {
+			defer update.Check()
+		}
 	}
 
 	if err := app.Run(os.Args); err != nil {

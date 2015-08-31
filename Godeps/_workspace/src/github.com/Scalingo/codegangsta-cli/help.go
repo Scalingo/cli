@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"io"
+	"os"
 	"strings"
 	"text/tabwriter"
 	"text/template"
@@ -235,9 +236,13 @@ func checkCompletions(c *Context) bool {
 }
 
 func checkCommandCompletions(c *Context, name string) bool {
-	if c.Bool(BashCompletionFlag.Name) && c.App.EnableBashCompletion {
-		ShowCommandCompletions(c, name)
-		return true
+	if c.App.EnableBashCompletion {
+		for i := range os.Args {
+			if strings.Contains(os.Args[i], "generate-bash-completion") {
+				ShowCommandCompletions(c, name)
+				return true
+			}
+		}
 	}
 
 	return false

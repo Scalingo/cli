@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
 )
 
@@ -21,6 +22,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys")
 		},
 	}
 
@@ -44,6 +48,9 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys-add")
+		},
 	}
 
 	RemoveSSHKeyCommand = cli.Command{
@@ -65,6 +72,10 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
+			autocomplete.KeysRemoveAutoComplete(c)
 		},
 	}
 )

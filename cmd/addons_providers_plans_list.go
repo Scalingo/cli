@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/addon_providers"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
 var (
@@ -19,6 +20,9 @@ var (
 			if err := addon_providers.Plans(c.Args()[0]); err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.AddonsPlansAutoComplete(c)
 		},
 	}
 )
