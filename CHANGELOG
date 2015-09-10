@@ -9,6 +9,7 @@ Changelog
 * [Feature - Log] Add -F/--filter flag to filter log output by container types #118
 * [Bugfix - Run] Fix parsing of environment variables (flag -e) #119
 * [Bugfix - Mongo Console] Do not try to connect to the oplog user anymore (when enabled) #117
+* [Bugfix - Logs] Stream is cut with an 'invalid JSON' error, fixed by increasing the buffer size #135
 
 ### v1.0.0 - 06/05/2015
 

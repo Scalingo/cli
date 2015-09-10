@@ -92,7 +92,7 @@ func dumpLogs(logsURL string, n int, filter string) error {
 func streamLogs(logsRawURL string, filter string) error {
 	var (
 		err    error
-		buffer [2048]byte
+		buffer [20480]byte
 		event  WSEvent
 	)
 
