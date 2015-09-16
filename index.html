@@ -127,9 +127,9 @@ scalingo -a myapp collaborators-remove user@example.com</code></pre></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>List existing addons and plans</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>addons-list</span>|<span class='subcmd'>addons-plans</span></code><div class='examples'><pre><code>scalingo addons-list
 scalingo addons-plans scalingo-mongodb</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Manage addons of your applications</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>addons</span>|<span class='subcmd'>addons-add</span>|<span class='subcmd'>addons-remove</span>|<span class='subcmd'>addons-upgrade</span></code><div class='examples'><pre><code>scalingo -a myapp addons
-scalingo -a myapp addons-add scalingo-mongodb 1
+scalingo -a myapp addons-add scalingo-mongodb 1g
 scalingo -a myapp addons-remove myapp_12345
-scalingo -a myapp addons-upgrade myapp_12345 2</code></pre></div></div></div>
+scalingo -a myapp addons-upgrade myapp_12345 2g</code></pre></div></div></div>
 <div class='row'><div class='col-xs-4'><span class='description'><span class='arrow'>→</span>Read and watch the logs</span></div><div class='col-xs-8'><code>scalingo <span class='subcmd'>logs</span></code><div class='examples'><pre><code># Display the last 1000 lines of log
 scalingo -a myapp logs -n 1000
 
