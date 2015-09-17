@@ -122,6 +122,7 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 	conn, err := sshClient.Dial("tcp", dbUrl.Host)
 	if err != nil {
 		errs <- err
+		return
 	}
 
 	wg := &sync.WaitGroup{}
