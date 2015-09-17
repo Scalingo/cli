@@ -132,8 +132,6 @@ func streamLogs(logsRawURL string, filter string) error {
 			fmt.Println(strings.TrimSpace(event.Log))
 		}
 	}
-
-	return nil
 }
 
 func checkFilter(appName string, filter string) error {
