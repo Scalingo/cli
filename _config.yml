@@ -1,0 +1,29 @@
+# Site settings
+title: Command Line Tool
+email: hello@scalingo.com
+description: > # this means to ignore newlines until "baseurl:"
+  Scalingo CLI
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://cli.scalingo.com"
+twitter_username: ScalingoHQ
+github_username:  Scalingo
+excerpt_separator: <!--more-->
+
+# Build settings
+markdown: kramdown
+
+permalink: none
+
+defaults:
+  - # set default layout on all pages
+    scope:
+      path: ""
+      type: "posts" # in jekyll files outside of _posts are of type pages
+    values:
+      layout: "page"
+
+gems:
+  - jekyll-sitemap
+  - jekyll-feed
+
+array: [] # hack for creating array

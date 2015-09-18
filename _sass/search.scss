@@ -1,0 +1,101 @@
+div.st-result:first-child {
+  padding-top: 20px;
+}
+
+div.search-dialog .modal-header {
+  background-color: #ddd;
+}
+
+div.search-dialog .modal-body {
+  padding: 0px;
+}
+
+@media screen and (min-width: 1024px) {
+  div.search-dialog {
+    width: 1024px;
+  }
+}
+
+.st-result-listing {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  margin-top: 40px;
+}
+
+div.st-search-summary {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 7px;
+  margin: 12px 0;
+}
+
+div.st-result-listing {
+  width: 600px;
+}
+
+div.st-result-listing h2 {
+  font-size: 13px;
+  font-weight: normal;
+  color: #333;
+  margin: 0;
+}
+
+div.st-result-listing h2 .st-query {
+  font-style: italic;
+  color: #666;
+}
+
+div.st-result-listing h3 {
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+div.st-result {
+  border-bottom: 1px solid #ddd;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-bottom: 12px;
+  padding-top: 12px;
+}
+
+div.st-result:hover {
+  background-color: #eee;
+}
+
+
+div.st-result em {
+  color: red;
+  font-size: 16px;
+  font-weight: 1000;
+}
+
+div.st-result.final {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+div.st-result .st-snippet {
+  color: #333;
+}
+
+div.st-result .st-date {
+  color: #999;
+}
+
+.st-pagination {
+  border-top: 1px solid #ccc;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.st-prev {
+  margin-right: 20px;
+}
+
+.st-loading-message {
+  font-size: 16px;
+  font-style: italic;
+  color: #999;
+  margin: 10px auto;
+}
+

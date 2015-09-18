@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Command Line Tool</title>
+    <description>Scalingo CLI
+</description>
+    <link>http://cli.scalingo.com/</link>
+    <atom:link href="http://cli.scalingo.com/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Fri, 18 Sep 2015 18:28:13 +0200</pubDate>
+    <lastBuildDate>Fri, 18 Sep 2015 18:28:13 +0200</lastBuildDate>
+    <generator>Jekyll v2.4.0</generator>
+    
+    
+      <item>
+        <title>Application crash</title>
+        <description>&lt;p&gt;For various reasons your application can terminate abruptly. Two cases of crash may happen:&lt;/p&gt;
+
+&lt;h2 id=&quot;boot-errors&quot;&gt;Boot errors&lt;/h2&gt;
+
+&lt;p&gt;They are detected directly when you deploy your application, if it crashes
+before binding the allocated network port, your deployment would fail.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The former version of your application &lt;strong&gt;keeps running&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;runtime-crashes&quot;&gt;Runtime crashes&lt;/h2&gt;
+
+&lt;p&gt;Two situations are the most common causes of runtime crashes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Runtime error of your application (uncatched exception, segfault of a library/runtime)&lt;/li&gt;
+  &lt;li&gt;Temporary error of an external resource&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When such an event occured, a notification is sent to you and the your collaborators for
+the concerned app by email.&lt;/p&gt;
+
+&lt;h2 id=&quot;restart-policy&quot;&gt;Restart policy&lt;/h2&gt;
+
+&lt;p&gt;When a runtime crash occured we automatically restart your container. If your application
+stopped again in the 5 minutes after being restarted, we won’t restart it directly, but
+5 minutes later.&lt;/p&gt;
+
+&lt;blockquote class=&quot;bg-info&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;5 additional minutes are added after each crash in the 5 first minutes of runtime.&lt;/li&gt;
+    &lt;li&gt;A crash which occures after 5 minutes has no effect on the cool-down&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This limitation has been setup in order to avoid the situation when an
+application try to boot and crash immediately, it is to let it crash again
+and again… and again.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A limit of &lt;strong&gt;12&lt;/strong&gt; restart operations exist, in means that after 6 hours and 30 minutes,
+your application &lt;strong&gt;won’t be accessible anymore&lt;/strong&gt; (The last cool-off duration is 1 hour).&lt;/p&gt;
+
+&lt;h2 id=&quot;what-to-do&quot;&gt;What to do?&lt;/h2&gt;
+
+&lt;p&gt;We stronly advise to look at the logs of your application using the web
+dashboard or by using the &lt;a href=&quot;http://cli.scalingo.com&quot;&gt;CLI tool&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;According to the information gathered, you should then modify your application to
+fix the issues which lead to this instability.&lt;/p&gt;
+
+&lt;blockquote class=&quot;bg-info&quot;&gt;
+  After a successful deployment, a manual restart, or scaling of your application, we
+  cancel any queued restart job, and the cool-down time after the next crash is reseted.
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;need-support&quot;&gt;Need support?&lt;/h2&gt;
+
+&lt;p&gt;Don’t hesitate to contact us at &lt;a href=&quot;&amp;#109;&amp;#097;&amp;#105;&amp;#108;&amp;#116;&amp;#111;:&amp;#115;&amp;#117;&amp;#112;&amp;#112;&amp;#111;&amp;#114;&amp;#116;&amp;#064;&amp;#115;&amp;#099;&amp;#097;&amp;#108;&amp;#105;&amp;#110;&amp;#103;&amp;#111;&amp;#046;&amp;#099;&amp;#111;&amp;#109;&quot;&gt;&amp;#115;&amp;#117;&amp;#112;&amp;#112;&amp;#111;&amp;#114;&amp;#116;&amp;#064;&amp;#115;&amp;#099;&amp;#097;&amp;#108;&amp;#105;&amp;#110;&amp;#103;&amp;#111;&amp;#046;&amp;#099;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Sep 2014 00:00:00 +0200</pubDate>
+        <link>http://cli.scalingo.com/app/crash.html</link>
+        <guid isPermaLink="true">http://cli.scalingo.com/app/crash.html</guid>
+        
+        <category>app</category>
+        
+        <category>crash</category>
+        
+        <category>recovery</category>
+        
+        
+        <category>app</category>
+        
+      </item>
+    
+  </channel>
+</rss>

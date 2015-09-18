@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  {% include head.html %}
+  <body>
+    {% include nav.html %}
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 content">
+            {{ content }}
+        </div>
+      </div>
+    </div>
+    {% include footer.html %}
+    <script data-main="{{ site.baseurl }}/assets/javascripts/application" src="{{ site.baseurl }}/assets/javascripts/require.js"></script>
+  </body>
+</html>
