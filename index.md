@@ -27,6 +27,8 @@ Read everything in our [Documentation Center](http://doc.scalingo.com/app/comman
 
 <ul class='list-inline h4' style='margin-left:-15px;'>
   <li>
+  </li>
+  <li>
     <i class='fa fa-linux'></i>
     Linux
   </li>
@@ -54,6 +56,17 @@ For each of these operating systems, you can download
 The client is developed with Go. Therefore, there is no external dependency.
 
 ## Changelog
+
+__1.1.0__
+
+* [Feature - CLI] Setup Bash and ZSH completion thanks to codegangsta/cli helpers [#127](https://github.com/Scalingo/issues/127)
+* [Feature - CLI] Add -r/--remote flag to specify a GIT remote instead of an app name [#89](https://github.com/Scalingo/issues/89)
+* [Feature - CLI] Add -r/--remote flag to the `create` subcommand to specify an alternative git remote name (default is `scalingo`) [#129](https://github.com/Scalingo/issues/129)
+* [Feature - Log] Add -F/--filter flag to filter log output by container types [#118](https://github.com/Scalingo/issues/118)
+* [Bugfix - Run] Fix parsing of environment variables (flag -e) [#119](https://github.com/Scalingo/issues/119)
+* [Bugfix - Mongo Console] Do not try to connect to the oplog user anymore (when enabled) [#117](https://github.com/Scalingo/issues/117)
+* [Bugfix - Logs] Stream is cut with an 'invalid JSON' error, fixed by increasing the buffer size [#135](https://github.com/Scalingo/issues/135)
+* [Bugfix - Tunnel] Error when the connection to the database failed, a panic could happen
 
 __1.0.0__
 
