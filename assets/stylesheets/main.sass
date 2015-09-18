@@ -1,9 +1,5 @@
 ---
 ---
-@import "autocomplete"
-@import "search"
-@import "syntax-highlighting"
-
 body
   background-color: darken(#fafafa, 5%)
   font-family: Roboto,HelveticaNeue,Helvetica,Arial,sans-serif
@@ -42,10 +38,8 @@ h2
 h3
   font-size: 120%
 
-.homepage
-  margin-top: 0
-  + ul
-    margin-bottom: 0
+.install input[readonly="readonly"]
+  cursor: text
 
 .navbar
   height: 54px
@@ -99,41 +93,6 @@ footer
   margin-right: 15px
   height: 25px
   display: inline-block
-
-#st-search-input
-  width: 80px
-  background-color: rgba(0, 0, 0, 0)
-  border-width: 0 0 1px 0
-  outline: 0
-  transition: all ease-in-out .3s
-  float: right
-  border-bottom-color: rgba(0, 0, 0, 0.117647)
-  border-bottom-style: solid
-  border-collapse: collapse
-  color: rgb(255, 255, 255)
-  cursor: auto
-  display: block
-  font-family: Roboto
-  font-size: 16px
-  &::-webkit-input-placeholder
-    color: white
-  &:-moz-placeholder
-    color: white
-  &::-moz-placeholder
-    color: white
-  &:-ms-input-placeholder
-    color: white
-
-#st-search-input:focus
-  width: 100%
-
-.vertical-align
-  display: flex
-  flex-direction: row
-  > [class^="col-"], [class*=" col-"]
-    display: flex
-    align-items: center
-
 .main
   margin: 2em 0
 
@@ -204,16 +163,4 @@ footer
     margin-top: 10px
     justify-content: center
     i
-      color: #2196F3
-  #st-search-input
-    width: 100%
-    color: #2196F3
-    border-bottom-color: rgba(33, 150, 243, 0.5)
-    &::-webkit-input-placeholder
-      color: #2196F3
-    &:-moz-placeholder
-      color: #2196F3
-    &::-moz-placeholder
-      color: #2196F3
-    &:-ms-input-placeholder
       color: #2196F3
