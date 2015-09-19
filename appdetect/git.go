@@ -27,23 +27,54 @@ func DetectGit() (string, bool) {
 }
 
 func ScalingoRepo(directory string, remoteName string) (string, error) {
-	remotes, err := gitremote.List(directory)
+	remotes, err := scalingoRemotes(directory)
 	if err != nil {
 		return "", err
 	}
-	for i := 0; i < 2; i++ {
-		for _, remote := range remotes {
-			if remote.Name == remoteName {
-				matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remote.URL))
-				if err == nil && matched {
-					debug.Println("[AppDetect] GIT remote found:", remote)
-					return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
-				}
-			}
+
+	altRemoteName := "scalingo-" + remoteName
+	for _, remote := range remotes {
+		if remote.Name == remoteName || remote.Name == altRemoteName {
+			return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
 		}
-		remoteName = "scalingo-" + remoteName
 	}
 	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
+}
+
+func ScalingoRepoComplete(dir string) []string {
+	var repos []string
+
+	remotes, err := scalingoRemotes(dir)
+	if err != nil {
+		debug.Println("[AppDetectCompletion] fail to get scalingo remotes in", dir)
+		return repos
+	}
+
+	for _, remote := range remotes {
+		if strings.HasPrefix(remote.Name, "scalingo-") {
+			repos = append(repos, remote.Name[9:])
+		} else {
+			repos = append(repos, remote.Name)
+		}
+	}
+
+	return repos
+}
+
+func scalingoRemotes(directory string) (gitremote.Remotes, error) {
+	matchedRemotes := make(gitremote.Remotes, 0)
+	remotes, err := gitremote.List(directory)
+	if err != nil {
+		return nil, err
+	}
+	for _, remote := range remotes {
+		matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remote.URL))
+		if err == nil && matched {
+			debug.Println("[AppDetect] GIT remote found:", remote)
+			matchedRemotes = append(matchedRemotes, remote)
+		}
+	}
+	return matchedRemotes, nil
 }
 
 func AddRemote(url string, name string) error {
