@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/debug"
 )
 
 func FlagAppAutoComplete(c *cli.Context) bool {
-	apps, err := api.AppsList()
-	if err != nil || len(apps) == 0 {
+	apps, err := appsList()
+	if err != nil {
+		debug.Println("fail to get apps list:", err)
 		return false
 	}
 

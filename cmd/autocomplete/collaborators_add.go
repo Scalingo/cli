@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/debug"
 )
 
 func CollaboratorsAddAutoComplete(c *cli.Context) error {
@@ -13,8 +14,9 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	apps, err := api.AppsList()
+	apps, err := appsList()
 	if err != nil {
+		debug.Println("fail to get apps list:", err)
 		return nil
 	}
 
