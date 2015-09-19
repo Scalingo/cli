@@ -35,7 +35,6 @@ func DefaultAction(c *cli.Context) {
 }
 
 func ScalingoAppComplete(c *cli.Context) {
-
 	autocomplete.DisplayFlags(c.App.Flags)
 
 	for _, command := range c.App.Commands {
