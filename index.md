@@ -21,7 +21,7 @@ Just copy/paste the command below in your terminal and execute it.
 
 ## Document and features
 
-Read everything in our [Documentation Center](http://doc.scalingo.com/app/command-line-tool.html)
+Read everything in our [Documentation Center](http://doc.scalingo.com/app/command-line-tool.html).
 
 ## Supported operating systems
 
@@ -51,7 +51,7 @@ Read everything in our [Documentation Center](http://doc.scalingo.com/app/comman
 </ul>
 
 For each of these operating systems, you can download
-[a precompiled binary](https://github.com/Scalingo/cli/releases)
+[a precompiled binary](https://github.com/Scalingo/cli/releases).
 
 The client is developed with Go. Therefore, there is no external dependency.
 
@@ -70,8 +70,8 @@ __1.1.0__
 
 __1.0.0__
 
-* [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis [#111](https://github.com/Scalingo/cli/issues/111)</li>
-* [Feature - Collaborators] Handle collaborators directly from the command line client [#113](https://github.com/Scalingo/cli/issues/113)</li>
+* [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis [#111](https://github.com/Scalingo/cli/issues/111)
+* [Feature - Collaborators] Handle collaborators directly from the command line client [#113](https://github.com/Scalingo/cli/issues/113)
 * [Feature - Proxy] Add support and documentation about how to use a HTTPS proxy [#104](https://github.com/Scalingo/cli/issues/104) [#110](https://github.com/Scalingo/cli/issues/110)
 * [Refactoring - API calls] Completely refactor error management for Scalingo API calls [#112](https://github.com/Scalingo/cli/issues/112)
 * [Improvement - SSL] Embed Scalingo new SSL certificate SHA-256 only [#109](https://github.com/Scalingo/cli/issues/109)
