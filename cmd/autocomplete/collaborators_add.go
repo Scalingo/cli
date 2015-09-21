@@ -32,6 +32,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 	setEmails := make(map[string]bool)
 	for _, app := range apps {
 		go func(app *api.App, setEmails map[string]bool) {
+			defer wg.Done()
 			appCollaborators, erro := api.CollaboratorsList(app.Name)
 			if erro != nil {
 				err = erro
@@ -40,7 +41,6 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 			for _, col := range appCollaborators {
 				setEmails[col.Email] = true
 			}
-			wg.Done()
 		}(app, setEmails)
 	}
 	wg.Wait()
