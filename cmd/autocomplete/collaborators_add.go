@@ -54,6 +54,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		}
 	}()
 	wg.Wait()
+	close(ch)
 
 	for email, _ := range setEmails {
 		isAlreadyCollaborator := false
