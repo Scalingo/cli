@@ -6,6 +6,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 )
 
@@ -27,6 +28,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
+	var apiError error = nil
 	ch := make(chan string)
 	var wg sync.WaitGroup
 	wg.Add(len(apps))
@@ -35,16 +37,14 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 			defer wg.Done()
 			appCollaborators, erro := api.CollaboratorsList(app.Name)
 			if erro != nil {
-				err = erro
+				config.C.Logger.Println(erro.Error())
+				apiError = erro
 				return
 			}
 			for _, col := range appCollaborators {
 				ch <- col.Email
 			}
 		}(app)
-	}
-	if err != nil {
-		return nil
 	}
 
 	setEmails := make(map[string]bool)
@@ -55,6 +55,10 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 	}()
 	wg.Wait()
 	close(ch)
+
+	if apiError != nil {
+		return nil
+	}
 
 	for email, _ := range setEmails {
 		isAlreadyCollaborator := false
