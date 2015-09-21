@@ -27,11 +27,11 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
+	ch := make(chan string)
 	var wg sync.WaitGroup
 	wg.Add(len(apps))
-	setEmails := make(map[string]bool)
 	for _, app := range apps {
-		go func(app *api.App, setEmails map[string]bool) {
+		go func(app *api.App) {
 			defer wg.Done()
 			appCollaborators, erro := api.CollaboratorsList(app.Name)
 			if erro != nil {
@@ -39,14 +39,21 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 				return
 			}
 			for _, col := range appCollaborators {
-				setEmails[col.Email] = true
+				ch <- col.Email
 			}
-		}(app, setEmails)
+		}(app)
 	}
-	wg.Wait()
 	if err != nil {
 		return nil
 	}
+
+	setEmails := make(map[string]bool)
+	go func() {
+		for content := range ch {
+			setEmails[content] = true
+		}
+	}()
+	wg.Wait()
 
 	for email, _ := range setEmails {
 		isAlreadyCollaborator := false
