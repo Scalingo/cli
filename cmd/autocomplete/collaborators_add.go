@@ -2,6 +2,7 @@ package autocomplete
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/api"
@@ -9,6 +10,7 @@ import (
 )
 
 func CollaboratorsAddAutoComplete(c *cli.Context) error {
+	var err error
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
@@ -25,15 +27,25 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
+	var wg sync.WaitGroup
+	wg.Add(len(apps))
 	setEmails := make(map[string]bool)
 	for _, app := range apps {
-		appCollaborators, err := api.CollaboratorsList(app.Name)
-		if err != nil {
-			return nil
-		}
-		for _, col := range appCollaborators {
-			setEmails[col.Email] = true
-		}
+		go func(app *api.App, setEmails map[string]bool) {
+			appCollaborators, erro := api.CollaboratorsList(app.Name)
+			if erro != nil {
+				err = erro
+				return
+			}
+			for _, col := range appCollaborators {
+				setEmails[col.Email] = true
+			}
+			wg.Done()
+		}(app, setEmails)
+	}
+	wg.Wait()
+	if err != nil {
+		return nil
 	}
 
 	for email, _ := range setEmails {
