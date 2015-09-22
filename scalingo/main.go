@@ -93,6 +93,9 @@ func main() {
 		} else {
 			defer update.Check()
 		}
+	} else {
+		// If we are completing stuff, disable logging
+		config.C.DisableInteractive = true
 	}
 
 	if err := app.Run(os.Args); err != nil {

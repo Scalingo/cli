@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	LoginAbortedErr = errors.New("canceled by user.")
+	ErrLoginAborted = errors.New("canceled by user.")
 )
 
 type LoginError struct {
@@ -47,7 +47,7 @@ func Auth() (*users.User, error) {
 		if err == nil {
 			break
 		} else if errgo.Cause(err) == io.EOF {
-			return nil, LoginAbortedErr
+			return nil, ErrLoginAborted
 		} else {
 			fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
 		}

@@ -18,7 +18,10 @@ import (
 	"github.com/Scalingo/cli/users"
 )
 
-var CurrentUser *users.User
+var (
+	CurrentUser  *users.User
+	ErrNotLogged = errgo.New("not logged")
+)
 
 type APIRequest struct {
 	NoAuth      bool
@@ -52,7 +55,10 @@ func (req *APIRequest) FillDefaultValues() error {
 			return errgo.Mask(err, errgo.Any)
 		}
 		if user == nil {
-			fmt.Println("You need to be authenticated to use Scalingo client.\nNo account ? → https://scalingo.com")
+			if config.C.DisableInteractive {
+				return ErrNotLogged
+			}
+			fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://scalingo.com")
 			user, err = Auth()
 			if err != nil {
 				return errgo.Mask(err, errgo.Any)

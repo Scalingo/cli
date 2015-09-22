@@ -2,6 +2,7 @@ package session
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/api"
@@ -14,7 +15,7 @@ func Login() error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	if user == nil {
-		fmt.Println("You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
+		fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
 		user, err = api.Auth()
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
