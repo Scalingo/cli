@@ -11,9 +11,10 @@ var (
 	EnvFlag    = cli.StringSlice([]string{})
 	FilesFlag  = cli.StringSlice([]string{})
 	RunCommand = cli.Command{
-		Name:     "run",
-		Category: "App Management",
-		Usage:    "Run any command for your app",
+		Name:      "run",
+		ShortName: "r",
+		Category:  "App Management",
+		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{appFlag,
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables", EnvVar: ""},
 			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload", EnvVar: ""},
