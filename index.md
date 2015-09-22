@@ -57,15 +57,24 @@ The client is developed with Go. Therefore, there is no external dependency.
 
 ## Changelog
 
+__1.1.1__
+
+* [Feature] Build in Linux ARM [#145](https://github.com/Scalingo/cli/issues/145)
+* [Feature - Completion] Add local cache of applications when using completion on them, avoid heavy unrequired API requests [#141](https://github.com/Scalingo/cli/issues/141)
+* [Feature - Completion] Completion of the `--remote` flag [#139](https://github.com/Scalingo/cli/issues/139)
+* [Optimisation - Completion] Completion of `collaborators-add` command is now quicker (×2 - ×4) [#137](https://github.com/Scalingo/cli/issues/137)
+* [Bugfix - Completion] Do not display error in autocompletion when unlogged [#142](https://github.com/Scalingo/cli/issues/142)
+* [Bugfix] Fix regression, small flags were not working anymore [#144](https://github.com/Scalingo/cli/issues/144) [#147](https://github.com/Scalingo/cli/issues/147)
+
 __1.1.0__
 
-* [Feature - CLI] Setup Bash and ZSH completion thanks to codegangsta/cli helpers [#127](https://github.com/Scalingo/issues/127)
-* [Feature - CLI] Add -r/--remote flag to specify a GIT remote instead of an app name [#89](https://github.com/Scalingo/issues/89)
-* [Feature - CLI] Add -r/--remote flag to the `create` subcommand to specify an alternative git remote name (default is `scalingo`) [#129](https://github.com/Scalingo/issues/129)
-* [Feature - Log] Add -F/--filter flag to filter log output by container types [#118](https://github.com/Scalingo/issues/118)
-* [Bugfix - Run] Fix parsing of environment variables (flag -e) [#119](https://github.com/Scalingo/issues/119)
-* [Bugfix - Mongo Console] Do not try to connect to the oplog user anymore (when enabled) [#117](https://github.com/Scalingo/issues/117)
-* [Bugfix - Logs] Stream is cut with an 'invalid JSON' error, fixed by increasing the buffer size [#135](https://github.com/Scalingo/issues/135)
+* [Feature - CLI] Setup Bash and ZSH completion thanks to codegangsta/cli helpers [#127](https://github.com/Scalingo/cli/issues/127)
+* [Feature - CLI] Add -r/--remote flag to specify a GIT remote instead of an app name [#89](https://github.com/Scalingo/cli/issues/89)
+* [Feature - CLI] Add -r/--remote flag to the `create` subcommand to specify an alternative git remote name (default is `scalingo`) [#129](https://github.com/Scalingo/cli/issues/129)
+* [Feature - Log] Add -F/--filter flag to filter log output by container types [#118](https://github.com/Scalingo/cli/issues/118)
+* [Bugfix - Run] Fix parsing of environment variables (flag -e) [#119](https://github.com/Scalingo/cli/issues/119)
+* [Bugfix - Mongo Console] Do not try to connect to the oplog user anymore (when enabled) [#117](https://github.com/Scalingo/cli/issues/117)
+* [Bugfix - Logs] Stream is cut with an 'invalid JSON' error, fixed by increasing the buffer size [#135](https://github.com/Scalingo/cli/issues/135)
 * [Bugfix - Tunnel] Error when the connection to the database failed, a panic could happen
 
 __1.0.0__
