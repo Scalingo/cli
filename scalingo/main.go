@@ -38,9 +38,7 @@ func ScalingoAppComplete(c *cli.Context) {
 	autocomplete.DisplayFlags(c.App.Flags)
 
 	for _, command := range c.App.Commands {
-		for _, name := range command.Names() {
-			fmt.Fprintln(c.App.Writer, name)
-		}
+		fmt.Fprintln(c.App.Writer, command.FullName())
 	}
 }
 
