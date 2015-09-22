@@ -1,6 +1,15 @@
 Changelog
 =========
 
+### v1.1.1 - 22/09/2015
+
+* [Feature] Build in Linux ARM #145
+* [Feature - Completion] Add local cache of applications when using completion on them, avoid heavy unrequired API requests #141
+* [Feature - Completion] Completion of the `--remote` flag #139
+* [Optimisation - Completion] Completion of `collaborators-add` command is now quicker (×2 - ×4) #137
+* [Bugfix - Completion] Do not display error in autocompletion when unlogged #142
+* [Bugfix] Fix regression, small flags were not working anymore #144 #147
+
 ### v1.1.0 - 17/09/2015
 
 * [Feature - CLI] Setup Bash and ZSH completion thanks to codegangsta/cli helpers #127
