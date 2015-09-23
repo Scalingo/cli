@@ -55,7 +55,7 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
-	if errgo.Cause(err) == api.ErrLoginAborted {
+	if errgo.Cause(err) == scalingo.ErrLoginAborted {
 		fmt.Printf("... %v\n", err)
 		os.Exit(1)
 	}

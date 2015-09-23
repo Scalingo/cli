@@ -18,7 +18,7 @@ import (
 type Config struct {
 	ApiUrl             string
 	apiHost            string
-	ApiPrefix          string
+	ApiVersion         string
 	DisableInteractive bool
 	SshHost            string
 	UnsecureSsl        bool
