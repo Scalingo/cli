@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func DbTunnelAutoComplete(c *cli.Context) error {
@@ -22,7 +22,7 @@ func DbTunnelAutoComplete(c *cli.Context) error {
 	}
 
 	if !strings.HasPrefix(lastArg, "-") {
-		variables, err := api.VariablesList(appName)
+		variables, err := scalingo.VariablesList(appName)
 		if err == nil {
 
 			for _, v := range variables {

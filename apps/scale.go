@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/io"
 )
 import (
@@ -13,7 +13,7 @@ import (
 )
 
 type ScaleRes struct {
-	Containers []api.Container `json:"containers"`
+	Containers []scalingo.Container `json:"containers"`
 }
 
 type ScaleUnprocessableEntity struct {
@@ -35,7 +35,7 @@ func (err ScaleUnprocessableEntity) Error() string {
 
 func Scale(app string, sync bool, types []string) error {
 	var size string
-	scaleParams := &api.AppsScaleParams{}
+	scaleParams := &scalingo.AppsScaleParams{}
 
 	for _, t := range types {
 		splitT := strings.Split(t, ":")
@@ -51,10 +51,10 @@ func Scale(app string, sync bool, types []string) error {
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
-		scaleParams.Containers = append(scaleParams.Containers, api.Container{Name: typeName, Amount: int(amount), Size: size})
+		scaleParams.Containers = append(scaleParams.Containers, scalingo.Container{Name: typeName, Amount: int(amount), Size: size})
 	}
 
-	res, err := api.AppsScale(app, scaleParams)
+	res, err := scalingo.AppsScale(app, scaleParams)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -62,7 +62,7 @@ func Scale(app string, sync bool, types []string) error {
 
 	if res.StatusCode == 422 {
 		var scaleUnprocessableEntity ScaleUnprocessableEntity
-		err = api.ParseJSON(res, &scaleUnprocessableEntity)
+		err = scalingo.ParseJSON(res, &scaleUnprocessableEntity)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -70,7 +70,7 @@ func Scale(app string, sync bool, types []string) error {
 	}
 
 	var scaleRes ScaleRes
-	err = api.ParseJSON(res, &scaleRes)
+	err = scalingo.ParseJSON(res, &scaleRes)
 	if err != nil {
 		return errgo.Mask(err)
 	}

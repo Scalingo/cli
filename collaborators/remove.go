@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -23,7 +23,7 @@ func Remove(app, email string) error {
 		}
 	}
 
-	err = api.CollaboratorRemove(app, collaborator.ID)
+	err = scalingo.CollaboratorRemove(app, collaborator.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -32,15 +32,15 @@ func Remove(app, email string) error {
 	return nil
 }
 
-func getFromEmail(app, email string) (api.Collaborator, error) {
-	collaborators, err := api.CollaboratorsList(app)
+func getFromEmail(app, email string) (scalingo.Collaborator, error) {
+	collaborators, err := scalingo.CollaboratorsList(app)
 	if err != nil {
-		return api.Collaborator{}, errgo.Mask(err, errgo.Any)
+		return scalingo.Collaborator{}, errgo.Mask(err, errgo.Any)
 	}
 	for _, collaborator := range collaborators {
 		if collaborator.Email == email {
 			return collaborator, nil
 		}
 	}
-	return api.Collaborator{}, notFound
+	return scalingo.Collaborator{}, notFound
 }

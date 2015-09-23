@@ -5,11 +5,11 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func List() error {
-	addonProviders, err := api.AddonProvidersList()
+	addonProviders, err := scalingo.AddonProvidersList()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

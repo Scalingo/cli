@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 var (
 	setInvalidSyntaxError = errors.New("format is invalid, accepted: VAR=VAL")
-	valueTooLongError     = fmt.Errorf("value is too long (max %d)", api.EnvValueMaxLength)
-	nameTooLongError      = fmt.Errorf("name is too long (max %d)", api.EnvNameMaxLength)
+	valueTooLongError     = fmt.Errorf("value is too long (max %d)", scalingo.EnvValueMaxLength)
+	nameTooLongError      = fmt.Errorf("name is too long (max %d)", scalingo.EnvNameMaxLength)
 
 	nameFormat             = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
 	invalidNameFormatError = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
@@ -28,7 +28,7 @@ func Add(app string, params []string) error {
 
 	for _, param := range params {
 		name, value := parseVariable(param)
-		_, code, err := api.VariableSet(app, name, value)
+		_, code, err := scalingo.VariableSet(app, name, value)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
@@ -44,12 +44,12 @@ func Add(app string, params []string) error {
 }
 
 func Delete(app string, varNames []string) error {
-	vars, err := api.VariablesList(app)
+	vars, err := scalingo.VariablesList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	var varsToUnset api.Variables
+	var varsToUnset scalingo.Variables
 
 	for _, varName := range varNames {
 		v, ok := vars.Contains(varName)
@@ -60,7 +60,7 @@ func Delete(app string, varNames []string) error {
 	}
 
 	for _, v := range varsToUnset {
-		err := api.VariableUnset(app, v.ID)
+		err := scalingo.VariableUnset(app, v.ID)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
@@ -79,11 +79,11 @@ func isEnvEditValid(edit string) error {
 		return setInvalidSyntaxError
 	}
 
-	if len(name) > api.EnvNameMaxLength {
+	if len(name) > scalingo.EnvNameMaxLength {
 		return nameTooLongError
 	}
 
-	if len(value) > api.EnvValueMaxLength {
+	if len(value) > scalingo.EnvValueMaxLength {
 		return valueTooLongError
 	}
 

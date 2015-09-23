@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func AddonsAddAutoComplete(c *cli.Context) error {
-	resources, err := api.AddonProvidersList()
+	resources, err := scalingo.AddonProvidersList()
 	if len(os.Args) > 1 && err == nil {
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonNameSet := false
@@ -22,7 +22,7 @@ func AddonsAddAutoComplete(c *cli.Context) error {
 		}
 
 		if isAddonNameSet {
-			plans, err := api.AddonProviderPlansList(lastArg)
+			plans, err := scalingo.AddonProviderPlansList(lastArg)
 
 			if err == nil {
 				for _, plan := range plans {

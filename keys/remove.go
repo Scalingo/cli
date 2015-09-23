@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Remove(name string) error {
@@ -13,7 +13,7 @@ func Remove(name string) error {
 		return errgo.Mask(err)
 	}
 
-	err = api.KeysDelete(k.ID)
+	err = scalingo.KeysDelete(k.ID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -22,8 +22,8 @@ func Remove(name string) error {
 	return nil
 }
 
-func keyByName(name string) (*api.Key, error) {
-	keys, err := api.KeysList()
+func keyByName(name string) (*scalingo.Key, error) {
+	keys, err := scalingo.KeysList()
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Destroy(app, resourceID string) error {
@@ -34,7 +34,7 @@ func Destroy(app, resourceID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, resourceID)
 	}
 
-	err = api.AddonDestroy(app, addon.ID)
+	err = scalingo.AddonDestroy(app, addon.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -43,8 +43,8 @@ func Destroy(app, resourceID string) error {
 	return nil
 }
 
-func checkAddonExist(app, resourceID string) (*api.Addon, error) {
-	resources, err := api.AddonsList(app)
+func checkAddonExist(app, resourceID string) (*scalingo.Addon, error) {
+	resources, err := scalingo.AddonsList(app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

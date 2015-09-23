@@ -14,7 +14,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/heroku/hk/term"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/httpclient"
 )
 
@@ -74,7 +74,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", api.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
 
 	res, err := httpclient.Do(req)
 	if err != nil {

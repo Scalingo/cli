@@ -12,11 +12,11 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Soulou/errgo-rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/cli/users"
+	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/users"
 )
 
 type Sysinfo struct {
@@ -55,13 +55,13 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
-	if errgo.Cause(err) == api.LoginAbortedErr {
+	if errgo.Cause(err) == scalingo.LoginAbortedErr {
 		fmt.Printf("... %v\n", err)
 		os.Exit(1)
 	}
 
-	if api.IsRequestFailedError(errgo.Cause(err)) {
-		code := errgo.Cause(err).(*api.RequestFailedError).Code
+	if scalingo.IsRequestFailedError(errgo.Cause(err)) {
+		code := errgo.Cause(err).(*scalingo.RequestFailedError).Code
 		if code == 401 {
 			session.DestroyToken()
 		}
@@ -77,15 +77,15 @@ func errorQuit(err error) {
 func newReportError(err error) *ReportError {
 	r := &ReportError{
 		Time:    time.Now(),
-		User:    api.CurrentUser,
+		User:    scalingo.CurrentUser,
 		Error:   err,
 		Command: strings.Join(os.Args, " "),
 		Version: config.Version,
 		System:  newSysinfo(),
 	}
 
-	if api.IsRequestFailedError(errgo.Cause(err)) {
-		r.FailedRequest = errgo.Cause(err).(*api.RequestFailedError).Req.HTTPRequest
+	if scalingo.IsRequestFailedError(errgo.Cause(err)) {
+		r.FailedRequest = errgo.Cause(err).(*scalingo.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func AddonsPlansAutoComplete(c *cli.Context) error {
@@ -13,7 +13,7 @@ func AddonsPlansAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	resources, err := api.AddonsList(appName)
+	resources, err := scalingo.AddonsList(appName)
 	if err == nil {
 		for _, resource := range resources {
 			fmt.Println(resource.AddonProvider.ID)

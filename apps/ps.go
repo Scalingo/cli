@@ -6,11 +6,11 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Ps(app string) error {
-	processes, err := api.AppsPs(app)
+	processes, err := scalingo.AppsPs(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

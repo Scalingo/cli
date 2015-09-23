@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func ScaleAutoComplete(c *cli.Context) error {
@@ -14,7 +14,7 @@ func ScaleAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	processes, err := api.AppsPs(appName)
+	processes, err := scalingo.AppsPs(appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}
