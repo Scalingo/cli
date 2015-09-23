@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
@@ -62,12 +62,12 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := api.Run(opts.App, opts.Cmd, env)
+	res, err := scalingo.Run(opts.App, opts.Cmd, env)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	runStruct := make(map[string]interface{})
-	api.ParseJSON(res, &runStruct)
+	scalingo.ParseJSON(res, &runStruct)
 	debug.Printf("%+v\n", runStruct)
 
 	if res.StatusCode == http.StatusNotFound {
@@ -153,7 +153,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", api.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
@@ -345,7 +345,7 @@ func uploadFile(endpoint string, file string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", api.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 

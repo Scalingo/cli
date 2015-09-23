@@ -6,7 +6,7 @@ import (
 )
 
 func DestroyToken() error {
-	if err := config.RemoveAuth(); err != nil {
+	if err := config.Authenticator.RemoveAuth(); err != nil {
 		return errgo.Mask(err)
 	}
 	return nil

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func dbURL(app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {
@@ -28,7 +28,7 @@ func dbURL(app, envWord string, urlSchemes []string) (*url.URL, string, string, 
 }
 
 func dbURLFromAPI(app, envWord string, urlSchemes []string) (string, error) {
-	environ, err := api.VariablesListWithoutAlias(app)
+	environ, err := scalingo.VariablesListWithoutAlias(app)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}

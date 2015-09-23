@@ -5,12 +5,12 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Login() error {
-	user, err := api.AuthFromConfig()
+	user, err := scalingo.AuthFromConfig()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

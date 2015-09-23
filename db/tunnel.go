@@ -9,7 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/debug"
@@ -20,7 +20,7 @@ var (
 )
 
 func Tunnel(app string, dbEnvVar string, identity string, port int) error {
-	environ, err := api.VariablesListWithoutAlias(app)
+	environ, err := scalingo.VariablesListWithoutAlias(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -104,7 +104,7 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 	}
 }
 
-func dbEnvVarValue(dbEnvVar string, environ api.Variables) string {
+func dbEnvVarValue(dbEnvVar string, environ scalingo.Variables) string {
 	for _, env := range environ {
 		if env.Value == dbEnvVar {
 			return dbEnvVar

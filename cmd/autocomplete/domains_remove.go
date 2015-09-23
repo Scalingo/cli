@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func DomainsRemoveAutoComplete(c *cli.Context) error {
@@ -13,7 +13,7 @@ func DomainsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	domains, err := api.DomainsList(appName)
+	domains, err := scalingo.DomainsList(appName)
 	if err == nil {
 
 		for _, domain := range domains {

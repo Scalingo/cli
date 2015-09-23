@@ -2,12 +2,18 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/users"
+	"github.com/Scalingo/cli/term"
+	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/users"
 )
 
 type CliAuthenticator struct{}
@@ -15,6 +21,34 @@ type CliAuthenticator struct{}
 type AuthConfigData struct {
 	LastUpdate        time.Time              `json:"last_update"`
 	AuthConfigPerHost map[string]*users.User `json:"auth_config_data"`
+}
+
+var Authenticator = &CliAuthenticator{}
+
+func Auth() (*users.User, error) {
+	var user *users.User
+	var err error
+	for i := 0; i < 3; i++ {
+		user, err = tryAuth()
+		if err == nil {
+			break
+		} else if errgo.Cause(err) == io.EOF {
+			return nil, errors.New("canceled by user")
+		} else {
+			fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
+		}
+	}
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	fmt.Printf("Hello %s, nice to see you !\n\n", user.Username)
+	err = Authenticator.StoreAuth(user)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return user, nil
 }
 
 func (a *CliAuthenticator) StoreAuth(user *users.User) error {
@@ -62,6 +96,32 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	}
 
 	return writeAuthFile(authConfig)
+}
+
+func tryAuth() (*users.User, error) {
+	var login string
+	for login == "" {
+		fmt.Print("Username or email: ")
+		_, err := fmt.Scanln(&login)
+		if err != nil {
+			if strings.Contains(err.Error(), "unexpected newline") {
+				continue
+			}
+			return nil, errgo.Mask(err, errgo.Any)
+		}
+	}
+
+	password, err := term.Password("Password: ")
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	user, err := scalingo.AuthUser(login, password)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return user, nil
 }
 
 func writeAuthFile(auth *AuthConfigData) error {
