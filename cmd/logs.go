@@ -9,9 +9,10 @@ import (
 
 var (
 	LogsCommand = cli.Command{
-		Name:     "logs",
-		Category: "App Management",
-		Usage:    "Get the logs of your applications",
+		Name:      "logs",
+		ShortName: "l",
+		Category:  "App Management",
+		Usage:     "Get the logs of your applications",
 		Description: `Get the logs of your applications
    Example:
      Get 100 lines:          'scalingo --app my-app logs -n 100'

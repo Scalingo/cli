@@ -38,9 +38,7 @@ func ScalingoAppComplete(c *cli.Context) {
 	autocomplete.DisplayFlags(c.App.Flags)
 
 	for _, command := range c.App.Commands {
-		for _, name := range command.Names() {
-			fmt.Fprintln(c.App.Writer, name)
-		}
+		fmt.Fprintln(c.App.Writer, command.FullName())
 	}
 }
 
@@ -93,6 +91,9 @@ func main() {
 		} else {
 			defer update.Check()
 		}
+	} else {
+		// If we are completing stuff, disable logging
+		config.C.DisableInteractive = true
 	}
 
 	if err := app.Run(os.Args); err != nil {

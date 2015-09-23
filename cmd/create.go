@@ -9,6 +9,7 @@ import (
 var (
 	CreateCommand = cli.Command{
 		Name:        "create",
+		ShortName:   "c",
 		Category:    "Global",
 		Description: "Create a new app:\n   Example:\n     'scalingo create mynewapp'\n     'scalingo create mynewapp --remote \"staging\"'",
 		Flags:       []cli.Flag{cli.StringFlag{Name: "remote", Value: "scalingo", Usage: "Remote to add to your current git repository", EnvVar: ""}},

@@ -16,17 +16,18 @@ import (
 )
 
 type Config struct {
-	ApiUrl       string
-	apiHost      string
-	ApiVersion   string
-	SshHost      string
-	UnsecureSsl  bool
-	RollbarToken string
-	ConfigDir    string
-	AuthFile     string
-	LogFile      string
-	logFile      *os.File
-	Logger       *log.Logger
+	ApiUrl             string
+	apiHost            string
+	ApiVersion         string
+	DisableInteractive bool
+	SshHost            string
+	UnsecureSsl        bool
+	RollbarToken       string
+	ConfigDir          string
+	AuthFile           string
+	LogFile            string
+	logFile            *os.File
+	Logger             *log.Logger
 }
 
 var (

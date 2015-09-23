@@ -9,10 +9,11 @@ import (
 
 var (
 	ScaleCommand = cli.Command{
-		Name:     "scale",
-		Category: "App Management",
-		Flags:    []cli.Flag{appFlag, cli.BoolFlag{Name: "synchronous", Usage: "Do the scaling synchronously", EnvVar: ""}},
-		Usage:    "Scale your application instantly",
+		Name:      "scale",
+		ShortName: "s",
+		Category:  "App Management",
+		Flags:     []cli.Flag{appFlag, cli.BoolFlag{Name: "synchronous", Usage: "Do the scaling synchronously", EnvVar: ""}},
+		Usage:     "Scale your application instantly",
 		Description: `Scale your application processes.
    Example
      'scalingo --app my-app scale web:2 worker:1'
