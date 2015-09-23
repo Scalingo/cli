@@ -1,4 +1,3 @@
-could not import "/home/leo/Projects/Go/src/github.com/Scalingo/cli/config": /home/leo/Projects/Go/src/github.com/Scalingo/cli/config/api_auth.go:1:1: expected 'package', found 'EOF'
 package session
 
 import (
@@ -6,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
 )
