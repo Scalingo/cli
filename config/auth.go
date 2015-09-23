@@ -80,8 +80,11 @@ func (a *CliAuthenticator) LoadAuth() (*users.User, error) {
 	}
 
 	if user, ok := authConfig.AuthConfigPerHost[C.apiHost]; !ok {
-		return nil, nil
+		return Auth()
 	} else {
+		if user == nil {
+			return Auth()
+		}
 		return user, nil
 	}
 }
