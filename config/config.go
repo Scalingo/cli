@@ -12,12 +12,13 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/envconfig"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
+	"github.com/Scalingo/go-scalingo"
 )
 
 type Config struct {
 	ApiUrl             string
 	apiHost            string
-	ApiPrefix          string
+	ApiVersion         string
 	DisableInteractive bool
 	SshHost            string
 	UnsecureSsl        bool
@@ -33,7 +34,7 @@ var (
 	env = map[string]string{
 		"API_URL":       "https://api.scalingo.com",
 		"SSH_HOST":      "appsdeck.eu:22",
-		"API_PREFIX":    "/v1",
+		"API_VERSION":   "1",
 		"UNSECURE_SSL":  "false",
 		"ROLLBAR_TOKEN": "",
 		"CONFIG_DIR":    ".config/scalingo",
@@ -92,6 +93,10 @@ func init() {
 		TlsConfig.InsecureSkipVerify = true
 		TlsConfig.MinVersion = tls.VersionTLS10
 	}
+
+	scalingo.ApiAuthenticator = Authenticator
+	scalingo.ApiUrl = C.ApiUrl
+	scalingo.ApiVersion = C.ApiVersion
 }
 
 func HomeDir() string {

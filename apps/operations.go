@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 var loadingRunes = "-\\|/"
@@ -19,7 +19,7 @@ func handleOperation(app string, res *http.Response) error {
 		return errgo.Mask(err)
 	}
 
-	var op *api.Operation
+	var op *scalingo.Operation
 
 	opID := filepath.Base(opURL.Path)
 	done := make(chan struct{})
@@ -29,7 +29,7 @@ func handleOperation(app string, res *http.Response) error {
 
 	go func() {
 		for {
-			op, err = api.OperationsShow(app, opID)
+			op, err = scalingo.OperationsShow(app, opID)
 			if err != nil {
 				errs <- err
 				break

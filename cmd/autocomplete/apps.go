@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"gopkg.in/errgo.v1"
@@ -14,7 +14,7 @@ import (
 
 type appsCache struct {
 	CreatedAt time.Time
-	Apps      []*api.App
+	Apps      []*scalingo.App
 }
 
 var (
@@ -23,16 +23,16 @@ var (
 	errExpiredCache   = errgo.New("apps has expired")
 )
 
-func appsList() ([]*api.App, error) {
+func appsList() ([]*scalingo.App, error) {
 	var (
 		err  error
-		apps []*api.App
+		apps []*scalingo.App
 	)
 
 	apps, err = appsAutoCompleteCache()
 	if err != nil {
 		debug.Println("fail to get applications autocomplete cache make GET request", err)
-		apps, err = api.AppsList()
+		apps, err = scalingo.AppsList()
 		if err != nil || len(apps) == 0 {
 			return nil, errgo.Mask(err)
 		}
@@ -46,7 +46,7 @@ func appsList() ([]*api.App, error) {
 	return apps, nil
 }
 
-func appsAutoCompleteCache() ([]*api.App, error) {
+func appsAutoCompleteCache() ([]*scalingo.App, error) {
 	fd, err := os.Open(appsCacheFile)
 	if err != nil {
 		return nil, errgo.Mask(err)
@@ -65,7 +65,7 @@ func appsAutoCompleteCache() ([]*api.App, error) {
 	return cache.Apps, nil
 }
 
-func writeAppsAutoCompleteCache(apps []*api.App) error {
+func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
 	fd, err := os.OpenFile(appsCacheFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
 		return errgo.Mask(err)

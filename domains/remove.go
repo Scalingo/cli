@@ -2,7 +2,7 @@ package domains
 
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -12,7 +12,7 @@ func Remove(app string, domain string) error {
 		return errgo.Mask(err)
 	}
 
-	err = api.DomainsRemove(app, d.ID)
+	err = scalingo.DomainsRemove(app, d.ID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -21,10 +21,10 @@ func Remove(app string, domain string) error {
 	return nil
 }
 
-func findDomain(app string, domain string) (api.Domain, error) {
-	domains, err := api.DomainsList(app)
+func findDomain(app string, domain string) (scalingo.Domain, error) {
+	domains, err := scalingo.DomainsList(app)
 	if err != nil {
-		return api.Domain{}, errgo.Mask(err)
+		return scalingo.Domain{}, errgo.Mask(err)
 	}
 
 	for _, d := range domains {
@@ -32,5 +32,5 @@ func findDomain(app string, domain string) (api.Domain, error) {
 			return d, nil
 		}
 	}
-	return api.Domain{}, errgo.New("There is no such domain, please ensure you've added it correctly.\nhttps://my.scalingo.com/apps/" + app + "/domains")
+	return scalingo.Domain{}, errgo.New("There is no such domain, please ensure you've added it correctly.\nhttps://my.scalingo.com/apps/" + app + "/domains")
 }

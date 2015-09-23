@@ -1,7 +1,7 @@
 package env
 
 import "bytes"
-import "github.com/Scalingo/cli/api"
+import "github.com/Scalingo/go-scalingo"
 import "testing"
 
 func TestAdd(t *testing.T) {
@@ -35,7 +35,7 @@ func TestIsEnvEditValid(t *testing.T) {
 	}
 
 	longName := new(bytes.Buffer)
-	for i := 0; i < api.EnvNameMaxLength; i++ {
+	for i := 0; i < scalingo.EnvNameMaxLength; i++ {
 		longName.WriteRune('A')
 	}
 	longName.WriteString("A=VAL")

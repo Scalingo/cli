@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Create(appName string, remote string) error {
-	app, err := api.AppsCreate(appName)
+	app, err := scalingo.AppsCreate(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

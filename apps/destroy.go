@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Destroy(appName string) error {
@@ -16,7 +16,7 @@ func Destroy(appName string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	res, err := api.AppsDestroy(appName, validationName)
+	res, err := scalingo.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}

@@ -4,13 +4,13 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Restart(app string, sync bool, args []string) error {
-	params := api.AppsRestartParams{Scope: args}
+	params := scalingo.AppsRestartParams{Scope: args}
 
-	res, err := api.AppsRestart(app, &params)
+	res, err := scalingo.AppsRestart(app, &params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

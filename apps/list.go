@@ -6,12 +6,12 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func List() error {
-	apps, err := api.AppsList()
+	apps, err := scalingo.AppsList()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -25,7 +25,7 @@ func List() error {
 	t.SetHeader([]string{"Name", "Role", "Owner"})
 
 	for _, app := range apps {
-		if app.Owner.Email == api.CurrentUser.Email {
+		if app.Owner.Email == scalingo.CurrentUser.Email {
 			t.Append([]string{app.Name, "owner", "-"})
 		} else {
 			t.Append([]string{app.Name, "collaborator", fmt.Sprintf("%s <%s>", app.Owner.Username, app.Owner.Email)})

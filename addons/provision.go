@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Provision(app, addon, plan string) error {
@@ -22,7 +22,7 @@ func Provision(app, addon, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := api.AddonProvision(app, addon, planID)
+	params, err := scalingo.AddonProvision(app, addon, planID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -39,7 +39,7 @@ func Provision(app, addon, plan string) error {
 }
 
 func checkPlanExist(addon, plan string) (string, error) {
-	plans, err := api.AddonProviderPlansList(addon)
+	plans, err := scalingo.AddonProviderPlansList(addon)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}

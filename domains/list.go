@@ -6,11 +6,11 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func List(app string) error {
-	domains, err := api.DomainsList(app)
+	domains, err := scalingo.DomainsList(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

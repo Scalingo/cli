@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Display(app string) error {
-	vars, err := api.VariablesList(app)
+	vars, err := scalingo.VariablesList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

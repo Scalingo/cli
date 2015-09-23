@@ -1,3 +1,4 @@
+could not import "/home/leo/Projects/Go/src/github.com/Scalingo/cli/config": /home/leo/Projects/Go/src/github.com/Scalingo/cli/config/api_auth.go:1:1: expected 'package', found 'EOF'
 package session
 
 import (
@@ -5,18 +6,18 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/api"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 func Login() error {
-	user, err := api.AuthFromConfig()
+	user, err := scalingo.AuthFromConfig()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	if user == nil {
 		fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
-		user, err = api.Auth()
+		user, err = config.Auth()
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
