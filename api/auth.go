@@ -8,14 +8,21 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/cli/users"
 )
 
 var (
-	ErrLoginAborted = errors.New("canceled by user.")
+	ErrLoginAborted  = errors.New("canceled by user.")
+	ApiAuthenticator Authenticator
+	ApiUrl           string
 )
+
+type Authenticator interface {
+	LoadAuth() *users.User
+	StoreAuth(user *users.User)
+	RemoveAuth() error
+}
 
 type LoginError struct {
 	Success bool   `json:"success"`
@@ -32,7 +39,7 @@ func (err *LoginError) Error() string {
 }
 
 func AuthFromConfig() (*users.User, error) {
-	user, err := config.LoadAuth()
+	user, err := ApiAuthenticator.LoadAuth()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -57,7 +64,7 @@ func Auth() (*users.User, error) {
 	}
 
 	fmt.Printf("Hello %s, nice to see you !\n\n", user.Username)
-	err = config.StoreAuth(user)
+	err = ApiAuthenticator.StoreAuth(user)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

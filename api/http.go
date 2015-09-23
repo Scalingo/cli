@@ -38,7 +38,7 @@ type Statuses []int
 
 func (req *APIRequest) FillDefaultValues() error {
 	if req.URL == "" {
-		req.URL = fmt.Sprintf("%s%s", config.C.ApiUrl, config.C.ApiPrefix)
+		req.URL = fmt.Sprintf("%s%s", ApiUrl, config.C.ApiPrefix)
 	}
 	if req.Method == "" {
 		req.Method = "GET"

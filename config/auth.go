@@ -10,12 +10,14 @@ import (
 	"github.com/Scalingo/cli/users"
 )
 
+type CliAuthenticator struct{}
+
 type AuthConfigData struct {
 	LastUpdate        time.Time              `json:"last_update"`
 	AuthConfigPerHost map[string]*users.User `json:"auth_config_data"`
 }
 
-func StoreAuth(user *users.User) error {
+func (a *CliAuthenticator) StoreAuth(user *users.User) error {
 	authConfig, err := existingAuth()
 	if err != nil {
 		return errgo.Mask(err)
@@ -27,7 +29,7 @@ func StoreAuth(user *users.User) error {
 	return writeAuthFile(authConfig)
 }
 
-func LoadAuth() (*users.User, error) {
+func (a *CliAuthenticator) LoadAuth() (*users.User, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0644)
 	if os.IsNotExist(err) {
 		return nil, nil
@@ -50,7 +52,7 @@ func LoadAuth() (*users.User, error) {
 	}
 }
 
-func RemoveAuth() error {
+func (a *CliAuthenticator) RemoveAuth() error {
 	authConfig, err := existingAuth()
 	if err != nil {
 		return errgo.Mask(err)
