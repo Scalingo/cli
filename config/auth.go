@@ -28,6 +28,8 @@ var Authenticator = &CliAuthenticator{}
 func Auth() (*users.User, error) {
 	var user *users.User
 	var err error
+
+	fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
 	for i := 0; i < 3; i++ {
 		user, err = tryAuth()
 		if err == nil {
