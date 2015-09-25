@@ -3,8 +3,6 @@ package config
 import (
 	"reflect"
 	"testing"
-
-	"github.com/Scalingo/cli/users"
 )
 
 var (

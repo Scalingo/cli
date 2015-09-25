@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Soulou/errgo-rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/users"
 )
 
 type Sysinfo struct {

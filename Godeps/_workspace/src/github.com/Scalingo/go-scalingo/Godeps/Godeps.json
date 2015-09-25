@@ -1,0 +1,13 @@
+{
+	"ImportPath": "github.com/Scalingo/go-scalingo",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"."
+	],
+	"Deps": [
+		{
+			"ImportPath": "gopkg.in/errgo.v1",
+			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
+		}
+	]
+}

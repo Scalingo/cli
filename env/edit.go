@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/go-scalingo"
 )
 
 var (
@@ -20,24 +20,26 @@ var (
 )
 
 func Add(app string, params []string) error {
+	var variables scalingo.Variables
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
 			return errgo.Newf("'%s' is invalid: %s", param, err)
 		}
+
+		name, value := parseVariable(param)
+		variables = append(variables, &scalingo.Variable{
+			Name:  name,
+			Value: value,
+		})
 	}
 
-	for _, param := range params {
-		name, value := parseVariable(param)
-		_, code, err := scalingo.VariableSet(app, name, value)
-		if err != nil {
-			return errgo.Mask(err, errgo.Any)
-		}
+	_, _, err := scalingo.VariableMultipleSet(app, variables)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
 
-		if code == 201 {
-			fmt.Printf("%s has been set to %s.\n", name, value)
-		} else if code == 200 {
-			fmt.Printf("%s has been updated to %s.\n", name, value)
-		}
+	for _, variable := range variables {
+		fmt.Printf("%s has been set to %s.\n", variable.Name, variable.Value)
 	}
 
 	return nil
