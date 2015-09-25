@@ -39,7 +39,7 @@ func Add(app string, params []string) error {
 	}
 
 	for _, variable := range variables {
-		fmt.Printf("%s set to %s.\n", variable.Name, variable.Value)
+		fmt.Printf("%s has been set to %s.\n", variable.Name, variable.Value)
 	}
 
 	return nil
