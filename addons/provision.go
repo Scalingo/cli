@@ -3,9 +3,9 @@ package addons
 import (
 	"errors"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo"
 )
 
 func Provision(app, addon, plan string) error {

@@ -1,7 +1,7 @@
 package env
 
 import "bytes"
-import "github.com/Scalingo/go-scalingo"
+import "github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 import "testing"
 
 func TestAdd(t *testing.T) {

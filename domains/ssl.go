@@ -3,8 +3,8 @@ package domains
 import (
 	"io/ioutil"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/io"
 )
 
