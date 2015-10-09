@@ -29,6 +29,7 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "restart")
+			autocomplete.RestartAutoComplete(c)
 		},
 	}
 )
