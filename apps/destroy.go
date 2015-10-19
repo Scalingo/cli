@@ -11,7 +11,7 @@ import (
 func Destroy(appName string) error {
 	var validationName string
 
-	res, err := scalingo.AppsShow(appName)
+	_, err := scalingo.AppsShow(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -22,7 +22,7 @@ func Destroy(appName string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	res, err = scalingo.AppsDestroy(appName, validationName)
+	res, err := scalingo.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}
