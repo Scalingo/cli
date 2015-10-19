@@ -11,6 +11,13 @@ import (
 )
 
 func Destroy(appName string) error {
+	var validationName string
+
+	_, err := scalingo.AppsShow(appName)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
 	fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 	validationName, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
