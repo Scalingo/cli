@@ -29,6 +29,8 @@ var Authenticator = &CliAuthenticator{}
 func Auth() (*users.User, error) {
 	var user *users.User
 	var err error
+
+	fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
 	if C.DisableInteractive {
 		err = errors.New("Fail to login (interactive mode disabled)")
 	} else {
