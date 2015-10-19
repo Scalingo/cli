@@ -10,13 +10,19 @@ import (
 
 func Destroy(appName string) error {
 	var validationName string
+
+	res, err := scalingo.AppsShow(appName)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
 	fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 	fmt.Scan(&validationName)
 	if validationName != appName {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	res, err := scalingo.AppsDestroy(appName, validationName)
+	res, err = scalingo.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}
