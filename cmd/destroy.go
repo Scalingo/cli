@@ -13,12 +13,19 @@ var (
 		Category:    "Global",
 		Flags:       []cli.Flag{appFlag},
 		Usage:       "Destroy an app /!\\",
-		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'",
+		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'\n    'scalingo -a my-app destroy'",
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			var currentApp string
+
+			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "destroy")
 			} else {
+				if len(c.Args()) != 0 {
+					currentApp = c.Args()[0]
+				} else {
+					currentApp = appdetect.CurrentApp(c)
+				}
+
 				err := apps.Destroy(currentApp)
 				if err != nil {
 					errorQuit(err)
