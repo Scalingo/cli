@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -107,15 +108,18 @@ func (a *CliAuthenticator) RemoveAuth() error {
 
 func tryAuth() (*users.User, error) {
 	var login string
+	var err error
+
 	for login == "" {
 		fmt.Print("Username or email: ")
-		_, err := fmt.Scanln(&login)
+		login, err = bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
 			return nil, errgo.Mask(err, errgo.Any)
 		}
+		login = strings.TrimRight(login, "\n")
 	}
 
 	password, err := term.Password("Password: ")
