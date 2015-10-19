@@ -62,9 +62,13 @@ func init() {
 		}
 	}
 
-	envconfig.Process("", &C)
+	err := envconfig.Process("", &C)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fail to initialize configuration: %v\n", err)
+		os.Exit(1)
+	}
 
-	err := os.MkdirAll(C.ConfigDir, 0755)
+	err = os.MkdirAll(C.ConfigDir, 0755)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v\n", err)
 		os.Exit(1)

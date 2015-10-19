@@ -30,14 +30,18 @@ func Auth() (*users.User, error) {
 	var err error
 
 	fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
-	for i := 0; i < 3; i++ {
-		user, err = tryAuth()
-		if err == nil {
-			break
-		} else if errgo.Cause(err) == io.EOF {
-			return nil, errors.New("canceled by user")
-		} else {
-			fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
+	if C.DisableInteractive {
+		err = errors.New("Fail to login (interactive mode disabled)")
+	} else {
+		for i := 0; i < 3; i++ {
+			user, err = tryAuth()
+			if err == nil {
+				break
+			} else if errgo.Cause(err) == io.EOF {
+				return nil, errors.New("canceled by user")
+			} else {
+				fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
+			}
 		}
 	}
 	if err != nil {

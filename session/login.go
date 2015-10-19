@@ -16,7 +16,7 @@ func Login() error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	if user == nil {
-		fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://my.scalingo.com/users/signup")
+		fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://scalingo.com")
 		user, err = config.Auth()
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
