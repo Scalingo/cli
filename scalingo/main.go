@@ -26,6 +26,7 @@ func DefaultAction(c *cli.Context) {
 
 	if !completeMode {
 		cmd.HelpCommand.Action(c)
+		cmd.ShowSuggestions(c)
 	} else {
 		i := len(os.Args) - 2
 		if i > 0 {
