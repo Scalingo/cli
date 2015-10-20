@@ -19,7 +19,7 @@ func Destroy(appName string) error {
 	}
 
 	fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
-	validationName, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
