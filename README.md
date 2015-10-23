@@ -1,4 +1,4 @@
-Scalingo-CLI v1.1.1
+Scalingo-CLI v1.1.2
 =======================
 
 This repository contains the command line utility for the public PaaS Scalingo
