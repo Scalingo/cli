@@ -19,11 +19,11 @@ func IsTerminal(f *os.File) bool {
 }
 
 func MakeRaw(f *os.File) error {
-	return stty(f, "-icanon", "-echo").Run()
+	return makeRaw(f)
 }
 
 func Restore(f *os.File) error {
-	return stty(f, "icanon", "echo").Run()
+	return restore(f)
 }
 
 func Cols() (int, error) {
@@ -40,13 +40,6 @@ func Lines() (int, error) {
 		return 0, errgo.Mask(err, errgo.Any)
 	}
 	return strconv.Atoi(cols)
-}
-
-// helpers
-func stty(f *os.File, args ...string) *exec.Cmd {
-	c := exec.Command("stty", args...)
-	c.Stdin = f
-	return c
 }
 
 func tput(what string) (string, error) {
