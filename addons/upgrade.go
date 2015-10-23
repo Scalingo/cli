@@ -20,7 +20,7 @@ func Upgrade(app, resourceID, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	planID, err := checkPlanExist(addon.AddonProvider.Name, plan)
+	planID, err := checkPlanExist(addon.AddonProvider.ID, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
