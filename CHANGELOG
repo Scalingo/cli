@@ -3,11 +3,16 @@ Changelog
 
 ### v1.1.2 - 23/10/2015
 
-* [Feature] Show suggestions to wrong commands
-* [Feature] Add `DISABLE_INTERACTIVE` environment variable to disable blocking user input
-* [Bugfix] User friendly login prompt in case of "No account"
-* [Bugfix] Destroy command requesting API to know if app exists or not before asking for confirmation
-* [Improvement - Completion] Enable completion on restart command
+* [Feature] Show suggestions to wrong commands #164
+* [Feature] Add `DISABLE_INTERACTIVE` environment variable to disable blocking user input #146
+* [Feature - Completion] Enable completion on restart command #158 #159
+* [Bugfix] Login on Windows 10 when using git bash #171 #160
+* [Bugfix] Fix error when upgrading addon #168 #170
+* [Bugfix] User friendly login prompt in case of "No account" #152
+* [Bugfix] Destroy command requesting API to know if app exists or not before asking for confirmation #161 #162 #155 #151
+* [Bugfix] Do not display wrong completion when user is not logged in #146 #142
+* [Refactoring] Extract Scalingo API functions to an external package github.com/Scalingo/go-scalingo #150
+* [Refactoring] Use API endpoint to update multiple environment variables at once #153
 
 ### v1.1.1 - 22/09/2015
 
