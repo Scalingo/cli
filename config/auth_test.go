@@ -3,6 +3,8 @@ package config
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 )
 
 var (
@@ -15,30 +17,30 @@ var (
 
 func TestStoreAuth(t *testing.T) {
 	// First creation
-	err := StoreAuth(u)
+	err := Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	clean()
 
 	// Rewrite over an existing file
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	clean()
 
 	// Add an additional api url
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	C.apiHost = "scalingo2.dev"
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
@@ -47,20 +49,20 @@ func TestStoreAuth(t *testing.T) {
 
 func TestLoadAuth(t *testing.T) {
 	// Load without Store should return nil User
-	u, err := LoadAuth()
+	user, err := Authenticator.LoadAuth()
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	if u != nil {
-		t.Errorf("%v should be nil", u)
+	if user != nil {
+		t.Errorf("%v should be nil", user)
 	}
 
 	// Load after storage of credentials
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	uLoad, err := LoadAuth()
+	uLoad, err := Authenticator.LoadAuth()
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
@@ -85,7 +87,7 @@ func TestExistingAuth(t *testing.T) {
 	}
 
 	// After one auth
-	err = StoreAuth(u)
+	err = Authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
