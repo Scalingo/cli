@@ -1,7 +1,6 @@
 package config
 
 import (
-	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -114,7 +113,7 @@ func tryAuth() (*users.User, error) {
 
 	for login == "" {
 		fmt.Print("Username or email: ")
-		login, err = bufio.NewReader(os.Stdin).ReadString('\n')
+		_, err := fmt.Scanln(&login)
 		if err != nil {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue

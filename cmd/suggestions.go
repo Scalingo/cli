@@ -27,7 +27,7 @@ func ShowSuggestions(c *cli.Context) {
 		}
 	}
 
-	if len(suggestions) > 0 {
+	if len(c.Args()) > 0 && len(suggestions) > 0 {
 		fmt.Println("You might be looking for:")
 		for _, s := range suggestions {
 			fmt.Printf("  - '%s'\n", s)
