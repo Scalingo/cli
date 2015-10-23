@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"unicode/utf8"
 	"unsafe"
+	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
@@ -45,6 +46,19 @@ func Password(prompt string) (string, error) {
 	if os.Getenv("BABUN_HOME") != "" {
 		fmt.Scanf("%s", &pass)
 		return pass, nil
+	}
+	if strings.HasSuffix(os.Getenv("SHELL"), "/usr/bin/bash") {
+		var c rune
+		var password string
+		MakeRaw(os.Stdin)
+		defer Restore(os.Stdin)
+		for (c != '\n') {
+			fmt.Scanf("%c", &c)
+			fmt.Print("*")
+			password = fmt.Sprintf("%s%c", password, c)
+		}
+		fmt.Println()
+		return strings.TrimSpace(password), nil
 	}
 	
 	var c rune
