@@ -57,6 +57,19 @@ The client is developed with Go. Therefore, there is no external dependency.
 
 ## Changelog
 
+__1.1.2__
+
+* [Feature] Show suggestions to wrong commands [#164](https://github.com/Scalingo/cli/issues/164)
+* [Feature] Add `DISABLE_INTERACTIVE` environment variable to disable blocking user input [#146](https://github.com/Scalingo/cli/issues/146)
+* [Feature - Completion] Enable completion on restart command [#158](https://github.com/Scalingo/cli/issues/158) [#159](https://github.com/Scalingo/cli/issues/159)
+* [Bugfix] Login on Windows 10 when using git bash [#171](https://github.com/Scalingo/cli/issues/171) [#160](https://github.com/Scalingo/cli/issues/160)
+* [Bugfix] Fix error when upgrading addon [#168](https://github.com/Scalingo/cli/issues/168) [#170](https://github.com/Scalingo/cli/issues/170)
+* [Bugfix] User friendly login prompt in case of "No account" [#152](https://github.com/Scalingo/cli/issues/152)
+* [Bugfix] Destroy command requesting API to know if app exists or not before asking for confirmation [#161](https://github.com/Scalingo/cli/issues/161) [#162](https://github.com/Scalingo/cli/issues/162) [#155](https://github.com/Scalingo/cli/issues/155) [#151](https://github.com/Scalingo/cli/issues/151)
+* [Bugfix] Do not display wrong completion when user is not logged in [#146](https://github.com/Scalingo/cli/issues/146) [#142](https://github.com/Scalingo/cli/issues/142)
+* [Refactoring] Extract Scalingo API functions to an external package github.com/Scalingo/go-scalingo [#150](https://github.com/Scalingo/cli/issues/150)
+* [Refactoring] Use API endpoint to update multiple environment variables at once [#153](https://github.com/Scalingo/cli/issues/153)
+
 __1.1.1__
 
 * [Feature] Build in Linux ARM [#145](https://github.com/Scalingo/cli/issues/145)
