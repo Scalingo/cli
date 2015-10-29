@@ -1,7 +1,6 @@
 package config
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
@@ -44,32 +43,6 @@ func TestStoreAuth(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	clean()
-}
-
-func TestLoadAuth(t *testing.T) {
-	// Load without Store should return nil User
-	user, err := Authenticator.LoadAuth()
-	if err != nil {
-		t.Errorf("%v should be nil", err)
-	}
-	if user != nil {
-		t.Errorf("%v should be nil", user)
-	}
-
-	// Load after storage of credentials
-	err = Authenticator.StoreAuth(u)
-	if err != nil {
-		t.Errorf("%v should be nil", err)
-	}
-	uLoad, err := Authenticator.LoadAuth()
-	if err != nil {
-		t.Errorf("%v should be nil", err)
-	}
-	if !reflect.DeepEqual(uLoad, u) {
-		t.Errorf("want %v, got %v", u, uLoad)
-	}
-
 	clean()
 }
 
