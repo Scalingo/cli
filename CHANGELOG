@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v1.1.3 - 29/10/2015
+
+* [Bugfix] Authentication problem when auth file doesn't exist
+
 ### v1.1.2 - 23/10/2015
 
 * [Feature] Show suggestions to wrong commands #164

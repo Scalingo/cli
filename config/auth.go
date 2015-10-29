@@ -72,7 +72,7 @@ func (a *CliAuthenticator) StoreAuth(user *users.User) error {
 func (a *CliAuthenticator) LoadAuth() (*users.User, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0644)
 	if os.IsNotExist(err) {
-		return nil, nil
+		return Auth()
 	}
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
