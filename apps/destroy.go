@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
@@ -23,6 +24,8 @@ func Destroy(appName string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	validationName = strings.Trim(validationName, "\n")
+
 	if validationName != appName {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
