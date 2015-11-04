@@ -43,12 +43,16 @@ var (
 		AddonsAddCommand,
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
+
 		// DB Access
 		DbTunnelCommand,
 		RedisConsoleCommand,
 		MongoConsoleCommand,
 		MySQLConsoleCommand,
 		PgSQLConsoleCommand,
+
+		// Stats
+		StatsCommand,
 
 		// SSH keys
 		ListSSHKeyCommand,

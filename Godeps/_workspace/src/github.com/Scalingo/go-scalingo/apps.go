@@ -14,6 +14,19 @@ type Container struct {
 	Size    string `json:"size"`
 }
 
+type ContainerStat struct {
+	ID                 string `json:"id"`
+	CpuUsage           int    `json:"cpu_usage"`
+	MemoryUsage        int64  `json:"memory_usage"`
+	SwapUsage          int64  `json:"swap_usage"`
+	MemoryLimit        int64  `json:"memory_limit"`
+	SwapLimit          int64  `json:"swap_limit"`
+	HighestMemoryUsage int64  `json:"highest_memory_usage"`
+	HighestSwapUsage   int64  `json:"highest_swap_usage"`
+}
+
+type AppStatsRes []*ContainerStat
+
 type AppsScaleParams struct {
 	Containers []Container `json:"containers"`
 }
@@ -118,6 +131,24 @@ func AppsCreate(app string) (*App, error) {
 	}
 
 	return params.App, nil
+}
+
+func AppsStats(app string) (AppStatsRes, error) {
+	req := &APIRequest{
+		Endpoint: "/apps/" + app + "/stats",
+	}
+	res, err := req.Do()
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	var stats AppStatsRes
+	err = ParseJSON(res, &stats)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	return stats, nil
 }
 
 func AppsPs(app string) ([]Container, error) {
