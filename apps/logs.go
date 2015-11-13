@@ -119,17 +119,26 @@ func streamLogs(logsRawURL string, filter string) error {
 	for {
 		n, err := conn.Read(buffer[:])
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
-		}
-		debug.Println(string(buffer[:n]))
-		err = json.Unmarshal(buffer[:n], &event)
-		if err != nil {
-			return errgo.Notef(err, "invalid JSON %v", string(buffer[:n]))
-		}
-		switch event.Type {
-		case "ping":
-		case "log":
-			fmt.Println(strings.TrimSpace(event.Log))
+			if err == stdio.EOF {
+				fmt.Println("Attempting to reconnect..")
+				for conn, err := websocket.Dial(logsURLString, "", "http://scalingo-cli.local/"+config.Version); err != nil; {
+					time.Sleep(time.Second * 10)
+				}
+				continue
+			} else {
+				return errgo.Mask(err, errgo.Any)
+			}
+		} else {
+			debug.Println(string(buffer[:n]))
+			err = json.Unmarshal(buffer[:n], &event)
+			if err != nil {
+				return errgo.Notef(err, "invalid JSON %v", string(buffer[:n]))
+			}
+			switch event.Type {
+			case "ping":
+			case "log":
+				fmt.Println(strings.TrimSpace(event.Log))
+			}
 		}
 	}
 }
