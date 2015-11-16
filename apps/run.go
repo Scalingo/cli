@@ -88,6 +88,11 @@ func Run(opts RunOpts) error {
 		}
 	}
 
+	fmt.Printf("-----> Connecting to container '[%v-%v]'...\n\n",
+		runStruct["container"].(map[string]interface{})["type"],
+		runStruct["container"].(map[string]interface{})["type_index"],
+	)
+
 	res, socket, err := connectToRunServer(attachURL)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
