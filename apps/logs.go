@@ -119,14 +119,12 @@ func streamLogs(logsRawURL string, filter string) error {
 	for {
 		n, err := conn.Read(buffer[:])
 		if err != nil {
+			conn.Close()
 			if err == stdio.EOF {
-				fmt.Println("Attempting to reconnect..")
+				debug.Println("Remote server broke the connection, reconnecting")
 				for err != nil {
-					if conn != nil {
-						conn.Close()
-					}
 					conn, err = websocket.Dial(logsURLString, "", "http://scalingo-cli.local/"+config.Version)
-					time.Sleep(time.Second * 10)
+					time.Sleep(time.Second * 1)
 				}
 				continue
 			} else {
