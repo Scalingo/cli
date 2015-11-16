@@ -57,6 +57,10 @@ The client is developed with Go. Therefore, there is no external dependency.
 
 ## Changelog
 
+__1.1.3__
+
+* [Bugfix] Authentication problem when auth file doesn't exist
+
 __1.1.2__
 
 * [Feature] Show suggestions to wrong commands [#164](https://github.com/Scalingo/cli/issues/164)
