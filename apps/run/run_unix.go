@@ -15,6 +15,7 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/heroku/hk/term"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
 )
 
@@ -49,7 +50,7 @@ func HandleSignal(s os.Signal, socket net.Conn, runUrl string) {
 	case syscall.SIGWINCH:
 		err := updateTtySize(runUrl)
 		if err != nil {
-			fmt.Println("WARN: Error when updating terminal size:", err)
+			debug.Println("WARN: Error when updating terminal size:", err)
 		}
 	}
 }

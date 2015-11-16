@@ -21,8 +21,9 @@ func MySQLConsole(app string) error {
 	}
 
 	opts := apps.RunOpts{
-		App: app,
-		Cmd: []string{"mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
+		DisplayCmd: "mysql-console " + user,
+		App:        app,
+		Cmd:        []string{"mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
 	}
 
 	err = apps.Run(opts)

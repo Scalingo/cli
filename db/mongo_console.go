@@ -13,8 +13,9 @@ func MongoConsole(app string) error {
 	}
 
 	opts := apps.RunOpts{
-		App: app,
-		Cmd: []string{"mongo", "-u", user, "-p", password, mongoURL.Host + "/" + user},
+		DisplayCmd: "mongo-console " + user,
+		App:        app,
+		Cmd:        []string{"mongo", "-u", user, "-p", password, mongoURL.Host + "/" + user},
 	}
 
 	err = apps.Run(opts)

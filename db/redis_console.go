@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net"
+	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/apps"
@@ -21,6 +22,7 @@ func RedisConsole(app string) error {
 	}
 
 	opts := apps.RunOpts{
+		DisplayCmd:    "redis-console " + strings.Split(host, ".")[0],
 		App:           app,
 		Cmd:           []string{"redis-cli", "-h", host, "-p", port, "-a", password},
 		StdinCopyFunc: redisStdinCopy,

@@ -20,8 +20,9 @@ func PgSQLConsole(app string) error {
 	}
 
 	opts := apps.RunOpts{
-		App: app,
-		Cmd: []string{"psql"},
+		DisplayCmd: "pgsql-console " + user,
+		App:        app,
+		Cmd:        []string{"psql"},
 		CmdEnv: []string{
 			"PGHOST=" + host,
 			"PGPORT=" + port,
