@@ -9,9 +9,8 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/io"
 )
-
-var loadingRunes = "-\\|/"
 
 func handleOperation(app string, res *http.Response) error {
 	opURL, err := url.Parse(res.Header.Get("Location"))
@@ -44,7 +43,11 @@ func handleOperation(app string, res *http.Response) error {
 	}()
 
 	fmt.Print("Status:  ")
-	for i := 0; ; i++ {
+	stopSpinner := make(chan struct{})
+	go io.Spinner(stopSpinner)
+	defer close(stopSpinner)
+
+	for {
 		select {
 		case err := <-errs:
 			return errgo.Mask(err)
@@ -56,11 +59,6 @@ func handleOperation(app string, res *http.Response) error {
 				fmt.Printf("\bOperation '%s' failed, an error occured: %v\n", op.Type, op.Error)
 				return nil
 			}
-		default:
 		}
-
-		r := loadingRunes[i%len(loadingRunes)]
-		time.Sleep(100 * time.Millisecond)
-		fmt.Printf("\b%c", r)
 	}
 }

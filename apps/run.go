@@ -6,7 +6,7 @@ import (
 	"compress/gzip"
 	"crypto/tls"
 	"fmt"
-	"io"
+	stdio "io"
 	"io/ioutil"
 	"mime/multipart"
 	"net"
@@ -25,17 +25,19 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
 )
 
 type RunOpts struct {
 	App            string
+	DisplayCmd     string
 	Cmd            []string
 	CmdEnv         []string
 	Files          []string
-	StdinCopyFunc  func(io.Writer, io.Reader) (int64, error)
-	StdoutCopyFunc func(io.Writer, io.Reader) (int64, error)
+	StdinCopyFunc  func(stdio.Writer, stdio.Reader) (int64, error)
+	StdoutCopyFunc func(stdio.Writer, stdio.Reader) (int64, error)
 }
 
 func Run(opts RunOpts) error {
@@ -46,10 +48,12 @@ func Run(opts RunOpts) error {
 		opts.Files = []string{}
 	}
 	if opts.StdinCopyFunc == nil {
-		opts.StdinCopyFunc = io.Copy
+		opts.StdinCopyFunc = stdio.Copy
 	}
+
+	firstReadDone := make(chan struct{})
 	if opts.StdoutCopyFunc == nil {
-		opts.StdoutCopyFunc = io.Copy
+		opts.StdoutCopyFunc = io.CopyWithFirstReadChan(firstReadDone)
 	}
 
 	env, err := buildEnv(opts.CmdEnv)
@@ -88,6 +92,22 @@ func Run(opts RunOpts) error {
 		}
 	}
 
+	fmt.Printf("-----> Connecting to container [%v-%v]...  ",
+		runStruct["container"].(map[string]interface{})["type"],
+		runStruct["container"].(map[string]interface{})["type_index"],
+	)
+
+	stopAttachSpinner := make(chan struct{})
+	go io.SpinnerWithPosthook(stopAttachSpinner, func() {
+		var displayCmd string
+		if opts.DisplayCmd != "" {
+			displayCmd = opts.DisplayCmd
+		} else {
+			displayCmd = strings.Join(opts.Cmd, " ")
+		}
+		fmt.Printf("\n-----> Process '%v' is starting...  ", displayCmd)
+	})
+
 	res, socket, err := connectToRunServer(attachURL)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -120,8 +140,13 @@ func Run(opts RunOpts) error {
 		}
 	}()
 
+	close(stopAttachSpinner)
+	go io.SpinnerWithPosthook(firstReadDone, func() {
+		fmt.Printf("\n\n")
+	})
+
 	go opts.StdinCopyFunc(socket, os.Stdin)
-	_, err = opts.StdinCopyFunc(os.Stdout, socket)
+	_, err = opts.StdoutCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
 
@@ -279,7 +304,7 @@ func createTarArchive(fd *os.File, dir string) error {
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		_, err = io.Copy(tarFd, fileFd)
+		_, err = stdio.Copy(tarFd, fileFd)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
@@ -305,7 +330,7 @@ func compressToGzip(file string) (string, error) {
 	writer := gzip.NewWriter(fdDest)
 	defer writer.Close()
 
-	_, err = io.Copy(writer, fdSource)
+	_, err = stdio.Copy(writer, fdSource)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
@@ -327,7 +352,7 @@ func uploadFile(endpoint string, file string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	_, err = io.Copy(writer, fd)
+	_, err = stdio.Copy(writer, fd)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
