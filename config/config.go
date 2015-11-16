@@ -16,7 +16,7 @@ import (
 )
 
 type Config struct {
-	ApiUrl             string
+	ScalingoApiUrl     string
 	apiHost            string
 	ApiVersion         string
 	DisableInteractive bool
@@ -32,14 +32,14 @@ type Config struct {
 
 var (
 	env = map[string]string{
-		"API_URL":       "https://api.scalingo.com",
-		"SSH_HOST":      "appsdeck.eu:22",
-		"API_VERSION":   "1",
-		"UNSECURE_SSL":  "false",
-		"ROLLBAR_TOKEN": "",
-		"CONFIG_DIR":    ".config/scalingo",
-		"AUTH_FILE":     "auth",
-		"LOG_FILE":      "local.log",
+		"SCALINGO_API_URL": "https://api.scalingo.com",
+		"SSH_HOST":         "appsdeck.eu:22",
+		"API_VERSION":      "1",
+		"UNSECURE_SSL":     "false",
+		"ROLLBAR_TOKEN":    "",
+		"CONFIG_DIR":       ".config/scalingo",
+		"AUTH_FILE":        "auth",
+		"LOG_FILE":         "local.log",
 	}
 	C         Config
 	TlsConfig *tls.Config
@@ -80,9 +80,9 @@ func init() {
 	}
 	C.Logger = log.New(C.logFile, "", log.LstdFlags)
 
-	u, err := url.Parse(C.ApiUrl)
+	u, err := url.Parse(C.ScalingoApiUrl)
 	if err != nil {
-		panic("API_URL is not a valid URL " + err.Error())
+		panic("SCALINGO_API_URL is not a valid URL " + err.Error())
 	}
 
 	C.apiHost = strings.Split(u.Host, ":")[0]
@@ -99,7 +99,7 @@ func init() {
 	}
 
 	scalingo.ApiAuthenticator = Authenticator
-	scalingo.ApiUrl = C.ApiUrl
+	scalingo.ApiUrl = C.ScalingoApiUrl
 	scalingo.ApiVersion = C.ApiVersion
 }
 
