@@ -57,6 +57,15 @@ The client is developed with Go. Therefore, there is no external dependency.
 
 ## Changelog
 
+__1.2.0__
+
+* [Feature - DB Tunnel] Reconnect automatically in case of connection problem
+* [Feature - DB Tunnel] Default port at 10000, if not available 10001 etc.
+* [Feature - One-off] More verbose output and spinner when starting a one-off container [#180](https://github.com/Scalingo/cli/issues/180) [#184](https://github.com/Scalingo/cli/issues/184)
+* [Feature - Logs] Automatically reconnect to logs streaming if anything wrong happen [#182](https://github.com/Scalingo/cli/issues/182)
+* [Feature] Add `stats` command to get containers CPU and memory metrics
+* [Bugfix] Fix delete command (app name wasn't read correctly) [#177](https://github.com/Scalingo/cli/issues/177)
+
 __1.1.3__
 
 * [Bugfix] Authentication problem when auth file doesn't exist
