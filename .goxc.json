@@ -7,7 +7,7 @@
    "Include": "INSTALL*,README.md,LICENSE*",
    "Exclude": "*.go"
   },
-  "PackageVersion": "1.1.3",
+  "PackageVersion": "1.2.0",
   "ConfigVersion": "0.9",
   "Env": [
     "GOPATH={{.Env.GOPATH}}{{.PS}}src{{.PS}}github.com{{.PS}}Scalingo{{.PS}}cli{{.PS}}Godeps{{.PS}}_workspace{{.PLS}}{{.Env.GOPATH}}"
