@@ -16,7 +16,7 @@ var (
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
 		Flags: []cli.Flag{appFlag,
-			cli.IntFlag{Name: "port, p", Usage: "Local port to bind"},
+			cli.IntFlag{Name: "port, p", Usage: "Local port to bind (default 10000)"},
 			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key"},
 			cli.BoolTFlag{Name: "reconnect", Usage: "true by default, automatically reconnect to the tunnel when disconnected"},
 		},
@@ -35,8 +35,8 @@ var (
      $ scalingo -a my-app db-tunnel mongodb://user:pass@host:port/db
 
    Once the tunnel is built, the port which has been allocated will be
-   displayed, example: "localhost:58000". You can choose this port
-   manually with the '-p' option.
+   displayed (default is 10000), example: "localhost:10000". You can
+	 choose this port manually with the '-p' option.
 
    Example
      $ scalingo -a my-app db-tunnel -p 20000 MONGO_URL

@@ -6,8 +6,10 @@ import (
 	stdio "io"
 	"net"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
@@ -22,6 +24,7 @@ import (
 var (
 	errTimeout      = errors.New("timeout")
 	connIDGenerator = make(chan int)
+	defaultPort     = 10000
 )
 
 type TunnelOpts struct {
@@ -76,15 +79,29 @@ func Tunnel(opts TunnelOpts) error {
 		errgo.Mask(err)
 	}
 
-	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", opts.Port))
-	if err != nil {
-		return errgo.Mask(err)
+	if opts.Port == 0 {
+		opts.Port = defaultPort
 	}
 
-	sock, err := net.ListenTCP("tcp", tcpAddr)
-	if err != nil {
-		return errgo.Mask(err)
+	var tcpAddr *net.TCPAddr
+	var sock *net.TCPListener
+	for {
+		tcpAddr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", opts.Port))
+		if err != nil {
+			return errgo.Mask(err)
+		}
+
+		sock, err = net.ListenTCP("tcp", tcpAddr)
+		if isAddrInUse(err) {
+			opts.Port++
+			continue
+		}
+		if err != nil {
+			return errgo.Mask(err)
+		}
+		break
 	}
+
 	defer sock.Close()
 	fmt.Printf("You can access your database on '%v'\n", sock.Addr())
 
@@ -221,4 +238,17 @@ func connectToSSHServerWithKey(key ssh.Signer) (*ssh.Client, error) {
 	}
 
 	return ssh.Dial("tcp", config.C.SshHost, sshConfig)
+}
+
+func isAddrInUse(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if err, ok := err.(*net.OpError); ok {
+		if err, ok := err.Err.(*os.SyscallError); ok {
+			return err.Err == syscall.EADDRINUSE
+		}
+	}
+	return false
 }
