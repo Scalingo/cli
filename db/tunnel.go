@@ -1,11 +1,14 @@
 package db
 
 import (
+	"errors"
 	"fmt"
-	"io"
+	stdio "io"
 	"net"
 	"net/url"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
@@ -13,21 +16,31 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/cli/io"
 )
 
 var (
+	errTimeout      = errors.New("timeout")
 	connIDGenerator = make(chan int)
 )
 
-func Tunnel(app string, dbEnvVar string, identity string, port int) error {
-	environ, err := scalingo.VariablesListWithoutAlias(app)
+type TunnelOpts struct {
+	App       string
+	DBEnvVar  string
+	Identity  string
+	Port      int
+	Reconnect bool
+}
+
+func Tunnel(opts TunnelOpts) error {
+	environ, err := scalingo.VariablesListWithoutAlias(opts.App)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	dbUrlStr := dbEnvVarValue(dbEnvVar, environ)
+	dbUrlStr := dbEnvVarValue(opts.DBEnvVar, environ)
 	if dbUrlStr == "" {
-		return errgo.Newf("no such environment variable: %s", dbEnvVar)
+		return errgo.Newf("no such environment variable: %s", opts.DBEnvVar)
 	}
 
 	dbUrl, err := url.Parse(dbUrlStr)
@@ -37,8 +50,8 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 	fmt.Printf("Building tunnel to %s\n", dbUrl.Host)
 
 	var privateKeys []ssh.Signer
-	if identity == "ssh-agent" {
-		var agentConnection io.Closer
+	if opts.Identity == "ssh-agent" {
+		var agentConnection stdio.Closer
 		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
 		if err != nil {
 			return errgo.Mask(err)
@@ -47,35 +60,23 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 	}
 
 	if len(privateKeys) == 0 {
-		identity = sshkeys.DefaultKeyPath
-		privateKey, err := sshkeys.ReadPrivateKey(identity)
+		opts.Identity = sshkeys.DefaultKeyPath
+		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
 		if err != nil {
 			return errgo.Mask(err)
 		}
 		privateKeys = append(privateKeys, privateKey)
 	}
 
-	debug.Println("Identity used:", identity)
+	debug.Println("Identity used:", opts.Identity)
+	waitingConnectionM := &sync.Mutex{}
 
-	var client *ssh.Client
-	for _, privateKey := range privateKeys {
-		sshConfig := &ssh.ClientConfig{
-			User: "git",
-			Auth: []ssh.AuthMethod{ssh.PublicKeys(privateKey)},
-		}
-
-		client, err = ssh.Dial("tcp", config.C.SshHost, sshConfig)
-		if err == nil {
-			break
-		} else {
-			config.C.Logger.Println("Fail to connect to the SSH server", err)
-		}
-	}
-	if client == nil {
-		return errgo.Newf("No authentication method has succeeded, please use the flag '-i /path/to/private/key' to specify your private key")
+	client, key, err := connectToSSHServer(privateKeys)
+	if err != nil {
+		errgo.Mask(err)
 	}
 
-	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", port))
+	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", opts.Port))
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -96,11 +97,42 @@ func Tunnel(app string, dbEnvVar string, identity string, port int) error {
 		default:
 		}
 
-		connToTunnel, err := sock.Accept()
+		debug.Println("Waiting local connection request")
+		connToTunnel, err := sock.AcceptTCP()
 		if err != nil {
 			return errgo.Mask(err)
 		}
-		go handleConnToTunnel(client, dbUrl, connToTunnel, errs)
+		debug.Println("New local connection")
+		// Checking not in reconnection process
+		waitingConnectionM.Lock()
+		waitingConnectionM.Unlock()
+
+		go func() {
+			for {
+				err := handleConnToTunnel(client, dbUrl, connToTunnel, errs)
+				if err != nil {
+					debug.Println("Error happened in tunnel", err)
+					if !opts.Reconnect {
+						errs <- err
+						return
+					}
+				}
+				if err == errTimeout {
+					waitingConnectionM.Lock()
+					fmt.Println("Connection broken, reconnecting...")
+					for err != nil {
+						client, err = connectToSSHServerWithKey(key)
+						if err != nil {
+							fmt.Println("Fail to reconnect, waiting 10 seconds...")
+							time.Sleep(10 * time.Second)
+						}
+					}
+					fmt.Println("Reconnected!")
+					waitingConnectionM.Unlock()
+				}
+				break
+			}
+		}()
 	}
 }
 
@@ -116,26 +148,31 @@ func dbEnvVarValue(dbEnvVar string, environ scalingo.Variables) string {
 	return ""
 }
 
-func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, errs chan error) {
+func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, errs chan error) error {
 	connID := <-connIDGenerator
 	fmt.Printf("Connect to %s [%v]\n", dbUrl.Host, connID)
 	conn, err := sshClient.Dial("tcp", dbUrl.Host)
 	if err != nil {
 		errs <- err
-		return
+		return nil
 	}
+	debug.Println("Connected to", dbUrl.Host, connID)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 
 	go func() {
-		io.Copy(sock, conn)
+		debug.Println("Pipe DB -> Local ON")
+		_, remoteErr := stdio.Copy(sock, conn)
+		debug.Println("Pipe DB -> Local OFF", remoteErr)
 		sock.Close()
 		wg.Done()
 	}()
 
 	go func() {
-		io.Copy(conn, sock)
+		debug.Println("Local -> DB ON")
+		_, err = io.CopyWithTimeout(2*time.Second)(conn, sock)
+		debug.Println("Local -> DB OFF", err)
 		conn.Close()
 		wg.Done()
 	}()
@@ -143,10 +180,45 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 	wg.Wait()
 
 	fmt.Printf("End of connection [%d]\n", connID)
+	// Connection timeout
+	if err != nil && strings.Contains(err.Error(), "use of closed network") {
+		return errTimeout
+	}
+	return nil
 }
 
 func startIDGenerator() {
 	for i := 1; ; i++ {
 		connIDGenerator <- i
 	}
+}
+
+func connectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
+	var (
+		client     *ssh.Client
+		privateKey ssh.Signer
+		err        error
+	)
+
+	for _, privateKey = range keys {
+		client, err = connectToSSHServerWithKey(privateKey)
+		if err == nil {
+			break
+		} else {
+			config.C.Logger.Println("Fail to connect to the SSH server", err)
+		}
+	}
+	if client == nil {
+		return nil, nil, errgo.Newf("No authentication method has succeeded, please use the flag '-i /path/to/private/key' to specify your private key")
+	}
+	return client, privateKey, nil
+}
+
+func connectToSSHServerWithKey(key ssh.Signer) (*ssh.Client, error) {
+	sshConfig := &ssh.ClientConfig{
+		User: "git",
+		Auth: []ssh.AuthMethod{ssh.PublicKeys(key)},
+	}
+
+	return ssh.Dial("tcp", config.C.SshHost, sshConfig)
 }

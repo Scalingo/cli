@@ -16,8 +16,9 @@ var (
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
 		Flags: []cli.Flag{appFlag,
-			cli.IntFlag{Name: "port, p", Usage: "Local port to bind", Value: 0, EnvVar: ""},
-			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key", Value: "", EnvVar: ""},
+			cli.IntFlag{Name: "port, p", Usage: "Local port to bind"},
+			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key"},
+			cli.BoolTFlag{Name: "reconnect", Usage: "true by default, automatically reconnect to the tunnel when disconnected"},
 		},
 		Description: `Create an SSH-encrypted connection to access your Scalingo database locally.
 
@@ -63,7 +64,17 @@ var (
 			}
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "db-tunnel")
-			} else if err := db.Tunnel(currentApp, c.Args()[0], sshIdentity, c.Int("port")); err != nil {
+				return
+			}
+			opts := db.TunnelOpts{
+				App:       currentApp,
+				DBEnvVar:  c.Args()[0],
+				Identity:  sshIdentity,
+				Port:      c.Int("port"),
+				Reconnect: c.BoolT("reconnect"),
+			}
+			err := db.Tunnel(opts)
+			if err != nil {
 				errorQuit(err)
 			}
 		},
