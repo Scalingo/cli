@@ -1,9 +1,14 @@
 Changelog
 =========
 
-### toBeReleased
+### v1.2.0 - 20/11/2015
 
+* [Feature - DB Tunnel] Reconnect automatically in case of connection problem
+* [Feature - DB Tunnel] Default port at 10000, if not available 10001 etc.
+* [Feature - One-off] More verbose output and spinner when starting a one-off container #180 #184
+* [Feature - Logs] Automatically reconnect to logs streaming if anything wrong happen #182
 * [Feature] Add `stats` command to get containers CPU and memory metrics
+* [Bugfix] Fix delete command (app name wasn't read correctly) #177
 
 ### v1.1.3 - 29/10/2015
 
