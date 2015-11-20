@@ -48,7 +48,7 @@ func Stats(app string, stream bool) error {
 func displayLiveStatsTable(stats []*scalingo.ContainerStat) {
 	fmt.Println("hello")
 	fmt.Print("\033[2J\033[;H")
-	fmt.Println("Refreshing every 10 seconds...\n")
+	fmt.Printf("Refreshing every 10 seconds...\n\n")
 	displayStatsTable(stats)
 	fmt.Println("Last update at:", time.Now().Format(time.UnixDate))
 }
