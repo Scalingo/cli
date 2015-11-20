@@ -25,7 +25,9 @@ type ContainerStat struct {
 	HighestSwapUsage   int64  `json:"highest_swap_usage"`
 }
 
-type AppStatsRes []*ContainerStat
+type AppStatsRes struct {
+	Stats []*ContainerStat `json:"stats"`
+}
 
 type AppsScaleParams struct {
 	Containers []Container `json:"containers"`
@@ -133,7 +135,7 @@ func AppsCreate(app string) (*App, error) {
 	return params.App, nil
 }
 
-func AppsStats(app string) (AppStatsRes, error) {
+func AppsStats(app string) (*AppStatsRes, error) {
 	req := &APIRequest{
 		Endpoint: "/apps/" + app + "/stats",
 	}
@@ -148,7 +150,7 @@ func AppsStats(app string) (AppStatsRes, error) {
 		return nil, errgo.Mask(err)
 	}
 
-	return stats, nil
+	return &stats, nil
 }
 
 func AppsPs(app string) ([]Container, error) {

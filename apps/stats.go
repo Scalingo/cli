@@ -22,7 +22,7 @@ func Stats(app string, stream bool) error {
 		if err != nil {
 			return errgo.Mask(err)
 		}
-		displayLiveStatsTable(stats)
+		displayLiveStatsTable(stats.Stats)
 
 		ticker := time.NewTicker(10 * time.Second)
 		for {
@@ -33,7 +33,7 @@ func Stats(app string, stream bool) error {
 					ticker.Stop()
 					return errgo.Mask(err)
 				}
-				displayLiveStatsTable(stats)
+				displayLiveStatsTable(stats.Stats)
 			}
 		}
 	} else {
@@ -41,7 +41,7 @@ func Stats(app string, stream bool) error {
 		if err != nil {
 			return errgo.Mask(err)
 		}
-		return displayStatsTable(stats)
+		return displayStatsTable(stats.Stats)
 	}
 }
 
