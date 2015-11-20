@@ -33,7 +33,7 @@ type Config struct {
 var (
 	env = map[string]string{
 		"SCALINGO_API_URL": "https://api.scalingo.com",
-		"SSH_HOST":         "appsdeck.eu:22",
+		"SSH_HOST":         "scalingo.com:22",
 		"API_VERSION":      "1",
 		"UNSECURE_SSL":     "false",
 		"ROLLBAR_TOKEN":    "",
