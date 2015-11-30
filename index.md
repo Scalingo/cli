@@ -10,13 +10,11 @@ date: 2015-09-09 00:00:00
 
 Just copy/paste the command below in your terminal and execute it.
 
-<div class='form-group install'>
-  <div class='input-group'>
-    <div class='input-group-addon cli-logo'>
-      <i class='fa fa-terminal'></i>
-    </div>
-    <input class='form-control input-lg' readonly='readonly' type='text' value='curl -O https://cli-dl.scalingo.io/install &amp;&amp; bash install' style='background-color:white;font-size: 22px;'>
+<div class='input-group'>
+  <div class='input-group-addon cli-logo'>
+    <i class='fa fa-terminal'></i>
   </div>
+  <input class='form-control input-lg' readonly='readonly' type='text' value='curl -O https://cli-dl.scalingo.io/install &amp;&amp; bash install' style='background-color:white;font-size: 22px;'>
 </div>
 
 ## Document and features

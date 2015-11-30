@@ -1,9 +1,11 @@
 ---
 ---
 @import custom
+@import header
+@import footer
+@import mdl-refactoring
 
 body
-  background-color: darken(#fafafa, 5%)
   font-family: Roboto,HelveticaNeue,Helvetica,Arial,sans-serif
   // Sticky footer, expand middle row
   display: flex
@@ -11,17 +13,6 @@ body
   min-height: 100vh
   .container
     flex: 1
-
-pre
-  border: 0
-  background-color: #272822
-  color: white
-  border-radius: 0
-
-code
-  font-family: 'Inconsolata', monospace
-  border-radius: 0
-  font-size: 100%
 
 blockquote
   background-color: #D9EDF7
@@ -43,54 +34,6 @@ h3
 .install input[readonly="readonly"]
   cursor: text
 
-.navbar
-  height: 54px
-  margin-bottom: 40px
-  background-color: #2196F3
-  border: 0
-  box-shadow: rgba(0, 0, 0, 0.137255) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.117647) 0px 1px 5px 0px
-  .navbar-nav
-    a
-      color: white
-      line-height: 54px
-      font-size: 18px
-      padding: 0 15px
-  img
-    height: 30px
-  .navbar-brand
-    height: 30px
-    padding: 0
-    margin-top: 12px
-
-.nav>li>a:focus, .nav>li>a:hover
-  background-color: transparent
-
-footer
-  margin-top: 40px
-  padding: 20px 0
-  background-color: darken(#fafafa, 15%)
-  color: darken(#fafafa, 40%)
-  a
-    color: darken(#fafafa, 40%)
-    text-decoration: underline
-    &:hover
-      color: darken(#fafafa, 60%)
-  .fa
-    opacity: 0.5
-  ul
-    margin-bottom: 0
-
-.navbar-form
-  display: flex
-  margin-top: 14px
-  border-top: 0
-  i
-    line-height: 21px
-    font-size: 16px
-    margin-right: 5px
-    align-self: center
-    color: rgb(255, 255, 255)
-
 .logo
   margin-top: 10px
   margin-bottom: 5px
@@ -99,30 +42,6 @@ footer
   display: inline-block
 .main
   margin: 2em 0
-
-.fa-rss
-  color: #fa9b39
-
-.fa-github
-  color: black
-
-.fa-facebook
-  color: #3b5998
-
-.fa-twitter
-  color: #4099ff
-
-.sidebar-nav
-  background-color: darken(#fafafa, 5%)
-  strong
-    font-size: 120%
-  a
-    color: #212121
-
-  ul
-    margin-bottom: 30px
-  > ul
-    padding-top: 5px
 
 .space-between
   display: flex
@@ -135,48 +54,11 @@ footer
 
 .content
   background-color: white
-  padding: 20px
   border-radius: 2px
-  box-shadow: rgba(0, 0, 0, 0.137255) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.117647) 0px 1px 5px 0px
   line-height: 1.5
   h1
     margin-top: 0
 
-.github-edit
-  a
-    opacity: 0.5
-    font-size: 12px
-    color: #888
-  a:hover
-    text-decoration: none
-    color: #222
-
-.modified-at
-  opacity: 0.5
-  font-size: 12px
-  color: #888
-
 @media (min-width: 1200px)
-  .container
+  .main-container
     width: 970px
-
-@media (min-width: 768px)
-  .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand
-    margin-left: 0
-  .navbar-right
-    margin-right: -30px
-  .sidebar-nav
-    overflow: auto
-    display: block
-
-@media (max-width: 768px)
-  .logo
-    margin-right: 0
-  .navbar-header
-    display: flex
-    justify-content: center
-  .navbar-form
-    margin-top: 10px
-    justify-content: center
-    i
-      color: #2196F3
