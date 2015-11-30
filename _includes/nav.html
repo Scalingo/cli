@@ -1,14 +1,49 @@
-<nav class="navbar navbar-static-top">
-  <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="https://scalingo.com">
-        <img src="https://scalingo.com/logo-white.svg" class="">
-      </a>
+<header class="mdl-layout__header mdl-color--light-blue">
+  <div class="mdl-layout__header-row header-row">
+    <a class="mdl-layout-title" href="/">
+      <img class="logo-img" src="http://scalingo.com/logo-white.svg">
+    </a>
+    <div class="mdl-layout-spacer"></div>
+    <div class="mdl-layout--large-screen-only">
+      <nav class="mdl-navigation sub-nav">
+        <a class="mdl-navigation__link mdl-typography--text-capitalize" href="https://scalingo.com">Homepage</a>
+        <a class="mdl-navigation__link mdl-typography--text-capitalize" href="https://doc.scalingo.com">Documentation</a>
+        <a class="mdl-navigation__link mdl-typography--text-capitalize" href="http://changelog.scalingo.com">Changelog</a>
+        <a class="mdl-navigation__link mdl-typography--text-capitalize" href="https://my.scalingo.com">Dashboard</a>
+      </nav>
+      <nav class="mdl-navigation main-nav">
+        <a class="mdl-navigation__link mdl-typography--text-uppercase" href="https://scalingo.com/tour">Tour</a>
+        <a class="mdl-navigation__link mdl-typography--text-uppercase" href="https://scalingo.com/pricing">Pricing</a>
+        <a class="mdl-navigation__link mdl-typography--text-uppercase" href="https://scalingo.com/technologies">Technologies</a>
+        <a class="mdl-navigation__link mdl-typography--text-uppercase" href="https://scalingo.com/addons">Add-ons</a>
+      </nav>
     </div>
-    <div id="navbar">
-      <ul class="nav navbar-nav collapse navbar-collapse">
-        <li><a href="/">{{ site.title }}</a></li>
+    <a href="https://scalingo.com/users/signup">
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-layout--large-screen-only mdl-color--light-green call-to-action">Sign up for free</button>
+    </a>
+    <button id="menu-button-small-screen" class="mdl-button mdl-js-button mdl-button--icon mdl-layout--small-screen-only">
+      <i class="material-icons">more_vert</i>
+    </button>
+    <nav class="mdl-navigation mdl-layout--small-screen-only small-screen-nav">
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-button-small-screen">
+        <li class="mdl-menu__item">
+          <a class="mdl-navigation__link" href="https://scalingo.com/tour">Tour</a>
+	</li>
+        <li class="mdl-menu__item">
+          <a class="mdl-navigation__link" href="https://scalingo.com/pricing">Pricing</a>
+        </li>
+        <li class="mdl-menu__item">
+          <a class="mdl-navigation__link" href="https://scalingo.com/technologies">Technologies</a>
+        </li>
+        <li class="mdl-menu__item">
+          <a class="mdl-navigation__link" href="https://scalingo.com/addons">Add-ons</a>
+        </li>
+        <li class="mdl-menu__item">
+	  <a href="https://scalingo.com/users/signup">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--light-green call-to-action">Sign up for free</button>
+	  </a>
+        </li>
       </ul>
-    </div>
+    </nav>
   </div>
-</nav>
+</header>

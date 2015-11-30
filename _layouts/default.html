@@ -2,15 +2,18 @@
 <html>
   {% include head.html %}
   <body>
-    {% include nav.html %}
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12 content">
-            {{ content }}
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      {% include nav.html %}
+      <main class="mdl-layout__content">
+        <div class="main-container mdl-card mdl-shadow--2dp">
+          {{ content }}
         </div>
-      </div>
+	{% include footer.html %}
+      </main>
     </div>
-    {% include footer.html %}
+    {% include fb_pixel.html %}
+    {% include ga_tracker.html %}
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
     <script data-main="{{ site.baseurl }}/assets/javascripts/application" src="{{ site.baseurl }}/assets/javascripts/require.js"></script>
   </body>
 </html>

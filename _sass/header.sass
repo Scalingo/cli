@@ -1,0 +1,65 @@
+$font-stack: "Roboto","Helvetica","Arial",sans-serif
+$font-color: white
+$margin-from-top: 40px
+$header-height: 72px
+$logo-height: 35px
+
+=nav_link_properties
+  color: $font-color
+  line-height: 1
+  height: auto
+  padding: 5px
+  margin-left: 10px
+
+header
+  .call-to-action
+    color: $font-color
+    font-weight: bold
+    margin-left: 25px
+    margin-right: 15px
+
+.logo-img
+  height: $logo-height
+
+.header-row
+  color: $font-color
+  font-family: $font-stack
+  height: $header-height
+  padding: 0 10px 0 15px
+  .main-nav
+    float: right
+    height: auto
+    margin: 0 0 0 0
+    clear: both
+    .mdl-navigation__link
+      +nav_link_properties
+      font-size: 120%
+      font-weight: bold
+  .sub-nav
+    height: auto
+    float: right
+    margin: 0 0 0 0
+    clear: both
+    .mdl-navigation__link
+      +nav_link_properties
+
+.small-screen-nav
+  color: black
+  .call-to-action
+    padding: 0 8px
+    margin-left: 10px
+  .mdl-navigation__link
+    line-height: 48px
+    padding: 0 16px 0 16px
+    height: inherit
+  .mdl-menu
+    .mdl-menu__item
+      width: 156px
+      margin: 0 0 0 0
+      padding: 0 0 0 0
+      &:last-child
+        &:hover, &:focus
+          background-color: transparent
+
+.header-spacer
+  height: 40px
