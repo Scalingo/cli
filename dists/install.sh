@@ -102,9 +102,18 @@ main() {
   fi
 
   status "Install scalingo client to /usr/local/bin\n"
-  if [ ! -w /usr/local/bin ] ; then
+  if [ ! -w "/usr/local/bin" ] ; then
     sudo=sudo
     info "sudo required...\n"
+  fi
+
+  if [ ! -e "/usr/local/bin" ] ; then
+    info "/usr/local/bin does not exist, creating...\n"
+    if [ -w "/usr/local" ] ; then
+      mkdir -p "/usr/local/bin"
+    else
+      $sudo mkdir -p "/usr/local/bin"
+    fi
   fi
 
   $sudo mv $exe_path $target ; rc=$?
