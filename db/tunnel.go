@@ -71,12 +71,12 @@ func Tunnel(opts TunnelOpts) error {
 		privateKeys = append(privateKeys, privateKey)
 	}
 
-	debug.Println("Identity used:", opts.Identity)
+	debug.Println("Identity used:", opts.Identity, "Private keys:", len(privateKeys))
 	waitingConnectionM := &sync.Mutex{}
 
 	client, key, err := connectToSSHServer(privateKeys)
 	if err != nil {
-		errgo.Mask(err)
+		return errgo.Mask(err)
 	}
 	debug.Println("SSH connection:", client.LocalAddr, "Key:", string(key.PublicKey().Marshal()))
 
