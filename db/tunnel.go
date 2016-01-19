@@ -78,6 +78,7 @@ func Tunnel(opts TunnelOpts) error {
 	if err != nil {
 		errgo.Mask(err)
 	}
+	debug.Println("SSH connection:", client.LocalAddr, "Key:", string(key.PublicKey().Marshal()))
 
 	if opts.Port == 0 {
 		opts.Port = defaultPort
