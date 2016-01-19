@@ -184,7 +184,7 @@ func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scale",
 		Params:   params,
-		Expected: Statuses{202, 422},
+		Expected: Statuses{202},
 	}
 	return req.Do()
 }
