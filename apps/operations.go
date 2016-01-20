@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -43,9 +44,9 @@ func handleOperation(app string, res *http.Response) error {
 	}()
 
 	fmt.Print("Status:  ")
-	stopSpinner := make(chan struct{})
-	go io.Spinner(stopSpinner)
-	defer close(stopSpinner)
+	spinner := io.NewSpinner(os.Stderr)
+	go spinner.Start()
+	defer spinner.Stop()
 
 	for {
 		select {

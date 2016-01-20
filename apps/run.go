@@ -92,21 +92,22 @@ func Run(opts RunOpts) error {
 		}
 	}
 
-	fmt.Printf("-----> Connecting to container [%v-%v]...  ",
+	fmt.Fprintf(os.Stderr, "-----> Connecting to container [%v-%v]...  ",
 		runStruct["container"].(map[string]interface{})["type"],
 		runStruct["container"].(map[string]interface{})["type_index"],
 	)
 
-	stopAttachSpinner := make(chan struct{})
-	go io.SpinnerWithPosthook(stopAttachSpinner, func() {
+	attachSpinner := io.NewSpinner(os.Stderr)
+	attachSpinner.PostHook = func() {
 		var displayCmd string
 		if opts.DisplayCmd != "" {
 			displayCmd = opts.DisplayCmd
 		} else {
 			displayCmd = strings.Join(opts.Cmd, " ")
 		}
-		fmt.Printf("\n-----> Process '%v' is starting...  ", displayCmd)
-	})
+		fmt.Fprintf(os.Stderr, "\n-----> Process '%v' is starting...  ", displayCmd)
+	}
+	go attachSpinner.Start()
 
 	res, socket, err := connectToRunServer(attachURL)
 	if err != nil {
@@ -140,10 +141,12 @@ func Run(opts RunOpts) error {
 		}
 	}()
 
-	close(stopAttachSpinner)
-	go io.SpinnerWithPosthook(firstReadDone, func() {
-		fmt.Printf("\n\n")
-	})
+	attachSpinner.Stop()
+	startSpinner := io.NewSpinnerWithStopChan(os.Stderr, firstReadDone)
+	startSpinner.PostHook = func() {
+		fmt.Fprintf(os.Stderr, "\n\n")
+	}
+	go startSpinner.Start()
 
 	go opts.StdinCopyFunc(socket, os.Stdin)
 	_, err = opts.StdoutCopyFunc(os.Stdout, socket)
@@ -267,7 +270,7 @@ func compressDir(dir string) (string, error) {
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
-	fmt.Println("Compressing directory", dir, "to", fd.Name())
+	fmt.Fprintln(os.Stderr, "Compressing directory", dir, "to", fd.Name())
 
 	err = createTarArchive(fd, dir)
 	if err != nil {
@@ -374,7 +377,7 @@ func uploadFile(endpoint string, file string) error {
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 
-	fmt.Println("Upload", file, "to container.")
+	fmt.Fprintln(os.Stderr, "Upload", file, "to container.")
 	debug.Println("Endpoint:", req.URL)
 
 	res, err := httpclient.Do(req)
