@@ -33,6 +33,7 @@ import (
 type RunOpts struct {
 	App            string
 	DisplayCmd     string
+	Silent         bool
 	Cmd            []string
 	CmdEnv         []string
 	Files          []string
@@ -40,28 +41,41 @@ type RunOpts struct {
 	StdoutCopyFunc func(stdio.Writer, stdio.Reader) (int64, error)
 }
 
+type runContext struct {
+	waitingTextOutputWriter stdio.Writer
+	stdinCopyFunc           func(stdio.Writer, stdio.Reader) (int64, error)
+	stdoutCopyFunc          func(stdio.Writer, stdio.Reader) (int64, error)
+}
+
 func Run(opts RunOpts) error {
+	firstReadDone := make(chan struct{})
+	ctx := &runContext{
+		waitingTextOutputWriter: os.Stderr,
+		stdinCopyFunc:           stdio.Copy,
+		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
+	}
 	if opts.CmdEnv == nil {
 		opts.CmdEnv = []string{}
 	}
 	if opts.Files == nil {
 		opts.Files = []string{}
 	}
-	if opts.StdinCopyFunc == nil {
-		opts.StdinCopyFunc = stdio.Copy
+	if opts.Silent {
+		ctx.waitingTextOutputWriter = new(bytes.Buffer)
+	}
+	if opts.StdinCopyFunc != nil {
+		ctx.stdinCopyFunc = opts.StdinCopyFunc
+	}
+	if opts.StdoutCopyFunc != nil {
+		ctx.stdoutCopyFunc = opts.StdoutCopyFunc
 	}
 
-	firstReadDone := make(chan struct{})
-	if opts.StdoutCopyFunc == nil {
-		opts.StdoutCopyFunc = io.CopyWithFirstReadChan(firstReadDone)
-	}
-
-	env, err := buildEnv(opts.CmdEnv)
+	env, err := ctx.buildEnv(opts.CmdEnv)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	err = validateFiles(opts.Files)
+	err = ctx.validateFiles(opts.Files)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -86,18 +100,18 @@ func Run(opts RunOpts) error {
 	debug.Println("Run Service URL is", attachURL)
 
 	if len(opts.Files) > 0 {
-		err := uploadFiles(attachURL+"/files", opts.Files)
+		err := ctx.uploadFiles(attachURL+"/files", opts.Files)
 		if err != nil {
 			return err
 		}
 	}
 
-	fmt.Fprintf(os.Stderr, "-----> Connecting to container [%v-%v]...  ",
+	fmt.Fprintf(ctx.waitingTextOutputWriter, "-----> Connecting to container [%v-%v]...  ",
 		runStruct["container"].(map[string]interface{})["type"],
 		runStruct["container"].(map[string]interface{})["type_index"],
 	)
 
-	attachSpinner := io.NewSpinner(os.Stderr)
+	attachSpinner := io.NewSpinner(ctx.waitingTextOutputWriter)
 	attachSpinner.PostHook = func() {
 		var displayCmd string
 		if opts.DisplayCmd != "" {
@@ -105,11 +119,11 @@ func Run(opts RunOpts) error {
 		} else {
 			displayCmd = strings.Join(opts.Cmd, " ")
 		}
-		fmt.Fprintf(os.Stderr, "\n-----> Process '%v' is starting...  ", displayCmd)
+		fmt.Fprintf(ctx.waitingTextOutputWriter, "\n-----> Process '%v' is starting...  ", displayCmd)
 	}
 	go attachSpinner.Start()
 
-	res, socket, err := connectToRunServer(attachURL)
+	res, socket, err := ctx.connectToRunServer(attachURL)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -142,14 +156,14 @@ func Run(opts RunOpts) error {
 	}()
 
 	attachSpinner.Stop()
-	startSpinner := io.NewSpinnerWithStopChan(os.Stderr, firstReadDone)
+	startSpinner := io.NewSpinnerWithStopChan(ctx.waitingTextOutputWriter, firstReadDone)
 	startSpinner.PostHook = func() {
-		fmt.Fprintf(os.Stderr, "\n\n")
+		fmt.Fprintf(ctx.waitingTextOutputWriter, "\n\n")
 	}
 	go startSpinner.Start()
 
-	go opts.StdinCopyFunc(socket, os.Stdin)
-	_, err = opts.StdoutCopyFunc(os.Stdout, socket)
+	go ctx.stdinCopyFunc(socket, os.Stdin)
+	_, err = ctx.stdoutCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
 
@@ -160,7 +174,7 @@ func Run(opts RunOpts) error {
 	return nil
 }
 
-func buildEnv(cmdEnv []string) (map[string]string, error) {
+func (ctx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	env := map[string]string{
 		"TERM":      os.Getenv("TERM"),
 		"CLIENT_OS": runtime.GOOS,
@@ -176,7 +190,7 @@ func buildEnv(cmdEnv []string) (map[string]string, error) {
 	return env, nil
 }
 
-func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
+func (ctx *runContext) connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	req, err := http.NewRequest("CONNECT", rawUrl, nil)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
@@ -225,7 +239,7 @@ func connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
 	return res, connection, nil
 }
 
-func validateFiles(files []string) error {
+func (ctx *runContext) validateFiles(files []string) error {
 	for _, file := range files {
 		_, err := os.Stat(file)
 		if err != nil {
@@ -235,7 +249,7 @@ func validateFiles(files []string) error {
 	return nil
 }
 
-func uploadFiles(endpoint string, files []string) error {
+func (ctx *runContext) uploadFiles(endpoint string, files []string) error {
 	for _, file := range files {
 		stat, err := os.Stat(file)
 		if err != nil {
@@ -248,12 +262,12 @@ func uploadFiles(endpoint string, files []string) error {
 		}
 		if stat.IsDir() {
 			dir := file
-			file, err = compressDir(dir)
+			file, err = ctx.compressDir(dir)
 			if err != nil {
 				return errgo.Notef(err, "fail to compress directory %s", dir)
 			}
 		}
-		err = uploadFile(endpoint, file)
+		err = ctx.uploadFile(endpoint, file)
 		if err != nil {
 			return errgo.Notef(err, "fail to upload file %s", file)
 		}
@@ -261,7 +275,7 @@ func uploadFiles(endpoint string, files []string) error {
 	return nil
 }
 
-func compressDir(dir string) (string, error) {
+func (ctx *runContext) compressDir(dir string) (string, error) {
 	tmpDir, err := ioutil.TempDir(os.TempDir(), "job-file")
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
@@ -270,14 +284,14 @@ func compressDir(dir string) (string, error) {
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
-	fmt.Fprintln(os.Stderr, "Compressing directory", dir, "to", fd.Name())
+	fmt.Fprintln(ctx.waitingTextOutputWriter, "Compressing directory", dir, "to", fd.Name())
 
-	err = createTarArchive(fd, dir)
+	err = ctx.createTarArchive(fd, dir)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
 
-	file, err := compressToGzip(fd.Name())
+	file, err := ctx.compressToGzip(fd.Name())
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
@@ -285,7 +299,7 @@ func compressDir(dir string) (string, error) {
 	return file, nil
 }
 
-func createTarArchive(fd *os.File, dir string) error {
+func (ctx *runContext) createTarArchive(fd *os.File, dir string) error {
 	tarFd := tar.NewWriter(fd)
 	defer tarFd.Close()
 	err := filepath.Walk(dir, func(name string, info os.FileInfo, err error) error {
@@ -319,7 +333,7 @@ func createTarArchive(fd *os.File, dir string) error {
 	return nil
 }
 
-func compressToGzip(file string) (string, error) {
+func (ctx *runContext) compressToGzip(file string) (string, error) {
 	fdSource, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
@@ -341,7 +355,7 @@ func compressToGzip(file string) (string, error) {
 	return fdDest.Name(), nil
 }
 
-func uploadFile(endpoint string, file string) error {
+func (ctx *runContext) uploadFile(endpoint string, file string) error {
 	body := new(bytes.Buffer)
 	name := filepath.Base(file)
 	multipartFile := multipart.NewWriter(body)
@@ -377,7 +391,7 @@ func uploadFile(endpoint string, file string) error {
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 
-	fmt.Fprintln(os.Stderr, "Upload", file, "to container.")
+	fmt.Fprintln(ctx.waitingTextOutputWriter, "Upload", file, "to container.")
 	debug.Println("Endpoint:", req.URL)
 
 	res, err := httpclient.Do(req)

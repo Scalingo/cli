@@ -2,7 +2,7 @@ package io
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"time"
 )
 
@@ -10,18 +10,18 @@ var loadingRunes = "-\\|/"
 
 type Spinner struct {
 	stop     chan struct{}
-	fd       *os.File
+	writer   io.Writer
 	PostHook func()
 }
 
-func NewSpinner(fd *os.File) *Spinner {
-	return NewSpinnerWithStopChan(fd, make(chan struct{}))
+func NewSpinner(writer io.Writer) *Spinner {
+	return NewSpinnerWithStopChan(writer, make(chan struct{}))
 }
 
-func NewSpinnerWithStopChan(fd *os.File, stop chan struct{}) *Spinner {
+func NewSpinnerWithStopChan(writer io.Writer, stop chan struct{}) *Spinner {
 	return &Spinner{
-		fd:   fd,
-		stop: stop,
+		writer: writer,
+		stop:   stop,
 	}
 }
 
@@ -29,7 +29,7 @@ func (s *Spinner) Start() {
 	for i := 0; ; i++ {
 		select {
 		case <-s.stop:
-			fmt.Fprint(s.fd, "\b ")
+			fmt.Fprint(s.writer, "\b ")
 			if s.PostHook != nil {
 				s.PostHook()
 			}
@@ -38,7 +38,7 @@ func (s *Spinner) Start() {
 		}
 		r := loadingRunes[i%len(loadingRunes)]
 		time.Sleep(100 * time.Millisecond)
-		fmt.Fprintf(s.fd, "\b%c", r)
+		fmt.Fprintf(s.writer, "\b%c", r)
 	}
 
 }

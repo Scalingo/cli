@@ -16,8 +16,9 @@ var (
 		Category:  "App Management",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{appFlag,
-			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables", EnvVar: ""},
-			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload", EnvVar: ""},
+			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables"},
+			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload"},
+			cli.BoolFlag{Name: "silent, s", Usage: "Do not output anything on stderr"},
 		},
 		Description: `Run command in current app context, a one-off container will be
    start with your application environment loaded.
@@ -25,6 +26,7 @@ var (
    Example
      scalingo --app rails-app run bundle exec rails console
      scalingo --app synfony-app run php app/console cache:clear
+     scalingo --app test-app run --silent custom/command > localoutput
 
    If you need to inject additional environment variables, you can use the flag
    '-e'. You can use it multiple time to define multiple variables. These
@@ -47,6 +49,7 @@ var (
 				Cmd:    c.Args(),
 				CmdEnv: c.StringSlice("e"),
 				Files:  c.StringSlice("f"),
+				Silent: c.Bool("s"),
 			}
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "run")
