@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 )
 import (
@@ -17,7 +18,13 @@ type ScaleRes struct {
 }
 
 func Scale(app string, sync bool, types []string) error {
-	var size string
+	var (
+		size        string
+		containers  []scalingo.Container
+		modificator byte
+		err         error
+	)
+
 	scaleParams := &scalingo.AppsScaleParams{}
 
 	for _, t := range types {
@@ -30,11 +37,43 @@ func Scale(app string, sync bool, types []string) error {
 			size = splitT[2]
 		}
 
+		if typeAmount[0] == '-' || typeAmount[0] == '+' {
+			modificator = typeAmount[0]
+			typeAmount = typeAmount[1:]
+			if size != "" {
+				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
+			}
+			if containers == nil {
+				containers, err = scalingo.AppsPs(app)
+				if err != nil {
+					return errgo.Notef(err, "fail to get list of running containers")
+				}
+				debug.Println("get container list", containers)
+			}
+		}
+
 		amount, err := strconv.ParseInt(typeAmount, 10, 32)
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
-		scaleParams.Containers = append(scaleParams.Containers, scalingo.Container{Name: typeName, Amount: int(amount), Size: size})
+
+		newContainerConfig := scalingo.Container{Name: typeName, Size: size}
+		if modificator != 0 {
+			for _, container := range containers {
+				if container.Name == typeName {
+					if modificator == '-' {
+						newContainerConfig.Amount = container.Amount - int(amount)
+					} else if modificator == '+' {
+						newContainerConfig.Amount = container.Amount + int(amount)
+					}
+					break
+				}
+			}
+		} else {
+			newContainerConfig.Amount = int(amount)
+		}
+
+		scaleParams.Containers = append(scaleParams.Containers, newContainerConfig)
 	}
 
 	res, err := scalingo.AppsScale(app, scaleParams)
