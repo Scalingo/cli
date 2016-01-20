@@ -195,7 +195,7 @@ func (ctx *runContext) connectToRunServer(rawUrl string) (*http.Response, net.Co
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
 
 	url, err := url.Parse(rawUrl)
 	if err != nil {
@@ -387,7 +387,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 

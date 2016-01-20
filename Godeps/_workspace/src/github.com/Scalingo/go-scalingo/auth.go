@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
 
@@ -17,8 +16,8 @@ var (
 )
 
 type Authenticator interface {
-	LoadAuth() (*users.User, error)
-	StoreAuth(user *users.User) error
+	LoadAuth() (*User, error)
+	StoreAuth(user *User) error
 	RemoveAuth() error
 }
 
@@ -28,15 +27,15 @@ type LoginError struct {
 }
 
 type LoginResponse struct {
-	AuthenticationToken string      `json:"authentication_token"`
-	User                *users.User `json:"user"`
+	AuthenticationToken string `json:"authentication_token"`
+	User                *User  `json:"user"`
 }
 
 func (err *LoginError) Error() string {
 	return err.Message
 }
 
-func AuthFromConfig() (*users.User, error) {
+func AuthFromConfig() (*User, error) {
 	user, err := ApiAuthenticator.LoadAuth()
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -44,7 +43,7 @@ func AuthFromConfig() (*users.User, error) {
 	return user, nil
 }
 
-func AuthUser(login, passwd string) (*users.User, error) {
+func AuthUser(login, passwd string) (*User, error) {
 	res, err := Login(login, passwd)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -75,6 +74,6 @@ func AuthUser(login, passwd string) (*users.User, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	loginRes.User.AuthToken = loginRes.AuthenticationToken
+	loginRes.User.AuthenticationToken = loginRes.AuthenticationToken
 	return loginRes.User, nil
 }

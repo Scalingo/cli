@@ -13,11 +13,10 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/httpclient"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/io"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
 
-var CurrentUser *users.User
+var CurrentUser *User
 
 type APIRequest struct {
 	NoAuth      bool
@@ -55,7 +54,7 @@ func (req *APIRequest) FillDefaultValues() error {
 			return errgo.New("Authentication required")
 		}
 		CurrentUser = user
-		req.Token = CurrentUser.AuthToken
+		req.Token = CurrentUser.AuthenticationToken
 	}
 	return nil
 }

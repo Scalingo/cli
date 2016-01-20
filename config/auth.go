@@ -11,22 +11,18 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config/auth"
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/term"
 )
 
 type CliAuthenticator struct{}
 
-type AuthConfigData struct {
-	LastUpdate        time.Time              `json:"last_update"`
-	AuthConfigPerHost map[string]*users.User `json:"auth_config_data"`
-}
-
 var Authenticator = &CliAuthenticator{}
 
-func Auth() (*users.User, error) {
-	var user *users.User
+func Auth() (*scalingo.User, error) {
+	var user *scalingo.User
 	var err error
 
 	fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://scalingo.com")
@@ -57,35 +53,66 @@ func Auth() (*users.User, error) {
 	return user, nil
 }
 
-func (a *CliAuthenticator) StoreAuth(user *users.User) error {
+func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
 	authConfig, err := existingAuth()
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	authConfig.AuthConfigPerHost[C.apiHost] = user
+	var c auth.ConfigPerHostV1
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, c)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	c[C.apiHost] = user
 	authConfig.LastUpdate = time.Now()
 
+	buffer, err := json.Marshal(&c)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	return writeAuthFile(authConfig)
 }
 
-func (a *CliAuthenticator) LoadAuth() (*users.User, error) {
-	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0644)
+func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
+	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
 		return Auth()
 	}
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-	defer file.Close()
 
-	var authConfig AuthConfigData
-	dec := json.NewDecoder(file)
-	if err := dec.Decode(&authConfig); err != nil {
+	var authConfig auth.ConfigData
+	if err := json.NewDecoder(file).Decode(&authConfig); err != nil {
+		file.Close()
 		return nil, errgo.Mask(err, errgo.Any)
 	}
+	file.Close()
 
-	if user, ok := authConfig.AuthConfigPerHost[C.apiHost]; !ok {
+	if authConfig.AuthDataVersion == "" {
+		debug.Println("auth config should be updated")
+		err = authConfig.MigrateToV1()
+		if err != nil {
+			return nil, errgo.Mask(err)
+		}
+		err = writeAuthFile(&authConfig)
+		if err != nil {
+			return nil, errgo.Mask(err)
+		}
+		debug.Println("auth config has been updated to V1")
+	}
+
+	var configPerHost auth.ConfigPerHostV1
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, &configPerHost)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	if user, ok := configPerHost[C.apiHost]; !ok {
 		return Auth()
 	} else {
 		if user == nil {
@@ -100,14 +127,27 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	if _, ok := authConfig.AuthConfigPerHost[C.apiHost]; ok {
-		delete(authConfig.AuthConfigPerHost, C.apiHost)
+
+	var c auth.ConfigPerHostV1
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, c)
+	if err != nil {
+		return errgo.Mask(err)
 	}
 
+	if _, ok := c[C.apiHost]; ok {
+		delete(c, C.apiHost)
+	}
+
+	buffer, err := json.Marshal(&c)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	return writeAuthFile(authConfig)
 }
 
-func tryAuth() (*users.User, error) {
+func tryAuth() (*scalingo.User, error) {
 	var login string
 	var err error
 
@@ -136,7 +176,7 @@ func tryAuth() (*users.User, error) {
 	return user, nil
 }
 
-func writeAuthFile(auth *AuthConfigData) error {
+func writeAuthFile(authConfig *auth.ConfigData) error {
 	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -144,21 +184,26 @@ func writeAuthFile(auth *AuthConfigData) error {
 	defer file.Close()
 
 	enc := json.NewEncoder(file)
-	if err := enc.Encode(auth); err != nil {
+	if err := enc.Encode(authConfig); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 
 }
 
-func existingAuth() (*AuthConfigData, error) {
-	authConfig := &AuthConfigData{}
+func existingAuth() (*auth.ConfigData, error) {
+	authConfig := &auth.ConfigData{}
 	content, err := ioutil.ReadFile(C.AuthFile)
 	if err == nil {
 		// We don't care of the error
 		json.Unmarshal(content, &authConfig)
 	} else if os.IsNotExist(err) {
-		authConfig.AuthConfigPerHost = make(map[string]*users.User)
+		config := make(auth.ConfigPerHostV1)
+		buffer, err := json.Marshal(&config)
+		if err != nil {
+			return nil, errgo.Mask(err)
+		}
+		authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	} else {
 		return nil, errgo.Mask(err)
 	}

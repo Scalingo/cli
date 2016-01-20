@@ -25,7 +25,7 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "8e8887a2682f1c60d05b050c3550b458b7bfa9fa"
+			"Rev": "c0525b1a85c83ad3a0a9229e9b327e4ba7b28fe5"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
