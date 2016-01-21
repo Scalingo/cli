@@ -60,7 +60,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
 	}
 
 	var c auth.ConfigPerHostV1
-	err = json.Unmarshal(authConfig.AuthConfigPerHost, c)
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -129,7 +129,7 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	}
 
 	var c auth.ConfigPerHostV1
-	err = json.Unmarshal(authConfig.AuthConfigPerHost, c)
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
 		return errgo.Mask(err)
 	}
