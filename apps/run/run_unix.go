@@ -75,7 +75,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthToken)
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
 
 	res, err := httpclient.Do(req)
 	if err != nil {

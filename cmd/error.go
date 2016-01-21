@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Soulou/errgo-rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
@@ -28,7 +27,7 @@ type Sysinfo struct {
 
 type ReportError struct {
 	Time          time.Time
-	User          *users.User
+	User          *scalingo.User
 	Error         error
 	Command       string
 	Version       string

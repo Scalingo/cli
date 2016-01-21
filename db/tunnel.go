@@ -15,10 +15,9 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
+	netssh "github.com/Scalingo/cli/net/ssh"
 )
 
 var (
@@ -52,33 +51,11 @@ func Tunnel(opts TunnelOpts) error {
 	}
 	fmt.Printf("Building tunnel to %s\n", dbUrl.Host)
 
-	var privateKeys []ssh.Signer
-	if opts.Identity == "ssh-agent" {
-		var agentConnection stdio.Closer
-		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
-		if err != nil {
-			return errgo.Mask(err)
-		}
-		defer agentConnection.Close()
-	}
-
-	if len(privateKeys) == 0 {
-		opts.Identity = sshkeys.DefaultKeyPath
-		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
-		if err != nil {
-			return errgo.Mask(err)
-		}
-		privateKeys = append(privateKeys, privateKey)
-	}
-
-	debug.Println("Identity used:", opts.Identity, "Private keys:", len(privateKeys))
-	waitingConnectionM := &sync.Mutex{}
-
-	client, key, err := connectToSSHServer(privateKeys)
+	client, key, err := netssh.Connect(opts.Identity)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to connect to SSH server")
 	}
-	debug.Println("SSH connection:", client.LocalAddr, "Key:", string(key.PublicKey().Marshal()))
+	waitingConnectionM := &sync.Mutex{}
 
 	if opts.Port == 0 {
 		opts.Port = defaultPort
@@ -139,7 +116,7 @@ func Tunnel(opts TunnelOpts) error {
 					waitingConnectionM.Lock()
 					fmt.Println("Connection broken, reconnecting...")
 					for err != nil {
-						client, err = connectToSSHServerWithKey(key)
+						client, err = netssh.ConnectToSSHServerWithKey(key)
 						if err != nil {
 							fmt.Println("Fail to reconnect, waiting 10 seconds...")
 							time.Sleep(10 * time.Second)
@@ -209,36 +186,6 @@ func startIDGenerator() {
 	for i := 1; ; i++ {
 		connIDGenerator <- i
 	}
-}
-
-func connectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
-	var (
-		client     *ssh.Client
-		privateKey ssh.Signer
-		err        error
-	)
-
-	for _, privateKey = range keys {
-		client, err = connectToSSHServerWithKey(privateKey)
-		if err == nil {
-			break
-		} else {
-			config.C.Logger.Println("Fail to connect to the SSH server", err)
-		}
-	}
-	if client == nil {
-		return nil, nil, errgo.Newf("No authentication method has succeeded, please use the flag '-i /path/to/private/key' to specify your private key")
-	}
-	return client, privateKey, nil
-}
-
-func connectToSSHServerWithKey(key ssh.Signer) (*ssh.Client, error) {
-	sshConfig := &ssh.ClientConfig{
-		User: "git",
-		Auth: []ssh.AuthMethod{ssh.PublicKeys(key)},
-	}
-
-	return ssh.Dial("tcp", config.C.SshHost, sshConfig)
 }
 
 func isAddrInUse(err error) bool {
