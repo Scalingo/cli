@@ -14,7 +14,7 @@ func IsTerminal(f *os.File) bool {
 func MakeRaw(f *os.File) error {
 	if strings.HasSuffix(os.Getenv("SHELL"), "/usr/bin/bash") {
 		return makeRaw(f)
-    }
+	}
 	return nil
 }
 
@@ -22,7 +22,7 @@ func MakeRaw(f *os.File) error {
 func Restore(f *os.File) error {
 	if strings.HasSuffix(os.Getenv("SHELL"), "/usr/bin/bash") {
 		return restore(f)
-    }
+	}
 	return nil
 }
 

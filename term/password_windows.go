@@ -1,14 +1,14 @@
 package term
 
 import (
-	"os"
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"os"
+	"strings"
 	"syscall"
 	"unicode/utf8"
 	"unsafe"
-	"strings"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
@@ -52,7 +52,7 @@ func Password(prompt string) (string, error) {
 		var password string
 		MakeRaw(os.Stdin)
 		defer Restore(os.Stdin)
-		for (c != '\n') {
+		for c != '\n' {
 			fmt.Scanf("%c", &c)
 			fmt.Print("*")
 			password = fmt.Sprintf("%s%c", password, c)
@@ -60,7 +60,7 @@ func Password(prompt string) (string, error) {
 		fmt.Println()
 		return strings.TrimSpace(password), nil
 	}
-	
+
 	var c rune
 	for c != '\r' {
 		var err error

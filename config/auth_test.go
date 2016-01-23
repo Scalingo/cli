@@ -3,11 +3,11 @@ package config
 import (
 	"testing"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo/users"
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 )
 
 var (
-	u = &users.User{
+	u = &scalingo.User{
 		Email:     "test@example.com",
 		Username:  "test",
 		AuthToken: "0123456789",

@@ -89,11 +89,14 @@ func loginWithSsh(identity string) error {
 	if err != nil {
 		return errgo.Notef(err, "SSH authentication request fails")
 	}
-	res := <-reqs
-	if res.Type != "auth@scalingo.com" {
-		return errgo.Newf("invalid response from SSH server, type is %v", res.Type)
+	req := <-reqs
+	if req == nil {
+		return errgo.Newf("invalid response from auth request")
 	}
-	payload := res.Payload
+	if req.Type != "auth@scalingo.com" {
+		return errgo.Newf("invalid response from SSH server, type is %v", req.Type)
+	}
+	payload := req.Payload
 
 	if len(payload) == 0 {
 		return errgo.Newf("invalid response from SSH server")
