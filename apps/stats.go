@@ -89,7 +89,7 @@ func displayStatsTable(stats []*scalingo.ContainerStat) error {
 
 func toHuman(sizeInBytes int64) string {
 	if sizeInBytes > GB {
-		return fmt.Sprintf("%3dGB", sizeInBytes/GB)
+		return fmt.Sprintf("%1.1fGB", float64(sizeInBytes)/float64(GB))
 	} else if sizeInBytes > MB {
 		return fmt.Sprintf("%3dMB", sizeInBytes/MB)
 	} else if sizeInBytes > KB {
