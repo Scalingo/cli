@@ -12,8 +12,6 @@ import (
 
 var (
 	setInvalidSyntaxError = errors.New("format is invalid, accepted: VAR=VAL")
-	valueTooLongError     = fmt.Errorf("value is too long (max %d)", scalingo.EnvValueMaxLength)
-	nameTooLongError      = fmt.Errorf("name is too long (max %d)", scalingo.EnvNameMaxLength)
 
 	nameFormat             = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
 	invalidNameFormatError = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
@@ -79,14 +77,6 @@ func isEnvEditValid(edit string) error {
 
 	if name == "" || value == "" {
 		return setInvalidSyntaxError
-	}
-
-	if len(name) > scalingo.EnvNameMaxLength {
-		return nameTooLongError
-	}
-
-	if len(value) > scalingo.EnvValueMaxLength {
-		return valueTooLongError
 	}
 
 	if !nameFormat.MatchString(name) {
