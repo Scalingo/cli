@@ -91,9 +91,8 @@ func dumpLogs(logsURL string, n int, filter string) error {
 
 func streamLogs(logsRawURL string, filter string) error {
 	var (
-		err    error
-		buffer [20480]byte
-		event  WSEvent
+		err   error
+		event WSEvent
 	)
 
 	logsURL, err := url.Parse(logsRawURL)
@@ -117,7 +116,7 @@ func streamLogs(logsRawURL string, filter string) error {
 	}
 
 	for {
-		n, err := conn.Read(buffer[:])
+		err := websocket.JSON.Receive(conn, &event)
 		if err != nil {
 			conn.Close()
 			if err == stdio.EOF {
@@ -131,11 +130,6 @@ func streamLogs(logsRawURL string, filter string) error {
 				return errgo.Mask(err, errgo.Any)
 			}
 		} else {
-			debug.Println(string(buffer[:n]))
-			err = json.Unmarshal(buffer[:n], &event)
-			if err != nil {
-				return errgo.Notef(err, "invalid JSON %v", string(buffer[:n]))
-			}
 			switch event.Type {
 			case "ping":
 			case "log":
