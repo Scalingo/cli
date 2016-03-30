@@ -1,10 +1,6 @@
 package scalingo
 
-import (
-	"encoding/json"
-
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-)
+import "github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 
 type Plan struct {
 	ID               string `json:"id"`
@@ -31,7 +27,6 @@ type ListParams struct {
 
 func AddonProvidersList() ([]*AddonProvider, error) {
 	req := &APIRequest{
-		NoAuth:   true,
 		Endpoint: "/addon_providers",
 	}
 	res, err := req.Do()
@@ -41,7 +36,7 @@ func AddonProvidersList() ([]*AddonProvider, error) {
 	defer res.Body.Close()
 
 	var params ListParams
-	err = json.NewDecoder(res.Body).Decode(&params)
+	err = ParseJSON(res, &params)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -51,7 +46,6 @@ func AddonProvidersList() ([]*AddonProvider, error) {
 
 func AddonProviderPlansList(addon string) ([]*Plan, error) {
 	req := &APIRequest{
-		NoAuth:   true,
 		Endpoint: "/addon_providers/" + addon + "/plans",
 	}
 	res, err := req.Do()
