@@ -1,9 +1,28 @@
-Scalingo-CLI v1.2.0
+Scalingo-CLI v1.3.0
 ===================
 
 This repository contains the command line utility for the public PaaS Scalingo
 
 https://scalingo.com
+
+## How to build?
+
+The project is using go, then you need a running go environment: [Official documentation](https://golang.org/doc/install)
+
+Once that's done, all you have to do is to 'go get' the project, with the following command:
+
+```
+go get github.com/Scalingo/cli/scalingo
+```
+
+That it, you've build the latest version of the Scalingo CLI (the binary will be present in `$GOPATH/bin/scalingo`)
+
+
+## How to upgrade?
+
+```
+go get -u github.com/Scalingo/cli/scalingo
+```
 
 ## Run behind a proxy
 
@@ -24,7 +43,7 @@ USAGE:
    Scalingo Client [global options] command [command options] [arguments...]
 
 VERSION:
-   1.2.0
+   1.3.0
 
 AUTHOR:
   Scalingo Team - <hello@scalingo.com>
