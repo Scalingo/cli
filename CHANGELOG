@@ -1,6 +1,28 @@
 Changelog
 =========
 
+### v1.3.0 - 01/04/2016
+
+* [Feature - Auth] Authentication with API key or SSH key (--ssh or --api-key flags) #196 #200
+* [Feature - Auth] New format of configuration file for authentication, auto migration. #200
+* [Feature - Scale] Possibility to scale with relative operator (i.e. web:+1) #197 #198
+* [Feature - Run] --type to directly run a command defined by a Procfile line #185 #207
+* [Feature - Run] --silent flag to remove any noise and only get the one-off command output #191
+* [Enhancement - Run] Display output on stderr to be able to drop it to /dev/null #190
+* [Enhancement - Run] Exit code of one-off container is now forward as exit code of the CLI #203 #205
+* [Bugfix - Stats] Fix computation of percentage for higher bound value
+* [Bugfix - Run] Accept pipes and redirections as input for one-off containers #199 #206
+* [Bugfix - Env] Remove arguments validation, that's server role, and it changes sometimes
+* [Bugfix - Env] Add quotes in output of env-set to avoid copy/paste problem with the final period
+* [Bugfix - Scale] Fix error management when application is already restarting or scaling #195
+* [Bugfix - Tunnel] Fix panic when authentication fails when building SSH tunnel 
+* [Bugfix - Tunnel] Fix double error handling when binding local port #202
+* [Bugfix] Fix install script on Mac OS X El Capitan 10.11
+
+Contributors
+- leo@scalingo.com <Leo Unbekandt>
+- mail2tevin@gmail.com <Tevin Zhang>
+
 ### v1.2.0 - 20/11/2015
 
 * [Feature - DB Tunnel] Reconnect automatically in case of connection problem
