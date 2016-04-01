@@ -16,6 +16,7 @@ var (
 		Category:  "App Management",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{appFlag,
+			cli.StringFlag{Name: "type, t", Value: "", Usage: "Procfile Type"},
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables"},
 			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload"},
 			cli.BoolFlag{Name: "silent, s", Usage: "Do not output anything on stderr"},
@@ -23,10 +24,26 @@ var (
 		Description: `Run command in current app context, a one-off container will be
    start with your application environment loaded.
 
-   Example
+   Examples
      scalingo --app rails-app run bundle exec rails console
      scalingo --app synfony-app run php app/console cache:clear
      scalingo --app test-app run --silent custom/command > localoutput
+
+   The --silent flag makes that the only output of the command will be the output
+   of the one-off container. There won't be any noise from the command tool itself.
+
+   Thank to the --type flag, you can build shortcuts to commands of your Procfile.
+   If your procfile is:
+
+   ==== Procfile
+   web: bundle exec rails server
+   migrate: bundle rake db:migrate
+   ====
+
+   You can run the migrate task with the following command:
+
+   Example:
+     scalingo --app my-app run -t migrate
 
    If you need to inject additional environment variables, you can use the flag
    '-e'. You can use it multiple time to define multiple variables. These
@@ -47,11 +64,12 @@ var (
 			opts := apps.RunOpts{
 				App:    currentApp,
 				Cmd:    c.Args(),
+				Type:   c.String("t"),
 				CmdEnv: c.StringSlice("e"),
 				Files:  c.StringSlice("f"),
 				Silent: c.Bool("s"),
 			}
-			if len(c.Args()) == 0 {
+			if (len(c.Args()) == 0 && c.String("t") == "") || (len(c.Args()) > 0 && c.String("t") != "") {
 				cli.ShowCommandHelp(c, "run")
 			} else if err := apps.Run(opts); err != nil {
 				errorQuit(err)
