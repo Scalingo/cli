@@ -35,6 +35,7 @@ type RunOpts struct {
 	App            string
 	DisplayCmd     string
 	Silent         bool
+	Type           string
 	Cmd            []string
 	CmdEnv         []string
 	Files          []string
@@ -56,6 +57,21 @@ func Run(opts RunOpts) error {
 		stdinCopyFunc:           stdio.Copy,
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
 	}
+	if opts.Type != "" {
+		processes, err := scalingo.AppsPs(opts.App)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+		for _, p := range processes {
+			if p.Name == opts.Type {
+				opts.Cmd = strings.Split(p.Command, " ")
+			}
+		}
+		if strings.Join(opts.Cmd, "") == "" {
+			return errgo.New("no such type")
+		}
+	}
+
 	if opts.CmdEnv == nil {
 		opts.CmdEnv = []string{}
 	}
