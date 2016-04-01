@@ -61,6 +61,9 @@ fi
 if uname -a | grep -iq Mingw ; then
   goxc_flags="${goxc_flags} -bc windows"
 fi
+if uname -a | grep -iq Cygwin ; then
+  goxc_flags="${goxc_flags} -bc windows"
+fi
 
 goxc $goxc_flags
 
