@@ -1,16 +1,18 @@
 package config
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/cli/config/auth"
 )
 
 var (
 	u = &scalingo.User{
-		Email:     "test@example.com",
-		Username:  "test",
-		AuthToken: "0123456789",
+		Email:               "test@example.com",
+		Username:            "test",
+		AuthenticationToken: "0123456789",
 	}
 )
 
@@ -48,15 +50,18 @@ func TestStoreAuth(t *testing.T) {
 
 func TestExistingAuth(t *testing.T) {
 	// Before any auth
-	auth, err := existingAuth()
+	currentAuth, err := existingAuth()
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	if len(auth.AuthConfigPerHost) > 0 {
-		t.Errorf("want auth.AuthConfigPerHost = [], got %v", auth.AuthConfigPerHost)
+	var configPerHost auth.ConfigPerHostV1
+	json.Unmarshal(currentAuth.AuthConfigPerHost, &configPerHost)
+
+	if len(configPerHost) > 0 {
+		t.Errorf("want auth.AuthConfigPerHost = [], got %v", configPerHost)
 	}
-	if !auth.LastUpdate.IsZero() {
-		t.Errorf("auth should never have been updated: %v", auth.LastUpdate)
+	if !currentAuth.LastUpdate.IsZero() {
+		t.Errorf("auth should never have been updated: %v", currentAuth.LastUpdate)
 	}
 
 	// After one auth
@@ -64,15 +69,17 @@ func TestExistingAuth(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	auth, err = existingAuth()
+
+	currentAuth, err = existingAuth()
+	json.Unmarshal(currentAuth.AuthConfigPerHost, &configPerHost)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	if len(auth.AuthConfigPerHost) != 1 {
-		t.Errorf("want len(auth.AuthConfigPerHost) = 1, got %v", auth.AuthConfigPerHost)
+	if len(configPerHost) != 1 {
+		t.Errorf("want len(auth.AuthConfigPerHost) = 1, got %v", configPerHost)
 	}
-	if auth.LastUpdate.IsZero() {
-		t.Errorf("auth should have been updated: %v", auth.LastUpdate)
+	if currentAuth.LastUpdate.IsZero() {
+		t.Errorf("auth should have been updated: %v", currentAuth.LastUpdate)
 	}
 
 	clean()

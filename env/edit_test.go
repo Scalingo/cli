@@ -1,7 +1,5 @@
 package env
 
-import "bytes"
-import "github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 import "testing"
 
 func TestAdd(t *testing.T) {
@@ -32,17 +30,6 @@ func TestIsEnvEditValid(t *testing.T) {
 		} else if err != invalidNameFormatError {
 			t.Fatal("expected", invalidNameFormatError, "error, got", err)
 		}
-	}
-
-	longName := new(bytes.Buffer)
-	for i := 0; i < scalingo.EnvNameMaxLength; i++ {
-		longName.WriteRune('A')
-	}
-	longName.WriteString("A=VAL")
-	if err := isEnvEditValid(longName.String()); err == nil {
-		t.Fatal(v, "should not be valid")
-	} else if err != nameTooLongError {
-		t.Fatal("expected", nameTooLongError, "error, got", err)
 	}
 }
 

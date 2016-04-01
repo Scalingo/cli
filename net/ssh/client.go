@@ -39,7 +39,7 @@ func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
 	if err != nil {
 		return nil, nil, errgo.Mask(err)
 	}
-	debug.Println("SSH connection:", client.LocalAddr, "Key:", string(key.PublicKey().Marshal()))
+	debug.Println("SSH connection:", client.LocalAddr(), "Key:", string(key.PublicKey().Marshal()))
 	return client, key, nil
 }
 
