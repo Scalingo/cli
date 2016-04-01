@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	stdio "io"
 	"io/ioutil"
@@ -42,6 +43,7 @@ type RunOpts struct {
 }
 
 type runContext struct {
+	attachURL               string
 	waitingTextOutputWriter stdio.Writer
 	stdinCopyFunc           func(stdio.Writer, stdio.Reader) (int64, error)
 	stdoutCopyFunc          func(stdio.Writer, stdio.Reader) (int64, error)
@@ -92,15 +94,16 @@ func Run(opts RunOpts) error {
 		return errgo.Newf("application %s not found", opts.App)
 	}
 
-	attachURL, ok := runStruct["attach_url"].(string)
+	var ok bool
+	ctx.attachURL, ok = runStruct["attach_url"].(string)
 	if !ok {
 		return errgo.New("unexpected answer from server")
 	}
 
-	debug.Println("Run Service URL is", attachURL)
+	debug.Println("Run Service URL is", ctx.attachURL)
 
 	if len(opts.Files) > 0 {
-		err := ctx.uploadFiles(attachURL+"/files", opts.Files)
+		err := ctx.uploadFiles(ctx.attachURL+"/files", opts.Files)
 		if err != nil {
 			return err
 		}
@@ -123,7 +126,7 @@ func Run(opts RunOpts) error {
 	}
 	go attachSpinner.Start()
 
-	res, socket, err := ctx.connectToRunServer(attachURL)
+	res, socket, err := ctx.connectToRunServer()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -147,7 +150,7 @@ func Run(opts RunOpts) error {
 		for {
 			select {
 			case s := <-signals:
-				run.HandleSignal(s, socket, attachURL)
+				run.HandleSignal(s, socket, ctx.attachURL)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
@@ -171,6 +174,12 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
+	exitCode, err := ctx.exitCode()
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
+	os.Exit(exitCode)
 	return nil
 }
 
@@ -190,14 +199,50 @@ func (ctx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	return env, nil
 }
 
-func (ctx *runContext) connectToRunServer(rawUrl string) (*http.Response, net.Conn, error) {
-	req, err := http.NewRequest("CONNECT", rawUrl, nil)
+func (ctx *runContext) exitCode() (int, error) {
+	if ctx.attachURL == "" {
+		return -1, errgo.New("No attach URL to connect to")
+	}
+
+	req, err := http.NewRequest("GET", ctx.attachURL+"/wait", nil)
+	if err != nil {
+		return -1, errgo.Mask(err, errgo.Any)
+	}
+	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return -1, errgo.Mask(err)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return -1, errgo.Notef(err, "fail to read body when getting exit code")
+	}
+	debug.Println("exit code body:", string(body))
+
+	waitRes := map[string]int{}
+	err = json.NewDecoder(bytes.NewBuffer(body)).Decode(&waitRes)
+	if err != nil {
+		return -1, errgo.Notef(err, "invalid response when getting exit code")
+	}
+
+	return waitRes["exit_code"], nil
+}
+
+func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
+	if ctx.attachURL == "" {
+		return nil, nil, errgo.New("No attach URL to connect to")
+	}
+
+	req, err := http.NewRequest("CONNECT", ctx.attachURL, nil)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
 
-	url, err := url.Parse(rawUrl)
+	url, err := url.Parse(ctx.attachURL)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}

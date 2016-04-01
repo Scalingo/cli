@@ -69,13 +69,17 @@ func updateTtySize(url string) error {
 		fmt.Sprintf("%d", cols),
 		fmt.Sprintf("%d", lines),
 	}
-	paramsJson, _ := json.Marshal(&params)
+	paramsJson, err := json.Marshal(&params)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJson))
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+	debug.Printf("Updating TTY Size: PUT %v %+v", url, params)
 
 	res, err := httpclient.Do(req)
 	if err != nil {
