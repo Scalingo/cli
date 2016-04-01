@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/andrew-d/go-termutil"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 )
 
@@ -16,6 +17,10 @@ func IsTerminal(f *os.File) bool {
 	cmd := exec.Command("test", "-t", "0")
 	cmd.Stdin = f
 	return cmd.Run() == nil
+}
+
+func IsATTY(f *os.File) bool {
+	return termutil.Isatty(f.Fd())
 }
 
 func MakeRaw(f *os.File) error {
