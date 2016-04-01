@@ -134,8 +134,10 @@ func Run(opts RunOpts) error {
 		return errgo.Newf("Fail to attach: %s", res.Status)
 	}
 
-	if err := term.MakeRaw(os.Stdin); err != nil {
-		return errgo.Mask(err, errgo.Any)
+	if term.IsATTY(os.Stdin) {
+		if err := term.MakeRaw(os.Stdin); err != nil {
+			return errgo.Mask(err, errgo.Any)
+		}
 	}
 
 	stopSignalsMonitoring := make(chan bool)
@@ -165,13 +167,24 @@ func Run(opts RunOpts) error {
 	}
 	go startSpinner.Start()
 
-	go ctx.stdinCopyFunc(socket, os.Stdin)
+	go func() {
+		_, err := ctx.stdinCopyFunc(socket, os.Stdin)
+		if err != nil {
+			debug.Println("error after reading stdin", err)
+		} else {
+			// Send EOT when stdin returns
+			// 'scalingo run < file'
+			socket.Write([]byte("\x04"))
+		}
+	}()
 	_, err = ctx.stdoutCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
 
-	if err := term.Restore(os.Stdin); err != nil {
-		return errgo.Mask(err, errgo.Any)
+	if term.IsATTY(os.Stdin) {
+		if err := term.Restore(os.Stdin); err != nil {
+			return errgo.Mask(err, errgo.Any)
+		}
 	}
 
 	exitCode, err := ctx.exitCode()

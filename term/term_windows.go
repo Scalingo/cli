@@ -10,6 +10,10 @@ func IsTerminal(f *os.File) bool {
 	return false
 }
 
+func IsATTY(f *os.File) bool {
+	return false
+}
+
 // MakeRaw is a no-op on windows. It returns nil.
 func MakeRaw(f *os.File) error {
 	if strings.HasSuffix(os.Getenv("SHELL"), "/usr/bin/bash") {
