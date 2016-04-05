@@ -25,7 +25,9 @@ func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
 	}
 
 	if len(privateKeys) == 0 {
-		identity = sshkeys.DefaultKeyPath
+		if identity == "ssh-agent" {
+			identity = sshkeys.DefaultKeyPath
+		}
 		privateKey, err := sshkeys.ReadPrivateKey(identity)
 		if err != nil {
 			return nil, nil, errgo.Mask(err)
