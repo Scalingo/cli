@@ -192,7 +192,7 @@ func writeAuthFile(authConfig *auth.ConfigData) error {
 }
 
 func existingAuth() (*auth.ConfigData, error) {
-	authConfig := &auth.ConfigData{}
+	authConfig := auth.NewConfigData()
 	content, err := ioutil.ReadFile(C.AuthFile)
 	if err == nil {
 		// We don't care of the error

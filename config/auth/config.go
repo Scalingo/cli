@@ -19,6 +19,12 @@ type ConfigData struct {
 	AuthConfigPerHost json.RawMessage `json:"auth_config_data"`
 }
 
+func NewConfigData() *ConfigData {
+	return &ConfigData{
+		AuthDataVersion: ConfigVersionV1,
+	}
+}
+
 type LegacyAuthConfigPerHost map[string]*LegacyUser
 
 type LegacyUser struct {
