@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v1.3.1 - 02/05/2016
+
+* [Bugfix - Auth] Fix authentication configuration for --ssh or --apikey, two attempts were necessary #208 #209
+
 ### v1.3.0 - 01/04/2016
 
 * [Feature - Auth] Authentication with API key or SSH key (--ssh or --api-key flags) #196 #200
