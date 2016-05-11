@@ -12,7 +12,7 @@ var (
 		Name:      "scale",
 		ShortName: "s",
 		Category:  "App Management",
-		Flags:     []cli.Flag{appFlag, cli.BoolFlag{Name: "synchronous", Usage: "Do the scaling synchronously", EnvVar: ""}},
+		Flags:     []cli.Flag{appFlag, cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""}},
 		Usage:     "Scale your application instantly",
 		Description: `Scale your application processes.
    Example
@@ -24,7 +24,7 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "scale")
-			} else if err := apps.Scale(currentApp, c.Bool("synchronous"), c.Args()); err != nil {
+			} else if err := apps.Scale(currentApp, c.Bool("synchronous") || c.Bool("s"), c.Args()); err != nil {
 				errorQuit(err)
 			}
 		},
