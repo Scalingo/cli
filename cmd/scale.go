@@ -24,7 +24,7 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
 				cli.ShowCommandHelp(c, "scale")
-			} else if err := apps.Scale(currentApp, c.Bool("synchronous") || c.Bool("s"), c.Args()); err != nil {
+			} else if err := apps.Scale(currentApp, c.Bool("s"), c.Args()); err != nil {
 				errorQuit(err)
 			}
 		},

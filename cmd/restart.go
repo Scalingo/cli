@@ -23,7 +23,7 @@ var (
 	  scalingo --app my-app restart web-1`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			if err := apps.Restart(currentApp, c.Bool("synchronous") || c.Bool("s"), c.Args()); err != nil {
+			if err := apps.Restart(currentApp, c.Bool("s"), c.Args()); err != nil {
 				errorQuit(err)
 			}
 		},
