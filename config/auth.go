@@ -44,7 +44,7 @@ func Auth() (*scalingo.User, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	fmt.Printf("Hello %s, nice to see you !\n\n", user.Username)
+	fmt.Printf("Hello %s, nice to see you!\n\n", user.Username)
 	err = Authenticator.StoreAuth(user)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -118,7 +118,7 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
 		if user == nil {
 			return Auth()
 		}
-		fmt.Printf("You are already logged in %s !\n", user.Username)
+		fmt.Printf("You are already logged in %s!\n", user.Username)
 		return user, nil
 	}
 }
