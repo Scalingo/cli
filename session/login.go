@@ -38,10 +38,11 @@ func Login(opts LoginOpts) error {
 }
 
 func loginWithUserAndPassword() error {
-	_, err := config.Authenticator.LoadAuth()
+	user, err := config.Authenticator.LoadAuth()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	fmt.Printf("You are already logged as %s (%s)!", user.Email, user.Username)
 	return nil
 }
 
