@@ -42,7 +42,7 @@ func loginWithUserAndPassword() error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	fmt.Printf("You are already logged as %s (%s)!", user.Email, user.Username)
+	fmt.Printf("You are already logged as %s (%s)!\n", user.Email, user.Username)
 	return nil
 }
 
@@ -65,7 +65,7 @@ func loginWithApiKey(apiKey string) error {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("Hello %s, nice to see you !\n", userRes.User.Username)
+	fmt.Printf("Hello %s, nice to see you!\n", userRes.User.Username)
 	err = config.Authenticator.StoreAuth(userRes.User)
 	if err != nil {
 		return errgo.Mask(err)
