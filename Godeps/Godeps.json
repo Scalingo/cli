@@ -52,7 +52,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh",
-			"Rev": "1351f936d976c60a0a48d728281922cf63eafb8d"
+			"Rev": "89d9e62992539701a49a19c52ebb33e84cbbe80f"
 		},
 		{
 			"ImportPath": "golang.org/x/net/websocket",
@@ -69,6 +69,18 @@
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/io",
 			"Rev": "9ee0984eabe0c4023d01ebb87ab598f74754a355"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/curve25519",
+			"Rev": "89d9e62992539701a49a19c52ebb33e84cbbe80f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "89d9e62992539701a49a19c52ebb33e84cbbe80f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "89d9e62992539701a49a19c52ebb33e84cbbe80f"
 		}
 	]
 }
