@@ -23,31 +23,31 @@ type DomainRes struct {
 	Domain Domain `json:"domain"`
 }
 
-func DomainsList(app string) ([]Domain, error) {
+func (c *Client) DomainsList(app string) ([]Domain, error) {
 	var domainRes DomainsRes
-	err := subresourceList(app, "domains", nil, &domainRes)
+	err := c.subresourceList(app, "domains", nil, &domainRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	return domainRes.Domains, nil
 }
 
-func DomainsAdd(app string, d Domain) (Domain, error) {
+func (c *Client) DomainsAdd(app string, d Domain) (Domain, error) {
 	var domainRes DomainRes
-	err := subresourceAdd(app, "domains", DomainRes{d}, &domainRes)
+	err := c.subresourceAdd(app, "domains", DomainRes{d}, &domainRes)
 	if err != nil {
 		return Domain{}, errgo.Mask(err)
 	}
 	return domainRes.Domain, nil
 }
 
-func DomainsRemove(app string, id string) error {
-	return subresourceDelete(app, "domains", id)
+func (c *Client) DomainsRemove(app string, id string) error {
+	return c.subresourceDelete(app, "domains", id)
 }
 
-func DomainsUpdate(app, id, cert, key string) (Domain, error) {
+func (c *Client) DomainsUpdate(app, id, cert, key string) (Domain, error) {
 	var domainRes DomainRes
-	err := subresourceUpdate(app, "domains", id, DomainRes{Domain: Domain{TlsCert: cert, TlsKey: key}}, &domainRes)
+	err := c.subresourceUpdate(app, "domains", id, DomainRes{Domain: Domain{TlsCert: cert, TlsKey: key}}, &domainRes)
 	if err != nil {
 		return Domain{}, errgo.Mask(err)
 	}

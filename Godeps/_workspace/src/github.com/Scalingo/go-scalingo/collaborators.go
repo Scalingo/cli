@@ -17,18 +17,18 @@ type CollaboratorRes struct {
 	Collaborator Collaborator `json:"collaborator"`
 }
 
-func CollaboratorsList(app string) ([]Collaborator, error) {
+func (c *Client) CollaboratorsList(app string) ([]Collaborator, error) {
 	var collaboratorsRes CollaboratorsRes
-	err := subresourceList(app, "collaborators", nil, &collaboratorsRes)
+	err := c.subresourceList(app, "collaborators", nil, &collaboratorsRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	return collaboratorsRes.Collaborators, nil
 }
 
-func CollaboratorAdd(app string, email string) (Collaborator, error) {
+func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
-	err := subresourceAdd(app, "collaborators", CollaboratorRes{
+	err := c.subresourceAdd(app, "collaborators", CollaboratorRes{
 		Collaborator: Collaborator{Email: email},
 	}, &collaboratorRes)
 	if err != nil {
@@ -37,6 +37,6 @@ func CollaboratorAdd(app string, email string) (Collaborator, error) {
 	return collaboratorRes.Collaborator, nil
 }
 
-func CollaboratorRemove(app string, id string) error {
-	return subresourceDelete(app, "collaborators", id)
+func (c *Client) CollaboratorRemove(app string, id string) error {
+	return c.subresourceDelete(app, "collaborators", id)
 }

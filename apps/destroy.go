@@ -6,15 +6,16 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
 func Destroy(appName string) error {
 	var validationName string
 
-	_, err := scalingo.AppsShow(appName)
+	c := config.ScalingoClient()
+	_, err := c.AppsShow(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -30,7 +31,7 @@ func Destroy(appName string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	res, err := scalingo.AppsDestroy(appName, validationName)
+	res, err := c.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}

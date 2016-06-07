@@ -51,6 +51,8 @@ type runContext struct {
 }
 
 func Run(opts RunOpts) error {
+	c := config.ScalingoClient()
+
 	firstReadDone := make(chan struct{})
 	ctx := &runContext{
 		waitingTextOutputWriter: os.Stderr,
@@ -58,7 +60,7 @@ func Run(opts RunOpts) error {
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
 	}
 	if opts.Type != "" {
-		processes, err := scalingo.AppsPs(opts.App)
+		processes, err := c.AppsPs(opts.App)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -98,7 +100,7 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := scalingo.Run(opts.App, opts.Cmd, env)
+	res, err := c.Run(opts.App, opts.Cmd, env)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -237,7 +239,7 @@ func (ctx *runContext) exitCode() (int, error) {
 	if err != nil {
 		return -1, errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -269,7 +271,7 @@ func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	url, err := url.Parse(ctx.attachURL)
 	if err != nil {
@@ -461,7 +463,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 

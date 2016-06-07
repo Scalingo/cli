@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func Add(name string, path string) error {
@@ -26,7 +26,8 @@ func Add(name string, path string) error {
 		return errgo.Mask(err)
 	}
 
-	_, err = scalingo.KeysAdd(name, string(keyContent))
+	c := config.ScalingoClient()
+	_, err = c.KeysAdd(name, string(keyContent))
 	if err != nil {
 		return errgo.Mask(err)
 	}

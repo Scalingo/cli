@@ -61,8 +61,9 @@ type CreateAppParams struct {
 	App *App `json:"app"`
 }
 
-func AppsList() ([]*App, error) {
+func (c *Client) AppsList() ([]*App, error) {
 	req := &APIRequest{
+		Client:   c,
 		Endpoint: "/apps",
 	}
 
@@ -80,15 +81,17 @@ func AppsList() ([]*App, error) {
 	return appsMap["apps"], nil
 }
 
-func AppsShow(app string) (*http.Response, error) {
+func (c *Client) AppsShow(app string) (*http.Response, error) {
 	req := &APIRequest{
+		Client:   c,
 		Endpoint: "/apps/" + app,
 	}
 	return req.Do()
 }
 
-func AppsDestroy(name string, currentName string) (*http.Response, error) {
+func (c *Client) AppsDestroy(name string, currentName string) (*http.Response, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "DELETE",
 		Endpoint: "/apps/" + name,
 		Expected: Statuses{204},
@@ -99,8 +102,9 @@ func AppsDestroy(name string, currentName string) (*http.Response, error) {
 	return req.Do()
 }
 
-func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
+func (c *Client) AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/restart",
 		Expected: Statuses{202},
@@ -109,8 +113,9 @@ func AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	return req.Do()
 }
 
-func AppsCreate(app string) (*App, error) {
+func (c *Client) AppsCreate(app string) (*App, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps",
 		Expected: Statuses{201},
@@ -135,8 +140,9 @@ func AppsCreate(app string) (*App, error) {
 	return params.App, nil
 }
 
-func AppsStats(app string) (*AppStatsRes, error) {
+func (c *Client) AppsStats(app string) (*AppStatsRes, error) {
 	req := &APIRequest{
+		Client:   c,
 		Endpoint: "/apps/" + app + "/stats",
 	}
 	res, err := req.Do()
@@ -153,8 +159,9 @@ func AppsStats(app string) (*AppStatsRes, error) {
 	return &stats, nil
 }
 
-func AppsPs(app string) ([]Container, error) {
+func (c *Client) AppsPs(app string) ([]Container, error) {
 	req := &APIRequest{
+		Client:   c,
 		Endpoint: "/apps/" + app + "/containers",
 	}
 	res, err := req.Do()
@@ -171,16 +178,9 @@ func AppsPs(app string) ([]Container, error) {
 	return containersRes.Containers, nil
 }
 
-// Handling 422 error as not a standard 422 error
-// {
-//    "errors": {
-//       "web": {
-//          "amount": ["is negative"]
-//       }
-//    }
-// }
-func AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
+func (c *Client) AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scale",
 		Params:   params,

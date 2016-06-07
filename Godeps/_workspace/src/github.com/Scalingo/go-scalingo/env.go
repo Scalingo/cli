@@ -2,11 +2,6 @@ package scalingo
 
 import "github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
 
-const (
-	EnvNameMaxLength  = 64
-	EnvValueMaxLength = 1024
-)
-
 type Variable struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
@@ -32,25 +27,26 @@ type VariableSetParams struct {
 	Variable *Variable `json:"variable"`
 }
 
-func VariablesList(app string) (Variables, error) {
-	return variableList(app, true)
+func (c *Client) VariablesList(app string) (Variables, error) {
+	return c.variableList(app, true)
 }
 
-func VariablesListWithoutAlias(app string) (Variables, error) {
-	return variableList(app, false)
+func (c *Client) VariablesListWithoutAlias(app string) (Variables, error) {
+	return c.variableList(app, false)
 }
 
-func variableList(app string, aliases bool) (Variables, error) {
+func (c *Client) variableList(app string, aliases bool) (Variables, error) {
 	var variablesRes VariablesRes
-	err := subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
+	err := c.subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return variablesRes.Variables, nil
 }
 
-func VariableSet(app string, name string, value string) (*Variable, int, error) {
+func (c *Client) VariableSet(app string, name string, value string) (*Variable, int, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]interface{}{
@@ -76,8 +72,9 @@ func VariableSet(app string, name string, value string) (*Variable, int, error) 
 	return params.Variable, res.StatusCode, nil
 }
 
-func VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
+func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
 	req := &APIRequest{
+		Client:   c,
 		Method:   "PUT",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]Variables{
@@ -100,6 +97,6 @@ func VariableMultipleSet(app string, variables Variables) (Variables, int, error
 	return params.Variables, res.StatusCode, nil
 }
 
-func VariableUnset(app string, id string) error {
-	return subresourceDelete(app, "variables", id)
+func (c *Client) VariableUnset(app string, id string) error {
+	return c.subresourceDelete(app, "variables", id)
 }

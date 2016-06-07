@@ -3,6 +3,7 @@ package domains
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -12,7 +13,8 @@ func Remove(app string, domain string) error {
 		return errgo.Mask(err)
 	}
 
-	err = scalingo.DomainsRemove(app, d.ID)
+	c := config.ScalingoClient()
+	err = c.DomainsRemove(app, d.ID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -22,7 +24,8 @@ func Remove(app string, domain string) error {
 }
 
 func findDomain(app string, domain string) (scalingo.Domain, error) {
-	domains, err := scalingo.DomainsList(app)
+	c := config.ScalingoClient()
+	domains, err := c.DomainsList(app)
 	if err != nil {
 		return scalingo.Domain{}, errgo.Mask(err)
 	}

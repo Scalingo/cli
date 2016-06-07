@@ -3,13 +3,14 @@ package collaborators
 import (
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func List(app string) error {
-	collaborators, err := scalingo.CollaboratorsList(app)
+	c := config.ScalingoClient()
+	collaborators, err := c.CollaboratorsList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
