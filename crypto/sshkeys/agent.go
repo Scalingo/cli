@@ -7,9 +7,9 @@ import (
 
 	"github.com/Scalingo/cli/config"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh/agent"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/agent"
+	"gopkg.in/errgo.v1"
 )
 
 func ReadPrivateKeysFromAgent() ([]ssh.Signer, io.Closer, error) {

@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 )
 

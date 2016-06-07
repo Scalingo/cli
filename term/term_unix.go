@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/andrew-d/go-termutil"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/andrew-d/go-termutil"
+	"gopkg.in/errgo.v1"
 )
 
 // IsTerminal returns true if f is a terminal.
