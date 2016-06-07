@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/term"

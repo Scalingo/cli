@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 )
