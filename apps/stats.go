@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 const (
@@ -18,7 +19,8 @@ const (
 
 func Stats(app string, stream bool) error {
 	if stream {
-		stats, err := scalingo.AppsStats(app)
+		c := config.ScalingoClient()
+		stats, err := c.AppsStats(app)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -28,7 +30,8 @@ func Stats(app string, stream bool) error {
 		for {
 			select {
 			case <-ticker.C:
-				stats, err := scalingo.AppsStats(app)
+				c := config.ScalingoClient()
+				stats, err := c.AppsStats(app)
 				if err != nil {
 					ticker.Stop()
 					return errgo.Mask(err)
@@ -37,7 +40,8 @@ func Stats(app string, stream bool) error {
 			}
 		}
 	} else {
-		stats, err := scalingo.AppsStats(app)
+		c := config.ScalingoClient()
+		stats, err := c.AppsStats(app)
 		if err != nil {
 			return errgo.Mask(err)
 		}

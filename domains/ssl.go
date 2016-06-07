@@ -3,8 +3,8 @@ package domains
 import (
 	"io/ioutil"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -14,7 +14,8 @@ func DisableSSL(app string, domain string) error {
 		return errgo.Mask(err)
 	}
 
-	_, err = scalingo.DomainsUpdate(app, d.ID, "", "")
+	c := config.ScalingoClient()
+	_, err = c.DomainsUpdate(app, d.ID, "", "")
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -33,7 +34,8 @@ func EnableSSL(app, domain, certPath, keyPath string) error {
 		return errgo.Mask(err)
 	}
 
-	d, err = scalingo.DomainsUpdate(app, d.ID, certContent, keyContent)
+	c := config.ScalingoClient()
+	d, err = c.DomainsUpdate(app, d.ID, certContent, keyContent)
 	if err != nil {
 		return errgo.Mask(err)
 	}

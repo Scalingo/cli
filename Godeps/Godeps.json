@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
 	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
@@ -25,7 +26,7 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "c0525b1a85c83ad3a0a9229e9b327e4ba7b28fe5"
+			"Rev": "9ee0984eabe0c4023d01ebb87ab598f74754a355"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
@@ -60,6 +61,14 @@
 		{
 			"ImportPath": "gopkg.in/errgo.v1",
 			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
+		},
+		{
+			"ImportPath": "github.com/Scalingo/go-scalingo/debug",
+			"Rev": "9ee0984eabe0c4023d01ebb87ab598f74754a355"
+		},
+		{
+			"ImportPath": "github.com/Scalingo/go-scalingo/io",
+			"Rev": "9ee0984eabe0c4023d01ebb87ab598f74754a355"
 		}
 	]
 }

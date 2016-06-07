@@ -54,11 +54,6 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
-	if errgo.Cause(err) == scalingo.ErrLoginAborted {
-		fmt.Printf("... %v\n", err)
-		os.Exit(1)
-	}
-
 	if scalingo.IsRequestFailedError(errgo.Cause(err)) {
 		code := errgo.Cause(err).(*scalingo.RequestFailedError).Code
 		if code == 401 {
@@ -76,7 +71,7 @@ func errorQuit(err error) {
 func newReportError(err error) *ReportError {
 	r := &ReportError{
 		Time:    time.Now(),
-		User:    scalingo.CurrentUser,
+		User:    config.AuthenticatedUser,
 		Error:   err,
 		Command: strings.Join(os.Args, " "),
 		Version: config.Version,

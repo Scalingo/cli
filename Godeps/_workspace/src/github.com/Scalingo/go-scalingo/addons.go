@@ -21,31 +21,31 @@ type AddonRes struct {
 	Variables []string `json:"variables,omitempty"`
 }
 
-func AddonsList(app string) ([]*Addon, error) {
+func (c *Client) AddonsList(app string) ([]*Addon, error) {
 	var addonsRes AddonsRes
-	err := subresourceList(app, "addons", nil, &addonsRes)
+	err := c.subresourceList(app, "addons", nil, &addonsRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return addonsRes.Addons, nil
 }
 
-func AddonProvision(app, addon, planID string) (AddonRes, error) {
+func (c *Client) AddonProvision(app, addon, planID string) (AddonRes, error) {
 	var addonRes AddonRes
-	err := subresourceAdd(app, "addons", AddonRes{Addon: Addon{AddonProviderID: addon, PlanID: planID}}, &addonRes)
+	err := c.subresourceAdd(app, "addons", AddonRes{Addon: Addon{AddonProviderID: addon, PlanID: planID}}, &addonRes)
 	if err != nil {
 		return AddonRes{}, errgo.Mask(err, errgo.Any)
 	}
 	return addonRes, nil
 }
 
-func AddonDestroy(app, addonID string) error {
-	return subresourceDelete(app, "addons", addonID)
+func (c *Client) AddonDestroy(app, addonID string) error {
+	return c.subresourceDelete(app, "addons", addonID)
 }
 
-func AddonUpgrade(app, addonID, planID string) (AddonRes, error) {
+func (c *Client) AddonUpgrade(app, addonID, planID string) (AddonRes, error) {
 	var addonRes AddonRes
-	err := subresourceUpdate(app, "addons", addonID, AddonRes{Addon: Addon{PlanID: planID}}, &addonRes)
+	err := c.subresourceUpdate(app, "addons", addonID, AddonRes{Addon: Addon{PlanID: planID}}, &addonRes)
 	if err != nil {
 		return AddonRes{}, errgo.Mask(err, errgo.Any)
 	}

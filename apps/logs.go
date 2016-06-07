@@ -35,7 +35,8 @@ func Logs(appName string, stream bool, n int, filter string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := scalingo.LogsURL(appName)
+	c := config.ScalingoClient()
+	res, err := c.LogsURL(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -70,7 +71,8 @@ func Logs(appName string, stream bool, n int, filter string) error {
 }
 
 func dumpLogs(logsURL string, n int, filter string) error {
-	res, err := scalingo.Logs(logsURL, n, filter)
+	c := config.ScalingoClient()
+	res, err := c.Logs(logsURL, n, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -141,7 +143,8 @@ func streamLogs(logsRawURL string, filter string) error {
 
 func checkFilter(appName string, filter string) error {
 	if filter != "" {
-		processes, err := scalingo.AppsPs(appName)
+		c := config.ScalingoClient()
+		processes, err := c.AppsPs(appName)
 		if err != nil {
 			return errgo.Mask(err)
 		}

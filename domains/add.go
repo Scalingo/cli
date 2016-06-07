@@ -3,6 +3,7 @@ package domains
 import (
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -12,7 +13,8 @@ func Add(app string, domain string, cert string, key string) error {
 		return errgo.Mask(err)
 	}
 
-	d, err := scalingo.DomainsAdd(app, scalingo.Domain{
+	c := config.ScalingoClient()
+	d, err := c.DomainsAdd(app, scalingo.Domain{
 		Name:    domain,
 		TlsCert: certContent,
 		TlsKey:  keyContent,

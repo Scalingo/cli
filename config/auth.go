@@ -168,12 +168,12 @@ func tryAuth() (*scalingo.User, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	user, err := scalingo.AuthUser(login, password)
+	c := ScalingoUnauthenticatedClient()
+	res, err := c.Login(login, password)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-
-	return user, nil
+	return res.User, nil
 }
 
 func writeAuthFile(authConfig *auth.ConfigData) error {

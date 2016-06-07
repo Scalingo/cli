@@ -1,8 +1,8 @@
 package addons
 
 import (
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -25,7 +25,8 @@ func Upgrade(app, resourceID, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := scalingo.AddonUpgrade(app, addon.ID, planID)
+	c := config.ScalingoClient()
+	params, err := c.AddonUpgrade(app, addon.ID, planID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

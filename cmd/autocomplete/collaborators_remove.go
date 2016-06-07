@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/cli/config"
 )
 
 func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
@@ -13,7 +13,8 @@ func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	collaborators, err := scalingo.CollaboratorsList(appName)
+	client := config.ScalingoClient()
+	collaborators, err := client.CollaboratorsList(appName)
 	if err == nil {
 
 		for _, col := range collaborators {
