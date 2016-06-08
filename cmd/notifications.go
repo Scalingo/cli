@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/notifications"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -44,7 +44,7 @@ var (
 		Description: ` Enable a notification for your application:
     $ scalingo -a myapp notifications-add <webhook-url>
 
-		# See also 'notifications-list' and 'notifications-remove'
+		# See also 'notifications' and 'notifications-remove'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

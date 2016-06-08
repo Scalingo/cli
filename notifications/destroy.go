@@ -3,10 +3,11 @@ package notifications
 import (
 	"fmt"
 	"strings"
+	"strconv"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -15,6 +16,8 @@ func Destroy(app string, ID string) error {
 		return errgo.New("no app defined")
 	} else if ID == "" {
 		return errgo.New("no ID defined")
+	} else if _, err := strconv.Atoi(ID); err != nil {
+		return errgo.New("ID should be a number")
 	}
 
 	notification, err := checkNotificationExist(app, ID)
@@ -53,7 +56,7 @@ func checkNotificationExist(app string, ID string) (*scalingo.Notification, erro
 	}
 	notificationsList := []string{}
 	for _, r := range resources {
-		notificationsList = append(notificationsList, r.Type + " (" + r.WebHookURL + ")")
+		notificationsList = append(notificationsList, r.ID + ": " + r.Type + " (" + r.WebHookURL + ")")
 		if ID == r.ID {
 			return r, nil
 		}

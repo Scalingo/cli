@@ -1,7 +1,9 @@
 package notifications
 
 import (
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"errors"
+
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
@@ -16,11 +18,10 @@ func Provision(app, webHookURL string) error {
 	c := config.ScalingoClient()
 	params, err := c.NotificationProvision(app, webHookURL)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.New("Notification " + webHookURL + " can't be enabled because you have already an other notification of the same type enabled!")
 	}
 
 	io.Status("Notifications to", webHookURL, "have been provisionned")
-	io.Info("ID:", params.Notification.ID)
 	if len(params.Variables) > 0 {
 		io.Info("Modified variables:", params.Variables)
 	}
