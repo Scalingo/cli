@@ -3,8 +3,8 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/config"
 )
 
 func DomainsRemoveAutoComplete(c *cli.Context) error {
@@ -13,7 +13,8 @@ func DomainsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	domains, err := scalingo.DomainsList(appName)
+	client := config.ScalingoClient()
+	domains, err := client.DomainsList(appName)
 	if err == nil {
 
 		for _, domain := range domains {

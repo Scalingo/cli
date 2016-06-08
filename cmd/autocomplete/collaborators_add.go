@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 )
@@ -23,7 +23,8 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	currentAppCollaborators, err := scalingo.CollaboratorsList(appName)
+	client := config.ScalingoClient()
+	currentAppCollaborators, err := client.CollaboratorsList(appName)
 	if err != nil {
 		return nil
 	}
@@ -35,7 +36,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 	for _, app := range apps {
 		go func(app *scalingo.App) {
 			defer wg.Done()
-			appCollaborators, erro := scalingo.CollaboratorsList(app.Name)
+			appCollaborators, erro := client.CollaboratorsList(app.Name)
 			if erro != nil {
 				config.C.Logger.Println(erro.Error())
 				apiError = erro

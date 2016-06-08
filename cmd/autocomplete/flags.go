@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 func getFlagByName(lastArg string, flags []cli.Flag) (bool, cli.Flag) {

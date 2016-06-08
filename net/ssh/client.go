@@ -3,8 +3,8 @@ package ssh
 import (
 	stdio "io"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/crypto/ssh"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"golang.org/x/crypto/ssh"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/debug"

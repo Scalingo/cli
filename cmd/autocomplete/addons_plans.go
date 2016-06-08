@@ -3,8 +3,8 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/config"
 )
 
 func AddonsPlansAutoComplete(c *cli.Context) error {
@@ -13,7 +13,8 @@ func AddonsPlansAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	resources, err := scalingo.AddonsList(appName)
+	client := config.ScalingoClient()
+	resources, err := client.AddonsList(appName)
 	if err == nil {
 		for _, resource := range resources {
 			fmt.Println(resource.AddonProvider.ID)

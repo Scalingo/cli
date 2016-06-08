@@ -3,13 +3,14 @@ package addon_providers
 import (
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func List() error {
-	addonProviders, err := scalingo.AddonProvidersList()
+	c := config.ScalingoUnauthenticatedClient()
+	addonProviders, err := c.AddonProvidersList()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

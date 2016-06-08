@@ -3,8 +3,9 @@ package collaborators
 import (
 	"errors"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -23,7 +24,8 @@ func Remove(app, email string) error {
 		}
 	}
 
-	err = scalingo.CollaboratorRemove(app, collaborator.ID)
+	c := config.ScalingoClient()
+	err = c.CollaboratorRemove(app, collaborator.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -33,7 +35,8 @@ func Remove(app, email string) error {
 }
 
 func getFromEmail(app, email string) (scalingo.Collaborator, error) {
-	collaborators, err := scalingo.CollaboratorsList(app)
+	c := config.ScalingoClient()
+	collaborators, err := c.CollaboratorsList(app)
 	if err != nil {
 		return scalingo.Collaborator{}, errgo.Mask(err, errgo.Any)
 	}

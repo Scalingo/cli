@@ -3,14 +3,14 @@ package apps
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/debug"
-	"github.com/Scalingo/cli/io"
-)
-import (
 	"strconv"
 	"strings"
+
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/cli/io"
 )
 
 type ScaleRes struct {
@@ -44,7 +44,8 @@ func Scale(app string, sync bool, types []string) error {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
 			if containers == nil {
-				containers, err = scalingo.AppsPs(app)
+				c := config.ScalingoClient()
+				containers, err = c.AppsPs(app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
 				}
@@ -76,7 +77,8 @@ func Scale(app string, sync bool, types []string) error {
 		scaleParams.Containers = append(scaleParams.Containers, newContainerConfig)
 	}
 
-	res, err := scalingo.AppsScale(app, scaleParams)
+	c := config.ScalingoClient()
+	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		return errgo.Mask(err)
 	}

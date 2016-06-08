@@ -3,9 +3,9 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/codegangsta-cli"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func RestartAutoComplete(c *cli.Context) error {
@@ -14,7 +14,8 @@ func RestartAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	processes, err := scalingo.AppsPs(appName)
+	client := config.ScalingoClient()
+	processes, err := client.AppsPs(appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}

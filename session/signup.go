@@ -3,8 +3,8 @@ package session
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/term"
 )
 
@@ -31,7 +31,8 @@ func SignUp() error {
 		return errgo.New("passwords don't match")
 	}
 
-	err = scalingo.SignUp(email, password)
+	c := config.ScalingoUnauthenticatedClient()
+	err = c.SignUp(email, password)
 	if err != nil {
 		return errgo.Mask(err)
 	}

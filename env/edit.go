@@ -6,8 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 var (
@@ -31,7 +32,8 @@ func Add(app string, params []string) error {
 		})
 	}
 
-	_, _, err := scalingo.VariableMultipleSet(app, variables)
+	c := config.ScalingoClient()
+	_, _, err := c.VariableMultipleSet(app, variables)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -44,7 +46,9 @@ func Add(app string, params []string) error {
 }
 
 func Delete(app string, varNames []string) error {
-	vars, err := scalingo.VariablesList(app)
+	c := config.ScalingoClient()
+	vars, err := c.VariablesList(app)
+
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -60,7 +64,7 @@ func Delete(app string, varNames []string) error {
 	}
 
 	for _, v := range varsToUnset {
-		err := scalingo.VariableUnset(app, v.ID)
+		err := c.VariableUnset(app, v.ID)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}

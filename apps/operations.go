@@ -8,8 +8,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -28,8 +29,9 @@ func handleOperation(app string, res *http.Response) error {
 	defer close(errs)
 
 	go func() {
+		c := config.ScalingoClient()
 		for {
-			op, err = scalingo.OperationsShow(app, opID)
+			op, err = c.OperationsShow(app, opID)
 			if err != nil {
 				errs <- err
 				break
