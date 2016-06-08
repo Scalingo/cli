@@ -1,4 +1,4 @@
-Scalingo-CLI v1.3.1
+Scalingo-CLI v1.4.0
 ===================
 
 This repository contains the command line utility for the public PaaS Scalingo
@@ -45,10 +45,12 @@ USAGE:
 VERSION:
    1.3.1
 
-AUTHOR:
-  Scalingo Team - <hello@scalingo.com>
+AUTHOR(S):
+   Scalingo Team <hello@scalingo.com>
 
 COMMANDS:
+    help        Shows a list of commands or help for one command
+
   Addons:
     addons              List used add-ons
     addons-add          Provision an add-on for your application
@@ -68,7 +70,6 @@ COMMANDS:
     db-tunnel   Create an encrypted connection to access your database
 
   CLI Internals:
-    version     Display current version
     update      Update 'scalingo' client
 
   Collaborators:
@@ -88,15 +89,23 @@ COMMANDS:
     mysql-console       Run an interactive console with your MySQL addon
     pgsql-console       Run an interactive console with your PostgreSQL addon
 
+  Deployment:
+    deployments         List app deployments
+    deployment-logs     View deployment logs
+    deployment-follow   Follow deployement event stream
+
+  Display metrics of the running containers:
+    stats       Display metrics of the currently running containers
+
   Environment:
     env         Display the environment of your apps
     env-set     Set the environment variables of your apps
     env-unset   Unset environment variables of your apps
 
   Global:
-    apps, a     List your apps
+    apps        List your apps
     create, c   Create a new app
-    destroy, d  Destroy an app /!\
+    destroy     Destroy an app /!\
     login       Login to Scalingo platform
     logout      Logout from Scalingo
     signup      Create your Scalingo account
@@ -112,7 +121,9 @@ COMMANDS:
     keys-remove Remove a public SSH key
 
 GLOBAL OPTIONS:
-   --app, -a '<name>'   Name of the app [$SCALINGO_APP]
-   --help, -h           show help
-   --version, -v        print the version
+   --app, -a "<name>"           Name of the app [$SCALINGO_APP]
+   --remote, -r "scalingo"      Name of the remote
+   --generate-bash-completion
+   --version, -v                print the version
+
 ```
