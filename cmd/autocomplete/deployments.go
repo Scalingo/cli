@@ -3,11 +3,10 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-  "github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/codegangsta-cli"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
   "github.com/Scalingo/cli/appdetect"
-
 )
 
 func DeploymentsAutoComplete(c *cli.Context) error {

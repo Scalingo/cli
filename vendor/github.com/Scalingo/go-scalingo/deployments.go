@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/golang.org/x/net/websocket"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"golang.org/x/net/websocket"
+	"gopkg.in/errgo.v1"
 )
 
 type Deployment struct {
