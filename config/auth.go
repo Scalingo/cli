@@ -118,7 +118,6 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
 		if user == nil {
 			return Auth()
 		}
-		fmt.Printf("You are already logged in %s !\n", user.Username)
 		return user, nil
 	}
 }
