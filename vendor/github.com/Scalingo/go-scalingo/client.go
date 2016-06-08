@@ -26,18 +26,20 @@ func NewClient(cfg ClientConfig) *Client {
 	if cfg.TLSConfig == nil {
 		cfg.TLSConfig = &tls.Config{}
 	}
-	return &Client{
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			Proxy:           http.ProxyFromEnvironment,
+			TLSClientConfig: cfg.TLSConfig,
+		},
+	}
+	c := &Client{
 		APIToken:   cfg.APIToken,
 		Endpoint:   cfg.Endpoint,
 		APIVersion: defaultAPIVersion,
 		TLSConfig:  cfg.TLSConfig,
-		httpClient: &http.Client{
-			Transport: &http.Transport{
-				Proxy:           http.ProxyFromEnvironment,
-				TLSClientConfig: cfg.TLSConfig,
-			},
-		},
+		httpClient: httpClient,
 	}
+	return c
 }
 
 func (c *Client) HTTPClient() *http.Client {

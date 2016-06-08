@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v73",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
@@ -26,7 +26,7 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "1024c550a87d4ade51236e3e1cfdf9083cfe4b18"
+			"Rev": "9ee0984eabe0c4023d01ebb87ab598f74754a355"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/debug",

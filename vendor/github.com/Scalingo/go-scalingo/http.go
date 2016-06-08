@@ -129,6 +129,7 @@ func (apiReq *APIRequest) doRequest(req *http.Request) (*http.Response, error) {
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Add("User-Agent", "Scalingo Go Client")
+	apiReq.Client.HTTPClient()
 	return apiReq.Client.HTTPClient().Do(req)
 }
 
