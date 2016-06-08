@@ -3,14 +3,14 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/cli/config"
 )
 
 func KeysRemoveAutoComplete(c *cli.Context) error {
-	keys, err := scalingo.KeysList()
+	client := config.ScalingoClient()
+	keys, err := client.KeysList()
 	if err == nil {
-
 		for _, key := range keys {
 			fmt.Println(key.Name)
 		}

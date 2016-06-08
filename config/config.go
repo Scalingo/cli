@@ -10,14 +10,15 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/envconfig"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/stvp/rollbar"
+	"github.com/Scalingo/envconfig"
+	"github.com/Scalingo/go-scalingo"
+	"github.com/stvp/rollbar"
 )
 
 type Config struct {
 	ScalingoApiUrl     string
 	apiHost            string
+	apiToken           string
 	ApiVersion         string
 	DisableInteractive bool
 	SshHost            string
@@ -31,7 +32,8 @@ type Config struct {
 }
 
 var (
-	env = map[string]string{
+	AuthenticatedUser *scalingo.User
+	env               = map[string]string{
 		"SCALINGO_API_URL": "https://api.scalingo.com",
 		"SSH_HOST":         "scalingo.com:22",
 		"API_VERSION":      "1",
@@ -98,9 +100,26 @@ func init() {
 		TlsConfig.MinVersion = tls.VersionTLS10
 	}
 
-	scalingo.ApiAuthenticator = Authenticator
-	scalingo.ApiUrl = C.ScalingoApiUrl
-	scalingo.ApiVersion = C.ApiVersion
+	AuthenticatedUser, err = Authenticator.LoadAuth()
+	if err != nil {
+		fmt.Println("Fail to authenticate user:", err)
+	}
+	C.apiToken = AuthenticatedUser.AuthenticationToken
+}
+
+func ScalingoClient() *scalingo.Client {
+	return scalingo.NewClient(scalingo.ClientConfig{
+		APIToken:  C.apiToken,
+		Endpoint:  C.ScalingoApiUrl,
+		TLSConfig: TlsConfig,
+	})
+}
+
+func ScalingoUnauthenticatedClient() *scalingo.Client {
+	return scalingo.NewClient(scalingo.ClientConfig{
+		Endpoint:  C.ScalingoApiUrl,
+		TLSConfig: TlsConfig,
+	})
 }
 
 func HomeDir() string {

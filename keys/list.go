@@ -3,13 +3,14 @@ package keys
 import (
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func List() error {
-	keys, err := scalingo.KeysList()
+	c := config.ScalingoClient()
+	keys, err := c.KeysList()
 	if err != nil {
 		return errgo.Mask(err)
 	}

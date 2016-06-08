@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/olekukonko/tablewriter"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func List(app string) error {
-	domains, err := scalingo.DomainsList(app)
+	c := config.ScalingoClient()
+	domains, err := c.DomainsList(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

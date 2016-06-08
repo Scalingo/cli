@@ -3,12 +3,13 @@ package env
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 )
 
 func Display(app string) error {
-	vars, err := scalingo.VariablesList(app)
+	c := config.ScalingoClient()
+	vars, err := c.VariablesList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

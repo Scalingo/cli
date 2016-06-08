@@ -1,11 +1,9 @@
 package session
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	netssh "github.com/Scalingo/cli/net/ssh"
@@ -47,26 +45,17 @@ func loginWithUserAndPassword() error {
 }
 
 func loginWithApiKey(apiKey string) error {
-	req := &scalingo.APIRequest{
-		Endpoint: "/users/self",
-		Params: map[string]interface{}{
-			"api_token": true,
-		},
-		Token: apiKey,
-	}
-	res, err := req.Do()
-	if err != nil {
-		return errgo.Mask(err)
-	}
-	defer res.Body.Close()
-	var userRes *scalingo.SelfResults
-	err = json.NewDecoder(res.Body).Decode(&userRes)
+	c := config.ScalingoUnauthenticatedClient()
+	c.APIToken = apiKey
+	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("Hello %s, nice to see you!\n", userRes.User.Username)
-	err = config.Authenticator.StoreAuth(userRes.User)
+	fmt.Printf("Hello %s, nice to see you!\n", user.Username)
+	user.AuthenticationToken = apiKey
+
+	err = config.Authenticator.StoreAuth(user)
 	if err != nil {
 		return errgo.Mask(err)
 	}

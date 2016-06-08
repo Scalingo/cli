@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -70,7 +70,7 @@ var (
 		Description: ` Remove an existing addon from your app:
     $ scalingo -a myapp addons-remove <addon-id>
 
-		# See also 'addons' and 'addons-remove'
+		# See also 'addons' and 'addons-add'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

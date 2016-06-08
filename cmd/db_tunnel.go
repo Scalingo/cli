@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"

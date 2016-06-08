@@ -12,9 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/heroku/hk/term"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/heroku/hk/term"
+	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
 )
@@ -78,7 +78,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", scalingo.CurrentUser.AuthenticationToken)
+	req.SetBasicAuth("", config.ScalingoClient().APIToken)
 	debug.Printf("Updating TTY Size: PUT %v %+v", url, params)
 
 	res, err := httpclient.Do(req)

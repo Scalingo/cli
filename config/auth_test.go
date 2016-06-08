@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config/auth"
 )
 

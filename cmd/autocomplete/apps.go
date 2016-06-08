@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/cli/Godeps/_workspace/src/gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 )
@@ -32,7 +32,8 @@ func appsList() ([]*scalingo.App, error) {
 	apps, err = appsAutoCompleteCache()
 	if err != nil {
 		debug.Println("fail to get applications autocomplete cache make GET request", err)
-		apps, err = scalingo.AppsList()
+		c := config.ScalingoClient()
+		apps, err = c.AppsList()
 		if err != nil || len(apps) == 0 {
 			return nil, errgo.Mask(err)
 		}
