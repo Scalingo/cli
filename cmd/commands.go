@@ -49,6 +49,11 @@ var (
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
 
+		// Notifications
+		NotificationsListCommand,
+		NotificationsAddCommand,
+		NotificationsRemoveCommand,
+
 		// DB Access
 		DbTunnelCommand,
 		RedisConsoleCommand,

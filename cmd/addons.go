@@ -70,7 +70,7 @@ var (
 		Description: ` Remove an existing addon from your app:
     $ scalingo -a myapp addons-remove <addon-id>
 
-		# See also 'addons' and 'addons-remove'
+		# See also 'addons' and 'addons-add'
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

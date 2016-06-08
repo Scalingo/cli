@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v74",
+	"GodepVersion": "v73",
 	"Packages": [
 		"./..."
 	],
