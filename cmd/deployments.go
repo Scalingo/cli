@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/deployments"
+	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 
 	"github.com/Scalingo/cli/Godeps/_workspace/src/github.com/Scalingo/codegangsta-cli"
 )
@@ -42,6 +43,9 @@ var (
 			} else {
 				cli.ShowCommandHelp(c, "deployment-logs")
 			}
+		},
+		BashComplete: func(c *cli.Context){
+			autocomplete.DeploymentsAutoComplete(c)
 		},
 	}
 	DeploymentFollowCommand = cli.Command{
