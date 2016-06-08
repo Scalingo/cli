@@ -14,6 +14,7 @@ import (
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 )
@@ -64,6 +65,7 @@ func errorQuit(err error) {
 	newReportError(err).Report()
 	rollbar.Wait()
 	io.Error("An error occured:")
+	debug.Println(errgo.Details(err))
 	fmt.Println(io.Indent(err.Error(), 7))
 	os.Exit(1)
 }

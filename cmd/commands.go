@@ -31,6 +31,11 @@ var (
 		DomainsRemoveCommand,
 		DomainsSSLCommand,
 
+		// Deploiments
+		DeploymentsListCommand,
+		DeploymentLogCommand,
+		DeploymentFollowCommand,
+
 		// Collaborators
 		CollaboratorsListCommand,
 		CollaboratorsAddCommand,

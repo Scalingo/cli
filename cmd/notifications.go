@@ -86,6 +86,7 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifications-remove")
+			autocomplete.NotificationsRemoveAutoComplete(c)
 		},
 	}
 )
