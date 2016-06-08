@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v1.3.2 - 08/06/2016
+
+* [Feature - Notification] Add list, remove and add commands for notifications
+
 ### v1.3.1 - 02/05/2016
 
 * [Bugfix - Auth] Fix authentication configuration for --ssh or --apikey, two attempts were necessary #208 #209
@@ -19,7 +23,7 @@ Changelog
 * [Bugfix - Env] Remove arguments validation, that's server role, and it changes sometimes
 * [Bugfix - Env] Add quotes in output of env-set to avoid copy/paste problem with the final period
 * [Bugfix - Scale] Fix error management when application is already restarting or scaling #195
-* [Bugfix - Tunnel] Fix panic when authentication fails when building SSH tunnel 
+* [Bugfix - Tunnel] Fix panic when authentication fails when building SSH tunnel
 * [Bugfix - Tunnel] Fix double error handling when binding local port #202
 * [Bugfix] Fix install script on Mac OS X El Capitan 10.11
 
@@ -75,7 +79,7 @@ Contributors
 
 ### v1.0.0 - 06/05/2015
 
-* [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis #111 
+* [Feature - Databases] Add helper to run interactive console for MySQL, PostgreSQL, MongoDB and Redis #111
 * [Feature - Collaborators] Handle collaborators directly from the command line client #113
 * [Feature - Proxy] Add support and documentation about how to use a HTTPS proxy #104 #110
 * [Refactoring - API calls] Completely refactor error management for Scalingo API calls #112
