@@ -101,6 +101,11 @@ COMMANDS:
     logout      Logout from Scalingo
     signup      Create your Scalingo account
 
+  Notifications:
+    notifications           List enabled notifications
+    notifications-add       Enable a notification for your application
+    notifications-remove    Remove an existing notification from your app
+
   Public SSH Keys:
     keys        List your SSH public keys
     keys-add    Add a public SSH key to deploy your apps
