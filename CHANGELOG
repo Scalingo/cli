@@ -1,9 +1,11 @@
 Changelog
 =========
 
-### v1.3.2 - 08/06/2016
-
+### v1.4.0 -
 * [Feature - Notification] Add list, remove and add commands for notifications
+* [Feature] Add `deployments` command to get the a deployments list for an application
+* [Feature] Add `deployment-logs` command to get logs for a specific deployment
+* [Feature] Add `deployment-follow` command to follow the deployment stream for an application
 
 ### v1.3.1 - 02/05/2016
 

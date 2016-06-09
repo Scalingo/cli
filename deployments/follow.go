@@ -35,7 +35,7 @@ func Stream(appName string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	debug.Println("Opening socket to : " + app.Links.DeploymentsStream)
+	debug.Println("Opening socket to: " + app.Links.DeploymentsStream)
 
 	conn, err := c.DeploymentStream(app.Links.DeploymentsStream)
 	if err != nil {
@@ -76,20 +76,20 @@ func Stream(appName string) error {
 					config.C.Logger.Println(err)
 				} else {
 					if oldStatus == "" {
-						fmt.Println("[STATUS] New status : " + statusData.Content)
+						fmt.Println("[STATUS] New status: " + statusData.Content)
 					} else {
-						fmt.Println("[STATUS] New status : " + oldStatus + " → " + statusData.Content)
+						fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
 					}
 					oldStatus = statusData.Content
 				}
 			case "new":
+				oldStatus = ""
 				var newData map[string]*scalingo.Deployment
 				err := json.Unmarshal(event.Data, &newData)
 				if err != nil {
 					config.C.Logger.Println(err)
 				} else {
-					fmt.Println("[NEW] New deploy : " + newData["deployment"].ID + " from " + newData["deployment"].User.Username)
-					oldStatus = ""
+					fmt.Println("[NEW] New deploy: " + newData["deployment"].ID + " from " + newData["deployment"].User.Username)
 				}
 			}
 		}
