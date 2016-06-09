@@ -19,12 +19,13 @@ func List(app string) error {
 
 	} else {
 		t := tablewriter.NewWriter(os.Stdout)
-		t.SetHeader([]string{"ID", "Date", "User", "Status"})
+		t.SetHeader([]string{"ID", "Date", "User", "Git Ref","Status"})
 
 		for _, deployment := range deployments {
 			t.Append([]string{deployment.ID,
 				deployment.CreatedAt.Format("2006/01/02 15:04:05"),
 				deployment.User.Username,
+				deployment.GitRef,
 				deployment.Status,
 			})
 		}

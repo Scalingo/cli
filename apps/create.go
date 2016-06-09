@@ -8,11 +8,19 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Create(appName string, remote string) error {
+func Create(appName string, remote string, buildpack string) error {
 	c := config.ScalingoClient()
 	app, err := c.AppsCreate(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
+	}
+
+	if buildpack != "" {
+		fmt.Println("Installing custom buildpack...")
+		_, _, err := c.VariableSet(app.Name, "BUILDPACK_URL", buildpack)
+		if err != nil {
+			fmt.Println("Failed to set custom buildpack. Please add BUILDPACK_URL="+buildpack+" to your application environment")
+		}
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)

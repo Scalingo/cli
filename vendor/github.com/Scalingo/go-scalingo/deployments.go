@@ -13,14 +13,14 @@ import (
 type Deployment struct {
 	ID        string          `json:"id"`
 	AppID     string          `json:"app_id"`
-	CreatedAt time.Time       `json:"created_at"`
+	CreatedAt *time.Time       `json:"created_at"`
 	Status    string          `json:"status"`
 	GitRef    string          `json:"git_ref"`
 	Image     string          `json:"image"`
 	Registry  string          `json:"registry"`
 	Duration  int             `json:"duration"`
-	User      User            `json:"pusher"`
-	Links     DeploymentLinks `json:"links"`
+	User      *User            `json:"pusher"`
+	Links     *DeploymentLinks `json:"links"`
 }
 
 type DeploymentList struct {

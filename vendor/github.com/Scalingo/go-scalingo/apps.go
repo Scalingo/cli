@@ -61,11 +61,11 @@ type App struct {
 		Billable bool   `json:"billable"`
 	} `json:"owner"`
 	GitUrl         string        `json:"git_url"`
-	LastDeployedAt time.Time     `json:"last_deployed_at"`
+	LastDeployedAt *time.Time     `json:"last_deployed_at"`
 	LastDeployedBy string        `json:"last_deployed_by"`
-	CreatedAt      time.Time     `json:"created_at"`
-	UpdatedAt      time.Time     `json:"update_at"`
-	Links          AppLinks      `json:"links"`
+	CreatedAt      *time.Time     `json:"created_at"`
+	UpdatedAt      *time.Time     `json:"update_at"`
+	Links          *AppLinks      `json:"links"`
 	Domains        []*AppDomains `json:"domains"`
 }
 
