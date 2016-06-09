@@ -6,6 +6,7 @@ Changelog
 * [Feature] Add `deployments` command to get the a deployments list for an application
 * [Feature] Add `deployment-logs` command to get logs for a specific deployment
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application
+* [Feature - Create] --buildpack flag to specify a custom buildpack
 
 ### v1.3.1 - 02/05/2016
 
