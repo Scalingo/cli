@@ -3,7 +3,6 @@ package notifications
 import (
 	"fmt"
 	"strings"
-	"strconv"
 
 	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
@@ -16,8 +15,6 @@ func Destroy(app string, ID string) error {
 		return errgo.New("no app defined")
 	} else if ID == "" {
 		return errgo.New("no ID defined")
-	} else if _, err := strconv.Atoi(ID); err != nil {
-		return errgo.New("ID should be a number")
 	}
 
 	notification, err := checkNotificationExist(app, ID)

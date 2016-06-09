@@ -2,6 +2,7 @@ package notifications
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
@@ -16,10 +17,10 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Type", "URL"})
+	t.SetHeader([]string{"ID", "Type", "URL", "Enabled"})
 
 	for _, resource := range resources {
-		t.Append([]string{resource.ID, resource.Type, resource.WebHookURL})
+		t.Append([]string{resource.ID, resource.Type, resource.WebHookURL, strconv.FormatBool(resource.Active)})
 	}
 	t.Render()
 
