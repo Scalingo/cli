@@ -1,9 +1,6 @@
 package notifications
 
 import (
-	"errors"
-	"regexp"
-
 	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -19,7 +16,7 @@ func Provision(app, webHookURL string) error {
 	c := config.ScalingoClient()
 	params, err := c.NotificationProvision(app, webHookURL)
 	if err != nil {
-		return errors.New("Notification to " + webHookURL + " can't be enabled because you have already an other notification of the same type " + getType(webHookURL) + " enabled!")
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	io.Status("Notifications to", webHookURL, "have been provisionned")
@@ -30,12 +27,4 @@ func Provision(app, webHookURL string) error {
 		io.Info("Message from notification provider:", params.Message)
 	}
 	return nil
-}
-
-func getType(webHookURL string) string {
-	if regexp.MustCompile("hooks.slack.com").FindString(webHookURL) == "hooks.slack.com" {
-		return "slack"
-	} else {
-		return "http"
-	}
 }
