@@ -3,10 +3,10 @@ package session
 import (
 	"fmt"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	netssh "github.com/Scalingo/cli/net/ssh"
+	"gopkg.in/errgo.v1"
 )
 
 type LoginOpts struct {
@@ -36,11 +36,15 @@ func Login(opts LoginOpts) error {
 }
 
 func loginWithUserAndPassword() error {
-	user, err := config.Authenticator.LoadAuth()
+	if config.AuthenticatedUser != nil {
+		fmt.Printf("You are already logged as %s (%s)!\n", config.AuthenticatedUser.Email, config.AuthenticatedUser.Username)
+		return nil
+	}
+
+	_, err := config.Authenticator.LoadAuth()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	fmt.Printf("You are already logged as %s (%s)!\n", user.Email, user.Username)
 	return nil
 }
 
