@@ -3,17 +3,24 @@ package scalingo
 import "gopkg.in/errgo.v1"
 
 type Notification struct {
-	ID              string `json:"notif_id"`
+	ID              string `json:"id"`
 	Type            string `json:"type"`
 	WebHookURL      string `json:"webhook_url"`
+	Active          bool   `json:"active"`
+}
+
+type NotificationAdd struct {
+	WebHookURL      string `json:"webhook_url"`
+}
+
+type NotificationPost struct {
+	Notification     NotificationAdd `json:"notification"`
+	Message          string          `json:"message,omitempty"`
+	Variables        []string        `json:"variables,omitempty"`
 }
 
 type NotificationsRes struct {
 	Notifications []*Notification `json:"notifications"`
-}
-
-type NotificationPost struct {
-	WebHookURL       string       `json:"webhook_url"`
 }
 
 type NotificationRes struct {
@@ -33,7 +40,7 @@ func (c *Client) NotificationsList(app string) ([]*Notification, error) {
 
 func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
-	err := c.subresourceAdd(app, "notifications", NotificationPost{WebHookURL: webHookURL}, &notificationRes)
+	err := c.subresourceAdd(app, "notifications", NotificationPost{Notification: NotificationAdd{WebHookURL: webHookURL}}, &notificationRes)
 	if err != nil {
 		return NotificationRes{}, errgo.Mask(err, errgo.Any)
 	}
