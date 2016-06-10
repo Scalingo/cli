@@ -39,7 +39,7 @@ func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes,
 
 func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
-	err := c.subresourceUpdate(app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
+	err := c.subresourceUpdate(app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL, Active: true}}, &notificationRes)
 	if err != nil {
 		return NotificationRes{}, errgo.Mask(err, errgo.Any)
 	}
