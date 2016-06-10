@@ -9,24 +9,14 @@ type Notification struct {
 	Active          bool   `json:"active"`
 }
 
-type NotificationAdd struct {
-	WebHookURL      string `json:"webhook_url"`
-}
-
-type NotificationPost struct {
-	Notification     NotificationAdd `json:"notification"`
-	Message          string          `json:"message,omitempty"`
-	Variables        []string        `json:"variables,omitempty"`
-}
-
-type NotificationsRes struct {
-	Notifications []*Notification `json:"notifications"`
-}
-
 type NotificationRes struct {
 	Notification     Notification `json:"notification"`
 	Message          string       `json:"message,omitempty"`
 	Variables        []string     `json:"variables,omitempty"`
+}
+
+type NotificationsRes struct {
+	Notifications []*Notification `json:"notifications"`
 }
 
 func (c *Client) NotificationsList(app string) ([]*Notification, error) {
@@ -40,13 +30,22 @@ func (c *Client) NotificationsList(app string) ([]*Notification, error) {
 
 func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
-	err := c.subresourceAdd(app, "notifications", NotificationPost{Notification: NotificationAdd{WebHookURL: webHookURL}}, &notificationRes)
+	err := c.subresourceAdd(app, "notifications", NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
 	if err != nil {
 		return NotificationRes{}, errgo.Mask(err, errgo.Any)
 	}
 	return notificationRes, nil
 }
 
-func (c *Client) NotificationDestroy(app, URL string) error {
-	return c.subresourceDelete(app, "notifications", URL)
+func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes, error) {
+	var notificationRes NotificationRes
+	err := c.subresourceUpdate(app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
+	if err != nil {
+		return NotificationRes{}, errgo.Mask(err, errgo.Any)
+	}
+	return notificationRes, nil
+}
+
+func (c *Client) NotificationDestroy(app, ID string) error {
+	return c.subresourceDelete(app, "notifications", ID)
 }

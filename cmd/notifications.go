@@ -62,6 +62,32 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "notifications-add")
 		},
 	}
+	NotificationsUpdateCommand = cli.Command{
+		Name:     "notifications-update",
+		Category: "Notifications",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Update the url of a notification",
+		Description: ` Update the url of a notification:
+    $ scalingo -a myapp notifications-update <ID> <new-url>
+
+		# See also 'notifications' and 'notifications-add'
+`,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			var err error
+			if len(c.Args()) == 2 {
+				err = notifications.Update(currentApp, c.Args()[0], c.Args()[1])
+			} else {
+				cli.ShowCommandHelp(c, "notifications-update")
+			}
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "notifications-update")
+		},
+	}
 	NotificationsRemoveCommand = cli.Command{
 		Name:     "notifications-remove",
 		Category: "Notifications",
