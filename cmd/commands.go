@@ -52,6 +52,7 @@ var (
 		// Notifications
 		NotificationsListCommand,
 		NotificationsAddCommand,
+		NotificationsUpdateCommand,
 		NotificationsRemoveCommand,
 
 		// DB Access
