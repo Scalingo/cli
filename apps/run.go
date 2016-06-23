@@ -20,8 +20,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
@@ -29,12 +27,15 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 type RunOpts struct {
 	App            string
 	DisplayCmd     string
 	Silent         bool
+	Size           string
 	Type           string
 	Cmd            []string
 	CmdEnv         []string
@@ -74,6 +75,10 @@ func Run(opts RunOpts) error {
 		}
 	}
 
+	if opts.Size == "" {
+		opts.Size = "S"
+	}
+
 	if opts.CmdEnv == nil {
 		opts.CmdEnv = []string{}
 	}
@@ -100,7 +105,7 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := c.Run(opts.App, opts.Cmd, env)
+	res, err := c.Run(opts.App, opts.Cmd, env, opts.Size)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
