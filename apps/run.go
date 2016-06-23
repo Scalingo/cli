@@ -76,7 +76,7 @@ func Run(opts RunOpts) error {
 	}
 
 	if opts.Size == "" {
-		opts.Size = "S"
+		opts.Size = "M"
 	}
 
 	if opts.CmdEnv == nil {
