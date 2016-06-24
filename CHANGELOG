@@ -7,7 +7,7 @@ Changelog
 * [Feature] Add `deployment-logs` command to get logs for a specific deployment
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application
 * [Feature - Create] --buildpack flag to specify a custom buildpack
-
+* [Ehancement - Keys] --auto flag to autodetect keys
 ### v1.3.1 - 02/05/2016
 
 * [Bugfix - Auth] Fix authentication configuration for --ssh or --apikey, two attempts were necessary #208 #209
