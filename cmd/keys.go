@@ -1,9 +1,13 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
+	"fmt"
+	"os"
+
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -14,7 +18,7 @@ var (
 		Description: `List all the public SSH keys associated with your account:
 
     $ scalingo keys
-		
+
     # See also commands 'keys-add' and 'keys-remove'`,
 
 		Action: func(c *cli.Context) {
@@ -32,18 +36,45 @@ var (
 		Name:     "keys-add",
 		Category: "Public SSH Keys",
 		Usage:    "Add a public SSH key to deploy your apps",
+		Flags: []cli.Flag{
+			cli.BoolFlag{Name: "auto, a", Usage: "Autodetect key configuration"},
+		},
 		Description: `Add a public SSH key:
 
     $ scalingo keys-add keyname /path/to/key
 
+		$ scalingo keys-add --auto
+
     # See also commands 'keys' and 'keys-remove'`,
 
 		Action: func(c *cli.Context) {
-			if len(c.Args()) != 2 {
+			if len(c.Args()) != 2 && !c.Bool("auto") {
 				cli.ShowCommandHelp(c, "keys-add")
 				return
 			}
-			err := keys.Add(c.Args()[0], c.Args()[1])
+			var keyname string
+			var path string
+			if c.Bool("auto") {
+				var err error
+				keyname, err = os.Hostname()
+				if err != nil {
+					errorQuit(err)
+				}
+				path, err = homedir.Expand("~/.ssh/id_rsa.pub")
+				if err != nil {
+					errorQuit(err)
+				}
+
+				fmt.Println("Adding key :")
+				fmt.Println(" - Name: " + keyname)
+				fmt.Println(" - Path: " + path)
+
+			} else {
+				keyname = c.Args()[0]
+				path = c.Args()[1]
+			}
+
+			err := keys.Add(keyname, path)
 			if err != nil {
 				errorQuit(err)
 			}
