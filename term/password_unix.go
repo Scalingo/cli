@@ -3,9 +3,19 @@
 package term
 
 import (
-	"code.google.com/p/gopass"
+	"fmt"
+
+	"gopkg.in/errgo.v1"
+
+	"github.com/howeyc/gopass"
 )
 
 func Password(prompt string) (string, error) {
-	return gopass.GetPass(prompt)
+	fmt.Printf(prompt)
+	res, err := gopass.GetPasswd()
+	if err != nil {
+		return "", errgo.Mask(err)
+	} else {
+		return string(res), nil
+	}
 }
