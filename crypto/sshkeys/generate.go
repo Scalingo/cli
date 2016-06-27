@@ -46,6 +46,9 @@ func GenerateKey() ([]byte, []byte, error) {
 	}
 
 	publicKeyBuffer.Write(ssh.MarshalAuthorizedKey(publicKeySSH))
-
+	err = AddKeyToAgent(privateKey)
+	if err != nil {
+		return nil, nil, errgo.Mask(err)
+	}
 	return publicKeyBuffer.Bytes(), privateKeyBuffer.Bytes(), nil
 }
