@@ -1,13 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
 	"github.com/Scalingo/codegangsta-cli"
-	"github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -55,28 +51,17 @@ var (
 			var keyname string
 			var path string
 			if c.Bool("auto") {
-				var err error
-				keyname, err = os.Hostname()
+				err := keys.AddAuto()
 				if err != nil {
 					errorQuit(err)
 				}
-				path, err = homedir.Expand("~/.ssh/id_rsa.pub")
-				if err != nil {
-					errorQuit(err)
-				}
-
-				fmt.Println("Adding key :")
-				fmt.Println(" - Name: " + keyname)
-				fmt.Println(" - Path: " + path)
-
 			} else {
 				keyname = c.Args()[0]
 				path = c.Args()[1]
-			}
-
-			err := keys.Add(keyname, path)
-			if err != nil {
-				errorQuit(err)
+				err := keys.Add(keyname, path)
+				if err != nil {
+					errorQuit(err)
+				}
 			}
 		},
 		BashComplete: func(c *cli.Context) {
