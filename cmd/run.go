@@ -16,11 +16,11 @@ var (
 		Category:  "App Management",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "size, z", Value: "", Usage: "Size of the container"},
+			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
 			cli.StringFlag{Name: "type, t", Value: "", Usage: "Procfile Type"},
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables"},
 			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload"},
-			cli.BoolFlag{Name: "silent, s", Usage: "Do not output anything on stderr"},
+			cli.BoolFlag{Name: "silent", Usage: "Do not output anything on stderr"},
 		},
 		Description: `Run command in current app context, a one-off container will be
    start with your application environment loaded.
@@ -71,11 +71,11 @@ var (
 			opts := apps.RunOpts{
 				App:    currentApp,
 				Cmd:    c.Args(),
-				Size:   c.String("z"),
+				Size:   c.String("s"),
 				Type:   c.String("t"),
 				CmdEnv: c.StringSlice("e"),
 				Files:  c.StringSlice("f"),
-				Silent: c.Bool("s"),
+				Silent: c.Bool("silent"),
 			}
 			if (len(c.Args()) == 0 && c.String("t") == "") || (len(c.Args()) > 0 && c.String("t") != "") {
 				cli.ShowCommandHelp(c, "run")
