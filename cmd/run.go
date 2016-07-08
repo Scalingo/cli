@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -16,6 +16,7 @@ var (
 		Category:  "App Management",
 		Usage:     "Run any command for your app",
 		Flags: []cli.Flag{appFlag,
+			cli.StringFlag{Name: "size, z", Value: "", Usage: "Size of the container"},
 			cli.StringFlag{Name: "type, t", Value: "", Usage: "Procfile Type"},
 			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables"},
 			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload"},
@@ -26,11 +27,17 @@ var (
 
    Examples
      scalingo --app rails-app run bundle exec rails console
-     scalingo --app synfony-app run php app/console cache:clear
+     scalingo --app appname run --size XL bash
+     scalingo --app symfony-app run php app/console cache:clear
      scalingo --app test-app run --silent custom/command > localoutput
 
    The --silent flag makes that the only output of the command will be the output
    of the one-off container. There won't be any noise from the command tool itself.
+
+   The --size flag makes it easy to specify the size of the container you want
+   to run. Each container size has different price and performance. You can read
+   more about container sizes here:
+   http://doc.scalingo.com/internals/container-sizes.html
 
    Thank to the --type flag, you can build shortcuts to commands of your Procfile.
    If your procfile is:
@@ -64,6 +71,7 @@ var (
 			opts := apps.RunOpts{
 				App:    currentApp,
 				Cmd:    c.Args(),
+				Size:   c.String("z"),
 				Type:   c.String("t"),
 				CmdEnv: c.StringSlice("e"),
 				Files:  c.StringSlice("f"),
