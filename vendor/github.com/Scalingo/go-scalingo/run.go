@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (c *Client) Run(app string, command []string, env map[string]string) (*http.Response, error) {
+func (c *Client) Run(app string, command []string, env map[string]string, size string) (*http.Response, error) {
 	req := &APIRequest{
 		Client:   c,
 		Method:   "POST",
@@ -13,6 +13,7 @@ func (c *Client) Run(app string, command []string, env map[string]string) (*http
 		Params: map[string]interface{}{
 			"command": strings.Join(command, " "),
 			"env":     env,
+			"size":    size,
 		},
 	}
 	return req.Do()
