@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -21,7 +21,7 @@ var (
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
-				cli.ShowCommandHelp(c, "redis-console")
+				cli.ShowCommandHelp(c, "mysql-console")
 			} else if err := db.MySQLConsole(currentApp); err != nil {
 				errorQuit(err)
 			}
