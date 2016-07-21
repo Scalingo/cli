@@ -4,13 +4,17 @@ import (
 	"fmt"
 	"net"
 
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 	"github.com/Scalingo/cli/apps"
+	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
-func MySQLConsole(app string) error {
+type MySQLConsoleOpts struct {
+	App  string
+	Size string
+}
 
-	mySQLURL, user, password, err := dbURL(app, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
+func MySQLConsole(opts MySQLConsoleOpts) error {
+	mySQLURL, user, password, err := dbURL(opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -20,13 +24,14 @@ func MySQLConsole(app string) error {
 		return errgo.Newf("%v has an invalid host", mySQLURL)
 	}
 
-	opts := apps.RunOpts{
+	runOpts := apps.RunOpts{
 		DisplayCmd: "mysql-console " + user,
-		App:        app,
+		App:        opts.App,
 		Cmd:        []string{"mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
+		Size:       opts.Size,
 	}
 
-	err = apps.Run(opts)
+	err = apps.Run(runOpts)
 	if err != nil {
 		return errgo.Newf("Fail to run MySQL console: %v", err)
 	}

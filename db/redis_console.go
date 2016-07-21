@@ -6,12 +6,17 @@ import (
 	"net"
 	"strings"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/apps"
+	"gopkg.in/errgo.v1"
 )
 
-func RedisConsole(app string) error {
-	redisURL, _, password, err := dbURL(app, "SCALINGO_REDIS", []string{"redis://"})
+type RedisConsoleOpts struct {
+	App  string
+	Size string
+}
+
+func RedisConsole(opts RedisConsoleOpts) error {
+	redisURL, _, password, err := dbURL(opts.App, "SCALINGO_REDIS", []string{"redis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -21,14 +26,15 @@ func RedisConsole(app string) error {
 		return errgo.Newf("%v has an invalid host", redisURL)
 	}
 
-	opts := apps.RunOpts{
+	runOpts := apps.RunOpts{
 		DisplayCmd:    "redis-console " + strings.Split(host, ".")[0],
-		App:           app,
+		App:           opts.App,
 		Cmd:           []string{"redis-cli", "-h", host, "-p", port, "-a", password},
+		Size:          opts.Size,
 		StdinCopyFunc: redisStdinCopy,
 	}
 
-	err = apps.Run(opts)
+	err = apps.Run(runOpts)
 	if err != nil {
 		return errgo.Newf("Fail to run redis console: %v", err)
 	}

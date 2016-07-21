@@ -3,13 +3,17 @@ package db
 import (
 	"net"
 
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 	"github.com/Scalingo/cli/apps"
+	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
-func PgSQLConsole(app string) error {
+type PgSQLConsoleOpts struct {
+	App  string
+	Size string
+}
 
-	postgreSQLURL, user, password, err := dbURL(app, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
+func PgSQLConsole(opts PgSQLConsoleOpts) error {
+	postgreSQLURL, user, password, err := dbURL(opts.App, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -19,10 +23,11 @@ func PgSQLConsole(app string) error {
 		return errgo.Newf("%v has an invalid host", postgreSQLURL)
 	}
 
-	opts := apps.RunOpts{
+	runOpts := apps.RunOpts{
 		DisplayCmd: "pgsql-console " + user,
-		App:        app,
+		App:        opts.App,
 		Cmd:        []string{"psql"},
+		Size:       opts.Size,
 		CmdEnv: []string{
 			"PGHOST=" + host,
 			"PGPORT=" + port,
@@ -32,7 +37,7 @@ func PgSQLConsole(app string) error {
 		},
 	}
 
-	err = apps.Run(opts)
+	err = apps.Run(runOpts)
 	if err != nil {
 		return errgo.Newf("Fail to run PostgreSQL console: %v", err)
 	}
