@@ -3,16 +3,14 @@ package scalingo
 import "gopkg.in/errgo.v1"
 
 type Notification struct {
-	ID              string `json:"id"`
-	Type            string `json:"type"`
-	WebHookURL      string `json:"webhook_url"`
-	Active          bool   `json:"active"`
+	ID         string `json:"id"`
+	Type       string `json:"type"`
+	WebHookURL string `json:"webhook_url"`
+	Active     bool   `json:"active"`
 }
 
 type NotificationRes struct {
-	Notification     Notification `json:"notification"`
-	Message          string       `json:"message,omitempty"`
-	Variables        []string     `json:"variables,omitempty"`
+	Notification Notification `json:"notification"`
 }
 
 type NotificationsRes struct {

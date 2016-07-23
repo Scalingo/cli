@@ -1,9 +1,9 @@
 package notifications
 
 import (
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 func Provision(app, webHookURL string) error {
@@ -19,12 +19,6 @@ func Provision(app, webHookURL string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	io.Status("Notifications to", webHookURL, "have been provisionned")
-	if len(params.Variables) > 0 {
-		io.Info("Modified variables:", params.Variables)
-	}
-	if len(params.Message) > 0 {
-		io.Info("Message from notification provider:", params.Message)
-	}
+	io.Status("Notifications to", webHookURL, "have been created.")
 	return nil
 }
