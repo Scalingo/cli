@@ -14,7 +14,7 @@ func Provision(app, webHookURL string) error {
 	}
 
 	c := config.ScalingoClient()
-	params, err := c.NotificationProvision(app, webHookURL)
+	_, err := c.NotificationProvision(app, webHookURL)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
