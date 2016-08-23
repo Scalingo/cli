@@ -1,20 +1,47 @@
 package scalingo
 
 import (
-	"net/http"
 	"strings"
+
+	"gopkg.in/errgo.v1"
 )
 
-func (c *Client) Run(app string, command []string, env map[string]string, size string) (*http.Response, error) {
+type RunOpts struct {
+	App      string
+	Command  []string
+	Env      map[string]string
+	Size     string
+	Detached bool
+}
+
+type RunRes struct {
+	Container *Container `json:"container"`
+	AttachURL string     `json:"attach_url"`
+}
+
+func (c *Client) Run(opts RunOpts) (*RunRes, error) {
 	req := &APIRequest{
 		Client:   c,
 		Method:   "POST",
-		Endpoint: "/apps/" + app + "/run",
+		Endpoint: "/apps/" + opts.App + "/run",
 		Params: map[string]interface{}{
-			"command": strings.Join(command, " "),
-			"env":     env,
-			"size":    size,
+			"command":  strings.Join(opts.Command, " "),
+			"env":      opts.Env,
+			"size":     opts.Size,
+			"detached": opts.Detached,
 		},
 	}
-	return req.Do()
+	res, err := req.Do()
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+	defer res.Body.Close()
+
+	var runRes RunRes
+	err = ParseJSON(res, &runRes)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	return &runRes, nil
 }

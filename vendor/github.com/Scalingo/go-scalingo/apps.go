@@ -7,7 +7,7 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type Container struct {
+type ContainerType struct {
 	Name    string `json:"name"`
 	Amount  int    `json:"amount"`
 	Command string `json:"command"`
@@ -30,11 +30,16 @@ type AppStatsRes struct {
 }
 
 type AppsScaleParams struct {
-	Containers []Container `json:"containers"`
+	Containers []ContainerType `json:"containers"`
 }
 
 type AppsPsRes struct {
-	Containers []Container `json:"containers"`
+	Containers []ContainerType `json:"containers"`
+}
+
+type AppsCreateOpts struct {
+	Name      string `json:"name"`
+	ParentApp string `json:"parent_id"`
 }
 
 type AppsRestartParams struct {
@@ -61,11 +66,11 @@ type App struct {
 		Billable bool   `json:"billable"`
 	} `json:"owner"`
 	GitUrl         string        `json:"git_url"`
-	LastDeployedAt *time.Time     `json:"last_deployed_at"`
+	LastDeployedAt *time.Time    `json:"last_deployed_at"`
 	LastDeployedBy string        `json:"last_deployed_by"`
-	CreatedAt      *time.Time     `json:"created_at"`
-	UpdatedAt      *time.Time     `json:"update_at"`
-	Links          *AppLinks      `json:"links"`
+	CreatedAt      *time.Time    `json:"created_at"`
+	UpdatedAt      *time.Time    `json:"update_at"`
+	Links          *AppLinks     `json:"links"`
 	Domains        []*AppDomains `json:"domains"`
 }
 
@@ -140,17 +145,13 @@ func (c *Client) AppsRestart(app string, scope *AppsRestartParams) (*http.Respon
 	return req.Do()
 }
 
-func (c *Client) AppsCreate(app string) (*App, error) {
+func (c *Client) AppsCreate(opts AppsCreateOpts) (*App, error) {
 	req := &APIRequest{
 		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps",
 		Expected: Statuses{201},
-		Params: map[string]interface{}{
-			"app": map[string]interface{}{
-				"name": app,
-			},
-		},
+		Params:   map[string]interface{}{"app": opts},
 	}
 	res, err := req.Do()
 	if err != nil {
@@ -186,7 +187,7 @@ func (c *Client) AppsStats(app string) (*AppStatsRes, error) {
 	return &stats, nil
 }
 
-func (c *Client) AppsPs(app string) ([]Container, error) {
+func (c *Client) AppsPs(app string) ([]ContainerType, error) {
 	req := &APIRequest{
 		Client:   c,
 		Endpoint: "/apps/" + app + "/containers",
