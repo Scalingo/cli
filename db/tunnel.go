@@ -12,13 +12,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Scalingo/go-scalingo"
-	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
+	"github.com/Scalingo/go-scalingo"
+	"golang.org/x/crypto/ssh"
+	"gopkg.in/errgo.v1"
 )
 
 var (
@@ -150,7 +150,9 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 	fmt.Printf("Connect to %s [%v]\n", dbUrl.Host, connID)
 	conn, err := sshClient.Dial("tcp", dbUrl.Host)
 	if err != nil {
-		errs <- err
+		if err != stdio.EOF {
+			errs <- err
+		}
 		return nil
 	}
 	debug.Println("Connected to", dbUrl.Host, connID)

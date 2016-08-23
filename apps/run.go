@@ -35,6 +35,7 @@ type RunOpts struct {
 	App            string
 	DisplayCmd     string
 	Silent         bool
+	Detached       bool
 	Size           string
 	Type           string
 	Cmd            []string
@@ -105,24 +106,27 @@ func Run(opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := c.Run(opts.App, opts.Cmd, env, opts.Size)
+	runRes, err := c.Run(scalingo.RunOpts{
+		App:      opts.App,
+		Command:  opts.Cmd,
+		Env:      env,
+		Size:     opts.Size,
+		Detached: opts.Detached,
+	})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	runStruct := make(map[string]interface{})
-	scalingo.ParseJSON(res, &runStruct)
-	debug.Printf("%+v\n", runStruct)
+	debug.Printf("%+v\n", runRes)
 
-	if res.StatusCode == http.StatusNotFound {
-		return errgo.Newf("application %s not found", opts.App)
+	if opts.Detached {
+		fmt.Printf(
+			"Starting one-off '%s' for app '%v'.\nRun `scalingo -a %v logs -F %v` to get the output\n",
+			io.Bold(strings.Join(opts.Cmd, " ")), io.Bold(opts.App), opts.App, runRes.Container.FullType(),
+		)
+		return nil
 	}
 
-	var ok bool
-	ctx.attachURL, ok = runStruct["attach_url"].(string)
-	if !ok {
-		return errgo.New("unexpected answer from server")
-	}
-
+	ctx.attachURL = runRes.AttachURL
 	debug.Println("Run Service URL is", ctx.attachURL)
 
 	if len(opts.Files) > 0 {
@@ -132,9 +136,10 @@ func Run(opts RunOpts) error {
 		}
 	}
 
-	fmt.Fprintf(ctx.waitingTextOutputWriter, "-----> Connecting to container [%v-%v]...  ",
-		runStruct["container"].(map[string]interface{})["type"],
-		runStruct["container"].(map[string]interface{})["type_index"],
+	fmt.Fprintf(
+		ctx.waitingTextOutputWriter,
+		"-----> Connecting to container [%v]...  ",
+		runRes.Container.FullType(),
 	)
 
 	attachSpinner := io.NewSpinner(ctx.waitingTextOutputWriter)

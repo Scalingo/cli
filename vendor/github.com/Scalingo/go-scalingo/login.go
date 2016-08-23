@@ -1,10 +1,6 @@
 package scalingo
 
-import (
-	"encoding/json"
-
-	"gopkg.in/errgo.v1"
-)
+import "gopkg.in/errgo.v1"
 
 type LoginError struct {
 	Success bool   `json:"success"`
@@ -39,12 +35,6 @@ func (c *Client) Login(email, password string) (*LoginResponse, error) {
 		return nil, errgo.Mask(err)
 	}
 	defer res.Body.Close()
-
-	if res.StatusCode == 401 {
-		var resErr map[string]string
-		json.NewDecoder(res.Body).Decode(&resErr)
-		return nil, errgo.New(resErr["message"])
-	}
 
 	var loginRes LoginResponse
 	err = ParseJSON(res, &loginRes)

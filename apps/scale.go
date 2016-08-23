@@ -6,21 +6,21 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 type ScaleRes struct {
-	Containers []scalingo.Container `json:"containers"`
+	Containers []scalingo.ContainerType `json:"containers"`
 }
 
 func Scale(app string, sync bool, types []string) error {
 	var (
 		size        string
-		containers  []scalingo.Container
+		containers  []scalingo.ContainerType
 		modificator byte
 		err         error
 	)
@@ -58,7 +58,7 @@ func Scale(app string, sync bool, types []string) error {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
 
-		newContainerConfig := scalingo.Container{Name: typeName, Size: size}
+		newContainerConfig := scalingo.ContainerType{Name: typeName, Size: size}
 		if modificator != 0 {
 			for _, container := range containers {
 				if container.Name == typeName {

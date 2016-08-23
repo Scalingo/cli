@@ -3,14 +3,15 @@ package apps
 import (
 	"fmt"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 func Create(appName string, remote string, buildpack string) error {
 	c := config.ScalingoClient()
-	app, err := c.AppsCreate(appName)
+	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -19,7 +20,7 @@ func Create(appName string, remote string, buildpack string) error {
 		fmt.Println("Installing custom buildpack...")
 		_, _, err := c.VariableSet(app.Name, "BUILDPACK_URL", buildpack)
 		if err != nil {
-			fmt.Println("Failed to set custom buildpack. Please add BUILDPACK_URL="+buildpack+" to your application environment")
+			fmt.Println("Failed to set custom buildpack. Please add BUILDPACK_URL=" + buildpack + " to your application environment")
 		}
 	}
 
