@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Scalingo/go-scalingo"
-	"golang.org/x/net/websocket"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
+	"golang.org/x/net/websocket"
+	"gopkg.in/errgo.v1"
 )
 
 type WSEvent struct {

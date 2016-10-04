@@ -7,11 +7,12 @@ import (
 )
 
 type RunOpts struct {
-	App      string
-	Command  []string
-	Env      map[string]string
-	Size     string
-	Detached bool
+	App        string
+	Command    []string
+	Env        map[string]string
+	Size       string
+	Detached   bool
+	HasUploads bool
 }
 
 type RunRes struct {
@@ -25,10 +26,11 @@ func (c *Client) Run(opts RunOpts) (*RunRes, error) {
 		Method:   "POST",
 		Endpoint: "/apps/" + opts.App + "/run",
 		Params: map[string]interface{}{
-			"command":  strings.Join(opts.Command, " "),
-			"env":      opts.Env,
-			"size":     opts.Size,
-			"detached": opts.Detached,
+			"command":     strings.Join(opts.Command, " "),
+			"env":         opts.Env,
+			"size":        opts.Size,
+			"detached":    opts.Detached,
+			"has_uploads": opts.HasUploads,
 		},
 	}
 	res, err := req.Do()

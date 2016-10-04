@@ -107,11 +107,12 @@ func Run(opts RunOpts) error {
 	}
 
 	runRes, err := c.Run(scalingo.RunOpts{
-		App:      opts.App,
-		Command:  opts.Cmd,
-		Env:      env,
-		Size:     opts.Size,
-		Detached: opts.Detached,
+		App:       opts.App,
+		Command:   opts.Cmd,
+		Env:       env,
+		Size:      opts.Size,
+		Detached:  opts.Detached,
+		HasUpload: len(opts.Files) == 0,
 	})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
