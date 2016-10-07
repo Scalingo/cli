@@ -50,6 +50,10 @@
 			"Rev": "66487b23f2880ba32e185121d2cd51a338ea069a"
 		},
 		{
+			"ImportPath": "github.com/mitchellh/go-homedir",
+			"Rev": "756f7b183b7ab78acdbbee5c7f392838ed459dda"
+		},
+		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
 		},
