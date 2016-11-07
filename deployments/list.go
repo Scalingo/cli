@@ -3,9 +3,9 @@ package deployments
 import (
 	"os"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func List(app string) error {
@@ -19,14 +19,14 @@ func List(app string) error {
 
 	} else {
 		t := tablewriter.NewWriter(os.Stdout)
-		t.SetHeader([]string{"ID", "Date", "User", "Git Ref","Status"})
+		t.SetHeader([]string{"ID", "Date", "User", "Git Ref", "Status"})
 
 		for _, deployment := range deployments {
 			t.Append([]string{deployment.ID,
 				deployment.CreatedAt.Format("2006/01/02 15:04:05"),
 				deployment.User.Username,
 				deployment.GitRef,
-				deployment.Status,
+				string(deployment.Status),
 			})
 		}
 		t.Render()

@@ -10,17 +10,36 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+type DeploymentStatus string
+
+const (
+	StatusSuccess      DeploymentStatus = "success"
+	StatusBuilding                      = "building"
+	StatusStarting                      = "starting"
+	StatusPushing                       = "pushing"
+	StatusAborted                       = "aborted"
+	StatusBuildError                    = "build-error"
+	StatusCrashedError                  = "crashed-error"
+	StatusTimeoutError                  = "timeout-error"
+	StatusHookError                     = "hook-error"
+)
+
 type Deployment struct {
-	ID        string          `json:"id"`
-	AppID     string          `json:"app_id"`
-	CreatedAt *time.Time       `json:"created_at"`
-	Status    string          `json:"status"`
-	GitRef    string          `json:"git_ref"`
-	Image     string          `json:"image"`
-	Registry  string          `json:"registry"`
-	Duration  int             `json:"duration"`
-	User      *User            `json:"pusher"`
-	Links     *DeploymentLinks `json:"links"`
+	ID             string           `json:"id"`
+	AppID          string           `json:"app_id"`
+	CreatedAt      *time.Time       `json:"created_at"`
+	Status         DeploymentStatus `json:"status"`
+	GitRef         string           `json:"git_ref"`
+	Image          string           `json:"image"`
+	Registry       string           `json:"registry"`
+	Duration       int              `json:"duration"`
+	PostdeployHook string           `json:"postdeploy_hook"`
+	User           *User            `json:"pusher"`
+	Links          *DeploymentLinks `json:"links"`
+}
+
+func (d *Deployment) IsFinished() bool {
+	return d.Status != StatusBuilding && d.Status != StatusStarting && d.Status != StatusPushing
 }
 
 type DeploymentList struct {

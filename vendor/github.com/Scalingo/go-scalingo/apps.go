@@ -57,7 +57,7 @@ type AppDomains struct {
 }
 
 type App struct {
-	Id    string `json:"_id"`
+	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Owner struct {
 		ID       string `json:"id"`
