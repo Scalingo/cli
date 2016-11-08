@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 type appsCache struct {
@@ -19,7 +19,7 @@ type appsCache struct {
 
 var (
 	appsCacheFile     = filepath.Join(config.C.ConfigDir, ".apps-cache")
-	appsCacheDuration = 10.0
+	appsCacheDuration = 30.0
 	errExpiredCache   = errgo.New("apps has expired")
 )
 
