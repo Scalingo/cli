@@ -78,8 +78,9 @@ func dumpLogs(logsURL string, n int, filter string) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == 404 {
-		io.Error("There is not log for this application.")
+	if res.StatusCode == 404 || res.StatusCode == 204 {
+		io.Error("There is not log for this application")
+		io.Info("Ensure your application is writing to the standard output")
 		return nil
 	}
 
