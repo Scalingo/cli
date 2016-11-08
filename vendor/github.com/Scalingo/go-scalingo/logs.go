@@ -23,7 +23,7 @@ func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, err
 	req := &APIRequest{
 		Client:   c,
 		NoAuth:   true,
-		Expected: Statuses{200, 404},
+		Expected: Statuses{200, 204, 404},
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]interface{}{
