@@ -70,6 +70,9 @@ func loginWithSsh(identity string) error {
 	debug.Println("Login through SSH, identity:", identity)
 	client, _, err := netssh.Connect(identity)
 	if err != nil {
+		if err == netssh.ErrNoAuthSucceed {
+			return errgo.Notef(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
+		}
 		return errgo.Notef(err, "fail to connect to SSH server")
 	}
 	channel, reqs, err := client.OpenChannel("session", []byte{})
