@@ -8,6 +8,7 @@ Changelog
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application
 * [Feature - Create] --buildpack flag to specify a custom buildpack
 * [Fix] Fix error handling when an addon fails to get provisioned #252
+* [Fix] Fix error display when an application doesn't have any log available #249
 
 ### v1.3.1 - 02/05/2016
 
