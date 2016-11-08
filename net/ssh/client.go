@@ -3,11 +3,15 @@ package ssh
 import (
 	stdio "io"
 
-	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/debug"
+	"golang.org/x/crypto/ssh"
+	"gopkg.in/errgo.v1"
+)
+
+var (
+	ErrNoAuthSucceed = errgo.Newf("No authentication method has succeeded")
 )
 
 func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
@@ -39,7 +43,7 @@ func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
 
 	client, key, err := ConnectToSSHServer(privateKeys)
 	if err != nil {
-		return nil, nil, errgo.Mask(err)
+		return nil, nil, err
 	}
 	debug.Println("SSH connection:", client.LocalAddr(), "Key:", string(key.PublicKey().Marshal()))
 	return client, key, nil
@@ -61,7 +65,7 @@ func ConnectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
 		}
 	}
 	if client == nil {
-		return nil, nil, errgo.Newf("No authentication method has succeeded, please use the flag '-i /path/to/private/key' to specify your private key")
+		return nil, nil, ErrNoAuthSucceed
 	}
 	return client, privateKey, nil
 }

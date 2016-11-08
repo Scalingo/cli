@@ -55,6 +55,9 @@ func Tunnel(opts TunnelOpts) error {
 
 	client, key, err := netssh.Connect(opts.Identity)
 	if err != nil {
+		if err == netssh.ErrNoAuthSucceed {
+			return errgo.Notef(err, "please use the flag '-i /path/to/private/key' to specify your private key")
+		}
 		return errgo.Notef(err, "fail to connect to SSH server")
 	}
 	waitingConnectionM := &sync.Mutex{}
