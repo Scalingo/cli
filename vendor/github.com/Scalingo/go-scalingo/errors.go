@@ -97,6 +97,8 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 		return &RequestFailedError{res.StatusCode, unprocessableError, req}
 	case 500:
 		return &RequestFailedError{res.StatusCode, errgo.New("server internal error - our team has been notified"), req}
+	case 503:
+		return &RequestFailedError{res.StatusCode, fmt.Errorf("upstream provider returned an error, please retry later"), req}
 	default:
 		return &RequestFailedError{res.StatusCode, fmt.Errorf("invalid status from server: %v", res.Status), req}
 	}

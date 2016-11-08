@@ -3,9 +3,9 @@ package addons
 import (
 	"errors"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 func Provision(app, addon, plan string) error {
@@ -25,7 +25,7 @@ func Provision(app, addon, plan string) error {
 	c := config.ScalingoClient()
 	params, err := c.AddonProvision(app, addon, planID)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "Fail to provision addon %v", addon)
 	}
 
 	io.Status("Addon", addon, "has been provisionned")
