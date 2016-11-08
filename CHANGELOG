@@ -3,7 +3,7 @@ Changelog
 
 ### v1.4.0 -
 * [Feature - Notification] Add list, remove and add commands for notifications
-* [Feature] Add `deployments` command to get the a deployments list for an application
+* [Feature] Add `deployments` command to get the a deployments list for an application #222 #234
 * [Feature] Add `deployment-logs` command to get logs for a specific deployment
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application
 * [Feature - Create] --buildpack flag to specify a custom buildpack
