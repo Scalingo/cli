@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -18,6 +18,7 @@ var (
 		Description: `Display metrics of you application running containers
 	Example
 	  'scalingo --app my-app stats'`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {

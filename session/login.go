@@ -41,7 +41,7 @@ func loginWithUserAndPassword() error {
 		return nil
 	}
 
-	_, err := config.Authenticator.LoadAuth()
+	_, err := config.Auth()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

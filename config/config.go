@@ -101,10 +101,9 @@ func init() {
 	}
 
 	AuthenticatedUser, err = Authenticator.LoadAuth()
-	if err != nil {
-		fmt.Println("Fail to authenticate user:", err)
+	if err == nil {
+		C.apiToken = AuthenticatedUser.AuthenticationToken
 	}
-	C.apiToken = AuthenticatedUser.AuthenticationToken
 }
 
 func ScalingoClient() *scalingo.Client {

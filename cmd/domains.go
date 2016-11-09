@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/domains"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -19,6 +19,7 @@ var (
 
     # See also commands 'domains-add' and 'domains-remove'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -51,6 +52,7 @@ var (
 
     # See also commands 'domains' and 'domains-remove'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -88,6 +90,7 @@ var (
 
     # See also commands 'domains' and 'domains-add'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -116,13 +119,14 @@ var (
 			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
 		},
 		Description: `Enable or disable SSL for your custom domains:
-		
+
 		$ scalingo -a myapp domains-ssl example.com --cert <certificate.crt> --key <keyfile.key>
 
 		$ scalingo -a myapp domains-ssl example.com disable
-		
+
 		# See also commands 'domains' and 'domains-add'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

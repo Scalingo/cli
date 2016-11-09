@@ -10,16 +10,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/term"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 type CliAuthenticator struct{}
 
-var Authenticator = &CliAuthenticator{}
+var (
+	Authenticator      = &CliAuthenticator{}
+	ErrUnauthenticated = errgo.New("user unauthenticated")
+)
 
 func Auth() (*scalingo.User, error) {
 	var user *scalingo.User
@@ -45,6 +48,8 @@ func Auth() (*scalingo.User, error) {
 	}
 
 	fmt.Printf("Hello %s, nice to see you!\n\n", user.Username)
+	C.apiToken = user.AuthenticationToken
+	AuthenticatedUser = user
 	err = Authenticator.StoreAuth(user)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -113,10 +118,10 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
 	}
 
 	if user, ok := configPerHost[C.apiHost]; !ok {
-		return Auth()
+		return nil, ErrUnauthenticated
 	} else {
 		if user == nil {
-			return Auth()
+			return nil, ErrUnauthenticated
 		}
 		return user, nil
 	}

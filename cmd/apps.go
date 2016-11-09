@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -12,6 +12,7 @@ var (
 		Category:    "Global",
 		Description: "List your apps and give some details about them",
 		Usage:       "List your apps",
+		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if err := apps.List(); err != nil {
 				errorQuit(err)

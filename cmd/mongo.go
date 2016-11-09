@@ -21,13 +21,14 @@ var (
     scalingo --app myapp mongo-console
     scalingo --app myapp mongo-console --size L
 
-   The --size flag makes it easy to specify the size of the container executing 
-   the MongoDB console. Each container size has different price and performance. 
+   The --size flag makes it easy to specify the size of the container executing
+   the MongoDB console. Each container size has different price and performance.
    You can read more about container sizes here:
    http://doc.scalingo.com/internals/container-sizes.html
 
     # See also 'redis-console' and 'mysql-console'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			opts := db.MongoConsoleOpts{
