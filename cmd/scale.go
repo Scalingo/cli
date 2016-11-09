@@ -20,6 +20,7 @@ var (
      'scalingo --app my-app scale web:1 worker:0'
      'scalingo --app my-app scale web:1:XL'
      'scalingo --app my-app scale web:+1 worker:-1'`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {

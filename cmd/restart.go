@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -21,6 +21,7 @@ var (
 	  scalingo --app my-app restart web
 		## Restart a specific container
 	  scalingo --app my-app restart web-1`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if err := apps.Restart(currentApp, c.Bool("s"), c.Args()); err != nil {

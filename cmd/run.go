@@ -74,6 +74,7 @@ var (
 
    Example
      scalingo run -f mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			opts := apps.RunOpts{

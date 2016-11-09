@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/codegangsta-cli"
 )
 
@@ -16,6 +16,7 @@ var (
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			err := deployments.List(currentApp)
@@ -32,6 +33,7 @@ var (
 		Description: ` Get the logs of an app deployment
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 1 {
@@ -43,7 +45,7 @@ var (
 				cli.ShowCommandHelp(c, "deployment-logs")
 			}
 		},
-		BashComplete: func(c *cli.Context){
+		BashComplete: func(c *cli.Context) {
 			autocomplete.DeploymentsAutoComplete(c)
 		},
 	}
@@ -55,6 +57,7 @@ var (
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
 		`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			err := deployments.Stream(currentApp)

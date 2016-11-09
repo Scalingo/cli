@@ -3,11 +3,11 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -52,6 +52,7 @@ var (
 
    Example
      $ scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var sshIdentity string

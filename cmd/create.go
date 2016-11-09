@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -12,11 +12,12 @@ var (
 		ShortName:   "c",
 		Category:    "Global",
 		Description: "Create a new app:\n   Example:\n     'scalingo create mynewapp'\n     'scalingo create mynewapp --remote \"staging\"'",
-		Flags:       []cli.Flag{
+		Flags: []cli.Flag{
 			cli.StringFlag{Name: "remote", Value: "scalingo", Usage: "Remote to add to your current git repository", EnvVar: ""},
-			cli.StringFlag{Name: "buildpack", Value: "", Usage: "URL to a custom buildpack that Scalingo should use to build your application", EnvVar:""},
+			cli.StringFlag{Name: "buildpack", Value: "", Usage: "URL to a custom buildpack that Scalingo should use to build your application", EnvVar: ""},
 		},
-		Usage:       "Create a new app",
+		Usage:  "Create a new app",
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "create")

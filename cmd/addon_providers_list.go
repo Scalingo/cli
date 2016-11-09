@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/addon_providers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (

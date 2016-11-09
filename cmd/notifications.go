@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
-	"github.com/Scalingo/cli/notifications"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/notifications"
+	"github.com/Scalingo/codegangsta-cli"
 )
-
 
 var (
 	NotificationsListCommand = cli.Command{
@@ -19,6 +18,7 @@ var (
 
 		# See also 'notifications-add' and 'notifications-remove'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -46,6 +46,7 @@ var (
 
 		# See also 'notifications' and 'notifications-remove'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -72,6 +73,7 @@ var (
 
 		# See also 'notifications' and 'notifications-add'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -98,6 +100,7 @@ var (
 
 		# See also 'notifications' and 'notifications-add'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

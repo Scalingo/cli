@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/env"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -19,6 +19,7 @@ var (
 
     # See also commands 'env-set' and 'env-unset'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -48,6 +49,7 @@ var (
 
     # See also commands 'env' and 'env-unset'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -76,6 +78,7 @@ var (
 
     # See also commands 'env' and 'env-set'`,
 
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

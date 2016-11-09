@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/codegangsta-cli"
 )
 
 var (
@@ -14,6 +14,7 @@ var (
 		Flags:       []cli.Flag{appFlag},
 		Usage:       "Destroy an app /!\\",
 		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'\n    'scalingo -a my-app destroy'",
+		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			var currentApp string
 

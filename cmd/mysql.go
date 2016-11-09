@@ -21,13 +21,14 @@ var (
     scalingo --app myapp mysql-console
     scalingo --app myapp mysql-console --size L
 
-   The --size flag makes it easy to specify the size of the container executing 
-   the MySQL console. Each container size has different price and performance. 
+   The --size flag makes it easy to specify the size of the container executing
+   the MySQL console. Each container size has different price and performance.
    You can read more about container sizes here:
    http://doc.scalingo.com/internals/container-sizes.html
 
     # See also 'mongo-console' and 'pgsql-console'
 `,
+		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			opts := db.MySQLConsoleOpts{
