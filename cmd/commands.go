@@ -20,6 +20,10 @@ var (
 		ScaleCommand,
 		RestartCommand,
 
+		// Events
+		UserTimelineCommand,
+		TimelineCommand,
+
 		// Environment
 		EnvCommand,
 		EnvSetCommand,
