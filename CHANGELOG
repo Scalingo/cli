@@ -2,7 +2,9 @@ Changelog
 =========
 
 ### v1.4.0 -
-* [Feature - Notification] Add list, remove and add commands for notifications
+
+* [Feature] Add timeline and user-timeline to display per are of user-global activities #235
+* [Feature] Add list, remove and add commands for notifications
 * [Feature] Add `deployments` command to get the a deployments list for an application #222 #234
 * [Feature] Add `deployment-logs` command to get logs for a specific deployment
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application

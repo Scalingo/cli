@@ -5,12 +5,16 @@ import (
 	"net/http"
 )
 
+type HTTPClient interface {
+	Do(*http.Request) (*http.Response, error)
+}
+
 type Client struct {
 	APIToken   string
 	Endpoint   string
 	TLSConfig  *tls.Config
 	APIVersion string
-	httpClient *http.Client
+	httpClient HTTPClient
 }
 
 type ClientConfig struct {
@@ -40,6 +44,6 @@ func NewClient(cfg ClientConfig) *Client {
 	}
 }
 
-func (c *Client) HTTPClient() *http.Client {
+func (c *Client) HTTPClient() HTTPClient {
 	return c.httpClient
 }
