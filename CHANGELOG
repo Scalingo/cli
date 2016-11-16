@@ -13,8 +13,9 @@ Changelog
 * [Fix] Fix error handling when an addon fails to get provisioned #252
 * [Fix] Fix error display when an application doesn't have any log available #249
 * [Fix] Fix error display when connection to the SSH server fails #242
-* [Fix] Password typing error on windows (ReadConsoleInput error) #237
+* [Fix - Windows] Password typing error on windows (ReadConsoleInput error) #237
 * [Fix] Login command logs twice #258
+* [Fix - MacOS Sierra] Build with go 1.7, fulle compatible with Sierra
 
 ### v1.3.1 - 02/05/2016
 
