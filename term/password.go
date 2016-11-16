@@ -3,15 +3,14 @@ package term
 import (
 	"fmt"
 
-	"golang.org/x/crypto/ssh/terminal"
-	"syscall"
+	"github.com/howeyc/gopass"
 
 	"gopkg.in/errgo.v1"
 )
 
 func Password(prompt string) (string, error) {
 	fmt.Printf(prompt)
-	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	bytePassword, err := gopass.GetPasswd()
 	if err != nil {
 		return "", errgo.Mask(err)
 	} else {

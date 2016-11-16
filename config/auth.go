@@ -189,7 +189,6 @@ func tryAuth() (*scalingo.User, error) {
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-	fmt.Print("\n")
 
 	c := ScalingoUnauthenticatedClient()
 	res, err := c.Login(login, password)
