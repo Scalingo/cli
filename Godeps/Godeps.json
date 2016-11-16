@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
-	"GoVersion": "go1.6",
+	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
@@ -22,6 +22,10 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
+			"Rev": "a76e799d9cbab31b0f4ac4320f36d762ea4c340e"
+		},
+		{
+			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
 			"Rev": "a76e799d9cbab31b0f4ac4320f36d762ea4c340e"
 		},
 		{
@@ -56,6 +60,11 @@
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter/csv2table",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+		},
+		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.7.0-5-ga2d6902",
+			"Rev": "a2d6902c6d2a2f194eb3fb474981ab7867c81505"
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
@@ -98,10 +107,6 @@
 			"ImportPath": "launchpad.net/gocheck",
 			"Comment": "87",
 			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
-		},
-		{
-			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
-			"Rev": "a76e799d9cbab31b0f4ac4320f36d762ea4c340e"
 		}
 	]
 }
