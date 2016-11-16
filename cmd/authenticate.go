@@ -7,8 +7,8 @@ import (
 )
 
 func AuthenticateHook(c *cli.Context) error {
-	if config.AuthenticatedUser == nil {
-		return session.Login(session.LoginOpts{SshIdentity: "ssh-agent"})
+	if config.AuthenticatedUser != nil {
+		return nil
 	}
-	return nil
+	return session.Login(session.LoginOpts{})
 }

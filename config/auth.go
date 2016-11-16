@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -12,9 +11,15 @@ import (
 
 	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/cli/debug"
+	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/pkg/errors"
 	"gopkg.in/errgo.v1"
+)
+
+var (
+	ErrAuthenticationFailed = errors.New("authentication failed")
 )
 
 type CliAuthenticator struct{}
@@ -28,7 +33,6 @@ func Auth() (*scalingo.User, error) {
 	var user *scalingo.User
 	var err error
 
-	fmt.Fprintln(os.Stderr, "You need to be authenticated to use Scalingo client.\nNo account ? → https://scalingo.com")
 	if C.DisableInteractive {
 		err = errors.New("Fail to login (interactive mode disabled)")
 	} else {
@@ -39,23 +43,36 @@ func Auth() (*scalingo.User, error) {
 			} else if errgo.Cause(err) == io.EOF {
 				return nil, errors.New("canceled by user")
 			} else {
-				fmt.Printf("Fail to login (%d/3): %v\n", i+1, err)
+
+				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
 			}
 		}
+	}
+	if err == ErrAuthenticationFailed {
+		return nil, errors.New("Forgot your password? https://my.scalingo.com")
 	}
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	fmt.Printf("Hello %s, nice to see you!\n\n", user.Username)
-	C.apiToken = user.AuthenticationToken
-	AuthenticatedUser = user
-	err = Authenticator.StoreAuth(user)
+	fmt.Print("\n")
+	appio.Statusf("Hello %s, nice to see you!\n\n", user.Username)
+	err = SetCurrentUser(user)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
 	return user, nil
+}
+
+func SetCurrentUser(user *scalingo.User) error {
+	C.apiToken = user.AuthenticationToken
+	AuthenticatedUser = user
+	err := Authenticator.StoreAuth(user)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	return nil
 }
 
 func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
@@ -157,7 +174,7 @@ func tryAuth() (*scalingo.User, error) {
 	var err error
 
 	for login == "" {
-		fmt.Print("Username or email: ")
+		appio.Infof("Username or email: ")
 		_, err := fmt.Scanln(&login)
 		if err != nil {
 			if strings.Contains(err.Error(), "unexpected newline") {
@@ -168,15 +185,19 @@ func tryAuth() (*scalingo.User, error) {
 		login = strings.TrimRight(login, "\n")
 	}
 
-	password, err := term.Password("Password: ")
+	password, err := term.Password("       Password: ")
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
+	fmt.Print("\n")
 
 	c := ScalingoUnauthenticatedClient()
 	res, err := c.Login(login, password)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
+	}
+	if res.User == nil {
+		return nil, ErrAuthenticationFailed
 	}
 	return res.User, nil
 }

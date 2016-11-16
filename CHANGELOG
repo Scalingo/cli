@@ -1,13 +1,14 @@
 Changelog
 =========
 
-### v1.4.0 -
+### v1.4.0 - 16/11/2016
 
 * [Feature] Add timeline and user-timeline to display per are of user-global activities #235
 * [Feature] Add list, remove and add commands for notifications
 * [Feature] Add `deployments` command to get the a deployments list for an application #222 #234
 * [Feature] Add `deployment-logs` command to get logs for a specific deployment
 * [Feature] Add `deployment-follow` command to follow the deployment stream for an application
+* [Feature - Login] Automatically try SSH with ssh-agent if available #262
 * [Feature - Create] --buildpack flag to specify a custom buildpack
 * [Fix] Fix error handling when an addon fails to get provisioned #252
 * [Fix] Fix error display when an application doesn't have any log available #249

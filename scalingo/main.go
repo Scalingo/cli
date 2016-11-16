@@ -5,13 +5,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/codegangsta-cli"
-	"github.com/stvp/rollbar"
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
+	"github.com/Scalingo/codegangsta-cli"
+	"github.com/stvp/rollbar"
 )
 
 func DefaultAction(c *cli.Context) {
@@ -98,6 +98,6 @@ func main() {
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Println("Fail to run scalingo", err)
+		fmt.Println("Fail to run command:", err)
 	}
 }

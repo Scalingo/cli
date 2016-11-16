@@ -7,6 +7,10 @@ func Error(args ...interface{}) {
 	fmt.Println(args...)
 }
 
+func Errorf(format string, args ...interface{}) {
+	fmt.Printf(" !     "+format, args...)
+}
+
 func Warning(args ...interface{}) {
 	fmt.Print("  /!\\  ")
 	fmt.Println(args...)
