@@ -1,26 +1,14 @@
 #!/bin/bash
 
-function ensure_goxc_installation() {
-  goxc_path=$(which goxc) ; rc=$?
-  if [ $rc -eq 1 ] ; then
-    echo "goxc not found, install..."
-    go get github.com/laher/goxc
-    goxc_path=$(which goxc)
-  fi
-}
+[ "$DEBUG" = "1" ] && set -x
+set -e
 
 VERSION=""
-DEV_MODE=0
 
 while getopts v:d: OPT; do
   case $OPT in
     v)
       VERSION=$OPTARG
-      ;;
-    d)
-      echo "HELLO"
-      DEV_MODE=1
-      PRE_VERSION=$OPTARG
       ;;
   esac
 done
@@ -30,41 +18,66 @@ if [ -z $VERSION ] ; then
   exit 1
 fi
 
-tag=$VERSION
+mkdir -p bin/$VERSION
 
-if [ $DEV_MODE -eq 1 ] ; then
-  ref=$(git rev-parse HEAD)
-  dev_tag="dev-${ref:0:10}"
-fi
-
-if [ -n "${PRE_VERSION}" ] ; then
-  dev_tag="${PRE_VERSION}"
-fi
-
-echo "tag: $tag"
+bin_dir="bin/$VERSION"
 
 git checkout dists
 git rebase master
 
-ensure_goxc_installation
+function build_for() {
+  local os=$1
+  local archive_type=$2
 
-goxc_flags="-pv $VERSION"
-if [ -n "${dev_tag}" ] ; then
-  goxc_flags="${goxc_flags} -pr $dev_tag"
-fi
+  for arch in amd64 386 ; do
+    pushd scalingo
+
+    [ -e "./scalingo" ] && rm ./scalingo
+    [ -e "./scalingo.exe" ] && rm ./scalingo.exe
+    GOOS=$os GOARCH=$arch go build -ldflags " \
+     -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` \
+     -X main.githash=`git rev-parse HEAD`
+     -X main.VERSION=$VERSION"
+
+    release_dir="scalingo_${VERSION}_${os}_${arch}"
+    archive_dir="$bin_dir/$release_dir"
+
+    popd
+    mkdir -p $archive_dir
+
+    bin="scalingo/scalingo"
+    if [ "$os" = "windows" ] ; then
+      bin="scalingo/scalingo.exe"
+    fi
+    cp $bin $archive_dir
+    cp README.md $archive_dir
+    cp LICENSE $archive_dir
+
+    pushd $bin_dir
+    if [ "$archive_type" = "tarball" ] ; then
+      tar czvf "${release_dir}.tar.gz" "$release_dir"
+    else
+      zip "${release_dir}.zip" $(find "${release_dir}")
+    fi
+    popd
+  done
+}
+
 if uname -a | grep -iq Linux ; then
-  goxc_flags="${goxc_flags} -bc linux,freebsd,openbsd"
+  build_for "linux" "tarball"
+  build_for "freebsd"
+  build_for "openbsd"
+  build_for "darwin"
+  build_for "windows"
 fi
 if uname -a | grep -iq Darwin ; then
-  goxc_flags="${goxc_flags} -bc darwin"
+  build_for "darwin"
 fi
 if uname -a | grep -iq Mingw ; then
-  goxc_flags="${goxc_flags} -bc windows"
+  build_for "windows"
 fi
 if uname -a | grep -iq Cygwin ; then
-  goxc_flags="${goxc_flags} -bc windows"
+  build_for windows
 fi
-
-goxc $goxc_flags
 
 git checkout master
