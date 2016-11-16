@@ -102,7 +102,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
 func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
-		return Auth()
+		return nil, ErrUnauthenticated
 	}
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
