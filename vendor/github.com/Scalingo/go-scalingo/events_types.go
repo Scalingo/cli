@@ -352,13 +352,14 @@ type EventUpgradeAddonType struct {
 func (ev *EventUpgradeAddonType) String() string {
 	return fmt.Sprintf(
 		"'%s' (%s) plan has been changed from '%s' to '%s'",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.OldPlanName, ev.TypeData.PlanName,
+		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.OldPlanName, ev.TypeData.NewPlanName,
 	)
 }
 
 type EventUpgradeAddonTypeData struct {
 	EventAddon
 	OldPlanName string `json:"old_plan_name"`
+	OldPlanName string `json:"new_plan_name"`
 }
 
 type EventDeleteAddonType struct {
