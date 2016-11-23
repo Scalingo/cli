@@ -359,7 +359,7 @@ func (ev *EventUpgradeAddonType) String() string {
 type EventUpgradeAddonTypeData struct {
 	EventAddon
 	OldPlanName string `json:"old_plan_name"`
-	OldPlanName string `json:"new_plan_name"`
+	NewPlanName string `json:"new_plan_name"`
 }
 
 type EventDeleteAddonType struct {
@@ -532,7 +532,7 @@ func (ev *EventEditVariablesType) String() string {
 		res += fmt.Sprintf(" %s modified", ev.TypeData.UpdatedVars.Names())
 	}
 	if len(ev.TypeData.DeletedVars) > 0 {
-		res += fmt.Sprintf(" %s removed")
+		res += fmt.Sprintf(" %s removed", ev.TypeData.DeletedVars.Names())
 	}
 	return res
 }

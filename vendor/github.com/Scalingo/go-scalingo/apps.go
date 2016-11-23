@@ -121,7 +121,7 @@ func (c *Client) AppsShow(appName string) (*App, error) {
 	return appMap["app"], nil
 }
 
-func (c *Client) AppsDestroy(name string, currentName string) (*http.Response, error) {
+func (c *Client) AppsDestroy(name string, currentName string) error {
 	req := &APIRequest{
 		Client:   c,
 		Method:   "DELETE",
@@ -131,7 +131,13 @@ func (c *Client) AppsDestroy(name string, currentName string) (*http.Response, e
 			"current_name": currentName,
 		},
 	}
-	return req.Do()
+	res, err := req.Do()
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	return nil
 }
 
 func (c *Client) AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {

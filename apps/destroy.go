@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 func Destroy(appName string) error {
@@ -31,11 +31,10 @@ func Destroy(appName string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	res, err := c.AppsDestroy(appName, validationName)
+	err = c.AppsDestroy(appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}
-	defer res.Body.Close()
 
 	io.Status("App " + appName + " has been deleted")
 	return nil
