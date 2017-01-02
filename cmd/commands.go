@@ -65,6 +65,7 @@ var (
 		MongoConsoleCommand,
 		MySQLConsoleCommand,
 		PgSQLConsoleCommand,
+		InfluxDBConsoleCommand,
 
 		// Stats
 		StatsCommand,
