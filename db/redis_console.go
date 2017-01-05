@@ -29,7 +29,7 @@ func RedisConsole(opts RedisConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd:    "redis-console " + strings.Split(host, ".")[0],
 		App:           opts.App,
-		Cmd:           []string{"redis-cli", "-h", host, "-p", port, "-a", password},
+		Cmd:           []string{"dbclient-fetcher", "redis", "&&", "redis-cli", "-h", host, "-p", port, "-a", password},
 		Size:          opts.Size,
 		StdinCopyFunc: redisStdinCopy,
 	}

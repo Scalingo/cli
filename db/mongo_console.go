@@ -19,7 +19,7 @@ func MongoConsole(opts MongoConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd: "mongo-console " + user,
 		App:        opts.App,
-		Cmd:        []string{"mongo", "-u", user, "-p", password, mongoURL.Host + "/" + user},
+		Cmd:        []string{"dbclient-fetcher", "mongo", "&&", "mongo", "-u", user, "-p", password, mongoURL.Host + "/" + user},
 		Size:       opts.Size,
 	}
 

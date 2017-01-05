@@ -27,7 +27,7 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd: "influxdb-console " + strings.Split(host, ".")[0],
 		App:        opts.App,
-		Cmd:        []string{"influx", "-host", host, "-port", port, "-username", username, "-password", password},
+		Cmd:        []string{"dbclient-fetcher", "influxdb", "&&", "influx", "-host", host, "-port", port, "-username", username, "-password", password},
 		Size:       opts.Size,
 	}
 
