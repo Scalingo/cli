@@ -14,24 +14,13 @@ func Create(appName string, remote string, buildpack string) error {
 	c := config.ScalingoClient()
 	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
-		if !utils.PaymentRequiredAndFreeTrialExceeded(err) {
+		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			return errgo.Mask(err, errgo.Any)
 		}
-
 		// If error is Payment Required and user tries to exceed its free trial
-		validate, err := utils.AskUserValidation()
-		if err != nil {
-			return errgo.Mask(err, errgo.Any)
-		}
-		if !validate {
-			fmt.Println("Do not break free trial.")
-			return nil
-		}
-		_, err = c.UpdateUser(scalingo.UpdateUserParams{StopFreeTrial: true})
-		if err != nil {
-			return errgo.Mask(err, errgo.Any)
-		}
-		return Create(appName, remote, buildpack)
+		return utils.AskAndStopFreeTrial(c, func() error {
+			return Create(appName, remote, buildpack)
+		})
 	}
 
 	if buildpack != "" {

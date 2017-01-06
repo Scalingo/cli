@@ -11,23 +11,25 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func AskAndStopFreeTrial(c *scalingo.Client) (bool, error) {
-	validate, err := AskUserValidation()
+// Ask the user wheter or not he wants to break his free trial. If not, return without doing
+// anything. If yes, call the given callback function.
+func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
+	validate, err := askUserValidation()
 	if err != nil {
-		return false, errgo.Mask(err, errgo.Any)
+		return errgo.Mask(err, errgo.Any)
 	}
 	if !validate {
 		fmt.Println("Do not break free trial.")
-		return false, nil
+		return nil
 	}
 	_, err = c.UpdateUser(scalingo.UpdateUserParams{StopFreeTrial: true})
 	if err != nil {
-		return false, errgo.Mask(err, errgo.Any)
+		return errgo.Mask(err, errgo.Any)
 	}
-	return true, nil
+	return callback()
 }
 
-func PaymentRequiredAndFreeTrialExceeded(err error) bool {
+func IsPaymentRequiredAndFreeTrialExceededError(err error) bool {
 	reqestFailedError, ok := errgo.Cause(err).(*scalingo.RequestFailedError)
 	if !ok || reqestFailedError.Code != 402 {
 		return false
@@ -39,7 +41,7 @@ func PaymentRequiredAndFreeTrialExceeded(err error) bool {
 	return true
 }
 
-func AskUserValidation() (bool, error) {
+func askUserValidation() (bool, error) {
 	fmt.Println("You are still in your free trial. If you continue, your free trial will end and you will be billed for your usage of the platform. Do you agree? [Y/n]")
 	in, err := readCharFromStdin()
 	if err != nil {
