@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"gopkg.in/errgo.v1"
 )
 
@@ -25,7 +26,13 @@ func Provision(app, addon, plan string) error {
 	c := config.ScalingoClient()
 	params, err := c.AddonProvision(app, addon, planID)
 	if err != nil {
-		return errgo.Notef(err, "Fail to provision addon %v", addon)
+		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
+			return errgo.Notef(err, "Fail to provision addon %v", addon)
+		}
+		// If error is Payment Required and user tries to exceed its free trial
+		return utils.AskAndStopFreeTrial(c, func() error {
+			return Provision(app, addon, plan)
+		})
 	}
 
 	io.Status("Addon", addon, "has been provisionned")

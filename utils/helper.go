@@ -29,6 +29,8 @@ func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
 	return callback()
 }
 
+// Return true if the given error is because of a Payment Required error and the free trial is
+// exceeded.
 func IsPaymentRequiredAndFreeTrialExceededError(err error) bool {
 	reqestFailedError, ok := errgo.Cause(err).(*scalingo.RequestFailedError)
 	if !ok || reqestFailedError.Code != 402 {

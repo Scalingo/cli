@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
@@ -80,7 +81,13 @@ func Scale(app string, sync bool, types []string) error {
 	c := config.ScalingoClient()
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
-		return errgo.Mask(err)
+		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
+			return errgo.Mask(err)
+		}
+		// If error is Payment Required and user tries to exceed its free trial
+		return utils.AskAndStopFreeTrial(c, func() error {
+			return Scale(app, sync, types)
+		})
 	}
 	defer res.Body.Close()
 
