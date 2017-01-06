@@ -1,10 +1,6 @@
 package scalingo
 
-import (
-	"encoding/json"
-
-	"gopkg.in/errgo.v1"
-)
+import "gopkg.in/errgo.v1"
 
 type User struct {
 	ID                  string          `json:"id"`
@@ -30,10 +26,11 @@ func (c *Client) Self() (*User, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
-	var u *SelfResponse
-	err = json.NewDecoder(res.Body).Decode(&u)
+
+	var u SelfResponse
+	err = ParseJSON(res, &u)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Mask(err)
 	}
 	return u.User, nil
 }

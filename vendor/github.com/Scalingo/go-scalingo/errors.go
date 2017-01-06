@@ -15,6 +15,7 @@ type (
 	}
 
 	PaymentRequiredError struct {
+		Name       string `json:"name"`
 		ErrMessage string `json:"error"`
 		URL        string `json:"url"`
 	}
