@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
@@ -13,7 +14,13 @@ func Create(appName string, remote string, buildpack string) error {
 	c := config.ScalingoClient()
 	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
+			return errgo.Mask(err, errgo.Any)
+		}
+		// If error is Payment Required and user tries to exceed its free trial
+		return utils.AskAndStopFreeTrial(c, func() error {
+			return Create(appName, remote, buildpack)
+		})
 	}
 
 	if buildpack != "" {

@@ -22,19 +22,19 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "2630b6c248e2bae3bb399c94fe240ad1a9fb894d"
+			"Rev": "8836d9a3f25f745a064b7ec56a0f53181eca731a"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
-			"Rev": "2630b6c248e2bae3bb399c94fe240ad1a9fb894d"
+			"Rev": "8836d9a3f25f745a064b7ec56a0f53181eca731a"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/debug",
-			"Rev": "2630b6c248e2bae3bb399c94fe240ad1a9fb894d"
+			"Rev": "8836d9a3f25f745a064b7ec56a0f53181eca731a"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/io",
-			"Rev": "2630b6c248e2bae3bb399c94fe240ad1a9fb894d"
+			"Rev": "8836d9a3f25f745a064b7ec56a0f53181eca731a"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",

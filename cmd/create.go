@@ -21,11 +21,11 @@ var (
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "create")
-			} else {
-				err := apps.Create(c.Args()[0], c.String("remote"), c.String("buildpack"))
-				if err != nil {
-					errorQuit(err)
-				}
+				return
+			}
+			err := apps.Create(c.Args()[0], c.String("remote"), c.String("buildpack"))
+			if err != nil {
+				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v1.5.0
+
+* [Fix] Fix error message when a user tries to break its free trial before the end #458
+
 ### v1.4.0 - 16/11/2016
 
 * [Feature] Add timeline and user-timeline to display per are of user-global activities #235
