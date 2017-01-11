@@ -8,8 +8,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/Scalingo/codegangsta-cli",
-			"Comment": "1.2.0-140-g5d938cb",
-			"Rev": "5d938cb0fd3254203b368ff239ce80b179d164b0"
+			"Comment": "1.2.0-145-g13206e9",
+			"Rev": "13206e93c57c98e103fd016b325b82f197b94ed6"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/envconfig",
