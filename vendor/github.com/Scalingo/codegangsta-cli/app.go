@@ -123,11 +123,15 @@ func (a *App) Run(arguments []string) (err error) {
 	}
 	context := NewContext(a, set, nil)
 
-	if checkCompletions(context) && err != nil {
+	if err != nil {
 		fmt.Fprintln(a.Writer, "Incorrect Usage.")
 		fmt.Fprintln(a.Writer)
 		ShowAppHelp(context)
 		return err
+	}
+
+	if checkCompletions(context) {
+		return nil
 	}
 
 	if checkHelp(context) {
