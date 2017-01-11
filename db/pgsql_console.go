@@ -26,7 +26,7 @@ func PgSQLConsole(opts PgSQLConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd: "pgsql-console " + user,
 		App:        opts.App,
-		Cmd:        []string{"psql"},
+		Cmd:        []string{"dbclient-fetcher", "pgsql", "&&", "psql"},
 		Size:       opts.Size,
 		CmdEnv: []string{
 			"PGHOST=" + host,
