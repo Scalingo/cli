@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/Scalingo/go-scalingo/debug"
 )
 
 type Event struct {
@@ -78,6 +80,7 @@ const (
 	EventDeleteDomain                 = "delete_domain"
 	EventNewAddon                     = "new_addon"
 	EventUpgradeAddon                 = "upgrade_addon"
+	EventUpgradeDatabase              = "upgrade_database"
 	EventDeleteAddon                  = "delete_addon"
 	EventResumeAddon                  = "resume_addon"
 	EventSuspendAddon                 = "suspend_addon"
@@ -467,6 +470,32 @@ type EventDeleteCollaboratorTypeData struct {
 	Collaborator EventCollaborator `json:"collaborator"`
 }
 
+type EventUpgradeDatabaseType struct {
+	*Event
+	TypeData EventUpgradeDatabaseTypeData `json:"type_data"`
+}
+
+type EventUpgradeDatabaseTypeData struct {
+	AddonName  string `json:"addon_name"`
+	OldVersion string `json:"old_version"`
+	NewVersion string `json:"new_version"`
+}
+
+func (ev *EventUpgradeDatabaseType) String() string {
+	return fmt.Sprintf(
+		"'%s' upgraded from v%s to v%s",
+		ev.TypeData.AddonName, ev.TypeData.OldVersion, ev.TypeData.NewVersion,
+	)
+}
+
+func (ev *EventUpgradeDatabaseType) Who() string {
+	if ev.TypeData.AddonName != "" {
+		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+	} else {
+		return ev.Who()
+	}
+}
+
 type EventVariable struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
@@ -632,6 +661,8 @@ func (ev *Event) Specialize() DetailedEvent {
 		e = &EventNewAddonType{Event: ev}
 	case EventUpgradeAddon:
 		e = &EventUpgradeAddonType{Event: ev}
+	case EventUpgradeDatabase:
+		e = &EventUpgradeDatabaseType{Event: ev}
 	case EventDeleteAddon:
 		e = &EventDeleteAddonType{Event: ev}
 	case EventResumeAddon:
@@ -673,6 +704,10 @@ func (ev *Event) Specialize() DetailedEvent {
 	default:
 		return ev
 	}
-	json.Unmarshal(ev.RawTypeData, e.TypeDataPtr())
+	err := json.Unmarshal(ev.RawTypeData, e.TypeDataPtr())
+	if err != nil {
+		debug.Printf("error reading the data: %+v\n", err)
+		return ev
+	}
 	return e
 }

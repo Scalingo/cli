@@ -47,10 +47,6 @@ func flagSet(name string, flags []Flag) *flag.FlagSet {
 	return set
 }
 
-func GetFlagName(f Flag) string {
-	return f.getName()
-}
-
 func eachName(longName string, fn func(string)) {
 	parts := strings.Split(longName, ",")
 	for _, name := range parts {

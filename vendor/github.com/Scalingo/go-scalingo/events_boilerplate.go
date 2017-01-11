@@ -51,6 +51,9 @@ func (e *EventNewAddonType) TypeDataPtr() interface{} {
 func (e *EventUpgradeAddonType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventUpgradeDatabaseType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
 func (e *EventDeleteAddonType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
