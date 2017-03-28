@@ -33,6 +33,9 @@ type statusData struct {
 	Content string `json:"Status"`
 }
 
+// We can stream the deployment logs of an application, or we can stream the logs of a specific
+// deployments.
+// The StreamOpts.DeploymentID argument is optional.
 func Stream(opts *StreamOpts) error {
 	// TODO Sometimes, the logs of the previous deployments show up at the begining...
 	c := config.ScalingoClient()
@@ -49,6 +52,7 @@ func Stream(opts *StreamOpts) error {
 	}
 
 	var event deployEvent
+	var currentDeployment *scalingo.Deployment
 	oldStatus := ""
 	for {
 		err := websocket.JSON.Receive(conn, &event)
@@ -68,28 +72,36 @@ func Stream(opts *StreamOpts) error {
 			switch event.Type {
 			case "ping":
 			case "log":
+				// If we stream logs of a specific deployment and this event is not about this one
+				if opts.DeploymentID != "" && (currentDeployment == nil || opts.DeploymentID != currentDeployment.ID) {
+					continue
+				}
 				var logData logData
 				err := json.Unmarshal(event.Data, &logData)
 				if err != nil {
 					config.C.Logger.Println(err)
-				} else {
-					fmt.Println("[LOG] " + strings.TrimSpace(logData.Content))
+					continue
 				}
+				fmt.Println("[LOG] " + strings.TrimSpace(logData.Content))
 			case "status":
+				// If we stream logs of a specific deployment and this event is not about this one
+				if opts.DeploymentID != "" && (currentDeployment == nil || opts.DeploymentID != currentDeployment.ID) {
+					continue
+				}
 				var statusData statusData
 				err := json.Unmarshal(event.Data, &statusData)
 				if err != nil {
 					config.C.Logger.Println(err)
+					continue
+				}
+				if oldStatus == "" {
+					fmt.Println("[STATUS] New status: " + statusData.Content)
 				} else {
-					if oldStatus == "" {
-						fmt.Println("[STATUS] New status: " + statusData.Content)
-					} else {
-						fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
-					}
-					oldStatus = statusData.Content
-					if scalingo.IsFinishedString(statusData.Content) {
-						return nil
-					}
+					fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
+				}
+				oldStatus = statusData.Content
+				if scalingo.IsFinishedString(statusData.Content) {
+					return nil
 				}
 			case "new":
 				oldStatus = ""
@@ -97,13 +109,10 @@ func Stream(opts *StreamOpts) error {
 				err := json.Unmarshal(event.Data, &newData)
 				if err != nil {
 					config.C.Logger.Println(err)
-				} else if newData["deployment"].ID != opts.DeploymentID {
-					fmt.Println("DeploymentID != opts ID")
-					// TODO Pas bon ça
-					break
-				} else {
-					fmt.Println("[NEW] New deploy: " + newData["deployment"].ID + " from " + newData["deployment"].User.Username)
+					continue
 				}
+				currentDeployment = newData["deployment"]
+				fmt.Println("[NEW] New deploy: " + currentDeployment.ID + " from " + currentDeployment.User.Username)
 			}
 		}
 	}
