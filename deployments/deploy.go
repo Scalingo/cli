@@ -13,11 +13,11 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type PushRes struct {
+type DeployRes struct {
 	Deployment *scalingo.Deployment `json:"deployment"`
 }
 
-func Push(app, archivePath, gitRef string) error {
+func Deploy(app, archivePath, gitRef string) error {
 	_, err := url.Parse(archivePath)
 	if err != nil {
 		// TODO differentiate local file and URL
@@ -49,7 +49,7 @@ func Push(app, archivePath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	pushRes := &PushRes{}
+	pushRes := &DeployRes{}
 	if err = json.Unmarshal(body, &pushRes); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

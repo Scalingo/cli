@@ -39,7 +39,7 @@ var (
 		DeploymentsListCommand,
 		DeploymentLogCommand,
 		DeploymentFollowCommand,
-		DeploymentPushCommand,
+		DeploymentDeployCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,

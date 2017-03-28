@@ -94,7 +94,7 @@ COMMANDS:
     deployments		List app deployments
     deployment-logs	View deployment logs
     deployment-follow	Follow deployment event stream
-    push  Trigger a deployment by archive
+    deploy		Trigger a deployment by archive
 
   Display metrics of the running containers:
     stats	Display metrics of the currently running containers

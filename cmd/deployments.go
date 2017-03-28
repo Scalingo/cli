@@ -68,8 +68,8 @@ var (
 			}
 		},
 	}
-	DeploymentPushCommand = cli.Command{
-		Name:     "push",
+	DeploymentDeployCommand = cli.Command{
+		Name:     "deploy",
 		Category: "Deployment",
 		Usage:    "Trigger a deployment by archive",
 		Flags:    []cli.Flag{appFlag},
@@ -93,7 +93,7 @@ var (
 				gitRef = args[1]
 			}
 			currentApp := appdetect.CurrentApp(c)
-			err := deployments.Push(currentApp, archivePath, gitRef)
+			err := deployments.Deploy(currentApp, archivePath, gitRef)
 			if err != nil {
 				errorQuit(err)
 			}
