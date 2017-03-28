@@ -38,8 +38,17 @@ type Deployment struct {
 	Links          *DeploymentLinks `json:"links"`
 }
 
+type DeploymentArchiveParams struct {
+	GitRef    *string `json:"git_ref"`
+	SourceURL string  `json:"source_url"`
+}
+
 func (d *Deployment) IsFinished() bool {
-	return d.Status != StatusBuilding && d.Status != StatusStarting && d.Status != StatusPushing
+	return IsFinishedString(string(d.Status))
+}
+
+func IsFinishedString(status string) bool {
+	return status != StatusBuilding && status != StatusStarting && status != StatusPushing
 }
 
 type DeploymentList struct {
@@ -144,4 +153,22 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return conn, nil
+}
+
+func (c *Client) DeploymentArchive(app string, params *DeploymentArchiveParams) (*http.Response, error) {
+	_, err := url.Parse(params.SourceURL)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	req := &APIRequest{
+		Client:   c,
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/deployments",
+		Expected: Statuses{201},
+		Params: map[string]interface{}{
+			"deployment": params,
+		},
+	}
+
+	return req.Do()
 }
