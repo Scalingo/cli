@@ -7,12 +7,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/go-scalingo"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
 )
+
+type StreamOpts struct {
+	AppName      string
+	DeploymentID string
+}
 
 type deployEvent struct {
 	ID   string          `json:"id"`
@@ -28,9 +33,10 @@ type statusData struct {
 	Content string `json:"Status"`
 }
 
-func Stream(appName string) error {
+func Stream(opts *StreamOpts) error {
+	// TODO Sometimes, the logs of the previous deployments show up at the begining...
 	c := config.ScalingoClient()
-	app, err := c.AppsShow(appName)
+	app, err := c.AppsShow(opts.AppName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -81,6 +87,9 @@ func Stream(appName string) error {
 						fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
 					}
 					oldStatus = statusData.Content
+					if scalingo.IsFinishedString(statusData.Content) {
+						return nil
+					}
 				}
 			case "new":
 				oldStatus = ""
@@ -88,6 +97,10 @@ func Stream(appName string) error {
 				err := json.Unmarshal(event.Data, &newData)
 				if err != nil {
 					config.C.Logger.Println(err)
+				} else if newData["deployment"].ID != opts.DeploymentID {
+					fmt.Println("DeploymentID != opts ID")
+					// TODO Pas bon ça
+					break
 				} else {
 					fmt.Println("[NEW] New deploy: " + newData["deployment"].ID + " from " + newData["deployment"].User.Username)
 				}

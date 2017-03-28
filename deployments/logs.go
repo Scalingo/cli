@@ -4,12 +4,12 @@ import (
 	stdio "io"
 	"os"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
-func Logs(app string, deployment string) error {
+func Logs(app, deployment string) error {
 	client := config.ScalingoClient()
 	deploy, err := client.Deployment(app, deployment)
 
