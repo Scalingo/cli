@@ -49,13 +49,13 @@ func Deploy(app, archivePath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	pushRes := &DeployRes{}
-	if err = json.Unmarshal(body, &pushRes); err != nil {
+	deployRes := &DeployRes{}
+	if err = json.Unmarshal(body, &deployRes); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	err = Stream(&StreamOpts{
 		AppName:      app,
-		DeploymentID: pushRes.Deployment.ID,
+		DeploymentID: deployRes.Deployment.ID,
 	})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

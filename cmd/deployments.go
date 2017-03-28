@@ -74,9 +74,9 @@ var (
 		Usage:    "Trigger a deployment by archive",
 		Flags:    []cli.Flag{appFlag},
 		Description: ` Trigger the deployment of a custom archive for your application
-		$ scalingo -a myapp push archive.tar.gz
+		$ scalingo -a myapp deploy archive.tar.gz
 		or
-		$ scalingo -a myapp push http://example.com/archive.tar.gz
+		$ scalingo -a myapp deploy http://example.com/archive.tar.gz
 
     # See also commands 'deployments'
 `,
@@ -84,7 +84,7 @@ var (
 		Action: func(c *cli.Context) {
 			args := c.Args()
 			if len(args) != 1 && len(args) != 2 {
-				cli.ShowCommandHelp(c, "push")
+				cli.ShowCommandHelp(c, "deploy")
 				return
 			}
 			archivePath := args[0]
@@ -99,7 +99,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "push")
+			autocomplete.CmdFlagsAutoComplete(c, "deploy")
 		},
 	}
 )
