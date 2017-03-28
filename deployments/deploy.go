@@ -8,7 +8,6 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/io"
 
 	"gopkg.in/errgo.v1"
 )
@@ -26,7 +25,6 @@ func Deploy(app, archivePath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	io.Status("Downloading the source code")
 	c := config.ScalingoClient()
 	params := &scalingo.DeploymentArchiveParams{
 		SourceURL: archivePath,
