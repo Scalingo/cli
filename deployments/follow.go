@@ -37,7 +37,6 @@ type statusData struct {
 // deployments.
 // The StreamOpts.DeploymentID argument is optional.
 func Stream(opts *StreamOpts) error {
-	// TODO Sometimes, the logs of the previous deployments show up at the begining...
 	c := config.ScalingoClient()
 	app, err := c.AppsShow(opts.AppName)
 	if err != nil {
