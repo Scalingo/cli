@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -91,21 +92,18 @@ func DeployWar(appName, warPath, gitRef string) error {
 		defer gzWriter.Close()
 		defer tarWriter.Close()
 
-		fmt.Println("WRITE HEADER")
 		err = tarWriter.WriteHeader(header)
 		if err != nil {
-			// Use channel to get error back in the main thread
+			// TODO Use channel to get error back in the main thread
 			fmt.Println("error")
 			fmt.Println(errgo.Mask(err, errgo.Any))
 		}
 
-		fmt.Println("COPY")
 		_, err := io.Copy(tarWriter, warReadStream)
 		if err != nil {
 			fmt.Println("error")
 			fmt.Println(errgo.Mask(err, errgo.Any))
 		}
-		fmt.Println("END OF goroutine")
 	}()
 	/*b, err := ioutil.ReadAll(warReadStream)
 	if err != nil {
@@ -116,19 +114,24 @@ func DeployWar(appName, warPath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}*/
 
-	fmt.Println("PUT")
 	req, err := http.NewRequest("PUT", sources.UploadURL, pipeReader)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	req.Header.Add("Content-Type", "application/gzip")
+	req.Header.Add("Content-Length", "2415")
 
 	httpClient := &http.Client{}
-	fmt.Println("PUT.Do")
 	res, err := httpClient.Do(req)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(res.Body)
+		fmt.Printf("body: %+v\n", string(body))
+		return errgo.Newf("wrong status code %s", res.Status)
+	}
 
 	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
