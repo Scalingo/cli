@@ -32,13 +32,6 @@ func DeployWar(appName, warPath, gitRef string) error {
 	// 3. send it to the new /sources endpoint
 	// 4. Use the signed URL from 3. to deploy the code
 
-	// TODO out should be the /sourcess endpoint
-	/*out, err := os.Create(appName + ".tgz")
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	defer out.Close()*/
-
 	var warReadStream io.ReadCloser
 	var warSize int64
 	var warFileName string
@@ -67,6 +60,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 		AccessTime: time.Now(),
 		ChangeTime: time.Now(),
 	}
+	fmt.Println("WAR size:", warSize)
 	if warSize != 0 {
 		// TODO It is mandatory. What to do if we cannot find the size
 		header.Size = warSize
@@ -80,14 +74,24 @@ func DeployWar(appName, warPath, gitRef string) error {
 	}
 	fmt.Printf("Upload archive to %s\n", sources.UploadURL)
 
+	// TODO out should be the /sourcess endpoint
+	archiveName := ".source-archive.tar.gz"
+	out, err := os.Create(archiveName)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer out.Close()
 	// The tar writer will write to the pipe. At the other end of the pipe we have the sources URL to
 	// upload to Scalingo.
-	pipeReader, pipeWriter := io.Pipe()
+	/*pipeReader, pipeWriter := io.Pipe()
 	defer pipeReader.Close()
-	gzWriter := gzip.NewWriter(pipeWriter)
+	gzWriter := gzip.NewWriter(pipeWriter)*/
+	gzWriter := gzip.NewWriter(out)
 	tarWriter := tar.NewWriter(gzWriter)
+	defer gzWriter.Close()
+	defer tarWriter.Close()
 
-	go func() {
+	/*go func() {
 		defer pipeWriter.Close()
 		defer gzWriter.Close()
 		defer tarWriter.Close()
@@ -104,25 +108,22 @@ func DeployWar(appName, warPath, gitRef string) error {
 			fmt.Println("error")
 			fmt.Println(errgo.Mask(err, errgo.Any))
 		}
-	}()
-	/*b, err := ioutil.ReadAll(warReadStream)
+	}()*/
+
+	err = _devTGzipArchive(tarWriter, warReadStream, header)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	_, err = tarWriter.Write(b)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}*/
 
-	req, err := http.NewRequest("PUT", sources.UploadURL, pipeReader)
+	/*req, err := http.NewRequest("PUT", sources.UploadURL, pipeReader)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	req.Header.Add("Content-Type", "application/gzip")
 	req.Header.Add("Content-Length", "2415")
+	req.Header.Add("Expect", "100-continue")
 
-	httpClient := &http.Client{}
-	res, err := httpClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -135,7 +136,40 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
-	return Deploy(appName, sources.DownloadURL, gitRef)
+	return Deploy(appName, sources.DownloadURL, gitRef)*/
+
+	fr, err := os.Open(archiveName)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer fr.Close()
+
+	req, err := http.NewRequest("PUT", sources.UploadURL, fr)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
+	fri, err := fr.Stat()
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	req.Header.Add("Content-Type", "application/gzip")
+	req.Header.Add("Content-Length", strconv.FormatInt(fri.Size(), 10))
+	req.Header.Add("Expect", "100-continue")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(res.Body)
+		fmt.Printf("body: %+v\n", string(body))
+		return errgo.Newf("wrong status code %s", res.Status)
+	}
+
+	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
+	return nil
 }
 
 func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {
@@ -168,4 +202,16 @@ func getFileInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, wa
 		return
 	}
 	return
+}
+
+func _devTGzipArchive(tarWriter *tar.Writer, warReadStream io.ReadCloser, header *tar.Header) error {
+	err := tarWriter.WriteHeader(header)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	_, err = io.Copy(tarWriter, warReadStream)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	return nil
 }
