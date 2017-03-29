@@ -3,6 +3,7 @@ package scalingo
 import (
 	"crypto/tls"
 	"net/http"
+	"time"
 )
 
 type HTTPClient interface {
@@ -18,12 +19,16 @@ type Client struct {
 }
 
 type ClientConfig struct {
+	Timeout   time.Duration
 	Endpoint  string
 	APIToken  string
 	TLSConfig *tls.Config
 }
 
 func NewClient(cfg ClientConfig) *Client {
+	if cfg.Timeout == 0 {
+		cfg.Timeout = 30 * time.Second
+	}
 	if cfg.Endpoint == "" {
 		cfg.Endpoint = defaultEndpoint
 	}
@@ -36,6 +41,7 @@ func NewClient(cfg ClientConfig) *Client {
 		APIVersion: defaultAPIVersion,
 		TLSConfig:  cfg.TLSConfig,
 		httpClient: &http.Client{
+			Timeout: cfg.Timeout,
 			Transport: &http.Transport{
 				Proxy:           http.ProxyFromEnvironment,
 				TLSClientConfig: cfg.TLSConfig,

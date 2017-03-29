@@ -50,12 +50,6 @@ type AppLinks struct {
 	DeploymentsStream string `json:"deployments_stream"`
 }
 
-type AppDomains struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	SSL  bool   `json:"ssl"`
-}
-
 type App struct {
 	Id    string `json:"id"`
 	Name  string `json:"name"`
@@ -65,13 +59,12 @@ type App struct {
 		Email    string `json:"email"`
 		Billable bool   `json:"billable"`
 	} `json:"owner"`
-	GitUrl         string        `json:"git_url"`
-	LastDeployedAt *time.Time    `json:"last_deployed_at"`
-	LastDeployedBy string        `json:"last_deployed_by"`
-	CreatedAt      *time.Time    `json:"created_at"`
-	UpdatedAt      *time.Time    `json:"update_at"`
-	Links          *AppLinks     `json:"links"`
-	Domains        []*AppDomains `json:"domains"`
+	GitUrl         string     `json:"git_url"`
+	LastDeployedAt *time.Time `json:"last_deployed_at"`
+	LastDeployedBy string     `json:"last_deployed_by"`
+	CreatedAt      *time.Time `json:"created_at"`
+	UpdatedAt      *time.Time `json:"update_at"`
+	Links          *AppLinks  `json:"links"`
 }
 
 func (app App) String() string {
