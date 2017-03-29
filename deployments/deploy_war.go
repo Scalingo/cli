@@ -132,7 +132,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
-	return nil
+	return Deploy(appName, sources.DownloadURL, gitRef)
 }
 
 func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {
