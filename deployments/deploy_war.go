@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Scalingo/cli/config"
+
 	"github.com/Scalingo/go-scalingo"
 
 	errgo "gopkg.in/errgo.v1"
@@ -26,19 +28,20 @@ func DeployWar(appName, warPath, gitRef string) error {
 	// 1. If file
 	// 1.b. if url, download the archive and go to 2
 	// 2. insert into a tgz (inside a folder)
-	// 3. send it to the new /source endpoint
+	// 3. send it to the new /sources endpoint
 	// 4. Use the signed URL from 3. to deploy the code
 
-	// TODO out should be the /sources endpoint
-	out, err := os.Create(appName + ".tgz")
+	// TODO out should be the /sourcess endpoint
+	/*out, err := os.Create(appName + ".tgz")
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	defer out.Close()
+	defer out.Close()*/
 
 	var warReadStream io.ReadCloser
 	var warSize int64
 	var warFileName string
+	var err error
 	if strings.HasPrefix(warPath, "http://") || strings.HasPrefix(warPath, "https://") {
 		fmt.Println("If is URL, download the WAR")
 		warReadStream, warSize, err = getURLInfo(warPath)
@@ -54,12 +57,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 		}
 	}
 	defer warReadStream.Close()
-
-	gzWriter := gzip.NewWriter(out)
-	defer gzWriter.Close()
-	tarWriter := tar.NewWriter(gzWriter)
-	defer tarWriter.Close()
-
+	// Create the tar header
 	header := &tar.Header{
 		Name:       fmt.Sprintf("%s/%s.war", appName, warFileName),
 		Typeflag:   tar.TypeReg, // Is a regular file
@@ -72,18 +70,43 @@ func DeployWar(appName, warPath, gitRef string) error {
 		// TODO It is mandatory. What to do if we cannot find the size
 		header.Size = warSize
 	}
-	_ = warSize
-	err = tarWriter.WriteHeader(header)
+
+	// Get the sources endpoints
+	c := config.ScalingoClient()
+	sources, err := c.SourcesCreate()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	fmt.Printf("Upload archive to %s\n", sources.UploadURL)
 
-	n, err := io.Copy(tarWriter, warReadStream)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	fmt.Printf("copied bytes: %d\n", n)
+	// The tar writer will write to the pipe. At the other end of the pipe we have the sources URL to
+	// upload to Scalingo.
+	pipeReader, pipeWriter := io.Pipe()
+	defer pipeReader.Close()
+	gzWriter := gzip.NewWriter(pipeWriter)
+	tarWriter := tar.NewWriter(gzWriter)
 
+	go func() {
+		defer pipeWriter.Close()
+		defer gzWriter.Close()
+		defer tarWriter.Close()
+
+		fmt.Println("WRITE HEADER")
+		err = tarWriter.WriteHeader(header)
+		if err != nil {
+			// Use channel to get error back in the main thread
+			fmt.Println("error")
+			fmt.Println(errgo.Mask(err, errgo.Any))
+		}
+
+		fmt.Println("COPY")
+		_, err := io.Copy(tarWriter, warReadStream)
+		if err != nil {
+			fmt.Println("error")
+			fmt.Println(errgo.Mask(err, errgo.Any))
+		}
+		fmt.Println("END OF goroutine")
+	}()
 	/*b, err := ioutil.ReadAll(warReadStream)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -93,16 +116,21 @@ func DeployWar(appName, warPath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}*/
 
-	/*c := config.ScalingoClient()
-	_ = c
-
-	err = Stream(&StreamOpts{
-		AppName: appName,
-		//DeploymentID: deployRes.Deployment.ID,
-	})
+	fmt.Println("PUT")
+	req, err := http.NewRequest("PUT", sources.UploadURL, pipeReader)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
-	}*/
+	}
+
+	httpClient := &http.Client{}
+	fmt.Println("PUT.Do")
+	res, err := httpClient.Do(req)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
 	return nil
 }
