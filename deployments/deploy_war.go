@@ -44,7 +44,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		warFileName = appName
+		warFileName = appName + ".war"
 	} else {
 		fmt.Println("If is file, just archive in tgz")
 		warReadStream, warSize, warFileName, err = getFileInfo(warPath)
@@ -55,7 +55,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 	defer warReadStream.Close()
 	// Create the tar header
 	header := &tar.Header{
-		Name:       fmt.Sprintf("%s/%s.war", appName, warFileName),
+		Name:       fmt.Sprintf("%s/%s", appName, warFileName),
 		Typeflag:   tar.TypeReg, // Is a regular file
 		Mode:       0644,
 		ModTime:    time.Now(),
