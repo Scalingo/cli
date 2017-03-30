@@ -107,6 +107,9 @@ func DeployWar(appName, warPath, gitRef string) error {
 		//close(tarErrorChannel)
 	}()
 	archiveBytes, err := ioutil.ReadAll(pipeReader)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
 	tarError := <-tarErrorChannel
 	if tarError != nil {
 		fmt.Println("error in tar")
