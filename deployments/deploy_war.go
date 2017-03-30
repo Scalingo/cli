@@ -86,6 +86,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 	defer gzWriter.Close()
 	defer tarWriter.Close()
 
+	tarErrorChannel := make(chan error)
 	go func() {
 		defer pipeWriter.Close()
 		defer gzWriter.Close()
@@ -93,33 +94,37 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 		err = tarWriter.WriteHeader(header)
 		if err != nil {
-			// TODO Use channel to get error back in the main thread
-			fmt.Println("error")
-			fmt.Println(errgo.Mask(err, errgo.Any))
+			tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			return
 		}
 
 		_, err := io.Copy(tarWriter, warReadStream)
 		if err != nil {
-			fmt.Println("error")
-			fmt.Println(errgo.Mask(err, errgo.Any))
+			tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			return
 		}
+		tarErrorChannel <- errgo.New("biniou")
+		//close(tarErrorChannel)
 	}()
-	var bodyDuplicate bytes.Buffer
-	teeReader := io.TeeReader(pipeReader, &bodyDuplicate)
+	archiveBytes, err := ioutil.ReadAll(pipeReader)
+	tarError := <-tarErrorChannel
+	if tarError != nil {
+		fmt.Println("error in tar")
+		return errgo.Mask(err, errgo.Any)
+	}
 
-	req, err := http.NewRequest("PUT", sources.UploadURL, teeReader)
+	req, err := http.NewRequest("PUT", sources.UploadURL, bytes.NewReader(archiveBytes))
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	req.GetBody = func() (io.ReadCloser, error) {
-		r := bytes.NewReader(bodyDuplicate.Bytes())
+		r := bytes.NewReader(archiveBytes)
 		return ioutil.NopCloser(r), nil
 	}
 
 	req.Header.Set("Date", time.Now().UTC().Format(http.TimeFormat))
 	req.Header.Add("Content-Type", mime.TypeByExtension(".gz"))
-	// TODO mandatory header but impossible with full stream
-	req.ContentLength = 1575
+	req.ContentLength = int64(len(archiveBytes))
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -127,9 +132,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(res.Body)
-		fmt.Printf("body: %+v\n", string(body))
-		return errgo.Newf("wrong status code %s", res.Status)
+		return errgo.Newf("wrong status code after upload %s", res.Status)
 	}
 
 	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
