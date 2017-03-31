@@ -18,6 +18,7 @@ import (
 	"github.com/Scalingo/cli/config"
 
 	"github.com/Scalingo/go-scalingo"
+	scalingoio "github.com/Scalingo/go-scalingo/io"
 
 	errgo "gopkg.in/errgo.v1"
 )
@@ -86,7 +87,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 	defer gzWriter.Close()
 	defer tarWriter.Close()
 
-	tarErrorChannel := make(chan error)
+	//tarErrorChannel := make(chan error)
 	go func() {
 		defer pipeWriter.Close()
 		defer gzWriter.Close()
@@ -94,35 +95,38 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 		err = tarWriter.WriteHeader(header)
 		if err != nil {
-			tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			//tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			fmt.Println(errgo.Mask(err, errgo.Any))
 			return
 		}
 
 		_, err := io.Copy(tarWriter, warReadStream)
 		if err != nil {
-			tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			//tarErrorChannel <- errgo.Mask(err, errgo.Any)
+			fmt.Println(errgo.Mask(err, errgo.Any))
 			return
 		}
+		/*fmt.Println("before sending")
 		tarErrorChannel <- errgo.New("biniou")
-		//close(tarErrorChannel)
+		fmt.Println("after sending")
+		//close(tarErrorChannel)*/
 	}()
 	archiveBytes, err := ioutil.ReadAll(pipeReader)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	/*fmt.Println("before receiving")
 	tarError := <-tarErrorChannel
+	fmt.Println("after receiving")
 	if tarError != nil {
 		fmt.Println("error in tar")
 		return errgo.Mask(err, errgo.Any)
-	}
+	}*/
 
+	scalingoio.Status("Uploading archive to Scalingo...")
 	req, err := http.NewRequest("PUT", sources.UploadURL, bytes.NewReader(archiveBytes))
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
-	}
-	req.GetBody = func() (io.ReadCloser, error) {
-		r := bytes.NewReader(archiveBytes)
-		return ioutil.NopCloser(r), nil
 	}
 
 	req.Header.Set("Date", time.Now().UTC().Format(http.TimeFormat))
@@ -140,8 +144,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
-	//return Deploy(appName, sources.DownloadURL, gitRef)
-	return nil
+	return Deploy(appName, sources.DownloadURL, gitRef)
 }
 
 func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {
