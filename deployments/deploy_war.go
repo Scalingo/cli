@@ -37,14 +37,12 @@ func DeployWar(appName, warPath, gitRef string) error {
 	var warFileName string
 	var err error
 	if strings.HasPrefix(warPath, "http://") || strings.HasPrefix(warPath, "https://") {
-		fmt.Println("If is URL, download the WAR")
 		warReadStream, warSize, err = getURLInfo(warPath)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
 		warFileName = appName + ".war"
 	} else {
-		fmt.Println("If is file, just archive in tgz")
 		warReadStream, warSize, warFileName, err = getFileInfo(warPath)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
@@ -73,7 +71,6 @@ func DeployWar(appName, warPath, gitRef string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	fmt.Printf("Upload archive to %s\n", sources.UploadURL)
 
 	// The tar writer will write to the pipe. At the other end of the pipe we have the sources URL to
 	// upload to Scalingo.

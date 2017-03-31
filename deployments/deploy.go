@@ -3,7 +3,6 @@ package deployments
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"mime"
 	"net/http"
@@ -44,12 +43,10 @@ func Deploy(app, archivePath, gitRef string) error {
 	if strings.TrimSpace(gitRef) != "" {
 		params.GitRef = &gitRef
 	}
-	fmt.Println("DeploymentArchive")
 	res, err := c.DeploymentArchive(app, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	fmt.Println("Deployment accepted")
 	defer res.Body.Close()
 	if res.StatusCode != 201 {
 		return errgo.Newf("fail to deploy the archive: %s", res.Status)
@@ -63,7 +60,6 @@ func Deploy(app, archivePath, gitRef string) error {
 	if err = json.Unmarshal(body, &deployRes); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	fmt.Println("stream")
 	err = Stream(&StreamOpts{
 		AppName:      app,
 		DeploymentID: deployRes.Deployment.ID,
