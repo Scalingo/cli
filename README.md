@@ -15,7 +15,7 @@ Once that's done, all you have to do is to 'go get' the project, with the follow
 go get github.com/Scalingo/cli/scalingo
 ```
 
-That it, you've build the latest version of the Scalingo CLI (the binary will be present in `$GOPATH/bin/scalingo`)
+That's it, you've build the latest version of the Scalingo CLI (the binary will be present in `$GOPATH/bin/scalingo`)
 
 
 ## How to upgrade?
@@ -93,7 +93,8 @@ COMMANDS:
   Deployment:
     deployments		List app deployments
     deployment-logs	View deployment logs
-    deployment-follow	Follow deployement event stream
+    deployment-follow	Follow deployment event stream
+    deploy		Trigger a deployment by archive
 
   Display metrics of the running containers:
     stats	Display metrics of the currently running containers

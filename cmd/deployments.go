@@ -52,18 +52,54 @@ var (
 	DeploymentFollowCommand = cli.Command{
 		Name:     "deployment-follow",
 		Category: "Deployment",
-		Usage:    "Follow deployement event stream",
+		Usage:    "Follow deployment event stream",
 		Flags:    []cli.Flag{appFlag},
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
-		`,
+`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			err := deployments.Stream(currentApp)
+			err := deployments.Stream(&deployments.StreamOpts{
+				AppName: currentApp,
+			})
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+	}
+	DeploymentDeployCommand = cli.Command{
+		Name:     "deploy",
+		Category: "Deployment",
+		Usage:    "Trigger a deployment by archive",
+		Flags:    []cli.Flag{appFlag},
+		Description: ` Trigger the deployment of a custom archive for your application
+		$ scalingo -a myapp deploy archive.tar.gz
+		or
+		$ scalingo -a myapp deploy http://example.com/archive.tar.gz
+
+    # See also commands 'deployments'
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			args := c.Args()
+			if len(args) != 1 && len(args) != 2 {
+				cli.ShowCommandHelp(c, "deploy")
+				return
+			}
+			archivePath := args[0]
+			gitRef := ""
+			if len(args) == 2 {
+				gitRef = args[1]
+			}
+			currentApp := appdetect.CurrentApp(c)
+			err := deployments.Deploy(currentApp, archivePath, gitRef)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "deploy")
 		},
 	}
 )
