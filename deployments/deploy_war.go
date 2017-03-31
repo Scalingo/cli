@@ -159,15 +159,3 @@ func getFileInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, wa
 	}
 	return
 }
-
-func _devTGzipArchive(tarWriter *tar.Writer, warReadStream io.ReadCloser, header *tar.Header) error {
-	err := tarWriter.WriteHeader(header)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	_, err = io.Copy(tarWriter, warReadStream)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	return nil
-}
