@@ -1,13 +1,18 @@
 package deployments
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"net/url"
+	"mime"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
+	scalingoio "github.com/Scalingo/go-scalingo/io"
 
 	"gopkg.in/errgo.v1"
 )
@@ -17,27 +22,34 @@ type DeployRes struct {
 }
 
 func Deploy(app, archivePath, gitRef string) error {
-	_, err := url.Parse(archivePath)
-	if err != nil {
-		// TODO differentiate local file and URL
-		// For instance if error 400 is returned, it means that archivePath is not an URL (so maybe a
-		// local file?)
-		return errgo.Mask(err, errgo.Any)
+	c := config.ScalingoClient()
+
+	var err error
+	var archiveURL string
+	// If archivePath is a remote resource
+	if strings.HasPrefix(archivePath, "http://") || strings.HasPrefix(archivePath, "https://") {
+		archiveURL = archivePath
+	} else { // if archivePath is a file
+		archiveURL, err = uploadArchivePath(c, archivePath)
+		if err != nil {
+			return errgo.Mask(err, errgo.Any)
+		}
 	}
 
-	c := config.ScalingoClient()
 	params := &scalingo.DeploymentArchiveParams{
-		SourceURL: archivePath,
+		SourceURL: archiveURL,
 	}
 	// TODO gitRef cannot be anything. It is used in the docker tag image. For example, it cannot
 	// start with a dash
 	if strings.TrimSpace(gitRef) != "" {
 		params.GitRef = &gitRef
 	}
+	fmt.Println("DeploymentArchive")
 	res, err := c.DeploymentArchive(app, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	fmt.Println("Deployment accepted")
 	defer res.Body.Close()
 	if res.StatusCode != 201 {
 		return errgo.Newf("fail to deploy the archive: %s", res.Status)
@@ -51,6 +63,7 @@ func Deploy(app, archivePath, gitRef string) error {
 	if err = json.Unmarshal(body, &deployRes); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	fmt.Println("stream")
 	err = Stream(&StreamOpts{
 		AppName:      app,
 		DeploymentID: deployRes.Deployment.ID,
@@ -60,4 +73,39 @@ func Deploy(app, archivePath, gitRef string) error {
 	}
 
 	return nil
+}
+
+func uploadArchivePath(c *scalingo.Client, archivePath string) (string, error) {
+	scalingoio.Status("Uploading archive to Scalingo...")
+
+	sources, err := c.SourcesCreate()
+	if err != nil {
+		return "", errgo.Mask(err, errgo.Any)
+	}
+	archiveBytes, err := ioutil.ReadFile(archivePath)
+	if err != nil {
+		return "", errgo.Mask(err, errgo.Any)
+	}
+
+	res, err := uploadArchiveBytes(sources.UploadURL, archiveBytes)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return "", errgo.Newf("wrong status code after upload %s", res.Status)
+	}
+
+	return sources.DownloadURL, nil
+}
+
+func uploadArchiveBytes(uploadURL string, archiveBytes []byte) (*http.Response, error) {
+	scalingoio.Status("Uploading archive to Scalingo...")
+	req, err := http.NewRequest("PUT", uploadURL, bytes.NewReader(archiveBytes))
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	req.Header.Set("Date", time.Now().UTC().Format(http.TimeFormat))
+	req.Header.Add("Content-Type", mime.TypeByExtension(".gz"))
+	req.ContentLength = int64(len(archiveBytes))
+
+	return http.DefaultClient.Do(req)
 }

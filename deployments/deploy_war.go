@@ -2,12 +2,10 @@ package deployments
 
 import (
 	"archive/tar"
-	"bytes"
 	"compress/gzip"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,7 +16,6 @@ import (
 	"github.com/Scalingo/cli/config"
 
 	"github.com/Scalingo/go-scalingo"
-	scalingoio "github.com/Scalingo/go-scalingo/io"
 
 	errgo "gopkg.in/errgo.v1"
 )
@@ -123,20 +120,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}*/
 
-	scalingoio.Status("Uploading archive to Scalingo...")
-	req, err := http.NewRequest("PUT", sources.UploadURL, bytes.NewReader(archiveBytes))
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	req.Header.Set("Date", time.Now().UTC().Format(http.TimeFormat))
-	req.Header.Add("Content-Type", mime.TypeByExtension(".gz"))
-	req.ContentLength = int64(len(archiveBytes))
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
+	res, err := uploadArchiveBytes(sources.UploadURL, archiveBytes)
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
