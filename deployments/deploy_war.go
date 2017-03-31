@@ -2,10 +2,10 @@ package deployments
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,14 +25,8 @@ type DeployWarRes struct {
 }
 
 func DeployWar(appName, warPath, gitRef string) error {
-	// TODO algo
-	// 1. If file
-	// 1.b. if url, download the archive and go to 2
-	// 2. insert into a tgz (inside a folder)
-	// 3. send it to the new /sources endpoint
-	// 4. Use the signed URL from 3. to deploy the code
-
 	var warReadStream io.ReadCloser
+
 	var warSize int64
 	var warFileName string
 	var err error
@@ -53,13 +47,12 @@ func DeployWar(appName, warPath, gitRef string) error {
 	header := &tar.Header{
 		Name:       fmt.Sprintf("%s/%s", appName, warFileName),
 		Typeflag:   tar.TypeReg, // Is a regular file
-		Mode:       0644,
+		Mode:       0640,
 		ModTime:    time.Now(),
 		AccessTime: time.Now(),
 		ChangeTime: time.Now(),
 	}
 	if warSize != 0 {
-		// TODO It is mandatory. What to do if we cannot find the size
 		header.Size = warSize
 	} else {
 		return errgo.New("Unknown WAR size")
@@ -72,58 +65,28 @@ func DeployWar(appName, warPath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	// The tar writer will write to the pipe. At the other end of the pipe we have the sources URL to
-	// upload to Scalingo.
-	pipeReader, pipeWriter := io.Pipe()
-	defer pipeReader.Close()
-	gzWriter := gzip.NewWriter(pipeWriter)
+	archiveBuffer := new(bytes.Buffer)
+	gzWriter := gzip.NewWriter(archiveBuffer)
 	tarWriter := tar.NewWriter(gzWriter)
-	defer gzWriter.Close()
-	defer tarWriter.Close()
 
-	//tarErrorChannel := make(chan error)
-	go func() {
-		defer pipeWriter.Close()
-		defer gzWriter.Close()
-		defer tarWriter.Close()
-
-		err = tarWriter.WriteHeader(header)
-		if err != nil {
-			//tarErrorChannel <- errgo.Mask(err, errgo.Any)
-			fmt.Println(errgo.Mask(err, errgo.Any))
-			return
-		}
-
-		_, err := io.Copy(tarWriter, warReadStream)
-		if err != nil {
-			//tarErrorChannel <- errgo.Mask(err, errgo.Any)
-			fmt.Println(errgo.Mask(err, errgo.Any))
-			return
-		}
-		/*fmt.Println("before sending")
-		tarErrorChannel <- errgo.New("biniou")
-		fmt.Println("after sending")
-		//close(tarErrorChannel)*/
-	}()
-	archiveBytes, err := ioutil.ReadAll(pipeReader)
+	err = tarWriter.WriteHeader(header)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to create tarball")
 	}
-	/*fmt.Println("before receiving")
-	tarError := <-tarErrorChannel
-	fmt.Println("after receiving")
-	if tarError != nil {
-		fmt.Println("error in tar")
-		return errgo.Mask(err, errgo.Any)
-	}*/
 
-	res, err := uploadArchiveBytes(sources.UploadURL, archiveBytes)
+	_, err = io.Copy(tarWriter, warReadStream)
+	if err != nil {
+		return errgo.Notef(err, "fail to copy war content")
+	}
+
+	tarWriter.Close()
+	gzWriter.Close()
+
+	res, err := uploadArchive(sources.UploadURL, archiveBuffer, int64(archiveBuffer.Len()))
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
 	}
-
-	fmt.Printf("Archive downloadable at %s\n", sources.DownloadURL)
 
 	return Deploy(appName, sources.DownloadURL, gitRef)
 }
