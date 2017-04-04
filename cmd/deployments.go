@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
@@ -96,14 +99,14 @@ var (
 				gitRef = args[1]
 			}
 			currentApp := appdetect.CurrentApp(c)
-			if c.Bool("war") {
-				io.Status("Deploy a WAR archive")
+			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
+				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
 				err := deployments.DeployWar(currentApp, archivePath, gitRef)
 				if err != nil {
 					errorQuit(err)
 				}
 			} else {
-				io.Status("Deploy an archive")
+				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
 				err := deployments.Deploy(currentApp, archivePath, gitRef)
 				if err != nil {
 					errorQuit(err)
