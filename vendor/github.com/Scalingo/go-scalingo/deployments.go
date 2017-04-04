@@ -38,9 +38,13 @@ type Deployment struct {
 	Links          *DeploymentLinks `json:"links"`
 }
 
-type DeploymentArchiveParams struct {
+type DeploymentsCreateParams struct {
 	GitRef    *string `json:"git_ref"`
 	SourceURL string  `json:"source_url"`
+}
+
+type DeploymentsCreateRes struct {
+	Deployment *Deployment `json:"deployment"`
 }
 
 func (d *Deployment) IsFinished() bool {
@@ -155,11 +159,7 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 	return conn, nil
 }
 
-func (c *Client) DeploymentArchive(app string, params *DeploymentArchiveParams) (*http.Response, error) {
-	_, err := url.Parse(params.SourceURL)
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
+func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error) {
 	req := &APIRequest{
 		Client:   c,
 		Method:   "POST",
@@ -170,5 +170,17 @@ func (c *Client) DeploymentArchive(app string, params *DeploymentArchiveParams) 
 		},
 	}
 
-	return req.Do()
+	res, err := req.Do()
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	defer res.Body.Close()
+
+	var response *DeploymentsCreateRes
+	err = ParseJSON(res, &response)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return response.Deployment, nil
 }

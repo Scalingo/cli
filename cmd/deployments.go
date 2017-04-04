@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/codegangsta-cli"
+	"github.com/Scalingo/go-scalingo/io"
 )
 
 var (
@@ -72,7 +76,9 @@ var (
 		Name:     "deploy",
 		Category: "Deployment",
 		Usage:    "Trigger a deployment by archive",
-		Flags:    []cli.Flag{appFlag},
+		Flags: []cli.Flag{appFlag,
+			cli.BoolFlag{Name: "war, w", Usage: "Specify that you want to deploy a WAR file"},
+		},
 		Description: ` Trigger the deployment of a custom archive for your application
 		$ scalingo -a myapp deploy archive.tar.gz
 		or
@@ -93,9 +99,18 @@ var (
 				gitRef = args[1]
 			}
 			currentApp := appdetect.CurrentApp(c)
-			err := deployments.Deploy(currentApp, archivePath, gitRef)
-			if err != nil {
-				errorQuit(err)
+			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
+				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
+				err := deployments.DeployWar(currentApp, archivePath, gitRef)
+				if err != nil {
+					errorQuit(err)
+				}
+			} else {
+				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
+				err := deployments.Deploy(currentApp, archivePath, gitRef)
+				if err != nil {
+					errorQuit(err)
+				}
 			}
 		},
 		BashComplete: func(c *cli.Context) {
