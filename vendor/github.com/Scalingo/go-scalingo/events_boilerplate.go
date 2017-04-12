@@ -114,3 +114,6 @@ func (e *EventNewKeyType) TypeDataPtr() interface{} {
 func (e *EventDeleteKeyType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventInvoiceAttemptType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
