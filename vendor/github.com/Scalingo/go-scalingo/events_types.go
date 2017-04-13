@@ -101,7 +101,7 @@ const (
 	EventRevokeGithub                 = "revoke_github"
 	EventNewKey                       = "new_key"
 	EventDeleteKey                    = "delete_key"
-	EventInvoiceAttempt               = "invoice_attempt"
+	EventPaymentAttempt               = "payment_attempt"
 )
 
 type EventNewAppType struct {
@@ -627,18 +627,18 @@ func (ev *EventDeleteNotificationType) String() string {
 	return ev.TypeData.String()
 }
 
-type EventInvoiceAttemptTypeData struct {
+type EventPaymentAttemptTypeData struct {
 	Amount        float32 `json:"amount"`
 	PaymentMethod string  `json:"payment_method"`
 	Status        string  `json:"status"`
 }
 
-type EventInvoiceAttemptType struct {
+type EventPaymentAttemptType struct {
 	*Event
-	TypeData EventInvoiceAttemptTypeData `json:"type_data"`
+	TypeData EventPaymentAttemptTypeData `json:"type_data"`
 }
 
-func (ev *EventInvoiceAttemptType) String() string {
+func (ev *EventPaymentAttemptType) String() string {
 	res := "There is a payment attempt of "
 	res += fmt.Sprintf("%0.2f€", ev.TypeData.Amount)
 	res += " with your "
@@ -732,8 +732,8 @@ func (ev *Event) Specialize() DetailedEvent {
 		e = &EventNewKeyType{Event: ev}
 	case EventDeleteKey:
 		e = &EventDeleteKeyType{Event: ev}
-	case EventInvoiceAttempt:
-		e = &EventInvoiceAttemptType{Event: ev}
+	case EventPaymentAttempt:
+		e = &EventPaymentAttemptType{Event: ev}
 	default:
 		return ev
 	}
