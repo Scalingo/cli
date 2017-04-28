@@ -101,10 +101,11 @@ const (
 	EventRevokeGithub                 = "revoke_github"
 	EventNewKey                       = "new_key"
 	EventDeleteKey                    = "delete_key"
+	EventPaymentAttempt               = "payment_attempt"
 )
 
 type EventNewAppType struct {
-	*Event
+	Event
 	TypeData EventNewAppTypeData `json:"type_data"`
 }
 
@@ -117,7 +118,7 @@ type EventNewAppTypeData struct {
 }
 
 type EventRenameAppType struct {
-	*Event
+	Event
 	TypeData EventRenameAppTypeData `json:"type_data"`
 }
 
@@ -134,7 +135,7 @@ type EventRenameAppTypeData struct {
 }
 
 type EventTransferAppType struct {
-	*Event
+	Event
 	TypeData EventTransferAppTypeData `json:"type_data"`
 }
 
@@ -151,7 +152,7 @@ type EventTransferAppTypeData struct {
 }
 
 type EventRestartType struct {
-	*Event
+	Event
 	TypeData EventRestartTypeData `json:"type_data"`
 }
 
@@ -169,7 +170,7 @@ type EventRestartTypeData struct {
 }
 
 type EventStopAppType struct {
-	*Event
+	Event
 	TypeData EventStopAppTypeData `json:"type_data"`
 }
 
@@ -190,7 +191,7 @@ func (ev *EventScaleType) String() string {
 }
 
 type EventScaleType struct {
-	*Event
+	Event
 	TypeData EventScaleTypeData `json:"type_data"`
 }
 
@@ -208,7 +209,7 @@ func (e *EventScaleTypeData) containersString(containers map[string]string) stri
 }
 
 type EventCrashType struct {
-	*Event
+	Event
 	TypeData EventCrashTypeData `json:"type_data"`
 }
 
@@ -221,7 +222,7 @@ type EventCrashTypeData struct {
 }
 
 type EventDeploymentType struct {
-	*Event
+	Event
 	TypeData EventDeploymentTypeData `json:"type_data"`
 }
 
@@ -238,7 +239,7 @@ type EventDeploymentTypeData struct {
 }
 
 type EventLinkGithubType struct {
-	*Event
+	Event
 	TypeData EventLinkGithubTypeData `json:"type_data"`
 }
 
@@ -253,7 +254,7 @@ type EventLinkGithubTypeData struct {
 }
 
 type EventUnlinkGithubType struct {
-	*Event
+	Event
 	TypeData EventLinkGithubTypeData `json:"type_data"`
 }
 
@@ -262,7 +263,7 @@ func (ev *EventUnlinkGithubType) String() string {
 }
 
 type EventRunType struct {
-	*Event
+	Event
 	TypeData EventRunTypeData `json:"type_data"`
 }
 
@@ -275,7 +276,7 @@ type EventRunTypeData struct {
 }
 
 type EventNewDomainType struct {
-	*Event
+	Event
 	TypeData EventNewDomainTypeData `json:"type_data"`
 }
 
@@ -289,7 +290,7 @@ type EventNewDomainTypeData struct {
 }
 
 type EventEditDomainType struct {
-	*Event
+	Event
 	TypeData EventEditDomainTypeData `json:"type_data"`
 }
 
@@ -313,7 +314,7 @@ type EventEditDomainTypeData struct {
 }
 
 type EventDeleteDomainType struct {
-	*Event
+	Event
 	TypeData EventDeleteDomainTypeData `json:"type_data"`
 }
 
@@ -332,7 +333,7 @@ type EventAddon struct {
 }
 
 type EventNewAddonType struct {
-	*Event
+	Event
 	TypeData EventNewAddonTypeData `json:"type_data"`
 }
 
@@ -348,7 +349,7 @@ type EventNewAddonTypeData struct {
 }
 
 type EventUpgradeAddonType struct {
-	*Event
+	Event
 	TypeData EventUpgradeAddonTypeData `json:"type_data"`
 }
 
@@ -366,7 +367,7 @@ type EventUpgradeAddonTypeData struct {
 }
 
 type EventDeleteAddonType struct {
-	*Event
+	Event
 	TypeData EventDeleteAddonTypeData `json:"type_data"`
 }
 
@@ -378,7 +379,7 @@ func (ev *EventDeleteAddonType) String() string {
 }
 
 type EventResumeAddonType struct {
-	*Event
+	Event
 	TypeData EventResumeAddonTypeData `json:"type_data"`
 }
 
@@ -394,7 +395,7 @@ type EventResumeAddonTypeData struct {
 }
 
 type EventSuspendAddonType struct {
-	*Event
+	Event
 	TypeData EventSuspendAddonTypeData `json:"type_data"`
 }
 
@@ -420,7 +421,7 @@ type EventCollaborator struct {
 }
 
 type EventNewCollaboratorType struct {
-	*Event
+	Event
 	TypeData EventNewCollaboratorTypeData `json:"type_data"`
 }
 
@@ -436,7 +437,7 @@ type EventNewCollaboratorTypeData struct {
 }
 
 type EventAcceptCollaboratorType struct {
-	*Event
+	Event
 	TypeData EventAcceptCollaboratorTypeData `json:"type_data"`
 }
 
@@ -454,7 +455,7 @@ type EventAcceptCollaboratorTypeData struct {
 }
 
 type EventDeleteCollaboratorType struct {
-	*Event
+	Event
 	TypeData EventDeleteCollaboratorTypeData `json:"type_data"`
 }
 
@@ -471,7 +472,7 @@ type EventDeleteCollaboratorTypeData struct {
 }
 
 type EventUpgradeDatabaseType struct {
-	*Event
+	Event
 	TypeData EventUpgradeDatabaseTypeData `json:"type_data"`
 }
 
@@ -502,7 +503,7 @@ type EventVariable struct {
 }
 
 type EventNewVariableType struct {
-	*Event
+	Event
 	TypeData EventNewVariableTypeData `json:"type_data"`
 }
 
@@ -534,7 +535,7 @@ func (evs EventVariables) Names() string {
 }
 
 type EventEditVariableType struct {
-	*Event
+	Event
 	TypeData EventEditVariableTypeData `json:"type_data"`
 }
 
@@ -548,7 +549,7 @@ type EventEditVariableTypeData struct {
 }
 
 type EventEditVariablesType struct {
-	*Event
+	Event
 	TypeData EventEditVariablesTypeData `json:"type_data"`
 }
 
@@ -573,7 +574,7 @@ type EventEditVariablesTypeData struct {
 }
 
 type EventDeleteVariableType struct {
-	*Event
+	Event
 	TypeData EventDeleteVariableTypeData `json:"type_data"`
 }
 
@@ -600,7 +601,7 @@ func (n *EventNotification) String() string {
 }
 
 type EventNewNotificationType struct {
-	*Event
+	Event
 	TypeData EventNotification `json:"type_data"`
 }
 
@@ -609,7 +610,7 @@ func (ev *EventNewNotificationType) String() string {
 }
 
 type EventEditNotificationType struct {
-	*Event
+	Event
 	TypeData EventNotification `json:"type_data"`
 }
 
@@ -618,7 +619,7 @@ func (ev *EventEditNotificationType) String() string {
 }
 
 type EventDeleteNotificationType struct {
-	*Event
+	Event
 	TypeData EventNotification `json:"type_data"`
 }
 
@@ -626,8 +627,39 @@ func (ev *EventDeleteNotificationType) String() string {
 	return ev.TypeData.String()
 }
 
-func (ev *Event) Specialize() DetailedEvent {
+type EventPaymentAttemptTypeData struct {
+	Amount        float32 `json:"amount"`
+	PaymentMethod string  `json:"payment_method"`
+	Status        string  `json:"status"`
+}
+
+type EventPaymentAttemptType struct {
+	Event
+	TypeData EventPaymentAttemptTypeData `json:"type_data"`
+}
+
+func (ev *EventPaymentAttemptType) String() string {
+	res := "Payment attempt of "
+	res += fmt.Sprintf("%0.2f€", ev.TypeData.Amount)
+	res += " with your "
+	if ev.TypeData.PaymentMethod == "credit" {
+		res += "credits"
+	} else {
+		res += "card"
+	}
+	if ev.TypeData.Status == "new" {
+		res += " (pending)"
+	} else if ev.TypeData.Status == "paid" {
+		res += " (success)"
+	} else {
+		res += " (fail)"
+	}
+	return res
+}
+
+func (pev *Event) Specialize() DetailedEvent {
 	var e DetailedEvent
+	ev := *pev
 	switch ev.Type {
 	case EventNewApp:
 		e = &EventNewAppType{Event: ev}
@@ -701,13 +733,15 @@ func (ev *Event) Specialize() DetailedEvent {
 		e = &EventNewKeyType{Event: ev}
 	case EventDeleteKey:
 		e = &EventDeleteKeyType{Event: ev}
+	case EventPaymentAttempt:
+		e = &EventPaymentAttemptType{Event: ev}
 	default:
-		return ev
+		return pev
 	}
-	err := json.Unmarshal(ev.RawTypeData, e.TypeDataPtr())
+	err := json.Unmarshal(pev.RawTypeData, e.TypeDataPtr())
 	if err != nil {
 		debug.Printf("error reading the data: %+v\n", err)
-		return ev
+		return pev
 	}
 	return e
 }

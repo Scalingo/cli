@@ -3,7 +3,7 @@ package scalingo
 import "fmt"
 
 type EventAuthorizeGithubType struct {
-	*Event
+	Event
 	TypeData EventAuthorizeGithubTypeData `json:"type_data"`
 }
 
@@ -21,7 +21,7 @@ type EventAuthorizeGithubTypeData struct {
 }
 
 type EventRevokeGithubType struct {
-	*Event
+	Event
 }
 
 func (ev *EventRevokeGithubType) String() string {
@@ -29,7 +29,7 @@ func (ev *EventRevokeGithubType) String() string {
 }
 
 type EventNewKeyType struct {
-	*Event
+	Event
 	TypeData EventNewKeyTypeData `json:"type_data"`
 }
 
@@ -43,7 +43,7 @@ type EventNewKeyTypeData struct {
 }
 
 type EventDeleteKeyType struct {
-	*Event
+	Event
 	TypeData EventDeleteKeyTypeData `json:"type_data"`
 }
 

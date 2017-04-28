@@ -7,7 +7,7 @@ import (
 )
 
 type EventAddCreditType struct {
-	*Event
+	Event
 	TypeData EventAddCreditTypeData `json:"type_data"`
 }
 
@@ -23,7 +23,7 @@ type EventAddCreditTypeData struct {
 }
 
 type EventAddPaymentMethodType struct {
-	*Event
+	Event
 	TypeData EventAddPaymentMethodTypeData `json:"type_data"`
 }
 
@@ -41,7 +41,7 @@ type EventAddPaymentMethodTypeData struct {
 }
 
 type EventAddVoucherType struct {
-	*Event
+	Event
 	TypeData EventAddVoucherTypeData `json:"type_data"`
 }
 
