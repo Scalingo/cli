@@ -1,12 +1,12 @@
 package apps
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	stdio "io"
 	"io/ioutil"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -84,7 +84,10 @@ func dumpLogs(logsURL string, n int, filter string) error {
 		return nil
 	}
 
-	_, err = stdio.Copy(os.Stdout, res.Body)
+	//_, err = stdio.Copy(os.Stdout, res.Body)
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(res.Body)
+	colorizeLogs(buf.String())
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -136,7 +139,7 @@ func streamLogs(logsRawURL string, filter string) error {
 			switch event.Type {
 			case "ping":
 			case "log":
-				fmt.Println(strings.TrimSpace(event.Log))
+				colorizeLogs(strings.TrimSpace(event.Log))
 			}
 		}
 	}
@@ -173,4 +176,36 @@ func checkFilter(appName string, filter string) error {
 	}
 
 	return nil
+}
+
+func colorizeLogs(logs string) {
+	lines := strings.Split(logs, "\n")
+
+	for _, line := range lines {
+		lineSplit := strings.Split(line, " - ")
+		if len(lineSplit) < 2 {
+			fmt.Println(line)
+			continue
+		}
+		header := lineSplit[0]
+		content := strings.Join(lineSplit[1:], " - ")
+
+		headerSplit := strings.Split(header, " ")
+		if len(headerSplit) != 6 {
+			fmt.Println(line)
+			continue
+		}
+		date := strings.Join(headerSplit[:4], " ")
+		containerWithSurround := headerSplit[4]
+		container := containerWithSurround[1 : len(containerWithSurround)-1]
+		ip := headerSplit[5]
+
+		fmt.Printf(
+			"%s [%s] %s - %s\n",
+			io.Yellow(date),
+			io.Green(container),
+			io.LightGray(ip),
+			content,
+		)
+	}
 }
