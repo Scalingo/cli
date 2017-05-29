@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
-	"GoVersion": "go1.7",
+	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
@@ -45,6 +45,11 @@
 			"Rev": "009166a695a2f516c749a26b4ac1f183d89aa336"
 		},
 		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v1.5.0-2-g62e9147",
+			"Rev": "62e9147c64a1ed519147b62a56a14e83e2be02c1"
+		},
+		{
 			"ImportPath": "github.com/heroku/hk/term",
 			"Comment": "v20140604-24-g9529c56",
 			"Rev": "9529c565876399db5b99c815664845ace7f6fd1a"
@@ -52,6 +57,16 @@
 		{
 			"ImportPath": "github.com/howeyc/gopass",
 			"Rev": "f5387c492211eb133053880d23dfae62aa14123d"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.7-24-gded68f7",
+			"Rev": "ded68f7a9561c023e790de24279db7ebf473ea80"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.2",
+			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
 		},
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
@@ -100,6 +115,10 @@
 			"Rev": "5058c78c3627b31e484a81463acd51c7cecc06f3"
 		},
 		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		},
+		{
 			"ImportPath": "gopkg.in/errgo.v1",
 			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
 		},
@@ -107,10 +126,6 @@
 			"ImportPath": "launchpad.net/gocheck",
 			"Comment": "87",
 			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
-		},
-		{
-			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
 		}
 	]
 }

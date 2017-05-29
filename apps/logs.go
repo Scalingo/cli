@@ -2,6 +2,7 @@ package apps
 
 import (
 	"bufio"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	stdio "io"
@@ -14,6 +15,7 @@ import (
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/fatih/color"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
 )
@@ -180,6 +182,24 @@ func checkFilter(appName string, filter string) error {
 	return nil
 }
 
+type colorFunc func(...interface{}) string
+
+var (
+	containerColors = []colorFunc{
+		color.New(color.FgBlue).SprintFunc(),
+		color.New(color.FgCyan).SprintFunc(),
+		color.New(color.FgGreen).SprintFunc(),
+		color.New(color.FgMagenta).SprintFunc(),
+		color.New(color.FgRed).SprintFunc(),
+		color.New(color.FgHiYellow).SprintFunc(),
+		color.New(color.FgHiBlue).SprintFunc(),
+		color.New(color.FgHiCyan).SprintFunc(),
+		color.New(color.FgHiGreen).SprintFunc(),
+		color.New(color.FgHiMagenta).SprintFunc(),
+		color.New(color.FgHiRed).SprintFunc(),
+	}
+)
+
 func colorizeLogs(logs string) {
 	lines := strings.Split(logs, "\n")
 
@@ -200,10 +220,13 @@ func colorizeLogs(logs string) {
 		containerWithSurround := headerSplit[4]
 		container := containerWithSurround[1 : len(containerWithSurround)-1]
 
+		hash := md5.Sum([]byte(container))
+		colorId := int(hash[0]+hash[1]+hash[2]+hash[3]) % len(containerColors)
+
 		fmt.Printf(
 			"%s [%s] %s\n",
-			io.Yellow(date),
-			io.Green(container),
+			color.New(color.FgYellow).SprintFunc()(date),
+			containerColors[colorId](container),
 			content,
 		)
 	}
