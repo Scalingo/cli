@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"bytes"
+	"bufio"
 	"encoding/json"
 	"fmt"
 	stdio "io"
@@ -84,12 +84,14 @@ func dumpLogs(logsURL string, n int, filter string) error {
 		return nil
 	}
 
-	//_, err = stdio.Copy(os.Stdout, res.Body)
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(res.Body)
-	colorizeLogs(buf.String())
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+	sr := bufio.NewReader(res.Body)
+	for {
+		bline, err := sr.ReadBytes('\n')
+		if err != nil {
+			break
+		}
+
+		colorizeLogs(string(bline))
 	}
 
 	return nil
@@ -182,6 +184,10 @@ func colorizeLogs(logs string) {
 	lines := strings.Split(logs, "\n")
 
 	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+
 		lineSplit := strings.Split(line, " - ")
 		if len(lineSplit) < 2 {
 			fmt.Println(line)
