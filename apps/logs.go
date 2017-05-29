@@ -184,8 +184,8 @@ func checkFilter(appName string, filter string) error {
 
 type colorFunc func(...interface{}) string
 
-var (
-	containerColors = []colorFunc{
+func colorizeLogs(logs string) {
+	containerColors := []colorFunc{
 		color.New(color.FgBlue).SprintFunc(),
 		color.New(color.FgCyan).SprintFunc(),
 		color.New(color.FgGreen).SprintFunc(),
@@ -198,9 +198,7 @@ var (
 		color.New(color.FgHiMagenta).SprintFunc(),
 		color.New(color.FgHiRed).SprintFunc(),
 	}
-)
 
-func colorizeLogs(logs string) {
 	lines := strings.Split(logs, "\n")
 
 	for _, line := range lines {
