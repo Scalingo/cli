@@ -188,29 +188,22 @@ func colorizeLogs(logs string) {
 			continue
 		}
 
-		lineSplit := strings.Split(line, " - ")
-		if len(lineSplit) < 2 {
+		lineSplit := strings.Split(line, " ")
+		if len(lineSplit) < 5 {
 			fmt.Println(line)
 			continue
 		}
-		header := lineSplit[0]
-		content := strings.Join(lineSplit[1:], " - ")
+		content := strings.Join(lineSplit[5:], " ")
 
-		headerSplit := strings.Split(header, " ")
-		if len(headerSplit) != 6 {
-			fmt.Println(line)
-			continue
-		}
+		headerSplit := lineSplit[:5]
 		date := strings.Join(headerSplit[:4], " ")
 		containerWithSurround := headerSplit[4]
 		container := containerWithSurround[1 : len(containerWithSurround)-1]
-		ip := headerSplit[5]
 
 		fmt.Printf(
-			"%s [%s] %s - %s\n",
+			"%s [%s] %s\n",
 			io.Yellow(date),
 			io.Green(container),
-			io.LightGray(ip),
 			content,
 		)
 	}
