@@ -222,10 +222,9 @@ func colorizeLogs(logs string) {
 		hash := md5.Sum([]byte(container))
 		colorId := int(hash[0]+hash[1]+hash[2]+hash[3]) % len(containerColors)
 
-		//if container == "router" {
-		content = "method=GET path=\"/v1/prov    \\i     \\\"der\" host=<host> request_id=0059d1b6-xxxxxxxx-xxxx-xxxxxx from=\"123.123.123.201\" protocol=https status=404 duration=0.007s bytes=544 referer=\"-\" user_agent=\"Go-http-client/4.2"
-		content = colorizeRouterLogs(content)
-		//}
+		if container == "router" {
+			content = colorizeRouterLogs(content)
+		}
 
 		fmt.Printf(
 			"%s [%s] %s\n",
