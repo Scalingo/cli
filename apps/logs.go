@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
@@ -221,11 +222,82 @@ func colorizeLogs(logs string) {
 		hash := md5.Sum([]byte(container))
 		colorId := int(hash[0]+hash[1]+hash[2]+hash[3]) % len(containerColors)
 
+		//if container == "router" {
+		content = "method=GET path=\"/v1/prov    \\i     \\\"der\" host=<host> request_id=0059d1b6-xxxxxxxx-xxxx-xxxxxx from=\"123.123.123.201\" protocol=https status=404 duration=0.007s bytes=544 referer=\"-\" user_agent=\"Go-http-client/4.2"
+		content = colorizeRouterLogs(content)
+		//}
+
 		fmt.Printf(
 			"%s [%s] %s\n",
-			color.New(color.FgYellow).SprintFunc()(date),
+			color.New(color.FgYellow).Sprint(date),
 			containerColors[colorId](container),
 			content,
 		)
 	}
+}
+
+const (
+	varname int = iota
+	equal
+	intext
+	instring
+)
+
+func colorizeRouterLogs(content string) string {
+	var outContent string
+	var stateBeginnedAt int
+
+	state := varname
+	// Remember where the matching state started
+	stateBeginnedAt = 0
+	outContent = ""
+	// Will be true if we are on the last char
+	isEnd := false
+	for i := 0; i < len([]rune(content)); i++ {
+		c := []rune(content)[i]
+		if i+1 >= len([]rune(content)) {
+			isEnd = true
+		}
+
+		// Some cases can return one char back if they go too far
+		switch state {
+		case varname:
+			if isEnd || (!unicode.IsLetter(c) && string(c) != "_") {
+				end := i
+				outContent += color.New(color.FgGreen).Sprint(content[stateBeginnedAt:end])
+				state = equal
+				stateBeginnedAt = end
+				i--
+			}
+		case equal:
+			end := i + 1
+			outContent += color.New(color.FgRed).Sprint(content[stateBeginnedAt:end])
+			state = intext
+			stateBeginnedAt = end
+		case intext:
+			if !isEnd && string(c) == "\"" {
+				state = instring
+			} else if isEnd || string(c) == " " {
+				end := i + 1
+				outContent += color.New(color.FgWhite).Sprint(content[stateBeginnedAt:end])
+				state = varname
+				stateBeginnedAt = end
+			}
+		case instring:
+			isEndAfter := i+2 >= len([]rune(content))
+			if !isEndAfter && string(c) == "\\" {
+				// Skip next char
+				i++
+			} else if isEnd || string(c) == "\"" {
+				state = intext
+				if isEnd {
+					i--
+				}
+			}
+		default:
+			outContent += string(c)
+		}
+	}
+
+	return fmt.Sprintf("%s", outContent)
 }
