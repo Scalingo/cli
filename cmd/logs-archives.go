@@ -15,7 +15,8 @@ var (
 		Usage:     "Get the logs archives of your applications",
 		Description: `Get the logs archives of your applications
    Example:
-     TODO `,
+     Get most recents archives : 'scalingo --app my-app logs-archives'
+     Get a specific page : 'scalingo --app my-app logs-archives -c CURSOR'`,
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "cursor, c", Usage: "Cursor to the next page", EnvVar: ""},
 		},
