@@ -1,45 +1,19 @@
 package apps
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 
 	"github.com/Scalingo/cli/config"
 	errgo "gopkg.in/errgo.v1"
 )
 
-type LogsItem struct {
-	Url  string `json:"url"`
-	From string `json:"from"`
-	To   string `json:"to"`
-	Size int64  `json:"size"`
-}
-
-type LogsResponse struct {
-	NextCursor string     `json:"next_cursor"`
-	HasMore    bool       `json:"has_more"`
-	Archives   []LogsItem `json:"archives"`
-}
-
 func LogsArchives(appName string, cursor string) error {
 	c := config.ScalingoClient()
 
-	res, err := c.LogsArchives(appName, cursor)
+	logsRes, err := c.LogsArchives(appName, cursor)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	var logsRes = LogsResponse{}
-	err = json.Unmarshal(body, &logsRes)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Mask(err)
 	}
 
 	fmt.Println("-------")
