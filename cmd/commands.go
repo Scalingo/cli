@@ -13,6 +13,7 @@ var (
 
 		// Apps Actions
 		LogsCommand,
+		LogsArchivesCommand,
 		RunCommand,
 
 		// Apps Process Actions

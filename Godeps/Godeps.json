@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
-	"GoVersion": "go1.7",
+	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
@@ -22,19 +22,19 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/debug",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/io",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
@@ -46,71 +46,67 @@
 		},
 		{
 			"ImportPath": "github.com/heroku/hk/term",
-			"Comment": "v20140604-24-g9529c56",
-			"Rev": "9529c565876399db5b99c815664845ace7f6fd1a"
+			"Comment": "v20140604-41-g9c27ee3",
+			"Rev": "9c27ee3bfe9f66aa13a74615442012f64c48ae03"
 		},
 		{
 			"ImportPath": "github.com/howeyc/gopass",
-			"Rev": "f5387c492211eb133053880d23dfae62aa14123d"
+			"Rev": "bf9dde6d0d2c004a008c27aaee91170c786f6db8"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "v0.0.2-3-g97311d9",
+			"Rev": "97311d9f7767e3d6f422ea06661bc2c7a19e8a5d"
 		},
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
-		},
-		{
-			"ImportPath": "github.com/olekukonko/tablewriter/csv2table",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+			"Rev": "febf2d34b54a69ce7530036c7503b1c9fbfdf0bb"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
-			"Comment": "v0.7.0-5-ga2d6902",
-			"Rev": "a2d6902c6d2a2f194eb3fb474981ab7867c81505"
+			"Comment": "v0.8.0-5-gc605e28",
+			"Rev": "c605e284fe17294bda444b34710735b29d1a9d90"
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.2.0-10-g292188c",
+			"Comment": "v0.3.0-6-g292188c",
 			"Rev": "292188c2b3067786458d2dac9cea1b61c3661063"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/curve25519",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ed25519",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/agent",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
-			"Rev": "811831de4c4dd03a0b8737233af3b36852386373"
+			"Rev": "c7af5bf2638a1164f2eb5467c39c6cffbd13a02e"
 		},
 		{
 			"ImportPath": "golang.org/x/net/websocket",
-			"Rev": "5058c78c3627b31e484a81463acd51c7cecc06f3"
+			"Rev": "da118f7b8e5954f39d0d2130ab35d4bf0e3cb344"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "9ccfe848b9db8435a24c424abbc07a921adf1df5"
 		},
 		{
 			"ImportPath": "gopkg.in/errgo.v1",
 			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
-		},
-		{
-			"ImportPath": "launchpad.net/gocheck",
-			"Comment": "87",
-			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
-		},
-		{
-			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
 		}
 	]
 }
