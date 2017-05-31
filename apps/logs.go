@@ -2,7 +2,6 @@ package apps
 
 import (
 	"bufio"
-	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	stdio "io"
@@ -217,12 +216,16 @@ func colorizeLogs(logs string) {
 		containerWithSurround := headerSplit[4]
 		container := containerWithSurround[1 : len(containerWithSurround)-1]
 
-		hash := md5.Sum([]byte(container))
-		colorId := int(hash[0]+hash[1]+hash[2]+hash[3]) % len(containerColors)
+		colorId := 0
+		for _, letter := range []byte(container) {
+			colorId += int(letter)
+		}
 
 		if container == "router" {
+			colorId += 6
 			content = colorizeRouterLogs(content)
 		}
+		colorId = colorId % len(containerColors)
 
 		fmt.Printf(
 			"%s [%s] %s\n",
