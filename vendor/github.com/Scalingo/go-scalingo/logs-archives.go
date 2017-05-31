@@ -8,20 +8,20 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
-type LogsItem struct {
+type LogsArchiveItem struct {
 	Url  string `json:"url"`
 	From string `json:"from"`
 	To   string `json:"to"`
 	Size int64  `json:"size"`
 }
 
-type LogsResponse struct {
-	NextCursor string     `json:"next_cursor"`
-	HasMore    bool       `json:"has_more"`
-	Archives   []LogsItem `json:"archives"`
+type LogsArchivesResponse struct {
+	NextCursor string            `json:"next_cursor"`
+	HasMore    bool              `json:"has_more"`
+	Archives   []LogsArchiveItem `json:"archives"`
 }
 
-func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsResponse, error) {
+func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsArchivesResponse, error) {
 	req := &APIRequest{
 		Client:   c,
 		Endpoint: "/apps/" + app + "/logs_archives",
@@ -40,7 +40,7 @@ func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsResponse,
 		return nil, errgo.Mask(err)
 	}
 
-	var logsRes = LogsResponse{}
+	var logsRes = LogsArchivesResponse{}
 	err = json.Unmarshal(body, &logsRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
@@ -49,7 +49,7 @@ func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsResponse,
 	return &logsRes, nil
 }
 
-func (c *Client) LogsArchives(app string, page int) (*LogsResponse, error) {
+func (c *Client) LogsArchives(app string, page int) (*LogsArchivesResponse, error) {
 	if page < 1 {
 		return nil, errgo.New("Page must be greater than 0.")
 	}
@@ -72,7 +72,7 @@ func (c *Client) LogsArchives(app string, page int) (*LogsResponse, error) {
 		return nil, errgo.Mask(err)
 	}
 
-	var logsRes = LogsResponse{}
+	var logsRes = LogsArchivesResponse{}
 	err = json.Unmarshal(body, &logsRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
