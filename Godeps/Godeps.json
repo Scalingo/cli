@@ -22,19 +22,19 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/debug",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/io",
-			"Rev": "667fc431c0edbfffba827f848527c33891a45e37"
+			"Rev": "ef9970b72ec8534c35fc124b128b05766aceab01"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
@@ -64,17 +64,13 @@
 			"Rev": "ded68f7a9561c023e790de24279db7ebf473ea80"
 		},
 		{
-			"ImportPath": "github.com/mattn/go-isatty",
-			"Comment": "v0.0.2",
-			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
-		},
-		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
 		},
 		{
-			"ImportPath": "github.com/olekukonko/tablewriter/csv2table",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.2",
+			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
@@ -83,7 +79,7 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.2.0-10-g292188c",
+			"Comment": "v0.3.0-6-g292188c",
 			"Rev": "292188c2b3067786458d2dac9cea1b61c3661063"
 		},
 		{
@@ -121,11 +117,6 @@
 		{
 			"ImportPath": "gopkg.in/errgo.v1",
 			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
-		},
-		{
-			"ImportPath": "launchpad.net/gocheck",
-			"Comment": "87",
-			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
 		}
 	]
 }
