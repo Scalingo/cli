@@ -191,13 +191,11 @@ func colorizeLogs(logs string) {
 		color.New(color.FgCyan).SprintFunc(),
 		color.New(color.FgGreen).SprintFunc(),
 		color.New(color.FgMagenta).SprintFunc(),
-		color.New(color.FgRed).SprintFunc(),
 		color.New(color.FgHiYellow).SprintFunc(),
 		color.New(color.FgHiBlue).SprintFunc(),
 		color.New(color.FgHiCyan).SprintFunc(),
 		color.New(color.FgHiGreen).SprintFunc(),
 		color.New(color.FgHiMagenta).SprintFunc(),
-		color.New(color.FgHiRed).SprintFunc(),
 	}
 
 	lines := strings.Split(logs, "\n")
