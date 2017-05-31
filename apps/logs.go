@@ -299,5 +299,5 @@ func colorizeRouterLogs(content string) string {
 		}
 	}
 
-	return fmt.Sprintf("%s", outContent)
+	return outContent
 }
