@@ -1,19 +1,22 @@
 package apps
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	stdio "io"
 	"io/ioutil"
 	"net/url"
-	"os"
+	"regexp"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/fatih/color"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
 )
@@ -84,9 +87,14 @@ func dumpLogs(logsURL string, n int, filter string) error {
 		return nil
 	}
 
-	_, err = stdio.Copy(os.Stdout, res.Body)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+	sr := bufio.NewReader(res.Body)
+	for {
+		bline, err := sr.ReadBytes('\n')
+		if err != nil {
+			break
+		}
+
+		colorizeLogs(string(bline))
 	}
 
 	return nil
@@ -136,7 +144,7 @@ func streamLogs(logsRawURL string, filter string) error {
 			switch event.Type {
 			case "ping":
 			case "log":
-				fmt.Println(strings.TrimSpace(event.Log))
+				colorizeLogs(strings.TrimSpace(event.Log))
 			}
 		}
 	}
@@ -173,4 +181,133 @@ func checkFilter(appName string, filter string) error {
 	}
 
 	return nil
+}
+
+type colorFunc func(...interface{}) string
+
+func colorizeLogs(logs string) {
+	containerColors := []colorFunc{
+		color.New(color.FgBlue).SprintFunc(),
+		color.New(color.FgCyan).SprintFunc(),
+		color.New(color.FgGreen).SprintFunc(),
+		color.New(color.FgMagenta).SprintFunc(),
+		color.New(color.FgHiYellow).SprintFunc(),
+		color.New(color.FgHiBlue).SprintFunc(),
+		color.New(color.FgHiCyan).SprintFunc(),
+		color.New(color.FgHiGreen).SprintFunc(),
+		color.New(color.FgHiMagenta).SprintFunc(),
+	}
+
+	lines := strings.Split(logs, "\n")
+
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+
+		lineSplit := strings.Split(line, " ")
+		if len(lineSplit) < 5 {
+			fmt.Println(line)
+			continue
+		}
+		content := strings.Join(lineSplit[5:], " ")
+
+		headerSplit := lineSplit[:5]
+		date := strings.Join(headerSplit[:4], " ")
+		containerWithSurround := headerSplit[4]
+		container := containerWithSurround[1 : len(containerWithSurround)-1]
+
+		colorId := 0
+		for _, letter := range []byte(container) {
+			colorId += int(letter)
+		}
+
+		if container == "router" {
+			colorId += 6
+			content = colorizeRouterLogs(content)
+		} else {
+			content = errorHighlight(content)
+		}
+		colorId = colorId % len(containerColors)
+
+		fmt.Printf(
+			"%s [%s] %s\n",
+			color.New(color.FgYellow).Sprint(date),
+			containerColors[colorId](container),
+			content,
+		)
+	}
+}
+
+const (
+	varNameState int = iota
+	equalState
+	inTextState
+	inStringState
+)
+
+func colorizeRouterLogs(content string) string {
+	var outContent string
+	var stateBeginnedAt int
+
+	state := varNameState
+	// Remember where the matching state started
+	stateBeginnedAt = 0
+	outContent = ""
+	// Will be true if we are on the last char
+	isEnd := false
+	for i := 0; i < len([]rune(content)); i++ {
+		c := []rune(content)[i]
+		if i+1 >= len([]rune(content)) {
+			isEnd = true
+		}
+
+		// Some cases can return one char back if they go too far
+		switch state {
+		case varNameState:
+			if isEnd || (!unicode.IsLetter(c) && string(c) != "_") {
+				end := i
+				outContent += color.New(color.FgGreen).Sprint(content[stateBeginnedAt:end])
+				state = equalState
+				stateBeginnedAt = end
+				i--
+			}
+		case equalState:
+			end := i + 1
+			outContent += color.New(color.FgRed).Sprint(content[stateBeginnedAt:end])
+			state = inTextState
+			stateBeginnedAt = end
+		case inTextState:
+			if !isEnd && string(c) == "\"" {
+				state = inStringState
+			} else if isEnd || string(c) == " " {
+				end := i + 1
+				outContent += color.New(color.FgWhite).Sprint(content[stateBeginnedAt:end])
+				state = varNameState
+				stateBeginnedAt = end
+			}
+		case inStringState:
+			isEndAfter := i+2 >= len([]rune(content))
+			if !isEndAfter && string(c) == "\\" {
+				// Skip next char
+				i++
+			} else if isEnd || string(c) == "\"" {
+				state = inTextState
+				if isEnd {
+					i--
+				}
+			}
+		default:
+			outContent += string(c)
+		}
+	}
+
+	return outContent
+}
+
+func errorHighlight(content string) string {
+	reg := regexp.MustCompile("(?i)(\\berr(or)?\\b)")
+	outContent := reg.ReplaceAllString(content, color.New(color.BgRed).Sprint("$1"))
+
+	return outContent
 }

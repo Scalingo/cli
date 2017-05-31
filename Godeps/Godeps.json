@@ -64,13 +64,13 @@
 			"Rev": "ded68f7a9561c023e790de24279db7ebf473ea80"
 		},
 		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
+			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+		},
+		{
 			"ImportPath": "github.com/mattn/go-isatty",
 			"Comment": "v0.0.2",
 			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
-		},
-		{
-			"ImportPath": "github.com/olekukonko/tablewriter",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
