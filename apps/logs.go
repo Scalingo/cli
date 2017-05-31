@@ -7,6 +7,7 @@ import (
 	stdio "io"
 	"io/ioutil"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 	"unicode"
@@ -224,6 +225,8 @@ func colorizeLogs(logs string) {
 		if container == "router" {
 			colorId += 6
 			content = colorizeRouterLogs(content)
+		} else {
+			content = errorHighlight(content)
 		}
 		colorId = colorId % len(containerColors)
 
@@ -298,6 +301,13 @@ func colorizeRouterLogs(content string) string {
 			outContent += string(c)
 		}
 	}
+
+	return outContent
+}
+
+func errorHighlight(content string) string {
+	reg := regexp.MustCompile("(?i)(\\berr(or)?\\b)")
+	outContent := reg.ReplaceAllString(content, color.New(color.BgRed).Sprint("$1"))
 
 	return outContent
 }
