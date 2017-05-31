@@ -234,17 +234,17 @@ func colorizeLogs(logs string) {
 }
 
 const (
-	varname int = iota
-	equal
-	intext
-	instring
+	varNameState int = iota
+	equalState
+	inTextState
+	inStringState
 )
 
 func colorizeRouterLogs(content string) string {
 	var outContent string
 	var stateBeginnedAt int
 
-	state := varname
+	state := varNameState
 	// Remember where the matching state started
 	stateBeginnedAt = 0
 	outContent = ""
@@ -258,35 +258,35 @@ func colorizeRouterLogs(content string) string {
 
 		// Some cases can return one char back if they go too far
 		switch state {
-		case varname:
+		case varNameState:
 			if isEnd || (!unicode.IsLetter(c) && string(c) != "_") {
 				end := i
 				outContent += color.New(color.FgGreen).Sprint(content[stateBeginnedAt:end])
-				state = equal
+				state = equalState
 				stateBeginnedAt = end
 				i--
 			}
-		case equal:
+		case equalState:
 			end := i + 1
 			outContent += color.New(color.FgRed).Sprint(content[stateBeginnedAt:end])
-			state = intext
+			state = inTextState
 			stateBeginnedAt = end
-		case intext:
+		case inTextState:
 			if !isEnd && string(c) == "\"" {
-				state = instring
+				state = inStringState
 			} else if isEnd || string(c) == " " {
 				end := i + 1
 				outContent += color.New(color.FgWhite).Sprint(content[stateBeginnedAt:end])
-				state = varname
+				state = varNameState
 				stateBeginnedAt = end
 			}
-		case instring:
+		case inStringState:
 			isEndAfter := i+2 >= len([]rune(content))
 			if !isEndAfter && string(c) == "\\" {
 				// Skip next char
 				i++
 			} else if isEnd || string(c) == "\"" {
-				state = intext
+				state = inTextState
 				if isEnd {
 					i--
 				}
