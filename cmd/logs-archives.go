@@ -16,19 +16,19 @@ var (
 		Description: `Get the logs archives of your applications
    Example:
      Get most recents archives : 'scalingo --app my-app logs-archives'
-     Get a specific page : 'scalingo --app my-app logs-archives -c CURSOR'`,
+     Get a specific page : 'scalingo --app my-app logs-archives -p 5'`,
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "cursor, c", Usage: "Cursor to the next page", EnvVar: ""},
+			cli.IntFlag{Name: "page, p", Usage: "Page number", EnvVar: ""},
 		},
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
-				if err := apps.LogsArchives(currentApp, c.String("c")); err != nil {
+				if err := apps.LogsArchives(currentApp, c.Int("p")); err != nil {
 					errorQuit(err)
 				}
 			} else {
-				cli.ShowCommandHelp(c, "logs")
+				cli.ShowCommandHelp(c, "logs-archives")
 			}
 		},
 		BashComplete: func(c *cli.Context) {
