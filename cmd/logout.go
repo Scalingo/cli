@@ -5,7 +5,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 var (

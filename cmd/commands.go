@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 var (

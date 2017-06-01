@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 func HelpAutoComplete(c *cli.Context) error {

@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 func AuthenticateHook(c *cli.Context) error {

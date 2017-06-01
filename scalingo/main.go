@@ -10,8 +10,8 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
-	"github.com/Scalingo/codegangsta-cli"
 	"github.com/stvp/rollbar"
+	"github.com/urfave/cli"
 )
 
 func DefaultAction(c *cli.Context) {
@@ -25,7 +25,7 @@ func DefaultAction(c *cli.Context) {
 	}
 
 	if !completeMode {
-		cmd.HelpCommand.Action(c)
+		cmd.HelpCommand.Action.(func(*cli.Context))(c)
 		cmd.ShowSuggestions(c)
 	} else {
 		i := len(os.Args) - 2
@@ -50,7 +50,6 @@ func main() {
 	app.Email = "hello@scalingo.com"
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
-	app.CategorizedHelp = true
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},

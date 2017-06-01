@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 func CmdFlagsAutoComplete(c *cli.Context, command string) error {
