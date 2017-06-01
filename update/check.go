@@ -5,10 +5,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 var (
@@ -36,7 +37,12 @@ func Check() error {
 		return nil
 	}
 
-	<-gotLastVersion
+	select {
+	case <-gotLastVersion:
+	case <-time.After(time.Second * 4):
+		fmt.Println("Timeout when connecting on scalingo server.")
+		return errgo.New("Timeout when connecting on scalingo server.")
+	}
 	if version == lastVersion {
 		return nil
 	}
