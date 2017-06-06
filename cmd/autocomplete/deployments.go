@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
   "github.com/Scalingo/cli/appdetect"

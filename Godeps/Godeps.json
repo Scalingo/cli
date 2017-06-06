@@ -7,11 +7,6 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/Scalingo/codegangsta-cli",
-			"Comment": "1.2.0-145-g13206e9",
-			"Rev": "13206e93c57c98e103fd016b325b82f197b94ed6"
-		},
-		{
 			"ImportPath": "github.com/Scalingo/envconfig",
 			"Comment": "v1.0.0-3-g8eb48cc",
 			"Rev": "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
@@ -64,13 +59,13 @@
 			"Rev": "ded68f7a9561c023e790de24279db7ebf473ea80"
 		},
 		{
-			"ImportPath": "github.com/olekukonko/tablewriter",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
-		},
-		{
 			"ImportPath": "github.com/mattn/go-isatty",
 			"Comment": "v0.0.2",
 			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
+		},
+		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
+			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
@@ -81,6 +76,11 @@
 			"ImportPath": "github.com/stvp/rollbar",
 			"Comment": "v0.3.0-6-g292188c",
 			"Rev": "292188c2b3067786458d2dac9cea1b61c3661063"
+		},
+		{
+			"ImportPath": "github.com/urfave/cli",
+			"Comment": "v1.19.1-36-gd70f47e",
+			"Rev": "d70f47eeca3afd795160003bc6e28b001d60c67c"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/curve25519",

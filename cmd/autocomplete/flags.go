@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 func getFlagByName(lastArg string, flags []cli.Flag) (bool, cli.Flag) {
@@ -43,7 +43,7 @@ func CountFlags(flags []string) int {
 }
 
 func GetFlagNames(flag cli.Flag) []string {
-	names := strings.Split(cli.GetFlagName(flag), ",")
+	names := strings.Split(flag.GetName(), ",")
 
 	for i := range names {
 		if i == 0 {

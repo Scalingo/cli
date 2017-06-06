@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/debug"
 )
 

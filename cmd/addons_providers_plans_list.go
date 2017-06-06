@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/addon_providers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 )
