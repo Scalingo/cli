@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### v1.5.1
+
+* [Feature] Authenticate your request using the environment by using the environment variable `SCALINGO_API_TOKEN` #291
+
 ### v1.5.0
 
 * [Feature] Add `deploy` command to deploy a tarball or a war archive directly
