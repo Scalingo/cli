@@ -84,7 +84,8 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
 	var c auth.ConfigPerHostV1
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
-		return errgo.Mask(err)
+		fmt.Println("Auth: error while reading auth file. Recreating a new one.")
+		c = make(auth.ConfigPerHostV1)
 	}
 
 	c[C.apiHost] = user
