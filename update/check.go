@@ -42,8 +42,8 @@ func Check() error {
 	<-gotLastVersion
 
 	if gotAnError {
-		fmt.Println("An error append when connecting on scalingo server.")
-		return errgo.New("Timeout when connecting on scalingo server.")
+		fmt.Println("Update checker: connection error")
+		return errgo.New("Update checker: connection error")
 	}
 	if version == lastVersion {
 		return nil
