@@ -16,6 +16,7 @@ var (
 	lastVersionURL = "http://cli-dl.scalingo.io/version"
 	lastVersion    = ""
 	gotLastVersion = make(chan struct{})
+	gotAnError     = false
 )
 
 func init() {
@@ -24,6 +25,7 @@ func init() {
 		lastVersion, err = getLastVersion()
 		if err != nil {
 			config.C.Logger.Println(err)
+			gotAnError = true
 		}
 		close(gotLastVersion)
 	}()
@@ -37,9 +39,9 @@ func Check() error {
 		return nil
 	}
 
-	select {
-	case <-gotLastVersion:
-	case <-time.After(time.Second * 4):
+	<-gotLastVersion
+
+	if gotAnError {
 		fmt.Println("Timeout when connecting on scalingo server.")
 		return errgo.New("Timeout when connecting on scalingo server.")
 	}
@@ -53,7 +55,11 @@ func Check() error {
 }
 
 func getLastVersion() (string, error) {
-	res, err := http.Get(lastVersionURL)
+	client := http.Client{
+		Timeout: 4 * time.Second,
+	}
+
+	res, err := client.Get(lastVersionURL)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}
