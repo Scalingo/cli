@@ -42,7 +42,6 @@ func Check() error {
 	<-gotLastVersion
 
 	if gotAnError {
-		fmt.Println("Update checker: connection error")
 		return errgo.New("Update checker: connection error")
 	}
 	if version == lastVersion {
