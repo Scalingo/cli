@@ -60,6 +60,9 @@ var (
 		NotificationsUpdateCommand,
 		NotificationsRemoveCommand,
 
+		// Notifiers
+		NotifiersListCommand,
+
 		// DB Access
 		DbTunnelCommand,
 		RedisConsoleCommand,
