@@ -1,10 +1,6 @@
 package io
 
-import (
-	"fmt"
-
-	"github.com/fatih/color"
-)
+import "fmt"
 
 func Error(args ...interface{}) {
 	fmt.Print(" !     ")
@@ -29,12 +25,6 @@ func Statusf(format string, args ...interface{}) {
 	fmt.Printf("-----> "+format, args...)
 }
 
-func Statusfred(format string, args ...interface{}) {
-	color.Set(color.FgRed, color.Bold)
-	fmt.Printf("-----> "+format, args...)
-	color.Unset()
-}
-
 func Info(args ...interface{}) {
 	fmt.Print("       ")
 	fmt.Println(args...)
@@ -42,9 +32,4 @@ func Info(args ...interface{}) {
 
 func Infof(format string, args ...interface{}) {
 	fmt.Printf("       "+format, args...)
-}
-func Infofred(format string, args ...interface{}) {
-	color.Set(color.FgRed, color.Bold)
-	fmt.Printf("       "+format, args...)
-	color.Unset()
 }
