@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/notifiers"
 	"github.com/Scalingo/codegangsta-cli"
+	scalingo "github.com/Scalingo/go-scalingo"
 )
 
 var (
@@ -25,7 +28,7 @@ var (
 			if len(c.Args()) == 0 {
 				err = notifiers.List(currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "notifications")
+				cli.ShowCommandHelp(c, "notifiers")
 			}
 
 			if err != nil {
@@ -33,37 +36,59 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifications")
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
 		},
 	}
 
-// 	NotificationsAddCommand = cli.Command{
-// 		Name:     "notifications-add",
-// 		Category: "Notifications",
-// 		Flags:    []cli.Flag{appFlag},
-// 		Usage:    "Enable a notification for your application",
-// 		Description: ` Enable a notification for your application:
-//     $ scalingo -a myapp notifications-add <webhook-url>
-//
-// 		# See also 'notifications' and 'notifications-remove'
-// `,
-// 		Before: AuthenticateHook,
-// 		Action: func(c *cli.Context) {
-// 			currentApp := appdetect.CurrentApp(c)
-// 			var err error
-// 			if len(c.Args()) == 1 {
-// 				err = notifications.Provision(currentApp, c.Args()[0])
-// 			} else {
-// 				cli.ShowCommandHelp(c, "notifications-add")
-// 			}
-// 			if err != nil {
-// 				errorQuit(err)
-// 			}
-// 		},
-// 		BashComplete: func(c *cli.Context) {
-// 			autocomplete.CmdFlagsAutoComplete(c, "notifications-add")
-// 		},
-// 	}
+	NotifiersAddCommand = cli.Command{
+		Name:     "notifiers-add",
+		Category: "Notifiers",
+		Flags: []cli.Flag{
+			appFlag,
+			cli.StringFlag{Name: "platform, p", Value: "", Usage: "The notifier platform"},
+			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
+			cli.BoolFlag{Name: "send-all-events, sa", Usage: "Should the notifier send all events or not"},
+			cli.StringFlag{Name: "events, e", Value: "", Usage: "List of selected events"},
+			cli.StringFlag{Name: "phone", Value: "", Usage: "A phone number"},
+			cli.StringFlag{Name: "email", Value: "", Usage: "An email"},
+			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "A webhook url"},
+		},
+		Usage: "Add a notifier for your application",
+		Description: ` Add a notifier for your application:
+    $ scalingo -a myapp notifiers-add <webhook-url>
+
+		# See also 'notifiers' and 'notifiers-remove'
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			params := scalingo.NotifierCreateParams{
+				Name:           c.String("name"),
+				SendAllEvents:  c.Bool("send-all-events"),
+				SelectedEvents: []string{c.String("events")}, //strings.Split(c.String("events"), " "),
+
+				// Type data options
+				PhoneNumber: c.String("phone"),
+				Email:       c.String("email"),
+				WebhookURL:  c.String("webhook-url"),
+			}
+
+			var err error
+			fmt.Println(len(c.Args()))
+			// if len(c.Args()) != 1 {
+			err = notifiers.Provision(currentApp, c.String("platform"), params)
+			// } else {
+			// 	cli.ShowCommandHelp(c, "notifiers-add")
+			// }
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "notifications-add")
+		},
+	}
+
 // 	NotificationsUpdateCommand = cli.Command{
 // 		Name:     "notifications-update",
 // 		Category: "Notifications",
