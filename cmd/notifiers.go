@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -45,27 +45,49 @@ var (
 		Category: "Notifiers",
 		Flags: []cli.Flag{
 			appFlag,
+			cli.StringFlag{Name: "active, act", Value: "", Usage: "Use this to enable or disable the notifier. Default: true"},
 			cli.StringFlag{Name: "platform, p", Value: "", Usage: "The notifier platform"},
 			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
-			cli.BoolFlag{Name: "send-all-events, sa", Usage: "Should the notifier send all events or not"},
-			cli.StringFlag{Name: "events, e", Value: "", Usage: "List of selected events"},
-			cli.StringFlag{Name: "phone", Value: "", Usage: "A phone number"},
-			cli.StringFlag{Name: "email", Value: "", Usage: "An email"},
-			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "A webhook url"},
+			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
+			cli.StringFlag{Name: "events, e", Value: "", Usage: "List of selected events. Default: []"},
+			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
+			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
+			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
 		},
 		Usage: "Add a notifier for your application",
-		Description: ` Add a notifier for your application:
-    $ scalingo -a myapp notifiers-add <webhook-url>
+		Description: `Add a notifier for your application:
 
-		# See also 'notifiers' and 'notifiers-remove'
+Examples
+ $ scalingo -a myapp notifiers-add \
+   --platform slack \
+   --name "My notifier" \
+   --webhook-url https://hooks.slack.com/services/1234 \
+   --events "deployment stop_app"
+
+ $ scalingo -a myapp notifiers-add \
+   --platform webhook \
+   --name "My notifier" \
+   --webhook-url https://custom-webhook.com \
+   --send-all-events true
+
+ # See also 'notifiers' and 'notifiers-remove'
 `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
+
+			var active bool
+			if c.IsSet("active") {
+				active = c.Bool("active")
+			} else {
+				active = true
+			}
+
 			params := scalingo.NotifierCreateParams{
+				Active:         active,
 				Name:           c.String("name"),
 				SendAllEvents:  c.Bool("send-all-events"),
-				SelectedEvents: []string{c.String("events")}, //strings.Split(c.String("events"), " "),
+				SelectedEvents: strings.Split(c.String("events"), " "),
 
 				// Type data options
 				PhoneNumber: c.String("phone"),
@@ -73,13 +95,7 @@ var (
 				WebhookURL:  c.String("webhook-url"),
 			}
 
-			var err error
-			fmt.Println(len(c.Args()))
-			// if len(c.Args()) != 1 {
-			err = notifiers.Provision(currentApp, c.String("platform"), params)
-			// } else {
-			// 	cli.ShowCommandHelp(c, "notifiers-add")
-			// }
+			err := notifiers.Provision(currentApp, c.String("platform"), params)
 			if err != nil {
 				errorQuit(err)
 			}

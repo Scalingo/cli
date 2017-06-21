@@ -14,7 +14,10 @@ func Provision(app, platformName string, params scalingo.NotifierCreateParams) e
 	}
 
 	debug.Printf("[Provision] params: %+v", params)
-	params.Active = true
+
+	if len(params.SelectedEvents) >= 1 && params.SelectedEvents[0] == "" {
+		params.SelectedEvents = nil
+	}
 	params.PlatformID = "593ac2d22664cd0001be2d0c"
 
 	c := config.ScalingoClient()

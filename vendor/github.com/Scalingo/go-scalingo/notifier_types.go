@@ -30,7 +30,6 @@ const (
 )
 
 type DetailedNotifier interface {
-	// fmt.Stringer
 	GetNotifier() *Notifier
 	GetID() string
 	GetName() string
@@ -38,9 +37,7 @@ type DetailedNotifier interface {
 	GetSendAllEvents() bool
 	GetSelectedEvents() []string
 	IsActive() bool
-	// PrintableType() string
 	When() string
-	// Who() string
 	TypeDataPtr() interface{}
 	TypeDataString() string
 }
@@ -147,10 +144,11 @@ func NewNotifier(notifierType string, params NotifierCreateParams) DetailedNotif
 	debug.Printf("[NewNotifier] notifierType: %+v\nparams: %+v\n", notifierType, params)
 	var specializedNotifier DetailedNotifier
 	notifier := &Notifier{
-		Active:        params.Active,
-		Name:          params.Name,
-		SendAllEvents: params.SendAllEvents,
-		PlatformID:    params.PlatformID,
+		Active:         params.Active,
+		Name:           params.Name,
+		SendAllEvents:  params.SendAllEvents,
+		SelectedEvents: params.SelectedEvents,
+		PlatformID:     params.PlatformID,
 	}
 
 	switch notifierType {
