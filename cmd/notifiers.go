@@ -45,11 +45,12 @@ var (
 		Category: "Notifiers",
 		Flags: []cli.Flag{
 			appFlag,
-			cli.StringFlag{Name: "active, act", Value: "", Usage: "Use this to enable or disable the notifier. Default: true"},
+			cli.BoolFlag{Name: "enable, e", Usage: "Enable the notifier (default)"},
+			cli.BoolFlag{Name: "disable, d", Usage: "Disable the notifier"},
 			cli.StringFlag{Name: "platform, p", Value: "", Usage: "The notifier platform"},
 			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
 			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
-			cli.StringFlag{Name: "events, e", Value: "", Usage: "List of selected events. Default: []"},
+			cli.StringFlag{Name: "events, ev", Value: "", Usage: "List of selected events. Default: []"},
 			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
 			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
@@ -77,16 +78,17 @@ Examples
 			currentApp := appdetect.CurrentApp(c)
 
 			var active bool
-			if c.IsSet("active") {
-				active = c.Bool("active")
+			if c.IsSet("disable") {
+				active = false
 			} else {
 				active = true
 			}
+			sendAllEvents := c.Bool("send-all-events")
 
-			params := scalingo.NotifierCreateParams{
-				Active:         active,
+			params := scalingo.NotifierParams{
+				Active:         &active,
 				Name:           c.String("name"),
-				SendAllEvents:  c.Bool("send-all-events"),
+				SendAllEvents:  &sendAllEvents,
 				SelectedEvents: strings.Split(c.String("events"), " "),
 
 				// Type data options
@@ -105,33 +107,81 @@ Examples
 		},
 	}
 
-	// 	NotificationsUpdateCommand = cli.Command{
-	// 		Name:     "notifications-update",
-	// 		Category: "Notifications",
-	// 		Flags:    []cli.Flag{appFlag},
-	// 		Usage:    "Update the url of a notification",
-	// 		Description: ` Update the url of a notification:
-	//     $ scalingo -a myapp notifications-update <ID> <new-url>
-	//
-	// 		# See also 'notifications' and 'notifications-add'
-	// `,
-	// 		Before: AuthenticateHook,
-	// 		Action: func(c *cli.Context) {
-	// 			currentApp := appdetect.CurrentApp(c)
-	// 			var err error
-	// 			if len(c.Args()) == 2 {
-	// 				err = notifications.Update(currentApp, c.Args()[0], c.Args()[1])
-	// 			} else {
-	// 				cli.ShowCommandHelp(c, "notifications-update")
-	// 			}
-	// 			if err != nil {
-	// 				errorQuit(err)
-	// 			}
-	// 		},
-	// 		BashComplete: func(c *cli.Context) {
-	// 			autocomplete.CmdFlagsAutoComplete(c, "notifications-update")
-	// 		},
-	// 	}
+	NotifiersUpdateCommand = cli.Command{
+		Name:     "notifiers-update",
+		Category: "Notifiers",
+		Flags: []cli.Flag{
+			appFlag,
+			cli.BoolFlag{Name: "enable, e", Usage: "Enable the notifier"},
+			cli.BoolFlag{Name: "disable, d", Usage: "Disable the notifier"},
+			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
+			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
+			cli.StringFlag{Name: "events, ev", Value: "", Usage: "List of selected events. Default: []"},
+			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
+			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
+			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
+		},
+		Usage: "Update a notifier",
+		Description: `Update a notifier:
+Examples
+ $ scalingo -a myapp notifiers-update --disable <ID>
+
+ $ scalingo -a myapp notifiers-update \
+	 --name "My notifier" \
+	 --webhook-url https://custom-webhook.com \
+	 --send-all-events true \
+	 <ID>
+
+ # See also 'notifiers' and 'notifiers-remove'
+	`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			var err error
+
+			var active *bool
+			if c.IsSet("enable") {
+				tmpActive := true
+				active = &tmpActive
+			} else if c.IsSet("disable") {
+				tmpActive := false
+				active = &tmpActive
+			} else {
+				active = nil
+			}
+
+			var sendAllEvents *bool
+			if c.IsSet("send-all-events") {
+				tmpEvents := c.Bool("send-all-events")
+				sendAllEvents = &tmpEvents
+			} else {
+				sendAllEvents = nil
+			}
+
+			params := scalingo.NotifierParams{
+				Active:         active,
+				Name:           c.String("name"),
+				SendAllEvents:  sendAllEvents,
+				SelectedEvents: strings.Split(c.String("events"), " "),
+
+				// Type data options
+				PhoneNumber: c.String("phone"),
+				Email:       c.String("email"),
+				WebhookURL:  c.String("webhook-url"),
+			}
+			if len(c.Args()) >= 1 {
+				err = notifiers.Update(currentApp, c.Args()[0], params)
+			} else {
+				cli.ShowCommandHelp(c, "notifiers-update")
+			}
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
+		},
+	}
 
 	NotifiersRemoveCommand = cli.Command{
 		Name:     "notifiers-remove",

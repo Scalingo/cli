@@ -10,11 +10,11 @@ import (
 
 type Notifier struct {
 	ID             string                 `json:"id"`
-	Active         bool                   `json:"active"`
-	Name           string                 `json:"name"`
+	Active         *bool                  `json:"active,omitempty"`
+	Name           string                 `json:"name,omitempty"`
 	Type           NotifierType           `json:"type"`
-	SendAllEvents  bool                   `json:"send_all_events"`
-	SelectedEvents []string               `json:"selected_events"`
+	SendAllEvents  *bool                  `json:"send_all_events,omitempty"`
+	SelectedEvents []string               `json:"selected_events,omitempty"`
 	TypeData       map[string]interface{} `json:"-"`
 	RawTypeData    json.RawMessage        `json:"type_data"`
 	PlatformID     string                 `json:"platform_id"`
@@ -62,7 +62,7 @@ func (not *Notifier) GetType() NotifierType {
 }
 
 func (not *Notifier) GetSendAllEvents() bool {
-	return not.SendAllEvents
+	return *not.SendAllEvents
 }
 
 func (not *Notifier) GetSelectedEvents() []string {
@@ -70,7 +70,7 @@ func (not *Notifier) GetSelectedEvents() []string {
 }
 
 func (not *Notifier) IsActive() bool {
-	return not.Active
+	return *not.Active
 }
 
 func (not *Notifier) When() string {
@@ -88,11 +88,11 @@ func (not *Notifier) TypeDataString() string {
 // Webhook
 type NotifierWebhookType struct {
 	Notifier
-	TypeData NotifierWebhookTypeData `json:"type_data"`
+	TypeData NotifierWebhookTypeData `json:"type_data,omitempty"`
 }
 
 type NotifierWebhookTypeData struct {
-	WebhookURL string `json:"webhook_url"`
+	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
 func (e *NotifierWebhookType) TypeDataPtr() interface{} {
@@ -106,11 +106,11 @@ func (not *NotifierWebhookType) TypeDataString() string {
 // Slack
 type NotifierSlackType struct {
 	Notifier
-	TypeData NotifierSlackTypeData `json:"type_data"`
+	TypeData NotifierSlackTypeData `json:"type_data,omitempty"`
 }
 
 type NotifierSlackTypeData struct {
-	WebhookURL string `json:"webhook_url"`
+	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
 func (e *NotifierSlackType) TypeDataPtr() interface{} {
@@ -140,7 +140,7 @@ func (pnot *Notifier) Specialize() DetailedNotifier {
 	return detailedNotifier
 }
 
-func NewNotifier(notifierType string, params NotifierCreateParams) DetailedNotifier {
+func NewNotifier(notifierType string, params NotifierParams) DetailedNotifier {
 	debug.Printf("[NewNotifier] notifierType: %+v\nparams: %+v\n", notifierType, params)
 	var specializedNotifier DetailedNotifier
 	notifier := &Notifier{

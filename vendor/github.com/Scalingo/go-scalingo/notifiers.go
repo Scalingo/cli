@@ -5,14 +5,14 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
-type notifierCreateRequest struct {
+type notifierRequest struct {
 	Notifier interface{} `json:"notifier"`
 }
 
-type NotifierCreateParams struct {
-	Active         bool
+type NotifierParams struct {
+	Active         *bool
 	Name           string
-	SendAllEvents  bool
+	SendAllEvents  *bool
 	SelectedEvents []string
 	PlatformID     string
 
@@ -43,17 +43,41 @@ func (c *Client) NotifiersList(app string) (Notifiers, error) {
 	return notifiers, nil
 }
 
-func (c *Client) NotifierProvision(app, notifierType string, params NotifierCreateParams) (NotifierRes, error) {
+func (c *Client) NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error) {
 	var notifierRes NotifierRes
 	notifier := NewNotifier(notifierType, params)
-	notifierParams := &notifierCreateRequest{Notifier: notifier}
+	notifierParams := &notifierRequest{Notifier: notifier}
 	debug.Printf("[Notifier params]\n%+v", notifier)
 
 	err := c.subresourceAdd(app, "notifiers", notifierParams, &notifierRes)
+
 	if err != nil {
-		return NotifierRes{}, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Mask(err, errgo.Any)
 	}
-	return notifierRes, nil
+	return &notifierRes.Notifier, nil
+}
+
+func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
+	var notifierRes NotifierRes
+	err := c.subresourceGet(app, "notifiers", ID, nil, &notifierRes)
+	if err != nil {
+		return nil, errgo.Mask(err)
+	}
+
+	return &notifierRes.Notifier, nil
+}
+
+func (c *Client) NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error) {
+	var notifierRes NotifierRes
+	notifier := NewNotifier(notifierType, params)
+	notifierParams := &notifierRequest{Notifier: notifier}
+	debug.Printf("[Notifier params]\n%+v", notifier)
+
+	err := c.subresourceUpdate(app, "notifiers", ID, notifierParams, &notifierRes)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+	return &notifierRes.Notifier, nil
 }
 
 func (c *Client) NotifierDestroy(app, ID string) error {

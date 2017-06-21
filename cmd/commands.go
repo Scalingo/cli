@@ -63,6 +63,7 @@ var (
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersAddCommand,
+		NotifiersUpdateCommand,
 		NotifiersRemoveCommand,
 
 		// DB Access
