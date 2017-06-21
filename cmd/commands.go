@@ -63,6 +63,7 @@ var (
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersAddCommand,
+		NotifiersRemoveCommand,
 
 		// DB Access
 		DbTunnelCommand,

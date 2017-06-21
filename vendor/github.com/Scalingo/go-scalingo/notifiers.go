@@ -55,3 +55,7 @@ func (c *Client) NotifierProvision(app, notifierType string, params NotifierCrea
 	}
 	return notifierRes, nil
 }
+
+func (c *Client) NotifierDestroy(app, ID string) error {
+	return c.subresourceDelete(app, "notifiers", ID)
+}

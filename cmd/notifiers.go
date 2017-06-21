@@ -101,63 +101,64 @@ Examples
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifications-add")
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
 		},
 	}
 
-// 	NotificationsUpdateCommand = cli.Command{
-// 		Name:     "notifications-update",
-// 		Category: "Notifications",
-// 		Flags:    []cli.Flag{appFlag},
-// 		Usage:    "Update the url of a notification",
-// 		Description: ` Update the url of a notification:
-//     $ scalingo -a myapp notifications-update <ID> <new-url>
-//
-// 		# See also 'notifications' and 'notifications-add'
-// `,
-// 		Before: AuthenticateHook,
-// 		Action: func(c *cli.Context) {
-// 			currentApp := appdetect.CurrentApp(c)
-// 			var err error
-// 			if len(c.Args()) == 2 {
-// 				err = notifications.Update(currentApp, c.Args()[0], c.Args()[1])
-// 			} else {
-// 				cli.ShowCommandHelp(c, "notifications-update")
-// 			}
-// 			if err != nil {
-// 				errorQuit(err)
-// 			}
-// 		},
-// 		BashComplete: func(c *cli.Context) {
-// 			autocomplete.CmdFlagsAutoComplete(c, "notifications-update")
-// 		},
-// 	}
-// 	NotificationsRemoveCommand = cli.Command{
-// 		Name:     "notifications-remove",
-// 		Category: "Notifications",
-// 		Flags:    []cli.Flag{appFlag},
-// 		Usage:    "Remove an existing notification from your app",
-// 		Description: ` Remove an existing notification from your app:
-//     $ scalingo -a myapp notifications-remove <ID>
-//
-// 		# See also 'notifications' and 'notifications-add'
-// `,
-// 		Before: AuthenticateHook,
-// 		Action: func(c *cli.Context) {
-// 			currentApp := appdetect.CurrentApp(c)
-// 			var err error
-// 			if len(c.Args()) == 1 {
-// 				err = notifications.Destroy(currentApp, c.Args()[0])
-// 			} else {
-// 				cli.ShowCommandHelp(c, "notifications-remove")
-// 			}
-// 			if err != nil {
-// 				errorQuit(err)
-// 			}
-// 		},
-// 		BashComplete: func(c *cli.Context) {
-// 			autocomplete.CmdFlagsAutoComplete(c, "notifications-remove")
-// 			autocomplete.NotificationsRemoveAutoComplete(c)
-// 		},
-// 	}
+	// 	NotificationsUpdateCommand = cli.Command{
+	// 		Name:     "notifications-update",
+	// 		Category: "Notifications",
+	// 		Flags:    []cli.Flag{appFlag},
+	// 		Usage:    "Update the url of a notification",
+	// 		Description: ` Update the url of a notification:
+	//     $ scalingo -a myapp notifications-update <ID> <new-url>
+	//
+	// 		# See also 'notifications' and 'notifications-add'
+	// `,
+	// 		Before: AuthenticateHook,
+	// 		Action: func(c *cli.Context) {
+	// 			currentApp := appdetect.CurrentApp(c)
+	// 			var err error
+	// 			if len(c.Args()) == 2 {
+	// 				err = notifications.Update(currentApp, c.Args()[0], c.Args()[1])
+	// 			} else {
+	// 				cli.ShowCommandHelp(c, "notifications-update")
+	// 			}
+	// 			if err != nil {
+	// 				errorQuit(err)
+	// 			}
+	// 		},
+	// 		BashComplete: func(c *cli.Context) {
+	// 			autocomplete.CmdFlagsAutoComplete(c, "notifications-update")
+	// 		},
+	// 	}
+
+	NotifiersRemoveCommand = cli.Command{
+		Name:     "notifiers-remove",
+		Category: "Notifiers",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Remove an existing notifier from your app",
+		Description: `Remove an existing notifier from your app:
+    $ scalingo -a myapp notifier-remove <ID>
+
+		# See also 'notifiers' and 'notifiers-add'
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			var err error
+			if len(c.Args()) == 1 {
+				err = notifiers.Destroy(currentApp, c.Args()[0])
+			} else {
+				cli.ShowCommandHelp(c, "notifiers-remove")
+			}
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
+			autocomplete.NotifiersRemoveAutoComplete(c)
+		},
+	}
 )
