@@ -9,19 +9,26 @@ import (
 )
 
 func Provision(app, platformName string, params scalingo.NotifierCreateParams) error {
+	debug.Printf("[Provision] params: %+v", params)
+
 	if app == "" {
 		return errgo.New("no app defined")
 	}
-
-	debug.Printf("[Provision] params: %+v", params)
-
+	if platformName == "" {
+		return errgo.New("no platform defined")
+	}
 	if len(params.SelectedEvents) >= 1 && params.SelectedEvents[0] == "" {
 		params.SelectedEvents = nil
 	}
-	params.PlatformID = "593ac2d22664cd0001be2d0c"
 
 	c := config.ScalingoClient()
-	_, err := c.NotifierProvision(app, platformName, params)
+	platform, err := c.NotificationPlatformByName(platformName)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+	params.PlatformID = platform.ID
+
+	_, err = c.NotifierProvision(app, platform.Name, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
