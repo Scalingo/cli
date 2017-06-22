@@ -14,9 +14,9 @@ var (
 	NotifiersListCommand = cli.Command{
 		Name:     "notifiers",
 		Category: "Notifiers",
-		Usage:    "List enabled notifiers",
+		Usage:    "List your notifiers",
 		Flags:    []cli.Flag{appFlag},
-		Description: ` List all notifiers enabled for your app:
+		Description: ` List all notifiers of your app:
     $ scalingo -a myapp notifiers
 
 		# See also 'notifiers-add' and 'notifiers-remove'
