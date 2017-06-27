@@ -14,7 +14,7 @@ var (
 		Usage:       "List plans",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "addons-plans")
+				cli.ShowCommandHelp(c, "addon-plans")
 				return
 			}
 			if err := addon_providers.Plans(c.Args()[0]); err != nil {
