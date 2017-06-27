@@ -214,11 +214,19 @@ type EventCrashType struct {
 }
 
 func (ev *EventCrashType) String() string {
-	return fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
+	msg := fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
+
+	if ev.TypeData.CrashLogs != "" {
+		dashboard_url := "https://my.scalingo.com/apps/" + ev.AppName + "/events/" + ev.ID
+		msg += fmt.Sprintf(" (logs on %s)", dashboard_url)
+	}
+
+	return msg
 }
 
 type EventCrashTypeData struct {
 	ContainerType string `json:"container_type"`
+	CrashLogs     string `json:"crash_logs"`
 }
 
 type EventDeploymentType struct {
