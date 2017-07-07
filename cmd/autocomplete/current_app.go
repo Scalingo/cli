@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/appdetect"
 )
 

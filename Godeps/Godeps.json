@@ -1,16 +1,11 @@
 {
 	"ImportPath": "github.com/Scalingo/cli",
-	"GoVersion": "go1.7",
+	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
 	],
 	"Deps": [
-		{
-			"ImportPath": "github.com/Scalingo/codegangsta-cli",
-			"Comment": "1.2.0-145-g13206e9",
-			"Rev": "13206e93c57c98e103fd016b325b82f197b94ed6"
-		},
 		{
 			"ImportPath": "github.com/Scalingo/envconfig",
 			"Comment": "v1.0.0-3-g8eb48cc",
@@ -45,6 +40,11 @@
 			"Rev": "009166a695a2f516c749a26b4ac1f183d89aa336"
 		},
 		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v1.5.0-2-g62e9147",
+			"Rev": "62e9147c64a1ed519147b62a56a14e83e2be02c1"
+		},
+		{
 			"ImportPath": "github.com/heroku/hk/term",
 			"Comment": "v20140604-24-g9529c56",
 			"Rev": "9529c565876399db5b99c815664845ace7f6fd1a"
@@ -54,11 +54,17 @@
 			"Rev": "f5387c492211eb133053880d23dfae62aa14123d"
 		},
 		{
-			"ImportPath": "github.com/olekukonko/tablewriter",
-			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.7-24-gded68f7",
+			"Rev": "ded68f7a9561c023e790de24279db7ebf473ea80"
 		},
 		{
-			"ImportPath": "github.com/olekukonko/tablewriter/csv2table",
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.2",
+			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
+		},
+		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "6ff773c8e48084f8800c53f6ca3557c1236388cd"
 		},
 		{
@@ -68,8 +74,13 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.2.0-10-g292188c",
+			"Comment": "v0.3.0-6-g292188c",
 			"Rev": "292188c2b3067786458d2dac9cea1b61c3661063"
+		},
+		{
+			"ImportPath": "github.com/urfave/cli",
+			"Comment": "v1.19.1-36-gd70f47e",
+			"Rev": "d70f47eeca3afd795160003bc6e28b001d60c67c"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/curve25519",
@@ -100,22 +111,18 @@
 			"Rev": "5058c78c3627b31e484a81463acd51c7cecc06f3"
 		},
 		{
-			"ImportPath": "gopkg.in/errgo.v1",
-			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
-		},
-		{
-			"ImportPath": "launchpad.net/gocheck",
-			"Comment": "87",
-			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
-		},
-		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
 		},
 		{
+<<<<<<< HEAD
 			"ImportPath": "github.com/Scalingo/cli/debug",
 			"Comment": "1.5.0-2-g930e6b5",
 			"Rev": "930e6b50efd7a0648dec216d3e0b39e6e599ef46"
+=======
+			"ImportPath": "gopkg.in/errgo.v1",
+			"Rev": "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
+>>>>>>> origin/master
 		}
 	]
 }

@@ -62,12 +62,13 @@ COMMANDS:
     addons-plans	List plans
 
   App Management:
-    logs, l	Get the logs of your applications
-    run, r	Run any command for your app
-    ps		Display your application running processes
-    scale, s	Scale your application instantly
-    restart	Restart processes of your app
-    db-tunnel	Create an encrypted connection to access your database
+    logs, l		Get the logs of your applications
+    logs-archives, la	Get the logs archives of your applications
+    run, r		Run any command for your app
+    ps			Display your application running processes
+    scale, s		Scale your application instantly
+    restart		Restart processes of your app
+    db-tunnel		Create an encrypted connection to access your database
 
   CLI Internals:
     update	Update 'scalingo' client

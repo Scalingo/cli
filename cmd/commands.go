@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -13,6 +13,7 @@ var (
 
 		// Apps Actions
 		LogsCommand,
+		LogsArchivesCommand,
 		RunCommand,
 
 		// Apps Process Actions

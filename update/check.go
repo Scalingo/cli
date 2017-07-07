@@ -5,16 +5,18 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
 var (
 	lastVersionURL = "http://cli-dl.scalingo.io/version"
 	lastVersion    = ""
 	gotLastVersion = make(chan struct{})
+	gotAnError     = false
 )
 
 func init() {
@@ -23,6 +25,7 @@ func init() {
 		lastVersion, err = getLastVersion()
 		if err != nil {
 			config.C.Logger.Println(err)
+			gotAnError = true
 		}
 		close(gotLastVersion)
 	}()
@@ -37,17 +40,25 @@ func Check() error {
 	}
 
 	<-gotLastVersion
+
+	if gotAnError {
+		return errgo.New("Update checker: connection error")
+	}
 	if version == lastVersion {
 		return nil
 	}
 
-	io.Statusf("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n", version)
-	io.Infof("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n", lastVersion)
+	io.Statusf(io.BoldRed("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n"), version)
+	io.Infof(io.BoldRed("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n"), lastVersion)
 	return nil
 }
 
 func getLastVersion() (string, error) {
-	res, err := http.Get(lastVersionURL)
+	client := http.Client{
+		Timeout: 4 * time.Second,
+	}
+
+	res, err := client.Get(lastVersionURL)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}
