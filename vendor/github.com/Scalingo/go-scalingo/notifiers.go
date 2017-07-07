@@ -19,7 +19,7 @@ type NotifierParams struct {
 	WebhookURL  string // Webhook and Slack notifier
 }
 
-// The struct that will be serialized in all notifier request's
+// The struct that will be serialized in all notifier's request
 type notifierRequestParams struct {
 	NotifierOutput `json:"notifier"`
 }

@@ -71,6 +71,7 @@ Examples
    --webhook-url "https://custom-webhook.com" \
    --send-all-events true
 
+ # Use 'platforms-list' to see all available platforms
  # See also 'notifiers' and 'notifiers-remove'
 `,
 		Before: AuthenticateHook,
