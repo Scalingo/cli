@@ -1,11 +1,12 @@
 package notifiers
 
 import (
+	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/Scalingo/cli/config"
+	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )

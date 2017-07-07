@@ -14,7 +14,7 @@ type Notifier struct {
 	Name           string                 `json:"name,omitempty"`
 	Type           NotifierType           `json:"type"`
 	SendAllEvents  *bool                  `json:"send_all_events,omitempty"`
-	SelectedEvents []string               `json:"selected_events,omitempty"`
+	SelectedEvents []EventTypeStruct      `json:"selected_events,omitempty"`
 	TypeData       map[string]interface{} `json:"-"`
 	RawTypeData    json.RawMessage        `json:"type_data"`
 	PlatformID     string                 `json:"platform_id"`
@@ -35,7 +35,7 @@ type DetailedNotifier interface {
 	GetName() string
 	GetType() NotifierType
 	GetSendAllEvents() bool
-	GetSelectedEvents() []string
+	GetSelectedEvents() []EventTypeStruct
 	IsActive() bool
 	When() string
 	TypeDataPtr() interface{}
@@ -65,7 +65,7 @@ func (not *Notifier) GetSendAllEvents() bool {
 	return *not.SendAllEvents
 }
 
-func (not *Notifier) GetSelectedEvents() []string {
+func (not *Notifier) GetSelectedEvents() []EventTypeStruct {
 	return not.SelectedEvents
 }
 
@@ -144,11 +144,10 @@ func NewNotifier(notifierType string, params NotifierParams) DetailedNotifier {
 	debug.Printf("[NewNotifier] notifierType: %+v\nparams: %+v\n", notifierType, params)
 	var specializedNotifier DetailedNotifier
 	notifier := &Notifier{
-		Active:         params.Active,
-		Name:           params.Name,
-		SendAllEvents:  params.SendAllEvents,
-		SelectedEvents: params.SelectedEvents,
-		PlatformID:     params.PlatformID,
+		Active:        params.Active,
+		Name:          params.Name,
+		SendAllEvents: params.SendAllEvents,
+		PlatformID:    params.PlatformID,
 	}
 
 	switch notifierType {

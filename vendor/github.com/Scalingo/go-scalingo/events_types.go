@@ -9,6 +9,21 @@ import (
 	"github.com/Scalingo/go-scalingo/debug"
 )
 
+type EventCategory struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Position int    `json:"position"`
+}
+
+type EventTypeStruct struct {
+	ID          string         `json:"id"`
+	Name        string         `json:"name"`
+	DisplayName string         `json:"display_name"`
+	Description string         `json:"description"`
+	Template    string         `json:"template"`
+	Category    *EventCategory `json:"category"`
+}
+
 type Event struct {
 	ID          string                 `json:"id"`
 	CreatedAt   time.Time              `json:"created_at"`
