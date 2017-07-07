@@ -2,7 +2,6 @@ package scalingo
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Scalingo/go-scalingo/debug"
@@ -51,7 +50,7 @@ type DetailedNotifier interface {
 	IsActive() bool
 	When() string
 	TypeDataPtr() interface{}
-	TypeDataString() string
+	TypeDataMap() map[string]string
 }
 
 type Notifiers []DetailedNotifier
@@ -93,8 +92,8 @@ func (not *Notifier) TypeDataPtr() interface{} {
 	return &not.TypeData
 }
 
-func (not *Notifier) TypeDataString() string {
-	return "unknow notifier type"
+func (not *Notifier) TypeDataMap() map[string]string {
+	return map[string]string{}
 }
 
 // Webhook
@@ -111,8 +110,10 @@ func (e *NotifierWebhookType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
-func (not *NotifierWebhookType) TypeDataString() string {
-	return fmt.Sprintf("- webhook url: %s", not.TypeData.WebhookURL)
+func (not *NotifierWebhookType) TypeDataMap() map[string]string {
+	return map[string]string{
+		"webhook url": not.TypeData.WebhookURL,
+	}
 }
 
 // Slack
@@ -129,8 +130,10 @@ func (e *NotifierSlackType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
-func (not *NotifierSlackType) TypeDataString() string {
-	return fmt.Sprintf("- webhook url: %s", not.TypeData.WebhookURL)
+func (not *NotifierSlackType) TypeDataMap() map[string]string {
+	return map[string]string{
+		"webhook url": not.TypeData.WebhookURL,
+	}
 }
 
 func (pnot *Notifier) Specialize() DetailedNotifier {

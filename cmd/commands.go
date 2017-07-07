@@ -62,6 +62,7 @@ var (
 
 		// Notifiers
 		NotifiersListCommand,
+		NotifiersDetailsCommand,
 		NotifiersAddCommand,
 		NotifiersUpdateCommand,
 		NotifiersRemoveCommand,

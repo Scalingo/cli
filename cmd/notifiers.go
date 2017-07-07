@@ -40,6 +40,35 @@ var (
 		},
 	}
 
+	NotifiersDetailsCommand = cli.Command{
+		Name:     "notifiers-details",
+		Category: "Notifiers",
+		Usage:    "Show details of your notifiers",
+		Flags:    []cli.Flag{appFlag},
+		Description: ` Show details of your notifiers:
+    $ scalingo -a myapp notifiers-details <ID>
+
+		# See also 'notifiers'
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			var err error
+			if len(c.Args()) == 1 {
+				err = notifiers.Details(currentApp, c.Args()[0])
+			} else {
+				cli.ShowCommandHelp(c, "notifiers")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
+		},
+	}
+
 	NotifiersAddCommand = cli.Command{
 		Name:     "notifiers-add",
 		Category: "Notifiers",

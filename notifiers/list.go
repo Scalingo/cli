@@ -25,7 +25,7 @@ func List(app string) error {
 		t.Append([]string{
 			r.GetID(), string(r.GetType()), r.GetName(),
 			strconv.FormatBool(r.IsActive()), strconv.FormatBool(r.GetSendAllEvents()),
-			eventTypesToString(r.GetSelectedEvents()), // r.TypeDataString()[:typeDataStringLength],
+			eventTypesToString(r.GetSelectedEvents()),
 		})
 	}
 	t.Render()
