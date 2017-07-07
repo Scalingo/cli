@@ -62,13 +62,13 @@ Examples
  $ scalingo -a myapp notifiers-add \
    --platform slack \
    --name "My notifier" \
-   --webhook-url https://hooks.slack.com/services/1234 \
+   --webhook-url "https://hooks.slack.com/services/1234" \
    --events "deployment stop_app"
 
  $ scalingo -a myapp notifiers-add \
    --platform webhook \
    --name "My notifier" \
-   --webhook-url https://custom-webhook.com \
+   --webhook-url "https://custom-webhook.com" \
    --send-all-events true
 
  # See also 'notifiers' and 'notifiers-remove'

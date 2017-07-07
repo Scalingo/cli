@@ -8,6 +8,10 @@ import (
 	"github.com/Scalingo/go-scalingo/debug"
 )
 
+// Used to omit attributes
+type omit *struct{}
+
+// Sruct used to represent a notifier.
 type Notifier struct {
 	ID             string                 `json:"id"`
 	Active         *bool                  `json:"active,omitempty"`
@@ -20,6 +24,14 @@ type Notifier struct {
 	PlatformID     string                 `json:"platform_id"`
 	CreatedAt      time.Time              `json:"created_at"`
 	UpdatedAt      time.Time              `json:"updated_at"`
+}
+
+// Struct used to serialize a notifier
+type NotifierOutput struct {
+	*Notifier
+	SelectedEvents []string    `json:"selected_events,omitempty"`
+	TypeData       interface{} `json:"type_data,omitempty"`
+	RawTypeData    omit        `json:"omitempty"` // Will always be empty and not serialized
 }
 
 type NotifierType string
@@ -140,7 +152,7 @@ func (pnot *Notifier) Specialize() DetailedNotifier {
 	return detailedNotifier
 }
 
-func NewNotifier(notifierType string, params NotifierParams) DetailedNotifier {
+func NewDetailedNotifier(notifierType string, params NotifierParams) DetailedNotifier {
 	debug.Printf("[NewNotifier] notifierType: %+v\nparams: %+v\n", notifierType, params)
 	var specializedNotifier DetailedNotifier
 	notifier := &Notifier{
@@ -169,4 +181,14 @@ func NewNotifier(notifierType string, params NotifierParams) DetailedNotifier {
 
 	debug.Printf("[NewNotifier] result: %+v\n", specializedNotifier)
 	return specializedNotifier
+}
+
+func NewOutputNotifier(notifierType string, params NotifierParams) NotifierOutput {
+	detailedNotifier := NewDetailedNotifier(notifierType, params)
+	res := NotifierOutput{
+		Notifier:       detailedNotifier.GetNotifier(),
+		TypeData:       detailedNotifier.TypeDataPtr(),
+		SelectedEvents: params.SelectedEvents,
+	}
+	return res
 }

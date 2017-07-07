@@ -3,14 +3,16 @@ package scalingo
 import (
 	"encoding/json"
 
+	"github.com/Scalingo/cli/debug"
+
 	errgo "gopkg.in/errgo.v1"
 )
 
 type NotificationPlatform struct {
-	ID              string   `json:"id"`
-	Name            string   `json:"name"`
-	DisplayName     string   `json:"display_name"`
-	EventsAvailable []string `json:"events_available"`
+	ID              string            `json:"id"`
+	Name            string            `json:"name"`
+	DisplayName     string            `json:"display_name"`
+	AvailableEvents []EventTypeStruct `json:"available_events"`
 }
 
 type PlatformRes struct {
@@ -18,7 +20,7 @@ type PlatformRes struct {
 }
 
 type PlatformsRes struct {
-	NotificationPlatforms []*NotificationPlatform `json:"notification_platform"`
+	NotificationPlatforms []*NotificationPlatform `json:"notification_platforms"`
 }
 
 func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
@@ -33,16 +35,17 @@ func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 	}
 	defer res.Body.Close()
 
-	var params PlatformsRes
-	err = json.NewDecoder(res.Body).Decode(&params)
+	var response PlatformsRes
+	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return params.NotificationPlatforms, nil
+	return response.NotificationPlatforms, nil
 }
 
-func (c *Client) NotificationPlatformByName(name string) (*NotificationPlatform, error) {
+func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
+	debug.Printf("[NotificationPlatformByName] name: %s", name)
 	req := &APIRequest{
 		Client:   c,
 		NoAuth:   true,
@@ -55,11 +58,12 @@ func (c *Client) NotificationPlatformByName(name string) (*NotificationPlatform,
 	}
 	defer res.Body.Close()
 
-	var params PlatformRes
-	err = json.NewDecoder(res.Body).Decode(&params)
+	debug.Printf("[NotificationPlatformByName] reponse: %+v", res.Body)
+	var response PlatformsRes
+	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return params.NotificationPlatform, nil
+	return response.NotificationPlatforms, nil
 }

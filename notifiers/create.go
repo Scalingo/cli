@@ -22,13 +22,16 @@ func Provision(app, platformName string, params scalingo.NotifierParams) error {
 	}
 
 	c := config.ScalingoClient()
-	platform, err := c.NotificationPlatformByName(platformName)
+	platforms, err := c.NotificationPlatformByName(platformName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	params.PlatformID = platform.ID
+	if len(platforms) <= 0 {
+		return errgo.Newf("notification platform \"%s\" has not been found", platformName)
+	}
+	params.PlatformID = platforms[0].ID
 
-	_, err = c.NotifierProvision(app, platform.Name, params)
+	_, err = c.NotifierProvision(app, platforms[0].Name, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
