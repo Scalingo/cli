@@ -19,22 +19,28 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events", "Type data"})
+	t.SetHeader([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events"})
 
 	for _, r := range resources {
-		// TODO: remove this
-		typeDataStringLength := 10
-		if len(r.TypeDataString()) < 10 {
-			typeDataStringLength = len(r.TypeDataString())
-		}
-
 		t.Append([]string{
 			r.GetID(), string(r.GetType()), r.GetName(),
 			strconv.FormatBool(r.IsActive()), strconv.FormatBool(r.GetSendAllEvents()),
-			strings.Join(r.GetSelectedEvents(), "\n"), r.TypeDataString()[:typeDataStringLength],
+			eventTypesToString(r.GetSelectedEvents()), // r.TypeDataString()[:typeDataStringLength],
 		})
 	}
 	t.Render()
 
 	return nil
+}
+
+func eventTypesToString(eventTypes []scalingo.EventTypeStruct) (res string) {
+	switch len(eventTypes) {
+	case 0:
+		res = ""
+	case 1:
+		res = eventTypes[0].Name
+	default:
+		res = fmt.Sprintf("%s, ...", eventTypes[0].Name)
+	}
+	return
 }
