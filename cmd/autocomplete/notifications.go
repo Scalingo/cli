@@ -3,8 +3,8 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/config"
+	"github.com/urfave/cli"
 )
 
 func NotificationsRemoveAutoComplete(c *cli.Context) error {

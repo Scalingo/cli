@@ -57,7 +57,7 @@ var (
 			if len(c.Args()) == 1 {
 				err = notifiers.Details(currentApp, c.Args()[0])
 			} else {
-				cli.ShowCommandHelp(c, "notifiers")
+				cli.ShowCommandHelp(c, "notifiers-details")
 			}
 
 			if err != nil {
@@ -65,7 +65,8 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
+			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
 
@@ -238,7 +239,7 @@ Examples
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
-			autocomplete.NotifiersRemoveAutoComplete(c)
+			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
 )

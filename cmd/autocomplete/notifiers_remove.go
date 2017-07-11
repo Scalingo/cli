@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func NotifiersRemoveAutoComplete(c *cli.Context) error {
+func NotifiersAutoComplete(c *cli.Context) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
