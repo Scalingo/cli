@@ -8,7 +8,7 @@ import (
 
 var (
 	NotificationPlatformListCommand = cli.Command{
-		Name:        "platforms-list",
+		Name:        "notification-platforms",
 		Category:    "Notifiers - Global",
 		Description: "List all notification platforms you can use with a notifier.",
 		Usage:       "List all notification platforms",
