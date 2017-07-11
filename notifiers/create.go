@@ -31,11 +31,15 @@ func Provision(app, platformName string, params scalingo.NotifierParams) error {
 	}
 	params.PlatformID = platforms[0].ID
 
-	_, err = c.NotifierProvision(app, platforms[0].Name, params)
+	baseNotifier, err := c.NotifierProvision(app, platforms[0].Name, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	notifier := baseNotifier.Specialize()
 
+	displayDetails(notifier)
+
+	io.Info()
 	io.Status("Notifier have been created.")
 	return nil
 }

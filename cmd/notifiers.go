@@ -28,7 +28,7 @@ var (
 			if len(c.Args()) == 0 {
 				err = notifiers.List(currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-add")
+				cli.ShowCommandHelp(c, "notifiers")
 			}
 
 			if err != nil {
@@ -36,7 +36,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
 		},
 	}
 
@@ -107,6 +107,10 @@ Examples
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
+
+			if c.String("platform") == "" {
+				cli.ShowCommandHelp(c, "notifiers-add")
+			}
 
 			var active bool
 			if c.IsSet("disable") {
@@ -211,6 +215,7 @@ Examples
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
+			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
 

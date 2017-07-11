@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
@@ -17,7 +18,11 @@ func Details(app, ID string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	notifier := baseNotifier.Specialize()
+	displayDetails(notifier)
+	return nil
+}
 
+func displayDetails(notifier scalingo.DetailedNotifier) {
 	t := tablewriter.NewWriter(os.Stdout)
 	// Basic data
 	data := [][]string{
@@ -51,6 +56,4 @@ func Details(app, ID string) error {
 		}
 	}
 	t.Render()
-
-	return nil
 }
