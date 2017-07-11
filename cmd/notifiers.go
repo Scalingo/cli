@@ -28,7 +28,7 @@ var (
 			if len(c.Args()) == 0 {
 				err = notifiers.List(currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers")
+				cli.ShowCommandHelp(c, "notifiers-add")
 			}
 
 			if err != nil {
@@ -36,7 +36,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
+			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
 		},
 	}
 
