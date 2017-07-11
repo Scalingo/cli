@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/notification_platforms"
-	cli "github.com/Scalingo/codegangsta-cli"
+	"github.com/urfave/cli"
 )
 
 var (

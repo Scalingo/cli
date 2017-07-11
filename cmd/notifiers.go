@@ -6,8 +6,8 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/notifiers"
-	"github.com/Scalingo/codegangsta-cli"
 	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/urfave/cli"
 )
 
 var (
