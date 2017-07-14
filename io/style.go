@@ -7,6 +7,7 @@ const (
 	boldBlueToken  = "\033[1;34m"
 	yellowToken    = "\033[33m"
 	greenToken     = "\033[32m"
+	boldRedToken   = "\033[1;31m"
 	grayToken      = "\033[90m"
 	lightGrayToken = "\033[1;37m"
 	resetToken     = "\033[0m"
@@ -18,6 +19,10 @@ func Bold(s string) string {
 
 func BoldBlue(s string) string {
 	return fmt.Sprintf("%s%s%s", boldBlueToken, s, resetToken)
+}
+
+func BoldRed(s string) string {
+	return fmt.Sprintf("%s%s%s", boldRedToken, s, resetToken)
 }
 
 func Green(s string) string {

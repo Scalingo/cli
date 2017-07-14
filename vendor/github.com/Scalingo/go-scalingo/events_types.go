@@ -9,6 +9,21 @@ import (
 	"github.com/Scalingo/go-scalingo/debug"
 )
 
+type EventCategory struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Position int    `json:"position"`
+}
+
+type EventTypeStruct struct {
+	ID          string         `json:"id"`
+	Name        string         `json:"name"`
+	DisplayName string         `json:"display_name"`
+	Description string         `json:"description"`
+	Template    string         `json:"template"`
+	Category    *EventCategory `json:"category"`
+}
+
 type Event struct {
 	ID          string                 `json:"id"`
 	CreatedAt   time.Time              `json:"created_at"`
@@ -214,19 +229,11 @@ type EventCrashType struct {
 }
 
 func (ev *EventCrashType) String() string {
-	msg := fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
-
-	if ev.TypeData.CrashLogs != "" {
-		msg += fmt.Sprintf(" (logs on %s)", ev.TypeData.LogsUrl)
-	}
-
-	return msg
+	return fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
 }
 
 type EventCrashTypeData struct {
 	ContainerType string `json:"container_type"`
-	CrashLogs     string `json:"crash_logs"`
-	LogsUrl       string `json:"logs_url"`
 }
 
 type EventDeploymentType struct {
@@ -276,13 +283,11 @@ type EventRunType struct {
 }
 
 func (ev *EventRunType) String() string {
-	return fmt.Sprintf("one-off container with command '%s' (logs on %s)", ev.TypeData.Command, ev.TypeData.LogsUrl)
+	return fmt.Sprintf("one-off container with command '%s'", ev.TypeData.Command)
 }
 
 type EventRunTypeData struct {
 	Command string `json:"command"`
-	RunLogs string `json:"run_logs"`
-	LogsUrl string `json:"logs_url"`
 }
 
 type EventNewDomainType struct {

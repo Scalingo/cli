@@ -48,8 +48,8 @@ func Check() error {
 		return nil
 	}
 
-	io.Statusf("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n", version)
-	io.Infof("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n", lastVersion)
+	io.Statusf(io.BoldRed("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n"), version)
+	io.Infof(io.BoldRed("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n"), lastVersion)
 	return nil
 }
 
