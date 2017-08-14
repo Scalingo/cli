@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+
 	"github.com/Scalingo/cli/apps"
 	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
@@ -16,10 +18,14 @@ func MongoConsole(opts MongoConsoleOpts) error {
 		return errgo.Mask(err)
 	}
 
+	host := mongoURL.Host
+	if mongoURL.Query().Get("replicaSet") != "" {
+		host = fmt.Sprintf("%s/%s", mongoURL.Query().Get("replicaSet"), mongoURL.Host)
+	}
 	runOpts := apps.RunOpts{
 		DisplayCmd: "mongo-console " + user,
 		App:        opts.App,
-		Cmd:        []string{"dbclient-fetcher", "mongo", "&&", "mongo", "-u", user, "-p", password, mongoURL.Host + "/" + user},
+		Cmd:        []string{"dbclient-fetcher", "mongo", "&&", "mongo", "-u", user, "-p", password, host + "/" + user},
 		Size:       opts.Size,
 	}
 
