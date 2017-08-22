@@ -4,7 +4,7 @@ Changelog
 ### v1.6.0
 
 * [Mongo Console] Add replicaset support to correctly connect to them #306
-* [Notificatiers] Add Notifiers related commands #303 #301 #297 #296:
+* [Notifiers] Add Notifiers related commands #303 #301 #297 #296:
 
 ```
      notifiers          List your notifiers
