@@ -1,4 +1,4 @@
-Scalingo-CLI v1.5.0
+Scalingo-CLI v1.6.0
 ===================
 
 This repository contains the command line utility for the public PaaS Scalingo
@@ -40,97 +40,100 @@ NAME:
    Scalingo Client - Manage your apps and containers
 
 USAGE:
-   Scalingo Client [global options] command [command options] [arguments...]
+   scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.5.0
+   1.6.0
 
-AUTHOR(S):
+AUTHOR:
    Scalingo Team <hello@scalingo.com>
 
 COMMANDS:
-    help	Shows a list of commands or help for one command
+     help  Shows a list of commands or help for one command
 
-  Addons:
-    addons		List used add-ons
-    addons-add		Provision an add-on for your application
-    addons-remove	Remove an existing addon from your app
-    addons-upgrade	Upgrade or downgrade an add-on attached to your app
+   Addons:
+     addons          List used add-ons
+     addons-add      Provision an add-on for your application
+     addons-remove   Remove an existing addon from your app
+     addons-upgrade  Upgrade or downgrade an add-on attached to your app
 
-  Addons - Global:
-    addons-list		List all addons
-    addons-plans	List plans
+   Addons - Global:
+     addons-list   List all addons
+     addons-plans  List plans
 
-  App Management:
-    logs, l		Get the logs of your applications
-    logs-archives, la	Get the logs archives of your applications
-    run, r		Run any command for your app
-    ps			Display your application running processes
-    scale, s		Scale your application instantly
-    restart		Restart processes of your app
-    db-tunnel		Create an encrypted connection to access your database
+   App Management:
+     logs, l            Get the logs of your applications
+     logs-archives, la  Get the logs archives of your applications
+     run, r             Run any command for your app
+     ps                 Display your application running processes
+     scale, s           Scale your application instantly
+     restart            Restart processes of your app
+     db-tunnel          Create an encrypted connection to access your database
 
-  CLI Internals:
-    update	Update 'scalingo' client
+   CLI Internals:
+     update  Update 'scalingo' client
 
-  Collaborators:
-    collaborators		List the collaborators of an application
-    collaborators-add		Invite someone to work on an application
-    collaborators-remove	Revoke permission to collaborate on an application
+   Collaborators:
+     collaborators         List the collaborators of an application
+     collaborators-add     Invite someone to work on an application
+     collaborators-remove  Revoke permission to collaborate on an application
 
-  Custom Domains:
-    domains		List the domains of an application
-    domains-add		Add a custom domain to an application
-    domains-remove	Remove a custom domain from an application
-    domains-ssl		Enable or disable SSL for your custom domains
+   Custom Domains:
+     domains         List the domains of an application
+     domains-add     Add a custom domain to an application
+     domains-remove  Remove a custom domain from an application
+     domains-ssl     Enable or disable SSL for your custom domains
 
-  Databases:
-    redis-console	Run an interactive console with your Redis addon
-    mongo-console	Run an interactive console with your MongoDB addon
-    mysql-console	Run an interactive console with your MySQL addon
-    pgsql-console	Run an interactive console with your PostgreSQL addon
-    influxdb-console	Run an interactive console with your InfluxDB addon
+   Databases:
+     redis-console     Run an interactive console with your Redis addon
+     mongo-console     Run an interactive console with your MongoDB addon
+     mysql-console     Run an interactive console with your MySQL addon
+     pgsql-console     Run an interactive console with your PostgreSQL addon
+     influxdb-console  Run an interactive console with your InfluxDB addon
 
-  Deployment:
-    deployments		List app deployments
-    deployment-logs	View deployment logs
-    deployment-follow	Follow deployment event stream
-    deploy		Trigger a deployment by archive
+   Deployment:
+     deployments        List app deployments
+     deployment-logs    View deployment logs
+     deployment-follow  Follow deployment event stream
+     deploy             Trigger a deployment by archive
 
-  Display metrics of the running containers:
-    stats	Display metrics of the currently running containers
+   Display metrics of the running containers:
+     stats  Display metrics of the currently running containers
 
-  Environment:
-    env		Display the environment of your apps
-    env-set	Set the environment variables of your apps
-    env-unset	Unset environment variables of your apps
+   Environment:
+     env        Display the environment of your apps
+     env-set    Set the environment variables of your apps
+     env-unset  Unset environment variables of your apps
 
-  Events:
-    user-timeline	List the events you have done on the platform
-    timeline		List the actions related to a given app
+   Events:
+     user-timeline  List the events you have done on the platform
+     timeline       List the actions related to a given app
 
-  Global:
-    apps	List your apps
-    create, c	Create a new app
-    destroy	Destroy an app /!\
-    login	Login to Scalingo platform
-    logout	Logout from Scalingo
-    signup	Create your Scalingo account
+   Global:
+     apps       List your apps
+     create, c  Create a new app
+     destroy    Destroy an app /!\
+     login      Login to Scalingo platform
+     logout     Logout from Scalingo
+     signup     Create your Scalingo account
 
-  Notifications:
-    notifications		List enabled notifications
-    notifications-add		Enable a notification for your application
-    notifications-update	Update the url of a notification
-    notifications-remove	Remove an existing notification from your app
+   Notifiers:
+     notifiers          List your notifiers
+     notifiers-details  Show details of your notifiers
+     notifiers-add      Add a notifier for your application
+     notifiers-update   Update a notifier
+     notifiers-remove   Remove an existing notifier from your app
 
-  Public SSH Keys:
-    keys	List your SSH public keys
-    keys-add	Add a public SSH key to deploy your apps
-    keys-remove	Remove a public SSH key
+   Notifiers - Global:
+     notification-platforms  List all notification platforms
+
+   Public SSH Keys:
+     keys         List your SSH public keys
+     keys-add     Add a public SSH key to deploy your apps
+     keys-remove  Remove a public SSH key
 
 GLOBAL OPTIONS:
-   --app, -a "<name>"		Name of the app [$SCALINGO_APP]
-   --remote, -r "scalingo"	Name of the remote
-   --generate-bash-completion
-   --version, -v		print the version
+   --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
+   --remote value, -r value  Name of the remote (default: "scalingo")
+   --version, -v             print the version
 ```
