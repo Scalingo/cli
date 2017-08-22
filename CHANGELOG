@@ -1,6 +1,26 @@
 Changelog
 =========
 
+### v1.6.0
+
+* [Mongo Console] Add replicaset support to correctly connect to them #306
+* [Notificatiers] Add Notifiers related commands #303 #301 #297 #296:
+
+```
+     notifiers          List your notifiers
+     notifiers-details  Show details of your notifiers
+     notifiers-add      Add a notifier for your application
+     notifiers-update   Update a notifier
+     notifiers-remove   Remove an existing notifier from your app
+```
+
+* [Notifications] Feature removed, replaced by notifiers, all the notifications have been migrated to notifiers #307
+* [Internals] Migrate to original `urfave/cli` instead of using our own fork of the library #290
+* [Update] Add timeout in update checking to avoid the CLI to freeze when GitHub is down for instance #274
+* [Auth] When authentication file is corrupted, recreate a new one instead of crashing #283
+* [Logs-archive] Logs archives are now listable and downloadable from the CLI #289
+* [Logs] Lines are now colored according to the source of the line #286
+
 ### v1.5.1
 
 * [Feature] Authenticate your request using the environment by using the environment variable `SCALINGO_API_TOKEN` #291
