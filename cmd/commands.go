@@ -55,12 +55,6 @@ var (
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
 
-		// Notifications
-		NotificationsListCommand,
-		NotificationsAddCommand,
-		NotificationsUpdateCommand,
-		NotificationsRemoveCommand,
-
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersDetailsCommand,
