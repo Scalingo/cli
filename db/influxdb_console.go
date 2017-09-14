@@ -14,7 +14,7 @@ type InfluxDBConsoleOpts struct {
 }
 
 func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
-	influxdbURL, username, password, err := dbURL(opts.App, "SCALINGO_INFLUX", []string{"http://"})
+	influxdbURL, username, password, err := dbURL(opts.App, "SCALINGO_INFLUX", []string{"http://", "https://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -24,10 +24,18 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 		return errgo.Newf("%v has an invalid host", influxdbURL)
 	}
 
+	cmd := []string{"dbclient-fetcher", "influxdb", "&&", "influx"}
+
+	if influxdbURL.Scheme == "https" {
+		cmd = append(cmd, "-ssl", "-unsafeSsl")
+	}
+
+	cmd = append(cmd, "-host", host, "-port", port, "-username", username, "-password", password, "-database", influxdbURL.Path[1:])
+
 	runOpts := apps.RunOpts{
 		DisplayCmd: "influxdb-console " + strings.Split(host, ".")[0],
 		App:        opts.App,
-		Cmd:        []string{"dbclient-fetcher", "influxdb", "&&", "influx", "-host", host, "-port", port, "-username", username, "-password", password, "-database", influxdbURL.Path[1:]},
+		Cmd:        cmd,
 		Size:       opts.Size,
 	}
 
