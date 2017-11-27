@@ -14,11 +14,15 @@ import (
 	"github.com/urfave/cli"
 )
 
+var (
+	completionFlag = "--" + cli.BashCompletionFlag.GetName()
+)
+
 func DefaultAction(c *cli.Context) {
 	completeMode := false
 
 	for i := range os.Args {
-		if strings.Contains(os.Args[i], "generate-bash-completion") {
+		if os.Args[i] == completionFlag {
 			completeMode = true
 			break
 		}
@@ -36,6 +40,25 @@ func DefaultAction(c *cli.Context) {
 }
 
 func ScalingoAppComplete(c *cli.Context) {
+	// At that point, flags have not been parsed by urfave/cli
+	// ie. `scalingo -a <tab><tab>`
+	// So we've to handle it ourselves
+	args := os.Args[1:]
+	nargs := []string{}
+	for _, a := range args {
+		if a != completionFlag {
+			nargs = append(nargs, a)
+		}
+	}
+	if len(nargs) == 1 && (nargs[0] == "-a" || nargs[0] == "--app") {
+		autocomplete.FlagAppAutoComplete(c)
+		return
+	}
+	if len(nargs) == 1 && (nargs[0] == "-r" || nargs[0] == "--remote") {
+		autocomplete.FlagRemoteAutoComplete(c)
+		return
+	}
+
 	autocomplete.DisplayFlags(c.App.Flags)
 
 	for _, command := range c.App.Commands {
