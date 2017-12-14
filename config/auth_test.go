@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config/auth"
+	"github.com/Scalingo/go-scalingo"
 )
 
 var (

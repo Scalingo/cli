@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config/auth"
-	"github.com/Scalingo/cli/debug"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo"
@@ -29,67 +28,72 @@ var (
 	ErrUnauthenticated = errgo.New("user unauthenticated")
 )
 
-func Auth() (*scalingo.User, error) {
+func Auth() (*scalingo.User, *scalingo.OAuthTokenGenerator, error) {
 	var user *scalingo.User
+	var tokens *scalingo.OAuthTokenGenerator
 	var err error
 
 	if C.DisableInteractive {
 		err = errors.New("Fail to login (interactive mode disabled)")
 	} else {
 		for i := 0; i < 3; i++ {
-			user, err = tryAuth()
+			user, tokens, err = tryAuth()
 			if err == nil {
 				break
 			} else if errgo.Cause(err) == io.EOF {
-				return nil, errors.New("canceled by user")
+				return nil, nil, errors.New("canceled by user")
 			} else {
-
 				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
 			}
 		}
 	}
 	if err == ErrAuthenticationFailed {
-		return nil, errors.New("Forgot your password? https://my.scalingo.com")
+		return nil, nil, errors.New("Forgot your password? https://my.scalingo.com")
 	}
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
 	fmt.Print("\n")
 	appio.Statusf("Hello %s, nice to see you!\n\n", user.Username)
-	err = SetCurrentUser(user)
+	err = SetCurrentUser(user, tokens)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
-	return user, nil
+	return user, tokens, nil
 }
 
-func SetCurrentUser(user *scalingo.User) error {
-	C.apiToken = user.AuthenticationToken
+func SetCurrentUser(user *scalingo.User, generator *scalingo.OAuthTokenGenerator) error {
+	C.TokenGenerator = generator
 	AuthenticatedUser = user
-	err := Authenticator.StoreAuth(user)
+	err := Authenticator.StoreAuth(user, generator)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }
 
-func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
+func (a *CliAuthenticator) StoreAuth(user *scalingo.User, generator *scalingo.OAuthTokenGenerator) error {
 	authConfig, err := existingAuth()
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	var c auth.ConfigPerHostV1
+	var c auth.ConfigPerHostV2
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
 		fmt.Println("Auth: error while reading auth file. Recreating a new one.")
-		c = make(auth.ConfigPerHostV1)
+		c = make(auth.ConfigPerHostV2)
 	}
 
-	c[C.apiHost] = user
+	c[C.apiHost] = &auth.CredentialsData{
+		TokenGenerator: generator,
+		User:           user,
+	}
+
 	authConfig.LastUpdate = time.Now()
+	authConfig.AuthDataVersion = auth.ConfigVersionV2
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {
@@ -100,48 +104,43 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User) error {
 	return writeAuthFile(authConfig)
 }
 
-func (a *CliAuthenticator) LoadAuth() (*scalingo.User, error) {
+func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *scalingo.OAuthTokenGenerator, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
-		return nil, ErrUnauthenticated
+		return nil, nil, ErrUnauthenticated
 	}
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
 	var authConfig auth.ConfigData
 	if err := json.NewDecoder(file).Decode(&authConfig); err != nil {
 		file.Close()
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 	file.Close()
 
-	if authConfig.AuthDataVersion == "" {
-		debug.Println("auth config should be updated")
-		err = authConfig.MigrateToV1()
-		if err != nil {
-			return nil, errgo.Mask(err)
-		}
+	if authConfig.AuthDataVersion != auth.ConfigVersionV2 {
 		err = writeAuthFile(&authConfig)
 		if err != nil {
-			return nil, errgo.Mask(err)
+			return nil, nil, errgo.NoteMask(err, "fail to update to authv2", errgo.Any)
 		}
-		debug.Println("auth config has been updated to V1")
+		return nil, nil, ErrUnauthenticated
 	}
 
-	var configPerHost auth.ConfigPerHostV1
+	var configPerHost auth.ConfigPerHostV2
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &configPerHost)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, nil, errgo.Mask(err)
 	}
 
-	if user, ok := configPerHost[C.apiHost]; !ok {
-		return nil, ErrUnauthenticated
+	if creds, ok := configPerHost[C.apiHost]; !ok {
+		return nil, nil, ErrUnauthenticated
 	} else {
-		if user == nil {
-			return nil, ErrUnauthenticated
+		if creds == nil {
+			return nil, nil, ErrUnauthenticated
 		}
-		return user, nil
+		return creds.User, creds.TokenGenerator, nil
 	}
 }
 
@@ -151,7 +150,7 @@ func (a *CliAuthenticator) RemoveAuth() error {
 		return errgo.Mask(err)
 	}
 
-	var c auth.ConfigPerHostV1
+	var c auth.ConfigPerHostV2
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
 		return errgo.Mask(err)
@@ -170,7 +169,7 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	return writeAuthFile(authConfig)
 }
 
-func tryAuth() (*scalingo.User, error) {
+func tryAuth() (*scalingo.User, *scalingo.OAuthTokenGenerator, error) {
 	var login string
 	var err error
 
@@ -181,25 +180,65 @@ func tryAuth() (*scalingo.User, error) {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
-			return nil, errgo.Mask(err, errgo.Any)
+			return nil, nil, errgo.Mask(err, errgo.Any)
 		}
 		login = strings.TrimRight(login, "\n")
 	}
 
 	password, err := term.Password("       Password: ")
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
+	otpRequired := false
+	retryAuth := true
+
 	c := ScalingoUnauthenticatedClient()
-	res, err := c.Login(login, password)
+
+	loginParams := scalingo.LoginParams{}
+	var app *scalingo.OAuthApplication
+	var token *scalingo.Token
+	for retryAuth {
+		var otp string
+		if otpRequired {
+			otp, err = term.Password("       OTP: ")
+			if err != nil {
+				return nil, nil, errgo.NoteMask(err, "fail to get otp", errgo.Any)
+			}
+		}
+
+		loginParams.Identifier = login
+		loginParams.Password = password
+
+		if otpRequired {
+			loginParams.OTP = otp
+		}
+
+		app, token, err = c.GetOAuthCredentials(loginParams)
+		if err != nil {
+			if !otpRequired && errgo.Cause(err) == scalingo.ErrOTPRequired {
+				otpRequired = true
+			} else {
+				return nil, nil, errgo.NoteMask(err, "fail to get oauth credentials", errgo.Any)
+			}
+		} else {
+			retryAuth = false
+		}
+	}
+
+	generator, err := c.GetOAuthTokenGenerator(app, token.Token, []string{}, "https://cli.scalingo.com")
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errgo.NoteMask(err, "fail to get oauth tokens", errgo.Any)
 	}
-	if res.User == nil {
-		return nil, ErrAuthenticationFailed
+
+	C.TokenGenerator = generator
+	client := ScalingoClient()
+	userInformation, err := client.Self()
+	if err != nil {
+		return nil, nil, errgo.NoteMask(err, "fail to get user informations", errgo.Any)
 	}
-	return res.User, nil
+
+	return userInformation, generator, nil
 }
 
 func writeAuthFile(authConfig *auth.ConfigData) error {
@@ -224,7 +263,7 @@ func existingAuth() (*auth.ConfigData, error) {
 		// We don't care of the error
 		json.Unmarshal(content, &authConfig)
 	} else if os.IsNotExist(err) {
-		config := make(auth.ConfigPerHostV1)
+		config := make(auth.ConfigPerHostV2)
 		buffer, err := json.Marshal(&config)
 		if err != nil {
 			return nil, errgo.Mask(err)
