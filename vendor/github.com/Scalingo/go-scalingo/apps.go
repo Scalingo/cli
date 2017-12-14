@@ -211,7 +211,9 @@ func (c *Client) AppsScale(app string, params *AppsScaleParams) (*http.Response,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scale",
 		Params:   params,
-		Expected: Statuses{202},
+		// Return 200 if app is scaled before deployment
+		// Otherwise async job is triggered, it's 202
+		Expected: Statuses{200, 202},
 	}
 	return req.Do()
 }

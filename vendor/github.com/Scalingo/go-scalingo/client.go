@@ -11,18 +11,18 @@ type HTTPClient interface {
 }
 
 type Client struct {
-	APIToken   string
-	Endpoint   string
-	TLSConfig  *tls.Config
-	APIVersion string
-	httpClient HTTPClient
+	TokenGenerator TokenGenerator
+	Endpoint       string
+	TLSConfig      *tls.Config
+	APIVersion     string
+	httpClient     HTTPClient
 }
 
 type ClientConfig struct {
-	Timeout   time.Duration
-	Endpoint  string
-	APIToken  string
-	TLSConfig *tls.Config
+	Timeout        time.Duration
+	Endpoint       string
+	TLSConfig      *tls.Config
+	TokenGenerator TokenGenerator
 }
 
 func NewClient(cfg ClientConfig) *Client {
@@ -36,10 +36,10 @@ func NewClient(cfg ClientConfig) *Client {
 		cfg.TLSConfig = &tls.Config{}
 	}
 	return &Client{
-		APIToken:   cfg.APIToken,
-		Endpoint:   cfg.Endpoint,
-		APIVersion: defaultAPIVersion,
-		TLSConfig:  cfg.TLSConfig,
+		TokenGenerator: cfg.TokenGenerator,
+		Endpoint:       cfg.Endpoint,
+		APIVersion:     defaultAPIVersion,
+		TLSConfig:      cfg.TLSConfig,
 		httpClient: &http.Client{
 			Timeout: cfg.Timeout,
 			Transport: &http.Transport{
