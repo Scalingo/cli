@@ -80,6 +80,7 @@ type EventType string
 
 const (
 	EventNewApp             EventType = "new_app"
+	EventDeleteApp                    = "delete_app"
 	EventRenameApp                    = "rename_app"
 	EventTransferApp                  = "transfer_app"
 	EventRestart                      = "restart"
@@ -130,6 +131,14 @@ func (ev *EventNewAppType) String() string {
 
 type EventNewAppTypeData struct {
 	GitSource string `json:"git_source"`
+}
+
+type EventDeleteAppType struct {
+	Event
+}
+
+func (ev *EventDeleteAppType) String() string {
+	return fmt.Sprintf("the application has been deleted")
 }
 
 type EventRenameAppType struct {
@@ -678,6 +687,8 @@ func (pev *Event) Specialize() DetailedEvent {
 	switch ev.Type {
 	case EventNewApp:
 		e = &EventNewAppType{Event: ev}
+	case EventDeleteApp:
+		e = &EventDeleteAppType{Event: ev}
 	case EventRenameApp:
 		e = &EventRenameAppType{Event: ev}
 	case EventTransferApp:
