@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### ToBeReleased
+
+* [One-off] Better inactivity timeout error message
+
 ### v1.6.0
 
 * [Mongo Console] Add replicaset support to correctly connect to them #306
