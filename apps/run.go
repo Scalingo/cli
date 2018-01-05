@@ -46,6 +46,7 @@ type RunOpts struct {
 }
 
 type runContext struct {
+	app                     string
 	attachURL               string
 	waitingTextOutputWriter stdio.Writer
 	stdinCopyFunc           func(stdio.Writer, stdio.Reader) (int64, error)
@@ -57,6 +58,7 @@ func Run(opts RunOpts) error {
 
 	firstReadDone := make(chan struct{})
 	ctx := &runContext{
+		app: opts.App,
 		waitingTextOutputWriter: os.Stderr,
 		stdinCopyFunc:           stdio.Copy,
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
@@ -268,6 +270,17 @@ func (ctx *runContext) exitCode() (int, error) {
 		return -1, errgo.Notef(err, "fail to read body when getting exit code")
 	}
 	debug.Println("exit code body:", string(body))
+
+	if res.StatusCode == http.StatusRequestTimeout {
+		fmt.Println()
+		io.Warning("Connection timed out due to inactivity, one-off aborted.")
+		io.Info("Data should be sent to/from the container regularly to avoid such timeout")
+		fmt.Println()
+		io.Info("If you need to run long background tasks, the '--detached' should be used")
+		io.Info("In this case, output will be available in the main logs of your application:")
+		io.Info(io.Gray(io.Bold(fmt.Sprintf("  $ scalingo -a %s logs", ctx.app))))
+		return -127, nil
+	}
 
 	waitRes := map[string]int{}
 	err = json.NewDecoder(bytes.NewBuffer(body)).Decode(&waitRes)
