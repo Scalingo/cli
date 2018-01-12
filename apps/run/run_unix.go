@@ -35,7 +35,7 @@ func NotifiedSignals() chan os.Signal {
 	return signals
 }
 
-func NofityTermSizeUpdate(signals chan os.Signal) {
+func NotifyTermSizeUpdate(signals chan os.Signal) {
 	signals <- syscall.SIGWINCH
 }
 

@@ -173,12 +173,12 @@ func Run(opts RunOpts) error {
 	stopSignalsMonitoring := make(chan bool)
 	defer close(stopSignalsMonitoring)
 
+	signals.CatchQuitSignals = false
+	signals := run.NotifiedSignals()
+
 	go func() {
-		signals.CatchQuitSignals = false
-		signals := run.NotifiedSignals()
 		defer close(signals)
 
-		go run.NofityTermSizeUpdate(signals)
 		for {
 			select {
 			case s := <-signals:
@@ -192,7 +192,9 @@ func Run(opts RunOpts) error {
 
 	attachSpinner.Stop()
 	startSpinner := io.NewSpinnerWithStopChan(ctx.waitingTextOutputWriter, firstReadDone)
+	// This method will be executed after first read
 	startSpinner.PostHook = func() {
+		go run.NotifyTermSizeUpdate(signals)
 		fmt.Fprintf(ctx.waitingTextOutputWriter, "\n\n")
 	}
 	go startSpinner.Start()
@@ -207,6 +209,7 @@ func Run(opts RunOpts) error {
 			socket.Write([]byte("\x04"))
 		}
 	}()
+
 	_, err = ctx.stdoutCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
