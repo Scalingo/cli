@@ -5,6 +5,7 @@ import (
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/pkg/errors"
 	"gopkg.in/errgo.v1"
 )
@@ -60,7 +61,7 @@ func loginWithUserAndPassword() error {
 
 func loginWithApiKey(apiKey string) error {
 	c := config.ScalingoUnauthenticatedClient()
-	c.APIToken = apiKey
+	c.TokenGenerator = scalingo.NewStaticTokenGenerator(apiKey)
 	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)

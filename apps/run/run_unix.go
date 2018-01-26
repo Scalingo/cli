@@ -12,11 +12,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/heroku/hk/term"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
+	"github.com/heroku/hk/term"
+	"gopkg.in/errgo.v1"
 )
 
 type UpdateTtyParams struct {
@@ -78,7 +78,11 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	req.SetBasicAuth("", config.ScalingoClient().APIToken)
+	token, err := config.ScalingoClient().TokenGenerator.GetAccessToken()
+	if err != nil {
+		return errgo.Notef(err, "fail to get access token")
+	}
+	req.SetBasicAuth("", token)
 	debug.Printf("Updating TTY Size: PUT %v %+v", url, params)
 
 	res, err := httpclient.Do(req)

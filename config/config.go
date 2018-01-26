@@ -108,9 +108,9 @@ func init() {
 
 func ScalingoClient() *scalingo.Client {
 	return scalingo.NewClient(scalingo.ClientConfig{
-		APIToken:  C.apiToken,
-		Endpoint:  C.ScalingoApiUrl,
-		TLSConfig: TlsConfig,
+		TokenGenerator: scalingo.NewStaticTokenGenerator(C.apiToken),
+		Endpoint:       C.ScalingoApiUrl,
+		TLSConfig:      TlsConfig,
 	})
 }
 
