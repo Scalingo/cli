@@ -3,6 +3,7 @@ Changelog
 
 ### ToBeReleased
 
+* [Commands] Add `rename` command to rename an application
 * [One-off] Better inactivity timeout error message
 
 ### v1.6.0
