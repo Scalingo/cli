@@ -3,7 +3,7 @@ package scalingo
 import (
 	"encoding/json"
 
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/cli/debug"
 
 	errgo "gopkg.in/errgo.v1"
 )

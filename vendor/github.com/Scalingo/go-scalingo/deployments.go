@@ -136,14 +136,10 @@ func (c *Client) DeploymentLogs(deployURL string) (*http.Response, error) {
 }
 
 func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
-	token, err := c.TokenGenerator.GetAccessToken()
-	if err != nil {
-		return nil, errgo.Notef(err, "fail to generate token")
-	}
 	authString, err := json.Marshal(&AuthStruct{
 		Type: "auth",
 		Data: AuthenticationData{
-			Token: token,
+			Token: c.APIToken,
 		},
 	})
 	if err != nil {

@@ -18,7 +18,7 @@ import (
 type Config struct {
 	ScalingoApiUrl     string
 	apiHost            string
-	TokenGenerator     scalingo.TokenGenerator
+	apiToken           string
 	ApiVersion         string
 	DisableInteractive bool
 	SshHost            string
@@ -100,22 +100,18 @@ func init() {
 		TlsConfig.MinVersion = tls.VersionTLS10
 	}
 
-	user, tokenGenerator, err := Authenticator.LoadAuth()
+	AuthenticatedUser, err = Authenticator.LoadAuth()
 	if err == nil {
-		C.TokenGenerator = tokenGenerator
+		C.apiToken = AuthenticatedUser.AuthenticationToken
 	}
-	AuthenticatedUser = user
 }
 
 func ScalingoClient() *scalingo.Client {
-	client := scalingo.NewClient(scalingo.ClientConfig{
-		TokenGenerator: C.TokenGenerator,
-		Endpoint:       C.ScalingoApiUrl,
-		TLSConfig:      TlsConfig,
+	return scalingo.NewClient(scalingo.ClientConfig{
+		APIToken:  C.apiToken,
+		Endpoint:  C.ScalingoApiUrl,
+		TLSConfig: TlsConfig,
 	})
-
-	client.TokenGenerator.SetClient(client)
-	return client
 }
 
 func ScalingoUnauthenticatedClient() *scalingo.Client {

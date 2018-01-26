@@ -254,13 +254,7 @@ func (ctx *runContext) exitCode() (int, error) {
 	if err != nil {
 		return -1, errgo.Mask(err, errgo.Any)
 	}
-
-	token, err := config.C.TokenGenerator.GetAccessToken()
-	if err != nil {
-		return -1, errgo.Notef(err, "fail to generate auth")
-	}
-
-	req.SetBasicAuth("", token)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -303,12 +297,7 @@ func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	token, err := config.C.TokenGenerator.GetAccessToken()
-
-	if err != nil {
-		return nil, nil, errgo.Notef(err, "fail to generate auth")
-	}
-	req.SetBasicAuth("", token)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	url, err := url.Parse(ctx.attachURL)
 	if err != nil {
@@ -500,12 +489,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-
-	token, err := config.C.TokenGenerator.GetAccessToken()
-	if err != nil {
-		return errgo.Notef(err, "fail to generate token")
-	}
-	req.SetBasicAuth("", token)
+	req.SetBasicAuth("", config.AuthenticatedUser.AuthenticationToken)
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 

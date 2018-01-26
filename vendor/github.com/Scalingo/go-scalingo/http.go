@@ -30,10 +30,6 @@ type APIRequest struct {
 	Expected    Statuses
 	Params      interface{}
 	HTTPRequest *http.Request
-	Token       string // Directly use a Bearer token
-	Username    string // Username for the OAuth generator (nil if you use a token)
-	Password    string // Password for the OAuth generator
-	OTP         string // OTP value
 }
 
 type Statuses []int
@@ -52,17 +48,9 @@ func (req *APIRequest) FillDefaultValues() error {
 		req.Client = &Client{Endpoint: defaultEndpoint, APIVersion: defaultAPIVersion}
 	}
 
-	if !req.NoAuth {
-		if req.Client.TokenGenerator == nil {
-			return ErrNoAuth
-		}
-		var err error
-		req.Token, err = req.Client.TokenGenerator.GetAccessToken()
-		if err != nil {
-			return ErrNoAuth
-		}
+	if req.Client.APIToken == "" && !req.NoAuth {
+		return ErrNoAuth
 	}
-
 	if req.URL == "" {
 		req.URL = fmt.Sprintf("%s%s%s", req.Client.Endpoint, "/v", req.Client.APIVersion)
 	}
@@ -121,16 +109,7 @@ func (req *APIRequest) Do() (*http.Response, error) {
 	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", req.HTTPRequest.Header), 6))
 	debug.Printf(io.Indent("Params : %v", 6), req.Params)
 
-	if req.Token != "" {
-		req.HTTPRequest.Header.Add("Authorization", fmt.Sprintf("Bearer %s", req.Token))
-	} else if req.Username != "" || req.Password != "" {
-		req.HTTPRequest.SetBasicAuth(req.Username, req.Password)
-	}
-
-	if req.OTP != "" {
-		req.HTTPRequest.Header.Add("X-Authorization-OTP", req.OTP)
-	}
-
+	req.HTTPRequest.SetBasicAuth("", req.Client.APIToken)
 	res, err := req.doRequest(req.HTTPRequest)
 	if err != nil {
 		fmt.Printf("Fail to query %s: %v\n", req.HTTPRequest.Host, err)
