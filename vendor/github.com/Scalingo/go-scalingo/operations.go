@@ -6,6 +6,14 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+type OperationsService interface {
+	OperationsShow(app string, opID string) (*Operation, error)
+}
+
+type OperationsClient struct {
+	subresourceClient
+}
+
 type OperationResponse struct {
 	Op Operation `json:"operation"`
 }
@@ -23,7 +31,7 @@ func (op *Operation) ElapsedDuration() float64 {
 	return op.FinishedAt.Sub(op.CreatedAt).Seconds()
 }
 
-func (c *Client) OperationsShow(app string, opID string) (*Operation, error) {
+func (c *OperationsClient) OperationsShow(app string, opID string) (*Operation, error) {
 	var opRes OperationResponse
 	err := c.subresourceGet(app, "operations", opID, nil, &opRes)
 	if err != nil {

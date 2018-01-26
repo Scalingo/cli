@@ -6,6 +6,15 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+type AddonProvidersService interface {
+	AddonProvidersList() ([]*AddonProvider, error)
+	AddonProviderPlansList(addon string) ([]*Plan, error)
+}
+
+type AddonProvidersClient struct {
+	*backendConfiguration
+}
+
 type Plan struct {
 	ID               string `json:"id"`
 	LogoURL          string `json:"logo_url"`
@@ -29,9 +38,9 @@ type ListParams struct {
 	AddonProviders []*AddonProvider `json:"addon_providers"`
 }
 
-func (c *Client) AddonProvidersList() ([]*AddonProvider, error) {
+func (c *AddonProvidersClient) AddonProvidersList() ([]*AddonProvider, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/addon_providers",
 	}
@@ -50,9 +59,9 @@ func (c *Client) AddonProvidersList() ([]*AddonProvider, error) {
 	return params.AddonProviders, nil
 }
 
-func (c *Client) AddonProviderPlansList(addon string) ([]*Plan, error) {
+func (c *AddonProvidersClient) AddonProviderPlansList(addon string) ([]*Plan, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/addon_providers/" + addon + "/plans",
 	}
