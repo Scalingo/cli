@@ -2,6 +2,18 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
+type VariablesService interface {
+	VariablesList(app string) (Variables, error)
+	VariablesListWithoutAlias(app string) (Variables, error)
+	VariableSet(app string, name string, value string) (*Variable, int, error)
+	VariableMultipleSet(app string, variables Variables) (Variables, int, error)
+	VariableUnset(app string, id string) error
+}
+
+type VariablesClient struct {
+	subresourceClient
+}
+
 type Variable struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
@@ -27,15 +39,15 @@ type VariableSetParams struct {
 	Variable *Variable `json:"variable"`
 }
 
-func (c *Client) VariablesList(app string) (Variables, error) {
+func (c *VariablesClient) VariablesList(app string) (Variables, error) {
 	return c.variableList(app, true)
 }
 
-func (c *Client) VariablesListWithoutAlias(app string) (Variables, error) {
+func (c *VariablesClient) VariablesListWithoutAlias(app string) (Variables, error) {
 	return c.variableList(app, false)
 }
 
-func (c *Client) variableList(app string, aliases bool) (Variables, error) {
+func (c *VariablesClient) variableList(app string, aliases bool) (Variables, error) {
 	var variablesRes VariablesRes
 	err := c.subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
@@ -44,9 +56,9 @@ func (c *Client) variableList(app string, aliases bool) (Variables, error) {
 	return variablesRes.Variables, nil
 }
 
-func (c *Client) VariableSet(app string, name string, value string) (*Variable, int, error) {
+func (c *VariablesClient) VariableSet(app string, name string, value string) (*Variable, int, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.subresourceClient.backendConfiguration,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]interface{}{
@@ -72,9 +84,9 @@ func (c *Client) VariableSet(app string, name string, value string) (*Variable, 
 	return params.Variable, res.StatusCode, nil
 }
 
-func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
+func (c *VariablesClient) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.subresourceClient.backendConfiguration,
 		Method:   "PUT",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]Variables{
@@ -97,6 +109,6 @@ func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables
 	return params.Variables, res.StatusCode, nil
 }
 
-func (c *Client) VariableUnset(app string, id string) error {
+func (c *VariablesClient) VariableUnset(app string, id string) error {
 	return c.subresourceDelete(app, "variables", id)
 }
