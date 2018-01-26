@@ -70,11 +70,7 @@ func loginWithToken(tk string) error {
 		return errgo.NoteMask(err, "fail to get token generator", errgo.Any)
 	}
 
-	err = finalizeLogin(app, token)
-	if err != nil {
-		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
-	}
-	return nil
+	return finalizeLogin(app, token)
 }
 
 func loginWithSsh(identity string) error {
@@ -117,11 +113,8 @@ func loginWithSsh(identity string) error {
 		return errgo.NoteMask(err, "fail to get oauth credentials", errgo.Any)
 	}
 
-	err = finalizeLogin(app, token)
-	if err != nil {
-		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
-	}
-	return nil
+	return finalizeLogin(app, token)
+
 }
 
 func finalizeLogin(app *scalingo.OAuthApplication, token *scalingo.Token) error {
