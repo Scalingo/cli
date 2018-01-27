@@ -12,7 +12,7 @@ import (
 var (
 	RenameCommand = cli.Command{
 		Name:     "rename",
-		Category: "Global",
+		Category: "App Management",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{

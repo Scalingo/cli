@@ -33,7 +33,7 @@ func Rename(appName string, newName string) error {
 
 	_, err = c.AppsRename(appName, newName)
 	if err != nil {
-		return errgo.Notef(err, "fail to name app")
+		return errgo.Notef(err, "fail to rename app")
 	}
 
 	io.Status("App " + appName + " has been renamed to " + newName)
