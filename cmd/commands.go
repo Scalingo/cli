@@ -10,6 +10,7 @@ var (
 		AppsCommand,
 		CreateCommand,
 		DestroyCommand,
+		RenameCommand,
 
 		// Apps Actions
 		LogsCommand,
