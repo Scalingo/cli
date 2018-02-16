@@ -59,18 +59,7 @@ func (c *AddonProvidersClient) AddonProvidersList() ([]*AddonProvider, error) {
 	return params.AddonProviders, nil
 }
 
-var addonProviderTypo = map[string]string{
-	"scalingo-mongo":   "scalingo-mongodb",
-	"scalingo-influx":  "scalingo-influxdb",
-	"scalingo-postgre": "scalingo-postgresql",
-	"scalingo-pgsql":   "scalingo-postgresql",
-}
-
 func (c *AddonProvidersClient) AddonProviderPlansList(addon string) ([]*Plan, error) {
-	correctAddon, ok := addonProviderTypo[addon]
-	if ok {
-		addon = correctAddon
-	}
 	req := &APIRequest{
 		Client:   c.backendConfiguration,
 		NoAuth:   true,
