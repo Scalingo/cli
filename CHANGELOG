@@ -1,10 +1,14 @@
 Changelog
 =========
 
-### ToBeReleased
+### 1.7.0
 
 * [Commands] Add `rename` command to rename an application
 * [One-off] Better inactivity timeout error message
+* [DB Console] Add support for TLS connection to databases
+* [Bugfix] Bad autocompletion on -a, --app, -r, --remote flags when they are the first argument of a command
+* [Bugfix] TTY size was not sent when launching a `run` command
+
 
 ### v1.6.0
 
