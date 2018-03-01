@@ -12,7 +12,7 @@ main() {
   error() {
     echo -en " !     $*"
   }
-  
+
   warn() {
     echo -en " /!\\   $*"
   }
@@ -25,6 +25,17 @@ main() {
     if [ "x$0" = "xinstall" ] ; then
       rm "$0"
     fi
+  }
+
+  usage() {
+    echo "Installs scalingo client."
+    echo
+    echo "Options:"
+    echo "  -h, --help             displays help and exits"
+    echo "  -i, --install-dir DIR  scalingo client installation directory, creating it if"
+    echo "                         necessary (defaults to /usr/local/bin)"
+    echo "  -y, --yes              overwrites previously installed scalingo client"
+    echo
   }
 
   if [ "x$DEBUG" = "xtrue" ] ; then
@@ -58,6 +69,36 @@ main() {
       ;;
   esac
 
+  while [ "$#" -gt "0" ]
+  do
+    key="$1"
+
+    case $key in
+      -h|--help)
+      usage
+      exit
+      ;;
+      -i|--install-dir)
+      target_dir="$2"
+      shift
+      shift
+      if [ -e "$target_dir" ] && [ ! -d "$target_dir" ] ; then
+        error "target directory '$target_dir' exists but is not a directory\n"
+        exit 1
+      fi
+      ;;
+      -y|--yes)
+      yes_to_overwrite=1
+      shift
+      ;;
+      *)
+      usage
+      error "unknown argument $1\n"
+      exit 1
+      ;;
+    esac
+  done
+
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
   version=$(curl -s http://cli-dl.scalingo.io/version | tr -d ' \t\n')
@@ -65,7 +106,7 @@ main() {
   archive_name="${dirname}.${ext}"
   url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
 
-  status "Downloading Scalingo client...  " 
+  status "Downloading Scalingo client...  "
   curl -s -L -o ${tmpdir}/${archive_name} ${url}
   echo "DONE"
   status "Extracting...   "
@@ -80,11 +121,12 @@ main() {
   echo "DONE"
 
   exe_path=${tmpdir}/${dirname}/scalingo
-  target=/usr/local/bin/scalingo
+  target_dir="${target_dir:-/usr/local/bin}"
+  target="$target_dir/scalingo"
 
-  if [ -x $target ] ; then
+  if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
     new_version=$($exe_path -v | cut -d' ' -f4)
-    old_version=$($target -v | cut -d' ' -f4)
+    old_version=$("$target" -v | cut -d' ' -f4)
     warn "Scalingo client is already installed (version ${old_version})\n"
     info "Do you want to replace it with version ${new_version}? [Y/n] "
 
@@ -101,22 +143,22 @@ main() {
     fi
   fi
 
-  status "Install scalingo client to /usr/local/bin\n"
-  if [ ! -w "/usr/local/bin" ] ; then
+  status "Install scalingo client to $target_dir\n"
+  if [ ! -w "$target_dir" ] ; then
     sudo=sudo
     info "sudo required...\n"
   fi
 
-  if [ ! -e "/usr/local/bin" ] ; then
-    info "/usr/local/bin does not exist, creating...\n"
-    if [ -w "/usr/local" ] ; then
-      mkdir -p "/usr/local/bin"
+  if [ ! -e "$target_dir" ] ; then
+    info "$target_dir does not exist, creating...\n"
+    if [ -w "$(basename "$target_dir")" ] ; then
+      mkdir -p "$target_dir"
     else
-      $sudo mkdir -p "/usr/local/bin"
+      $sudo mkdir -p "$target_dir"
     fi
   fi
 
-  $sudo mv $exe_path $target ; rc=$?
+  $sudo mv $exe_path "$target" ; rc=$?
 
   if [ $rc -ne 0 ] ; then
     error "Fail to install scalingo client (return $rc)\n"
@@ -126,4 +168,4 @@ main() {
 }
 
 # Avoid error if download failure
-main
+main "$@"
