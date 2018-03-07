@@ -13,7 +13,7 @@ var (
 		Category:    "Collaborators",
 		Usage:       "List the collaborators of an application",
 		Flags:       []cli.Flag{appFlag},
-		Description: "List all the collaborator of an application and display information about them.",
+		Description: "List all the collaborators of an application and display information about them.",
 		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)

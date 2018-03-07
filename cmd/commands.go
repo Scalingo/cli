@@ -91,6 +91,11 @@ var (
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
 
+		// Autoscalers
+		autoscalersListCommand,
+		//autoscalersAddCommand,
+		//autoscalersRemoveCommand,
+
 		// Sessions
 		LoginCommand,
 		LogoutCommand,

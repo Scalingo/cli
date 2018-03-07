@@ -14,11 +14,6 @@ var (
 		Category:  "App Management",
 		Flags: []cli.Flag{appFlag,
 			cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""},
-			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the autoscaler"},
-			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the autoscaling to apply on"},
-			cli.Float64Flag{Name: "target, t", Usage: "Target value for the metric the autoscaler will maintain"},
-			cli.IntFlag{Name: "min-containers", Usage: "lower limit the autoscaler will never scale below"},
-			cli.IntFlag{Name: "max-containers", Usage: "upper limit the autoscaler will never scale above"},
 		},
 		Usage: "Scale your application instantly",
 		Description: `Scale your application processes.
@@ -31,7 +26,7 @@ var (
      `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
-			if !isValidAutoscalerOpts(c) && !isValidScaleOpts(c) {
+			if len(c.Args()) == 0 {
 				err := cli.ShowCommandHelp(c, "scale")
 				if err != nil {
 					errorQuit(err)
@@ -49,19 +44,21 @@ var (
 				return
 			}
 
-			opts := apps.AutoscaleOpts{
-				App:           currentApp,
-				ContainerType: c.String("container-type"),
-				Metric:        c.String("metric"),
-				Target:        c.Float64("target"),
-				MinContainers: c.Int("min-containers"),
-				MaxContainers: c.Int("max-containers"),
-			}
+			/*
+				opts := apps.AutoscaleOpts{
+					App:           currentApp,
+					ContainerType: c.String("container-type"),
+					Metric:        c.String("metric"),
+					Target:        c.Float64("target"),
+					MinContainers: c.Int("min-containers"),
+					MaxContainers: c.Int("max-containers"),
+				}
 
-			err := apps.Autoscale(opts)
-			if err != nil {
-				errorQuit(err)
-			}
+				err := apps.Autoscale(opts)
+				if err != nil {
+					errorQuit(err)
+				}
+			*/
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "scale")
