@@ -2,14 +2,6 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-type SourcesService interface {
-	SourcesCreate() (*Source, error)
-}
-
-type SourcesClient struct {
-	*backendConfiguration
-}
-
 type SourcesCreateResponse struct {
 	Source *Source `json:"source"`
 }
@@ -19,9 +11,9 @@ type Source struct {
 	UploadURL   string `json:"upload_url"`
 }
 
-func (c *SourcesClient) SourcesCreate() (*Source, error) {
+func (c *Client) SourcesCreate() (*Source, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/sources",
 		Expected: Statuses{201},

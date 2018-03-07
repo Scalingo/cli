@@ -2,15 +2,6 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-type UsersService interface {
-	Self() (*User, error)
-	UpdateUser(params UpdateUserParams) (*User, error)
-}
-
-type UsersClient struct {
-	*backendConfiguration
-}
-
 type User struct {
 	ID                  string          `json:"id"`
 	Username            string          `json:"username"`
@@ -25,9 +16,9 @@ type SelfResponse struct {
 	User *User `json:"user"`
 }
 
-func (c *UsersClient) Self() (*User, error) {
+func (c *Client) Self() (*User, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		Endpoint: "/users/self",
 	}
 	res, err := req.Do()
@@ -37,40 +28,6 @@ func (c *UsersClient) Self() (*User, error) {
 	defer res.Body.Close()
 
 	var u SelfResponse
-	err = ParseJSON(res, &u)
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-	return u.User, nil
-}
-
-type UpdateUserParams struct {
-	StopFreeTrial bool   `json:"stop_free_trial,omitempty"`
-	Password      string `json:"password,omitempty"`
-	Email         string `json:"email,omitempty"`
-}
-
-type UpdateUserResponse struct {
-	User *User `json:"user"`
-}
-
-func (c *UsersClient) UpdateUser(params UpdateUserParams) (*User, error) {
-	req := &APIRequest{
-		Client:   c.backendConfiguration,
-		Method:   "PATCH",
-		Endpoint: "/account/profile",
-		Params: map[string]interface{}{
-			"user": params,
-		},
-		Expected: Statuses{200},
-	}
-	res, err := req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-	defer res.Body.Close()
-
-	var u UpdateUserResponse
 	err = ParseJSON(res, &u)
 	if err != nil {
 		return nil, errgo.Mask(err)

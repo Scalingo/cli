@@ -1,18 +1,6 @@
 package scalingo
 
-import (
-	"fmt"
-
-	"gopkg.in/errgo.v1"
-)
-
-type LoginService interface {
-	Login(email, password string) (*LoginResponse, error)
-}
-
-type LoginClient struct {
-	*backendConfiguration
-}
+import "gopkg.in/errgo.v1"
 
 type LoginError struct {
 	Success bool   `json:"success"`
@@ -28,10 +16,9 @@ func (err *LoginError) Error() string {
 	return err.Message
 }
 
-func (c *LoginClient) Login(email, password string) (*LoginResponse, error) {
-	fmt.Println("[GO-SCALINGO] You are using the Login method. This method is deprecated, please use the OAuth flow")
+func (c *Client) Login(email, password string) (*LoginResponse, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		NoAuth:   true,
 		Method:   "POST",
 		Endpoint: "/users/sign_in",
@@ -45,14 +32,14 @@ func (c *LoginClient) Login(email, password string) (*LoginResponse, error) {
 	}
 	res, err := req.Do()
 	if err != nil {
-		return nil, errgo.NoteMask(err, "fail to login", errgo.Any)
+		return nil, errgo.Mask(err)
 	}
 	defer res.Body.Close()
 
 	var loginRes LoginResponse
 	err = ParseJSON(res, &loginRes)
 	if err != nil {
-		return nil, errgo.NoteMask(err, "invalid response from server", errgo.Any)
+		return nil, errgo.Mask(err)
 	}
 	return &loginRes, nil
 }

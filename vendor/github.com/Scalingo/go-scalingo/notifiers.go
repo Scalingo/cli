@@ -5,19 +5,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
-type NotifiersService interface {
-	NotifiersList(app string) (Notifiers, error)
-	NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error)
-	NotifierByID(app, ID string) (*Notifier, error)
-	NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error)
-	NotifierDestroy(app, ID string) error
-}
-
-type NotifiersClient struct {
-	subresourceClient
-}
-
-// NotifierParams will be given as a parameter in notifiers function's
+// The struct that will be given as a parameter in notifiers function's
 type NotifierParams struct {
 	Active         *bool
 	Name           string
@@ -45,7 +33,7 @@ type notifiersRequestRes struct {
 	Notifiers []*Notifier `json:"notifiers"`
 }
 
-func (c *NotifiersClient) NotifiersList(app string) (Notifiers, error) {
+func (c *Client) NotifiersList(app string) (Notifiers, error) {
 	var notifiersRes notifiersRequestRes
 	err := c.subresourceList(app, "notifiers", nil, &notifiersRes)
 	if err != nil {
@@ -58,7 +46,7 @@ func (c *NotifiersClient) NotifiersList(app string) (Notifiers, error) {
 	return notifiers, nil
 }
 
-func (c *NotifiersClient) NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error) {
+func (c *Client) NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := NewOutputNotifier(notifierType, params)
 	notifierRequestParams := &notifierRequestParams{notifier}
@@ -71,7 +59,7 @@ func (c *NotifiersClient) NotifierProvision(app, notifierType string, params Not
 	return &notifierRes.Notifier, nil
 }
 
-func (c *NotifiersClient) NotifierByID(app, ID string) (*Notifier, error) {
+func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	err := c.subresourceGet(app, "notifiers", ID, nil, &notifierRes)
 	if err != nil {
@@ -81,7 +69,7 @@ func (c *NotifiersClient) NotifierByID(app, ID string) (*Notifier, error) {
 	return &notifierRes.Notifier, nil
 }
 
-func (c *NotifiersClient) NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error) {
+func (c *Client) NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := NewOutputNotifier(notifierType, params)
 	notifierRequestParams := &notifierRequestParams{notifier}
@@ -95,6 +83,6 @@ func (c *NotifiersClient) NotifierUpdate(app, ID, notifierType string, params No
 	return &notifierRes.Notifier, nil
 }
 
-func (c *NotifiersClient) NotifierDestroy(app, ID string) error {
+func (c *Client) NotifierDestroy(app, ID string) error {
 	return c.subresourceDelete(app, "notifiers", ID)
 }

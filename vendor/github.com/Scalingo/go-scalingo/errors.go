@@ -29,15 +29,10 @@ type (
 		Errors map[string][]string `json:"errors"`
 	}
 
-	APIError struct {
-		Error string `json:"error"`
-	}
-
 	RequestFailedError struct {
 		Code     int
 		APIError error
 		Req      *APIRequest
-		Message  string
 	}
 )
 
@@ -77,38 +72,36 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
+		return &RequestFailedError{res.StatusCode, badRequestError, req}
 	case 401:
-		var apiErr APIError
-		ParseJSON(res, &apiErr)
-		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
+		return &RequestFailedError{res.StatusCode, errgo.New("unauthorized - you are not authorized to do this operation"), req}
 	case 402:
 		var paymentRequiredErr PaymentRequiredError
 		err := ParseJSON(res, &paymentRequiredErr)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
+		return &RequestFailedError{res.StatusCode, paymentRequiredErr, req}
 	case 404:
 		var notFoundErr NotFoundError
 		err := ParseJSON(res, &notFoundErr)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		return &RequestFailedError{Code: res.StatusCode, APIError: notFoundErr, Req: req}
+		return &RequestFailedError{res.StatusCode, notFoundErr, req}
 	case 422:
 		var unprocessableError UnprocessableEntity
 		err := ParseJSON(res, &unprocessableError)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
-		return &RequestFailedError{Code: res.StatusCode, APIError: unprocessableError, Req: req}
+		return &RequestFailedError{res.StatusCode, unprocessableError, req}
 	case 500:
-		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("server internal error - our team has been notified"), Req: req}
+		return &RequestFailedError{res.StatusCode, errgo.New("server internal error - our team has been notified"), req}
 	case 503:
-		return &RequestFailedError{Code: res.StatusCode, APIError: fmt.Errorf("upstream provider returned an error, please retry later"), Req: req}
+		return &RequestFailedError{res.StatusCode, fmt.Errorf("upstream provider returned an error, please retry later"), req}
 	default:
-		return &RequestFailedError{Code: res.StatusCode, APIError: fmt.Errorf("invalid status from server: %v", res.Status), Req: req}
+		return &RequestFailedError{res.StatusCode, fmt.Errorf("invalid status from server: %v", res.Status), req}
 	}
 }
 

@@ -2,17 +2,6 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-type AddonsService interface {
-	AddonsList(app string) ([]*Addon, error)
-	AddonProvision(app, addon, planID string) (AddonRes, error)
-	AddonDestroy(app, addonID string) error
-	AddonUpgrade(app, addonID, planID string) (AddonRes, error)
-}
-
-type AddonsClient struct {
-	subresourceClient
-}
-
 type Addon struct {
 	ID              string         `json:"id"`
 	ResourceID      string         `json:"resource_id"`
@@ -32,7 +21,7 @@ type AddonRes struct {
 	Variables []string `json:"variables,omitempty"`
 }
 
-func (c *AddonsClient) AddonsList(app string) ([]*Addon, error) {
+func (c *Client) AddonsList(app string) ([]*Addon, error) {
 	var addonsRes AddonsRes
 	err := c.subresourceList(app, "addons", nil, &addonsRes)
 	if err != nil {
@@ -41,7 +30,7 @@ func (c *AddonsClient) AddonsList(app string) ([]*Addon, error) {
 	return addonsRes.Addons, nil
 }
 
-func (c *AddonsClient) AddonProvision(app, addon, planID string) (AddonRes, error) {
+func (c *Client) AddonProvision(app, addon, planID string) (AddonRes, error) {
 	var addonRes AddonRes
 	err := c.subresourceAdd(app, "addons", AddonRes{Addon: Addon{AddonProviderID: addon, PlanID: planID}}, &addonRes)
 	if err != nil {
@@ -50,11 +39,11 @@ func (c *AddonsClient) AddonProvision(app, addon, planID string) (AddonRes, erro
 	return addonRes, nil
 }
 
-func (c *AddonsClient) AddonDestroy(app, addonID string) error {
+func (c *Client) AddonDestroy(app, addonID string) error {
 	return c.subresourceDelete(app, "addons", addonID)
 }
 
-func (c *AddonsClient) AddonUpgrade(app, addonID, planID string) (AddonRes, error) {
+func (c *Client) AddonUpgrade(app, addonID, planID string) (AddonRes, error) {
 	var addonRes AddonRes
 	err := c.subresourceUpdate(app, "addons", addonID, AddonRes{Addon: Addon{PlanID: planID}}, &addonRes)
 	if err != nil {

@@ -3,19 +3,10 @@ package scalingo
 import (
 	"encoding/json"
 
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/cli/debug"
 
 	errgo "gopkg.in/errgo.v1"
 )
-
-type NotificationPlatformsService interface {
-	NotificationPlatformsList() ([]*NotificationPlatform, error)
-	NotificationPlatformByName(name string) ([]*NotificationPlatform, error)
-}
-
-type NotificationPlatformsClient struct {
-	*backendConfiguration
-}
 
 type NotificationPlatform struct {
 	ID              string            `json:"id"`
@@ -32,9 +23,9 @@ type PlatformsRes struct {
 	NotificationPlatforms []*NotificationPlatform `json:"notification_platforms"`
 }
 
-func (c *NotificationPlatformsClient) NotificationPlatformsList() ([]*NotificationPlatform, error) {
+func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		NoAuth:   true,
 		Endpoint: "/notification_platforms",
 	}
@@ -53,10 +44,10 @@ func (c *NotificationPlatformsClient) NotificationPlatformsList() ([]*Notificati
 	return response.NotificationPlatforms, nil
 }
 
-func (c *NotificationPlatformsClient) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
+func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
 	debug.Printf("[NotificationPlatformByName] name: %s", name)
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		NoAuth:   true,
 		Endpoint: "/notification_platforms/search",
 		Params:   map[string]string{"name": name},

@@ -2,16 +2,6 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-type CollaboratorsService interface {
-	CollaboratorsList(app string) ([]Collaborator, error)
-	CollaboratorAdd(app string, email string) (Collaborator, error)
-	CollaboratorRemove(app string, id string) error
-}
-
-type CollaboratorsClient struct {
-	subresourceClient
-}
-
 type Collaborator struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
@@ -27,7 +17,7 @@ type CollaboratorRes struct {
 	Collaborator Collaborator `json:"collaborator"`
 }
 
-func (c *CollaboratorsClient) CollaboratorsList(app string) ([]Collaborator, error) {
+func (c *Client) CollaboratorsList(app string) ([]Collaborator, error) {
 	var collaboratorsRes CollaboratorsRes
 	err := c.subresourceList(app, "collaborators", nil, &collaboratorsRes)
 	if err != nil {
@@ -36,7 +26,7 @@ func (c *CollaboratorsClient) CollaboratorsList(app string) ([]Collaborator, err
 	return collaboratorsRes.Collaborators, nil
 }
 
-func (c *CollaboratorsClient) CollaboratorAdd(app string, email string) (Collaborator, error) {
+func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
 	err := c.subresourceAdd(app, "collaborators", CollaboratorRes{
 		Collaborator: Collaborator{Email: email},
@@ -47,6 +37,6 @@ func (c *CollaboratorsClient) CollaboratorAdd(app string, email string) (Collabo
 	return collaboratorRes.Collaborator, nil
 }
 
-func (c *CollaboratorsClient) CollaboratorRemove(app string, id string) error {
+func (c *Client) CollaboratorRemove(app string, id string) error {
 	return c.subresourceDelete(app, "collaborators", id)
 }

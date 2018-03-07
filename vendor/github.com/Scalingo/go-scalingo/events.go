@@ -2,15 +2,6 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-type EventsService interface {
-	EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error)
-	UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error)
-}
-
-type EventsClient struct {
-	subresourceClient
-}
-
 type EventsRes struct {
 	Events []*Event `json:"events"`
 	Meta   struct {
@@ -18,7 +9,7 @@ type EventsRes struct {
 	}
 }
 
-func (c *EventsClient) EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error) {
+func (c *Client) EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error) {
 	var eventsRes EventsRes
 	err := c.subresourceList(app, "events", opts.ToMap(), &eventsRes)
 	if err != nil {
@@ -31,9 +22,9 @@ func (c *EventsClient) EventsList(app string, opts PaginationOpts) (Events, Pagi
 	return events, eventsRes.Meta.PaginationMeta, nil
 }
 
-func (c *EventsClient) UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error) {
+func (c *Client) UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error) {
 	req := &APIRequest{
-		Client:   c.subresourceClient.backendConfiguration,
+		Client:   c,
 		Endpoint: "/events",
 		Params:   opts.ToMap(),
 	}
