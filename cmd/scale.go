@@ -22,7 +22,6 @@ var (
      'scalingo --app my-app scale web:1 worker:0'
      'scalingo --app my-app scale web:1:XL'
      'scalingo --app my-app scale web:+1 worker:-1'
-     'scalingo --app my-app scale --container-type web --metric cpu --target 0.75 --min-containers 1 --max-containers 3'
      `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
@@ -36,29 +35,10 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 
-			if len(c.Args()) > 0 {
-				err := apps.Scale(currentApp, c.Bool("s"), c.Args())
-				if err != nil {
-					errorQuit(err)
-				}
-				return
+			err := apps.Scale(currentApp, c.Bool("s"), c.Args())
+			if err != nil {
+				errorQuit(err)
 			}
-
-			/*
-				opts := apps.AutoscaleOpts{
-					App:           currentApp,
-					ContainerType: c.String("container-type"),
-					Metric:        c.String("metric"),
-					Target:        c.Float64("target"),
-					MinContainers: c.Int("min-containers"),
-					MaxContainers: c.Int("max-containers"),
-				}
-
-				err := apps.Autoscale(opts)
-				if err != nil {
-					errorQuit(err)
-				}
-			*/
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "scale")
@@ -66,24 +46,3 @@ var (
 		},
 	}
 )
-
-func isValidAutoscalerOpts(c *cli.Context) bool {
-	if len(c.Args()) > 0 {
-		return false
-	}
-	for _, opt := range []string{
-		"container-type", "metric", "target", "min-containers", "max-containers",
-	} {
-		if !c.IsSet(opt) {
-			return false
-		}
-	}
-	return true
-}
-
-func isValidScaleOpts(c *cli.Context) bool {
-	if len(c.Args()) == 0 {
-		return false
-	}
-	return true
-}

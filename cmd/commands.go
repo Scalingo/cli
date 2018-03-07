@@ -93,7 +93,7 @@ var (
 
 		// Autoscalers
 		autoscalersListCommand,
-		//autoscalersAddCommand,
+		autoscalersAddCommand,
 		//autoscalersRemoveCommand,
 
 		// Sessions
