@@ -5,6 +5,7 @@ Changelog
 
 * [alerts] Add all command to CRUD alerts
 * [notifiers] Add the ability to configure email notifiers with custom emails and collaborators
+* [commands] Update scale commands to accept flags to create an autoscaler
 
 ### 1.8.0
 
