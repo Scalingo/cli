@@ -39,6 +39,9 @@ func (e *EventRunType) TypeDataPtr() interface{} {
 func (e *EventNewDomainType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventEditAppType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
 func (e *EventEditDomainType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }

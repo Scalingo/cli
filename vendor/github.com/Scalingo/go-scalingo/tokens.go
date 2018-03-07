@@ -81,7 +81,7 @@ func (c *TokensClient) CreateToken(t Token) (Token, error) {
 func (c *TokensClient) ShowToken(id int) (Token, error) {
 	req := &APIRequest{
 		Client:   c.backendConfiguration,
-		Endpoint: fmt.Sprintf("/tokens/%s", id),
+		Endpoint: fmt.Sprintf("/tokens/%d", id),
 	}
 
 	var token TokenResp

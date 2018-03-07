@@ -1,5 +1,5 @@
-// Copyright 2014 Canonical Ltd.
-// Licensed under the LGPLv3, see LICENCE file for details.
+// Copyright 2014 Roger Peppe.
+// See LICENCE file for details.
 
 // The errgo package provides a way to create
 // and diagnose errors. It is compatible with
@@ -209,7 +209,7 @@ func match(err error, pass ...func(error) bool) bool {
 // It is intended to be used as a "pass" argument
 // to Mask and friends; for example:
 //
-// 	return errors.Mask(err, errors.Is(http.ErrNoCookie))
+// 	return errgo.Mask(err, errgo.Is(http.ErrNoCookie))
 //
 // would return an error with an http.ErrNoCookie cause
 // only if that was err's diagnosis; otherwise the diagnosis
@@ -233,6 +233,15 @@ func Any(error) bool {
 // the result if allowed by the specific pass functions
 // (see Mask for an explanation of the pass parameter).
 func NoteMask(underlying error, msg string, pass ...func(error) bool) error {
+	err := noteMask(underlying, msg, pass...)
+	setLocation(err, 1)
+	return err
+}
+
+// noteMask is exactly like NoteMask except it doesn't set the location
+// of the returned error, so that we can avoid setting it twice
+// when it's used in other functions.
+func noteMask(underlying error, msg string, pass ...func(error) bool) error {
 	newErr := &Err{
 		Underlying_: underlying,
 		Message_:    msg,
@@ -251,6 +260,7 @@ func NoteMask(underlying error, msg string, pass ...func(error) bool) error {
 			log.Printf("new error %#v", newErr)
 		}
 	}
+	newErr.SetLocation(1)
 	return newErr
 }
 
@@ -270,7 +280,7 @@ func NoteMask(underlying error, msg string, pass ...func(error) bool) error {
 //
 //	f, err := os.Open("non-existent-file")
 //	if err != nil {
-//		return errors.Mask(err, os.IsNotExist)
+//		return errgo.Mask(err, os.IsNotExist)
 //	}
 //
 // In order to add context to returned errors, it
@@ -281,7 +291,7 @@ func Mask(underlying error, pass ...func(error) bool) error {
 	if underlying == nil {
 		return nil
 	}
-	err := NoteMask(underlying, "", pass...)
+	err := noteMask(underlying, "", pass...)
 	setLocation(err, 1)
 	return err
 }
@@ -291,7 +301,7 @@ func Mask(underlying error, pass ...func(error) bool) error {
 // The returned error has no cause (use NoteMask
 // or WithCausef to add a message while retaining a cause).
 func Notef(underlying error, f string, a ...interface{}) error {
-	err := NoteMask(underlying, fmt.Sprintf(f, a...))
+	err := noteMask(underlying, fmt.Sprintf(f, a...))
 	setLocation(err, 1)
 	return err
 }
@@ -323,12 +333,19 @@ func MaskFunc(allow ...func(error) bool) func(error, ...func(error) bool) error 
 // WithCausef returns a new Error that wraps the given
 // (possibly nil) underlying error and associates it with
 // the given cause. The given formatted message context
-// will also be added.
+// will also be added. If underlying is nil and f is empty and has no arguments,
+// the message will be the same as the cause.
 func WithCausef(underlying, cause error, f string, a ...interface{}) error {
+	var msg string
+	if underlying == nil && f == "" && len(a) == 0 && cause != nil {
+		msg = cause.Error()
+	} else {
+		msg = fmt.Sprintf(f, a...)
+	}
 	err := &Err{
 		Underlying_: underlying,
 		Cause_:      cause,
-		Message_:    fmt.Sprintf(f, a...),
+		Message_:    msg,
 	}
 	err.SetLocation(1)
 	return err
