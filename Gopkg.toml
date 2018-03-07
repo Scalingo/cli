@@ -31,6 +31,10 @@
 
 [[constraint]]
   branch = "master"
+  name = "github.com/Scalingo/go-scalingo"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/Scalingo/go-gitremote"
 
 [[constraint]]
@@ -42,5 +46,6 @@
   name = "github.com/andrew-d/go-termutil"
 
 [prune]
+  non-go = true
   go-tests = true
   unused-packages = true

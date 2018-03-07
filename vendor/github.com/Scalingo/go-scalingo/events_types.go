@@ -44,7 +44,7 @@ func (ev *Event) TypeDataPtr() interface{} {
 }
 
 func (ev *Event) String() string {
-	return fmt.Sprintf("Unkown event %v on app %v", ev.Type, ev.AppName)
+	return fmt.Sprintf("Unknown event %v on app %v", ev.Type, ev.AppName)
 }
 
 func (ev *Event) When() string {
@@ -80,43 +80,45 @@ type EventType string
 
 const (
 	EventNewApp             EventType = "new_app"
-	EventRenameApp                    = "rename_app"
-	EventTransferApp                  = "transfer_app"
-	EventRestart                      = "restart"
-	EventScale                        = "scale"
-	EventStopApp                      = "stop_app"
-	EventCrash                        = "crash"
-	EventDeployment                   = "deployment"
-	EventLinkGithub                   = "link_github"
-	EventUnlinkGithub                 = "unlink_github"
-	EventRun                          = "run"
-	EventNewDomain                    = "new_domain"
-	EventEditDomain                   = "edit_domain"
-	EventDeleteDomain                 = "delete_domain"
-	EventNewAddon                     = "new_addon"
-	EventUpgradeAddon                 = "upgrade_addon"
-	EventUpgradeDatabase              = "upgrade_database"
-	EventDeleteAddon                  = "delete_addon"
-	EventResumeAddon                  = "resume_addon"
-	EventSuspendAddon                 = "suspend_addon"
-	EventNewCollaborator              = "new_collaborator"
-	EventAcceptCollaborator           = "accept_collaborator"
-	EventDeleteCollaborator           = "delete_collaborator"
-	EventNewVariable                  = "new_variable"
-	EventEditVariable                 = "edit_variable"
-	EventEditVariables                = "edit_variables"
-	EventDeleteVariable               = "delete_variable"
-	EventNewNotification              = "new_notification"
-	EventEditNotification             = "edit_notification"
-	EventDeleteNotification           = "delete_notification"
-	EventAddCredit                    = "add_credit"
-	EventAddPaymentMethod             = "add_payment_method"
-	EventAddVoucher                   = "add_voucher"
-	EventAuthorizeGithub              = "authorize_github"
-	EventRevokeGithub                 = "revoke_github"
-	EventNewKey                       = "new_key"
-	EventDeleteKey                    = "delete_key"
-	EventPaymentAttempt               = "payment_attempt"
+	EventEditApp            EventType = "edit_app"
+	EventDeleteApp          EventType = "delete_app"
+	EventRenameApp          EventType = "rename_app"
+	EventTransferApp        EventType = "transfer_app"
+	EventRestart            EventType = "restart"
+	EventScale              EventType = "scale"
+	EventStopApp            EventType = "stop_app"
+	EventCrash              EventType = "crash"
+	EventDeployment         EventType = "deployment"
+	EventLinkGithub         EventType = "link_github"
+	EventUnlinkGithub       EventType = "unlink_github"
+	EventRun                EventType = "run"
+	EventNewDomain          EventType = "new_domain"
+	EventEditDomain         EventType = "edit_domain"
+	EventDeleteDomain       EventType = "delete_domain"
+	EventNewAddon           EventType = "new_addon"
+	EventUpgradeAddon       EventType = "upgrade_addon"
+	EventUpgradeDatabase    EventType = "upgrade_database"
+	EventDeleteAddon        EventType = "delete_addon"
+	EventResumeAddon        EventType = "resume_addon"
+	EventSuspendAddon       EventType = "suspend_addon"
+	EventNewCollaborator    EventType = "new_collaborator"
+	EventAcceptCollaborator EventType = "accept_collaborator"
+	EventDeleteCollaborator EventType = "delete_collaborator"
+	EventNewVariable        EventType = "new_variable"
+	EventEditVariable       EventType = "edit_variable"
+	EventEditVariables      EventType = "edit_variables"
+	EventDeleteVariable     EventType = "delete_variable"
+	EventNewNotification    EventType = "new_notification"
+	EventEditNotification   EventType = "edit_notification"
+	EventDeleteNotification EventType = "delete_notification"
+	EventAddCredit          EventType = "add_credit"
+	EventAddPaymentMethod   EventType = "add_payment_method"
+	EventAddVoucher         EventType = "add_voucher"
+	EventAuthorizeGithub    EventType = "authorize_github"
+	EventRevokeGithub       EventType = "revoke_github"
+	EventNewKey             EventType = "new_key"
+	EventDeleteKey          EventType = "delete_key"
+	EventPaymentAttempt     EventType = "payment_attempt"
 )
 
 type EventNewAppType struct {
@@ -130,6 +132,35 @@ func (ev *EventNewAppType) String() string {
 
 type EventNewAppTypeData struct {
 	GitSource string `json:"git_source"`
+}
+
+type EventEditAppType struct {
+	Event
+	TypeData EventEditAppTypeData `json:"type_data"`
+}
+
+type EventEditAppTypeData struct {
+	ForceHTTPS *bool `json:"force_https"`
+}
+
+func (ev *EventEditAppType) String() string {
+	base := "application settings have been updated"
+	if ev.TypeData.ForceHTTPS != nil {
+		if *ev.TypeData.ForceHTTPS {
+			base += ", Force HTTPS has been enabled"
+		} else {
+			base += ", Force HTTPS has been disabled"
+		}
+	}
+	return base
+}
+
+type EventDeleteAppType struct {
+	Event
+}
+
+func (ev *EventDeleteAppType) String() string {
+	return fmt.Sprintf("the application has been deleted")
 }
 
 type EventRenameAppType struct {
@@ -229,11 +260,19 @@ type EventCrashType struct {
 }
 
 func (ev *EventCrashType) String() string {
-	return fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
+	msg := fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
+
+	if ev.TypeData.CrashLogs != "" {
+		msg += fmt.Sprintf(" (logs on %s)", ev.TypeData.LogsUrl)
+	}
+
+	return msg
 }
 
 type EventCrashTypeData struct {
 	ContainerType string `json:"container_type"`
+	CrashLogs     string `json:"crash_logs"`
+	LogsUrl       string `json:"logs_url"`
 }
 
 type EventDeploymentType struct {
@@ -678,6 +717,10 @@ func (pev *Event) Specialize() DetailedEvent {
 	switch ev.Type {
 	case EventNewApp:
 		e = &EventNewAppType{Event: ev}
+	case EventEditApp:
+		e = &EventEditAppType{Event: ev}
+	case EventDeleteApp:
+		e = &EventDeleteAppType{Event: ev}
 	case EventRenameApp:
 		e = &EventRenameAppType{Event: ev}
 	case EventTransferApp:

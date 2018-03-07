@@ -14,6 +14,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
+  branch = "master"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,7 +22,13 @@
     "debug",
     "io"
   ]
-  revision = "7d9693333a4e8fa3b8aed581610028325a1e95f2"
+  revision = "c2cc4c3fc2d5fa484390d629021f74484e1e9f91"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/Scalingo/gopassword"
+  packages = ["."]
+  revision = "27d6fc05ae4d0cba5a5c646925f3aec369353ca1"
 
 [[projects]]
   branch = "master"
@@ -39,6 +46,12 @@
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "62e9147c64a1ed519147b62a56a14e83e2be02c1"
+
+[[projects]]
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/heroku/hk"
@@ -94,9 +107,23 @@
   revision = "811831de4c4dd03a0b8737233af3b36852386373"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/net"
-  packages = ["websocket"]
-  revision = "5058c78c3627b31e484a81463acd51c7cecc06f3"
+  packages = [
+    "context",
+    "context/ctxhttp",
+    "websocket"
+  ]
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/oauth2"
+  packages = [
+    ".",
+    "internal"
+  ]
+  revision = "2f32c3ac0fa4fb807a0fcefb0b6f2468a0d99bd0"
 
 [[projects]]
   name = "golang.org/x/sys"
@@ -104,13 +131,28 @@
   revision = "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
 
 [[projects]]
+  name = "google.golang.org/appengine"
+  packages = [
+    "internal",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/remote_api",
+    "internal/urlfetch",
+    "urlfetch"
+  ]
+  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "v1"
   name = "gopkg.in/errgo.v1"
   packages = ["."]
-  revision = "1a3d4d77253d47458a42542b4c0bf709fcd5d715"
+  revision = "442357a80af5c6bf9b6d51ae791a39c3421004f3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8ac6bcbf8eee95a4c0d2ffd84518482aa9fe04ba48898133efe94ff98e4756d2"
+  inputs-digest = "b3ea42dadf794ef6fffae3b1b3ab939722753d32f56a13341fd9cca319e734df"
   solver-name = "gps-cdcl"
   solver-version = 1
