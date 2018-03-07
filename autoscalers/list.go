@@ -17,13 +17,13 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Disabled", "Container type", "Metric", "Target", "Min containers", "Max contaiers"})
+	t.SetHeader([]string{"Active", "Container type", "Metric", "Target", "Min containers", "Max containers"})
 
 	for _, autoscaler := range autoscalers {
 		t.Append([]string{
-			fmt.Sprint(autoscaler.Disabled),
+			fmt.Sprint(!autoscaler.Disabled),
 			autoscaler.ContainerType,
-			autoscaler.Metric, fmt.Sprintf("%f", autoscaler.Target),
+			autoscaler.Metric, fmt.Sprintf("%.2f", autoscaler.Target),
 			fmt.Sprintf("%d", autoscaler.MinContainers), fmt.Sprintf("%d", autoscaler.MaxContainers),
 		})
 	}
