@@ -73,7 +73,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			// TODO
+			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-add")
 		},
 	}
 
@@ -135,7 +135,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			// TODO
+			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-update")
 		},
 	}
 
@@ -169,7 +169,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			// TODO
+			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-enable")
 		},
 	}
 
@@ -203,7 +203,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			// TODO
+			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-disable")
 		},
 	}
 
@@ -230,7 +230,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			// TODO
+			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-remove")
 		},
 	}
 )
