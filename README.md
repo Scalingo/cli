@@ -82,6 +82,14 @@ COMMANDS:
      restart            Restart processes of your app
      db-tunnel          Create an encrypted connection to access your database
 
+   Autoscalers:
+     autoscalers          List the autoscalers of an application
+     autoscalers-add      Add an autoscaler to an application
+     autoscalers-remove   Remove an autoscaler from an application
+     autoscalers-update   Update an autoscaler
+     autoscalers-disable  Disable an autoscaler
+     autoscalers-enable   Enable an autoscaler
+
    CLI Internals:
      update  Update 'scalingo' client
 
