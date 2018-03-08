@@ -77,31 +77,32 @@ var (
 		},
 	}
 
-	/*
-		autoscalersRemoveCommand = cli.Command{
-			Name:        "autoscalers-remove",
-			Category:    "Autoscalers",
-			Usage:       "Revoke permission to collaborate on an application",
-			Flags:       []cli.Flag{appFlag},
-			Description: "Revoke the invitation of collaboration to the given email\n    scalingo -a myapp autoscalers-remove user@example.com",
-			Before:      AuthenticateHook,
-			Action: func(c *cli.Context) {
-				currentApp := appdetect.CurrentApp(c)
-				if len(c.Args()) != 1 {
-					cli.ShowCommandHelp(c, "autoscalers-remove")
-				} else {
-					err := autoscalers.Remove(currentApp, c.Args()[0])
-					if err != nil {
-						errorQuit(err)
-					}
-				}
-			},
-			BashComplete: func(c *cli.Context) {
-				autocomplete.CmdFlagsAutoComplete(c, "autoscalers-remove")
-				autocomplete.AutoscalersRemoveAutoComplete(c)
-			},
-		}
-	*/
+	autoscalersRemoveCommand = cli.Command{
+		Name:     "autoscalers-remove",
+		Category: "Autoscalers",
+		Usage:    "Remove an autoscaler from an application",
+		Flags:    []cli.Flag{appFlag},
+		Description: `Remove an autoscaler for a container type of an application
+
+   Example
+     scalingo --app my-app autoscalers-remove web`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "autoscalers-remove")
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			err := autoscalers.Remove(currentApp, c.Args()[0])
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			// TODO
+		},
+	}
 )
 
 func isValidAutoscalerAddOpts(c *cli.Context) bool {

@@ -10,40 +10,40 @@ import (
 )
 
 var (
-	notFound = errors.New("collaborator not found")
+	errNotFound = errors.New("autoscaler not found")
 )
 
-func Remove(app, email string) error {
-	collaborator, err := getFromEmail(app, email)
+func Remove(app, containerType string) error {
+	autoscaler, err := getFromContainerType(app, containerType)
 	if err != nil {
-		if err == notFound {
-			io.Error(email + " is not a collaborator of " + app + ".")
+		if err == errNotFound {
+			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
-		} else {
-			return errgo.Mask(err, errgo.Any)
 		}
+		return errgo.Mask(err, errgo.Any)
 	}
 
 	c := config.ScalingoClient()
-	err = c.CollaboratorRemove(app, collaborator.ID)
+	err = c.AutoscalerRemove(app, autoscaler.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	io.Status(email, "has been removed from the collaborators of", app)
+	io.Status("Autoscaler removed on", app, "for", containerType, "containers")
 	return nil
 }
 
-func getFromEmail(app, email string) (scalingo.Collaborator, error) {
+func getFromContainerType(app, containerType string) (scalingo.Autoscaler, error) {
 	c := config.ScalingoClient()
-	collaborators, err := c.CollaboratorsList(app)
+	autoscalers, err := c.AutoscalersList(app)
 	if err != nil {
-		return scalingo.Collaborator{}, errgo.Mask(err, errgo.Any)
+		return scalingo.Autoscaler{}, errgo.Mask(err, errgo.Any)
 	}
-	for _, collaborator := range collaborators {
-		if collaborator.Email == email {
-			return collaborator, nil
+
+	for _, autoscaler := range autoscalers {
+		if autoscaler.ContainerType == containerType {
+			return autoscaler, nil
 		}
 	}
-	return scalingo.Collaborator{}, notFound
+	return scalingo.Autoscaler{}, errNotFound
 }

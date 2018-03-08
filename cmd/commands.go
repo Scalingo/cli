@@ -94,7 +94,8 @@ var (
 		// Autoscalers
 		autoscalersListCommand,
 		autoscalersAddCommand,
-		//autoscalersRemoveCommand,
+		autoscalersRemoveCommand,
+		//autoscalersUpdateCommand,
 
 		// Sessions
 		LoginCommand,
