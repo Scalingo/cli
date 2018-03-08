@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
@@ -27,6 +28,7 @@ func Scale(app string, sync bool, types []string) error {
 	)
 
 	scaleParams := &scalingo.AppsScaleParams{}
+	typesWithAutoscaler := []string{}
 
 	for _, t := range types {
 		splitT := strings.Split(t, ":")
@@ -59,6 +61,14 @@ func Scale(app string, sync bool, types []string) error {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
 
+		_, err = autoscalers.GetFromContainerType(app, typeName)
+		if err != nil && err != autoscalers.ErrNotFound {
+			return errgo.Mask(err, errgo.Any)
+		}
+		if err == nil {
+			typesWithAutoscaler = append(typesWithAutoscaler, typeName)
+		}
+
 		newContainerConfig := scalingo.ContainerType{Name: typeName, Size: size}
 		if modificator != 0 {
 			for _, container := range containers {
@@ -76,6 +86,16 @@ func Scale(app string, sync bool, types []string) error {
 		}
 
 		scaleParams.Containers = append(scaleParams.Containers, newContainerConfig)
+	}
+
+	if len(typesWithAutoscaler) > 0 {
+		io.Warning(autoscaleDisableMessage(typesWithAutoscaler))
+
+		var confirm string
+		fmt.Scanln(&confirm)
+		if confirm != "y" && confirm != "Y" {
+			return errgo.New("You didn't confirm, aborting…")
+		}
 	}
 
 	c := config.ScalingoClient()
@@ -113,4 +133,22 @@ func Scale(app string, sync bool, types []string) error {
 
 	fmt.Println("Your application has been scaled.")
 	return nil
+}
+
+func autoscaleDisableMessage(typesWithAutoscaler []string) string {
+	if len(typesWithAutoscaler) <= 0 {
+		return ""
+	}
+	msg := "An autoscaler is configured for " + strings.Join(typesWithAutoscaler, ", ") + " container"
+	if len(typesWithAutoscaler) > 1 {
+		msg += "s"
+	}
+	msg += ". Manually scaling "
+	if len(typesWithAutoscaler) > 1 {
+		msg += "them"
+	} else {
+		msg += "it"
+	}
+	msg += " will disable the autoscaler. Do you confirm? (y/N)"
+	return msg
 }

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ScaleCommand = cli.Command{
+	scaleCommand = cli.Command{
 		Name:      "scale",
 		ShortName: "s",
 		Category:  "App Management",

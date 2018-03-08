@@ -19,7 +19,7 @@ var (
 
 		// Apps Process Actions
 		PsCommand,
-		ScaleCommand,
+		scaleCommand,
 		RestartCommand,
 
 		// Events
