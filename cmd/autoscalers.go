@@ -48,7 +48,7 @@ var (
    All options are mandatory.
 
    Example
-     scalingo --app my-app autoscaler-add --container-type web --metric cpu --target 0.75 --min-containers 1 --max-containers 3
+     scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 1 --max-containers 3
 		`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
@@ -67,6 +67,136 @@ var (
 				Target:        c.Float64("t"),
 				MinContainers: c.Int("min-containers"),
 				MaxContainers: c.Int("max-containers"),
+			})
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			// TODO
+		},
+	}
+
+	autoscalersUpdateCommand = cli.Command{
+		Name:     "autoscalers-update",
+		Category: "Autoscalers",
+		Usage:    "Update an autoscaler",
+		Flags: []cli.Flag{appFlag,
+			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the autoscaler"},
+			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the autoscaling to apply on"},
+			cli.Float64Flag{Name: "target, t", Usage: "Target value for the metric the autoscaler will maintain"},
+			cli.IntFlag{Name: "min-containers", Usage: "lower limit the autoscaler will never scale below"},
+			cli.IntFlag{Name: "max-containers", Usage: "upper limit the autoscaler will never scale above"},
+			cli.BoolFlag{Name: "disabled, d", Usage: "disable/enable the given autoscaler"},
+		},
+		Description: `Update an autoscaler.
+
+   The "container-type" option is mandatory.
+
+   Example
+     scalingo --app my-app autoscalers-update --container-type web --max-containers 5
+     scalingo --app my-app autoscalers-update --container-type web --metric p95_response_time --target 67
+		`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 0 || !c.IsSet("c") {
+				err := cli.ShowCommandHelp(c, "autoscalers-update")
+				if err != nil {
+					errorQuit(err)
+				}
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			params := scalingo.AutoscalerUpdateParams{}
+			if c.IsSet("m") {
+				m := c.String("m")
+				params.Metric = &m
+			}
+			if c.IsSet("t") {
+				t := c.Float64("t")
+				params.Target = &t
+			}
+			if c.IsSet("min-containers") {
+				min := c.Int("min-containers")
+				params.MinContainers = &min
+			}
+			if c.IsSet("max-containers") {
+				max := c.Int("max-containers")
+				params.MaxContainers = &max
+			}
+			if c.IsSet("d") {
+				d := c.Bool("d")
+				params.Disabled = &d
+			}
+			err := autoscalers.Update(currentApp, c.String("c"), params)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			// TODO
+		},
+	}
+
+	autoscalersEnableCommand = cli.Command{
+		Name:     "autoscalers-enable",
+		Category: "Autoscalers",
+		Usage:    "Enable an autoscaler",
+		Flags:    []cli.Flag{appFlag},
+		Description: `Enable an autoscaler.
+
+   Example
+     scalingo --app my-app autoscalers-enable web
+		`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				err := cli.ShowCommandHelp(c, "autoscalers-enable")
+				if err != nil {
+					errorQuit(err)
+				}
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			disabled := false
+			err := autoscalers.Update(currentApp, c.Args()[0], scalingo.AutoscalerUpdateParams{
+				Disabled: &disabled,
+			})
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			// TODO
+		},
+	}
+
+	autoscalersDisableCommand = cli.Command{
+		Name:     "autoscalers-disable",
+		Category: "Autoscalers",
+		Usage:    "Disable an autoscaler",
+		Flags:    []cli.Flag{appFlag},
+		Description: `Disable an autoscaler.
+
+   Example
+     scalingo --app my-app autoscalers-disable web
+		`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				err := cli.ShowCommandHelp(c, "autoscalers-disable")
+				if err != nil {
+					errorQuit(err)
+				}
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			disabled := true
+			err := autoscalers.Update(currentApp, c.Args()[0], scalingo.AutoscalerUpdateParams{
+				Disabled: &disabled,
 			})
 			if err != nil {
 				errorQuit(err)
