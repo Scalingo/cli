@@ -18,7 +18,7 @@ var (
 		RunCommand,
 
 		// Apps Process Actions
-		PsCommand,
+		psCommand,
 		scaleCommand,
 		RestartCommand,
 

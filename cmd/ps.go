@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	PsCommand = cli.Command{
+	psCommand = cli.Command{
 		Name:     "ps",
 		Category: "App Management",
 		Usage:    "Display your application running processes",
@@ -21,7 +21,11 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "ps")
-			} else if err := apps.Ps(currentApp); err != nil {
+				return
+			}
+
+			err := apps.Ps(currentApp)
+			if err != nil {
 				errorQuit(err)
 			}
 		},
