@@ -64,7 +64,7 @@ func errorQuit(err error) {
 
 	newReportError(err).Report()
 	rollbar.Wait()
-	io.Error("An error occured:")
+	io.Error("An error occurred:")
 	debug.Println(errgo.Details(err))
 	fmt.Println(io.Indent(err.Error(), 7))
 	os.Exit(1)
