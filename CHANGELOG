@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### To be Released
+
+* [logs] accepts filter for psotdeploy and one-off container
+
 ### 1.7.0
 
 * [Commands] Add `rename` command to rename an application
