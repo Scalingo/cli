@@ -7,17 +7,15 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Add(app string, domain string, cert string, key string) error {
+func Add(app string, params scalingo.AlertParams) error {
 	c := config.ScalingoClient()
-	d, err := c.DomainsAdd(app, scalingo.Domain{
-		Name: domain,
-	})
+	a, err := c.AlertAdd(app, params)
 
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	io.Status("Domain", d.Name, "has been created, access your app at the following URL:\n")
-	io.Info("http://" + d.Name)
+	io.Status("Alert created for the container type", a.ContainerType)
+	io.Info("http://")
 	return nil
 }
