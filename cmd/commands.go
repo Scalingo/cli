@@ -77,6 +77,10 @@ var (
 		// TODO: Alerts
 		alertsListCommand,
 		alertsAddCommand,
+		alertsUpdateCommand,
+		alertsEnableCommand,
+		alertsDisableCommand,
+		alertsRemoveCommand,
 
 		// Stats
 		StatsCommand,

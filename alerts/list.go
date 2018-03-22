@@ -17,7 +17,7 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Active", "CONTAINER TYPE", "METRIC", "LIMIT"})
+	t.SetHeader([]string{"ID", "Active", "Container Type", "Metric", "Limit"})
 
 	for _, alert := range alerts {
 		var above string
@@ -27,6 +27,7 @@ func List(app string) error {
 			above = "above"
 		}
 		t.Append([]string{
+			alert.ID,
 			fmt.Sprint(!alert.Disabled),
 			alert.ContainerType,
 			alert.Metric,

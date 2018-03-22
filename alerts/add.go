@@ -7,10 +7,8 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Add(app string, params scalingo.AlertParams) error {
-	c := config.ScalingoClient()
-	a, err := c.AlertAdd(app, params)
-
+func Add(app string, params scalingo.AlertAddParams) error {
+	a, err := config.ScalingoClient().AlertAdd(app, params)
 	if err != nil {
 		return errgo.Mask(err)
 	}
