@@ -74,6 +74,9 @@ var (
 		PgSQLConsoleCommand,
 		InfluxDBConsoleCommand,
 
+		// TODO: Alerts
+		alertsListCommand,
+
 		// Stats
 		StatsCommand,
 

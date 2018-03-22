@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### To be Released
+
+* [alerts] Add all command to CRUD alerts
+
 ### 1.8.0
 
 * [logs] accepts filter for postdeploy and one-off container
