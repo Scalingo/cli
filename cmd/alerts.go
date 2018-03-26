@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Scalingo/cli/alerts"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -45,14 +47,16 @@ var (
 			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
 			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
 			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
-			cli.BoolFlag{Name: "disabled, d", Usage: "Disable the alert (nothing is sent)"},
+			cli.StringFlag{Name: "remind-every, r", Usage: "When the alert is activated, send the alert at regular interval"},
+			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
 		},
 		Description: `Add an alert to an application metric.
 
-   The "disabled" flag is optionnal
+   The "remind-every" and "below" flags are optionnal
 
    Example
-     scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75 [--disabled]
+     scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75
+     scalingo --app my-app alerts-add --container-type web --metric rpm_per_container --limit 100 --remind-every 5m30s --below
 
     # See also commands 'alerts-update' and 'alerts-remove'
 		`,
@@ -67,12 +71,20 @@ var (
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := alerts.Add(currentApp, scalingo.AlertAddParams{
+			params := scalingo.AlertAddParams{
 				ContainerType: c.String("c"),
 				Metric:        c.String("m"),
 				Limit:         c.Float64("l"),
-				Disabled:      c.Bool("d"),
-			})
+				SendWhenBelow: c.Bool("b"),
+			}
+			if c.IsSet("r") {
+				remindEvery, err := time.ParseDuration(c.String("r"))
+				if err != nil {
+					errorQuit(err)
+				}
+				params.RemindEvery = &remindEvery
+			}
+			err := alerts.Add(currentApp, params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -90,6 +102,8 @@ var (
 			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
 			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
 			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
+			cli.StringFlag{Name: "remind-every, r", Usage: "When the alert is activated, send the alert at regular interval"},
+			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
 			cli.BoolFlag{Name: "disabled, d", Usage: "Disable the alert (nothing is sent)"},
 		},
 		Description: `Update an existing alert.
@@ -126,6 +140,17 @@ var (
 			if c.IsSet("l") {
 				l := c.Float64("l")
 				params.Limit = &l
+			}
+			if c.IsSet("r") {
+				remindEvery, err := time.ParseDuration(c.String("r"))
+				if err != nil {
+					errorQuit(err)
+				}
+				params.RemindEvery = &remindEvery
+			}
+			if c.IsSet("b") {
+				b := c.Bool("b")
+				params.SendWhenBelow = &b
 			}
 			if c.IsSet("d") {
 				d := c.Bool("d")

@@ -17,7 +17,15 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Active", "Container Type", "Metric", "Limit"})
+	headers := []string{"ID", "Active", "Container Type", "Metric", "Limit"}
+	hasRemindEvery := false
+	for _, alert := range alerts {
+		if alert.RemindEvery != "" {
+			headers = append(headers, "Remind Every")
+			hasRemindEvery = true
+		}
+	}
+	t.SetHeader(headers)
 
 	for _, alert := range alerts {
 		var above string
@@ -26,13 +34,17 @@ func List(app string) error {
 		} else {
 			above = "above"
 		}
-		t.Append([]string{
+		row := []string{
 			alert.ID,
 			fmt.Sprint(!alert.Disabled),
 			alert.ContainerType,
 			alert.Metric,
 			fmt.Sprintf("triggers %s %.2f", above, alert.Limit),
-		})
+		}
+		if hasRemindEvery {
+			row = append(row, alert.RemindEvery)
+		}
+		t.Append(row)
 	}
 	t.Render()
 	return nil

@@ -24,7 +24,6 @@
   ]
   revision = "58550a49931a35be339c42fcc9c719b8a214d66a"
   version = "v1.1.0"
-  revision = "5f6febc3423f32d8becc401ddb941474d22e1edb"
 
 [[projects]]
   branch = "master"
@@ -123,7 +122,7 @@
     "ssh/agent",
     "ssh/terminal"
   ]
-  revision = "80db560fac1fb3e6ac81dbc7f8ae4c061f5257bd"
+  revision = "88942b9c40a4c9d203b82b3731787b672d6e809b"
 
 [[projects]]
   branch = "master"
