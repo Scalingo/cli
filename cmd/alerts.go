@@ -53,6 +53,8 @@ var (
 
    Example
      scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75 [--disabled]
+
+    # See also commands 'alerts-update' and 'alerts-remove'
 		`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
@@ -149,6 +151,8 @@ var (
 
    Example
      scalingo --app my-app alerts-enable <ID>
+
+   # See also commands 'alerts-update' and 'alerts-remove'
 		`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
@@ -183,6 +187,8 @@ var (
 
    Example
      scalingo --app my-app alerts-disable <ID>
+
+   # See also commands 'alerts-update' and 'alerts-remove'
 		`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
@@ -216,7 +222,10 @@ var (
 		Description: `Remove an alert.
 
    Example
-     scalingo --app my-app alerts-remove <ID>`,
+     scalingo --app my-app alerts-remove <ID>
+
+   # See also commands 'alerts-add' and 'alerts-update'
+		 `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
