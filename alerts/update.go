@@ -13,7 +13,16 @@ func Update(app, id string, params scalingo.AlertUpdateParams) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	io.Status("Alert updated")
-	io.Info("http://")
+	var msg string
+	if params.Disabled != nil {
+		if *params.Disabled {
+			msg = "Alert disabled"
+		} else {
+			msg = "Alert enabled"
+		}
+	} else {
+		msg = "Alert updated"
+	}
+	io.Status(msg)
 	return nil
 }

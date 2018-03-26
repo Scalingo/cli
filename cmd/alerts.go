@@ -52,7 +52,7 @@ var (
    The "disabled" flag is optionnal
 
    Example
-     scalingo --app my-app alerts-add --container-type web --metric cpu --target 0.75 [--disabled]
+     scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75 [--disabled]
 		`,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {

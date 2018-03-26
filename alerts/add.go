@@ -14,6 +14,5 @@ func Add(app string, params scalingo.AlertAddParams) error {
 	}
 
 	io.Status("Alert created for the container type", a.ContainerType)
-	io.Info("http://")
 	return nil
 }
