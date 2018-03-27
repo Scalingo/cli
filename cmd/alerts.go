@@ -47,14 +47,16 @@ var (
 			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
 			cli.DurationFlag{Name: "remind-every, r", Usage: "When the alert is activated, send the alert at regular interval"},
 			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
+			cli.StringSliceFlag{Name: "notifiers, n", Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: `Add an alert to an application metric.
 
-   The "remind-every" and "below" flags are optionnal
+   The "remind-every", "below" and "notifiers" flags are optionnal
 
    Example
      scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75
      scalingo --app my-app alerts-add --container-type web --metric rpm_per_container --limit 100 --remind-every 5m30s --below
+     scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75 --notifiers 5aaab14dcbf5e7000120fd01 --notifiers 5aaab3cacbf5e7000120fd19
 
     # See also commands 'alerts-update' and 'alerts-remove'
 		`,
@@ -76,6 +78,7 @@ var (
 				Limit:         c.Float64("l"),
 				SendWhenBelow: c.Bool("b"),
 				RemindEvery:   &remindEvery,
+				Notifiers:     c.StringSlice("n"),
 			})
 			if err != nil {
 				errorQuit(err)
@@ -97,6 +100,7 @@ var (
 			cli.DurationFlag{Name: "remind-every, r", Usage: "When the alert is activated, send the alert at regular interval"},
 			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
 			cli.BoolFlag{Name: "disabled, d", Usage: "Disable the alert (nothing is sent)"},
+			cli.StringSliceFlag{Name: "notifiers, n", Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: `Update an existing alert.
 
@@ -105,6 +109,7 @@ var (
    Example
      scalingo --app my-app alerts-update --metric rpm-per-container --target 150 <ID>
      scalingo --app my-app alerts-update --disabled <ID>
+     scalingo --app my-app alerts-update --notifiers 5aaab14dcbf5e7000120fd01 --notifiers 5aaab3cacbf5e7000120fd19 <ID>
 
    # See also 'alerts-disable' and 'alerts-enable'
 		`,
@@ -144,6 +149,10 @@ var (
 			if c.IsSet("d") {
 				d := c.Bool("d")
 				params.Disabled = &d
+			}
+			if c.IsSet("n") {
+				n := c.StringSlice("n")
+				params.Notifiers = &n
 			}
 
 			err := alerts.Update(currentApp, alertID, params)
