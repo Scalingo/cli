@@ -14,7 +14,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "fix/cli/345/alerts"
+  branch = "master"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -166,6 +166,5 @@
   analyzer-name = "dep"
   analyzer-version = 1
   inputs-digest = "8ce7e170a82994ddbbe358981c79c4d512f6330e0839996880ac9919ce304fea"
-  inputs-digest = "ff7dd856abd6428516ba8e9dad365f38abafc2b2164299ec4b585964a8de946f"
   solver-name = "gps-cdcl"
   solver-version = 1
