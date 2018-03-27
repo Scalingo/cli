@@ -11,11 +11,23 @@ type subresourceService interface {
 	subresourceGet(app, subresource, id string, payload, data interface{}) error
 	subresourceUpdate(app, subresource, id string, payload, data interface{}) error
 	subresourceDelete(app, subresource, id string) error
+<<<<<<< HEAD
 }
 
 var _ subresourceService = (*Client)(nil)
 
 func (c *Client) subresourceGet(app, subresource, id string, payload, data interface{}) error {
+=======
+}
+
+type subresourceClient struct {
+	*backendConfiguration
+}
+
+var _ subresourceService = (*subresourceClient)(nil)
+
+func (c subresourceClient) subresourceGet(app, subresource, id string, payload, data interface{}) error {
+>>>>>>> Update dependencies
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/" + subresource + "/" + id,

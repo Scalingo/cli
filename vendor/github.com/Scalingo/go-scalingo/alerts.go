@@ -14,7 +14,15 @@ type AlertsService interface {
 	AlertRemove(app, id string) error
 }
 
+<<<<<<< HEAD
 var _ AlertsService = (*Client)(nil)
+=======
+type AlertsClient struct {
+	subresourceService
+}
+>>>>>>> Update dependencies
+
+var _ AlertsService = (*AlertsClient)(nil)
 
 type Alert struct {
 	ID            string  `json:"id"`

@@ -57,9 +57,13 @@ package gomock
 
 import (
 	"fmt"
+<<<<<<< HEAD
 	"golang.org/x/net/context"
 	"reflect"
 	"runtime"
+=======
+	"reflect"
+>>>>>>> Update dependencies
 	"sync"
 )
 
@@ -76,13 +80,18 @@ type TestReporter interface {
 type Controller struct {
 	mu            sync.Mutex
 	t             TestReporter
+<<<<<<< HEAD
 	expectedCalls *callSet
 	finished      bool
+=======
+	expectedCalls callSet
+>>>>>>> Update dependencies
 }
 
 func NewController(t TestReporter) *Controller {
 	return &Controller{
 		t:             t,
+<<<<<<< HEAD
 		expectedCalls: newCallSet(),
 	}
 }
@@ -110,6 +119,13 @@ func (ctrl *Controller) RecordCall(receiver interface{}, method string, args ...
 		h.Helper()
 	}
 
+=======
+		expectedCalls: make(callSet),
+	}
+}
+
+func (ctrl *Controller) RecordCall(receiver interface{}, method string, args ...interface{}) *Call {
+>>>>>>> Update dependencies
 	recv := reflect.ValueOf(receiver)
 	for i := 0; i < recv.Type().NumMethod(); i++ {
 		if recv.Type().Method(i).Name == method {
@@ -117,6 +133,7 @@ func (ctrl *Controller) RecordCall(receiver interface{}, method string, args ...
 		}
 	}
 	ctrl.t.Fatalf("gomock: failed finding method %s on %T", method, receiver)
+<<<<<<< HEAD
 	panic("unreachable")
 }
 
@@ -131,10 +148,38 @@ func (ctrl *Controller) RecordCallWithMethodType(receiver interface{}, method st
 	defer ctrl.mu.Unlock()
 	ctrl.expectedCalls.Add(call)
 
+=======
+	// In case t.Fatalf does not panic.
+	panic(fmt.Sprintf("gomock: failed finding method %s on %T", method, receiver))
+}
+
+func (ctrl *Controller) RecordCallWithMethodType(receiver interface{}, method string, methodType reflect.Type, args ...interface{}) *Call {
+	// TODO: check arity, types.
+	margs := make([]Matcher, len(args))
+	for i, arg := range args {
+		if m, ok := arg.(Matcher); ok {
+			margs[i] = m
+		} else if arg == nil {
+			// Handle nil specially so that passing a nil interface value
+			// will match the typed nils of concrete args.
+			margs[i] = Nil()
+		} else {
+			margs[i] = Eq(arg)
+		}
+	}
+
+	ctrl.mu.Lock()
+	defer ctrl.mu.Unlock()
+
+	call := &Call{t: ctrl.t, receiver: receiver, method: method, methodType: methodType, args: margs, minCalls: 1, maxCalls: 1}
+
+	ctrl.expectedCalls.Add(call)
+>>>>>>> Update dependencies
 	return call
 }
 
 func (ctrl *Controller) Call(receiver interface{}, method string, args ...interface{}) []interface{} {
+<<<<<<< HEAD
 	if h, ok := ctrl.t.(testHelper); ok {
 		h.Helper()
 	}
@@ -170,12 +215,44 @@ func (ctrl *Controller) Call(receiver interface{}, method string, args ...interf
 		if r := action(args); r != nil {
 			rets = r
 		}
+=======
+	ctrl.mu.Lock()
+	defer ctrl.mu.Unlock()
+
+	expected := ctrl.expectedCalls.FindMatch(receiver, method, args)
+	if expected == nil {
+		ctrl.t.Fatalf("no matching expected call: %T.%v(%v)", receiver, method, args)
+	}
+
+	// Two things happen here:
+	// * the matching call no longer needs to check prerequite calls,
+	// * and the prerequite calls are no longer expected, so remove them.
+	preReqCalls := expected.dropPrereqs()
+	for _, preReqCall := range preReqCalls {
+		ctrl.expectedCalls.Remove(preReqCall)
+	}
+
+	rets, action := expected.call(args)
+	if expected.exhausted() {
+		ctrl.expectedCalls.Remove(expected)
+	}
+
+	// Don't hold the lock while doing the call's action (if any)
+	// so that actions may execute concurrently.
+	// We use the deferred Unlock to capture any panics that happen above;
+	// here we add a deferred Lock to balance it.
+	ctrl.mu.Unlock()
+	defer ctrl.mu.Lock()
+	if action != nil {
+		action()
+>>>>>>> Update dependencies
 	}
 
 	return rets
 }
 
 func (ctrl *Controller) Finish() {
+<<<<<<< HEAD
 	if h, ok := ctrl.t.(testHelper); ok {
 		h.Helper()
 	}
@@ -188,6 +265,11 @@ func (ctrl *Controller) Finish() {
 	}
 	ctrl.finished = true
 
+=======
+	ctrl.mu.Lock()
+	defer ctrl.mu.Unlock()
+
+>>>>>>> Update dependencies
 	// If we're currently panicking, probably because this is a deferred call,
 	// pass through the panic.
 	if err := recover(); err != nil {
@@ -195,6 +277,7 @@ func (ctrl *Controller) Finish() {
 	}
 
 	// Check that all remaining expected calls are satisfied.
+<<<<<<< HEAD
 	failures := ctrl.expectedCalls.Failures()
 	for _, call := range failures {
 		ctrl.t.Errorf("missing call(s) to %v", call)
@@ -215,3 +298,20 @@ type testHelper interface {
 	TestReporter
 	Helper()
 }
+=======
+	failures := false
+	for _, methodMap := range ctrl.expectedCalls {
+		for _, calls := range methodMap {
+			for _, call := range calls {
+				if !call.satisfied() {
+					ctrl.t.Errorf("missing call(s) to %v", call)
+					failures = true
+				}
+			}
+		}
+	}
+	if failures {
+		ctrl.t.Fatalf("aborting test due to missing call(s)")
+	}
+}
+>>>>>>> Update dependencies

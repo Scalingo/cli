@@ -17,7 +17,10 @@ package gomock
 import (
 	"fmt"
 	"reflect"
+<<<<<<< HEAD
 	"strconv"
+=======
+>>>>>>> Update dependencies
 	"strings"
 )
 
@@ -25,11 +28,19 @@ import (
 type Call struct {
 	t TestReporter // for triggering test failures on invalid call setup
 
+<<<<<<< HEAD
 	receiver   interface{}  // the receiver of the method call
 	method     string       // the name of the method
 	methodType reflect.Type // the type of the method
 	args       []Matcher    // the args
 	origin     string       // file and line number of call setup
+=======
+	receiver   interface{}   // the receiver of the method call
+	method     string        // the name of the method
+	methodType reflect.Type  // the type of the method
+	args       []Matcher     // the args
+	rets       []interface{} // the return values (if any)
+>>>>>>> Update dependencies
 
 	preReqs []*Call // prerequisite calls
 
@@ -38,6 +49,7 @@ type Call struct {
 
 	numCalls int // actual number made
 
+<<<<<<< HEAD
 	// actions are called when this Call is called. Each action gets the args and
 	// can set the return values by returning a non-nil slice. Actions run in the
 	// order they are created.
@@ -76,6 +88,11 @@ func newCall(t TestReporter, receiver interface{}, method string, methodType ref
 	}}
 	return &Call{t: t, receiver: receiver, method: method, methodType: methodType,
 		args: margs, origin: origin, minCalls: 1, maxCalls: 1, actions: actions}
+=======
+	// Actions
+	doFunc  reflect.Value
+	setArgs map[int]reflect.Value
+>>>>>>> Update dependencies
 }
 
 // AnyTimes allows the expectation to be called 0 or more times
@@ -104,6 +121,7 @@ func (c *Call) MaxTimes(n int) *Call {
 	return c
 }
 
+<<<<<<< HEAD
 // DoAndReturn declares the action to run when the call is matched.
 // The return values from this function are returned by the mocked function.
 // It takes an interface{} argument to support n-arity functions.
@@ -167,6 +185,21 @@ func (c *Call) Return(rets ...interface{}) *Call {
 	if len(rets) != mt.NumOut() {
 		c.t.Fatalf("wrong number of arguments to Return for %T.%v: got %d, want %d [%s]",
 			c.receiver, c.method, len(rets), mt.NumOut(), c.origin)
+=======
+// Do declares the action to run when the call is matched.
+// It takes an interface{} argument to support n-arity functions.
+func (c *Call) Do(f interface{}) *Call {
+	// TODO: Check arity and types here, rather than dying badly elsewhere.
+	c.doFunc = reflect.ValueOf(f)
+	return c
+}
+
+func (c *Call) Return(rets ...interface{}) *Call {
+	mt := c.methodType
+	if len(rets) != mt.NumOut() {
+		c.t.Fatalf("wrong number of arguments to Return for %T.%v: got %d, want %d",
+			c.receiver, c.method, len(rets), mt.NumOut())
+>>>>>>> Update dependencies
 	}
 	for i, ret := range rets {
 		if got, want := reflect.TypeOf(ret), mt.Out(i); got == want {
@@ -177,8 +210,13 @@ func (c *Call) Return(rets ...interface{}) *Call {
 			case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
 				// ok
 			default:
+<<<<<<< HEAD
 				c.t.Fatalf("argument %d to Return for %T.%v is nil, but %v is not nillable [%s]",
 					i, c.receiver, c.method, want, c.origin)
+=======
+				c.t.Fatalf("argument %d to Return for %T.%v is nil, but %v is not nillable",
+					i, c.receiver, c.method, want)
+>>>>>>> Update dependencies
 			}
 		} else if got.AssignableTo(want) {
 			// Assignable type relation. Make the assignment now so that the generated code
@@ -187,6 +225,7 @@ func (c *Call) Return(rets ...interface{}) *Call {
 			v.Set(reflect.ValueOf(ret))
 			rets[i] = v.Interface()
 		} else {
+<<<<<<< HEAD
 			c.t.Fatalf("wrong type of argument %d to Return for %T.%v: %v is not assignable to %v [%s]",
 				i, c.receiver, c.method, got, want, c.origin)
 		}
@@ -200,12 +239,24 @@ func (c *Call) Return(rets ...interface{}) *Call {
 }
 
 // Times declares the exact number of times a function call is expected to be executed.
+=======
+			c.t.Fatalf("wrong type of argument %d to Return for %T.%v: %v is not assignable to %v",
+				i, c.receiver, c.method, got, want)
+		}
+	}
+
+	c.rets = rets
+	return c
+}
+
+>>>>>>> Update dependencies
 func (c *Call) Times(n int) *Call {
 	c.minCalls, c.maxCalls = n, n
 	return c
 }
 
 // SetArg declares an action that will set the nth argument's value,
+<<<<<<< HEAD
 // indirected through a pointer. Or, in the case of a slice, SetArg
 // will copy value's elements into the nth argument.
 func (c *Call) SetArg(n int, value interface{}) *Call {
@@ -213,12 +264,23 @@ func (c *Call) SetArg(n int, value interface{}) *Call {
 		h.Helper()
 	}
 
+=======
+// indirected through a pointer.
+func (c *Call) SetArg(n int, value interface{}) *Call {
+	if c.setArgs == nil {
+		c.setArgs = make(map[int]reflect.Value)
+	}
+>>>>>>> Update dependencies
 	mt := c.methodType
 	// TODO: This will break on variadic methods.
 	// We will need to check those at invocation time.
 	if n < 0 || n >= mt.NumIn() {
+<<<<<<< HEAD
 		c.t.Fatalf("SetArg(%d, ...) called for a method with %d args [%s]",
 			n, mt.NumIn(), c.origin)
+=======
+		c.t.Fatalf("SetArg(%d, ...) called for a method with %d args", n, mt.NumIn())
+>>>>>>> Update dependencies
 	}
 	// Permit setting argument through an interface.
 	// In the interface case, we don't (nay, can't) check the type here.
@@ -227,6 +289,7 @@ func (c *Call) SetArg(n int, value interface{}) *Call {
 	case reflect.Ptr:
 		dt := at.Elem()
 		if vt := reflect.TypeOf(value); !vt.AssignableTo(dt) {
+<<<<<<< HEAD
 			c.t.Fatalf("SetArg(%d, ...) argument is a %v, not assignable to %v [%s]",
 				n, vt, dt, c.origin)
 		}
@@ -249,6 +312,16 @@ func (c *Call) SetArg(n int, value interface{}) *Call {
 		}
 		return nil
 	})
+=======
+			c.t.Fatalf("SetArg(%d, ...) argument is a %v, not assignable to %v", n, vt, dt)
+		}
+	case reflect.Interface:
+		// nothing to do
+	default:
+		c.t.Fatalf("SetArg(%d, ...) referring to argument of non-pointer non-interface type %v", n, at)
+	}
+	c.setArgs[n] = reflect.ValueOf(value)
+>>>>>>> Update dependencies
 	return c
 }
 
@@ -264,12 +337,17 @@ func (c *Call) isPreReq(other *Call) bool {
 
 // After declares that the call may only match after preReq has been exhausted.
 func (c *Call) After(preReq *Call) *Call {
+<<<<<<< HEAD
 	if h, ok := c.t.(testHelper); ok {
 		h.Helper()
 	}
 
 	if c == preReq {
 		c.t.Fatalf("A call isn't allowed to be its own prerequisite")
+=======
+	if c == preReq {
+		c.t.Fatalf("A call isn't allowed to be it's own prerequisite")
+>>>>>>> Update dependencies
 	}
 	if preReq.isPreReq(c) {
 		c.t.Fatalf("Loop in call order: %v is a prerequisite to %v (possibly indirectly).", c, preReq)
@@ -279,7 +357,11 @@ func (c *Call) After(preReq *Call) *Call {
 	return c
 }
 
+<<<<<<< HEAD
 // Returns true if the minimum number of calls have been made.
+=======
+// Returns true iff the minimum number of calls have been made.
+>>>>>>> Update dependencies
 func (c *Call) satisfied() bool {
 	return c.numCalls >= c.minCalls
 }
@@ -295,6 +377,7 @@ func (c *Call) String() string {
 		args[i] = arg.String()
 	}
 	arguments := strings.Join(args, ", ")
+<<<<<<< HEAD
 	return fmt.Sprintf("%T.%v(%s) %s", c.receiver, c.method, arguments, c.origin)
 }
 
@@ -377,12 +460,26 @@ func (c *Call) matches(args []interface{}) error {
 			return fmt.Errorf("Expected call at %s doesn't match the argument at index %s.\nGot: %v\nWant: %v",
 				c.origin, strconv.Itoa(i), args[i:], c.args[i])
 
+=======
+	return fmt.Sprintf("%T.%v(%s)", c.receiver, c.method, arguments)
+}
+
+// Tests if the given call matches the expected call.
+func (c *Call) matches(args []interface{}) bool {
+	if len(args) != len(c.args) {
+		return false
+	}
+	for i, m := range c.args {
+		if !m.Matches(args[i]) {
+			return false
+>>>>>>> Update dependencies
 		}
 	}
 
 	// Check that all prerequisite calls have been satisfied.
 	for _, preReqCall := range c.preReqs {
 		if !preReqCall.satisfied() {
+<<<<<<< HEAD
 			return fmt.Errorf("Expected call at %s doesn't have a prerequisite call satisfied:\n%v\nshould be called before:\n%v",
 				c.origin, preReqCall, c)
 		}
@@ -397,6 +494,16 @@ func (c *Call) matches(args []interface{}) error {
 }
 
 // dropPrereqs tells the expected Call to not re-check prerequisite calls any
+=======
+			return false
+		}
+	}
+
+	return true
+}
+
+// dropPrereqs tells the expected Call to not re-check prerequite calls any
+>>>>>>> Update dependencies
 // longer, and to return its current set.
 func (c *Call) dropPrereqs() (preReqs []*Call) {
 	preReqs = c.preReqs
@@ -404,9 +511,44 @@ func (c *Call) dropPrereqs() (preReqs []*Call) {
 	return
 }
 
+<<<<<<< HEAD
 func (c *Call) call(args []interface{}) []func([]interface{}) []interface{} {
 	c.numCalls++
 	return c.actions
+=======
+func (c *Call) call(args []interface{}) (rets []interface{}, action func()) {
+	c.numCalls++
+
+	// Actions
+	if c.doFunc.IsValid() {
+		doArgs := make([]reflect.Value, len(args))
+		ft := c.doFunc.Type()
+		for i := 0; i < len(args); i++ {
+			if args[i] != nil {
+				doArgs[i] = reflect.ValueOf(args[i])
+			} else {
+				// Use the zero value for the arg.
+				doArgs[i] = reflect.Zero(ft.In(i))
+			}
+		}
+		action = func() { c.doFunc.Call(doArgs) }
+	}
+	for n, v := range c.setArgs {
+		reflect.ValueOf(args[n]).Elem().Set(v)
+	}
+
+	rets = c.rets
+	if rets == nil {
+		// Synthesize the zero value for each of the return args' types.
+		mt := c.methodType
+		rets = make([]interface{}, mt.NumOut())
+		for i := 0; i < mt.NumOut(); i++ {
+			rets[i] = reflect.Zero(mt.Out(i)).Interface()
+		}
+	}
+
+	return
+>>>>>>> Update dependencies
 }
 
 // InOrder declares that the given calls should occur in order.
@@ -415,6 +557,7 @@ func InOrder(calls ...*Call) {
 		calls[i].After(calls[i-1])
 	}
 }
+<<<<<<< HEAD
 
 func setSlice(arg interface{}, v reflect.Value) {
 	va := reflect.ValueOf(arg)
@@ -426,3 +569,5 @@ func setSlice(arg interface{}, v reflect.Value) {
 func (c *Call) addAction(action func([]interface{}) []interface{}) {
 	c.actions = append(c.actions, action)
 }
+=======
+>>>>>>> Update dependencies
