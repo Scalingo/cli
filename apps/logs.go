@@ -151,32 +151,38 @@ func streamLogs(logsRawURL string, filter string) error {
 }
 
 func checkFilter(appName string, filter string) error {
-	if filter != "" {
-		c := config.ScalingoClient()
-		processes, err := c.AppsPs(appName)
-		if err != nil {
-			return errgo.Mask(err)
+	if filter == "" {
+		return nil
+	}
+
+	if strings.HasPrefix(filter, "one-off-") || strings.HasPrefix(filter, "postdeploy-") {
+		return nil
+	}
+
+	c := config.ScalingoClient()
+	processes, err := c.AppsPs(appName)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	filters := strings.Split(filter, "|")
+	for _, f := range filters {
+		ctName := ""
+
+		for _, ct := range processes {
+			ctName = ct.Name
+			if strings.HasPrefix(f, ctName+"-") || f == ctName {
+				break
+			}
 		}
 
-		filters := strings.Split(filter, "|")
-		for _, f := range filters {
-
-			ctName := ""
-			for _, ct := range processes {
-
-				ctName = ct.Name
-				if strings.HasPrefix(f, ctName+"-") || f == ctName {
-					break
-				}
-			}
-			if !strings.HasPrefix(f, ctName+"-") && f != ctName {
-				return errgo.Newf(
-					"%s is not a valid container filter\n\nEXAMPLES:\n"+
-						"\"scalingo logs -F web\": logs of every web containers\n"+
-						"\"scalingo logs -F web-1\": logs of web container 1\n"+
-						"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
-					f)
-			}
+		if !strings.HasPrefix(f, ctName+"-") && f != ctName {
+			return errgo.Newf(
+				"%s is not a valid container filter\n\nEXAMPLES:\n"+
+					"\"scalingo logs -F web\": logs of every web containers\n"+
+					"\"scalingo logs -F web-1\": logs of web container 1\n"+
+					"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
+				f)
 		}
 	}
 

@@ -1,4 +1,4 @@
-Scalingo-CLI v1.6.0
+Scalingo-CLI v1.7.0
 ===================
 
 This repository contains the command line utility for the public PaaS Scalingo
@@ -36,6 +36,7 @@ https_proxy=https://<proxy host>:<proxy port>
 ## Command help
 
 ```
+
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -43,7 +44,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.6.0
+   1.7.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -62,6 +63,8 @@ COMMANDS:
      addons-plans  List plans
 
    App Management:
+     destroy            Destroy an app /!\
+     rename             Rename an application
      logs, l            Get the logs of your applications
      logs-archives, la  Get the logs archives of your applications
      run, r             Run any command for your app
@@ -112,7 +115,6 @@ COMMANDS:
    Global:
      apps       List your apps
      create, c  Create a new app
-     destroy    Destroy an app /!\
      login      Login to Scalingo platform
      logout     Logout from Scalingo
      signup     Create your Scalingo account

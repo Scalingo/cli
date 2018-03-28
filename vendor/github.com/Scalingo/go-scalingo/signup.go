@@ -2,9 +2,17 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
-func (c *Client) SignUp(email, password string) error {
+type SignUpService interface {
+	SignUp(email, password string) error
+}
+
+type SignUpClient struct {
+	*backendConfiguration
+}
+
+func (c *SignUpClient) SignUp(email, password string) error {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Method:   "POST",
 		Endpoint: "/users",

@@ -5,7 +5,7 @@ import (
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
-	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/pkg/errors"
 	"gopkg.in/errgo.v1"
 )
@@ -61,11 +61,16 @@ func loginWithUserAndPassword() error {
 
 func loginWithToken(tk string) error {
 	c := config.ScalingoUnauthenticatedClient()
+<<<<<<< HEAD
 
 	app, token, err := c.GetOAuthCredentials(scalingo.LoginParams{
 		Password: tk,
 	})
 
+=======
+	c.TokenGenerator = scalingo.NewStaticTokenGenerator(apiKey)
+	user, err := c.Self()
+>>>>>>> master
 	if err != nil {
 		return errgo.NoteMask(err, "fail to get token generator", errgo.Any)
 	}

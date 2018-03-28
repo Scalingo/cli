@@ -7,6 +7,16 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
+type TokensService interface {
+	TokensList() (Tokens, error)
+	CreateToken(t Token) (Token, error)
+	ShowToken(id int) (Token, error)
+}
+
+type TokensClient struct {
+	*backendConfiguration
+}
+
 type Token struct {
 	ID        int       `json:"int"`
 	Name      string    `json:"name"`
@@ -24,9 +34,9 @@ type TokenResp struct {
 	Token Token `json:"token"`
 }
 
-func (c *Client) TokensList() (Tokens, error) {
+func (c *TokensClient) TokensList() (Tokens, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Endpoint: "/tokens",
 	}
 
@@ -45,9 +55,9 @@ func (c *Client) TokensList() (Tokens, error) {
 	return tokens.Tokens, nil
 }
 
-func (c *Client) CreateToken(t Token) (Token, error) {
+func (c *TokensClient) CreateToken(t Token) (Token, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Endpoint: "/tokens",
 		Method:   "POST",
 		Params:   t,
@@ -68,10 +78,10 @@ func (c *Client) CreateToken(t Token) (Token, error) {
 	return token.Token, nil
 }
 
-func (c *Client) ShowToken(id int) (Token, error) {
+func (c *TokensClient) ShowToken(id int) (Token, error) {
 	req := &APIRequest{
-		Client:   c,
-		Endpoint: fmt.Sprintf("/tokens/%s", id),
+		Client:   c.backendConfiguration,
+		Endpoint: fmt.Sprintf("/tokens/%d", id),
 	}
 
 	var token TokenResp

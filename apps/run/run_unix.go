@@ -80,7 +80,7 @@ func updateTtySize(url string) error {
 	}
 	token, err := config.ScalingoClient().TokenGenerator.GetAccessToken()
 	if err != nil {
-		return errgo.Notef(err, "fail to get authentication token")
+		return errgo.Notef(err, "fail to get access token")
 	}
 	req.SetBasicAuth("", token)
 	debug.Printf("Updating TTY Size: PUT %v %+v", url, params)
