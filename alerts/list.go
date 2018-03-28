@@ -23,6 +23,7 @@ func List(app string) error {
 		if alert.RemindEvery != "" {
 			headers = append(headers, "Remind Every")
 			hasRemindEvery = true
+			break
 		}
 	}
 	t.SetHeader(headers)
