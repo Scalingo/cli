@@ -14,7 +14,7 @@ import (
 )
 
 type LoginOpts struct {
-	Token       string
+	APIToken    string
 	Ssh         bool
 	SshIdentity string
 }
@@ -24,8 +24,8 @@ func Login(opts LoginOpts) error {
 		opts.SshIdentity = "ssh-agent"
 	}
 
-	if opts.Token != "" {
-		return loginWithToken(opts.Token)
+	if opts.APIToken != "" {
+		return loginWithToken(opts.APIToken)
 	}
 
 	if config.AuthenticatedUser != nil {
@@ -62,26 +62,10 @@ func loginWithUserAndPassword() error {
 	return nil
 }
 
-func loginWithToken(tk string) error {
-	c := config.ScalingoUnauthenticatedClient()
-
-	hostname, err := os.Hostname()
+func loginWithToken(token string) error {
+	err := finalizeLogin(token)
 	if err != nil {
-		return errgo.Notef(err, "fail to get hostname")
-	}
-
-	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
-		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
-	}, scalingo.LoginParams{
-		Password: tk,
-	})
-	if err != nil {
-		return errgo.Notef(err, "fail to create credentials for CLI")
-	}
-
-	err = finalizeLogin(token)
-	if err != nil {
-		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
+		return errgo.Notef(err, "token invalid")
 	}
 	return nil
 }
@@ -131,16 +115,16 @@ func loginWithSsh(identity string) error {
 		return errgo.NoteMask(err, "fail to create API token", errgo.Any)
 	}
 
-	err = finalizeLogin(token)
+	err = finalizeLogin(token.Token)
 	if err != nil {
 		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
 	}
 	return nil
 }
 
-func finalizeLogin(token scalingo.Token) error {
+func finalizeLogin(token string) error {
 	c := config.ScalingoUnauthenticatedClient()
-	generator := c.GetAPITokenGenerator(token.Token)
+	generator := c.GetAPITokenGenerator(token)
 	config.C.TokenGenerator = generator
 
 	c = config.ScalingoClient()
