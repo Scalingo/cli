@@ -1,9 +1,10 @@
 Changelog
 =========
 
-### To be Released
+### 1.8.0
 
 * [logs] accepts filter for psotdeploy and one-off container
+* [authentication] use of the new authentication API `auth.scalingo.com`
 
 ### 1.7.0
 
