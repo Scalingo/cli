@@ -48,7 +48,7 @@ func Auth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 		}
 	}
 	if err == ErrAuthenticationFailed {
-		return nil, nil, errors.New("Forgot your password? https://my.scalingo.com")
+		return nil, nil, errors.New("Forgot your password? https://auth.scalingo.com")
 	}
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
