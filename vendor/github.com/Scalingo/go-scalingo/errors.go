@@ -68,7 +68,7 @@ func (err UnprocessableEntity) Error() string {
 }
 
 func NewRequestFailedError(res *http.Response, req *APIRequest) error {
-	debug.Println("APIRequest Error:", res.StatusCode, req.Method, req.Endpoint)
+	debug.Printf("APIRequest Error: [%d] %s %s%s", res.StatusCode, req.Method, req.URL, req.Endpoint)
 	defer res.Body.Close()
 	switch res.StatusCode {
 	case 400:

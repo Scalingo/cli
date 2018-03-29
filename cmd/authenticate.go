@@ -9,10 +9,10 @@ import (
 )
 
 func AuthenticateHook(c *cli.Context) error {
-	apiKey := os.Getenv("SCALINGO_API_TOKEN")
+	token := os.Getenv("SCALINGO_API_TOKEN")
 
-	if apiKey == "" && config.AuthenticatedUser != nil {
+	if token == "" && config.AuthenticatedUser != nil {
 		return nil
 	}
-	return session.Login(session.LoginOpts{ApiKey: apiKey})
+	return session.Login(session.LoginOpts{APIToken: token})
 }

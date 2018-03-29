@@ -11,7 +11,7 @@ var (
 		Name:     "login",
 		Category: "Global",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "api-key", Usage: "Authenticate with an API key instead of login/password"},
+			cli.StringFlag{Name: "api-token", Usage: "Authenticate with a token instead of login/password"},
 			cli.BoolFlag{Name: "ssh", Usage: "Login with you SSH identity instead of login/password"},
 			cli.StringFlag{Name: "ssh-identity", Value: "ssh-agent", Usage: "Use a custom SSH key, only compatible if --ssh is set"},
 		},
@@ -21,7 +21,7 @@ var (
      'scalingo login'`,
 		Action: func(c *cli.Context) {
 			err := session.Login(session.LoginOpts{
-				ApiKey:      c.String("api-key"),
+				APIToken:    c.String("api-token"),
 				Ssh:         c.Bool("ssh"),
 				SshIdentity: c.String("ssh-identity"),
 			})

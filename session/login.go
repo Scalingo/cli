@@ -1,6 +1,9 @@
 package session
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
@@ -11,7 +14,7 @@ import (
 )
 
 type LoginOpts struct {
-	ApiKey      string
+	APIToken    string
 	Ssh         bool
 	SshIdentity string
 }
@@ -21,8 +24,8 @@ func Login(opts LoginOpts) error {
 		opts.SshIdentity = "ssh-agent"
 	}
 
-	if opts.ApiKey != "" {
-		return loginWithApiKey(opts.ApiKey)
+	if opts.APIToken != "" {
+		return loginWithToken(opts.APIToken)
 	}
 
 	if config.AuthenticatedUser != nil {
@@ -52,27 +55,17 @@ func Login(opts LoginOpts) error {
 }
 
 func loginWithUserAndPassword() error {
-	_, err := config.Auth()
+	_, _, err := config.Auth()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }
 
-func loginWithApiKey(apiKey string) error {
-	c := config.ScalingoUnauthenticatedClient()
-	c.TokenGenerator = scalingo.NewStaticTokenGenerator(apiKey)
-	user, err := c.Self()
+func loginWithToken(token string) error {
+	err := finalizeLogin(token)
 	if err != nil {
-		return errgo.Mask(err)
-	}
-
-	io.Statusf("Hello %s, nice to see you!\n", user.Username)
-
-	user.AuthenticationToken = apiKey
-	err = config.SetCurrentUser(user)
-	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "token invalid")
 	}
 	return nil
 }
@@ -90,7 +83,7 @@ func loginWithSsh(identity string) error {
 
 	defer client.Close()
 
-	_, err = channel.SendRequest("auth@scalingo.com", false, []byte{})
+	_, err = channel.SendRequest("auth.v2@scalingo.com", false, []byte{})
 	if err != nil {
 		return errgo.Notef(err, "SSH authentication request fails")
 	}
@@ -98,7 +91,7 @@ func loginWithSsh(identity string) error {
 	if req == nil {
 		return errgo.Newf("invalid response from auth request")
 	}
-	if req.Type != "auth@scalingo.com" {
+	if req.Type != "auth.v2@scalingo.com" {
 		return errgo.Newf("invalid response from SSH server, type is %v", req.Type)
 	}
 	payload := req.Payload
@@ -106,5 +99,46 @@ func loginWithSsh(identity string) error {
 	if len(payload) == 0 {
 		return errgo.Newf("invalid response from SSH server")
 	}
-	return loginWithApiKey(string(payload))
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		return errgo.Notef(err, "fail to get current hostname")
+	}
+
+	c := config.ScalingoUnauthenticatedClient()
+	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
+		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
+	}, scalingo.LoginParams{
+		JWT: string(payload),
+	})
+	if err != nil {
+		return errgo.NoteMask(err, "fail to create API token", errgo.Any)
+	}
+
+	err = finalizeLogin(token.Token)
+	if err != nil {
+		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
+	}
+	return nil
+}
+
+func finalizeLogin(token string) error {
+	c := config.ScalingoUnauthenticatedClient()
+	generator := c.GetAPITokenGenerator(token)
+	config.C.TokenGenerator = generator
+
+	c = config.ScalingoClient()
+	user, err := c.Self()
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	io.Statusf("Hello %s, nice to see you!\n", user.Username)
+
+	err = config.SetCurrentUser(user, generator)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+	return nil
+
 }

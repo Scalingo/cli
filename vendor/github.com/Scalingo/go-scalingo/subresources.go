@@ -4,11 +4,18 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type subresourceClient struct {
-	*backendConfiguration
+// subresourceService that wraps the CRUD methods for any subresource of an app on Scalingo.
+type subresourceService interface {
+	subresourceList(app, subresource string, payload, data interface{}) error
+	subresourceAdd(app, subresource string, payload, data interface{}) error
+	subresourceGet(app, subresource, id string, payload, data interface{}) error
+	subresourceUpdate(app, subresource, id string, payload, data interface{}) error
+	subresourceDelete(app, subresource, id string) error
 }
 
-func (c subresourceClient) subresourceGet(app, subresource, id string, payload, data interface{}) error {
+var _ subresourceService = (*Client)(nil)
+
+func (c *Client) subresourceGet(app, subresource, id string, payload, data interface{}) error {
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/" + subresource + "/" + id,
@@ -16,7 +23,7 @@ func (c subresourceClient) subresourceGet(app, subresource, id string, payload, 
 	}, data)
 }
 
-func (c subresourceClient) subresourceList(app, subresource string, payload, data interface{}) error {
+func (c *Client) subresourceList(app, subresource string, payload, data interface{}) error {
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/" + subresource,
@@ -24,7 +31,7 @@ func (c subresourceClient) subresourceList(app, subresource string, payload, dat
 	}, data)
 }
 
-func (c subresourceClient) subresourceAdd(app, subresource string, payload, data interface{}) error {
+func (c *Client) subresourceAdd(app, subresource string, payload, data interface{}) error {
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/" + subresource,
@@ -33,7 +40,7 @@ func (c subresourceClient) subresourceAdd(app, subresource string, payload, data
 	}, data)
 }
 
-func (c subresourceClient) subresourceDelete(app string, subresource string, id string) error {
+func (c *Client) subresourceDelete(app string, subresource string, id string) error {
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/apps/" + app + "/" + subresource + "/" + id,
@@ -41,7 +48,7 @@ func (c subresourceClient) subresourceDelete(app string, subresource string, id 
 	}, nil)
 }
 
-func (c subresourceClient) subresourceUpdate(app, subresource, id string, payload, data interface{}) error {
+func (c *Client) subresourceUpdate(app, subresource, id string, payload, data interface{}) error {
 	return c.doSubresourceRequest(&APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app + "/" + subresource + "/" + id,
@@ -49,8 +56,8 @@ func (c subresourceClient) subresourceUpdate(app, subresource, id string, payloa
 	}, data)
 }
 
-func (c subresourceClient) doSubresourceRequest(req *APIRequest, data interface{}) error {
-	req.Client = c.backendConfiguration
+func (c *Client) doSubresourceRequest(req *APIRequest, data interface{}) error {
+	req.Client = c
 	res, err := req.Do()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

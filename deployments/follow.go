@@ -99,7 +99,7 @@ func Stream(opts *StreamOpts) error {
 					fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
 				}
 				oldStatus = statusData.Content
-				if opts.DeploymentID != "" && scalingo.IsFinishedString(statusData.Content) {
+				if opts.DeploymentID != "" && scalingo.IsFinishedString(scalingo.DeploymentStatus(statusData.Content)) {
 					return nil
 				}
 			case "new":
