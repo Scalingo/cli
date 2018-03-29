@@ -24,8 +24,8 @@ func NewConfigData() *ConfigData {
 }
 
 type CredentialsData struct {
-	TokenGenerator *scalingo.OAuthTokenGenerator `json:"tokens"`
-	User           *scalingo.User                `json:"user"`
+	TokenGenerator *scalingo.APITokenGenerator `json:"tokens"`
+	User           *scalingo.User              `json:"user"`
 }
 
 type ConfigPerHostV2 map[string]*CredentialsData

@@ -1,6 +1,9 @@
 package session
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
@@ -61,21 +64,22 @@ func loginWithUserAndPassword() error {
 
 func loginWithToken(tk string) error {
 	c := config.ScalingoUnauthenticatedClient()
-<<<<<<< HEAD
 
-	app, token, err := c.GetOAuthCredentials(scalingo.LoginParams{
-		Password: tk,
-	})
-
-=======
-	c.TokenGenerator = scalingo.NewStaticTokenGenerator(apiKey)
-	user, err := c.Self()
->>>>>>> master
+	hostname, err := os.Hostname()
 	if err != nil {
-		return errgo.NoteMask(err, "fail to get token generator", errgo.Any)
+		return errgo.Notef(err, "fail to get hostname")
 	}
 
-	err = finalizeLogin(app, token)
+	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
+		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
+	}, scalingo.LoginParams{
+		Password: tk,
+	})
+	if err != nil {
+		return errgo.Notef(err, "fail to create credentials for CLI")
+	}
+
+	err = finalizeLogin(token)
 	if err != nil {
 		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
 	}
@@ -112,33 +116,34 @@ func loginWithSsh(identity string) error {
 		return errgo.Newf("invalid response from SSH server")
 	}
 
-	c := config.ScalingoUnauthenticatedClient()
-
-	app, token, err := c.GetOAuthCredentials(scalingo.LoginParams{
-		JWT: string(payload),
-	})
-
+	hostname, err := os.Hostname()
 	if err != nil {
-		return errgo.NoteMask(err, "fail to get oauth credentials", errgo.Any)
+		return errgo.Notef(err, "fail to get current hostname")
 	}
 
-	err = finalizeLogin(app, token)
+	c := config.ScalingoUnauthenticatedClient()
+	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
+		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
+	}, scalingo.LoginParams{
+		JWT: string(payload),
+	})
+	if err != nil {
+		return errgo.NoteMask(err, "fail to create API token", errgo.Any)
+	}
+
+	err = finalizeLogin(token)
 	if err != nil {
 		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
 	}
 	return nil
 }
 
-func finalizeLogin(app *scalingo.OAuthApplication, token *scalingo.Token) error {
+func finalizeLogin(token scalingo.Token) error {
 	c := config.ScalingoUnauthenticatedClient()
-	generator, err := c.GetOAuthTokenGenerator(app, token.Token, []string{}, "https://cli.scalingo.com")
+	generator := c.GetAPITokenGenerator(token.Token)
+	config.C.TokenGenerator = generator
 
-	if err != nil {
-		return errgo.NoteMask(err, "fail to get tokens", errgo.Any)
-	}
-
-	c.TokenGenerator = generator
-
+	c = config.ScalingoClient()
 	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)

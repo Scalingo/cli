@@ -101,8 +101,9 @@ func init() {
 	}
 
 	user, tokenGenerator, err := Authenticator.LoadAuth()
-	if err == nil {
-		C.TokenGenerator = tokenGenerator
+	if err == nil && tokenGenerator != nil {
+		client := ScalingoUnauthenticatedClient()
+		C.TokenGenerator = client.GetAPITokenGenerator(tokenGenerator.APIToken)
 	}
 	AuthenticatedUser = user
 }
@@ -113,8 +114,6 @@ func ScalingoClient() *scalingo.Client {
 		Endpoint:       C.ScalingoApiUrl,
 		TLSConfig:      TlsConfig,
 	})
-
-	client.TokenGenerator.SetClient(client)
 	return client
 }
 

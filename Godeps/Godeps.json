@@ -17,23 +17,23 @@
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo",
-			"Comment": "v1.0.0-11-g4cd2251",
-			"Rev": "4cd2251fcc76aadcdf4d7c564bca09235df74928"
+			"Comment": "v1.2.0",
+			"Rev": "b1a1f7bec6aaec90e90a1b6e35ecff2554f44197"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/billing",
-			"Comment": "v1.0.0-11-g4cd2251",
-			"Rev": "4cd2251fcc76aadcdf4d7c564bca09235df74928"
+			"Comment": "v1.2.0",
+			"Rev": "b1a1f7bec6aaec90e90a1b6e35ecff2554f44197"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/debug",
-			"Comment": "v1.0.0-11-g4cd2251",
-			"Rev": "4cd2251fcc76aadcdf4d7c564bca09235df74928"
+			"Comment": "v1.2.0",
+			"Rev": "b1a1f7bec6aaec90e90a1b6e35ecff2554f44197"
 		},
 		{
 			"ImportPath": "github.com/Scalingo/go-scalingo/io",
-			"Comment": "v1.0.0-11-g4cd2251",
-			"Rev": "4cd2251fcc76aadcdf4d7c564bca09235df74928"
+			"Comment": "v1.2.0",
+			"Rev": "b1a1f7bec6aaec90e90a1b6e35ecff2554f44197"
 		},
 		{
 			"ImportPath": "github.com/Soulou/errgo-rollbar",
@@ -138,6 +138,11 @@
 		{
 			"ImportPath": "golang.org/x/oauth2/internal",
 			"Rev": "9a379c6b3e95a790ffc43293c2a78dee0d7b6e20"
+		},
+		{
+			"ImportPath": "github.com/golang/mock/gomock",
+			"Comment": "v1.0.0-83-gb3e60bc",
+			"Rev": "b3e60bcdc577185fce3cf625fc96b62857ce5574"
 		}
 	]
 }

@@ -9,13 +9,12 @@ import (
 
 type TokensService interface {
 	TokensList() (Tokens, error)
-	CreateToken(t Token) (Token, error)
-	ShowToken(id int) (Token, error)
+	TokenCreate(TokenCreateParams) (Token, error)
+	TokenExchange(TokenExchangeParams) (string, error)
+	TokenShow(id int) (Token, error)
 }
 
-type TokensClient struct {
-	*backendConfiguration
-}
+var _ TokensService = (*Client)(nil)
 
 type Token struct {
 	ID        int       `json:"int"`
@@ -24,77 +23,146 @@ type Token struct {
 	Token     string    `json:"token"`
 }
 
+type TokenCreateParams struct {
+	Name string `json:"name"`
+}
+
+type TokenExchangeParams struct {
+	Token string
+}
+
 type Tokens []*Token
 
-type TokensResp struct {
+type TokensRes struct {
 	Tokens Tokens `json:"tokens"`
 }
 
-type TokenResp struct {
+type BearerTokenRes struct {
+	Token string `json:"token"`
+}
+
+type TokenRes struct {
 	Token Token `json:"token"`
 }
 
-func (c *TokensClient) TokensList() (Tokens, error) {
+func (c *Client) TokensList() (Tokens, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
-		Endpoint: "/tokens",
+		Client:   c,
+		URL:      AuthURL(),
+		Endpoint: "/v1/tokens",
 	}
 
 	res, err := req.Do()
-
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get tokens")
 	}
 
-	var tokens TokensResp
-	err = ParseJSON(res, &tokens)
+	var tokensRes TokensRes
+	err = ParseJSON(res, &tokensRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to parse response from server")
 	}
 
-	return tokens.Tokens, nil
+	return tokensRes.Tokens, nil
 }
 
-func (c *TokensClient) CreateToken(t Token) (Token, error) {
+func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
-		Endpoint: "/tokens",
+		Client:   c,
+		NoAuth:   true,
 		Method:   "POST",
-		Params:   t,
+		URL:      AuthURL(),
+		Endpoint: "/v1/tokens/exchange",
+		Password: params.Token,
 	}
-
-	var token TokenResp
 
 	res, err := req.Do()
 	if err != nil {
-		return token.Token, errgo.Notef(err, "fail to create token")
+		return "", errgo.Notef(err, "fail to make request POST /v1/tokens/exchange")
 	}
 
-	err = ParseJSON(res, &token)
+	var btRes BearerTokenRes
+	err = ParseJSON(res, &btRes)
 	if err != nil {
-		return token.Token, errgo.Notef(err, "fail to parse response from server")
+		return "", errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
 	}
 
-	return token.Token, nil
+	return btRes.Token, nil
 }
 
-func (c *TokensClient) ShowToken(id int) (Token, error) {
+func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParams) (Token, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
-		Endpoint: fmt.Sprintf("/tokens/%d", id),
+		Client:   c,
+		NoAuth:   true,
+		Method:   "POST",
+		URL:      AuthURL(),
+		Endpoint: "/v1/tokens",
+		Expected: Statuses{201},
+		Username: login.Identifier,
+		Password: login.Password,
+		OTP:      login.OTP,
+		Token:    login.JWT,
+		Params:   map[string]interface{}{"token": params},
 	}
 
-	var token TokenResp
+	resp, err := req.Do()
+	if err != nil {
+		if IsOTPRequired(err) {
+			return Token{}, ErrOTPRequired
+		}
+		return Token{}, errgo.Notef(err, "request failed")
+	}
+
+	var tokenRes TokenRes
+	err = ParseJSON(resp, &tokenRes)
+	if err != nil {
+		return Token{}, errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
+	}
+
+	return tokenRes.Token, nil
+}
+
+func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
+	req := &APIRequest{
+		Client:   c,
+		URL:      AuthURL(),
+		Expected: Statuses{201},
+		Endpoint: "/v1/tokens",
+		Params:   map[string]interface{}{"token": params},
+		Method:   "POST",
+	}
 
 	res, err := req.Do()
 	if err != nil {
-		return token.Token, errgo.Notef(err, "fail to get token")
+		return Token{}, errgo.Notef(err, "fail to create token")
 	}
 
-	err = ParseJSON(res, &token)
+	var tokenRes TokenRes
+	err = ParseJSON(res, &tokenRes)
 	if err != nil {
-		return token.Token, errgo.Notef(err, "fail to parse response from server")
+		return Token{}, errgo.Notef(err, "fail to parse response from server")
 	}
 
-	return token.Token, nil
+	return tokenRes.Token, nil
+}
+
+func (c *Client) TokenShow(id int) (Token, error) {
+	req := &APIRequest{
+		Client:   c,
+		URL:      AuthURL(),
+		Endpoint: fmt.Sprintf("/v1/tokens/%d", id),
+	}
+
+	res, err := req.Do()
+	if err != nil {
+		return Token{}, errgo.Notef(err, "fail to get token")
+	}
+
+	var tokenRes TokenRes
+	err = ParseJSON(res, &tokenRes)
+	if err != nil {
+		return Token{}, errgo.Notef(err, "fail to parse response from server")
+	}
+
+	return tokenRes.Token, nil
 }

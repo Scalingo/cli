@@ -78,7 +78,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	token, err := config.ScalingoClient().TokenGenerator.GetAccessToken()
+	token, err := config.ScalingoClient().GetAccessToken()
 	if err != nil {
 		return errgo.Notef(err, "fail to get access token")
 	}

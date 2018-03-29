@@ -10,9 +10,7 @@ type VariablesService interface {
 	VariableUnset(app string, id string) error
 }
 
-type VariablesClient struct {
-	subresourceClient
-}
+var _ VariablesService = (*Client)(nil)
 
 type Variable struct {
 	ID    string `json:"id"`
@@ -39,15 +37,15 @@ type VariableSetParams struct {
 	Variable *Variable `json:"variable"`
 }
 
-func (c *VariablesClient) VariablesList(app string) (Variables, error) {
+func (c *Client) VariablesList(app string) (Variables, error) {
 	return c.variableList(app, true)
 }
 
-func (c *VariablesClient) VariablesListWithoutAlias(app string) (Variables, error) {
+func (c *Client) VariablesListWithoutAlias(app string) (Variables, error) {
 	return c.variableList(app, false)
 }
 
-func (c *VariablesClient) variableList(app string, aliases bool) (Variables, error) {
+func (c *Client) variableList(app string, aliases bool) (Variables, error) {
 	var variablesRes VariablesRes
 	err := c.subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
@@ -56,9 +54,9 @@ func (c *VariablesClient) variableList(app string, aliases bool) (Variables, err
 	return variablesRes.Variables, nil
 }
 
-func (c *VariablesClient) VariableSet(app string, name string, value string) (*Variable, int, error) {
+func (c *Client) VariableSet(app string, name string, value string) (*Variable, int, error) {
 	req := &APIRequest{
-		Client:   c.subresourceClient.backendConfiguration,
+		Client:   c,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]interface{}{
@@ -84,9 +82,9 @@ func (c *VariablesClient) VariableSet(app string, name string, value string) (*V
 	return params.Variable, res.StatusCode, nil
 }
 
-func (c *VariablesClient) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
+func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
 	req := &APIRequest{
-		Client:   c.subresourceClient.backendConfiguration,
+		Client:   c,
 		Method:   "PUT",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]Variables{
@@ -109,6 +107,6 @@ func (c *VariablesClient) VariableMultipleSet(app string, variables Variables) (
 	return params.Variables, res.StatusCode, nil
 }
 
-func (c *VariablesClient) VariableUnset(app string, id string) error {
+func (c *Client) VariableUnset(app string, id string) error {
 	return c.subresourceDelete(app, "variables", id)
 }

@@ -12,25 +12,23 @@ type LogsService interface {
 	Logs(logsURL string, n int, filter string) (*http.Response, error)
 }
 
-type LogsClient struct {
-	*backendConfiguration
-}
+var _ LogsService = (*Client)(nil)
 
-func (c *LogsClient) LogsURL(app string) (*http.Response, error) {
+func (c *Client) LogsURL(app string) (*http.Response, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		Endpoint: "/apps/" + app + "/logs",
 	}
 	return req.Do()
 }
 
-func (c *LogsClient) Logs(logsURL string, n int, filter string) (*http.Response, error) {
+func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, error) {
 	u, err := url.Parse(logsURL)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		NoAuth:   true,
 		Expected: Statuses{200, 204, 404},
 		URL:      u.Scheme + "://" + u.Host,
