@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	lastVersionURL = "http://cli-dl.scalingo.io/version"
+	lastVersionURL = "https://cli-dl.scalingo.io/version"
 	lastVersion    = ""
 	gotLastVersion = make(chan struct{})
 	gotAnError     = false
@@ -49,7 +49,7 @@ func Check() error {
 	}
 
 	io.Statusf(io.BoldRed("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n"), version)
-	io.Infof(io.BoldRed("Please update to '%s' by reinstalling it: http://cli.scalingo.com\n"), lastVersion)
+	io.Infof(io.BoldRed("Please update to '%s' by reinstalling it: https://cli.scalingo.com\n"), lastVersion)
 	return nil
 }
 
