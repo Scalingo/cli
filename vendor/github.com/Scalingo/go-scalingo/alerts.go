@@ -14,13 +14,9 @@ type AlertsService interface {
 	AlertRemove(app, id string) error
 }
 
-<<<<<<< HEAD
-var _ AlertsService = (*Client)(nil)
-=======
 type AlertsClient struct {
 	subresourceService
 }
->>>>>>> Update dependencies
 
 var _ AlertsService = (*AlertsClient)(nil)
 
@@ -42,7 +38,7 @@ type AlertRes struct {
 	Alert Alert `json:"alert"`
 }
 
-func (c *Client) AlertsList(app string) ([]*Alert, error) {
+func (c *AlertsClient) AlertsList(app string) ([]*Alert, error) {
 	var alertsRes AlertsRes
 	err := c.subresourceList(app, "alerts", nil, &alertsRes)
 	if err != nil {
@@ -60,7 +56,7 @@ type AlertAddParams struct {
 	Notifiers     []string
 }
 
-func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
+func (c *AlertsClient) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 	var alertRes AlertRes
 	alert := Alert{
 		ContainerType: params.ContainerType,
@@ -80,7 +76,7 @@ func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 	return &alertRes.Alert, nil
 }
 
-func (c *Client) AlertShow(app, id string) (*Alert, error) {
+func (c *AlertsClient) AlertShow(app, id string) (*Alert, error) {
 	var alertRes AlertRes
 	err := c.subresourceGet(app, "alerts", id, nil, &alertRes)
 	if err != nil {
@@ -99,7 +95,7 @@ type AlertUpdateParams struct {
 	Notifiers     *[]string      `json:"notifiers,omitempty"`
 }
 
-func (c *Client) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, error) {
+func (c *AlertsClient) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, error) {
 	var alertRes AlertRes
 	err := c.subresourceUpdate(app, "alerts", id, params, &alertRes)
 	if err != nil {
@@ -108,7 +104,7 @@ func (c *Client) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, 
 	return &alertRes.Alert, nil
 }
 
-func (c *Client) AlertRemove(app, id string) error {
+func (c *AlertsClient) AlertRemove(app, id string) error {
 	err := c.subresourceDelete(app, "alerts", id)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

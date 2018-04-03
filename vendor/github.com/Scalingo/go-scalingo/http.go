@@ -23,7 +23,7 @@ var (
 )
 
 type APIRequest struct {
-	Client      API
+	Client      *backendConfiguration
 	NoAuth      bool
 	URL         string
 	Method      string
@@ -50,22 +50,22 @@ func (req *APIRequest) FillDefaultValues() error {
 		req.Params = make(map[string]interface{})
 	}
 	if req.Client == nil {
-		req.Client = NewClient(ClientConfig{
-			Endpoint:   defaultEndpoint,
-			APIVersion: defaultAPIVersion,
-		})
+		req.Client = &backendConfiguration{Endpoint: defaultEndpoint, APIVersion: defaultAPIVersion}
 	}
 
 	if !req.NoAuth {
+		if req.Client.TokenGenerator == nil {
+			return ErrNoAuth
+		}
 		var err error
-		req.Token, err = req.Client.GetAccessToken()
+		req.Token, err = req.Client.TokenGenerator.GetAccessToken()
 		if err != nil {
 			return ErrNoAuth
 		}
 	}
 
 	if req.URL == "" {
-		req.URL = fmt.Sprintf("%s%s%s", req.Client.Endpoint(), "/v", req.Client.APIVersion())
+		req.URL = fmt.Sprintf("%s%s%s", req.Client.Endpoint, "/v", req.Client.APIVersion)
 	}
 	return nil
 }

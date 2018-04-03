@@ -14,7 +14,6 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "master"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -24,12 +23,6 @@
   ]
   revision = "58550a49931a35be339c42fcc9c719b8a214d66a"
   version = "v1.1.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/Scalingo/gopassword"
-  packages = ["."]
-  revision = "27d6fc05ae4d0cba5a5c646925f3aec369353ca1"
 
 [[projects]]
   branch = "master"
@@ -122,30 +115,13 @@
     "ssh/agent",
     "ssh/terminal"
   ]
-  revision = "88942b9c40a4c9d203b82b3731787b672d6e809b"
+  revision = "12892e8c234f4fe6f6803f052061de9057903bb2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["websocket"]
-  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
-
-[[projects]]
-  packages = [
-    "context",
-    "context/ctxhttp",
-    "websocket"
-  ]
-  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/oauth2"
-  packages = [
-    ".",
-    "internal"
-  ]
-  revision = "fdc9e635145ae97e6c2cb777c48305600cf515cb"
+  revision = "b68f30494add4df6bd8ef5e82803f308e7f7c59c"
 
 [[projects]]
   branch = "master"
@@ -154,7 +130,7 @@
     "unix",
     "windows"
   ]
-  revision = "c488ab1dd8481ef762f96a79a9577c27825be697"
+  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
 
 [[projects]]
   branch = "v1"

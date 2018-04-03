@@ -9,7 +9,9 @@ type NotificationsService interface {
 	NotificationDestroy(app, ID string) error
 }
 
-var _ NotificationsService = (*Client)(nil)
+type NotificationsClient struct {
+	subresourceClient
+}
 
 type Notification struct {
 	ID         string `json:"id"`
@@ -26,7 +28,7 @@ type NotificationsRes struct {
 	Notifications []*Notification `json:"notifications"`
 }
 
-func (c *Client) NotificationsList(app string) ([]*Notification, error) {
+func (c *NotificationsClient) NotificationsList(app string) ([]*Notification, error) {
 	var notificationsRes NotificationsRes
 	err := c.subresourceList(app, "notifications", nil, &notificationsRes)
 	if err != nil {
@@ -35,7 +37,7 @@ func (c *Client) NotificationsList(app string) ([]*Notification, error) {
 	return notificationsRes.Notifications, nil
 }
 
-func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes, error) {
+func (c *NotificationsClient) NotificationProvision(app, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
 	err := c.subresourceAdd(app, "notifications", NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
 	if err != nil {
@@ -44,7 +46,7 @@ func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes,
 	return notificationRes, nil
 }
 
-func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes, error) {
+func (c *NotificationsClient) NotificationUpdate(app, ID, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
 	err := c.subresourceUpdate(app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL, Active: true}}, &notificationRes)
 	if err != nil {
@@ -53,6 +55,6 @@ func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes
 	return notificationRes, nil
 }
 
-func (c *Client) NotificationDestroy(app, ID string) error {
+func (c *NotificationsClient) NotificationDestroy(app, ID string) error {
 	return c.subresourceDelete(app, "notifications", ID)
 }

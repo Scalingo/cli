@@ -2,13 +2,20 @@ package scalingo
 
 import (
 	"crypto/tls"
-	"errors"
 	"net/http"
 	"time"
 )
 
 type HTTPClient interface {
 	Do(*http.Request) (*http.Response, error)
+}
+
+type backendConfiguration struct {
+	TokenGenerator TokenGenerator
+	Endpoint       string
+	TLSConfig      *tls.Config
+	APIVersion     string
+	httpClient     HTTPClient
 }
 
 type API interface {
@@ -23,7 +30,7 @@ type API interface {
 	EventsService
 	KeysService
 	LoginService
-	LogsArchivesService
+	LogsArcivesService
 	LogsService
 	NotificationPlatformsService
 	NotificationsService
@@ -34,22 +41,33 @@ type API interface {
 	SourcesService
 	TokensService
 	UsersService
-
-	TokenGenerator
-
-	APIVersion() string
-	Endpoint() string
-	HTTPClient() HTTPClient
 }
 
-var _ API = (*Client)(nil)
-
 type Client struct {
-	tokenGenerator TokenGenerator
-	endpoint       string
-	TLSConfig      *tls.Config
-	apiVersion     string
-	httpClient     HTTPClient
+	*AddonsClient
+	*AddonProvidersClient
+	*AppsClient
+	*AlertsClient
+	*CollaboratorsClient
+	*DeploymentsClient
+	*DomainsClient
+	*EventsClient
+	*KeysClient
+	*LoginClient
+	*LogsArchivesClient
+	*LogsClient
+	*NotificationPlatformsClient
+	*NotificationsClient
+	*NotifiersClient
+	*OperationsClient
+	*RunsClient
+	*SignUpClient
+	*SourcesClient
+	*TokensClient
+	*UsersClient
+	*VariablesClient
+
+	*backendConfiguration
 }
 
 type ClientConfig struct {
@@ -57,7 +75,6 @@ type ClientConfig struct {
 	Endpoint       string
 	TLSConfig      *tls.Config
 	TokenGenerator TokenGenerator
-	APIVersion     string
 }
 
 func NewClient(cfg ClientConfig) *Client {
@@ -70,24 +87,23 @@ func NewClient(cfg ClientConfig) *Client {
 	if cfg.TLSConfig == nil {
 		cfg.TLSConfig = &tls.Config{}
 	}
-
-	if cfg.APIVersion == "" {
-		cfg.APIVersion = defaultAPIVersion
-	}
-
 	c := Client{
-		tokenGenerator: cfg.TokenGenerator,
-		endpoint:       cfg.Endpoint,
-		apiVersion:     cfg.APIVersion,
-		TLSConfig:      cfg.TLSConfig,
-		httpClient: &http.Client{
-			Timeout: cfg.Timeout,
-			Transport: &http.Transport{
-				Proxy:           http.ProxyFromEnvironment,
-				TLSClientConfig: cfg.TLSConfig,
+		backendConfiguration: &backendConfiguration{
+			TokenGenerator: cfg.TokenGenerator,
+			Endpoint:       cfg.Endpoint,
+			APIVersion:     defaultAPIVersion,
+			TLSConfig:      cfg.TLSConfig,
+			httpClient: &http.Client{
+				Timeout: cfg.Timeout,
+				Transport: &http.Transport{
+					Proxy:           http.ProxyFromEnvironment,
+					TLSClientConfig: cfg.TLSConfig,
+				},
 			},
 		},
 	}
+
+	c.init()
 
 	return &c
 }
@@ -96,17 +112,31 @@ func (c *Client) HTTPClient() HTTPClient {
 	return c.httpClient
 }
 
-func (c *Client) GetAccessToken() (string, error) {
-	if c.tokenGenerator == nil {
-		return "", errors.New("no token generator")
-	}
-	return c.tokenGenerator.GetAccessToken()
+func (c *backendConfiguration) HTTPClient() HTTPClient {
+	return c.httpClient
 }
 
-func (c *Client) APIVersion() string {
-	return c.apiVersion
-}
-
-func (c *Client) Endpoint() string {
-	return c.endpoint
+func (c *Client) init() {
+	c.AddonsClient = &AddonsClient{subresourceClient{c.backendConfiguration}}
+	c.AddonProvidersClient = &AddonProvidersClient{c.backendConfiguration}
+	c.AppsClient = &AppsClient{c.backendConfiguration}
+	c.AlertsClient = &AlertsClient{subresourceClient{c.backendConfiguration}}
+	c.CollaboratorsClient = &CollaboratorsClient{subresourceClient{c.backendConfiguration}}
+	c.DeploymentsClient = &DeploymentsClient{c.backendConfiguration}
+	c.DomainsClient = &DomainsClient{subresourceClient{c.backendConfiguration}}
+	c.EventsClient = &EventsClient{subresourceClient{c.backendConfiguration}}
+	c.KeysClient = &KeysClient{c.backendConfiguration}
+	c.LoginClient = &LoginClient{c.backendConfiguration}
+	c.LogsArchivesClient = &LogsArchivesClient{c.backendConfiguration}
+	c.LogsClient = &LogsClient{c.backendConfiguration}
+	c.NotificationPlatformsClient = &NotificationPlatformsClient{c.backendConfiguration}
+	c.NotificationsClient = &NotificationsClient{subresourceClient{c.backendConfiguration}}
+	c.NotifiersClient = &NotifiersClient{subresourceClient{c.backendConfiguration}}
+	c.OperationsClient = &OperationsClient{subresourceClient{c.backendConfiguration}}
+	c.RunsClient = &RunsClient{c.backendConfiguration}
+	c.SignUpClient = &SignUpClient{c.backendConfiguration}
+	c.TokensClient = &TokensClient{c.backendConfiguration}
+	c.UsersClient = &UsersClient{c.backendConfiguration}
+	c.VariablesClient = &VariablesClient{subresourceClient{c.backendConfiguration}}
+	c.SourcesClient = &SourcesClient{c.backendConfiguration}
 }

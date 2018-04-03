@@ -6,7 +6,9 @@ type SourcesService interface {
 	SourcesCreate() (*Source, error)
 }
 
-var _ SourcesService = (*Client)(nil)
+type SourcesClient struct {
+	*backendConfiguration
+}
 
 type SourcesCreateResponse struct {
 	Source *Source `json:"source"`
@@ -17,9 +19,9 @@ type Source struct {
 	UploadURL   string `json:"upload_url"`
 }
 
-func (c *Client) SourcesCreate() (*Source, error) {
+func (c *SourcesClient) SourcesCreate() (*Source, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Method:   "POST",
 		Endpoint: "/sources",
 		Expected: Statuses{201},

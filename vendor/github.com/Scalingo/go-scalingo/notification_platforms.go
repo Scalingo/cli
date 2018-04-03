@@ -13,7 +13,9 @@ type NotificationPlatformsService interface {
 	NotificationPlatformByName(name string) ([]*NotificationPlatform, error)
 }
 
-var _ NotificationPlatformsService = (*Client)(nil)
+type NotificationPlatformsClient struct {
+	*backendConfiguration
+}
 
 type NotificationPlatform struct {
 	ID              string            `json:"id"`
@@ -30,9 +32,9 @@ type PlatformsRes struct {
 	NotificationPlatforms []*NotificationPlatform `json:"notification_platforms"`
 }
 
-func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
+func (c *NotificationPlatformsClient) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/notification_platforms",
 	}
@@ -51,10 +53,10 @@ func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 	return response.NotificationPlatforms, nil
 }
 
-func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
+func (c *NotificationPlatformsClient) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
 	debug.Printf("[NotificationPlatformByName] name: %s", name)
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/notification_platforms/search",
 		Params:   map[string]string{"name": name},

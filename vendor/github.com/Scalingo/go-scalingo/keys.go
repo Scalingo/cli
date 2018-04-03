@@ -8,7 +8,9 @@ type KeysService interface {
 	KeysDelete(id string) error
 }
 
-var _ KeysService = (*Client)(nil)
+type KeysClient struct {
+	*backendConfiguration
+}
 
 type Key struct {
 	ID      string `json:"id"`
@@ -20,9 +22,9 @@ type KeyIndex struct {
 	Keys []Key `json:"keys"`
 }
 
-func (c *Client) KeysList() ([]Key, error) {
+func (c *KeysClient) KeysList() ([]Key, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Endpoint: "/account/keys",
 	}
 	res, err := req.Do()
@@ -40,9 +42,9 @@ func (c *Client) KeysList() ([]Key, error) {
 	return ki.Keys, nil
 }
 
-func (c *Client) KeysAdd(name string, content string) (*Key, error) {
+func (c *KeysClient) KeysAdd(name string, content string) (*Key, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Method:   "POST",
 		Endpoint: "/account/keys",
 		Params: map[string]interface{}{
@@ -68,9 +70,9 @@ func (c *Client) KeysAdd(name string, content string) (*Key, error) {
 	return key, nil
 }
 
-func (c *Client) KeysDelete(id string) error {
+func (c *KeysClient) KeysDelete(id string) error {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Method:   "DELETE",
 		Endpoint: "/account/keys/" + id,
 		Expected: Statuses{204},

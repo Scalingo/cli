@@ -13,7 +13,9 @@ type NotifiersService interface {
 	NotifierDestroy(app, ID string) error
 }
 
-var _ NotifiersService = (*Client)(nil)
+type NotifiersClient struct {
+	subresourceClient
+}
 
 // NotifierParams will be given as a parameter in notifiers function's
 type NotifierParams struct {
@@ -43,7 +45,7 @@ type notifiersRequestRes struct {
 	Notifiers []*Notifier `json:"notifiers"`
 }
 
-func (c *Client) NotifiersList(app string) (Notifiers, error) {
+func (c *NotifiersClient) NotifiersList(app string) (Notifiers, error) {
 	var notifiersRes notifiersRequestRes
 	err := c.subresourceList(app, "notifiers", nil, &notifiersRes)
 	if err != nil {
@@ -56,7 +58,7 @@ func (c *Client) NotifiersList(app string) (Notifiers, error) {
 	return notifiers, nil
 }
 
-func (c *Client) NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error) {
+func (c *NotifiersClient) NotifierProvision(app, notifierType string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := NewOutputNotifier(notifierType, params)
 	notifierRequestParams := &notifierRequestParams{notifier}
@@ -69,7 +71,7 @@ func (c *Client) NotifierProvision(app, notifierType string, params NotifierPara
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
+func (c *NotifiersClient) NotifierByID(app, ID string) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	err := c.subresourceGet(app, "notifiers", ID, nil, &notifierRes)
 	if err != nil {
@@ -79,7 +81,7 @@ func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error) {
+func (c *NotifiersClient) NotifierUpdate(app, ID, notifierType string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := NewOutputNotifier(notifierType, params)
 	notifierRequestParams := &notifierRequestParams{notifier}
@@ -93,6 +95,6 @@ func (c *Client) NotifierUpdate(app, ID, notifierType string, params NotifierPar
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierDestroy(app, ID string) error {
+func (c *NotifiersClient) NotifierDestroy(app, ID string) error {
 	return c.subresourceDelete(app, "notifiers", ID)
 }

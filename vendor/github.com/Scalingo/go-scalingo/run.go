@@ -10,7 +10,9 @@ type RunsService interface {
 	Run(opts RunOpts) (*RunRes, error)
 }
 
-var _ RunsService = (*Client)(nil)
+type RunsClient struct {
+	*backendConfiguration
+}
 
 type RunOpts struct {
 	App        string
@@ -26,9 +28,9 @@ type RunRes struct {
 	AttachURL string     `json:"attach_url"`
 }
 
-func (c *Client) Run(opts RunOpts) (*RunRes, error) {
+func (c *RunsClient) Run(opts RunOpts) (*RunRes, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Method:   "POST",
 		Endpoint: "/apps/" + opts.App + "/run",
 		Params: map[string]interface{}{

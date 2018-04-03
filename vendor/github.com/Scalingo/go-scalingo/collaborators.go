@@ -8,7 +8,9 @@ type CollaboratorsService interface {
 	CollaboratorRemove(app string, id string) error
 }
 
-var _ CollaboratorsService = (*Client)(nil)
+type CollaboratorsClient struct {
+	subresourceClient
+}
 
 type Collaborator struct {
 	ID       string `json:"id"`
@@ -25,7 +27,7 @@ type CollaboratorRes struct {
 	Collaborator Collaborator `json:"collaborator"`
 }
 
-func (c *Client) CollaboratorsList(app string) ([]Collaborator, error) {
+func (c *CollaboratorsClient) CollaboratorsList(app string) ([]Collaborator, error) {
 	var collaboratorsRes CollaboratorsRes
 	err := c.subresourceList(app, "collaborators", nil, &collaboratorsRes)
 	if err != nil {
@@ -34,7 +36,7 @@ func (c *Client) CollaboratorsList(app string) ([]Collaborator, error) {
 	return collaboratorsRes.Collaborators, nil
 }
 
-func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error) {
+func (c *CollaboratorsClient) CollaboratorAdd(app string, email string) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
 	err := c.subresourceAdd(app, "collaborators", CollaboratorRes{
 		Collaborator: Collaborator{Email: email},
@@ -45,6 +47,6 @@ func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error)
 	return collaboratorRes.Collaborator, nil
 }
 
-func (c *Client) CollaboratorRemove(app string, id string) error {
+func (c *CollaboratorsClient) CollaboratorRemove(app string, id string) error {
 	return c.subresourceDelete(app, "collaborators", id)
 }

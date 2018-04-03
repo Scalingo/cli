@@ -11,7 +11,9 @@ type AddonProvidersService interface {
 	AddonProviderPlansList(addon string) ([]*Plan, error)
 }
 
-var _ AddonProvidersService = (*Client)(nil)
+type AddonProvidersClient struct {
+	*backendConfiguration
+}
 
 type Plan struct {
 	ID               string `json:"id"`
@@ -36,9 +38,9 @@ type ListParams struct {
 	AddonProviders []*AddonProvider `json:"addon_providers"`
 }
 
-func (c *Client) AddonProvidersList() ([]*AddonProvider, error) {
+func (c *AddonProvidersClient) AddonProvidersList() ([]*AddonProvider, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/addon_providers",
 	}
@@ -66,14 +68,14 @@ var addonProviderTypo = map[string]string{
 	"scalingo-psql":     "scalingo-postgresql",
 }
 
-func (c *Client) AddonProviderPlansList(addon string) ([]*Plan, error) {
+func (c *AddonProvidersClient) AddonProviderPlansList(addon string) ([]*Plan, error) {
 	correctAddon, ok := addonProviderTypo[addon]
 	if ok {
 		addon = correctAddon
 	}
 
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Endpoint: "/addon_providers/" + addon + "/plans",
 	}

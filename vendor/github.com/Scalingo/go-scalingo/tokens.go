@@ -14,7 +14,9 @@ type TokensService interface {
 	TokenShow(id int) (Token, error)
 }
 
-var _ TokensService = (*Client)(nil)
+type TokensClient struct {
+	*backendConfiguration
+}
 
 type Token struct {
 	ID        int       `json:"int"`
@@ -45,9 +47,9 @@ type TokenRes struct {
 	Token Token `json:"token"`
 }
 
-func (c *Client) TokensList() (Tokens, error) {
+func (c *TokensClient) TokensList() (Tokens, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		URL:      AuthURL(),
 		Endpoint: "/v1/tokens",
 	}
@@ -66,9 +68,9 @@ func (c *Client) TokensList() (Tokens, error) {
 	return tokensRes.Tokens, nil
 }
 
-func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
+func (c *TokensClient) TokenExchange(params TokenExchangeParams) (string, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Method:   "POST",
 		URL:      AuthURL(),
@@ -90,9 +92,9 @@ func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
 	return btRes.Token, nil
 }
 
-func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParams) (Token, error) {
+func (c *TokensClient) TokenCreateWithLogin(params TokenCreateParams, login LoginParams) (Token, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Method:   "POST",
 		URL:      AuthURL(),
@@ -122,9 +124,9 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 	return tokenRes.Token, nil
 }
 
-func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
+func (c *TokensClient) TokenCreate(params TokenCreateParams) (Token, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		URL:      AuthURL(),
 		Expected: Statuses{201},
 		Endpoint: "/v1/tokens",
@@ -146,9 +148,9 @@ func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
 	return tokenRes.Token, nil
 }
 
-func (c *Client) TokenShow(id int) (Token, error) {
+func (c *TokensClient) TokenShow(id int) (Token, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		URL:      AuthURL(),
 		Endpoint: fmt.Sprintf("/v1/tokens/%d", id),
 	}

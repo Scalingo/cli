@@ -18,7 +18,9 @@ type DeploymentsService interface {
 	DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error)
 }
 
-var _ DeploymentsService = (*Client)(nil)
+type DeploymentsClient struct {
+	*backendConfiguration
+}
 
 type DeploymentStatus string
 
@@ -82,9 +84,9 @@ type AuthStruct struct {
 	Data AuthenticationData `json:"data"`
 }
 
-func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
+func (c *DeploymentsClient) DeploymentList(app string) ([]*Deployment, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Endpoint: "/apps/" + app + "/deployments",
 	}
 
@@ -106,9 +108,9 @@ func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
 	return deployments.Deployments, nil
 }
 
-func (c *Client) Deployment(app string, deploy string) (*Deployment, error) {
+func (c *DeploymentsClient) Deployment(app string, deploy string) (*Deployment, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Endpoint: "/apps/" + app + "/deployments/" + deploy,
 	}
 
@@ -130,13 +132,13 @@ func (c *Client) Deployment(app string, deploy string) (*Deployment, error) {
 	return deploymentMap["deployment"], nil
 }
 
-func (c *Client) DeploymentLogs(deployURL string) (*http.Response, error) {
+func (c *DeploymentsClient) DeploymentLogs(deployURL string) (*http.Response, error) {
 	u, err := url.Parse(deployURL)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Expected: Statuses{200, 404},
 		Endpoint: u.Path,
 		URL:      u.Scheme + "://" + u.Host,
@@ -145,8 +147,8 @@ func (c *Client) DeploymentLogs(deployURL string) (*http.Response, error) {
 	return req.Do()
 }
 
-func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
-	token, err := c.GetAccessToken()
+func (c *DeploymentsClient) DeploymentStream(deployURL string) (*websocket.Conn, error) {
+	token, err := c.TokenGenerator.GetAccessToken()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to generate token")
 	}
@@ -160,7 +162,7 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	conn, err := websocket.Dial(deployURL, "", "http://scalingo-cli.local/"+c.APIVersion())
+	conn, err := websocket.Dial(deployURL, "", "http://scalingo-cli.local/"+c.APIVersion)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -173,9 +175,9 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 	return conn, nil
 }
 
-func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error) {
+func (c *DeploymentsClient) DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error) {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/deployments",
 		Expected: Statuses{201},

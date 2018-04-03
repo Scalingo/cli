@@ -6,11 +6,13 @@ type SignUpService interface {
 	SignUp(email, password string) error
 }
 
-var _ SignUpService = (*Client)(nil)
+type SignUpClient struct {
+	*backendConfiguration
+}
 
-func (c *Client) SignUp(email, password string) error {
+func (c *SignUpClient) SignUp(email, password string) error {
 	req := &APIRequest{
-		Client:   c,
+		Client:   c.backendConfiguration,
 		NoAuth:   true,
 		Method:   "POST",
 		Endpoint: "/users",
