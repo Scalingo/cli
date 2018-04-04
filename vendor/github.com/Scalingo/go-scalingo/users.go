@@ -7,9 +7,7 @@ type UsersService interface {
 	UpdateUser(params UpdateUserParams) (*User, error)
 }
 
-type UsersClient struct {
-	*backendConfiguration
-}
+var _ UsersService = (*Client)(nil)
 
 type User struct {
 	ID                  string          `json:"id"`
@@ -25,9 +23,9 @@ type SelfResponse struct {
 	User *User `json:"user"`
 }
 
-func (c *UsersClient) Self() (*User, error) {
+func (c *Client) Self() (*User, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		Endpoint: "/users/self",
 	}
 	res, err := req.Do()
@@ -54,9 +52,9 @@ type UpdateUserResponse struct {
 	User *User `json:"user"`
 }
 
-func (c *UsersClient) UpdateUser(params UpdateUserParams) (*User, error) {
+func (c *Client) UpdateUser(params UpdateUserParams) (*User, error) {
 	req := &APIRequest{
-		Client:   c.backendConfiguration,
+		Client:   c,
 		Method:   "PATCH",
 		Endpoint: "/account/profile",
 		Params: map[string]interface{}{

@@ -1,13 +1,15 @@
 package rollbar
 
 import (
+	"fmt"
+	"hash/crc32"
 	"os"
 	"runtime"
 	"strings"
 )
 
 var (
-	knownFilePathPatterns = []string{
+	knownFilePathPatterns []string = []string{
 		"github.com/",
 		"code.google.com/",
 		"bitbucket.org/",
@@ -15,17 +17,14 @@ var (
 	}
 )
 
-// Frame is a single line of executed code in a Stack.
 type Frame struct {
 	Filename string `json:"filename"`
 	Method   string `json:"method"`
 	Line     int    `json:"lineno"`
 }
 
-// Stack represents a stacktrace as a slice of Frames.
 type Stack []Frame
 
-// BuildStack builds a full stacktrace for the current execution location.
 func BuildStack(skip int) Stack {
 	stack := make(Stack, 0)
 
@@ -41,18 +40,16 @@ func BuildStack(skip int) Stack {
 	return stack
 }
 
-// BuildStackWithCallers builds a full stackstrace from the given list of callees.
-func BuildStackWithCallers(callers []uintptr) Stack {
-	stack := make(Stack, 0, len(callers))
-
-	for _, caller := range callers {
-		if fn := runtime.FuncForPC(caller); fn != nil {
-			file, line := fn.FileLine(caller)
-			stack = append(stack, Frame{shortenFilePath(file), functionNameFromFunc(fn), line})
-		}
+// Create a fingerprint that uniqely identify a given message. We use the full
+// callstack, including file names. That ensure that there are no false duplicates
+// but also means that after changing the code (adding/removing lines), the
+// fingerprints will change. It's a trade-off.
+func (s Stack) Fingerprint() string {
+	hash := crc32.NewIEEE()
+	for _, frame := range s {
+		fmt.Fprintf(hash, "%s%s%d", frame.Filename, frame.Method, frame.Line)
 	}
-
-	return stack
+	return fmt.Sprintf("%x", hash.Sum32())
 }
 
 // Remove un-needed information from the source file path. This makes them
@@ -76,15 +73,12 @@ func shortenFilePath(s string) string {
 	return s
 }
 
-func functionNameFromFunc(fn *runtime.Func) string {
+func functionName(pc uintptr) string {
+	fn := runtime.FuncForPC(pc)
 	if fn == nil {
 		return "???"
 	}
 	name := fn.Name()
 	end := strings.LastIndex(name, string(os.PathSeparator))
 	return name[end+1 : len(name)]
-}
-
-func functionName(pc uintptr) string {
-	return functionNameFromFunc(runtime.FuncForPC(pc))
 }
