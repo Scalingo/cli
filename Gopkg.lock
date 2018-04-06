@@ -21,8 +21,8 @@
     "debug",
     "io"
   ]
-  revision = "58550a49931a35be339c42fcc9c719b8a214d66a"
-  version = "v1.1.0"
+  revision = "b1a1f7bec6aaec90e90a1b6e35ecff2554f44197"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -120,6 +120,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8ce7e170a82994ddbbe358981c79c4d512f6330e0839996880ac9919ce304fea"
+  inputs-digest = "799bce3f9049037683a6aa5840f9906e53c7938086601cef833ba48ef34241a3"
   solver-name = "gps-cdcl"
   solver-version = 1
