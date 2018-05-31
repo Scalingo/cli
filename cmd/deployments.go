@@ -22,7 +22,11 @@ var (
 `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
-
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "deployment-delete-cache")
+			} else  {
+				// TODO work here
+			}
 		},
 	}
 	DeploymentsListCommand = cli.Command{
