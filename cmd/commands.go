@@ -42,6 +42,7 @@ var (
 		DeploymentLogCommand,
 		DeploymentFollowCommand,
 		DeploymentDeployCommand,
+		DeploymentCacheResetCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,

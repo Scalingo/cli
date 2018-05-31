@@ -12,6 +12,19 @@ import (
 )
 
 var (
+	DeploymentCacheResetCommand = cli.Command{
+		Name:     "deployment-delete-cache",
+		Category: "Deployment",
+		Usage:    "Reset deployment cache",
+		Flags:    []cli.Flag{appFlag},
+		Description: ` Delete the deployment cache (in case of corruption mostly)
+    $ scalingo -a myapp deployment-delete-cache
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+
+		},
+	}
 	DeploymentsListCommand = cli.Command{
 		Name:     "deployments",
 		Category: "Deployment",
