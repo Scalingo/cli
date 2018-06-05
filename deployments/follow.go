@@ -51,8 +51,12 @@ func Stream(opts *StreamOpts) error {
 	}
 
 	var event deployEvent
-	var currentDeployment *scalingo.Deployment
-	oldStatus := ""
+	currentDeployment := &scalingo.Deployment{
+		ID: opts.DeploymentID,
+	}
+	anyDeployment := currentDeployment.ID == ""
+	statuses := map[string]string{}
+
 	for {
 		err := websocket.JSON.Receive(conn, &event)
 		if err != nil {
@@ -72,7 +76,7 @@ func Stream(opts *StreamOpts) error {
 			case "ping":
 			case "log":
 				// If we stream logs of a specific deployment and this event is not about this one
-				if opts.DeploymentID != "" && (currentDeployment == nil || opts.DeploymentID != currentDeployment.ID) {
+				if !anyDeployment && event.ID != currentDeployment.ID {
 					continue
 				}
 				var logData logData
@@ -84,7 +88,7 @@ func Stream(opts *StreamOpts) error {
 				fmt.Println("[LOG] " + strings.TrimSpace(logData.Content))
 			case "status":
 				// If we stream logs of a specific deployment and this event is not about this one
-				if opts.DeploymentID != "" && (currentDeployment == nil || opts.DeploymentID != currentDeployment.ID) {
+				if !anyDeployment && event.ID != currentDeployment.ID {
 					continue
 				}
 				var statusData statusData
@@ -93,25 +97,32 @@ func Stream(opts *StreamOpts) error {
 					config.C.Logger.Println(err)
 					continue
 				}
-				if oldStatus == "" {
+				if statuses[event.ID] == "" {
 					fmt.Println("[STATUS] New status: " + statusData.Content)
 				} else {
-					fmt.Println("[STATUS] New status: " + oldStatus + " →  " + statusData.Content)
+					fmt.Println("[STATUS] New status: " + statuses[event.ID] + " →  " + statusData.Content)
 				}
-				oldStatus = statusData.Content
-				if opts.DeploymentID != "" && scalingo.IsFinishedString(scalingo.DeploymentStatus(statusData.Content)) {
+				statuses[event.ID] = statusData.Content
+
+				if !anyDeployment && scalingo.IsFinishedString(scalingo.DeploymentStatus(statusData.Content)) {
 					return nil
 				}
 			case "new":
-				oldStatus = ""
 				var newData map[string]*scalingo.Deployment
 				err := json.Unmarshal(event.Data, &newData)
 				if err != nil {
 					config.C.Logger.Println(err)
 					continue
 				}
-				currentDeployment = newData["deployment"]
-				fmt.Println("[NEW] New deploy: " + currentDeployment.ID + " from " + currentDeployment.User.Username)
+				newDeployment := newData["deployment"]
+
+				if newDeployment.ID == currentDeployment.ID {
+					currentDeployment = newDeployment
+				}
+
+				if anyDeployment || newDeployment.ID == currentDeployment.ID {
+					fmt.Println("[NEW] New deploy: " + newDeployment.ID + " from " + newDeployment.User.Username)
+				}
 			}
 		}
 	}
