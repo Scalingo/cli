@@ -48,7 +48,7 @@ type TokenRes struct {
 func (c *Client) TokensList() (Tokens, error) {
 	req := &APIRequest{
 		Client:   c,
-		URL:      AuthURL(),
+		URL:      c.AuthURL(),
 		Endpoint: "/v1/tokens",
 	}
 
@@ -71,7 +71,7 @@ func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
 		Client:   c,
 		NoAuth:   true,
 		Method:   "POST",
-		URL:      AuthURL(),
+		URL:      c.AuthURL(),
 		Endpoint: "/v1/tokens/exchange",
 		Password: params.Token,
 	}
@@ -95,7 +95,7 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 		Client:   c,
 		NoAuth:   true,
 		Method:   "POST",
-		URL:      AuthURL(),
+		URL:      c.AuthURL(),
 		Endpoint: "/v1/tokens",
 		Expected: Statuses{201},
 		Username: login.Identifier,
@@ -125,7 +125,7 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
 	req := &APIRequest{
 		Client:   c,
-		URL:      AuthURL(),
+		URL:      c.AuthURL(),
 		Expected: Statuses{201},
 		Endpoint: "/v1/tokens",
 		Params:   map[string]interface{}{"token": params},
@@ -149,7 +149,7 @@ func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
 func (c *Client) TokenShow(id int) (Token, error) {
 	req := &APIRequest{
 		Client:   c,
-		URL:      AuthURL(),
+		URL:      c.AuthURL(),
 		Endpoint: fmt.Sprintf("/v1/tokens/%d", id),
 	}
 

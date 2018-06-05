@@ -40,13 +40,6 @@ func IsOTPRequired(err error) bool {
 
 const defaultAuthUrl = "https://auth.scalingo.com"
 
-func AuthURL() string {
-	if os.Getenv("SCALINGO_AUTH_URL") != "" {
-		return os.Getenv("SCALINGO_AUTH_URL")
-	}
-	return defaultAuthUrl
-}
-
 func (c *Client) GetAPITokenGenerator(apiToken string) *APITokenGenerator {
 	return &APITokenGenerator{
 		APIToken:      apiToken,
@@ -60,4 +53,17 @@ func (t *APITokenGenerator) GetAccessToken() (string, error) {
 		return "", errgo.Notef(err, "fail to get access token")
 	}
 	return accessToken, nil
+}
+
+func (c *Client) AuthURL() string {
+	if len(c.authEndpoint) != 0 {
+		return c.authEndpoint
+	}
+
+	if os.Getenv("SCALINGO_AUTH_URL") != "" {
+		c.authEndpoint = os.Getenv("SCALINGO_AUTH_URL")
+	} else {
+		c.authEndpoint = defaultAuthUrl
+	}
+	return c.authEndpoint
 }
