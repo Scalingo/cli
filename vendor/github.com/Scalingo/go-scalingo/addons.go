@@ -39,6 +39,17 @@ func (c *Client) AddonsList(app string) ([]*Addon, error) {
 	return addonsRes.Addons, nil
 }
 
+func (c *Client) AddonShow(app, addonID string) (Addon, error) {
+	var addonRes AddonRes
+
+	err := c.subresourceGet(app, "addons", addonID, nil, &addonRes)
+	if err != nil {
+		return Addon{}, errgo.Mask(err, errgo.Any)
+	}
+
+	return addonRes.Addon, nil
+}
+
 func (c *Client) AddonProvision(app, addon, planID string) (AddonRes, error) {
 	var addonRes AddonRes
 	err := c.subresourceAdd(app, "addons", AddonRes{Addon: Addon{AddonProviderID: addon, PlanID: planID}}, &addonRes)

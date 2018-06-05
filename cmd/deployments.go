@@ -7,11 +7,33 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
-	"github.com/urfave/cli"
 	"github.com/Scalingo/go-scalingo/io"
+	"github.com/urfave/cli"
 )
 
 var (
+	DeploymentCacheResetCommand = cli.Command{
+		Name:     "deployment-delete-cache",
+		Category: "Deployment",
+		Usage:    "Reset deployment cache",
+		Flags:    []cli.Flag{appFlag},
+		Description: ` Delete the deployment cache (in case of corruption mostly)
+    $ scalingo -a myapp deployment-delete-cache
+`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "deployment-delete-cache")
+			} else {
+				currentApp := appdetect.CurrentApp(c)
+				err := deployments.ResetCache(currentApp)
+				if err != nil {
+					errorQuit(err)
+				}
+				io.Status(fmt.Sprintf("Deployment cache successfully deleted"))
+			}
+		},
+	}
 	DeploymentsListCommand = cli.Command{
 		Name:     "deployments",
 		Category: "Deployment",

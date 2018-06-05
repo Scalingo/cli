@@ -62,3 +62,14 @@ func (c *Client) DomainsUpdate(app, id, cert, key string) (Domain, error) {
 	}
 	return domainRes.Domain, nil
 }
+
+func (c *Client) DomainsShow(app string, id string) (Domain, error) {
+	var domainRes DomainRes
+
+	err := c.subresourceGet(app, "domains", id, nil, &domainRes)
+	if err != nil {
+		return Domain{}, errgo.Mask(err)
+	}
+
+	return domainRes.Domain, nil
+}

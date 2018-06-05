@@ -198,3 +198,20 @@ func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) 
 
 	return response.Deployment, nil
 }
+
+func (c *Client) DeploymentCacheReset(app string) error {
+	req := &APIRequest{
+		Client:   c,
+		Endpoint: "/apps/" + app + "/caches/deployment",
+		Method:   "DELETE",
+		Expected: Statuses{204},
+	}
+	res, err := req.Do()
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	defer res.Body.Close()
+
+	return nil
+}
