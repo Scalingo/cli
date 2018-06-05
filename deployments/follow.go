@@ -50,14 +50,22 @@ func Stream(opts *StreamOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	var event deployEvent
+	// This method can focus on one given deployment and will on display events
+	// related to this deployment
 	currentDeployment := &scalingo.Deployment{
 		ID: opts.DeploymentID,
 	}
+	// If the method is called without any specific deployment, ie. `scalingo
+	// deployment-follow` all events from all deployments will be displayed
 	anyDeployment := currentDeployment.ID == ""
+
+	// Statuses is a map of deploymentID -> current status of the deployment
+	// Why are we keeping it? To be able to say when a new 'status' event arrives
+	// Deployment X status has changed from 'building' to 'pushing' for instance.
 	statuses := map[string]string{}
 
 	for {
+		var event deployEvent
 		err := websocket.JSON.Receive(conn, &event)
 		if err != nil {
 			conn.Close()
