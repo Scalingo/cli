@@ -12,7 +12,7 @@ var (
 	ErrNotFound = errors.New("autoscaler not found")
 )
 
-func GetFromContainerType(app, containerType string) (scalingo.Autoscaler, error) {
+func getFromContainerType(app, containerType string) (scalingo.Autoscaler, error) {
 	c := config.ScalingoClient()
 	autoscalers, err := c.AutoscalersList(app)
 	if err != nil {

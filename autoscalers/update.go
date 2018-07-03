@@ -8,7 +8,7 @@ import (
 )
 
 func Update(app, containerType string, params scalingo.AutoscalerUpdateParams) error {
-	autoscaler, err := GetFromContainerType(app, containerType)
+	autoscaler, err := getFromContainerType(app, containerType)
 	if err != nil {
 		if err == ErrNotFound {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")

@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
@@ -27,8 +26,13 @@ func Scale(app string, sync bool, types []string) error {
 		err         error
 	)
 
+	c := config.ScalingoClient()
 	scaleParams := &scalingo.AppsScaleParams{}
 	typesWithAutoscaler := []string{}
+	autoscalers, err := c.AutoscalersList(app)
+	if err != nil {
+		return errgo.NoteMask(err, "fail to list the autoscalers")
+	}
 
 	for _, t := range types {
 		splitT := strings.Split(t, ":")
@@ -47,7 +51,6 @@ func Scale(app string, sync bool, types []string) error {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
 			if containers == nil {
-				c := config.ScalingoClient()
 				containers, err = c.AppsPs(app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
@@ -61,12 +64,11 @@ func Scale(app string, sync bool, types []string) error {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
 		}
 
-		_, err = autoscalers.GetFromContainerType(app, typeName)
-		if err != nil && err != autoscalers.ErrNotFound {
-			return errgo.Mask(err, errgo.Any)
-		}
-		if err == nil {
-			typesWithAutoscaler = append(typesWithAutoscaler, typeName)
+		for _, a := range autoscalers {
+			if a.ContainerType == typeName {
+				typesWithAutoscaler = append(typesWithAutoscaler, typeName)
+				break
+			}
 		}
 
 		newContainerConfig := scalingo.ContainerType{Name: typeName, Size: size}
@@ -98,7 +100,6 @@ func Scale(app string, sync bool, types []string) error {
 		}
 	}
 
-	c := config.ScalingoClient()
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {

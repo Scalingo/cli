@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
@@ -21,15 +20,20 @@ func Ps(app string) error {
 	t.SetHeader([]string{"Name", "Amount", "Size", "Command"})
 
 	hasAutoscaler := false
+	autoscalers, err := c.AutoscalersList(app)
+	if err != nil {
+		return errgo.NoteMask(err, "fail to list the autoscalers")
+	}
+
 	for _, ct := range processes {
 		name := ct.Name
-		_, err = autoscalers.GetFromContainerType(app, name)
-		if err != nil && err != autoscalers.ErrNotFound {
-			return errgo.Mask(err, errgo.Any)
-		}
-		if err == nil {
-			hasAutoscaler = true
-			name += " (*)"
+
+		for _, a := range autoscalers {
+			if a.ContainerType == ct.Name {
+				hasAutoscaler = true
+				name += " (*)"
+				break
+			}
 		}
 
 		amount := fmt.Sprintf("%d", ct.Amount)
