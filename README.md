@@ -1,5 +1,4 @@
-Scalingo-CLI v1.8.0
-===================
+# Scalingo-CLI v1.8.0
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -7,9 +6,9 @@ https://scalingo.com
 
 ## How to build?
 
-The project is using go, then you need a running go environment: [Official documentation](https://golang.org/doc/install)
+The project is using Go, then you need a running Go environment: [Official documentation](https://golang.org/doc/install)
 
-Once that's done, all you have to do is to 'go get' the project, with the following command:
+Once that's done, all you have to do is to `go get` the project, with the following command:
 
 ```
 go get github.com/Scalingo/cli/scalingo
@@ -53,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.7.0
+   1.8.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -70,6 +69,14 @@ COMMANDS:
    Addons - Global:
      addons-list   List all addons
      addons-plans  List plans
+
+   Alerts:
+     alerts          List the alerts of an application
+     alerts-add      Add an alert to an application
+     alerts-update   Update an alert
+     alerts-enable   Enable an alert
+     alerts-disable  Disable an alert
+     alerts-remove   Remove an alert from an application
 
    App Management:
      destroy            Destroy an app /!\
@@ -155,4 +162,14 @@ GLOBAL OPTIONS:
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --version, -v             print the version
+```
+
+## Development setup
+
+In order to build the current development version and use it against the development services:
+
+```bash
+cd scalingo
+go build .
+SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234 ./scalingo login --api-token <admin user API token>
 ```
