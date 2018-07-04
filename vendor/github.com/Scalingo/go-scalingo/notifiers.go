@@ -24,9 +24,10 @@ type NotifierParams struct {
 	PlatformID     string
 
 	// Options
-	PhoneNumber string // SMS notifier
-	Email       string // Email notifier
-	WebhookURL  string // Webhook and Slack notifier
+	PhoneNumber string   // SMS notifier
+	Emails      []string // Email notifier
+	UserIDs     []string // Email notifier
+	WebhookURL  string   // Webhook and Slack notifier
 }
 
 // The struct that will be serialized in all notifier's request

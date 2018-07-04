@@ -1,6 +1,7 @@
 package notifiers
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -38,7 +39,7 @@ func displayDetails(notifier scalingo.DetailedNotifier) {
 
 	// Type data
 	for key, value := range notifier.TypeDataMap() {
-		t.Append([]string{strings.Title(key), value})
+		t.Append([]string{strings.Title(key), fmt.Sprintf("%v", value)})
 	}
 
 	//Selected events

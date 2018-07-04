@@ -4,6 +4,7 @@ Changelog
 ### To be Released
 
 * [alerts] Add all command to CRUD alerts
+* [notifiers] Add the ability to configure email notifiers with custom emails and collaborators
 
 ### 1.8.0
 

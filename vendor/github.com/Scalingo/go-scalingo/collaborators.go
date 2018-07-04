@@ -15,6 +15,7 @@ type Collaborator struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Status   string `json:"status"`
+	UserID   string `json:"user_id"`
 }
 
 type CollaboratorsRes struct {
