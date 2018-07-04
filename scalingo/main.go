@@ -89,7 +89,8 @@ COMMANDS:{{range .VisibleCategories}}{{if .Name}}
 		 {{end}}{{end}}{{if .VisibleFlags}}
 GLOBAL OPTIONS:
    {{range $index, $option := .VisibleFlags}}{{if $index}}
-   {{end}}{{$option}}{{end}}{{end}}{{if .Copyright}}
+   {{end}}{{$option}}{{end}}{{end}}
+{{if .Copyright}}
 
 COPYRIGHT:
    {{.Copyright}}{{end}}
