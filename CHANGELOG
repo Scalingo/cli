@@ -9,6 +9,7 @@ Changelog
 
 * [logs] accepts filter for postdeploy and one-off container
 * [authentication] use of the new authentication API `auth.scalingo.com`
+* [help] fix missing help with unknown commsnds #365
 
 ### 1.7.0
 

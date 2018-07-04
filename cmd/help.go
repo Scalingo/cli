@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -13,9 +13,8 @@ var (
 			args := c.Args()
 			if args.Present() {
 				cli.ShowCommandHelp(c, args.First())
-			} else {
-				cli.ShowAppHelp(c)
 			}
+			cli.ShowAppHelp(c)
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "help")
