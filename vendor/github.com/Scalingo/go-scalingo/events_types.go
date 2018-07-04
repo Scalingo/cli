@@ -119,6 +119,11 @@ const (
 	EventNewKey             EventType = "new_key"
 	EventDeleteKey          EventType = "delete_key"
 	EventPaymentAttempt     EventType = "payment_attempt"
+	EventNewAlert           EventType = "new_alert"
+	EventAlert              EventType = "alert"
+	EventDeleteAlert        EventType = "delete_alert"
+	EventNewAutoscaler      EventType = "new_autoscaler"
+	EventDeleteAutoscaler   EventType = "delete_autoscaler"
 )
 
 type EventNewAppType struct {
@@ -326,7 +331,8 @@ func (ev *EventRunType) String() string {
 }
 
 type EventRunTypeData struct {
-	Command string `json:"command"`
+	Command    string `json:"command"`
+	AuditLogID string `json:"audit_log_id"`
 }
 
 type EventNewDomainType struct {
@@ -711,6 +717,110 @@ func (ev *EventPaymentAttemptType) String() string {
 	return res
 }
 
+type EventNewAlertTypeData struct {
+	ContainerType string  `json:"container_type"`
+	Metric        string  `json:"metric"`
+	Limit         float64 `json:"limit"`
+	LimitText     string  `json:"limit_text"`
+	SendWhenBelow bool    `json:"send_when_below"`
+}
+
+type EventNewAlertType struct {
+	Event
+	TypeData EventNewAlertTypeData `json:"type_data"`
+}
+
+func (ev *EventNewAlertType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Alert created about %s on container %s (limit: %s)", d.Metric, d.ContainerType, d.LimitText)
+}
+
+type EventAlertTypeData struct {
+	SenderName    string  `json:"sender_name"`
+	Metric        string  `json:"metric"`
+	Limit         float64 `json:"limit"`
+	LimitText     string  `json:"limit_text"`
+	Value         float64 `json:"value"`
+	ValueText     string  `json:"value_text"`
+	Activated     bool    `json:"activated"`
+	SendWhenBelow bool    `json:"send_when_below"`
+	RawLimit      float64 `json:"raw_limit"`
+	RawValue      float64 `json:"raw_value"`
+}
+
+type EventAlertType struct {
+	Event
+	TypeData EventAlertTypeData `json:"type_data"`
+}
+
+func (ev *EventAlertType) String() string {
+	d := ev.TypeData
+	var res string
+	if d.SendWhenBelow {
+		res = "Low"
+	} else {
+		res = "High"
+	}
+	res += fmt.Sprintf("%s usage on container %s", d.Metric, d.SenderName)
+	if ev.TypeData.Activated {
+		res += "triggered"
+	} else {
+		res += "resolved"
+	}
+	res += fmt.Sprintf(" (value: %s, limit: %s)", d.ValueText, d.LimitText)
+
+	return res
+}
+
+type EventDeleteAlertTypeData struct {
+	ContainerType string `json:"container_type"`
+	Metric        string `json:"metric"`
+}
+
+type EventDeleteAlertType struct {
+	Event
+	TypeData EventDeleteAlertTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteAlertType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Alert deleted about %s on container %s", d.Metric, d.ContainerType)
+}
+
+type EventNewAutoscalerTypeData struct {
+	ContainerType string  `json:"container_type"`
+	MinContainers int     `json:"min_containers"`
+	MaxContainers int     `json:"max_containers"`
+	Metric        string  `json:"metric"`
+	Target        float64 `json:"target"`
+	TargetText    string  `json:"target_text"`
+}
+
+type EventNewAutoscalerType struct {
+	Event
+	TypeData EventNewAutoscalerTypeData `json:"type_data"`
+}
+
+func (ev *EventNewAutoscalerType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Autoscaler created about %s on container %s (target: %s)", d.Metric, d.ContainerType, d.TargetText)
+}
+
+type EventDeleteAutoscalerTypeData struct {
+	ContainerType string `json:"container_type"`
+	Metric        string `json:"metric"`
+}
+
+type EventDeleteAutoscalerType struct {
+	Event
+	TypeData EventDeleteAutoscalerTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteAutoscalerType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Alert deleted about %s on container %s", d.Metric, d.ContainerType)
+}
+
 func (pev *Event) Specialize() DetailedEvent {
 	var e DetailedEvent
 	ev := *pev
@@ -793,6 +903,16 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDeleteKeyType{Event: ev}
 	case EventPaymentAttempt:
 		e = &EventPaymentAttemptType{Event: ev}
+	case EventNewAlert:
+		e = &EventNewAlertType{Event: ev}
+	case EventAlert:
+		e = &EventAlertType{Event: ev}
+	case EventDeleteAlert:
+		e = &EventDeleteAlertType{Event: ev}
+	case EventNewAutoscaler:
+		e = &EventNewAutoscalerType{Event: ev}
+	case EventDeleteAutoscaler:
+		e = &EventDeleteAutoscalerType{Event: ev}
 	default:
 		return pev
 	}

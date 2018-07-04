@@ -83,7 +83,8 @@ var (
 			cli.StringFlag{Name: "events, ev", Value: "", Usage: "List of selected events. Default: []"},
 			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
-			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
+			cli.StringSliceFlag{Name: "email", Value: &cli.StringSlice{}, Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
+			cli.StringSliceFlag{Name: "collaborator", Value: &cli.StringSlice{}, Usage: "The usernames of the collaborators who will receive notifications"},
 		},
 		Usage: "Add a notifier for your application",
 		Description: `Add a notifier for your application:
@@ -120,16 +121,19 @@ Examples
 			}
 			sendAllEvents := c.Bool("send-all-events")
 
-			params := scalingo.NotifierParams{
-				Active:         &active,
-				Name:           c.String("name"),
-				SendAllEvents:  &sendAllEvents,
-				SelectedEvents: strings.Split(c.String("events"), " "),
+			params := notifiers.ProvisionParams{
+				CollaboratorUsernames: c.StringSlice("collaborator"),
+				NotifierParams: scalingo.NotifierParams{
+					Active:         &active,
+					Name:           c.String("name"),
+					SendAllEvents:  &sendAllEvents,
+					SelectedEvents: strings.Split(c.String("events"), " "),
 
-				// Type data options
-				PhoneNumber: c.String("phone"),
-				Email:       c.String("email"),
-				WebhookURL:  c.String("webhook-url"),
+					// Type data options
+					PhoneNumber: c.String("phone"),
+					Emails:      c.StringSlice("email"),
+					WebhookURL:  c.String("webhook-url"),
+				},
 			}
 
 			err := notifiers.Provision(currentApp, c.String("platform"), params)
@@ -193,16 +197,19 @@ Examples
 				sendAllEvents = nil
 			}
 
-			params := scalingo.NotifierParams{
-				Active:         active,
-				Name:           c.String("name"),
-				SendAllEvents:  sendAllEvents,
-				SelectedEvents: strings.Split(c.String("events"), " "),
+			params := notifiers.ProvisionParams{
+				CollaboratorUsernames: c.StringSlice("collaborator"),
+				NotifierParams: scalingo.NotifierParams{
+					Active:         active,
+					Name:           c.String("name"),
+					SendAllEvents:  sendAllEvents,
+					SelectedEvents: strings.Split(c.String("events"), " "),
 
-				// Type data options
-				PhoneNumber: c.String("phone"),
-				Email:       c.String("email"),
-				WebhookURL:  c.String("webhook-url"),
+					// Type data options
+					PhoneNumber: c.String("phone"),
+					Emails:      c.StringSlice("email"),
+					WebhookURL:  c.String("webhook-url"),
+				},
 			}
 			if len(c.Args()) >= 1 {
 				err = notifiers.Update(currentApp, c.Args()[0], params)

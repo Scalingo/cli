@@ -120,3 +120,18 @@ func (e *EventDeleteKeyType) TypeDataPtr() interface{} {
 func (e *EventPaymentAttemptType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventNewAlertType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventAlertType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventDeleteAlertType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventNewAutoscalerType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventDeleteAutoscalerType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
