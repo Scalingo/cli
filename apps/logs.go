@@ -7,6 +7,8 @@ import (
 	stdio "io"
 	"io/ioutil"
 	"net/url"
+	"os"
+	"os/signal"
 	"regexp"
 	"strings"
 	"time"
@@ -15,6 +17,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/fatih/color"
 	"golang.org/x/net/websocket"
@@ -126,6 +129,19 @@ func streamLogs(logsRawURL string, filter string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
+	signals.CatchQuitSignals = false
+	signals := make(chan os.Signal)
+	signal.Notify(signals, os.Interrupt)
+
+	go func() {
+		defer close(signals)
+		<-signals
+		err := conn.Close()
+		if err != nil {
+			debug.Println("Fail to close log websocket connection", err)
+		}
+	}()
+
 	for {
 		err := websocket.JSON.Receive(conn, &event)
 		if err != nil {
@@ -137,6 +153,9 @@ func streamLogs(logsRawURL string, filter string) error {
 					time.Sleep(time.Second * 1)
 				}
 				continue
+
+			} else if strings.Contains(err.Error(), "use of closed network connect") {
+				return nil
 			} else {
 				return errgo.Mask(err, errgo.Any)
 			}
