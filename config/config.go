@@ -16,19 +16,20 @@ import (
 )
 
 type Config struct {
-	ScalingoApiUrl     string
-	apiHost            string
-	TokenGenerator     scalingo.TokenGenerator
-	ApiVersion         string
-	DisableInteractive bool
-	SshHost            string
-	UnsecureSsl        bool
-	RollbarToken       string
-	ConfigDir          string
-	AuthFile           string
-	LogFile            string
-	logFile            *os.File
-	Logger             *log.Logger
+	ScalingoApiUrl       string
+	apiHost              string
+	TokenGenerator       scalingo.TokenGenerator
+	ApiVersion           string
+	DisableInteractive   bool
+	DisableUpdateChecker bool
+	SshHost              string
+	UnsecureSsl          bool
+	RollbarToken         string
+	ConfigDir            string
+	AuthFile             string
+	LogFile              string
+	logFile              *os.File
+	Logger               *log.Logger
 }
 
 var (
