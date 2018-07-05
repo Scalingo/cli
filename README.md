@@ -33,6 +33,15 @@ http_proxy=http://<proxy host>:<proxy port>
 https_proxy=https://<proxy host>:<proxy port>
 ```
 
+## Disable update checking
+
+By default the CLI is making an HTTP request to learn if a newer version is available.
+To disable this feature, define the environment variable:
+
+```
+DISABLE_UPDATE_CHECKER=true
+```
+
 ## Command help
 
 ```

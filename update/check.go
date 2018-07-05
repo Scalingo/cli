@@ -15,11 +15,16 @@ import (
 var (
 	lastVersionURL = "https://cli-dl.scalingo.io/version"
 	lastVersion    = ""
+	cancelUpdate   = make(chan struct{})
 	gotLastVersion = make(chan struct{})
 	gotAnError     = false
 )
 
 func init() {
+	if config.C.DisableUpdateChecker {
+		close(cancelUpdate)
+		return
+	}
 	go func() {
 		var err error
 		lastVersion, err = getLastVersion()
@@ -39,7 +44,11 @@ func Check() error {
 		return nil
 	}
 
-	<-gotLastVersion
+	select {
+	case <-cancelUpdate:
+		return nil
+	case <-gotLastVersion:
+	}
 
 	if gotAnError {
 		return errgo.New("Update checker: connection error")
