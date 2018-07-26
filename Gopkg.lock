@@ -14,7 +14,6 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "fix/autoscaler/1"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -145,10 +144,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-<<<<<<< HEAD
   inputs-digest = "cd2b54a20ae15294b82727955a667511a5056208ae75ba65059ea686acd27ea8"
-=======
-  inputs-digest = "3083752fa7c77a8981420d5157574fed5689817d67cb9e9704bb031226806577"
->>>>>>> Update dependencies
   solver-name = "gps-cdcl"
   solver-version = 1
