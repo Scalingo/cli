@@ -1,10 +1,15 @@
 Changelog
 =========
 
-### To be Released
+### 1.9.0
 
-* [alerts] Add all command to CRUD alerts
-* [notifiers] Add the ability to configure email notifiers with custom emails and collaborators
+* [alerts] Add all command to CRUD alerts #346
+* [notifiers] Add the ability to configure email notifiers with custom emails and collaborators #366
+* [deployment] Add command to reset deployment cache #358
+* [deployment] Fix deploy/deployments-follow log streaming when multiple deployments are running #359
+* [update] Add the ability to disable the update checker with the environment variable `DISABLE_UPDATE_CHECKER=true` #361
+* [global] Correctly display help when command syntax is not respected #367
+* [logs] Bugfix: consider Ctrl^C the default way to stop `logs -f` command, it's not an error #368
 
 ### 1.8.0
 
