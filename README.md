@@ -45,7 +45,6 @@ DISABLE_UPDATE_CHECKER=true
 ## Command help
 
 ```
-
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -53,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.7.0
+   1.9.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -70,6 +69,14 @@ COMMANDS:
    Addons - Global:
      addons-list   List all addons
      addons-plans  List plans
+
+   Alerts:
+     alerts          List the alerts of an application
+     alerts-add      Add an alert to an application
+     alerts-update   Update an alert
+     alerts-enable   Enable an alert
+     alerts-disable  Disable an alert
+     alerts-remove   Remove an alert from an application
 
    App Management:
      destroy            Destroy an app /!\
@@ -104,10 +111,11 @@ COMMANDS:
      influxdb-console  Run an interactive console with your InfluxDB addon
 
    Deployment:
-     deployments        List app deployments
-     deployment-logs    View deployment logs
-     deployment-follow  Follow deployment event stream
-     deploy             Trigger a deployment by archive
+     deployments              List app deployments
+     deployment-logs          View deployment logs
+     deployment-follow        Follow deployment event stream
+     deploy                   Trigger a deployment by archive
+     deployment-delete-cache  Reset deployment cache
 
    Display metrics of the running containers:
      stats  Display metrics of the currently running containers
