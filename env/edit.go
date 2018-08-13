@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 var (
@@ -41,6 +41,8 @@ func Add(app string, params []string) error {
 	for _, variable := range variables {
 		fmt.Printf("%s has been set to '%s'.\n", variable.Name, variable.Value)
 	}
+	fmt.Println("Please restart your containers:")
+	fmt.Printf("scalingo --app %s restart\n", app)
 
 	return nil
 }
