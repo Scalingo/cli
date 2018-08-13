@@ -27,8 +27,8 @@ func TestIsEnvEditValid(t *testing.T) {
 	for _, v = range vs {
 		if err := isEnvEditValid(v); err == nil {
 			t.Fatal(v, "should not be valid")
-		} else if err != invalidNameFormatError {
-			t.Fatal("expected", invalidNameFormatError, "error, got", err)
+		} else if err != errInvalidNameFormat {
+			t.Fatal("expected", errInvalidNameFormat, "error, got", err)
 		}
 	}
 }
