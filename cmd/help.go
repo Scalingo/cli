@@ -13,6 +13,7 @@ var (
 			args := c.Args()
 			if args.Present() {
 				cli.ShowCommandHelp(c, args.First())
+				return
 			}
 			cli.ShowAppHelp(c)
 		},
