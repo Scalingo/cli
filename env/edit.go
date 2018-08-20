@@ -41,7 +41,7 @@ func Add(app string, params []string) error {
 	for _, variable := range variables {
 		fmt.Printf("%s has been set to '%s'.\n", variable.Name, variable.Value)
 	}
-	fmt.Println("\nPlease restart your containers for the environment changes to take effect:")
+	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
 	fmt.Printf("scalingo --app %s restart\n", app)
 
 	return nil
@@ -72,7 +72,7 @@ func Delete(app string, varNames []string) error {
 		}
 		fmt.Printf("%s has been unset.\n", v.Name)
 	}
-	fmt.Println("\nPlease restart your containers for the environment changes to take effect:")
+	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
 	fmt.Printf("scalingo --app %s restart\n", app)
 	return nil
 }
