@@ -27,9 +27,9 @@ var (
 		TimelineCommand,
 
 		// Environment
-		EnvCommand,
-		EnvSetCommand,
-		EnvUnsetCommand,
+		envCommand,
+		envSetCommand,
+		envUnsetCommand,
 
 		// Domains
 		DomainsListCommand,
