@@ -14,14 +14,15 @@ import (
 )
 
 type LoginOpts struct {
-	APIToken    string
-	Ssh         bool
-	SshIdentity string
+	APIToken     string
+	PasswordOnly bool
+	SSH          bool
+	SSHIdentity  string
 }
 
 func Login(opts LoginOpts) error {
-	if opts.SshIdentity == "" {
-		opts.SshIdentity = "ssh-agent"
+	if opts.SSHIdentity == "" {
+		opts.SSHIdentity = "ssh-agent"
 	}
 
 	if opts.APIToken != "" {
@@ -33,25 +34,23 @@ func Login(opts LoginOpts) error {
 		return nil
 	}
 	io.Status("Currently unauthenticated")
-	io.Info("Trying login with SSH…")
-	err := loginWithSsh(opts.SshIdentity)
-	if err != nil {
-		config.C.Logger.Printf("SSH connection failed: %+v\n", err)
-		io.Error("SSH connection failed.")
-		if opts.Ssh {
-			if errors.Cause(err) == netssh.ErrNoAuthSucceed {
-				return errors.Wrap(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
+	if !opts.PasswordOnly {
+		io.Info("Trying login with SSH…")
+		err := loginWithSSH(opts.SSHIdentity)
+		if err != nil {
+			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
+			io.Error("SSH connection failed.")
+			if opts.SSH {
+				if errors.Cause(err) == netssh.ErrNoAuthSucceed {
+					return errors.Wrap(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
+				}
+				return errors.Wrap(err, "fail to login with SSH")
 			}
-			if err != nil {
-				return errors.Wrap(err, "fail to login wish SSH")
-			}
-		} else {
-			io.Info("Trying login with user/password:\n")
-			return loginWithUserAndPassword()
 		}
 	}
 
-	return nil
+	io.Info("Trying login with user/password:\n")
+	return loginWithUserAndPassword()
 }
 
 func loginWithUserAndPassword() error {
@@ -70,7 +69,7 @@ func loginWithToken(token string) error {
 	return nil
 }
 
-func loginWithSsh(identity string) error {
+func loginWithSSH(identity string) error {
 	debug.Println("Login through SSH, identity:", identity)
 	client, _, err := netssh.Connect(identity)
 	if err != nil {
