@@ -7,9 +7,9 @@ https://scalingo.com
 
 ## How to build?
 
-The project is using go, then you need a running go environment: [Official documentation](https://golang.org/doc/install)
+The project is using Go, then you need a running Go environment: [Official documentation](https://golang.org/doc/install)
 
-Once that's done, all you have to do is to 'go get' the project, with the following command:
+Once that's done, all you have to do is to `go get` the project, with the following command:
 
 ```
 go get github.com/Scalingo/cli/scalingo
@@ -89,6 +89,14 @@ COMMANDS:
      restart            Restart processes of your app
      db-tunnel          Create an encrypted connection to access your database
 
+   Autoscalers:
+     autoscalers          List the autoscalers of an application
+     autoscalers-add      Add an autoscaler to an application
+     autoscalers-remove   Remove an autoscaler from an application
+     autoscalers-update   Update an autoscaler
+     autoscalers-disable  Disable an autoscaler
+     autoscalers-enable   Enable an autoscaler
+
    CLI Internals:
      update  Update 'scalingo' client
 
@@ -155,4 +163,14 @@ GLOBAL OPTIONS:
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --version, -v             print the version
+```
+
+## Development setup
+
+In order to build the current development version and use it against the development services:
+
+```bash
+cd scalingo
+go build .
+SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234 ./scalingo login --api-token <admin user API token>
 ```

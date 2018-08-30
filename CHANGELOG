@@ -3,6 +3,7 @@ Changelog
 
 ### To be Released
 
+* [commands] Update scale commands to accept flags to create an autoscaler
 * [env-set] Advise to restart after setting the environment #373
 * Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351
 * [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350

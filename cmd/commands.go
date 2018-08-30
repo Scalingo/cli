@@ -18,8 +18,8 @@ var (
 		RunCommand,
 
 		// Apps Process Actions
-		PsCommand,
-		ScaleCommand,
+		psCommand,
+		scaleCommand,
 		RestartCommand,
 
 		// Events
@@ -90,6 +90,14 @@ var (
 		ListSSHKeyCommand,
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
+
+		// Autoscalers
+		autoscalersListCommand,
+		autoscalersAddCommand,
+		autoscalersRemoveCommand,
+		autoscalersUpdateCommand,
+		autoscalersDisableCommand,
+		autoscalersEnableCommand,
 
 		// Sessions
 		LoginCommand,

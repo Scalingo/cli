@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 func handleOperation(app string, res *http.Response) error {
@@ -59,7 +59,7 @@ func handleOperation(app string, res *http.Response) error {
 				fmt.Printf("\bDone in %.3f seconds\n", op.ElapsedDuration())
 				return nil
 			} else if op.Status == "error" {
-				fmt.Printf("\bOperation '%s' failed, an error occured: %v\n", op.Type, op.Error)
+				fmt.Printf("\bOperation '%s' failed, an error occurred: %v\n", op.Type, op.Error)
 				return nil
 			}
 		}

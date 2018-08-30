@@ -26,7 +26,13 @@ func Scale(app string, sync bool, types []string) error {
 		err         error
 	)
 
+	c := config.ScalingoClient()
 	scaleParams := &scalingo.AppsScaleParams{}
+	typesWithAutoscaler := []string{}
+	autoscalers, err := c.AutoscalersList(app)
+	if err != nil {
+		return errgo.NoteMask(err, "fail to list the autoscalers")
+	}
 
 	for _, t := range types {
 		splitT := strings.Split(t, ":")
@@ -45,7 +51,6 @@ func Scale(app string, sync bool, types []string) error {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
 			if containers == nil {
-				c := config.ScalingoClient()
 				containers, err = c.AppsPs(app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
@@ -57,6 +62,13 @@ func Scale(app string, sync bool, types []string) error {
 		amount, err := strconv.ParseInt(typeAmount, 10, 32)
 		if err != nil {
 			return errgo.Newf("%s in %s should be an integer", typeAmount, t)
+		}
+
+		for _, a := range autoscalers {
+			if a.ContainerType == typeName {
+				typesWithAutoscaler = append(typesWithAutoscaler, typeName)
+				break
+			}
 		}
 
 		newContainerConfig := scalingo.ContainerType{Name: typeName, Size: size}
@@ -78,7 +90,16 @@ func Scale(app string, sync bool, types []string) error {
 		scaleParams.Containers = append(scaleParams.Containers, newContainerConfig)
 	}
 
-	c := config.ScalingoClient()
+	if len(typesWithAutoscaler) > 0 {
+		io.Warning(autoscaleDisableMessage(typesWithAutoscaler))
+
+		var confirm string
+		fmt.Scanln(&confirm)
+		if confirm != "y" && confirm != "Y" {
+			return errgo.New("You didn't confirm, aborting…")
+		}
+	}
+
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
@@ -113,4 +134,22 @@ func Scale(app string, sync bool, types []string) error {
 
 	fmt.Println("Your application has been scaled.")
 	return nil
+}
+
+func autoscaleDisableMessage(typesWithAutoscaler []string) string {
+	if len(typesWithAutoscaler) <= 0 {
+		return ""
+	}
+	msg := "An autoscaler is configured for " + strings.Join(typesWithAutoscaler, ", ") + " container"
+	if len(typesWithAutoscaler) > 1 {
+		msg += "s"
+	}
+	msg += ". Manually scaling "
+	if len(typesWithAutoscaler) > 1 {
+		msg += "them"
+	} else {
+		msg += "it"
+	}
+	msg += " will disable the autoscaler. Do you confirm? (y/N)"
+	return msg
 }

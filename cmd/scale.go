@@ -8,24 +8,35 @@ import (
 )
 
 var (
-	ScaleCommand = cli.Command{
+	scaleCommand = cli.Command{
 		Name:      "scale",
 		ShortName: "s",
 		Category:  "App Management",
-		Flags:     []cli.Flag{appFlag, cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""}},
-		Usage:     "Scale your application instantly",
+		Flags: []cli.Flag{appFlag,
+			cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""},
+		},
+		Usage: "Scale your application instantly",
 		Description: `Scale your application processes.
    Example
      'scalingo --app my-app scale web:2 worker:1'
      'scalingo --app my-app scale web:1 worker:0'
      'scalingo --app my-app scale web:1:XL'
-     'scalingo --app my-app scale web:+1 worker:-1'`,
+     'scalingo --app my-app scale web:+1 worker:-1'
+     `,
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {
-				cli.ShowCommandHelp(c, "scale")
-			} else if err := apps.Scale(currentApp, c.Bool("s"), c.Args()); err != nil {
+				err := cli.ShowCommandHelp(c, "scale")
+				if err != nil {
+					errorQuit(err)
+				}
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+
+			err := apps.Scale(currentApp, c.Bool("s"), c.Args())
+			if err != nil {
 				errorQuit(err)
 			}
 		},
