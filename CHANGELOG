@@ -3,9 +3,53 @@ Changelog
 
 ### To be Released
 
-* [alerts] Add all command to CRUD alerts
-* [notifiers] Add the ability to configure email notifiers with custom emails and collaborators
 * [commands] Update scale commands to accept flags to create an autoscaler
+* [env-set] Advise to restart after setting the environment #373
+* Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351
+* [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350
+* Better error message if 401 Unauthorized #352
+
+### 1.9.0
+
+* [alerts] Add all command to CRUD alerts #346
+
+```
+   Alerts:
+     alerts          List the alerts of an application
+     alerts-add      Add an alert to an application
+     alerts-update   Update an alert
+     alerts-enable   Enable an alert
+     alerts-disable  Disable an alert
+     alerts-remove   Remove an alert from an application
+```
+
+* [notifiers] Add the ability to configure email notifiers with custom emails and collaborators #366
+
+```
+$ scalingo -a my-app notifiers-add --platform email --send-all-events --name email-notif-1 --email notifications@example.com --collaborator username1 --collaborator username2
++-----------------+------------------------------------------+
+| ID              | no-bd6ea457-ccf9-45c5-8767-04225fdb1018  |
+| Type            | email                                    |
+| Name            | email-notif-1                            |
+| Enabled         | true                                     |
+| Send all events | true                                     |
+| Emails          | [notifications@example.com]              |
+| User_ids        | [us-38246321-111f-4b54-a22c-12b04548c55f |
+|                 | us-0784238c-b422-4a79-8760-f3ffbd10705c] |
++-----------------+------------------------------------------+
+```
+
+* [deployment] Add command to reset deployment cache #358
+
+```
+$ scalingo -a my-app deployment-delete-cache
+-----> Deployment cache successfully deleted
+```
+
+* [deployment] Fix deploy/deployments-follow log streaming when multiple deployments are running #359
+* [update] Add the ability to disable the update checker with the environment variable `DISABLE_UPDATE_CHECKER=true` #361
+* [global] Correctly display help when command syntax is not respected #367
+* [logs] Bugfix: consider Ctrl^C the default way to stop `logs -f` command, it's not an error #368
 
 ### 1.8.0
 

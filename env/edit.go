@@ -6,16 +6,16 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 var (
 	setInvalidSyntaxError = errors.New("format is invalid, accepted: VAR=VAL")
 
-	nameFormat             = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
-	invalidNameFormatError = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
+	nameFormat           = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
+	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
 )
 
 func Add(app string, params []string) error {
@@ -41,6 +41,8 @@ func Add(app string, params []string) error {
 	for _, variable := range variables {
 		fmt.Printf("%s has been set to '%s'.\n", variable.Name, variable.Value)
 	}
+	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
+	fmt.Printf("scalingo --app %s restart\n", app)
 
 	return nil
 }
@@ -70,6 +72,8 @@ func Delete(app string, varNames []string) error {
 		}
 		fmt.Printf("%s has been unset.\n", v.Name)
 	}
+	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
+	fmt.Printf("scalingo --app %s restart\n", app)
 	return nil
 }
 
@@ -84,7 +88,7 @@ func isEnvEditValid(edit string) error {
 	}
 
 	if !nameFormat.MatchString(name) {
-		return invalidNameFormatError
+		return errInvalidNameFormat
 	}
 
 	return nil

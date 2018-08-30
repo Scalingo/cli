@@ -27,9 +27,9 @@ var (
 		TimelineCommand,
 
 		// Environment
-		EnvCommand,
-		EnvSetCommand,
-		EnvUnsetCommand,
+		envCommand,
+		envSetCommand,
+		envUnsetCommand,
 
 		// Domains
 		DomainsListCommand,
@@ -103,6 +103,8 @@ var (
 		LoginCommand,
 		LogoutCommand,
 		SignUpCommand,
+		selfCommand,
+		whoamiCommand, // `self` alias
 
 		// Version
 		UpdateCommand,

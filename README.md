@@ -1,4 +1,5 @@
-# Scalingo-CLI v1.8.0
+Scalingo-CLI v1.9.0
+===================
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -44,7 +45,6 @@ DISABLE_UPDATE_CHECKER=true
 ## Command help
 
 ```
-
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.8.0
+   1.9.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -119,10 +119,11 @@ COMMANDS:
      influxdb-console  Run an interactive console with your InfluxDB addon
 
    Deployment:
-     deployments        List app deployments
-     deployment-logs    View deployment logs
-     deployment-follow  Follow deployment event stream
-     deploy             Trigger a deployment by archive
+     deployments              List app deployments
+     deployment-logs          View deployment logs
+     deployment-follow        Follow deployment event stream
+     deploy                   Trigger a deployment by archive
+     deployment-delete-cache  Reset deployment cache
 
    Display metrics of the running containers:
      stats  Display metrics of the currently running containers

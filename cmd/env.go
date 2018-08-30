@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	EnvCommand = cli.Command{
+	envCommand = cli.Command{
 		Name:     "env",
 		Category: "Environment",
 		Flags:    []cli.Flag{appFlag},
@@ -38,7 +38,7 @@ var (
 		},
 	}
 
-	EnvSetCommand = cli.Command{
+	envSetCommand = cli.Command{
 		Name:     "env-set",
 		Category: "Environment",
 		Flags:    []cli.Flag{appFlag},
@@ -57,6 +57,7 @@ var (
 				err = env.Add(currentApp, c.Args())
 			} else {
 				cli.ShowCommandHelp(c, "env-set")
+				return
 			}
 			if err != nil {
 				errorQuit(err)
@@ -67,7 +68,7 @@ var (
 		},
 	}
 
-	EnvUnsetCommand = cli.Command{
+	envUnsetCommand = cli.Command{
 		Name:     "env-unset",
 		Category: "Environment",
 		Flags:    []cli.Flag{appFlag},
