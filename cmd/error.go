@@ -55,18 +55,20 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
-	if scalingo.IsRequestFailedError(errgo.Cause(err)) {
-		code := errgo.Cause(err).(*scalingo.RequestFailedError).Code
-		if code == 401 {
-			session.DestroyToken()
-		}
-	}
-
 	newReportError(err).Report()
 	rollbar.Wait()
-	io.Error("An error occured:")
-	debug.Println(errgo.Details(err))
-	fmt.Println(io.Indent(err.Error(), 7))
+
+	if scalingo.IsRequestFailedError(errgo.Cause(err)) &&
+		errgo.Cause(err).(*scalingo.RequestFailedError).Code == 401 {
+		session.DestroyToken()
+		io.Errorf("You are currently logged in as %s.\n", config.AuthenticatedUser.Username)
+		io.Errorf("Are you sure %s is a collaborator of this app?\n", config.AuthenticatedUser.Username)
+	} else {
+		io.Error("An error occured:")
+		debug.Println(errgo.Details(err))
+		fmt.Println(io.Indent(err.Error(), 7))
+	}
+
 	os.Exit(1)
 }
 
