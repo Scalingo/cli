@@ -95,6 +95,8 @@ var (
 		LoginCommand,
 		LogoutCommand,
 		SignUpCommand,
+		selfCommand,
+		whoamiCommand, // `self` alias
 
 		// Version
 		UpdateCommand,

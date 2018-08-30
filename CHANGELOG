@@ -4,6 +4,7 @@ Changelog
 ### To be Released
 
 * [env-set] Advise to restart after setting the environment #373
+* [self] Add `self` (and `whoami` alias) #350
 * Better error message if 401 Unauthorized #352
 
 ### 1.9.0
