@@ -28,11 +28,14 @@ type AppsService interface {
 	AppsStats(app string) (*AppStatsRes, error)
 	AppsPs(app string) ([]ContainerType, error)
 	AppsScale(app string, params *AppsScaleParams) (*http.Response, error)
+	AppsForceHTTPS(name string, enable bool) (*App, error)
+	AppsStickySession(name string, enable bool) (*App, error)
 }
 
 var _ AppsService = (*Client)(nil)
 
 type ContainerType struct {
+	AppID   string `json:"app_id"`
 	Name    string `json:"name"`
 	Amount  int    `json:"amount"`
 	Command string `json:"command"`
@@ -296,4 +299,39 @@ func (c *Client) AppsScale(app string, params *AppsScaleParams) (*http.Response,
 		Expected: Statuses{200, 202},
 	}
 	return req.Do()
+}
+
+func (c *Client) AppsForceHTTPS(name string, enable bool) (*App, error) {
+	return c.appsUpdate(name, map[string]interface{}{
+		"force_https": enable,
+	})
+}
+
+func (c *Client) AppsStickySession(name string, enable bool) (*App, error) {
+	return c.appsUpdate(name, map[string]interface{}{
+		"sticky_session": enable,
+	})
+}
+
+func (c *Client) appsUpdate(name string, params map[string]interface{}) (*App, error) {
+	req := &APIRequest{
+		Client:   c,
+		Method:   "PUT",
+		Endpoint: "/apps/" + name,
+		Expected: Statuses{200},
+		Params:   params,
+	}
+	res, err := req.Do()
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	var appRes *AppResponse
+	err = ParseJSON(res, &appRes)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return appRes.App, nil
 }

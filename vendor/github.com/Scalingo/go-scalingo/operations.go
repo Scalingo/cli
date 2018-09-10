@@ -18,6 +18,7 @@ type OperationResponse struct {
 
 type Operation struct {
 	ID         string    `json:"id"`
+	AppID      string    `json:"app_id"`
 	CreatedAt  time.Time `json:"created_at"`
 	FinishedAt time.Time `json:"finished_at"`
 	Status     string    `json:"status"`

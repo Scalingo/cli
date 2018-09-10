@@ -7,7 +7,7 @@ import (
 var (
 	Commands = []cli.Command{
 		// Apps
-		AppsCommand,
+		appsCommand,
 		CreateCommand,
 		DestroyCommand,
 		RenameCommand,
@@ -21,6 +21,9 @@ var (
 		psCommand,
 		scaleCommand,
 		RestartCommand,
+
+		// Routing Settings
+		forceHTTPSCommand,
 
 		// Events
 		UserTimelineCommand,

@@ -17,6 +17,7 @@ var _ DomainsService = (*Client)(nil)
 
 type Domain struct {
 	ID       string    `json:"id"`
+	AppID    string    `json:"app_id"`
 	Name     string    `json:"name"`
 	TlsCert  string    `json:"tlscert,omitempty"`
 	TlsKey   string    `json:"tlskey,omitempty"`

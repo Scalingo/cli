@@ -16,10 +16,10 @@ type NotificationPlatformsService interface {
 var _ NotificationPlatformsService = (*Client)(nil)
 
 type NotificationPlatform struct {
-	ID              string            `json:"id"`
-	Name            string            `json:"name"`
-	DisplayName     string            `json:"display_name"`
-	AvailableEvents []EventTypeStruct `json:"available_events"`
+	ID                string   `json:"id"`
+	Name              string   `json:"name"`
+	DisplayName       string   `json:"display_name"`
+	AvailableEventIDs []string `json:"available_event_ids"`
 }
 
 type PlatformRes struct {

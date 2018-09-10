@@ -25,8 +25,9 @@
   name = "github.com/Scalingo/envconfig"
 
 [[constraint]]
-  version = "~1.4"
   name = "github.com/Scalingo/go-scalingo"
+  branch = "fix/cli/344/router_settings"
+  #version = "~1.4"
 
 [[constraint]]
   branch = "master"

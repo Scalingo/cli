@@ -14,6 +14,7 @@ var _ AutoscalersService = (*Client)(nil)
 
 type Autoscaler struct {
 	ID            string  `json:"id"`
+	AppID         string  `json:"app_id"`
 	ContainerType string  `json:"container_type"`
 	Metric        string  `json:"metric"`
 	Target        float64 `json:"target"`
