@@ -23,3 +23,21 @@ func ForceHTTPS(appName string, enable bool) error {
 	io.Statusf("Force HTTPS has been %sd on %s", action, appName)
 	return nil
 }
+
+func StickySession(appName string, enable bool) error {
+	c := config.ScalingoClient()
+	_, err := c.AppsStickySession(appName, enable)
+	if err != nil {
+		return errors.Wrap(err, "fail to configure sticky-session feature")
+	}
+
+	var action string
+	if enable {
+		action = "enable"
+	} else {
+		action = "disable"
+	}
+
+	io.Statusf("Sticky session has been %sd on %s", action, appName)
+	return nil
+}

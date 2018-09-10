@@ -3,6 +3,7 @@ Changelog
 
 ### To be Released
 
+* Add force HTTPS, sticky session and canonical domain
 * [commands] Update scale commands to accept flags to create an autoscaler
 * [env-set] Advise to restart after setting the environment #373
 * Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351

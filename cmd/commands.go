@@ -24,6 +24,7 @@ var (
 
 		// Routing Settings
 		forceHTTPSCommand,
+		stickySessionCommand,
 
 		// Events
 		UserTimelineCommand,
