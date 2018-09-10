@@ -145,4 +145,60 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "domains-ssl")
 		},
 	}
+
+	setCanonicalDomainCommand = cli.Command{
+		Name:     "set-canonical-domain",
+		Category: "App Management",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Set a canonical domain.",
+		Description: `After defining multiple domains on an application, one can need to redirect all requests towards its application to a specific domain. This domain is called the canonical domain. This command sets the canonical domain:
+
+    $ scalingo -a myapp set-canonical-domain example.com
+
+    # See also commands 'domains', 'domains-add' and 'unset-canonical-domain'`,
+
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "set-canonical-domain")
+			}
+
+			err := domains.Canonical(currentApp, c.Args()[0], true)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "set-canonical-domain")
+		},
+	}
+
+	unsetCanonicalDomainCommand = cli.Command{
+		Name:     "unset-canonical-domain",
+		Category: "App Management",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Unset a canonical domain.",
+		Description: `Unset the canonical domain of this app:
+
+    $ scalingo -a myapp unset-canonical-domain example.com
+
+    # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
+
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "unset-canonical-domain")
+			}
+
+			err := domains.Canonical(currentApp, c.Args()[0], false)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "unset-canonical-domain")
+		},
+	}
 )

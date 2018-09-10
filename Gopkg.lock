@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "fix/cli/344/router_settings"
-  digest = "1:645b33e21dcebbf8ad42710ed3106429c3b04a595976178b4dbd89d71918d966"
+  digest = "1:65d0a0724e609db973ae32696314aab7890fbfe928f4e66710fb7a6dc67a23e0"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -28,7 +28,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "349feb538faa51ae6c416de65fcf9d0cbc10ef50"
+  revision = "96dceb95a4c36550541d524c03b44614d0ff2b9d"
 
 [[projects]]
   branch = "master"
@@ -104,11 +104,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8ba3f1b3c0cb6d601b3a8d3dfc3a899768614e77ff89a30c6eefdc34f75ff5ee"
+  digest = "1:e6baebf0bd20950e285254902a8f2241b4870528fb63fdc10460c67b1f31b1a3"
   name = "github.com/olekukonko/tablewriter"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "b8a9be070da40449e501c3c4730a889e42d87a9e"
+  revision = "d4647c9c7a84d847478d890b816b7d8b62b0b279"
 
 [[projects]]
   digest = "1:5cf3f025cbee5951a4ee961de067c8a89fc95a5adabead774f82822efabab121"
