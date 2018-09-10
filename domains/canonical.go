@@ -23,7 +23,7 @@ func Canonical(app, domain string, enable bool) error {
 	}
 
 	if enable {
-		io.Statusf("Canonical domain set to %s", domain)
+		io.Statusf("Canonical domain set to %s\n", domain)
 	} else {
 		io.Status("Canonical domain disabled")
 	}

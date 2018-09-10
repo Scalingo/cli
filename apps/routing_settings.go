@@ -20,7 +20,7 @@ func ForceHTTPS(appName string, enable bool) error {
 		action = "disable"
 	}
 
-	io.Statusf("Force HTTPS has been %sd on %s", action, appName)
+	io.Statusf("Force HTTPS has been %sd on %s\n", action, appName)
 	return nil
 }
 
@@ -38,6 +38,6 @@ func StickySession(appName string, enable bool) error {
 		action = "disable"
 	}
 
-	io.Statusf("Sticky session has been %sd on %s", action, appName)
+	io.Statusf("Sticky session has been %sd on %s\n", action, appName)
 	return nil
 }
