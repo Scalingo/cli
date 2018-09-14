@@ -18,7 +18,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "fix/cli/344/router_settings"
+  branch = "master"
   digest = "1:b92748b827f43c1ab65d102031a542a9f26ad064ae9ac44e3346b66e6685cc57"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
@@ -28,7 +28,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "6dd3e2294029dc8790f515f94ebded76c066517f"
+  revision = "71cf8991b8d32ce61dddc46cf7023d7117e1f078"
 
 [[projects]]
   branch = "master"
