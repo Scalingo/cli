@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"errors"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -12,7 +13,7 @@ type DomainsService interface {
 	DomainsRemove(app string, id string) error
 	DomainsUpdate(app, id, cert, key string) (Domain, error)
 	DomainSetCanonical(app, id string) (Domain, error)
-	DomainUnsetCanonical(app, id string) (Domain, error)
+	DomainUnsetCanonical(app string) (Domain, error)
 }
 
 var _ DomainsService = (*Client)(nil)
@@ -87,11 +88,21 @@ func (c *Client) DomainSetCanonical(app, id string) (Domain, error) {
 	return domainRes.Domain, nil
 }
 
-func (c *Client) DomainUnsetCanonical(app, id string) (Domain, error) {
-	var domainRes DomainRes
-	err := c.subresourceUpdate(app, "domains", id, DomainRes{Domain: Domain{Canonical: false}}, &domainRes)
+func (c *Client) DomainUnsetCanonical(app string) (Domain, error) {
+	domains, err := c.DomainsList(app)
 	if err != nil {
 		return Domain{}, errgo.Mask(err)
 	}
-	return domainRes.Domain, nil
+
+	for _, domain := range domains {
+		if domain.Canonical {
+			var domainRes DomainRes
+			err := c.subresourceUpdate(app, "domains", domain.ID, DomainRes{Domain: Domain{Canonical: false}}, &domainRes)
+			if err != nil {
+				return Domain{}, errgo.Mask(err)
+			}
+			return domainRes.Domain, nil
+		}
+	}
+	return Domain{}, errors.New("no canonical domain configured")
 }

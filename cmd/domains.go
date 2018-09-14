@@ -162,9 +162,10 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "set-canonical-domain")
+				return
 			}
 
-			err := domains.Canonical(currentApp, c.Args()[0], true)
+			err := domains.SetCanonical(currentApp, c.Args()[0])
 			if err != nil {
 				errorQuit(err)
 			}
@@ -181,18 +182,19 @@ var (
 		Usage:    "Unset a canonical domain.",
 		Description: `Unset the canonical domain of this app:
 
-    $ scalingo -a myapp unset-canonical-domain example.com
+    $ scalingo -a myapp unset-canonical-domain
 
     # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
 
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "unset-canonical-domain")
+				return
 			}
 
-			err := domains.Canonical(currentApp, c.Args()[0], false)
+			err := domains.UnsetCanonical(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
