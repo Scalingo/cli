@@ -70,7 +70,7 @@ func (c *Client) doSubresourceRequest(req *APIRequest, data interface{}) error {
 
 	err = ParseJSON(res, data)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.NoteMask(err, "fail to parse json of subresource response")
 	}
 	return nil
 }

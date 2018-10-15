@@ -18,6 +18,7 @@ var _ AlertsService = (*Client)(nil)
 
 type Alert struct {
 	ID            string  `json:"id"`
+	AppID         string  `json:"app_id"`
 	ContainerType string  `json:"container_type"`
 	Metric        string  `json:"metric"`
 	Limit         float64 `json:"limit"`

@@ -13,6 +13,7 @@ var _ AddonsService = (*Client)(nil)
 
 type Addon struct {
 	ID              string         `json:"id"`
+	AppID           string         `json:"app_id"`
 	ResourceID      string         `json:"resource_id"`
 	PlanID          string         `json:"plan_id"`
 	AddonProviderID string         `json:"addon_provider_id"`

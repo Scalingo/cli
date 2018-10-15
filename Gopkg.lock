@@ -3,107 +3,140 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:08dcd5fd9153189d126eb0634d512263ab26dfd27a0e5850db10738bca908196"
   name = "github.com/Scalingo/envconfig"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
   branch = "master"
+  digest = "1:e25669f49084df10ec9ff820eb625cfd90a136331bfb79112f88307f7829ad9f"
   name = "github.com/Scalingo/go-gitremote"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
+  branch = "master"
+  digest = "1:b92748b827f43c1ab65d102031a542a9f26ad064ae9ac44e3346b66e6685cc57"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
     "billing",
     "debug",
-    "io"
+    "io",
   ]
-  revision = "e8c99784888c9508d037e144fdb414161589130d"
-  version = "v1.4.1"
+  pruneopts = "NUT"
+  revision = "71cf8991b8d32ce61dddc46cf7023d7117e1f078"
 
 [[projects]]
   branch = "master"
+  digest = "1:38d6a203284088a8cc7090298b2de1e6de0506da85e16a95fdf7ac4b8dcf24e7"
   name = "github.com/Soulou/errgo-rollbar"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "2f7de2c8755a840bfcf34b2b6508e86eba0fbccc"
 
 [[projects]]
   branch = "master"
+  digest = "1:9c94adb84080287919cda31447549e0ce8f8cc2067e19ce51537cf4572868d36"
   name = "github.com/andrew-d/go-termutil"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "009166a695a2f516c749a26b4ac1f183d89aa336"
 
 [[projects]]
+  digest = "1:7c4b5e23bb01e5945b0df8a5f181efa2d90abd19e368be7c7bd55a5737db0739"
   name = "github.com/fatih/color"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
   version = "v1.6.0"
 
 [[projects]]
+  digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
   name = "github.com/golang/mock"
   packages = ["gomock"]
+  pruneopts = "NUT"
   revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:447011f2b96902f1472411da1d874c6a1b9e27ec6bbcde548a3f9282eaf2f162"
   name = "github.com/heroku/hk"
   packages = ["term"]
+  pruneopts = "NUT"
   revision = "04afaf7ac071cefe22b19e080c89737bcbac6b39"
   version = "v20140604"
 
 [[projects]]
   branch = "master"
+  digest = "1:b7f860847a1d71f925ba9385ed95f1ebc0abfeb418a78e219ab61f48fdfeffad"
   name = "github.com/howeyc/gopass"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "bf9dde6d0d2c004a008c27aaee91170c786f6db8"
 
 [[projects]]
+  digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:bc4f7eec3b7be8c6cb1f0af6c1e3333d5bb71072951aaaae2f05067b0803f287"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:cb591533458f6eb6e2c1065ff3eac6b50263d7847deb23fc9f79b25bc608970e"
   name = "github.com/mattn/go-runewidth"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
   version = "v0.0.2"
 
 [[projects]]
   branch = "master"
+  digest = "1:e6baebf0bd20950e285254902a8f2241b4870528fb63fdc10460c67b1f31b1a3"
   name = "github.com/olekukonko/tablewriter"
   packages = ["."]
-  revision = "b8a9be070da40449e501c3c4730a889e42d87a9e"
+  pruneopts = "NUT"
+  revision = "d4647c9c7a84d847478d890b816b7d8b62b0b279"
 
 [[projects]]
+  digest = "1:5cf3f025cbee5951a4ee961de067c8a89fc95a5adabead774f82822efabab121"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:23e732b621cc44a466904c71c4d81af2db9a07c153e577f6612531e321e174f0"
   name = "github.com/stvp/rollbar"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "b20261800d8cda3be14dcef0d1a8320779bba61a"
   version = "v0.5.1"
 
 [[projects]]
+  digest = "1:5dba68a1600a235630e208cb7196b24e58fcbb77bb7a6bec08fcd23f081b0a58"
   name = "github.com/urfave/cli"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:f8c6a973949021b83add1b043d7ebea58f3bb5a8bacac56af87439771f6a64ce"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -113,37 +146,62 @@
     "poly1305",
     "ssh",
     "ssh/agent",
-    "ssh/terminal"
+    "ssh/terminal",
   ]
+  pruneopts = "NUT"
   revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
 
 [[projects]]
   branch = "master"
+  digest = "1:d6eb74ab0724315b0197fefd4010de15fbc4da0900a1a6f95c9354c1662036f7"
   name = "golang.org/x/net"
   packages = [
     "context",
-    "websocket"
+    "websocket",
   ]
+  pruneopts = "NUT"
   revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
 
 [[projects]]
   branch = "master"
+  digest = "1:0ceea664a3d703218d433440b91555c0e918681e50a4a3d10c3f6166a1373a6d"
   name = "golang.org/x/sys"
   packages = [
     "unix",
-    "windows"
+    "windows",
   ]
+  pruneopts = "NUT"
   revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [[projects]]
   branch = "v1"
+  digest = "1:9cac97867c339fd55f00089b6667a943a27f6311e2394e2f57f9e7926037d125"
   name = "gopkg.in/errgo.v1"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "442357a80af5c6bf9b6d51ae791a39c3421004f3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cd2b54a20ae15294b82727955a667511a5056208ae75ba65059ea686acd27ea8"
+  input-imports = [
+    "github.com/Scalingo/envconfig",
+    "github.com/Scalingo/go-gitremote",
+    "github.com/Scalingo/go-scalingo",
+    "github.com/Scalingo/go-scalingo/io",
+    "github.com/Soulou/errgo-rollbar",
+    "github.com/andrew-d/go-termutil",
+    "github.com/fatih/color",
+    "github.com/heroku/hk/term",
+    "github.com/howeyc/gopass",
+    "github.com/olekukonko/tablewriter",
+    "github.com/pkg/errors",
+    "github.com/stvp/rollbar",
+    "github.com/urfave/cli",
+    "golang.org/x/crypto/ssh",
+    "golang.org/x/crypto/ssh/agent",
+    "golang.org/x/net/websocket",
+    "gopkg.in/errgo.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

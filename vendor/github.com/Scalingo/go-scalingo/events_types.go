@@ -16,20 +16,20 @@ type EventCategory struct {
 }
 
 type EventTypeStruct struct {
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	DisplayName string         `json:"display_name"`
-	Description string         `json:"description"`
-	Template    string         `json:"template"`
-	Category    *EventCategory `json:"category"`
+	ID          string `json:"id"`
+	CategoryID  string `json:"category_id"`
+	Name        string `json:"name"`
+	DisplayName string `json:"display_name"`
+	Description string `json:"description"`
+	Template    string `json:"template"`
 }
 
 type Event struct {
 	ID          string                 `json:"id"`
+	AppID       string                 `json:"app_id"`
 	CreatedAt   time.Time              `json:"created_at"`
 	User        EventUser              `json:"user"`
 	Type        EventType              `json:"type"`
-	AppID       string                 `json:"app_id"`
 	AppName     string                 `json:"app_name"`
 	RawTypeData json.RawMessage        `json:"type_data"`
 	TypeData    map[string]interface{} `json:"-"`
