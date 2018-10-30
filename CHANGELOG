@@ -9,6 +9,7 @@ Changelog
 * Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351
 * [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350
 * Better error message if 401 Unauthorized #352
+* Fix English wording #385
 
 ### 1.9.0
 

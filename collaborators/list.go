@@ -29,7 +29,7 @@ func List(app string) error {
 
 	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner})
 	for _, collaborator := range collaborators {
-		t.Append([]string{collaborator.Email, collaborator.Username, collaborator.Status})
+		t.Append([]string{collaborator.Email, collaborator.Username, string(collaborator.Status)})
 	}
 	t.Render()
 	return nil

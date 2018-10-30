@@ -51,11 +51,11 @@ func (err PaymentRequiredError) Error() string {
 
 func (err NotFoundError) Error() string {
 	if err.Resource == "app" {
-		return fmt.Sprintf("The application has not been found, have you done a typo?")
+		return fmt.Sprintf("The application was not found, did you make a typo?")
 	} else if err.Resource == "container_type" {
-		return fmt.Sprintf("This type of container has not been found, please ensure it is present in your Procfile\n→ http://doc.scalingo.com/internals/procfile")
+		return fmt.Sprintf("This type of container was not found, please ensure it is present in your Procfile\n→ http://doc.scalingo.com/internals/procfile")
 	} else {
-		return fmt.Sprintf("The %s has not been found", err.Resource)
+		return fmt.Sprintf("The %s was not found", err.Resource)
 	}
 }
 

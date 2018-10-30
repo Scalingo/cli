@@ -2,6 +2,14 @@ package scalingo
 
 import "gopkg.in/errgo.v1"
 
+type CollaboratorStatus string
+
+const (
+	CollaboratorStatusPending  CollaboratorStatus = "pending"
+	CollaboratorStatusAccepted CollaboratorStatus = "accepted"
+	CollaboratorStatusDeleted  CollaboratorStatus = "user account deleted"
+)
+
 type CollaboratorsService interface {
 	CollaboratorsList(app string) ([]Collaborator, error)
 	CollaboratorAdd(app string, email string) (Collaborator, error)
@@ -11,12 +19,12 @@ type CollaboratorsService interface {
 var _ CollaboratorsService = (*Client)(nil)
 
 type Collaborator struct {
-	ID       string `json:"id"`
-	AppID    string `json:"app_id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Status   string `json:"status"`
-	UserID   string `json:"user_id"`
+	ID       string             `json:"id"`
+	AppID    string             `json:"app_id"`
+	Username string             `json:"username"`
+	Email    string             `json:"email"`
+	Status   CollaboratorStatus `json:"status"`
+	UserID   string             `json:"user_id"`
 }
 
 type CollaboratorsRes struct {
