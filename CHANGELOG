@@ -1,5 +1,4 @@
-Changelog
-=========
+# Changelog
 
 ### To be Released
 
@@ -10,6 +9,7 @@ Changelog
 * [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350
 * Better error message if 401 Unauthorized #352
 * Fix English wording #385
+* Fix missing spaces #388
 
 ### 1.9.0
 
