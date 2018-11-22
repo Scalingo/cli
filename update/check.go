@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	lastVersionURL = "https://cli-dl.scalingo.io/version"
+	lastVersionURL = "https://cli-dl.scalingo.com/version"
 	lastVersion    = ""
 	cancelUpdate   = make(chan struct{})
 	gotLastVersion = make(chan struct{})

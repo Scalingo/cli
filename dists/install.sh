@@ -101,7 +101,7 @@ main() {
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
-  version=$(curl -s https://cli-dl.scalingo.io/version | tr -d ' \t\n')
+  version=$(curl -s https://cli-dl.scalingo.com/version | tr -d ' \t\n')
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
   url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
