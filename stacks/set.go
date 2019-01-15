@@ -31,7 +31,8 @@ func Set(app string, stack string) error {
 		return errgo.Notef(err, "fail to set stack %v (%v)", stackToSet.Name, stackToSet.ID)
 	}
 
-	io.Statusf("Stack of %v has been set to %v (%v)\n", app, stackToSet.Name, stackToSet.ID)
+	io.Statusf("Stack of %v has been set to %v (%v)\n", io.Bold(app), io.Bold(stackToSet.Name), stackToSet.ID)
+	io.Infof(io.Gray("Deployment cache of %v has been reseted\n"), app)
 
 	return nil
 
