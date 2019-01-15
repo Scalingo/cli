@@ -23,6 +23,7 @@ type AppsService interface {
 	AppsDestroy(name string, currentName string) error
 	AppsRename(name string, newName string) (*App, error)
 	AppsTransfer(name string, email string) (*App, error)
+	AppsSetStack(name string, stackID string) (*App, error)
 	AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error)
 	AppsCreate(opts AppsCreateOpts) (*App, error)
 	AppsStats(app string) (*AppStatsRes, error)
@@ -198,6 +199,33 @@ func (c *Client) AppsTransfer(name string, email string) (*App, error) {
 		Params: map[string]interface{}{
 			"app": map[string]string{
 				"owner": email,
+			},
+		},
+	}
+	res, err := req.Do()
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	var appRes *AppResponse
+	err = ParseJSON(res, &appRes)
+	if err != nil {
+		return nil, errgo.Mask(err, errgo.Any)
+	}
+
+	return appRes.App, nil
+}
+
+func (c *Client) AppsSetStack(app string, stackID string) (*App, error) {
+	req := &APIRequest{
+		Client:   c,
+		Method:   "PATCH",
+		Endpoint: "/apps/" + app,
+		Expected: Statuses{200},
+		Params: map[string]interface{}{
+			"app": map[string]string{
+				"stack_id": stackID,
 			},
 		},
 	}
