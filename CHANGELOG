@@ -10,6 +10,7 @@
 * Better error message if 401 Unauthorized #352
 * Fix English wording #385
 * Fix missing spaces #388
+* Fix new format of SSH key 'invalid type' error #389
 
 ### 1.9.0
 
