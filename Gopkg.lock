@@ -136,20 +136,21 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f8c6a973949021b83add1b043d7ebea58f3bb5a8bacac56af87439771f6a64ce"
+  digest = "1:08b4fc6f40d1c93a95d09436227c72a8889e86feb6bb3eb265027cfbe6a75cb4"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
     "ed25519",
     "ed25519/internal/edwards25519",
     "internal/chacha20",
+    "internal/subtle",
     "poly1305",
     "ssh",
     "ssh/agent",
     "ssh/terminal",
   ]
   pruneopts = "NUT"
-  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
+  revision = "a4c6cb3142f211c99e4bf4cd769535b29a9b616f"
 
 [[projects]]
   branch = "master"
