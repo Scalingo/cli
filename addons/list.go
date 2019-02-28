@@ -3,9 +3,9 @@ package addons
 import (
 	"os"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func List(app string) error {
@@ -19,7 +19,7 @@ func List(app string) error {
 	t.SetHeader([]string{"Addon", "ID", "Plan"})
 
 	for _, resource := range resources {
-		t.Append([]string{resource.AddonProvider.Name, resource.ResourceID, resource.Plan.Name})
+		t.Append([]string{resource.AddonProvider.Name, resource.UUID, resource.Plan.Name})
 	}
 	t.Render()
 

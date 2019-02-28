@@ -122,11 +122,7 @@ func loginWithSSH(identity string) error {
 }
 
 func finalizeLogin(token string) error {
-	c := config.ScalingoUnauthenticatedClient()
-	generator := c.GetAPITokenGenerator(token)
-	config.C.TokenGenerator = generator
-
-	c = config.ScalingoClient()
+	c := config.ScalingoClientFromToken(token)
 	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)
@@ -134,7 +130,7 @@ func finalizeLogin(token string) error {
 
 	io.Statusf("Hello %s, nice to see you!\n", user.Username)
 
-	err = config.SetCurrentUser(user, generator)
+	err = config.SetCurrentUser(user, token)
 	if err != nil {
 		return errgo.Mask(err)
 	}

@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"strconv"
@@ -113,7 +114,7 @@ func Scale(app string, sync bool, types []string) error {
 	defer res.Body.Close()
 
 	var scaleRes ScaleRes
-	err = scalingo.ParseJSON(res, &scaleRes)
+	err = json.NewDecoder(res.Body).Decode(&scaleRes)
 	if err != nil {
 		return errgo.Mask(err)
 	}

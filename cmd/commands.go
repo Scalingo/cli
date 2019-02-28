@@ -81,6 +81,9 @@ var (
 		PgSQLConsoleCommand,
 		InfluxDBConsoleCommand,
 
+		// Backups
+		BackupListCommand,
+
 		// TODO: Alerts
 		alertsListCommand,
 		alertsAddCommand,
