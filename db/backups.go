@@ -2,10 +2,12 @@ package db
 
 import (
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
+	scalingo "github.com/Scalingo/go-scalingo"
+	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	errgo "gopkg.in/errgo.v1"
 )
@@ -25,10 +27,23 @@ func ListBackups(app, addon string) error {
 			backup.ID,
 			backup.Name,
 			backup.CreatedAt.Format(time.RFC1123),
-			strconv.FormatUint(backup.Size, 10),
-			string(backup.Status),
+			humanize.Bytes(backup.Size),
+			formatBackupStatus(backup.Status),
 		})
 	}
 	t.Render()
 	return nil
+}
+func formatBackupStatus(status scalingo.BackupStatus) string {
+	switch status {
+	case scalingo.BackupStatusScheduled:
+		return io.Gray(string(status))
+	case scalingo.BackupStatusRunning:
+		return io.Yellow(string(status))
+	case scalingo.BackupStatusDone:
+		return io.Green(string(status))
+	case scalingo.BackupStatusError:
+		return io.BoldRed(string(status))
+	}
+	return io.BoldRed(string(status))
 }

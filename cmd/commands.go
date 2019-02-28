@@ -83,6 +83,7 @@ var (
 
 		// Backups
 		BackupListCommand,
+		BackupDownloadCommand,
 
 		// TODO: Alerts
 		alertsListCommand,

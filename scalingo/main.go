@@ -105,6 +105,7 @@ func main() {
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
+		cli.StringFlag{Name: "addon", Value: "<addon_id>", Usage: "ID of the current addon", EnvVar: "SCALINGO_ADDON"},
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
 	}

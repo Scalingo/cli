@@ -136,8 +136,6 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserTokens, error) 
 		return nil, nil, errgo.Mask(err)
 	}
 
-	fmt.Println(C.apiHost)
-
 	if creds, ok := configPerHost[C.apiHost]; !ok {
 		return nil, nil, ErrUnauthenticated
 	} else {
