@@ -51,7 +51,7 @@ func Tunnel(opts TunnelOpts) error {
 	if err != nil {
 		return errgo.Notef(err, "invalid database 'URL': %s", dbUrlStr)
 	}
-	fmt.Printf("Building tunnel to %s\n", dbUrl.Host)
+	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbUrl.Host)
 
 	client, key, err := netssh.Connect(opts.Identity)
 	if err != nil {
@@ -86,7 +86,8 @@ func Tunnel(opts TunnelOpts) error {
 	}
 
 	defer sock.Close()
-	fmt.Printf("You can access your database on '%v'\n", sock.Addr())
+	fmt.Fprintln(os.Stderr, "You can access your database on:")
+	fmt.Printf("%v\n", sock.Addr())
 
 	go startIDGenerator()
 	errs := make(chan error)
