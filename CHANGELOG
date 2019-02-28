@@ -11,6 +11,7 @@
 * Fix English wording #385
 * Fix missing spaces #388
 * Fix new format of SSH key 'invalid type' error #389
+* [db-tunnel] Only display parsable information on stdout, the rest on stderr #396
 
 ### 1.9.0
 
