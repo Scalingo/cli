@@ -32,7 +32,7 @@ func (op *Operation) ElapsedDuration() float64 {
 
 func (c *Client) OperationsShow(app string, opID string) (*Operation, error) {
 	var opRes OperationResponse
-	err := c.subresourceGet(app, "operations", opID, nil, &opRes)
+	err := c.ScalingoAPI().SubresourceGet("apps", app, "operations", opID, nil, &opRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

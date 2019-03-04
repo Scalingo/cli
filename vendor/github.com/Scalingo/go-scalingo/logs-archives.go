@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"strconv"
 
+	"github.com/Scalingo/go-scalingo/http"
+
 	errgo "gopkg.in/errgo.v1"
 )
 
@@ -29,15 +31,14 @@ type LogsArchivesResponse struct {
 }
 
 func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsArchivesResponse, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Endpoint: "/apps/" + app + "/logs_archives",
 		Params: map[string]string{
 			"cursor": cursor,
 		},
 	}
 
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -61,15 +62,14 @@ func (c *Client) LogsArchives(app string, page int) (*LogsArchivesResponse, erro
 		return nil, errgo.New("Page must be greater than 0.")
 	}
 
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Endpoint: "/apps/" + app + "/logs_archives",
 		Params: map[string]string{
 			"page": strconv.FormatInt(int64(page), 10),
 		},
 	}
 
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

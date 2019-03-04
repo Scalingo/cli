@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"time"
 
+	httpclient "github.com/Scalingo/go-scalingo/http"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
 )
@@ -83,22 +84,11 @@ type AuthStruct struct {
 }
 
 func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
-	req := &APIRequest{
-		Client:   c,
+	var deployments DeploymentList
+	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/deployments",
 	}
-
-	res, err := req.Do()
-
-	if err != nil {
-		return []*Deployment{}, errgo.Mask(err, errgo.Any)
-	}
-
-	defer res.Body.Close()
-
-	var deployments DeploymentList
-	err = ParseJSON(res, &deployments)
-
+	err := c.ScalingoAPI().DoRequest(req, &deployments)
 	if err != nil {
 		return []*Deployment{}, errgo.Mask(err, errgo.Any)
 	}
@@ -107,26 +97,15 @@ func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
 }
 
 func (c *Client) Deployment(app string, deploy string) (*Deployment, error) {
-	req := &APIRequest{
-		Client:   c,
+	var deploymentMap map[string]*Deployment
+	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/deployments/" + deploy,
 	}
 
-	res, err := req.Do()
-
+	err := c.ScalingoAPI().DoRequest(req, &deploymentMap)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-	defer res.Body.Close()
-
-	var deploymentMap map[string]*Deployment
-
-	err = ParseJSON(res, &deploymentMap)
-
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-
 	return deploymentMap["deployment"], nil
 }
 
@@ -135,18 +114,17 @@ func (c *Client) DeploymentLogs(deployURL string) (*http.Response, error) {
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
-	req := &APIRequest{
-		Client:   c,
-		Expected: Statuses{200, 404},
+	req := &httpclient.APIRequest{
+		Expected: httpclient.Statuses{200, 404},
 		Endpoint: u.Path,
 		URL:      u.Scheme + "://" + u.Host,
 	}
 
-	return req.Do()
+	return c.ScalingoAPI().Do(req)
 }
 
 func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
-	token, err := c.GetAccessToken()
+	token, err := c.ScalingoAPI().TokenGenerator().GetAccessToken()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to generate token")
 	}
@@ -160,7 +138,7 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 
-	conn, err := websocket.Dial(deployURL, "", "http://scalingo-cli.local/"+c.APIVersion())
+	conn, err := websocket.Dial(deployURL, "", "http://scalingo-cli.local/1")
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -174,24 +152,17 @@ func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
 }
 
 func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error) {
-	req := &APIRequest{
-		Client:   c,
+	var response *DeploymentsCreateRes
+	req := &httpclient.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/deployments",
-		Expected: Statuses{201},
+		Expected: httpclient.Statuses{201},
 		Params: map[string]interface{}{
 			"deployment": params,
 		},
 	}
 
-	res, err := req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	defer res.Body.Close()
-
-	var response *DeploymentsCreateRes
-	err = ParseJSON(res, &response)
+	err := c.ScalingoAPI().DoRequest(req, &response)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -200,18 +171,15 @@ func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) 
 }
 
 func (c *Client) DeploymentCacheReset(app string) error {
-	req := &APIRequest{
-		Client:   c,
+	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/caches/deployment",
 		Method:   "DELETE",
-		Expected: Statuses{204},
+		Expected: httpclient.Statuses{204},
 	}
-	res, err := req.Do()
+	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
 		return errgo.Mask(err)
 	}
-
-	defer res.Body.Close()
 
 	return nil
 }

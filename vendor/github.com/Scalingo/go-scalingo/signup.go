@@ -1,6 +1,9 @@
 package scalingo
 
-import "gopkg.in/errgo.v1"
+import (
+	"github.com/Scalingo/go-scalingo/http"
+	"gopkg.in/errgo.v1"
+)
 
 type SignUpService interface {
 	SignUp(email, password string) error
@@ -9,12 +12,11 @@ type SignUpService interface {
 var _ SignUpService = (*Client)(nil)
 
 func (c *Client) SignUp(email, password string) error {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		NoAuth:   true,
 		Method:   "POST",
 		Endpoint: "/users",
-		Expected: Statuses{201},
+		Expected: http.Statuses{201},
 		Params: map[string]interface{}{
 			"user": map[string]string{
 				"email":    email,
@@ -22,7 +24,7 @@ func (c *Client) SignUp(email, password string) error {
 			},
 		},
 	}
-	_, err := req.Do()
+	_, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return errgo.Mask(err)
 	}

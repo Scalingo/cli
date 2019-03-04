@@ -33,7 +33,7 @@ type AutoscalerRes struct {
 
 func (c *Client) AutoscalersList(app string) ([]Autoscaler, error) {
 	var autoscalersRes AutoscalersRes
-	err := c.subresourceList(app, "autoscalers", nil, &autoscalersRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "autoscalers", nil, &autoscalersRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -50,7 +50,7 @@ type AutoscalerAddParams struct {
 
 func (c *Client) AutoscalerAdd(app string, params AutoscalerAddParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.subresourceAdd(app, "autoscalers", AutoscalerRes{
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "autoscalers", AutoscalerRes{
 		Autoscaler: Autoscaler{
 			ContainerType: params.ContainerType,
 			Metric:        params.Metric,
@@ -67,7 +67,7 @@ func (c *Client) AutoscalerAdd(app string, params AutoscalerAddParams) (*Autosca
 
 func (c *Client) AutoscalerShow(app, id string) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.subresourceGet(app, "autoscalers", id, nil, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceGet("apps", app, "autoscalers", id, nil, &autoscalerRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -84,7 +84,7 @@ type AutoscalerUpdateParams struct {
 
 func (c *Client) AutoscalerUpdate(app, id string, params AutoscalerUpdateParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.subresourceUpdate(app, "autoscalers", id, params, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "autoscalers", id, params, &autoscalerRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -92,7 +92,7 @@ func (c *Client) AutoscalerUpdate(app, id string, params AutoscalerUpdateParams)
 }
 
 func (c *Client) AutoscalerRemove(app, id string) error {
-	err := c.subresourceDelete(app, "autoscalers", id)
+	err := c.ScalingoAPI().SubresourceDelete("apps", app, "autoscalers", id)
 	if err != nil {
 		return errgo.Mask(err)
 	}

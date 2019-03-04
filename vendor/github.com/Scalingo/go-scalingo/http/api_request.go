@@ -1,4 +1,4 @@
-package scalingo
+package http
 
 import (
 	"bytes"
@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"reflect"
 	"time"
 
@@ -23,7 +22,6 @@ var (
 )
 
 type APIRequest struct {
-	Client      API
 	NoAuth      bool
 	URL         string
 	Method      string
@@ -39,7 +37,7 @@ type APIRequest struct {
 
 type Statuses []int
 
-func (req *APIRequest) FillDefaultValues() error {
+func (c *client) FillDefaultValues(req *APIRequest) error {
 	if req.Method == "" {
 		req.Method = "GET"
 	}
@@ -49,23 +47,17 @@ func (req *APIRequest) FillDefaultValues() error {
 	if req.Params == nil {
 		req.Params = make(map[string]interface{})
 	}
-	if req.Client == nil {
-		req.Client = NewClient(ClientConfig{
-			Endpoint:   defaultEndpoint,
-			APIVersion: defaultAPIVersion,
-		})
-	}
 
 	if !req.NoAuth {
 		var err error
-		req.Token, err = req.Client.GetAccessToken()
+		req.Token, err = c.TokenGenerator().GetAccessToken()
 		if err != nil {
 			return ErrNoAuth
 		}
 	}
 
 	if req.URL == "" {
-		req.URL = fmt.Sprintf("%s%s%s", req.Client.Endpoint(), "/v", req.Client.APIVersion())
+		req.URL = c.BaseURL()
 	}
 	return nil
 }
@@ -80,8 +72,8 @@ func (statuses Statuses) Contains(status int) bool {
 }
 
 // Execute an API request and return its response/error
-func (req *APIRequest) Do() (*http.Response, error) {
-	err := req.FillDefaultValues()
+func (c *client) Do(req *APIRequest) (*http.Response, error) {
+	err := c.FillDefaultValues(req)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -133,10 +125,9 @@ func (req *APIRequest) Do() (*http.Response, error) {
 	}
 
 	now := time.Now()
-	res, err := req.doRequest(req.HTTPRequest)
+	res, err := c.doRequest(req.HTTPRequest)
 	if err != nil {
-		fmt.Printf("Fail to query %s: %v\n", req.HTTPRequest.Host, err)
-		os.Exit(1)
+		return nil, fmt.Errorf("Fail to query %s: %v", req.HTTPRequest.Host, err)
 	}
 	debug.Printf(io.Indent("Duration: %v", 6), time.Now().Sub(now))
 
@@ -147,13 +138,13 @@ func (req *APIRequest) Do() (*http.Response, error) {
 	return nil, NewRequestFailedError(res, req)
 }
 
-func (apiReq *APIRequest) doRequest(req *http.Request) (*http.Response, error) {
+func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 	if req.Header.Get("Content-type") == "" {
 		req.Header.Set("Content-type", "application/json")
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Add("User-Agent", "Scalingo Go Client")
-	return apiReq.Client.HTTPClient().Do(req)
+	return c.HTTPClient().Do(req)
 }
 
 func ParseJSON(res *http.Response, data interface{}) error {

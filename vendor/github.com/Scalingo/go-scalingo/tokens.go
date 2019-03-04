@@ -1,20 +1,37 @@
 package scalingo
 
 import (
-	"fmt"
+	"encoding/json"
+	"errors"
+	"strconv"
 	"time"
 
+	"github.com/Scalingo/go-scalingo/http"
 	errgo "gopkg.in/errgo.v1"
 )
 
 type TokensService interface {
 	TokensList() (Tokens, error)
 	TokenCreate(TokenCreateParams) (Token, error)
-	TokenExchange(TokenExchangeParams) (string, error)
+	TokenExchange(token string) (string, error)
 	TokenShow(id int) (Token, error)
 }
 
 var _ TokensService = (*Client)(nil)
+var ErrOTPRequired = errors.New("OTP Required")
+
+// IsOTPRequired tests if the authentication backend return an OTP Required error
+func IsOTPRequired(err error) bool {
+	rerr, ok := err.(*http.RequestFailedError)
+	if !ok {
+		return false
+	}
+
+	if rerr.Message == "OTP Required" {
+		return true
+	}
+	return false
+}
 
 type Token struct {
 	ID        int       `json:"int"`
@@ -23,12 +40,15 @@ type Token struct {
 	Token     string    `json:"token"`
 }
 
-type TokenCreateParams struct {
-	Name string `json:"name"`
+type LoginParams struct {
+	Identifier string `json:"identifier"`
+	Password   string `json:"password"`
+	OTP        string `json:"otp"`
+	JWT        string `json:"jwt"`
 }
 
-type TokenExchangeParams struct {
-	Token string
+type TokenCreateParams struct {
+	Name string `json:"name"`
 }
 
 type Tokens []*Token
@@ -46,43 +66,32 @@ type TokenRes struct {
 }
 
 func (c *Client) TokensList() (Tokens, error) {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Endpoint: "/v1/tokens",
-	}
+	var tokensRes TokensRes
 
-	res, err := req.Do()
+	err := c.AuthAPI().ResourceList("tokens", nil, &tokensRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get tokens")
-	}
-
-	var tokensRes TokensRes
-	err = ParseJSON(res, &tokensRes)
-	if err != nil {
-		return nil, errgo.Notef(err, "fail to parse response from server")
 	}
 
 	return tokensRes.Tokens, nil
 }
 
-func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
-	req := &APIRequest{
-		Client:   c,
+func (c *Client) TokenExchange(token string) (string, error) {
+	req := &http.APIRequest{
 		NoAuth:   true,
 		Method:   "POST",
-		URL:      c.AuthURL(),
-		Endpoint: "/v1/tokens/exchange",
-		Password: params.Token,
+		Endpoint: "/tokens/exchange",
+		Password: token,
 	}
 
-	res, err := req.Do()
+	res, err := c.AuthAPI().Do(req)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to make request POST /v1/tokens/exchange")
 	}
+	defer res.Body.Close()
 
 	var btRes BearerTokenRes
-	err = ParseJSON(res, &btRes)
+	err = json.NewDecoder(res.Body).Decode(&btRes)
 	if err != nil {
 		return "", errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
 	}
@@ -91,13 +100,11 @@ func (c *Client) TokenExchange(params TokenExchangeParams) (string, error) {
 }
 
 func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParams) (Token, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		NoAuth:   true,
 		Method:   "POST",
-		URL:      c.AuthURL(),
-		Endpoint: "/v1/tokens",
-		Expected: Statuses{201},
+		Endpoint: "/tokens",
+		Expected: http.Statuses{201},
 		Username: login.Identifier,
 		Password: login.Password,
 		OTP:      login.OTP,
@@ -105,16 +112,17 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 		Params:   map[string]interface{}{"token": params},
 	}
 
-	resp, err := req.Do()
+	resp, err := c.AuthAPI().Do(req)
 	if err != nil {
 		if IsOTPRequired(err) {
 			return Token{}, ErrOTPRequired
 		}
 		return Token{}, errgo.Notef(err, "request failed")
 	}
+	defer resp.Body.Close()
 
 	var tokenRes TokenRes
-	err = ParseJSON(resp, &tokenRes)
+	err = json.NewDecoder(resp.Body).Decode(&tokenRes)
 	if err != nil {
 		return Token{}, errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
 	}
@@ -123,46 +131,28 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 }
 
 func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Expected: Statuses{201},
-		Endpoint: "/v1/tokens",
-		Params:   map[string]interface{}{"token": params},
-		Method:   "POST",
+	var tokenRes TokenRes
+	payload := map[string]TokenCreateParams{
+		"token": params,
 	}
-
-	res, err := req.Do()
+	err := c.AuthAPI().ResourceAdd("tokens", payload, &tokenRes)
 	if err != nil {
 		return Token{}, errgo.Notef(err, "fail to create token")
-	}
-
-	var tokenRes TokenRes
-	err = ParseJSON(res, &tokenRes)
-	if err != nil {
-		return Token{}, errgo.Notef(err, "fail to parse response from server")
 	}
 
 	return tokenRes.Token, nil
 }
 
 func (c *Client) TokenShow(id int) (Token, error) {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Endpoint: fmt.Sprintf("/v1/tokens/%d", id),
-	}
-
-	res, err := req.Do()
+	var tokenRes TokenRes
+	err := c.AuthAPI().ResourceGet("tokens", strconv.Itoa(id), nil, &tokenRes)
 	if err != nil {
 		return Token{}, errgo.Notef(err, "fail to get token")
 	}
 
-	var tokenRes TokenRes
-	err = ParseJSON(res, &tokenRes)
-	if err != nil {
-		return Token{}, errgo.Notef(err, "fail to parse response from server")
-	}
-
 	return tokenRes.Token, nil
+}
+
+func (c *Client) GetAccessToken() (string, error) {
+	return c.ScalingoAPI().TokenGenerator().GetAccessToken()
 }

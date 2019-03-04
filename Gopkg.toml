@@ -26,7 +26,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  branch = "master"
+  branch = "fix/add_db_api"
 
 [[constraint]]
   branch = "master"

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
+	httpclient "github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
 )
 
@@ -15,11 +16,10 @@ type LogsService interface {
 var _ LogsService = (*Client)(nil)
 
 func (c *Client) LogsURL(app string) (*http.Response, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/logs",
 	}
-	return req.Do()
+	return c.ScalingoAPI().Do(req)
 }
 
 func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, error) {
@@ -27,10 +27,9 @@ func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, err
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	req := &APIRequest{
-		Client:   c,
+	req := &httpclient.APIRequest{
 		NoAuth:   true,
-		Expected: Statuses{200, 204, 404},
+		Expected: httpclient.Statuses{200, 204, 404},
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]interface{}{
@@ -39,5 +38,5 @@ func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, err
 			"filter": filter,
 		},
 	}
-	return req.Do()
+	return c.ScalingoAPI().Do(req)
 }

@@ -3,6 +3,8 @@ package scalingo
 import (
 	"encoding/json"
 
+	"github.com/Scalingo/go-scalingo/http"
+
 	"github.com/Scalingo/go-scalingo/debug"
 
 	errgo "gopkg.in/errgo.v1"
@@ -31,12 +33,11 @@ type PlatformsRes struct {
 }
 
 func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		NoAuth:   true,
 		Endpoint: "/notification_platforms",
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -53,13 +54,12 @@ func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 
 func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
 	debug.Printf("[NotificationPlatformByName] name: %s", name)
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		NoAuth:   true,
 		Endpoint: "/notification_platforms/search",
 		Params:   map[string]string{"name": name},
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
