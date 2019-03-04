@@ -24,12 +24,12 @@ func NewConfigData() *ConfigData {
 }
 
 type CredentialsData struct {
-	Tokens *UserTokens    `json:"tokens"`
+	Tokens *UserToken     `json:"tokens"`
 	User   *scalingo.User `json:"user"`
 }
 
 type ConfigPerHostV2 map[string]*CredentialsData
 
-type UserTokens struct {
+type UserToken struct {
 	Token string `json:"token"`
 }

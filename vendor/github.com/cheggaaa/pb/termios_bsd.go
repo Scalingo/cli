@@ -1,7 +1,7 @@
 // +build darwin freebsd netbsd openbsd dragonfly
 // +build !appengine
 
-package termutil
+package pb
 
 import "syscall"
 

@@ -40,6 +40,10 @@
   branch = "master"
   name = "github.com/andrew-d/go-termutil"
 
+[[constraint]]
+  name = "github.com/cheggaaa/pb"
+  version = "1.0.28"
+
 [prune]
   non-go = true
   go-tests = true

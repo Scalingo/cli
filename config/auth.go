@@ -88,7 +88,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 	}
 
 	c[C.apiHost] = &auth.CredentialsData{
-		Tokens: &auth.UserTokens{
+		Tokens: &auth.UserToken{
 			Token: token,
 		},
 		User: user,
@@ -106,7 +106,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 	return writeAuthFile(authConfig)
 }
 
-func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserTokens, error) {
+func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
 		return nil, nil, ErrUnauthenticated

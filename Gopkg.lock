@@ -49,12 +49,12 @@
   version = "1.4"
 
 [[projects]]
-  digest = "1:ea07e3ce599a5323383b0809c413d4532773741206c8c2ec38cb789408ad074e"
+  digest = "1:21562b59c496f4cbd7a40beaa257ac6761002dd3e36259f532216082abace8b1"
   name = "github.com/cheggaaa/pb"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "c112833d014c77e8bde723fd0158e3156951639f"
-  version = "v2.0.6"
+  revision = "f907f6f5dd81f77c2bbc1cde92e4c5a04720cb11"
+  version = "v1.0.28"
 
 [[projects]]
   digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
@@ -193,60 +193,12 @@
   revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [[projects]]
-  digest = "1:dde06cba636162cd41df016518e771b1f1e156edadde221e04bd0c35f0564488"
-  name = "gopkg.in/VividCortex/ewma.v1"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "b24eb346a94c3ba12c1da1e564dbac1b498a77ce"
-  version = "v1.1.1"
-
-[[projects]]
-  digest = "1:256938e7d43c73bd5e7bb97dd281d1ebe294b2928403ee1fbec96249915d1150"
-  name = "gopkg.in/cheggaaa/pb.v2"
-  packages = ["termutil"]
-  pruneopts = "NUT"
-  revision = "c112833d014c77e8bde723fd0158e3156951639f"
-  version = "v2.0.6"
-
-[[projects]]
   branch = "v1"
   digest = "1:9cac97867c339fd55f00089b6667a943a27f6311e2394e2f57f9e7926037d125"
   name = "gopkg.in/errgo.v1"
   packages = ["."]
   pruneopts = "NUT"
   revision = "442357a80af5c6bf9b6d51ae791a39c3421004f3"
-
-[[projects]]
-  digest = "1:ade392a843b2035effb4b4a2efa2c3bab3eb29b992e98bacf9c898b0ecb54e45"
-  name = "gopkg.in/fatih/color.v1"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
-  version = "v1.7.0"
-
-[[projects]]
-  digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
-  name = "gopkg.in/mattn/go-colorable.v0"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
-
-[[projects]]
-  digest = "1:f4109742a922eca7b7a6a1f97f93cc5834e21a5f13a1e0c1cead73815ab75548"
-  name = "gopkg.in/mattn/go-isatty.v0"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "369ecd8cea9851e459abb67eb171853e3986591e"
-  version = "v0.0.6"
-
-[[projects]]
-  digest = "1:70ef8268170621826f8c111ac1674afe75136f526f449453b4a6631c6dba1946"
-  name = "gopkg.in/mattn/go-runewidth.v0"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "3ee7d812e62a0804a7d0a324e0249ca2db3476d3"
-  version = "v0.0.4"
 
 [solve-meta]
   analyzer-name = "dep"

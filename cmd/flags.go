@@ -31,7 +31,7 @@ func addonName(c *cli.Context) string {
 		addonName = os.Getenv("SCALINGO_ADDON")
 	}
 	if addonName == "" {
-		fmt.Println("Unable to find the application name, please use --addon flag.")
+		fmt.Println("Unable to find the addon name, please use --addon flag.")
 		os.Exit(1)
 	}
 

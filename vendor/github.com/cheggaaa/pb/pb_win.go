@@ -1,12 +1,12 @@
 // +build windows
 
-package termutil
+package pb
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"os/exec"
-	"strconv"
+	"sync"
 	"syscall"
 	"unsafe"
 )
@@ -35,8 +35,6 @@ var (
 	// specified console screen buffer.
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms686025(v=vs.85).aspx
 	setConsoleCursorPosition = kernel32.NewProc("SetConsoleCursorPosition")
-
-	mingw = isMingw()
 )
 
 type (
@@ -70,39 +68,14 @@ type (
 	}
 )
 
-// TerminalWidth returns width of the terminal.
-func TerminalWidth() (width int, err error) {
-	if mingw {
-		return termWidthTPut()
-	}
-	return termWidthCmd()
-}
-
-func termWidthCmd() (width int, err error) {
+// terminalWidth returns width of the terminal.
+func terminalWidth() (width int, err error) {
 	var info consoleScreenBufferInfo
 	_, _, e := syscall.Syscall(procGetConsoleScreenBufferInfo.Addr(), 2, uintptr(syscall.Stdout), uintptr(unsafe.Pointer(&info)), 0)
 	if e != 0 {
 		return 0, error(e)
 	}
 	return int(info.dwSize.X) - 1, nil
-}
-
-func isMingw() bool {
-	return os.Getenv("MINGW_PREFIX") != "" || os.Getenv("MSYSTEM") == "MINGW64"
-}
-
-func termWidthTPut() (width int, err error) {
-	// TODO: maybe anybody knows a better way to get it on mintty...
-	var res []byte
-	cmd := exec.Command("tput", "cols")
-	cmd.Stdin = os.Stdin
-	if res, err = cmd.CombinedOutput(); err != nil {
-		return 0, fmt.Errorf("%s: %v", string(res), err)
-	}
-	if len(res) > 1 {
-		res = res[:len(res)-1]
-	}
-	return strconv.Atoi(string(res))
 }
 
 func getCursorPos() (pos coordinates, err error) {
@@ -122,9 +95,22 @@ func setCursorPos(pos coordinates) error {
 	return nil
 }
 
+var ErrPoolWasStarted = errors.New("Bar pool was started")
+
+var echoLocked bool
+var echoLockMutex sync.Mutex
+
 var oldState word
 
-func lockEcho() (err error) {
+func lockEcho() (shutdownCh chan struct{}, err error) {
+	echoLockMutex.Lock()
+	defer echoLockMutex.Unlock()
+	if echoLocked {
+		err = ErrPoolWasStarted
+		return
+	}
+	echoLocked = true
+
 	if _, _, e := syscall.Syscall(getConsoleMode.Addr(), 2, uintptr(syscall.Stdout), uintptr(unsafe.Pointer(&oldState)), 0); e != 0 {
 		err = fmt.Errorf("Can't get terminal settings: %v", e)
 		return
@@ -138,10 +124,18 @@ func lockEcho() (err error) {
 		err = fmt.Errorf("Can't set terminal settings: %v", e)
 		return
 	}
+
+	shutdownCh = make(chan struct{})
 	return
 }
 
 func unlockEcho() (err error) {
+	echoLockMutex.Lock()
+	defer echoLockMutex.Unlock()
+	if !echoLocked {
+		return
+	}
+	echoLocked = false
 	if _, _, e := syscall.Syscall(setConsoleMode.Addr(), 2, uintptr(syscall.Stdout), uintptr(oldState), 0); e != 0 {
 		err = fmt.Errorf("Can't set terminal settings")
 	}

@@ -83,7 +83,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	defer resp.Body.Close()
 	spinner.Stop()
 	// Stop the spinner, start the progress bar
-	bar := pb.New(int(backup.Size)).SetUnits(pb.U_BYTES)
+	bar := pb.New64(int64(backup.Size)).SetUnits(pb.U_BYTES)
 	bar.Output = logWriter
 	bar.Start()
 	reader := bar.NewProxyReader(resp.Body) // Did I tell you this library is awesome ?
@@ -101,7 +101,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	return nil
 }
 
-// True if it's a valid path to a directory, false otherwise
+// isDir returns true if it's a valid path to a directory, false otherwise
 func isDir(path string) bool {
 	a, err := os.Open(path)
 	if err != nil {

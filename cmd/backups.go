@@ -15,7 +15,7 @@ var (
 		Usage:    "List backups for an addon",
 		Flags:    []cli.Flag{appFlag, addonFlag},
 		Description: `  List all available backups for an addon:
-		$ scalingo -a myapp --addon my_addon backups
+		$ scalingo --app myapp --addon my_addon backups
 
 		# See also 'addons' and 'backup-download'
 		`,
@@ -54,7 +54,7 @@ var (
 			addon := addonName(c)
 			backup := c.String("backup")
 			if backup == "" {
-				fmt.Println("Please specify an backup using the --backup flag")
+				fmt.Println("Please specify a backup using the --backup flag")
 				return
 			}
 
