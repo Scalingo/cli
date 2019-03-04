@@ -20,6 +20,7 @@ type DownloadBackupOpts struct {
 }
 
 func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error {
+	// Output management (manage -s and -o - flags)
 	var fileWriter io.Writer
 	var logWriter io.Writer
 	writeToStdout := false
@@ -36,57 +37,61 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		logWriter = ioutil.Discard
 	}
 
+	// Start a spinner when loading metadatas
 	spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spinner.Suffix = " Preparing download"
 	spinner.Writer = logWriter
 	spinner.Start()
 
+	// Get backup metadatas
 	client := config.ScalingoClient()
-
 	backup, err := client.BackupShow(app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup")
 	}
 
+	// Generate the filename and file writer
 	filepath := ""
-	if !writeToStdout {
-		filepath = fmt.Sprintf("%s.tar.gz", backup.Name)
-		if opts.Output != "" {
-			if isDir(opts.Output) {
+	if !writeToStdout { // No need to generate the filename nor the file writer if we're outputing to stdout
+		filepath = fmt.Sprintf("%s.tar.gz", backup.Name) // Default filename
+		if opts.Output != "" {                           // If the Output flag was defined
+			if isDir(opts.Output) { // If it's a directory use the default filename in this directory
 				filepath = fmt.Sprintf("%s/%s.tar.gz", opts.Output, backup.Name)
-			} else {
+			} else { // If the output is not a directory use it as the filename
 				filepath = opts.Output
 			}
 		}
+		// Open the output file
 		f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
 		if err != nil {
 			return errgo.Notef(err, "fail to open file")
 		}
-		fileWriter = f
+		fileWriter = f // Set the output file as the fileWriter
 	}
 
+	// Get the pre-signed download URL
 	downloadURL, err := client.BackupDownloadURL(app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup download URL")
 	}
 
+	// Start the download
 	resp, err := http.Get(downloadURL)
 	if err != nil {
 		return errgo.Notef(err, "fail to start download")
 	}
 	defer resp.Body.Close()
 	spinner.Stop()
-
+	// Stop the spinner, start the progress bar
 	bar := pb.New(int(backup.Size)).SetUnits(pb.U_BYTES)
 	bar.Output = logWriter
 	bar.Start()
-
-	reader := bar.NewProxyReader(resp.Body)
+	reader := bar.NewProxyReader(resp.Body) // Did I tell you this library is awesome ?
 	_, err = io.Copy(fileWriter, reader)
-	if writeToStdout {
+	if writeToStdout { // If we were writing the file to Stdout do not print the filepath at the end
 		bar.Finish()
 	} else {
-		bar.FinishPrint(fmt.Sprintf("===> %s", filepath))
+		bar.FinishPrint(fmt.Sprintf("===> %s", filepath)) // If we weren't writing to stdout append the filepath
 	}
 
 	if err != nil {
@@ -96,6 +101,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	return nil
 }
 
+// True if it's a valid path to a directory, false otherwise
 func isDir(path string) bool {
 	a, err := os.Open(path)
 	if err != nil {
