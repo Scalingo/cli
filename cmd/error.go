@@ -14,7 +14,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/Soulou/errgo-rollbar"
+	httpclient "github.com/Scalingo/go-scalingo/http"
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
 )
@@ -51,15 +51,15 @@ func (r *ReportError) Report() {
 			},
 		})
 	}
-	rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
+	//rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
 }
 
 func errorQuit(err error) {
 	newReportError(err).Report()
 	rollbar.Wait()
 
-	if scalingo.IsRequestFailedError(errgo.Cause(err)) &&
-		errgo.Cause(err).(*scalingo.RequestFailedError).Code == 401 {
+	if httpclient.IsRequestFailedError(errgo.Cause(err)) &&
+		errgo.Cause(err).(*httpclient.RequestFailedError).Code == 401 {
 		session.DestroyToken()
 		io.Errorf("You are currently logged in as %s.\n", config.AuthenticatedUser.Username)
 		io.Errorf("Are you sure %s is a collaborator of this app?\n", config.AuthenticatedUser.Username)
@@ -82,8 +82,8 @@ func newReportError(err error) *ReportError {
 		System:  newSysinfo(),
 	}
 
-	if scalingo.IsRequestFailedError(errgo.Cause(err)) {
-		r.FailedRequest = errgo.Cause(err).(*scalingo.RequestFailedError).Req.HTTPRequest
+	if httpclient.IsRequestFailedError(errgo.Cause(err)) {
+		r.FailedRequest = errgo.Cause(err).(*httpclient.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r

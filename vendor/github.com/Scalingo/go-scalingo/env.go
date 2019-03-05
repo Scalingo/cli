@@ -1,6 +1,12 @@
 package scalingo
 
-import "gopkg.in/errgo.v1"
+import (
+	"encoding/json"
+
+	"github.com/Scalingo/go-scalingo/http"
+
+	"gopkg.in/errgo.v1"
+)
 
 type VariablesService interface {
 	VariablesList(app string) (Variables, error)
@@ -47,7 +53,7 @@ func (c *Client) VariablesListWithoutAlias(app string) (Variables, error) {
 
 func (c *Client) variableList(app string, aliases bool) (Variables, error) {
 	var variablesRes VariablesRes
-	err := c.subresourceList(app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -55,8 +61,7 @@ func (c *Client) variableList(app string, aliases bool) (Variables, error) {
 }
 
 func (c *Client) VariableSet(app string, name string, value string) (*Variable, int, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]interface{}{
@@ -65,16 +70,16 @@ func (c *Client) VariableSet(app string, name string, value string) (*Variable, 
 				"value": value,
 			},
 		},
-		Expected: Statuses{200, 201},
+		Expected: http.Statuses{200, 201},
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params VariableSetParams
-	err = ParseJSON(res, &params)
+	err = json.NewDecoder(res.Body).Decode(&params)
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
@@ -83,23 +88,22 @@ func (c *Client) VariableSet(app string, name string, value string) (*Variable, 
 }
 
 func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables, int, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Method:   "PUT",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]Variables{
 			"variables": variables,
 		},
-		Expected: Statuses{200, 201},
+		Expected: http.Statuses{200, 201},
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var params VariablesRes
-	err = ParseJSON(res, &params)
+	err = json.NewDecoder(res.Body).Decode(&params)
 	if err != nil {
 		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
@@ -108,5 +112,5 @@ func (c *Client) VariableMultipleSet(app string, variables Variables) (Variables
 }
 
 func (c *Client) VariableUnset(app string, id string) error {
-	return c.subresourceDelete(app, "variables", id)
+	return c.ScalingoAPI().SubresourceDelete("apps", app, "variables", id)
 }

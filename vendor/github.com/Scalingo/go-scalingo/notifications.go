@@ -28,7 +28,7 @@ type NotificationsRes struct {
 
 func (c *Client) NotificationsList(app string) ([]*Notification, error) {
 	var notificationsRes NotificationsRes
-	err := c.subresourceList(app, "notifications", nil, &notificationsRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "notifications", nil, &notificationsRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -37,7 +37,7 @@ func (c *Client) NotificationsList(app string) ([]*Notification, error) {
 
 func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
-	err := c.subresourceAdd(app, "notifications", NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "notifications", NotificationRes{Notification: Notification{WebHookURL: webHookURL}}, &notificationRes)
 	if err != nil {
 		return NotificationRes{}, errgo.Mask(err, errgo.Any)
 	}
@@ -46,7 +46,7 @@ func (c *Client) NotificationProvision(app, webHookURL string) (NotificationRes,
 
 func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes, error) {
 	var notificationRes NotificationRes
-	err := c.subresourceUpdate(app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL, Active: true}}, &notificationRes)
+	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "notifications", ID, NotificationRes{Notification: Notification{WebHookURL: webHookURL, Active: true}}, &notificationRes)
 	if err != nil {
 		return NotificationRes{}, errgo.Mask(err, errgo.Any)
 	}
@@ -54,5 +54,5 @@ func (c *Client) NotificationUpdate(app, ID, webHookURL string) (NotificationRes
 }
 
 func (c *Client) NotificationDestroy(app, ID string) error {
-	return c.subresourceDelete(app, "notifications", ID)
+	return c.ScalingoAPI().SubresourceDelete("apps", app, "notifications", ID)
 }

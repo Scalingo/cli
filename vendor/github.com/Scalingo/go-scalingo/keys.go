@@ -11,77 +11,47 @@ type KeysService interface {
 var _ KeysService = (*Client)(nil)
 
 type Key struct {
-	ID      string `json:"id"`
+	ID      string `json:"id,omitempty"`
 	Name    string `json:"name"`
 	Content string `json:"content"`
 }
 
-type KeyIndex struct {
+type KeyRes struct {
+	Key Key `json:"key"`
+}
+
+type KeysRes struct {
 	Keys []Key `json:"keys"`
 }
 
 func (c *Client) KeysList() ([]Key, error) {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Endpoint: "/v1/keys",
-	}
-	res, err := req.Do()
+	var res KeysRes
+	err := c.AuthAPI().ResourceList("keys", nil, &res)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	defer res.Body.Close()
-
-	var ki KeyIndex
-	err = ParseJSON(res, &ki)
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-
-	return ki.Keys, nil
+	return res.Keys, nil
 }
 
 func (c *Client) KeysAdd(name string, content string) (*Key, error) {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Method:   "POST",
-		Endpoint: "/v1/keys",
-		Params: map[string]interface{}{
-			"key": map[string]interface{}{
-				"name":    name,
-				"content": content,
-			},
-		},
-		Expected: Statuses{201},
-	}
-	res, err := req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-	defer res.Body.Close()
+	payload := KeyRes{Key{
+		Name:    name,
+		Content: content,
+	}}
+	var res KeyRes
 
-	var key *Key
-	err = ParseJSON(res, &key)
+	err := c.AuthAPI().ResourceAdd("keys", payload, &res)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 
-	return key, nil
+	return &res.Key, nil
 }
 
 func (c *Client) KeysDelete(id string) error {
-	req := &APIRequest{
-		Client:   c,
-		URL:      c.AuthURL(),
-		Method:   "DELETE",
-		Endpoint: "/v1/keys/" + id,
-		Expected: Statuses{204},
-	}
-	res, err := req.Do()
+	err := c.AuthAPI().ResourceDelete("keys", id)
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	res.Body.Close()
 	return nil
 }

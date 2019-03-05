@@ -18,20 +18,8 @@ type Source struct {
 }
 
 func (c *Client) SourcesCreate() (*Source, error) {
-	req := &APIRequest{
-		Client:   c,
-		Method:   "POST",
-		Endpoint: "/sources",
-		Expected: Statuses{201},
-	}
-	res, err := req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-	defer res.Body.Close()
-
-	var sourceRes *SourcesCreateResponse
-	err = ParseJSON(res, &sourceRes)
+	var sourceRes SourcesCreateResponse
+	err := c.ScalingoAPI().ResourceAdd("sources", nil, &sourceRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

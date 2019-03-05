@@ -1,8 +1,10 @@
 package scalingo
 
 import (
+	"encoding/json"
 	"strings"
 
+	"github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
 )
 
@@ -27,8 +29,7 @@ type RunRes struct {
 }
 
 func (c *Client) Run(opts RunOpts) (*RunRes, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + opts.App + "/run",
 		Params: map[string]interface{}{
@@ -39,14 +40,14 @@ func (c *Client) Run(opts RunOpts) (*RunRes, error) {
 			"has_uploads": opts.HasUploads,
 		},
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	defer res.Body.Close()
 
 	var runRes RunRes
-	err = ParseJSON(res, &runRes)
+	err = json.NewDecoder(res.Body).Decode(&runRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

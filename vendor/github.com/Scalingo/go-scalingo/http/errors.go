@@ -1,6 +1,7 @@
-package scalingo
+package http
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -40,6 +41,21 @@ type (
 		Message  string
 	}
 )
+
+var ErrOTPRequired = errors.New("OTP Required")
+
+// IsOTPRequired tests if the authentication backend return an OTP Required error
+func IsOTPRequired(err error) bool {
+	rerr, ok := err.(*RequestFailedError)
+	if !ok {
+		return false
+	}
+
+	if rerr.Message == "OTP Required" {
+		return true
+	}
+	return false
+}
 
 func (err BadRequestError) Error() string {
 	return fmt.Sprintf("400 Bad Request → %v", err.ErrMessage)
