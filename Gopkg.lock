@@ -18,8 +18,8 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "fix/add_db_api"
-  digest = "1:ebe5ae7e504ec0ede605f4782cafa0f04ab0b3a3688ff238098d717651f85869"
+  branch = "master"
+  digest = "1:268a4a7920ea2fb1b3d663e26f708b9f5458b04e65230dc72bf5d311992ae562"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -30,7 +30,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "36128bbcfe246f8529bee04d3d5578c54cddf96f"
+  revision = "86b308f6d239965a45dc984cbead6f87cd7f4102"
 
 [[projects]]
   branch = "master"
