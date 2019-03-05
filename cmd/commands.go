@@ -62,6 +62,7 @@ var (
 		AddonsAddCommand,
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
+		AddonsLogsCommand,
 
 		// Notifiers
 		NotifiersListCommand,
