@@ -19,7 +19,7 @@ func List(app string) error {
 	t.SetHeader([]string{"Addon", "ID", "Plan"})
 
 	for _, resource := range resources {
-		t.Append([]string{resource.AddonProvider.Name, resource.UUID, resource.Plan.Name})
+		t.Append([]string{resource.AddonProvider.Name, resource.ID, resource.Plan.Name})
 	}
 	t.Render()
 
