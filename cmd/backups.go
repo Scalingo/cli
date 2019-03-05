@@ -15,7 +15,7 @@ var (
 		Usage:    "List backups for an addon",
 		Flags:    []cli.Flag{appFlag, addonFlag},
 		Description: `  List all available backups for an addon:
-		$ scalingo --app myapp --addon my_addon backups
+		$ scalingo --app myapp --addon addon_uuid backups
 
 		# See also 'addons' and 'backup-download'
 		`,
@@ -45,7 +45,7 @@ var (
 			Usage: "Do not show meter and loading messages",
 		}},
 		Description: `  Download a specific backup:
-		$ scalingo -a myapp --addon my_addon backup-download --backup my_backup
+		$ scalingo -a myapp --addon addon_uuid backup-download --backup my_backup
 
 		# See also 'backups' and 'addons'`,
 		Before: AuthenticateHook,
