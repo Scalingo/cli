@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* [db] Add database logs
+* [db] Add backups and backup-download commands
 * Add force HTTPS, sticky session and canonical domain
 * [commands] Update scale commands to accept flags to create an autoscaler
 * [env-set] Advise to restart after setting the environment #373
