@@ -45,6 +45,7 @@ DISABLE_UPDATE_CHECKER=true
 ## Command help
 
 ```
+
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -61,10 +62,12 @@ COMMANDS:
      help  Shows a list of commands or help for one command
 
    Addons:
-     addons          List used add-ons
-     addons-add      Provision an add-on for your application
-     addons-remove   Remove an existing addon from your app
-     addons-upgrade  Upgrade or downgrade an add-on attached to your app
+     addons           List used add-ons
+     addons-add       Provision an add-on for your application
+     addons-remove    Remove an existing addon from your app
+     addons-upgrade   Upgrade or downgrade an add-on attached to your app
+     backups          List backups for an addon
+     backup-download  Download a backup
 
    Addons - Global:
      addons-list   List all addons
@@ -79,15 +82,19 @@ COMMANDS:
      alerts-remove   Remove an alert from an application
 
    App Management:
-     destroy            Destroy an app /!\
-     rename             Rename an application
-     logs, l            Get the logs of your applications
-     logs-archives, la  Get the logs archives of your applications
-     run, r             Run any command for your app
-     ps                 Display your application running processes
-     scale, s           Scale your application instantly
-     restart            Restart processes of your app
-     db-tunnel          Create an encrypted connection to access your database
+     destroy                 Destroy an app /!\
+     rename                  Rename an application
+     logs, l                 Get the logs of your applications
+     logs-archives, la       Get the logs archives of your applications
+     run, r                  Run any command for your app
+     ps                      Display your application running processes
+     scale, s                Scale your application instantly
+     restart                 Restart processes of your app
+     force-https
+     sticky-session
+     set-canonical-domain    Set a canonical domain.
+     unset-canonical-domain  Unset a canonical domain.
+     db-tunnel               Create an encrypted connection to access your database
 
    Autoscalers:
      autoscalers          List the autoscalers of an application
@@ -143,6 +150,8 @@ COMMANDS:
      login      Login to Scalingo platform
      logout     Logout from Scalingo
      signup     Create your Scalingo account
+     self       Get the logged in profile
+     whoami     Get the logged in profile
 
    Notifiers:
      notifiers          List your notifiers
@@ -160,6 +169,7 @@ COMMANDS:
      keys-remove  Remove a public SSH key
 
 GLOBAL OPTIONS:
+   --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --version, -v             print the version

@@ -1,6 +1,8 @@
 package scalingo
 
 import (
+	"encoding/json"
+
 	"github.com/Scalingo/go-scalingo/http"
 
 	"gopkg.in/errgo.v1"
@@ -12,6 +14,7 @@ type AddonsService interface {
 	AddonDestroy(app, addonID string) error
 	AddonUpgrade(app, addonID, planID string) (AddonRes, error)
 	AddonToken(app, addonID string) (string, error)
+	AddonLogsURL(app, addonID string) (string, error)
 }
 
 var _ AddonsService = (*Client)(nil)
@@ -41,6 +44,10 @@ type AddonToken struct {
 }
 type AddonTokenRes struct {
 	Addon AddonToken `json:"addon"`
+}
+
+type AddonLogsURLRes struct {
+	URL string `json:"url"`
 }
 
 func (c *Client) AddonsList(app string) ([]*Addon, error) {
@@ -96,4 +103,22 @@ func (c *Client) AddonToken(app, addonID string) (string, error) {
 	}
 
 	return res.Addon.Token, nil
+}
+
+func (c *Client) AddonLogsURL(app, addonID string) (string, error) {
+	var url AddonLogsURLRes
+	res, err := c.DBAPI(app, addonID).Do(&http.APIRequest{
+		Endpoint: "/databases/" + addonID + "/logs",
+	})
+	if err != nil {
+		return "", errgo.Notef(err, "fail to get log URL")
+	}
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&url)
+	if err != nil {
+		return "", errgo.Notef(err, "invalid response")
+	}
+
+	return url.URL, nil
 }
