@@ -18,11 +18,12 @@ var (
    Example:
      Get 100 lines:          'scalingo --app my-app logs -n 100'
      Real-Time logs:         'scalingo --app my-app logs -f'
+     Addon logs:             'scalingo --app my-app --addon addon_uid logs'
      Get lines with filter:
        'scalingo --app my-app logs -F web'
        'scalingo --app my-app logs -F web-1'
        'scalingo --app my-app logs --follow -F "worker|clock"'`,
-		Flags: []cli.Flag{appFlag,
+		Flags: []cli.Flag{appFlag, addonFlag,
 			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
 			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
 			cli.StringFlag{Name: "filter, F", Usage: "Filter containers logs that will be displayed", EnvVar: ""},
@@ -30,48 +31,33 @@ var (
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			if len(c.Args()) == 0 {
-				if err := apps.Logs(currentApp, c.Bool("f"), c.Int("n"), c.String("F")); err != nil {
-					errorQuit(err)
-				}
-			} else {
-				cli.ShowCommandHelp(c, "logs")
-			}
-		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "logs")
-		},
-	}
-
-	AddonsLogsCommand = cli.Command{
-		Name:     "addon-logs",
-		Category: "Addons",
-		Usage:    "Get the logs of your addons",
-		Description: `Get the logs of your addons
-   Example:
-     Get 100 lines:          'scalingo --app my-app --addon addon_uuid logs -n 100'
-     Real-Time logs:         'scalingo --app my-app --addon addon_uuid logs -f'
-		 `,
-		Flags: []cli.Flag{appFlag,
-			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
-			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of addon, (as \"tail -f\")", EnvVar: ""},
-		},
-		Before: AuthenticateHook,
-		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "logs")
 				return
 			}
-			currentApp := appdetect.CurrentApp(c)
-			currentAddon := addonName(c)
-			opts := db.LogsOpts{
-				Follow: c.Bool("follow"),
-				Count:  c.Int("lines"),
+			var addonName string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonName = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonName = c.String("addon")
 			}
-			err := db.Logs(currentApp, currentAddon, opts)
+			var err error
+			if addonName == "" {
+				err = apps.Logs(currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
+			} else {
+				err = db.Logs(currentApp, addonName, db.LogsOpts{
+					Follow: c.Bool("f"),
+					Count:  c.Int("n"),
+				})
+
+			}
+
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "logs")
 		},
 	}
 )
