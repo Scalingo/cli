@@ -36,7 +36,7 @@ var (
 		Usage:    "Download a backup",
 		Flags: []cli.Flag{appFlag, addonFlag, cli.StringFlag{
 			Name:  "backup, b",
-			Usage: "Name of the current backup",
+			Usage: "ID of the backup to download",
 		}, cli.StringFlag{
 			Name:  "output, o",
 			Usage: "Output file (- for stdout)",
