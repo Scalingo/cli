@@ -18,7 +18,7 @@ var (
    Example:
      Get 100 lines:          'scalingo --app my-app logs -n 100'
      Real-Time logs:         'scalingo --app my-app logs -f'
-     Addon logs:             'scalingo --app my-app --addon addon_uid logs'
+     Addon logs:             'scalingo --app my-app --addon addon_uuid logs'
      Get lines with filter:
        'scalingo --app my-app logs -F web'
        'scalingo --app my-app logs -F web-1'
