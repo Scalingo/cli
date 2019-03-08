@@ -2,10 +2,10 @@
 
 ### To be Released
 
-* [db] Add database logs
-* [db] Add backups and backup-download commands
-* Add force HTTPS, sticky session and canonical domain
-* [commands] Update scale commands to accept flags to create an autoscaler
+* [db] Add database logs #398
+* [db] Add backups and backup-download commands #397
+* Add force HTTPS, sticky session and canonical domain #344
+* [commands] Update scale commands to accept flags to create an autoscaler #339
 * [env-set] Advise to restart after setting the environment #373
 * Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351
 * [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350
