@@ -184,3 +184,20 @@ cd scalingo
 go build .
 SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234 ./scalingo login --api-token <admin user API token>
 ```
+
+## Release a new version
+
+Bump new version number in:
+
+- `.goxc.json`
+- `CHANGELOG.md`
+- `README.md`
+- `VERSION`
+- `config/version.go`
+
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.10.0`.
+
+Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
+the zip archives created by the `make-release.sh` script to this release.
+
+You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
