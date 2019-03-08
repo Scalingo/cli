@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.10.0
+
 * [db] Add database logs #398
 * [db] Add backups and backup-download commands #397
 * Add force HTTPS, sticky session and canonical domain #344
