@@ -20,7 +20,7 @@ func ListBackups(app, addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "CreatedAt", "Size", "Status"})
+	t.SetHeader([]string{"ID", "Created At", "Size", "Status"})
 
 	for _, backup := range backups {
 		t.Append([]string{

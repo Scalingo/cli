@@ -42,7 +42,7 @@ var (
 			Usage: "Output file (- for stdout)",
 		}, cli.BoolFlag{
 			Name:  "silent, s",
-			Usage: "Do not show meter and loading messages",
+			Usage: "Do not show progress bar and loading messages",
 		}},
 		Description: `  Download a specific backup:
 		$ scalingo -a myapp --addon addon_uuid backup-download --backup my_backup
