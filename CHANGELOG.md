@@ -2,6 +2,10 @@
 
 ### To be Released
 
+### 1.10.1
+
+* Wrong default URL for the database API [#403](https://github.com/Scalingo/cli/pull/403)
+
 ### 1.10.0
 
 * [db] Add database logs #398
