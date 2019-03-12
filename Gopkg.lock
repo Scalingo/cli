@@ -18,7 +18,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "fix/79/default_SCALINGO_DB_URL"
+  branch = "master"
   digest = "1:4e87f74e1786cad3e36a4a52750e78dbe5fb2a1e09ffdec09ba7d3b4a2a86c6f"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
@@ -30,7 +30,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "aac375570fe1c7bd83043bd2de2f19bfdc263553"
+  revision = "6a5e889bd6b503e52f86d93f8d5309873fd9ea1a"
 
 [[projects]]
   branch = "master"
