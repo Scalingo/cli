@@ -28,7 +28,7 @@ var apisConfig = map[string]apiConfig{
 		HasVersionPrefix: true,
 	},
 	DBAPI: {
-		DefaultEndpoint: "https://db-api.scalingo.com/api",
+		DefaultEndpoint: "https://db-api.scalingo.com",
 		EnvironmentKey:  "SCALINGO_DB_URL",
 		Prefix:          "/api",
 	},
