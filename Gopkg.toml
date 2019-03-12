@@ -34,10 +34,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/Soulou/errgo-rollbar"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/andrew-d/go-termutil"
 
 [[constraint]]
