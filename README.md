@@ -199,4 +199,11 @@ Build the new version for all platforms with: `./dists/make-release.sh -v 1.10.0
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.
 
+Last, restart the Scalingo application `cli-download-service`. It serves as cache between GitHub and
+our customers for a more efficient check of what is the new CLI version. Type:
+
+```
+scalingo -a cli-download-service restart
+```
+
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
