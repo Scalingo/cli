@@ -1,21 +1,21 @@
 package addons
 
 import (
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"gopkg.in/errgo.v1"
 )
 
-func Upgrade(app, resourceID, plan string) error {
+func Upgrade(app, addonID, plan string) error {
 	if app == "" {
 		return errgo.New("no app defined")
-	} else if resourceID == "" {
+	} else if addonID == "" {
 		return errgo.New("no addon ID defined")
 	} else if plan == "" {
 		return errgo.New("no plan defined")
 	}
 
-	addon, err := checkAddonExist(app, resourceID)
+	addon, err := checkAddonExist(app, addonID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -31,7 +31,7 @@ func Upgrade(app, resourceID, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	io.Status("Addon", resourceID, "has been upgraded")
+	io.Status("Addon", addonID, "has been upgraded")
 	if len(params.Variables) > 0 {
 		io.Info("Modified variables:", params.Variables)
 	}
