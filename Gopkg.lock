@@ -18,8 +18,8 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "master"
-  digest = "1:4e87f74e1786cad3e36a4a52750e78dbe5fb2a1e09ffdec09ba7d3b4a2a86c6f"
+  branch = "fix/alerter/93/alert_delay"
+  digest = "1:e36601b2ed044dbc8f88554175dac8407822f27d72ac9e9bff7636fb6b3777b3"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -30,7 +30,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "6a5e889bd6b503e52f86d93f8d5309873fd9ea1a"
+  revision = "798bed03986caa71880b7da2cbdf905e66fbeaeb"
 
 [[projects]]
   branch = "master"
