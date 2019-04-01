@@ -24,7 +24,7 @@ func List(app string) error {
 		if alert.DurationBeforeTrigger != 0 {
 			hasDurationBeforeTrigger = true
 		}
-		if alert.RemindEvery != 0 {
+		if alert.RemindEvery != "" {
 			hasRemindEvery = true
 		}
 	}
@@ -51,7 +51,7 @@ func List(app string) error {
 			fmt.Sprintf("triggers %s %.2f", above, alert.Limit),
 		}
 		if hasRemindEvery {
-			row = append(row, alert.RemindEvery.String())
+			row = append(row, alert.RemindEvery)
 		}
 		if hasDurationBeforeTrigger {
 			row = append(row, alert.DurationBeforeTrigger.String())

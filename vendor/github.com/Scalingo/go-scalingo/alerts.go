@@ -25,7 +25,7 @@ type Alert struct {
 	Disabled              bool          `json:"disabled"`
 	SendWhenBelow         bool          `json:"send_when_below"`
 	DurationBeforeTrigger time.Duration `json:"duration_before_trigger"`
-	RemindEvery           time.Duration `json:"remind_every"`
+	RemindEvery           string        `json:"remind_every"`
 }
 
 type AlertsRes struct {
@@ -64,7 +64,7 @@ func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 		SendWhenBelow: params.SendWhenBelow,
 	}
 	if params.RemindEvery != nil {
-		a.RemindEvery = *params.RemindEvery
+		a.RemindEvery = (*params.RemindEvery).String()
 	}
 	if params.DurationBeforeTrigger != nil {
 		a.DurationBeforeTrigger = *params.DurationBeforeTrigger
