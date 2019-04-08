@@ -19,12 +19,21 @@ type AddonsService interface {
 
 var _ AddonsService = (*Client)(nil)
 
+type AddonStatus string
+
+const (
+	AddonStatusRunning      AddonStatus = "running"
+	AddonStatusProvisioning AddonStatus = "provisioning"
+	AddonStatusSuspended    AddonStatus = "suspended"
+)
+
 type Addon struct {
 	ID              string         `json:"id"`
 	AppID           string         `json:"app_id"`
 	ResourceID      string         `json:"resource_id"`
 	PlanID          string         `json:"plan_id"`
 	AddonProviderID string         `json:"addon_provider_id"`
+	Status          AddonStatus    `json:"status"`
 	Plan            *Plan          `json:"plan"`
 	AddonProvider   *AddonProvider `json:"addon_provider"`
 }
