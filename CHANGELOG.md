@@ -2,14 +2,24 @@
 
 ### To be Released
 
-* Add force HTTPS, sticky session and canonical domain
-* [commands] Update scale commands to accept flags to create an autoscaler
+### 1.10.1
+
+* Wrong default URL for the database API [#403](https://github.com/Scalingo/cli/pull/403)
+
+### 1.10.0
+
+* [db] Add database logs #398
+* [db] Add backups and backup-download commands #397
+* Add force HTTPS, sticky session and canonical domain #344
+* [commands] Update scale commands to accept flags to create an autoscaler #339
 * [env-set] Advise to restart after setting the environment #373
 * Add `--password-only` flag to `scalingo login`: to change account when a SSH key is defined #351
 * [self] Add `self` (and `whoami` alias): to know which user is connected in case of multi-account #350
 * Better error message if 401 Unauthorized #352
 * Fix English wording #385
 * Fix missing spaces #388
+* Fix new format of SSH key 'invalid type' error #389
+* [db-tunnel] Only display parsable information on stdout, the rest on stderr #396
 
 ### 1.9.0
 

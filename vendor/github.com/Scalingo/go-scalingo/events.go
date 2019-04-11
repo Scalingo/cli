@@ -1,6 +1,11 @@
 package scalingo
 
-import "gopkg.in/errgo.v1"
+import (
+	"encoding/json"
+
+	"github.com/Scalingo/go-scalingo/http"
+	"gopkg.in/errgo.v1"
+)
 
 type EventsService interface {
 	EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error)
@@ -18,7 +23,7 @@ type EventsRes struct {
 
 func (c *Client) EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error) {
 	var eventsRes EventsRes
-	err := c.subresourceList(app, "events", opts.ToMap(), &eventsRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "events", opts.ToMap(), &eventsRes)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Mask(err)
 	}
@@ -30,19 +35,19 @@ func (c *Client) EventsList(app string, opts PaginationOpts) (Events, Pagination
 }
 
 func (c *Client) UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Endpoint: "/events",
 		Params:   opts.ToMap(),
 	}
 
 	var eventsRes EventsRes
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Mask(err, errgo.Any)
 	}
+	defer res.Body.Close()
 
-	err = ParseJSON(res, &eventsRes)
+	err = json.NewDecoder(res.Body).Decode(&eventsRes)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Mask(err, errgo.Any)
 	}

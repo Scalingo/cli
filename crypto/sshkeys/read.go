@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Scalingo/cli/config"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 var (

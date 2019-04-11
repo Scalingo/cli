@@ -28,9 +28,9 @@ var (
 	ErrUnauthenticated = errgo.New("user unauthenticated")
 )
 
-func Auth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
+func Auth() (*scalingo.User, string, error) {
 	var user *scalingo.User
-	var tokens *scalingo.APITokenGenerator
+	var tokens string
 	var err error
 
 	if C.DisableInteractive {
@@ -41,40 +41,40 @@ func Auth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 			if err == nil {
 				break
 			} else if errgo.Cause(err) == io.EOF {
-				return nil, nil, errors.New("canceled by user")
+				return nil, "", errors.New("canceled by user")
 			} else {
 				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
 			}
 		}
 	}
 	if err == ErrAuthenticationFailed {
-		return nil, nil, errors.New("Forgot your password? https://auth.scalingo.com")
+		return nil, "", errors.New("Forgot your password? https://auth.scalingo.com")
 	}
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, "", errgo.Mask(err, errgo.Any)
 	}
 
 	fmt.Print("\n")
 	appio.Statusf("Hello %s, nice to see you!\n\n", user.Username)
 	err = SetCurrentUser(user, tokens)
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, "", errgo.Mask(err, errgo.Any)
 	}
 
 	return user, tokens, nil
 }
 
-func SetCurrentUser(user *scalingo.User, generator *scalingo.APITokenGenerator) error {
-	C.TokenGenerator = generator
+func SetCurrentUser(user *scalingo.User, token string) error {
+	C.token = token
 	AuthenticatedUser = user
-	err := Authenticator.StoreAuth(user, generator)
+	err := Authenticator.StoreAuth(user, token)
 	if err != nil {
 		return errgo.Notef(err, "fail to store user credentials")
 	}
 	return nil
 }
 
-func (a *CliAuthenticator) StoreAuth(user *scalingo.User, generator *scalingo.APITokenGenerator) error {
+func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 	authConfig, err := existingAuth()
 	if err != nil {
 		return errgo.Mask(err)
@@ -88,8 +88,10 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, generator *scalingo.AP
 	}
 
 	c[C.apiHost] = &auth.CredentialsData{
-		TokenGenerator: generator,
-		User:           user,
+		Tokens: &auth.UserToken{
+			Token: token,
+		},
+		User: user,
 	}
 
 	authConfig.LastUpdate = time.Now()
@@ -104,7 +106,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, generator *scalingo.AP
 	return writeAuthFile(authConfig)
 }
 
-func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
+func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
 		return nil, nil, ErrUnauthenticated
@@ -140,7 +142,7 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *scalingo.APITokenGenerat
 		if creds == nil {
 			return nil, nil, ErrUnauthenticated
 		}
-		return creds.User, creds.TokenGenerator, nil
+		return creds.User, creds.Tokens, nil
 	}
 }
 
@@ -169,7 +171,7 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	return writeAuthFile(authConfig)
 }
 
-func tryAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
+func tryAuth() (*scalingo.User, string, error) {
 	var login string
 	var err error
 
@@ -180,14 +182,14 @@ func tryAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
-			return nil, nil, errgo.Mask(err, errgo.Any)
+			return nil, "", errgo.Mask(err, errgo.Any)
 		}
 		login = strings.TrimRight(login, "\n")
 	}
 
 	password, err := term.Password("       Password: ")
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, "", errgo.Mask(err, errgo.Any)
 	}
 
 	otpRequired := false
@@ -202,7 +204,7 @@ func tryAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 		if otpRequired {
 			otp, err = term.Password("       OTP: ")
 			if err != nil {
-				return nil, nil, errgo.NoteMask(err, "fail to get otp", errgo.Any)
+				return nil, "", errgo.NoteMask(err, "fail to get otp", errgo.Any)
 			}
 		}
 
@@ -215,7 +217,7 @@ func tryAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 
 		hostname, err := os.Hostname()
 		if err != nil {
-			return nil, nil, errgo.Notef(err, "fail to get current hostname")
+			return nil, "", errgo.Notef(err, "fail to get current hostname")
 		}
 
 		apiToken, err = c.TokenCreateWithLogin(scalingo.TokenCreateParams{
@@ -225,23 +227,22 @@ func tryAuth() (*scalingo.User, *scalingo.APITokenGenerator, error) {
 			if !otpRequired && errgo.Cause(err) == scalingo.ErrOTPRequired {
 				otpRequired = true
 			} else {
-				return nil, nil, errgo.NoteMask(err, "fail to create API token", errgo.Any)
+				return nil, "", errgo.NoteMask(err, "fail to create API token", errgo.Any)
 			}
 		} else {
 			retryAuth = false
 		}
 	}
 
-	generator := c.GetAPITokenGenerator(apiToken.Token)
-	C.TokenGenerator = generator
+	C.token = apiToken.Token
 
 	client := ScalingoClient()
 	userInformation, err := client.Self()
 	if err != nil {
-		return nil, nil, errgo.NoteMask(err, "fail to get account data", errgo.Any)
+		return nil, "", errgo.NoteMask(err, "fail to get account data", errgo.Any)
 	}
 
-	return userInformation, generator, nil
+	return userInformation, C.token, nil
 }
 
 func writeAuthFile(authConfig *auth.ConfigData) error {

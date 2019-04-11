@@ -1,6 +1,11 @@
 package scalingo
 
-import "gopkg.in/errgo.v1"
+import (
+	"encoding/json"
+
+	"github.com/Scalingo/go-scalingo/http"
+	"gopkg.in/errgo.v1"
+)
 
 type UsersService interface {
 	Self() (*User, error)
@@ -23,18 +28,17 @@ type SelfResponse struct {
 }
 
 func (c *Client) Self() (*User, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Endpoint: "/users/self",
 	}
-	res, err := req.Do()
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	defer res.Body.Close()
 
 	var u SelfResponse
-	err = ParseJSON(res, &u)
+	err = json.NewDecoder(res.Body).Decode(&u)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -52,23 +56,22 @@ type UpdateUserResponse struct {
 }
 
 func (c *Client) UpdateUser(params UpdateUserParams) (*User, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/account/profile",
 		Params: map[string]interface{}{
 			"user": params,
 		},
-		Expected: Statuses{200},
+		Expected: http.Statuses{200},
 	}
-	res, err := req.Do()
+	res, err := c.AuthAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	defer res.Body.Close()
 
 	var u UpdateUserResponse
-	err = ParseJSON(res, &u)
+	err = json.NewDecoder(res.Body).Decode(&u)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

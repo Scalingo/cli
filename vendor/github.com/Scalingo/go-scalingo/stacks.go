@@ -3,6 +3,7 @@ package scalingo
 import (
 	"time"
 
+	httpclient "github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
 )
 
@@ -22,19 +23,12 @@ type StacksService interface {
 var _ StacksService = (*Client)(nil)
 
 func (c *Client) StacksList() ([]Stack, error) {
-	req := &APIRequest{
-		Client:   c,
+	req := &httpclient.APIRequest{
 		Endpoint: "/features/stacks",
 	}
 
-	res, err := req.Do()
-	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
-	}
-	defer res.Body.Close()
-
 	resmap := map[string][]Stack{}
-	err = ParseJSON(res, &resmap)
+	err := c.ScalingoAPI().DoRequest(req, &resmap)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

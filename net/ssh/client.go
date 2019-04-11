@@ -72,8 +72,9 @@ func ConnectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
 
 func ConnectToSSHServerWithKey(key ssh.Signer) (*ssh.Client, error) {
 	sshConfig := &ssh.ClientConfig{
-		User: "git",
-		Auth: []ssh.AuthMethod{ssh.PublicKeys(key)},
+		User:            "git",
+		Auth:            []ssh.AuthMethod{ssh.PublicKeys(key)},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
 	return ssh.Dial("tcp", config.C.SshHost, sshConfig)

@@ -37,7 +37,7 @@ type AlertRes struct {
 
 func (c *Client) AlertsList(app string) ([]*Alert, error) {
 	var alertsRes AlertsRes
-	err := c.subresourceList(app, "alerts", nil, &alertsRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "alerts", nil, &alertsRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -64,7 +64,7 @@ func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 	if params.RemindEvery != nil {
 		alert.RemindEvery = (*params.RemindEvery).String()
 	}
-	err := c.subresourceAdd(app, "alerts", AlertRes{
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "alerts", AlertRes{
 		Alert: alert,
 	}, &alertRes)
 	if err != nil {
@@ -75,7 +75,7 @@ func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 
 func (c *Client) AlertShow(app, id string) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.subresourceGet(app, "alerts", id, nil, &alertRes)
+	err := c.ScalingoAPI().SubresourceGet("apps", app, "alerts", id, nil, &alertRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -94,7 +94,7 @@ type AlertUpdateParams struct {
 
 func (c *Client) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.subresourceUpdate(app, "alerts", id, params, &alertRes)
+	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "alerts", id, params, &alertRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -102,7 +102,7 @@ func (c *Client) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, 
 }
 
 func (c *Client) AlertRemove(app, id string) error {
-	err := c.subresourceDelete(app, "alerts", id)
+	err := c.ScalingoAPI().SubresourceDelete("apps", app, "alerts", id)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

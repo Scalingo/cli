@@ -761,7 +761,7 @@ func (ev *EventAlertType) String() string {
 	} else {
 		res = "High"
 	}
-	res += fmt.Sprintf("%s usage on container %s", d.Metric, d.SenderName)
+	res += fmt.Sprintf(" %s usage on container %s ", d.Metric, d.SenderName)
 	if ev.TypeData.Activated {
 		res += "triggered"
 	} else {

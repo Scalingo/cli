@@ -1,5 +1,4 @@
-Scalingo-CLI v1.9.0
-===================
+# Scalingo-CLI v1.10.1
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -45,6 +44,7 @@ DISABLE_UPDATE_CHECKER=true
 ## Command help
 
 ```
+
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.9.0
+   1.10.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -61,10 +61,12 @@ COMMANDS:
      help  Shows a list of commands or help for one command
 
    Addons:
-     addons          List used add-ons
-     addons-add      Provision an add-on for your application
-     addons-remove   Remove an existing addon from your app
-     addons-upgrade  Upgrade or downgrade an add-on attached to your app
+     addons           List used add-ons
+     addons-add       Provision an add-on for your application
+     addons-remove    Remove an existing addon from your app
+     addons-upgrade   Upgrade or downgrade an add-on attached to your app
+     backups          List backups for an addon
+     backup-download  Download a backup
 
    Addons - Global:
      addons-list   List all addons
@@ -79,15 +81,19 @@ COMMANDS:
      alerts-remove   Remove an alert from an application
 
    App Management:
-     destroy            Destroy an app /!\
-     rename             Rename an application
-     logs, l            Get the logs of your applications
-     logs-archives, la  Get the logs archives of your applications
-     run, r             Run any command for your app
-     ps                 Display your application running processes
-     scale, s           Scale your application instantly
-     restart            Restart processes of your app
-     db-tunnel          Create an encrypted connection to access your database
+     destroy                 Destroy an app /!\
+     rename                  Rename an application
+     logs, l                 Get the logs of your applications
+     logs-archives, la       Get the logs archives of your applications
+     run, r                  Run any command for your app
+     ps                      Display your application running processes
+     scale, s                Scale your application instantly
+     restart                 Restart processes of your app
+     force-https
+     sticky-session
+     set-canonical-domain    Set a canonical domain.
+     unset-canonical-domain  Unset a canonical domain.
+     db-tunnel               Create an encrypted connection to access your database
 
    Autoscalers:
      autoscalers          List the autoscalers of an application
@@ -143,6 +149,8 @@ COMMANDS:
      login      Login to Scalingo platform
      logout     Logout from Scalingo
      signup     Create your Scalingo account
+     self       Get the logged in profile
+     whoami     Get the logged in profile
 
    Notifiers:
      notifiers          List your notifiers
@@ -160,6 +168,7 @@ COMMANDS:
      keys-remove  Remove a public SSH key
 
 GLOBAL OPTIONS:
+   --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --version, -v             print the version
@@ -174,3 +183,27 @@ cd scalingo
 go build .
 SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234 ./scalingo login --api-token <admin user API token>
 ```
+
+## Release a new version
+
+Bump new version number in:
+
+- `.goxc.json`
+- `CHANGELOG.md`
+- `README.md`
+- `VERSION`
+- `config/version.go`
+
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.10.0`.
+
+Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
+the zip archives created by the `make-release.sh` script to this release.
+
+Last, restart the Scalingo application `cli-download-service`. It serves as cache between GitHub and
+our customers for a more efficient check of what is the new CLI version. Type:
+
+```
+scalingo -a cli-download-service restart
+```
+
+You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!

@@ -1,6 +1,10 @@
 package scalingo
 
-import "time"
+import (
+	"time"
+
+	"github.com/Scalingo/go-scalingo/http"
+)
 
 type GithubLinkService interface {
 	GithubLinkShow(app string) (*GithubLink, error)
@@ -56,7 +60,7 @@ var _ GithubLinkService = (*Client)(nil)
 
 func (c *Client) GithubLinkShow(app string) (*GithubLink, error) {
 	var link GithubLinksResponse
-	err := c.subresourceList(app, "github_repo_links", nil, &link)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "github_repo_links", nil, &link)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +74,7 @@ func (c *Client) GithubLinkAdd(app string, params GithubLinkParams) (*GithubLink
 	}
 
 	var link GithubLinkResponse
-	err := c.subresourceAdd(app, "github_repo_links", linkParams, &link)
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "github_repo_links", linkParams, &link)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +87,7 @@ func (c *Client) GithubLinkUpdate(app, id string, params GithubLinkParams) (*Git
 	}
 
 	var link GithubLinkResponse
-	err := c.subresourceUpdate(app, "github_repo_links", id, linkParams, &link)
+	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "github_repo_links", id, linkParams, &link)
 	if err != nil {
 		return nil, err
 	}
@@ -91,19 +95,18 @@ func (c *Client) GithubLinkUpdate(app, id string, params GithubLinkParams) (*Git
 }
 
 func (c *Client) GithubLinkDelete(app, id string) error {
-	return c.subresourceDelete(app, "github_repo_links", id)
+	return c.ScalingoAPI().SubresourceDelete("apps", app, "github_repo_links", id)
 }
 
 func (c *Client) GithubLinkManualDeploy(app, id, branch string) error {
-	req := &APIRequest{
-		Client:   c,
+	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/github_repo_links/" + id + "/manual_deploy",
-		Expected: Statuses{200},
+		Expected: http.Statuses{200},
 		Params: map[string]string{
 			"branch": branch,
 		},
 	}
-	_, err := req.Do()
+	_, err := c.ScalingoAPI().Do(req)
 	return err
 }
