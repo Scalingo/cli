@@ -205,7 +205,7 @@ func (c *Client) AppsSetStack(app string, stackID string) (*App, error) {
 	var appRes AppResponse
 	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
-		return nil, err
+		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}
 
 	return appRes.App, nil

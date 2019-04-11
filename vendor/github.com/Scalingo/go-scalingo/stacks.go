@@ -30,7 +30,7 @@ func (c *Client) StacksList() ([]Stack, error) {
 	resmap := map[string][]Stack{}
 	err := c.ScalingoAPI().DoRequest(req, &resmap)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}
 	return resmap["stacks"], nil
 }

@@ -18,8 +18,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  branch = "feature/app-stack-update"
-  digest = "1:3f3d245aba7589529cee86e79bd02ff84aedba81802b0a771a44d127ff46c50a"
+  digest = "1:1e188cb6e7bf0df1b07b5c30248dc8043fc551c3a8de54d776c9c79644cbb878"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -30,7 +29,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "bebb9e896cd0bee2c92297ea139452ac8c519835"
+  revision = "d02971611e1f5170b783c32f35807fae796450d1"
+  version = "v2.1.0"
 
 [[projects]]
   branch = "master"
