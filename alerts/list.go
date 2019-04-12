@@ -19,11 +19,7 @@ func List(app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	headers := []string{"ID", "Active", "Container Type", "Metric", "Limit"}
 	hasRemindEvery := false
-	hasDurationBeforeTrigger := false
 	for _, alert := range alerts {
-		if alert.DurationBeforeTrigger != 0 {
-			hasDurationBeforeTrigger = true
-		}
 		if alert.RemindEvery != "" {
 			hasRemindEvery = true
 		}
@@ -31,30 +27,29 @@ func List(app string) error {
 	if hasRemindEvery {
 		headers = append(headers, "Remind Every")
 	}
-	if hasDurationBeforeTrigger {
-		headers = append(headers, "Duration")
-	}
 	t.SetHeader(headers)
 
 	for _, alert := range alerts {
 		var above string
 		if alert.SendWhenBelow {
-			above = "below"
+			above = "≤"
 		} else {
-			above = "above"
+			above = "≥"
 		}
+		var durationString string
+		if alert.DurationBeforeTrigger != 0 {
+			durationString = fmt.Sprintf(" (for %s)", alert.DurationBeforeTrigger)
+		}
+
 		row := []string{
 			alert.ID,
 			fmt.Sprint(!alert.Disabled),
 			alert.ContainerType,
 			alert.Metric,
-			fmt.Sprintf("triggers %s %.2f", above, alert.Limit),
+			fmt.Sprintf("%s %.2f%s", above, alert.Limit, durationString),
 		}
 		if hasRemindEvery {
 			row = append(row, alert.RemindEvery)
-		}
-		if hasDurationBeforeTrigger {
-			row = append(row, alert.DurationBeforeTrigger.String())
 		}
 		t.Append(row)
 	}
