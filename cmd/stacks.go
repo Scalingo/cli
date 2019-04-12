@@ -11,7 +11,7 @@ var (
 		Name:     "stacks",
 		Category: "Runtime Stacks",
 		Usage:    "List the available runtime stacks",
-		Description: ` List all the available rutime stacks for your apps:
+		Description: ` List all the available runtime stacks for your apps:
     $ scalingo stacks
 
 		# See also 'stacks-set'
