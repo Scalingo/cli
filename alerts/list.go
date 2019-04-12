@@ -21,26 +21,32 @@ func List(app string) error {
 	hasRemindEvery := false
 	for _, alert := range alerts {
 		if alert.RemindEvery != "" {
-			headers = append(headers, "Remind Every")
 			hasRemindEvery = true
-			break
 		}
+	}
+	if hasRemindEvery {
+		headers = append(headers, "Remind Every")
 	}
 	t.SetHeader(headers)
 
 	for _, alert := range alerts {
 		var above string
 		if alert.SendWhenBelow {
-			above = "below"
+			above = "≤"
 		} else {
-			above = "above"
+			above = "≥"
 		}
+		var durationString string
+		if alert.DurationBeforeTrigger != 0 {
+			durationString = fmt.Sprintf(" (for %s)", alert.DurationBeforeTrigger)
+		}
+
 		row := []string{
 			alert.ID,
 			fmt.Sprint(!alert.Disabled),
 			alert.ContainerType,
 			alert.Metric,
-			fmt.Sprintf("triggers %s %.2f", above, alert.Limit),
+			fmt.Sprintf("%s %.2f%s", above, alert.Limit, durationString),
 		}
 		if hasRemindEvery {
 			row = append(row, alert.RemindEvery)

@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* [alerts] Add support for the duration_before_trigger attribute [#407](https://github.com/Scalingo/cli/pull/407)
+
 ### 1.10.1
 
 * Wrong default URL for the database API [#403](https://github.com/Scalingo/cli/pull/403)
