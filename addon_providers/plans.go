@@ -17,9 +17,9 @@ func Plans(addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name", "Description", "Price"})
+	t.SetHeader([]string{"ID", "Name", "Price"})
 	for _, plan := range plans {
-		t.Append([]string{plan.Name, plan.DisplayName, plan.ShortDescription, fmt.Sprintf("%.2f€", plan.Price)})
+		t.Append([]string{plan.Name, plan.DisplayName, fmt.Sprintf("%.2f€", plan.Price)})
 	}
 	t.Render()
 	return nil
