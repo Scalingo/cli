@@ -38,16 +38,14 @@ func List(app string) error {
 		row := []string{domainName}
 		if !domain.SSL {
 			row = append(row, "-")
-		} else {
-			var tls string
-			if domain.LetsEncrypt {
-				letsencryptStatus, ok := letsencryptStatusString[string(domain.LetsEncryptStatus)]
-				if !ok {
-					letsencryptStatus = string(domain.LetsEncryptStatus)
-				}
-				tls = fmt.Sprintf("(LE %s)", letsencryptStatus)
+		} else if domain.LetsEncrypt {
+			letsencryptStatus, ok := letsencryptStatusString[string(domain.LetsEncryptStatus)]
+			if !ok {
+				letsencryptStatus = string(domain.LetsEncryptStatus)
 			}
-			row = append(row, fmt.Sprintf("%s Valid until %v", tls, domain.Validity))
+			row = append(row, fmt.Sprintf("Let's Encrypt: %s", letsencryptStatus))
+		} else {
+			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
 		}
 		t.Append(row)
 	}
