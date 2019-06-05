@@ -1,6 +1,6 @@
 # Changelog
 
-### To be Released
+### 1.11.0
 
 * [alerts] Add support for the duration_before_trigger attribute [#407](https://github.com/Scalingo/cli/pull/407)
 * [domains] Handle Let's Encrypt certificate status [#410](https://github.com/Scalingo/cli/pull/410)

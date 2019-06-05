@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.10.1
+# Scalingo-CLI v1.11.0
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.10.1
+   1.11.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
