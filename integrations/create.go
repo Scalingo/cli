@@ -8,12 +8,11 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-
-func Create(scm_type string, link string, token string) error {
-	switch scm_type {
+func Create(scmType string, link string, token string) error {
+	switch scmType {
 	case "github", "gitlab":
 
-		fmt.Printf("Integration '%s' has been added.\n", scm_type)
+		fmt.Printf("Integration '%s' has been added.\n", scmType)
 		return nil
 	case "github-enterprise", "gitlab-self-hosted":
 		if link == "" {
@@ -40,7 +39,7 @@ func Create(scm_type string, link string, token string) error {
 			return errgo.New("Token is empty")
 		}
 
-		fmt.Printf("Integration '%s' has been added.\n", scm_type)
+		fmt.Printf("Integration '%s' has been added.\n", scmType)
 		return nil
 	default:
 		return errgo.New("Type don't exist or is empty")
