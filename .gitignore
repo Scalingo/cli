@@ -7,3 +7,9 @@ scalingo/scalingo
 src/github.com
 src/code.google.com
 Godeps/Readme
+
+# Executable
+main
+
+# IDE
+.idea/

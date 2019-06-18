@@ -101,6 +101,11 @@ var (
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
 
+		// Integrations
+		IntegrationsListCommand,
+		IntegrationsCreateCommand,
+		IntegrationsDestroyCommand,
+
 		// Autoscalers
 		autoscalersListCommand,
 		autoscalersAddCommand,
