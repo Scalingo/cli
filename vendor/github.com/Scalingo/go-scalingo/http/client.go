@@ -65,6 +65,7 @@ type ClientConfig struct {
 	Timeout        time.Duration
 	TLSConfig      *tls.Config
 	APIVersion     string
+	Endpoint       string
 	TokenGenerator TokenGenerator
 }
 
@@ -102,6 +103,7 @@ func NewClient(api string, cfg ClientConfig) Client {
 
 	c := client{
 		prefix:         prefix,
+		endpoint:       cfg.Endpoint,
 		tokenGenerator: cfg.TokenGenerator,
 		apiConfig:      config,
 		httpClient: &http.Client{
@@ -221,9 +223,12 @@ func (c *client) TokenGenerator() TokenGenerator {
 }
 
 func (c *client) BaseURL() string {
-	endpoint := c.apiConfig.DefaultEndpoint
-	if os.Getenv(c.apiConfig.EnvironmentKey) != "" {
-		endpoint = os.Getenv(c.apiConfig.EnvironmentKey)
+	endpoint := c.endpoint
+	if endpoint == "" {
+		endpoint = c.apiConfig.DefaultEndpoint
+		if os.Getenv(c.apiConfig.EnvironmentKey) != "" {
+			endpoint = os.Getenv(c.apiConfig.EnvironmentKey)
+		}
 	}
 
 	if c.prefix != "" {

@@ -1,11 +1,12 @@
 package addon_providers
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func Plans(addon string) error {
@@ -16,9 +17,9 @@ func Plans(addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name", "Description"})
+	t.SetHeader([]string{"ID", "Name", "Price/month"})
 	for _, plan := range plans {
-		t.Append([]string{plan.Name, plan.DisplayName, plan.ShortDescription})
+		t.Append([]string{plan.Name, plan.DisplayName, fmt.Sprintf("%.2f€", plan.Price)})
 	}
 	t.Render()
 	return nil

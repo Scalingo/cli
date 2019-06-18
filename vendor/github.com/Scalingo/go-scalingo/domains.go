@@ -19,15 +19,35 @@ type DomainsService interface {
 
 var _ DomainsService = (*Client)(nil)
 
+type LetsEncryptStatus string
+
+const (
+	LetsEncryptStatusPendingDNS  LetsEncryptStatus = "pending_dns"
+	LetsEncryptStatusNew         LetsEncryptStatus = "new"
+	LetsEncryptStatusCreated     LetsEncryptStatus = "created"
+	LetsEncryptStatusDNSRequired LetsEncryptStatus = "dns_required"
+	LetsEncryptStatusError       LetsEncryptStatus = "error"
+)
+
+type ACMEErrorVariables struct {
+	DNSProvider string   `json:"dns_provider"`
+	Variables   []string `json:"variables"`
+}
+
 type Domain struct {
-	ID        string    `json:"id"`
-	AppID     string    `json:"app_id"`
-	Name      string    `json:"name"`
-	TLSCert   string    `json:"tlscert,omitempty"`
-	TLSKey    string    `json:"tlskey,omitempty"`
-	SSL       bool      `json:"ssl"`
-	Validity  time.Time `json:"validity"`
-	Canonical bool      `json:"canonical"`
+	ID                string             `json:"id"`
+	AppID             string             `json:"app_id"`
+	Name              string             `json:"name"`
+	TLSCert           string             `json:"tlscert,omitempty"`
+	TLSKey            string             `json:"tlskey,omitempty"`
+	SSL               bool               `json:"ssl"`
+	Validity          time.Time          `json:"validity"`
+	Canonical         bool               `json:"canonical"`
+	LetsEncrypt       bool               `json:"letsencrypt"`
+	LetsEncryptStatus LetsEncryptStatus  `json:"letsencrypt_status"`
+	AcmeDNSFqdn       string             `json:"acme_dns_fqdn"`
+	AcmeDNSValue      string             `json:"acme_dns_value"`
+	AcmeDNSError      ACMEErrorVariables `json:"acme_dns_error"`
 }
 
 type DomainsRes struct {

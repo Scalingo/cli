@@ -45,13 +45,14 @@ var (
 			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
 			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
 			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
+			cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
 			cli.DurationFlag{Name: "remind-every, r", Usage: "Send the alert at regular interval when activated"},
 			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
 			cli.StringSliceFlag{Name: "notifiers, n", Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: `Add an alert to an application metric.
 
-   The "remind-every", "below" and "notifiers" flags are optionnal
+   The "duration-before-trigger", "remind-every", "below" and "notifiers" flags are optionnal
 
    Example
      scalingo --app my-app alerts-add --container-type web --metric cpu --limit 0.75
@@ -72,13 +73,15 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 			remindEvery := c.Duration("r")
+			durationBeforeTrigger := c.Duration("duration-before-trigger")
 			err := alerts.Add(currentApp, scalingo.AlertAddParams{
-				ContainerType: c.String("c"),
-				Metric:        c.String("m"),
-				Limit:         c.Float64("l"),
-				SendWhenBelow: c.Bool("b"),
-				RemindEvery:   &remindEvery,
-				Notifiers:     c.StringSlice("n"),
+				ContainerType:         c.String("c"),
+				Metric:                c.String("m"),
+				Limit:                 c.Float64("l"),
+				SendWhenBelow:         c.Bool("b"),
+				DurationBeforeTrigger: &durationBeforeTrigger,
+				RemindEvery:           &remindEvery,
+				Notifiers:             c.StringSlice("n"),
 			})
 			if err != nil {
 				errorQuit(err)
@@ -97,6 +100,7 @@ var (
 			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
 			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
 			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
+			cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
 			cli.DurationFlag{Name: "remind-every, r", Usage: "Send the alert at regular interval when activated"},
 			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
 			cli.BoolFlag{Name: "disabled, d", Usage: "Disable the alert (nothing is sent)"},
@@ -137,6 +141,10 @@ var (
 			if c.IsSet("l") {
 				l := c.Float64("l")
 				params.Limit = &l
+			}
+			if c.IsSet("duration-before-trigger") {
+				durationBeforeTrigger := c.Duration("duration-before-trigger")
+				params.DurationBeforeTrigger = &durationBeforeTrigger
 			}
 			if c.IsSet("r") {
 				remindEvery := c.Duration("r")

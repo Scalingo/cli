@@ -46,6 +46,8 @@ func Login(opts LoginOpts) error {
 				}
 				return errors.Wrap(err, "fail to login with SSH")
 			}
+		} else {
+			return nil
 		}
 	}
 

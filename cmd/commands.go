@@ -55,6 +55,10 @@ var (
 		CollaboratorsAddCommand,
 		CollaboratorsRemoveCommand,
 
+		// Stacks
+		stacksListCommand,
+		stacksSetCommand,
+
 		// Addons
 		AddonProvidersListCommand,
 		AddonProvidersPlansCommand,
