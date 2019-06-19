@@ -8,9 +8,9 @@ import (
 
 var (
 	IntegrationsListCommand = cli.Command{
-		Name: "integrations",
+		Name:     "integrations",
 		Category: "External Integrations",
-		Usage: "List your external integrations",
+		Usage:    "List your external integrations",
 		Description: `List all the external integrations associated with your account:
 
 	$ scalingo integrations
@@ -30,7 +30,7 @@ var (
 	}
 
 	IntegrationsCreateCommand = cli.Command{
-		Name: "integrations-create",
+		Name:     "integrations-create",
 		Category: "External Integrations",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "url", Usage: "URL of the integration", Value: "<url>", EnvVar: ""},
@@ -72,9 +72,9 @@ var (
 	}
 
 	IntegrationsDestroyCommand = cli.Command{
-		Name: "integrations-destroy",
+		Name:     "integrations-destroy",
 		Category: "External Integrations",
-		Usage: "Destroy a link between external integration and your account",
+		Usage:    "Destroy a link between external integration and your account",
 		Description: `Destroy a link between external integration and your account:
 
 	$ scalingo integrations-destroy integration-type
@@ -83,7 +83,13 @@ var (
 
 		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
-			err := integrations.Destroy("gitlab")
+			var err error
+			if len(c.Args()) == 1 {
+				err = integrations.Destroy(c.Args()[0])
+			} else {
+				cli.ShowCommandHelp(c, "integrations-destroy")
+			}
+
 			if err != nil {
 				errorQuit(err)
 			}
