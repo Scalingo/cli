@@ -9,7 +9,7 @@ import (
 var (
 	IntegrationsListCommand = cli.Command{
 		Name:     "integrations",
-		Category: "External Integrations",
+		Category: "Integrations",
 		Usage:    "List your external integrations",
 		Description: `List all the external integrations associated with your account:
 
@@ -31,7 +31,7 @@ var (
 
 	IntegrationsCreateCommand = cli.Command{
 		Name:     "integrations-create",
-		Category: "External Integrations",
+		Category: "Integrations",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "url", Usage: "URL of the integration", Value: "<url>", EnvVar: ""},
 			cli.StringFlag{Name: "token", Usage: "Token of the integration", Value: "<token>", EnvVar: ""},
@@ -73,7 +73,7 @@ var (
 
 	IntegrationsDestroyCommand = cli.Command{
 		Name:     "integrations-destroy",
-		Category: "External Integrations",
+		Category: "Integrations",
 		Usage:    "Destroy a link between external integration and your account",
 		Description: `Destroy a link between external integration and your account:
 
