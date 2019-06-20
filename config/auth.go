@@ -95,7 +95,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 	}
 
 	authConfig.LastUpdate = time.Now()
-	authConfig.AuthDataVersion = auth.ConfigVersionV2
+	authConfig.AuthDataVersion = auth.ConfigVersionV21
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {
@@ -122,7 +122,7 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	}
 	file.Close()
 
-	if authConfig.AuthDataVersion != auth.ConfigVersionV2 {
+	if authConfig.AuthDataVersion != auth.ConfigVersionV2 && authConfig.AuthDataVersion != auth.ConfigVersionV21 {
 		err = writeAuthFile(&authConfig)
 		if err != nil {
 			return nil, nil, errgo.NoteMask(err, "fail to update to authv2", errgo.Any)
@@ -134,6 +134,22 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &configPerHost)
 	if err != nil {
 		return nil, nil, errgo.Mask(err)
+	}
+
+	if authConfig.AuthDataVersion == auth.ConfigVersionV2 {
+		authConfig.AuthDataVersion = auth.ConfigVersionV21
+		configPerHost["api.agora-fr1.scalingo.com"] = configPerHost["api.scalingo.com"]
+		delete(configPerHost, "api.scalingo.com")
+		buffer, err := json.Marshal(&configPerHost)
+		if err != nil {
+			return nil, nil, errgo.Notef(err, "Fail to migrate auth config v2.0 to v2.1")
+		}
+		authConfig.AuthConfigPerHost = json.RawMessage(buffer)
+		err = writeAuthFile(&authConfig)
+		if err != nil {
+			return nil, nil, errgo.Notef(err, "Fail to migrate auth config v2.0 to v2.1")
+		}
+
 	}
 
 	if creds, ok := configPerHost[C.apiHost]; !ok {
