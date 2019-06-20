@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	ConfigVersionV2 = "2.0"
+	ConfigVersionV2  = "2.0"
+	ConfigVersionV21 = "2.1"
 )
 
 type ConfigData struct {
