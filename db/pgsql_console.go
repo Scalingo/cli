@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
@@ -11,7 +12,12 @@ type PgSQLConsoleOpts struct {
 }
 
 func PgSQLConsole(opts PgSQLConsoleOpts) error {
-	postgreSQLURL, user, _, err := dbURL(opts.App, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	postgreSQLURL, user, _, err := dbURL(c, opts.App, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

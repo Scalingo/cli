@@ -116,7 +116,8 @@ var (
 		// Sessions
 		LoginCommand,
 		LogoutCommand,
-		SignUpCommand,
+		RegionsListCommand,
+		RegionsSetCommand,
 		selfCommand,
 		whoamiCommand, // `self` alias
 

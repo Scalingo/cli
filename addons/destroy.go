@@ -17,7 +17,12 @@ func Destroy(app, addonID string) error {
 		return errgo.New("no addon ID defined")
 	}
 
-	addon, err := checkAddonExist(app, addonID)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	addon, err := checkAddonExist(c, app, addonID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -35,7 +40,6 @@ func Destroy(app, addonID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, addonID)
 	}
 
-	c := config.ScalingoClient()
 	err = c.AddonDestroy(app, addon.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -45,8 +49,7 @@ func Destroy(app, addonID string) error {
 	return nil
 }
 
-func checkAddonExist(app, addonID string) (*scalingo.Addon, error) {
-	c := config.ScalingoClient()
+func checkAddonExist(c *scalingo.Client, app, addonID string) (*scalingo.Addon, error) {
 	resources, err := c.AddonsList(app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)

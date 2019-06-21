@@ -8,6 +8,8 @@ import (
 )
 
 type EventsService interface {
+	EventTypesList() ([]EventType, error)
+	EventCategoriesList() ([]EventCategory, error)
 	EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error)
 	UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error)
 }

@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
@@ -14,7 +15,12 @@ type MySQLConsoleOpts struct {
 }
 
 func MySQLConsole(opts MySQLConsoleOpts) error {
-	mySQLURL, user, password, err := dbURL(opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	mySQLURL, user, password, err := dbURL(c, opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

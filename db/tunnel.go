@@ -36,7 +36,11 @@ type TunnelOpts struct {
 }
 
 func Tunnel(opts TunnelOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	environ, err := c.VariablesListWithoutAlias(opts.App)
 	if err != nil {
 		return errgo.Mask(err)

@@ -8,7 +8,12 @@ import (
 )
 
 func Update(app, id string, params scalingo.AlertUpdateParams) error {
-	_, err := config.ScalingoClient().AlertUpdate(app, id, params)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	_, err = c.AlertUpdate(app, id, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

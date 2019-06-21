@@ -14,8 +14,9 @@ var (
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
 		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
-			if config.AuthenticatedUser != nil {
-				io.Statusf("You are logged in as %s (%s)\n", config.AuthenticatedUser.Username, config.AuthenticatedUser.Email)
+			currentUser, err := config.C.CurrentUser()
+			if err == nil && currentUser != nil {
+				io.Statusf("You are logged in as %s (%s)\n", currentUser.Username, currentUser.Email)
 				return
 			}
 			io.Status("Currently unauthenticated")

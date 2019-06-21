@@ -1,19 +1,22 @@
 package domains
 
 import (
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 func Remove(app string, domain string) error {
-	d, err := findDomain(app, domain)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+	d, err := findDomain(c, app, domain)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	c := config.ScalingoClient()
 	err = c.DomainsRemove(app, d.ID)
 	if err != nil {
 		return errgo.Mask(err)
@@ -23,8 +26,7 @@ func Remove(app string, domain string) error {
 	return nil
 }
 
-func findDomain(app string, domain string) (scalingo.Domain, error) {
-	c := config.ScalingoClient()
+func findDomain(c *scalingo.Client, app string, domain string) (scalingo.Domain, error) {
 	domains, err := c.DomainsList(app)
 	if err != nil {
 		return scalingo.Domain{}, errgo.Mask(err)

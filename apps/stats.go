@@ -19,8 +19,12 @@ const (
 )
 
 func Stats(app string, stream bool) error {
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	if stream {
-		c := config.ScalingoClient()
 		stats, err := c.AppsStats(app)
 		if err != nil {
 			return errgo.Mask(err)
@@ -31,7 +35,6 @@ func Stats(app string, stream bool) error {
 		for {
 			select {
 			case <-ticker.C:
-				c := config.ScalingoClient()
 				stats, err := c.AppsStats(app)
 				if err != nil {
 					ticker.Stop()
@@ -41,7 +44,6 @@ func Stats(app string, stream bool) error {
 			}
 		}
 	} else {
-		c := config.ScalingoClient()
 		stats, err := c.AppsStats(app)
 		if err != nil {
 			return errgo.Mask(err)

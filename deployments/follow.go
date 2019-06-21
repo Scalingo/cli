@@ -37,7 +37,11 @@ type statusData struct {
 // deployments.
 // The StreamOpts.DeploymentID argument is optional.
 func Stream(opts *StreamOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	app, err := c.AppsShow(opts.AppName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

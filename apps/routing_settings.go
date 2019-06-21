@@ -4,11 +4,16 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/pkg/errors"
+	"gopkg.in/errgo.v1"
 )
 
 func ForceHTTPS(appName string, enable bool) error {
-	c := config.ScalingoClient()
-	_, err := c.AppsForceHTTPS(appName, enable)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	_, err = c.AppsForceHTTPS(appName, enable)
 	if err != nil {
 		return errors.Wrap(err, "fail to configure force-https feature")
 	}
@@ -25,8 +30,11 @@ func ForceHTTPS(appName string, enable bool) error {
 }
 
 func StickySession(appName string, enable bool) error {
-	c := config.ScalingoClient()
-	_, err := c.AppsStickySession(appName, enable)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+	_, err = c.AppsStickySession(appName, enable)
 	if err != nil {
 		return errors.Wrap(err, "fail to configure sticky-session feature")
 	}

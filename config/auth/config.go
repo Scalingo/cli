@@ -29,7 +29,7 @@ type CredentialsData struct {
 	User   *scalingo.User `json:"user"`
 }
 
-type ConfigPerHostV2 map[string]*CredentialsData
+type ConfigPerHostV2 map[string]CredentialsData
 
 type UserToken struct {
 	Token string `json:"token"`

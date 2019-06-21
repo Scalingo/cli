@@ -12,7 +12,10 @@ import (
 )
 
 func List(app string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	resources, err := c.NotifiersList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -21,11 +24,16 @@ func List(app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events"})
 
+	eventTypes, err := c.EventTypesList()
+	if err != nil {
+		return errgo.Notef(err, "fail to list event types")
+	}
+
 	for _, r := range resources {
 		t.Append([]string{
 			r.GetID(), string(r.GetType()), r.GetName(),
 			strconv.FormatBool(r.IsActive()), strconv.FormatBool(r.GetSendAllEvents()),
-			eventTypesToString(r.GetSelectedEvents()),
+			eventTypesToString(eventTypes, r.GetSelectedEventIDs()),
 		})
 	}
 	t.Render()
@@ -33,14 +41,24 @@ func List(app string) error {
 	return nil
 }
 
-func eventTypesToString(eventTypes []scalingo.EventTypeStruct) (res string) {
+func eventTypesToString(eventTypes []scalingo.EventType, ids []string) (res string) {
 	switch len(eventTypes) {
 	case 0:
 		res = ""
 	case 1:
-		res = eventTypes[0].Name
+		for _, t := range eventTypes {
+			if t.ID == ids[0] {
+				res = t.Name
+				break
+			}
+		}
 	default:
-		res = fmt.Sprintf("%s, ...", eventTypes[0].Name)
+		for _, t := range eventTypes {
+			if t.ID == ids[0] {
+				res = fmt.Sprintf("%s, ...", t.Name)
+				break
+			}
+		}
 	}
 	return
 }

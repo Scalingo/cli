@@ -10,7 +10,11 @@ import (
 )
 
 func Plans(addon string) error {
-	c := config.ScalingoUnauthenticatedClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	plans, err := c.AddonProviderPlansList(addon)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

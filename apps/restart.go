@@ -3,15 +3,19 @@ package apps
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func Restart(app string, sync bool, args []string) error {
 	params := scalingo.AppsRestartParams{Scope: args}
 
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	res, err := c.AppsRestart(app, &params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

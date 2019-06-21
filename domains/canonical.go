@@ -7,12 +7,16 @@ import (
 )
 
 func SetCanonical(app, domain string) error {
-	d, err := findDomain(app, domain)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	d, err := findDomain(c, app, domain)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	c := config.ScalingoClient()
 	_, err = c.DomainSetCanonical(app, d.ID)
 	if err != nil {
 		return errgo.Mask(err)
@@ -23,9 +27,12 @@ func SetCanonical(app, domain string) error {
 }
 
 func UnsetCanonical(app string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
-	_, err := c.DomainUnsetCanonical(app)
+	_, err = c.DomainUnsetCanonical(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

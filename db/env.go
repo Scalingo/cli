@@ -4,12 +4,12 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
 
-func dbURL(app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {
-	u, err := dbURLFromAPI(app, envWord, urlSchemes)
+func dbURL(c *scalingo.Client, app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {
+	u, err := dbURLFromAPI(c, app, envWord, urlSchemes)
 	if err != nil {
 		return nil, "", "", errgo.Mask(err)
 	}
@@ -27,8 +27,7 @@ func dbURL(app, envWord string, urlSchemes []string) (*url.URL, string, string, 
 	return dbURL, user, password, nil
 }
 
-func dbURLFromAPI(app, envWord string, urlSchemes []string) (string, error) {
-	c := config.ScalingoClient()
+func dbURLFromAPI(c *scalingo.Client, app, envWord string, urlSchemes []string) (string, error) {
 	environ, err := c.VariablesListWithoutAlias(app)
 	if err != nil {
 		return "", errgo.Mask(err)

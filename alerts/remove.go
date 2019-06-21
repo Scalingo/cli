@@ -7,7 +7,12 @@ import (
 )
 
 func Remove(app, id string) error {
-	err := config.ScalingoClient().AlertRemove(app, id)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	err = c.AlertRemove(app, id)
 	if err != nil {
 		return errgo.Mask(err)
 	}

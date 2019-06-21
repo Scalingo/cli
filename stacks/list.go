@@ -9,7 +9,11 @@ import (
 )
 
 func List() error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	stacks, err := c.StacksList()
 	if err != nil {
 		return errgo.Notef(err, "fail to list available stacks")

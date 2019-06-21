@@ -27,7 +27,10 @@ func Scale(app string, sync bool, types []string) error {
 		err         error
 	)
 
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	scaleParams := &scalingo.AppsScaleParams{}
 	typesWithAutoscaler := []string{}
 	autoscalers, err := c.AutoscalersList(app)

@@ -12,9 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/heroku/hk/term"
 	"gopkg.in/errgo.v1"
 )
@@ -39,7 +39,7 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	signals <- syscall.SIGWINCH
 }
 
-func HandleSignal(s os.Signal, socket net.Conn, runUrl string) {
+func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl string) {
 	switch s {
 	case syscall.SIGINT:
 		socket.Write([]byte{0x03})
@@ -48,14 +48,14 @@ func HandleSignal(s os.Signal, socket net.Conn, runUrl string) {
 	case syscall.SIGTSTP:
 		socket.Write([]byte{0x1a})
 	case syscall.SIGWINCH:
-		err := updateTtySize(runUrl)
+		err := updateTtySize(c, runUrl)
 		if err != nil {
 			debug.Println("WARN: Error when updating terminal size:", err)
 		}
 	}
 }
 
-func updateTtySize(url string) error {
+func updateTtySize(c *scalingo.Client, url string) error {
 	cols, err := term.Cols()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -78,7 +78,7 @@ func updateTtySize(url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	token, err := config.ScalingoClient().GetAccessToken()
+	token, err := c.GetAccessToken()
 	if err != nil {
 		return errgo.Notef(err, "fail to get access token")
 	}

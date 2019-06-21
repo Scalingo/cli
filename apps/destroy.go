@@ -14,8 +14,12 @@ import (
 func Destroy(appName string) error {
 	var validationName string
 
-	c := config.ScalingoClient()
-	_, err := c.AppsShow(appName)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	_, err = c.AppsShow(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

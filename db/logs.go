@@ -12,7 +12,11 @@ type LogsOpts struct {
 }
 
 func Logs(app, addon string, opts LogsOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	url, err := c.AddonLogsURL(app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to get log URL")
