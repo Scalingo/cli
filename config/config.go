@@ -130,8 +130,8 @@ func init() {
 	if err == nil {
 		json.NewDecoder(fd).Decode(&C.ConfigFile)
 	}
-	if C.ScalingoRegion != "" {
-		C.ConfigFile.Region = C.ScalingoRegion
+	if C.ConfigFile.Region != "" {
+		C.ScalingoRegion = C.ConfigFile.Region
 	}
 }
 

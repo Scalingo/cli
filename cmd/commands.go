@@ -1,11 +1,56 @@
 package cmd
 
 import (
+	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 )
 
+type AppCommands struct {
+	commands []cli.Command
+}
+
+type Command struct {
+	cli.Command
+	// Regional flag not available if Global is true
+	Global bool
+}
+
+func (cmds *AppCommands) AddCommand(cmd Command) {
+	if !cmd.Global {
+		regionFlag := cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
+		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
+	}
+	action := cmd.Command.Action.(func(c *cli.Context))
+	cmd.Command.Action = func(c *cli.Context) {
+		region := c.GlobalString("region")
+		if region == "" {
+			region = c.String("region")
+		}
+		if region != "" {
+			config.C.ScalingoRegion = region
+		}
+		action(c)
+	}
+	cmds.commands = append(cmds.commands, cmd.Command)
+}
+
+func (cmds *AppCommands) Commands() []cli.Command {
+	return cmds.commands
+}
+
+func NewAppCommands() *AppCommands {
+	cmds := AppCommands{}
+	for _, cmd := range regionalCommands {
+		cmds.AddCommand(Command{Command: cmd})
+	}
+	for _, cmd := range globalCommands {
+		cmds.AddCommand(Command{Global: true, Command: cmd})
+	}
+	return &cmds
+}
+
 var (
-	Commands = []cli.Command{
+	regionalCommands = []cli.Command{
 		// Apps
 		appsCommand,
 		CreateCommand,
@@ -89,7 +134,7 @@ var (
 		BackupListCommand,
 		BackupDownloadCommand,
 
-		// TODO: Alerts
+		// Alerts
 		alertsListCommand,
 		alertsAddCommand,
 		alertsUpdateCommand,
@@ -100,11 +145,6 @@ var (
 		// Stats
 		StatsCommand,
 
-		// SSH keys
-		ListSSHKeyCommand,
-		AddSSHKeyCommand,
-		RemoveSSHKeyCommand,
-
 		// Autoscalers
 		autoscalersListCommand,
 		autoscalersAddCommand,
@@ -112,12 +152,19 @@ var (
 		autoscalersUpdateCommand,
 		autoscalersDisableCommand,
 		autoscalersEnableCommand,
+	}
+
+	globalCommands = []cli.Command{
+		// SSH keys
+		ListSSHKeyCommand,
+		AddSSHKeyCommand,
+		RemoveSSHKeyCommand,
 
 		// Sessions
 		LoginCommand,
 		LogoutCommand,
 		RegionsListCommand,
-		RegionsSetCommand,
+		ConfigCommand,
 		selfCommand,
 		whoamiCommand, // `self` alias
 
