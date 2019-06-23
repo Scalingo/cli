@@ -12,6 +12,7 @@ type RegionsService interface {
 type Region struct {
 	Name        string `json:"name"`
 	DisplayName string `json:"display_name"`
+	SSH         string `json:"ssh"`
 	API         string `json:"api"`
 	Dashboard   string `json:"dashboard"`
 	DatabaseAPI string `json:"database_api"`

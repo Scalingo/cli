@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
@@ -14,9 +15,15 @@ type RegionsCache struct {
 	Regions  []scalingo.Region `json:"regions"`
 }
 
+// GetRegionOpts allows the caller to use a custom api token instead of the
+// default one of the authentication used
+type GetRegionOpts struct {
+	Token string
+}
+
 // GetRegion returns the requested region configuration, use local file system cache if any
 // In case of cache fault, save on disk for 10 minutes the available regions
-func GetRegion(c Config, token, name string) (scalingo.Region, error) {
+func GetRegion(c Config, name string, opts GetRegionOpts) (scalingo.Region, error) {
 	var regionsCache RegionsCache
 	fd, err := os.Open(c.RegionsCachePath)
 	if err == nil {
@@ -24,7 +31,15 @@ func GetRegion(c Config, token, name string) (scalingo.Region, error) {
 		fd.Close()
 	}
 	if time.Now().Unix() > regionsCache.ExpireAt.Unix() {
-		regions, err := ScalingoAuthClientFromToken(token).RegionsList()
+		token := &auth.UserToken{Token: opts.Token}
+		if token.Token == "" {
+			auth := &CliAuthenticator{}
+			_, token, err = auth.LoadAuth()
+			if err != nil {
+				return scalingo.Region{}, errgo.Notef(err, "fail to load authentication")
+			}
+		}
+		regions, err := ScalingoAuthClientFromToken(token.Token).RegionsList()
 		if err != nil {
 			return scalingo.Region{}, errgo.Notef(err, "fail to list available regions")
 		}

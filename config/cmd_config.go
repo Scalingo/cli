@@ -8,13 +8,7 @@ import (
 )
 
 func SetRegion(regionName string) error {
-	authenticator := &CliAuthenticator{}
-	_, token, err := authenticator.LoadAuth()
-	if err != nil {
-		return errgo.Notef(err, "fail to get current user")
-	}
-
-	region, err := GetRegion(C, token.Token, regionName)
+	region, err := GetRegion(C, regionName, GetRegionOpts{})
 	if err != nil {
 		return errgo.Notef(err, "fail to select region")
 	}

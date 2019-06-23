@@ -23,7 +23,6 @@ type Config struct {
 	ApiVersion           string
 	DisableInteractive   bool
 	DisableUpdateChecker bool
-	SshHost              string
 	UnsecureSsl          bool
 	RollbarToken         string
 
@@ -32,6 +31,7 @@ type Config struct {
 	ScalingoAuthUrl string
 	ScalingoDbUrl   string
 	ScalingoRegion  string
+	ScalingoSshHost string
 
 	// Configuration files
 	ConfigDir      string
@@ -54,8 +54,8 @@ var (
 		"SCALINGO_AUTH_URL":  "https://auth.scalingo.com",
 		"SCALINGO_API_URL":   "",
 		"SCALINGO_DB_URL":    "",
-		"SCALINGO_REGION":    "agora-fr1",
-		"SSH_HOST":           "scalingo.com:22",
+		"SCALINGO_SSH_HOST":  "scalingo.com:22",
+		"SCALINGO_REGION":    "",
 		"API_VERSION":        "1",
 		"UNSECURE_SSL":       "false",
 		"ROLLBAR_TOKEN":      "",
@@ -66,8 +66,9 @@ var (
 		"REGIONS_CACHE_PATH": "regions.json",
 		"LOG_FILE":           "local.log",
 	}
-	C         Config
-	TlsConfig *tls.Config
+	defaultRegion = "agora-fr1"
+	C             Config
+	TlsConfig     *tls.Config
 )
 
 func init() {
@@ -130,8 +131,11 @@ func init() {
 	if err == nil {
 		json.NewDecoder(fd).Decode(&C.ConfigFile)
 	}
-	if C.ConfigFile.Region != "" {
+	if C.ScalingoRegion == "" {
 		C.ScalingoRegion = C.ConfigFile.Region
+	}
+	if C.ScalingoRegion == "" {
+		C.ScalingoRegion = defaultRegion
 	}
 }
 
@@ -161,7 +165,9 @@ func (config Config) scalingoClientConfig(opts ClientConfigOpts) (scalingo.Clien
 			c.APIEndpoint = config.ScalingoApiUrl
 			c.DatabaseAPIEndpoint = config.ScalingoDbUrl
 		} else {
-			region, err := GetRegion(config, opts.APIToken, config.ScalingoRegion)
+			region, err := GetRegion(config, config.ScalingoRegion, GetRegionOpts{
+				Token: opts.APIToken,
+			})
 			if err != nil {
 				return c, errgo.Notef(err, "fail to get region %v specifications", config.ScalingoRegion)
 			}

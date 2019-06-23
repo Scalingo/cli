@@ -68,7 +68,10 @@ func loginWithToken(token string) error {
 
 func loginWithSSH(identity string) error {
 	debug.Println("Login through SSH, identity:", identity)
-	client, _, err := netssh.Connect(identity)
+	client, _, err := netssh.Connect(netssh.ConnectOpts{
+		Host:     config.C.ScalingoSshHost,
+		Identity: identity,
+	})
 	if err != nil {
 		return errors.Wrap(err, "fail to connect to SSH server")
 	}
