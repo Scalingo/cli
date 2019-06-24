@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/user"
 	"github.com/urfave/cli"
 )
 
@@ -14,14 +13,13 @@ var (
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
 		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
-			currentUser, err := config.C.CurrentUser()
-			if err == nil && currentUser != nil {
-				io.Statusf("You are logged in as %s (%s)\n", currentUser.Username, currentUser.Email)
-				return
+			err := user.Self()
+			if err != nil {
+				errorQuit(err)
 			}
-			io.Status("Currently unauthenticated")
 		},
 	}
+
 	whoamiCommand = cli.Command{
 		Name:        "whoami",
 		Category:    selfCommand.Category,
