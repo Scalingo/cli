@@ -187,7 +187,7 @@ func Run(opts RunOpts) error {
 		for {
 			select {
 			case s := <-signals:
-				run.HandleSignal(c, s, socket, ctx.attachURL)
+				run.HandleSignal(ctx.scalingoClient, s, socket, ctx.attachURL)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
