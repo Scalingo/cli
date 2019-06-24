@@ -10,7 +10,7 @@ var (
 	RegionsListCommand = cli.Command{
 		Name:     "regions",
 		Category: "Global",
-		Usage:    "List available availability regions",
+		Usage:    "List available regions",
 		Description: `
    Example
      'scalingo regions'`,
