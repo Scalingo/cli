@@ -27,6 +27,11 @@ var (
 					errorQuit(err)
 				}
 			}
+
+			// If no flag are given, display the current config
+			if c.String("region") == "" {
+				config.Display()
+			}
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "config")

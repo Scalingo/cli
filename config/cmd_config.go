@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
 
@@ -26,4 +27,12 @@ func SetRegion(regionName string) error {
 	}
 
 	return nil
+}
+
+func Display() {
+	t := tablewriter.NewWriter(os.Stdout)
+	t.SetColWidth(60)
+	t.SetHeader([]string{"Configuration key", "Value"})
+	t.Append([]string{"region", C.ConfigFile.Region})
+	t.Render()
 }
