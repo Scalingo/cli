@@ -166,7 +166,7 @@ var (
 		RegionsListCommand,
 		ConfigCommand,
 		selfCommand,
-		whoamiCommand, // `self` alias
+		whoamiCommand,
 
 		// Version
 		UpdateCommand,
