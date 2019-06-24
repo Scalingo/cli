@@ -15,7 +15,11 @@ var (
 		Usage:       "Logout from Scalingo",
 		Description: "Destroy login information stored on your computer",
 		Action: func(c *cli.Context) {
-			if config.AuthenticatedUser == nil {
+			currentUser, err := config.C.CurrentUser()
+			if err != nil {
+				errorQuit(err)
+			}
+			if currentUser == nil {
 				io.Status("You are already logged out.")
 				return
 			}

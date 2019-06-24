@@ -11,7 +11,8 @@ import (
 func AuthenticateHook(c *cli.Context) error {
 	token := os.Getenv("SCALINGO_API_TOKEN")
 
-	if token == "" && config.AuthenticatedUser != nil {
+	currentUser, err := config.C.CurrentUser()
+	if err == nil && currentUser != nil {
 		return nil
 	}
 	return session.Login(session.LoginOpts{APIToken: token})

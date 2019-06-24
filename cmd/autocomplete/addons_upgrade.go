@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/config"
+	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 )
 
 func AddonsUpgradeAutoComplete(c *cli.Context) error {
@@ -15,7 +16,10 @@ func AddonsUpgradeAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	resources, err := client.AddonsList(appName)
 	if len(os.Args) > 1 && err == nil {
 

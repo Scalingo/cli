@@ -11,7 +11,11 @@ import (
 )
 
 func Create(appName string, remote string, buildpack string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {

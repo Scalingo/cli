@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 )
 
 func List() error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	apps, err := c.AppsList()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -25,8 +29,13 @@ func List() error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"Name", "Role", "Owner"})
 
+	currentUser, err := config.C.CurrentUser()
+	if err != nil {
+		return errgo.Notef(err, "fail to get current user")
+	}
+
 	for _, app := range apps {
-		if app.Owner.Email == config.AuthenticatedUser.Email {
+		if app.Owner.Email == currentUser.Email {
 			t.Append([]string{app.Name, "owner", "-"})
 		} else {
 			t.Append([]string{app.Name, "collaborator", fmt.Sprintf("%s <%s>", app.Owner.Username, app.Owner.Email)})

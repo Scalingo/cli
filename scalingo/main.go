@@ -108,6 +108,7 @@ func main() {
 		cli.StringFlag{Name: "addon", Value: "<addon_id>", Usage: "ID of the current addon", EnvVar: "SCALINGO_ADDON"},
 		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
 		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
+		cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"},
 	}
 	app.EnableBashCompletion = true
 	app.BashComplete = func(c *cli.Context) {
@@ -116,8 +117,9 @@ func main() {
 	app.Action = DefaultAction
 	setHelpTemplate()
 
+	cmds := cmd.NewAppCommands()
 	// Commands
-	for _, command := range cmd.Commands {
+	for _, command := range cmds.Commands() {
 		oldFunc := command.BashComplete
 		command.BashComplete = func(c *cli.Context) {
 			n := len(os.Args) - 2

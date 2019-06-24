@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -24,7 +25,6 @@ var (
 type CliAuthenticator struct{}
 
 var (
-	Authenticator      = &CliAuthenticator{}
 	ErrUnauthenticated = errgo.New("user unauthenticated")
 )
 
@@ -65,9 +65,8 @@ func Auth() (*scalingo.User, string, error) {
 }
 
 func SetCurrentUser(user *scalingo.User, token string) error {
-	C.token = token
-	AuthenticatedUser = user
-	err := Authenticator.StoreAuth(user, token)
+	authenticator := &CliAuthenticator{}
+	err := authenticator.StoreAuth(user, token)
 	if err != nil {
 		return errgo.Notef(err, "fail to store user credentials")
 	}
@@ -87,7 +86,12 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 		c = make(auth.ConfigPerHostV2)
 	}
 
-	c[C.apiHost] = &auth.CredentialsData{
+	authHost, err := a.authHost()
+	if err != nil {
+		return errgo.Notef(err, "fail to get authentication service host")
+	}
+
+	c[authHost] = auth.CredentialsData{
 		Tokens: &auth.UserToken{
 			Token: token,
 		},
@@ -138,7 +142,7 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 
 	if authConfig.AuthDataVersion == auth.ConfigVersionV2 {
 		authConfig.AuthDataVersion = auth.ConfigVersionV21
-		configPerHost["api.agora-fr1.scalingo.com"] = configPerHost["api.scalingo.com"]
+		configPerHost["auth.scalingo.com"] = configPerHost["api.scalingo.com"]
 		delete(configPerHost, "api.scalingo.com")
 		buffer, err := json.Marshal(&configPerHost)
 		if err != nil {
@@ -149,17 +153,18 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 		if err != nil {
 			return nil, nil, errgo.Notef(err, "Fail to migrate auth config v2.0 to v2.1")
 		}
-
 	}
 
-	if creds, ok := configPerHost[C.apiHost]; !ok {
+	authHost, err := a.authHost()
+	if err != nil {
+		return nil, nil, errgo.Notef(err, "fail to get authentication service host")
+	}
+
+	creds, ok := configPerHost[authHost]
+	if !ok || creds.User == nil {
 		return nil, nil, ErrUnauthenticated
-	} else {
-		if creds == nil {
-			return nil, nil, ErrUnauthenticated
-		}
-		return creds.User, creds.Tokens, nil
 	}
+	return creds.User, creds.Tokens, nil
 }
 
 func (a *CliAuthenticator) RemoveAuth() error {
@@ -174,8 +179,12 @@ func (a *CliAuthenticator) RemoveAuth() error {
 		return errgo.Mask(err)
 	}
 
-	if _, ok := c[C.apiHost]; ok {
-		delete(c, C.apiHost)
+	authHost, err := a.authHost()
+	if err != nil {
+		return errgo.Notef(err, "fail to get authentication service host")
+	}
+	if _, ok := c[authHost]; ok {
+		delete(c, authHost)
 	}
 
 	buffer, err := json.Marshal(&c)
@@ -185,6 +194,14 @@ func (a *CliAuthenticator) RemoveAuth() error {
 
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	return writeAuthFile(authConfig)
+}
+
+func (a *CliAuthenticator) authHost() (string, error) {
+	u, err := url.Parse(C.ScalingoAuthUrl)
+	if err != nil {
+		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthUrl)
+	}
+	return strings.Split(u.Host, ":")[0], nil
 }
 
 func tryAuth() (*scalingo.User, string, error) {
@@ -211,7 +228,7 @@ func tryAuth() (*scalingo.User, string, error) {
 	otpRequired := false
 	retryAuth := true
 
-	c := ScalingoUnauthenticatedClient()
+	c := ScalingoUnauthenticatedAuthClient()
 
 	loginParams := scalingo.LoginParams{}
 	var apiToken scalingo.Token
@@ -250,15 +267,16 @@ func tryAuth() (*scalingo.User, string, error) {
 		}
 	}
 
-	C.token = apiToken.Token
-
-	client := ScalingoClient()
+	client, err := ScalingoClientFromToken(apiToken.Token)
+	if err != nil {
+		return nil, "", errgo.Notef(err, "fail to get Scalingo client from token %v", apiToken.Token[0:10])
+	}
 	userInformation, err := client.Self()
 	if err != nil {
 		return nil, "", errgo.NoteMask(err, "fail to get account data", errgo.Any)
 	}
 
-	return userInformation, C.token, nil
+	return userInformation, apiToken.Token, nil
 }
 
 func writeAuthFile(authConfig *auth.ConfigData) error {

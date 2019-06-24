@@ -6,8 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/config"
+	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 )
 
 func DbTunnelAutoComplete(c *cli.Context) error {
@@ -22,7 +23,10 @@ func DbTunnelAutoComplete(c *cli.Context) error {
 	}
 
 	if !strings.HasPrefix(lastArg, "-") {
-		client := config.ScalingoClient()
+		client, err := config.ScalingoClient()
+		if err != nil {
+			return errgo.Notef(err, "fail to get Scalingo client")
+		}
 		variables, err := client.VariablesList(appName)
 		if err == nil {
 

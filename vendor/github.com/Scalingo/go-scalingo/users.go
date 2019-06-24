@@ -15,12 +15,11 @@ type UsersService interface {
 var _ UsersService = (*Client)(nil)
 
 type User struct {
-	ID                  string          `json:"id"`
-	Username            string          `json:"username"`
-	Fullname            string          `json:"fullname"`
-	Email               string          `json:"email"`
-	Flags               map[string]bool `json:"flags"`
-	AuthenticationToken string          `json:"authentication_token"`
+	ID       string          `json:"id"`
+	Username string          `json:"username"`
+	Fullname string          `json:"fullname"`
+	Email    string          `json:"email"`
+	Flags    map[string]bool `json:"flags"`
 }
 
 type SelfResponse struct {
@@ -31,7 +30,7 @@ func (c *Client) Self() (*User, error) {
 	req := &http.APIRequest{
 		Endpoint: "/users/self",
 	}
-	res, err := c.ScalingoAPI().Do(req)
+	res, err := c.AuthAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

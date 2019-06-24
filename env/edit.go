@@ -32,8 +32,11 @@ func Add(app string, params []string) error {
 		})
 	}
 
-	c := config.ScalingoClient()
-	_, _, err := c.VariableMultipleSet(app, variables)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+	_, _, err = c.VariableMultipleSet(app, variables)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -48,7 +51,10 @@ func Add(app string, params []string) error {
 }
 
 func Delete(app string, varNames []string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	vars, err := c.VariablesList(app)
 
 	if err != nil {

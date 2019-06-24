@@ -29,7 +29,11 @@ type WSEvent struct {
 }
 
 func Dump(logsURL string, n int, filter string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	res, err := c.Logs(logsURL, n, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

@@ -10,11 +10,15 @@ import (
 
 type ProvisionParams struct {
 	CollaboratorUsernames []string
+	SelectedEventNames    []string
 	scalingo.NotifierParams
 }
 
 func Provision(app, platformName string, params ProvisionParams) error {
-	var err error
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	debug.Printf("[Provision] params: %+v", params)
 
 	if app == "" {
@@ -23,18 +27,27 @@ func Provision(app, platformName string, params ProvisionParams) error {
 	if platformName == "" {
 		return errgo.New("no platform defined")
 	}
-	if len(params.SelectedEvents) >= 1 && params.SelectedEvents[0] == "" {
-		params.SelectedEvents = nil
+
+	eventTypes, err := c.EventTypesList()
+	if err != nil {
+		return errgo.Notef(err, "fail to list event types")
+	}
+	for _, name := range params.SelectedEventNames {
+		for _, t := range eventTypes {
+			if t.Name == name {
+				params.SelectedEventIDs = append(params.SelectedEventIDs, t.ID)
+				break
+			}
+		}
 	}
 
 	if len(params.CollaboratorUsernames) > 0 {
-		params.UserIDs, err = collaboratorUserIDs(app, params.CollaboratorUsernames)
+		params.UserIDs, err = collaboratorUserIDs(c, app, params.CollaboratorUsernames)
 		if err != nil {
 			return errgo.Notef(err, "invalid collaborator usernames")
 		}
 	}
 
-	c := config.ScalingoClient()
 	platforms, err := c.NotificationPlatformByName(platformName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -44,22 +57,21 @@ func Provision(app, platformName string, params ProvisionParams) error {
 	}
 	params.PlatformID = platforms[0].ID
 
-	baseNotifier, err := c.NotifierProvision(app, platforms[0].Name, params.NotifierParams)
+	baseNotifier, err := c.NotifierProvision(app, params.NotifierParams)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	notifier := baseNotifier.Specialize()
 
-	displayDetails(notifier)
+	displayDetails(notifier, eventTypes)
 
 	io.Info()
 	io.Status("Notifier have been created.")
 	return nil
 }
 
-func collaboratorUserIDs(app string, usernames []string) ([]string, error) {
+func collaboratorUserIDs(c *scalingo.Client, app string, usernames []string) ([]string, error) {
 	ids := make([]string, 0, len(usernames))
-	c := config.ScalingoClient()
 
 	collaborators, err := c.CollaboratorsList(app)
 	if err != nil {

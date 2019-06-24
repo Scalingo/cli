@@ -21,6 +21,8 @@ type NotificationPlatform struct {
 	ID                string   `json:"id"`
 	Name              string   `json:"name"`
 	DisplayName       string   `json:"display_name"`
+	LogoURL           string   `json:"logo_url"`
+	Description       string   `json:"description"`
 	AvailableEventIDs []string `json:"available_event_ids"`
 }
 

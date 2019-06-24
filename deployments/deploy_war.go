@@ -29,7 +29,12 @@ func DeployWar(appName, warPath, gitRef string) error {
 
 	var warSize int64
 	var warFileName string
-	var err error
+
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	if strings.HasPrefix(warPath, "http://") || strings.HasPrefix(warPath, "https://") {
 		warReadStream, warSize, err = getURLInfo(warPath)
 		if err != nil {
@@ -59,7 +64,6 @@ func DeployWar(appName, warPath, gitRef string) error {
 	}
 
 	// Get the sources endpoints
-	c := config.ScalingoClient()
 	sources, err := c.SourcesCreate()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

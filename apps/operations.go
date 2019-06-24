@@ -20,6 +20,11 @@ func handleOperation(app string, res *http.Response) error {
 		return errgo.Mask(err)
 	}
 
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	var op *scalingo.Operation
 
 	opID := filepath.Base(opURL.Path)
@@ -29,7 +34,6 @@ func handleOperation(app string, res *http.Response) error {
 	defer close(errs)
 
 	go func() {
-		c := config.ScalingoClient()
 		for {
 			op, err = c.OperationsShow(app, opID)
 			if err != nil {

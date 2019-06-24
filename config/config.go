@@ -2,50 +2,73 @@ package config
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"log"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/Scalingo/envconfig"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/stvp/rollbar"
+	"gopkg.in/errgo.v1"
 )
 
+type ConfigFile struct {
+	Region string `json:"region"`
+}
+
 type Config struct {
-	ScalingoApiUrl       string
-	apiHost              string
-	token                string
 	ApiVersion           string
 	DisableInteractive   bool
 	DisableUpdateChecker bool
-	SshHost              string
 	UnsecureSsl          bool
 	RollbarToken         string
-	ConfigDir            string
-	AuthFile             string
-	LogFile              string
-	logFile              *os.File
-	Logger               *log.Logger
+
+	// Override region configuration
+	ScalingoApiUrl  string
+	ScalingoAuthUrl string
+	ScalingoDbUrl   string
+	ScalingoRegion  string
+	ScalingoSshHost string
+
+	// Configuration files
+	ConfigDir      string
+	AuthFile       string
+	LogFile        string
+	ConfigFilePath string
+	ConfigFile     ConfigFile
+
+	// Cache related files
+	CacheDir         string
+	RegionsCachePath string
+
+	// Logging
+	logFile *os.File
+	Logger  *log.Logger
 }
 
 var (
-	AuthenticatedUser *scalingo.User
-	env               = map[string]string{
-		"SCALINGO_API_URL": "https://api.scalingo.com",
-		"SSH_HOST":         "scalingo.com:22",
-		"API_VERSION":      "1",
-		"UNSECURE_SSL":     "false",
-		"ROLLBAR_TOKEN":    "",
-		"CONFIG_DIR":       ".config/scalingo",
-		"AUTH_FILE":        "auth",
-		"LOG_FILE":         "local.log",
+	env = map[string]string{
+		"SCALINGO_AUTH_URL":  "https://auth.scalingo.com",
+		"SCALINGO_API_URL":   "",
+		"SCALINGO_DB_URL":    "",
+		"SCALINGO_SSH_HOST":  "scalingo.com:22",
+		"SCALINGO_REGION":    "",
+		"API_VERSION":        "1",
+		"UNSECURE_SSL":       "false",
+		"ROLLBAR_TOKEN":      "",
+		"CONFIG_DIR":         ".config/scalingo",
+		"CACHE_DIR":          ".cache/scalingo",
+		"AUTH_FILE":          "auth",
+		"CONFIG_FILE_PATH":   "config.json",
+		"REGIONS_CACHE_PATH": "regions.json",
+		"LOG_FILE":           "local.log",
 	}
-	C         Config
-	TlsConfig *tls.Config
+	defaultRegion = "agora-fr1"
+	C             Config
+	TlsConfig     *tls.Config
 )
 
 func init() {
@@ -56,7 +79,11 @@ func init() {
 
 	env["CONFIG_DIR"] = filepath.Join(home, env["CONFIG_DIR"])
 	env["AUTH_FILE"] = filepath.Join(env["CONFIG_DIR"], env["AUTH_FILE"])
+	env["CONFIG_FILE_PATH"] = filepath.Join(env["CONFIG_DIR"], env["CONFIG_FILE_PATH"])
 	env["LOG_FILE"] = filepath.Join(env["CONFIG_DIR"], env["LOG_FILE"])
+
+	env["CACHE_DIR"] = filepath.Join(home, env["CACHE_DIR"])
+	env["REGIONS_CACHE_PATH"] = filepath.Join(env["CACHE_DIR"], env["REGIONS_CACHE_PATH"])
 
 	for k := range env {
 		vEnv := os.Getenv(k)
@@ -71,7 +98,12 @@ func init() {
 		os.Exit(1)
 	}
 
-	err = os.MkdirAll(C.ConfigDir, 0755)
+	err = os.MkdirAll(C.ConfigDir, 0750)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v\n", err)
+		os.Exit(1)
+	}
+	err = os.MkdirAll(C.CacheDir, 0750)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fail to create configuration directory: %v\n", err)
 		os.Exit(1)
@@ -82,13 +114,6 @@ func init() {
 		fmt.Fprintf(os.Stderr, "Fail to open log file: %s, disabling logging.\n", C.LogFile)
 	}
 	C.Logger = log.New(C.logFile, "", log.LstdFlags)
-
-	u, err := url.Parse(C.ScalingoApiUrl)
-	if err != nil {
-		panic("SCALINGO_API_URL is not a valid URL " + err.Error())
-	}
-
-	C.apiHost = strings.Split(u.Host, ":")[0]
 
 	rollbar.Token = C.RollbarToken
 	rollbar.Platform = "client"
@@ -101,33 +126,89 @@ func init() {
 		TlsConfig.MinVersion = tls.VersionTLS10
 	}
 
-	user, token, err := Authenticator.LoadAuth()
-	if err == nil && token != nil {
-		//client := ScalingoUnauthenticatedClient()
-		C.token = token.Token
+	// Region definition
+	fd, err := os.Open(C.ConfigFilePath)
+	if err == nil {
+		json.NewDecoder(fd).Decode(&C.ConfigFile)
 	}
-	AuthenticatedUser = user
+	if C.ScalingoRegion == "" {
+		C.ScalingoRegion = C.ConfigFile.Region
+	}
+	if C.ScalingoRegion == "" {
+		C.ScalingoRegion = defaultRegion
+	}
 }
 
-func ScalingoClientFromToken(token string) *scalingo.Client {
-	return scalingo.NewClient(scalingo.ClientConfig{
-		TLSConfig: TlsConfig,
-		APIToken:  token,
-	})
+func (config Config) CurrentUser() (*scalingo.User, error) {
+	authenticator := &CliAuthenticator{}
+	user, _, err := authenticator.LoadAuth()
+	return user, err
 }
 
-func ScalingoClient() *scalingo.Client {
-	client := scalingo.NewClient(scalingo.ClientConfig{
-		TLSConfig: TlsConfig,
-		APIToken:  C.token,
-	})
-	return client
+type ClientConfigOpts struct {
+	APIToken string
+	AuthOnly bool
 }
 
-func ScalingoUnauthenticatedClient() *scalingo.Client {
-	return scalingo.NewClient(scalingo.ClientConfig{
-		TLSConfig: TlsConfig,
+func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.ClientConfig {
+	return scalingo.ClientConfig{
+		TLSConfig:    TlsConfig,
+		AuthEndpoint: config.ScalingoAuthUrl,
+		APIToken:     opts.APIToken,
+	}
+}
+
+func (config Config) scalingoClientConfig(opts ClientConfigOpts) (scalingo.ClientConfig, error) {
+	c := config.scalingoClientBaseConfig(opts)
+	if !opts.AuthOnly {
+		if config.ScalingoApiUrl != "" && config.ScalingoDbUrl != "" {
+			c.APIEndpoint = config.ScalingoApiUrl
+			c.DatabaseAPIEndpoint = config.ScalingoDbUrl
+		} else {
+			region, err := GetRegion(config, config.ScalingoRegion, GetRegionOpts{
+				Token: opts.APIToken,
+			})
+			if err != nil {
+				return c, errgo.Notef(err, "fail to get region %v specifications", config.ScalingoRegion)
+			}
+			c.APIEndpoint = region.API
+			c.DatabaseAPIEndpoint = region.DatabaseAPI
+		}
+	}
+	return c, nil
+}
+
+func ScalingoClientFromToken(token string) (*scalingo.Client, error) {
+	config, err := C.scalingoClientConfig(ClientConfigOpts{APIToken: token})
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to create Scalingo client")
+	}
+	return scalingo.NewClient(config), nil
+}
+
+func ScalingoAuthClientFromToken(token string) *scalingo.Client {
+	config := C.scalingoClientBaseConfig(ClientConfigOpts{
+		AuthOnly: true, APIToken: token,
 	})
+	return scalingo.NewClient(config)
+}
+
+func ScalingoClient() (*scalingo.Client, error) {
+	authenticator := &CliAuthenticator{}
+	_, token, err := authenticator.LoadAuth()
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to load credentials")
+	}
+	config, err := C.scalingoClientConfig(ClientConfigOpts{APIToken: token.Token})
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to create Scalingo client")
+	}
+	return scalingo.NewClient(config), nil
+}
+
+func ScalingoUnauthenticatedAuthClient() *scalingo.Client {
+	config := C.scalingoClientBaseConfig(ClientConfigOpts{AuthOnly: true})
+	return scalingo.NewClient(config)
 }
 
 func HomeDir() string {

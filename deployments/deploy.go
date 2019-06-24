@@ -20,9 +20,11 @@ type DeployRes struct {
 }
 
 func Deploy(app, archivePath, gitRef string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
-	var err error
 	var archiveURL string
 	// If archivePath is a remote resource
 	if strings.HasPrefix(archivePath, "http://") || strings.HasPrefix(archivePath, "https://") {

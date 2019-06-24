@@ -15,17 +15,21 @@ func Upgrade(app, addonID, plan string) error {
 		return errgo.New("no plan defined")
 	}
 
-	addon, err := checkAddonExist(app, addonID)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	addon, err := checkAddonExist(c, app, addonID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	planID, err := checkPlanExist(addon.AddonProvider.ID, plan)
+	planID, err := checkPlanExist(c, addon.AddonProvider.ID, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	c := config.ScalingoClient()
 	params, err := c.AddonUpgrade(app, addon.ID, planID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

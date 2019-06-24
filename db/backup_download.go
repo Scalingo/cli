@@ -44,7 +44,10 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	spinner.Start()
 
 	// Get backup metadatas
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	backup, err := client.BackupShow(app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup")

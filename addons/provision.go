@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
 
@@ -18,12 +19,16 @@ func Provision(app, addon, plan string) error {
 		return errgo.New("no plan defined")
 	}
 
-	planID, err := checkPlanExist(addon, plan)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	planID, err := checkPlanExist(c, addon, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	c := config.ScalingoClient()
 	params, err := c.AddonProvision(app, addon, planID)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
@@ -46,8 +51,7 @@ func Provision(app, addon, plan string) error {
 	return nil
 }
 
-func checkPlanExist(addon, plan string) (string, error) {
-	c := config.ScalingoClient()
+func checkPlanExist(c *scalingo.Client, addon, plan string) (string, error) {
 	plans, err := c.AddonProviderPlansList(addon)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)

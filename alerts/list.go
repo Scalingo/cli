@@ -10,7 +10,11 @@ import (
 )
 
 func List(app string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	alerts, err := c.AlertsList(app)
 	if err != nil {
 		return errgo.Mask(err)

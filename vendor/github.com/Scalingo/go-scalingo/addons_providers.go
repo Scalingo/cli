@@ -13,13 +13,12 @@ type AddonProvidersService interface {
 var _ AddonProvidersService = (*Client)(nil)
 
 type Plan struct {
-	ID               string  `json:"id"`
-	LogoURL          string  `json:"logo_url"`
-	DisplayName      string  `json:"display_name"`
-	Name             string  `json:"name"`
-	ShortDescription string  `json:"short_description"`
-	Description      string  `json:"description"`
-	Price            float64 `json:"price"`
+	ID          string  `json:"id"`
+	LogoURL     string  `json:"logo_url"`
+	DisplayName string  `json:"display_name"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
 }
 
 type PlansParams struct {

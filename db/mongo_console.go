@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
@@ -11,7 +12,12 @@ type MongoConsoleOpts struct {
 }
 
 func MongoConsole(opts MongoConsoleOpts) error {
-	mongoURL, _, _, err := dbURL(opts.App, "SCALINGO_MONGO", []string{"mongodb://"})
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	mongoURL, _, _, err := dbURL(c, opts.App, "SCALINGO_MONGO", []string{"mongodb://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
