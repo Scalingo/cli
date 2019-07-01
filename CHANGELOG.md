@@ -1,5 +1,12 @@
 # Changelog
 
+### To be Released
+
+### 1.12.0
+
+* Initial support for multi-region [#425](https://github.com/Scalingo/cli/pull/425)
+* [self] Check logged in user with the API [#427](https://github.com/Scalingo/cli/pull/427)
+
 ### 1.11.0
 
 * [alerts] Add support for the duration_before_trigger attribute [#407](https://github.com/Scalingo/cli/pull/407)

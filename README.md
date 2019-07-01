@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.11.0
+# Scalingo-CLI v1.12.0
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.11.0
+   1.12.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -148,6 +148,8 @@ COMMANDS:
      create, c  Create a new app
      login      Login to Scalingo platform
      logout     Logout from Scalingo
+     regions    List available regions
+     config     Configure the CLI
      signup     Create your Scalingo account
      self       Get the logged in profile
      whoami     Get the logged in profile
@@ -167,10 +169,15 @@ COMMANDS:
      keys-add     Add a public SSH key to deploy your apps
      keys-remove  Remove a public SSH key
 
+   Runtime Stacks:
+     stacks      List the available runtime stacks
+     stacks-set  Set the runtime stack of an app
+
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
+   --region value            Name of the region to use
    --version, -v             print the version
 ```
 
