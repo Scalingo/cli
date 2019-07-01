@@ -62,7 +62,7 @@ func Run(opts RunOpts) error {
 
 	firstReadDone := make(chan struct{})
 	ctx := &runContext{
-		app:                     opts.App,
+		app: opts.App,
 		waitingTextOutputWriter: os.Stderr,
 		stdinCopyFunc:           stdio.Copy,
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
