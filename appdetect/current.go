@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/urfave/cli"
-	"github.com/Scalingo/cli/debug"
 )
 
 func CurrentApp(c *cli.Context) string {

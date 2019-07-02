@@ -28,8 +28,8 @@ go get -u github.com/Scalingo/cli/scalingo
 You have to setup the following environment variables:
 
 ```
-http_proxy=http://<proxy host>:<proxy port>
-https_proxy=https://<proxy host>:<proxy port>
+HTTP_PROXY=http://<proxy host>:<proxy port>
+HTTPS_PROXY=https://<proxy host>:<proxy port>
 ```
 
 ## Disable update checking

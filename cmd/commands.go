@@ -152,6 +152,9 @@ var (
 		autoscalersUpdateCommand,
 		autoscalersDisableCommand,
 		autoscalersEnableCommand,
+
+		gitSetup,
+		gitShow,
 	}
 
 	globalCommands = []cli.Command{

@@ -22,7 +22,7 @@ import (
 
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"

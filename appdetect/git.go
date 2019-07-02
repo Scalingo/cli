@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/Scalingo/go-gitremote"
+	"github.com/Scalingo/go-scalingo/debug"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/debug"
 )
 
 func DetectGit() (string, bool) {

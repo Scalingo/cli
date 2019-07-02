@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
