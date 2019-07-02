@@ -1,7 +1,6 @@
 package git
 
 import (
-	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/debug"
 	errgo "gopkg.in/errgo.v1"
@@ -35,17 +34,4 @@ func Setup(appName string, params SetupParams) error {
 
 	io.Status("Successfully added the Git remote", params.RemoteName, "on", appName)
 	return nil
-}
-
-func getGitEndpoint(appName string) (string, error) {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return "", errgo.Notef(err, "fail to get scalingo API client")
-	}
-	app, err := c.AppsShow(appName)
-	if err != nil {
-		return "", errgo.Notef(err, "fail to get application information")
-	}
-
-	return app.GitUrl, nil
 }

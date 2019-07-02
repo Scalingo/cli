@@ -40,4 +40,30 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "git-setup")
 		},
 	}
+	gitShow = cli.Command{
+		Name:     "git-show",
+		Category: "Git",
+		Usage:    "Display the Git remote URL for this application",
+		Flags:    []cli.Flag{appFlag},
+		Description: `Display the Git remote URL for this application.
+
+		Example
+		  scalingo --app my-app git-show
+		`,
+		Before: AuthenticateHook,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "git-show")
+				return
+			}
+
+			err := git.Show(appdetect.CurrentApp(c))
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "git-show")
+		},
+	}
 )
