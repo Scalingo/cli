@@ -152,6 +152,8 @@ var (
 		autoscalersUpdateCommand,
 		autoscalersDisableCommand,
 		autoscalersEnableCommand,
+
+		gitSetup,
 	}
 
 	globalCommands = []cli.Command{
