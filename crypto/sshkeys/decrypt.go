@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/term"
 )
 

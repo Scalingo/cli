@@ -12,9 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Scalingo/cli/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/heroku/hk/term"
 	"gopkg.in/errgo.v1"
 )
