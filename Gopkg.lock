@@ -10,14 +10,6 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "master"
-  digest = "1:e25669f49084df10ec9ff820eb625cfd90a136331bfb79112f88307f7829ad9f"
-  name = "github.com/Scalingo/go-gitremote"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "97b505dac0c3696d7395d6627494ec105a69280f"
-
-[[projects]]
   digest = "1:49225d9b4bc7c37a606e9f18c963ddd79ba55541ee696495e415154b2e77ed74"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
@@ -363,7 +355,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Scalingo/envconfig",
-    "github.com/Scalingo/go-gitremote",
     "github.com/Scalingo/go-scalingo",
     "github.com/Scalingo/go-scalingo/debug",
     "github.com/Scalingo/go-scalingo/http",

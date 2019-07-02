@@ -4,12 +4,12 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strings"
 
-	"github.com/Scalingo/go-gitremote"
 	"github.com/Scalingo/go-scalingo/debug"
 	"gopkg.in/errgo.v1"
+	"gopkg.in/src-d/go-git.v4"
+	gitconfig "gopkg.in/src-d/go-git.v4/config"
 )
 
 func DetectGit() (string, bool) {
@@ -26,6 +26,10 @@ func DetectGit() (string, bool) {
 	return "", false
 }
 
+// ScalingoRepo searches into the current directory and its parent for a remote
+// named remoteName or scalingo-<remoteName>.
+//
+// It returns the application name and an error.
 func ScalingoRepo(directory string, remoteName string) (string, error) {
 	remotes, err := scalingoRemotes(directory)
 	if err != nil {
@@ -34,14 +38,21 @@ func ScalingoRepo(directory string, remoteName string) (string, error) {
 
 	altRemoteName := "scalingo-" + remoteName
 	for _, remote := range remotes {
-		if remote.Name == remoteName || remote.Name == altRemoteName {
-			return filepath.Base(strings.TrimSuffix(remote.Repository(), ".git")), nil
+		if remote.Config().Name == remoteName ||
+			remote.Config().Name == altRemoteName {
+			// The URL looks like git@host:appName.git. The following line extract
+			// the application name from it.
+			splittedURL := strings.SplitN(strings.TrimSuffix(remote.Config().URLs[0], ".git"), ":", 2)
+			if len(splittedURL) < 2 {
+				return "", errgo.Notef(err, "fail to parse remote URL")
+			}
+			return splittedURL[1], nil
 		}
 	}
-	return "", errgo.Newf("Scalingo GIT remote hasn't been found")
+	return "", errgo.Newf("Scalingo Git remote hasn't been found")
 }
 
-func ScalingoRepoComplete(dir string) []string {
+func ScalingoRepoAutoComplete(dir string) []string {
 	var repos []string
 
 	remotes, err := scalingoRemotes(dir)
@@ -51,42 +62,37 @@ func ScalingoRepoComplete(dir string) []string {
 	}
 
 	for _, remote := range remotes {
-		if strings.HasPrefix(remote.Name, "scalingo-") {
-			repos = append(repos, remote.Name[9:])
+		if strings.HasPrefix(remote.Config().Name, "scalingo-") {
+			repos = append(repos, remote.Config().Name[9:])
 		} else {
-			repos = append(repos, remote.Name)
+			repos = append(repos, remote.Config().Name)
 		}
 	}
 
 	return repos
 }
 
-func scalingoRemotes(directory string) (gitremote.Remotes, error) {
-	matchedRemotes := make(gitremote.Remotes, 0)
-	remotes, err := gitremote.List(directory)
+func scalingoRemotes(directory string) ([]*git.Remote, error) {
+	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return nil, err
+		return nil, errgo.Notef(err, "fail to initialize the Git repository")
 	}
-	for _, remote := range remotes {
-		matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remote.URL))
-		if err == nil && matched {
-			debug.Println("[AppDetect] GIT remote found:", remote)
-			matchedRemotes = append(matchedRemotes, remote)
-		}
-	}
-	return matchedRemotes, nil
+
+	return repo.Remotes()
 }
 
 func AddRemote(url string, name string) error {
-	remote := &gitremote.Remote{
-		Name: name,
-		URL:  url,
+	repo, err := git.PlainOpen(".")
+	if err != nil {
+		return errgo.Notef(err, "fail to initialize the Git repository")
 	}
 
-	config := gitremote.New(".")
-	err := config.Add(remote)
+	_, err = repo.CreateRemote(&gitconfig.RemoteConfig{
+		Name: name,
+		URLs: []string{url},
+	})
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to add the Git remote")
 	}
 
 	return nil
