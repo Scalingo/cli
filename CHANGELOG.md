@@ -3,6 +3,8 @@
 ### To be Released
 
 * Display request ID in debug logs [#435](https://github.com/Scalingo/cli/pull/435)
+* Add `git-setup` and `git-show` commands [#431](https://github.com/Scalingo/cli/pull/431)
+* Remove dependency to an old Git lib for a more battle tested one [#434](https://github.com/Scalingo/cli/pull/434)
 
 ### 1.12.0
 

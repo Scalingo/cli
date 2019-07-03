@@ -30,10 +30,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/Scalingo/go-gitremote"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/andrew-d/go-termutil"
 
 [[constraint]]
