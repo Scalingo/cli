@@ -4,6 +4,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/Scalingo/go-scalingo/debug"
@@ -73,12 +74,29 @@ func ScalingoRepoAutoComplete(dir string) []string {
 }
 
 func scalingoRemotes(directory string) ([]*git.Remote, error) {
-	repo, err := git.PlainOpen(".")
+	repo, err := git.PlainOpen(directory)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to initialize the Git repository")
 	}
 
-	return repo.Remotes()
+	remotes, err := repo.Remotes()
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to list the remotes")
+	}
+
+	matchedRemotes := []*git.Remote{}
+	for _, remote := range remotes {
+		remoteURL := remote.Config().URLs[0]
+		matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remoteURL))
+		if err != nil || !matched {
+			continue
+		}
+
+		debug.Println("[AppDetect] Git remote found:", remoteURL)
+		matchedRemotes = append(matchedRemotes, remote)
+	}
+
+	return matchedRemotes, nil
 }
 
 func AddRemote(url string, name string) error {
