@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.13.0
+
 * Add the `apps-info` command [#438](https://github.com/Scalingo/cli/pull/438)
 * Display request ID in debug logs [#435](https://github.com/Scalingo/cli/pull/435)
 * Add `git-setup` and `git-show` commands [#431](https://github.com/Scalingo/cli/pull/431)
