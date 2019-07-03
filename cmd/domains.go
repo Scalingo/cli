@@ -15,7 +15,7 @@ var (
 		Usage:    "List the domains of an application",
 		Description: `List all the custom domains of an application:
 
-    $ scalingo -a myapp domains
+    $ scalingo --app my-app domains
 
     # See also commands 'domains-add' and 'domains-remove'`,
 

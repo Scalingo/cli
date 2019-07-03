@@ -55,7 +55,8 @@ var (
 		appsCommand,
 		CreateCommand,
 		DestroyCommand,
-		RenameCommand,
+		renameCommand,
+		appsInfoCommand,
 
 		// Apps Actions
 		LogsCommand,

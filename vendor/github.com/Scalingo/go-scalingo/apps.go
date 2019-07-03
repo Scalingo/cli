@@ -101,6 +101,10 @@ type App struct {
 	CreatedAt      *time.Time `json:"created_at"`
 	UpdatedAt      *time.Time `json:"update_at"`
 	Links          *AppLinks  `json:"links"`
+	StackID        string     `json:"stack_id"`
+	StickySession  bool       `json:"sticky_session"`
+	ForceHTTPS     bool       `json:"force_https"`
+	RouterLogs     bool       `json:"router_logs"`
 }
 
 func (app App) String() string {
