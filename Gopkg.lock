@@ -18,7 +18,7 @@
   revision = "97b505dac0c3696d7395d6627494ec105a69280f"
 
 [[projects]]
-  digest = "1:109be2950f2a07c4c4d9d4d6154ff8f40905922f3631e93be60bd8075a834ec9"
+  digest = "1:49225d9b4bc7c37a606e9f18c963ddd79ba55541ee696495e415154b2e77ed74"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -29,8 +29,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "b8b1bc82dd22d8983a95e2a2df045c2bb1c4b62f"
-  version = "v2.4.3"
+  revision = "b86a840520ff122c737acf56feeeb8fb072525dc"
+  version = "v2.4.4"
 
 [[projects]]
   branch = "master"

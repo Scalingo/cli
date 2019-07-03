@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* Display request ID in debug logs [#435](https://github.com/Scalingo/cli/pull/435)
+
 ### 1.12.0
 
 * Initial support for multi-region [#425](https://github.com/Scalingo/cli/pull/425)
