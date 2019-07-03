@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/stacks"
 	"github.com/urfave/cli"
 )
@@ -51,6 +52,9 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.StacksSetAutoComplete(c)
 		},
 	}
 )
