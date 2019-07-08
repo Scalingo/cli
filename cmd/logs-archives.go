@@ -20,7 +20,6 @@ var (
 		Flags: []cli.Flag{appFlag,
 			cli.IntFlag{Name: "page, p", Usage: "Page number", EnvVar: ""},
 		},
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 0 {

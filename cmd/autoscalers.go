@@ -15,7 +15,6 @@ var (
 		Usage:       "List the autoscalers of an application",
 		Flags:       []cli.Flag{appFlag},
 		Description: "List all the autoscalers of an application and display information about them.",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "autoscalers")
@@ -50,7 +49,6 @@ var (
    Example
      scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 1 --max-containers 3
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if !isValidAutoscalerAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "autoscalers-add")
@@ -97,7 +95,6 @@ var (
      scalingo --app my-app autoscalers-update --container-type web --max-containers 5
      scalingo --app my-app autoscalers-update --container-type web --metric p95_response_time --target 67
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 || !c.IsSet("c") {
 				err := cli.ShowCommandHelp(c, "autoscalers-update")
@@ -149,7 +146,6 @@ var (
    Example
      scalingo --app my-app autoscalers-enable web
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-enable")
@@ -183,7 +179,6 @@ var (
    Example
      scalingo --app my-app autoscalers-disable web
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-disable")
@@ -216,7 +211,6 @@ var (
 
    Example
      scalingo --app my-app autoscalers-remove web`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "autoscalers-remove")

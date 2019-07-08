@@ -19,7 +19,6 @@ var (
 
 		# See also 'stacks-set'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			err := stacks.List()
 			if err != nil {
@@ -40,7 +39,6 @@ var (
 
 		# See also 'stacks'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 1 {

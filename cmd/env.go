@@ -19,7 +19,6 @@ var (
 
     # See also commands 'env-set' and 'env-unset'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -49,7 +48,6 @@ var (
 
     # See also commands 'env' and 'env-unset'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -79,7 +77,6 @@ var (
 
     # See also commands 'env' and 'env-set'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

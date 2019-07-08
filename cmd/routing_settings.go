@@ -22,7 +22,6 @@ var (
    Example
      scalingo --app my-app force-https --enable
 	 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) > 1 {
@@ -59,7 +58,6 @@ var (
    Example
      scalingo --app my-app sticky-session --enable
 	 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) > 1 {

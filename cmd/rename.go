@@ -23,7 +23,6 @@ var (
 		},
 		Usage:       "Rename an application",
 		Description: "Rename an app\n  Example:\n    'scalingo rename --app my-app --new-name my-app-production'",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			newName := c.String("new-name")

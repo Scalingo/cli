@@ -22,8 +22,6 @@ var (
 		## Restart a specific container
 	  scalingo --app my-app restart web-1`,
 
-		Before: AuthenticateHook,
-
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if err := apps.Restart(currentApp, c.Bool("s"), c.Args()); err != nil {

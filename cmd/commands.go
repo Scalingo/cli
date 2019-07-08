@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/session"
 	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/urfave/cli"
@@ -24,7 +27,19 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 	}
 	action := cmd.Command.Action.(func(c *cli.Context))
 	cmd.Command.Action = func(c *cli.Context) {
-		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{})
+		token := os.Getenv("SCALINGO_API_TOKEN")
+
+		currentUser, err := config.C.CurrentUser()
+		if err != nil || currentUser == nil {
+			err := session.Login(session.LoginOpts{APIToken: token})
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			Token: token,
+		})
 		if err != nil {
 			panic(err)
 		}

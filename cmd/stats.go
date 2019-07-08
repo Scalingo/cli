@@ -18,7 +18,6 @@ var (
 		Description: `Display metrics of you application running containers
 	Example
 	  'scalingo --app my-app stats'`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {

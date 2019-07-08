@@ -14,7 +14,6 @@ var (
 		Usage:       "List the collaborators of an application",
 		Flags:       []cli.Flag{appFlag},
 		Description: "List all the collaborators of an application and display information about them.",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
@@ -37,7 +36,6 @@ var (
 		Usage:       "Invite someone to work on an application",
 		Flags:       []cli.Flag{appFlag},
 		Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email\n scalingo -a myapp collaborators-add user@example.com",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 1 {
@@ -61,7 +59,6 @@ var (
 		Usage:       "Revoke permission to collaborate on an application",
 		Flags:       []cli.Flag{appFlag},
 		Description: "Revoke the invitation of collaboration to the given email\n    scalingo -a myapp collaborators-remove user@example.com",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 1 {
