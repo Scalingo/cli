@@ -13,7 +13,6 @@ var (
 		Category:    "Global",
 		Description: "List your apps and give some details about them",
 		Usage:       "List your apps",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if err := apps.List(); err != nil {
 				errorQuit(err)
@@ -34,7 +33,6 @@ var (
 		Example:
 			scalingo apps-info --app my-app
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if err := apps.Info(currentApp); err != nil {

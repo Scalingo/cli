@@ -11,7 +11,6 @@ var (
 		Category:    "Global",
 		Usage:       "Get the logged in profile",
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			err := user.Self()
 			if err != nil {

@@ -19,7 +19,6 @@ var (
 
 		# See also 'notifiers-add' and 'notifiers-remove'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -48,7 +47,6 @@ var (
 
 		# See also 'notifiers'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -103,7 +101,6 @@ Examples
  # Use 'platforms-list' to see all available platforms
  # See also 'notifiers' and 'notifiers-remove'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 
@@ -171,7 +168,6 @@ Examples
 
  # See also 'notifiers' and 'notifiers-remove'
 	`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -234,7 +230,6 @@ Examples
 
 		# See also 'notifiers' and 'notifiers-add'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

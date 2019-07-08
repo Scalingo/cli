@@ -16,8 +16,7 @@ var (
 			cli.StringFlag{Name: "remote", Value: "scalingo", Usage: "Remote to add to your current git repository", EnvVar: ""},
 			cli.StringFlag{Name: "buildpack", Value: "", Usage: "URL to a custom buildpack that Scalingo should use to build your application", EnvVar: ""},
 		},
-		Usage:  "Create a new app",
-		Before: AuthenticateHook,
+		Usage: "Create a new app",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "create")

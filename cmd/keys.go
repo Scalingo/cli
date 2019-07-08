@@ -17,7 +17,6 @@ var (
 
     # See also commands 'keys-add' and 'keys-remove'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			err := keys.List()
 			if err != nil {
@@ -39,7 +38,6 @@ var (
 
     # See also commands 'keys' and 'keys-remove'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 2 {
 				cli.ShowCommandHelp(c, "keys-add")
@@ -65,7 +63,6 @@ var (
 
     # See also commands 'keys' and 'keys-add'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "keys-remove")

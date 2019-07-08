@@ -20,7 +20,6 @@ var (
 
     # See also commands 'alerts-add', 'alerts-update' and 'alerts-remove'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "alerts")
@@ -61,7 +60,6 @@ var (
 
     # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if !isValidAlertAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "alerts-add")
@@ -117,7 +115,6 @@ var (
 
    # See also 'alerts-disable' and 'alerts-enable'
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-update")
@@ -185,7 +182,6 @@ var (
 
    # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-enable")
@@ -221,7 +217,6 @@ var (
 
    # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-disable")
@@ -257,7 +252,6 @@ var (
 
    # See also commands 'alerts-add' and 'alerts-update'
 		 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "alerts-remove")

@@ -18,7 +18,6 @@ var (
 
 		# See also 'addons-add' and 'addons-remove'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

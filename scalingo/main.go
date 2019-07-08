@@ -146,9 +146,9 @@ func main() {
 				rollbar.Error(rollbar.ERR, err)
 			}
 			return
-		} else {
-			defer update.Check()
 		}
+
+		defer update.Check()
 	} else {
 		// If we are completing stuff, disable logging
 		config.C.DisableInteractive = true

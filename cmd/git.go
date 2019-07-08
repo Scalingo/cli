@@ -22,7 +22,6 @@ var (
 		Example
 		  scalingo --app my-app git-setup --remote scalingo-staging
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "git-setup")
@@ -50,7 +49,6 @@ var (
 		Example
 		  scalingo --app my-app git-show
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "git-show")

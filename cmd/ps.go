@@ -16,7 +16,6 @@ var (
 		Description: `Display your application processes
 	Example
 	  'scalingo --app my-app ps'`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
