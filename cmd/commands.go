@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"github.com/Scalingo/cli/config"
+	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/urfave/cli"
 )
 
@@ -22,16 +24,38 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 	}
 	action := cmd.Command.Action.(func(c *cli.Context))
 	cmd.Command.Action = func(c *cli.Context) {
-		region := c.GlobalString("region")
-		if region == "" {
-			region = c.String("region")
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{})
+		if err != nil {
+			panic(err)
 		}
-		if region != "" {
-			config.C.ScalingoRegion = region
+		currentRegion := c.GlobalString("region")
+		if currentRegion == "" {
+			currentRegion = c.String("region")
+		}
+
+		if config.C.ScalingoRegion == "" && currentRegion == "" {
+			region := getDefaultRegion(regions)
+			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+			currentRegion = region.Name
+		}
+
+		if currentRegion != "" {
+			config.C.ScalingoRegion = currentRegion
 		}
 		action(c)
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)
+}
+
+func getDefaultRegion(regionsCache config.RegionsCache) scalingo.Region {
+	defaultRegion := regionsCache.Regions[0]
+	for _, region := range regionsCache.Regions {
+		if region.Default {
+			defaultRegion = region
+			break
+		}
+	}
+	return defaultRegion
 }
 
 func (cmds *AppCommands) Commands() []cli.Command {

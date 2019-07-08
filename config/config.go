@@ -66,9 +66,8 @@ var (
 		"REGIONS_CACHE_PATH": "regions.json",
 		"LOG_FILE":           "local.log",
 	}
-	defaultRegion = "agora-fr1"
-	C             Config
-	TlsConfig     *tls.Config
+	C         Config
+	TlsConfig *tls.Config
 )
 
 func init() {
@@ -126,16 +125,13 @@ func init() {
 		TlsConfig.MinVersion = tls.VersionTLS10
 	}
 
-	// Region definition
+	// Read region from the configuration file
 	fd, err := os.Open(C.ConfigFilePath)
 	if err == nil {
 		json.NewDecoder(fd).Decode(&C.ConfigFile)
 	}
 	if C.ScalingoRegion == "" {
 		C.ScalingoRegion = C.ConfigFile.Region
-	}
-	if C.ScalingoRegion == "" {
-		C.ScalingoRegion = defaultRegion
 	}
 }
 
@@ -169,7 +165,7 @@ func (config Config) scalingoClientConfig(opts ClientConfigOpts) (scalingo.Clien
 				Token: opts.APIToken,
 			})
 			if err != nil {
-				return c, errgo.Notef(err, "fail to get region %v specifications", config.ScalingoRegion)
+				return c, errgo.Notef(err, "fail to get region '%v' specifications", config.ScalingoRegion)
 			}
 			c.APIEndpoint = region.API
 			c.DatabaseAPIEndpoint = region.DatabaseAPI

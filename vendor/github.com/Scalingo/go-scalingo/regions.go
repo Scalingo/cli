@@ -16,6 +16,7 @@ type Region struct {
 	API         string `json:"api"`
 	Dashboard   string `json:"dashboard"`
 	DatabaseAPI string `json:"database_api"`
+	Default     bool   `json:"default"`
 }
 
 type regionsRes struct {
