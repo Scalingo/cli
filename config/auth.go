@@ -267,10 +267,7 @@ func tryAuth() (*scalingo.User, string, error) {
 		}
 	}
 
-	client, err := ScalingoClientFromToken(apiToken.Token)
-	if err != nil {
-		return nil, "", errgo.Notef(err, "fail to get Scalingo client from token %v", apiToken.Token[0:10])
-	}
+	client := ScalingoAuthClientFromToken(apiToken.Token)
 	userInformation, err := client.Self()
 	if err != nil {
 		return nil, "", errgo.NoteMask(err, "fail to get account data", errgo.Any)
