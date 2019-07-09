@@ -2,6 +2,10 @@
 
 ### To be Released
 
+### 1.14.0
+
+* Use user's default region [#411](https://github.com/Scalingo/cli/pull/441)
+
 ### 1.13.0
 
 * Add the `apps-info` command [#438](https://github.com/Scalingo/cli/pull/438)
