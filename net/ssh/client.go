@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
 )
@@ -14,12 +14,17 @@ var (
 	ErrNoAuthSucceed = errgo.Newf("No authentication method has succeeded")
 )
 
-func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
+type ConnectOpts struct {
+	Host     string
+	Identity string
+}
+
+func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		err         error
 		privateKeys []ssh.Signer
 	)
-	if identity == "ssh-agent" {
+	if opts.Identity == "ssh-agent" {
 		var agentConnection stdio.Closer
 		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
 		if err != nil {
@@ -29,19 +34,22 @@ func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
 	}
 
 	if len(privateKeys) == 0 {
-		if identity == "ssh-agent" {
-			identity = sshkeys.DefaultKeyPath
+		if opts.Identity == "ssh-agent" {
+			opts.Identity = sshkeys.DefaultKeyPath
 		}
-		privateKey, err := sshkeys.ReadPrivateKey(identity)
+		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
 		if err != nil {
 			return nil, nil, errgo.Mask(err)
 		}
 		privateKeys = append(privateKeys, privateKey)
 	}
 
-	debug.Println("Identity used:", identity, "Private keys:", len(privateKeys))
+	debug.Println("Identity used:", opts.Identity, "Private keys:", len(privateKeys))
 
-	client, key, err := ConnectToSSHServer(privateKeys)
+	client, key, err := ConnectToSSHServer(ConnectSSHOpts{
+		Host: opts.Host,
+		Keys: privateKeys,
+	})
 	if err != nil {
 		return nil, nil, err
 	}
@@ -49,15 +57,20 @@ func Connect(identity string) (*ssh.Client, ssh.Signer, error) {
 	return client, key, nil
 }
 
-func ConnectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
+type ConnectSSHOpts struct {
+	Host string
+	Keys []ssh.Signer
+}
+
+func ConnectToSSHServer(opts ConnectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		client     *ssh.Client
 		privateKey ssh.Signer
 		err        error
 	)
 
-	for _, privateKey = range keys {
-		client, err = ConnectToSSHServerWithKey(privateKey)
+	for _, privateKey = range opts.Keys {
+		client, err = ConnectToSSHServerWithKey(opts.Host, privateKey)
 		if err == nil {
 			break
 		} else {
@@ -70,12 +83,12 @@ func ConnectToSSHServer(keys []ssh.Signer) (*ssh.Client, ssh.Signer, error) {
 	return client, privateKey, nil
 }
 
-func ConnectToSSHServerWithKey(key ssh.Signer) (*ssh.Client, error) {
+func ConnectToSSHServerWithKey(host string, key ssh.Signer) (*ssh.Client, error) {
 	sshConfig := &ssh.ClientConfig{
 		User:            "git",
 		Auth:            []ssh.AuthMethod{ssh.PublicKeys(key)},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	return ssh.Dial("tcp", config.C.SshHost, sshConfig)
+	return ssh.Dial("tcp", host, sshConfig)
 }

@@ -21,8 +21,7 @@ type LoginError struct {
 }
 
 type LoginResponse struct {
-	AuthenticationToken string `json:"authentication_token"`
-	User                *User  `json:"user"`
+	User *User `json:"user"`
 }
 
 func (err *LoginError) Error() string {

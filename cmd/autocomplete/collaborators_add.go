@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/urfave/cli"
-	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 )
 
 func CollaboratorsAddAutoComplete(c *cli.Context) error {
@@ -23,7 +24,10 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	currentAppCollaborators, err := client.CollaboratorsList(appName)
 	if err != nil {
 		return nil

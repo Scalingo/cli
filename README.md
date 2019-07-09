@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.11.0
+# Scalingo-CLI v1.14.0
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -28,8 +28,8 @@ go get -u github.com/Scalingo/cli/scalingo
 You have to setup the following environment variables:
 
 ```
-http_proxy=http://<proxy host>:<proxy port>
-https_proxy=https://<proxy host>:<proxy port>
+HTTP_PROXY=http://<proxy host>:<proxy port>
+HTTPS_PROXY=https://<proxy host>:<proxy port>
 ```
 
 ## Disable update checking
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.11.0
+   1.14.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -148,6 +148,8 @@ COMMANDS:
      create, c  Create a new app
      login      Login to Scalingo platform
      logout     Logout from Scalingo
+     regions    List available regions
+     config     Configure the CLI
      signup     Create your Scalingo account
      self       Get the logged in profile
      whoami     Get the logged in profile
@@ -167,10 +169,15 @@ COMMANDS:
      keys-add     Add a public SSH key to deploy your apps
      keys-remove  Remove a public SSH key
 
+   Runtime Stacks:
+     stacks      List the available runtime stacks
+     stacks-set  Set the runtime stack of an app
+
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
+   --region value            Name of the region to use
    --version, -v             print the version
 ```
 
@@ -194,7 +201,7 @@ Bump new version number in:
 - `VERSION`
 - `config/version.go`
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.10.0`.
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.14.0`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.

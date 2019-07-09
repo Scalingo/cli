@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/user"
-	"github.com/urfave/cli"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -19,7 +19,6 @@ var (
 		Description: `List the events you have done on the platform:
 
     $ scalingo user-timeline`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			var err error
 			if len(c.Args()) == 0 {

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/notifiers"
@@ -21,7 +19,6 @@ var (
 
 		# See also 'notifiers-add' and 'notifiers-remove'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -50,7 +47,6 @@ var (
 
 		# See also 'notifiers'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -80,9 +76,9 @@ var (
 			cli.StringFlag{Name: "platform, p", Value: "", Usage: "The notifier platform"},
 			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
 			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
-			cli.StringFlag{Name: "events, ev", Value: "", Usage: "List of selected events. Default: []"},
 			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
+			cli.StringSliceFlag{Name: "event, ev", Value: &cli.StringSlice{}, Usage: "List of selected events. Default: []"},
 			cli.StringSliceFlag{Name: "email", Value: &cli.StringSlice{}, Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
 			cli.StringSliceFlag{Name: "collaborator", Value: &cli.StringSlice{}, Usage: "The usernames of the collaborators who will receive notifications"},
 		},
@@ -94,7 +90,7 @@ Examples
    --platform slack \
    --name "My notifier" \
    --webhook-url "https://hooks.slack.com/services/1234" \
-   --events "deployment stop_app"
+   --event deployment --event stop_app
 
  $ scalingo -a myapp notifiers-add \
    --platform webhook \
@@ -105,7 +101,6 @@ Examples
  # Use 'platforms-list' to see all available platforms
  # See also 'notifiers' and 'notifiers-remove'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 
@@ -123,11 +118,11 @@ Examples
 
 			params := notifiers.ProvisionParams{
 				CollaboratorUsernames: c.StringSlice("collaborator"),
+				SelectedEventNames:    c.StringSlice("event"),
 				NotifierParams: scalingo.NotifierParams{
-					Active:         &active,
-					Name:           c.String("name"),
-					SendAllEvents:  &sendAllEvents,
-					SelectedEvents: strings.Split(c.String("events"), " "),
+					Active:        &active,
+					Name:          c.String("name"),
+					SendAllEvents: &sendAllEvents,
 
 					// Type data options
 					PhoneNumber: c.String("phone"),
@@ -155,10 +150,10 @@ Examples
 			cli.BoolFlag{Name: "disable, d", Usage: "Disable the notifier"},
 			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
 			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
-			cli.StringFlag{Name: "events, ev", Value: "", Usage: "List of selected events. Default: []"},
 			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
 			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
+			cli.StringSliceFlag{Name: "event, ev", Value: &cli.StringSlice{}, Usage: "List of selected events. Default: []"},
 		},
 		Usage: "Update a notifier",
 		Description: `Update a notifier:
@@ -173,7 +168,6 @@ Examples
 
  # See also 'notifiers' and 'notifiers-remove'
 	`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -199,11 +193,11 @@ Examples
 
 			params := notifiers.ProvisionParams{
 				CollaboratorUsernames: c.StringSlice("collaborator"),
+				SelectedEventNames:    c.StringSlice("event"),
 				NotifierParams: scalingo.NotifierParams{
-					Active:         active,
-					Name:           c.String("name"),
-					SendAllEvents:  sendAllEvents,
-					SelectedEvents: strings.Split(c.String("events"), " "),
+					Active:        active,
+					Name:          c.String("name"),
+					SendAllEvents: sendAllEvents,
 
 					// Type data options
 					PhoneNumber: c.String("phone"),
@@ -236,7 +230,6 @@ Examples
 
 		# See also 'notifiers' and 'notifiers-add'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

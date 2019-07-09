@@ -10,7 +10,11 @@ import (
 )
 
 func Ps(app string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	processes, err := c.AppsPs(app)
 	if err != nil {
 		return errgo.Mask(err)

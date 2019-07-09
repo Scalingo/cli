@@ -17,31 +17,33 @@ var (
 )
 
 func TestStoreAuth(t *testing.T) {
+	authenticator := &CliAuthenticator{}
+
 	// First creation
-	err := Authenticator.StoreAuth(u)
+	err := authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	clean()
 
 	// Rewrite over an existing file
-	err = Authenticator.StoreAuth(u)
+	err = authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
-	err = Authenticator.StoreAuth(u)
+	err = authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	clean()
 
 	// Add an additional api url
-	err = Authenticator.StoreAuth(u)
+	err = authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
 	C.apiHost = "scalingo2.dev"
-	err = Authenticator.StoreAuth(u)
+	err = authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}
@@ -49,6 +51,8 @@ func TestStoreAuth(t *testing.T) {
 }
 
 func TestExistingAuth(t *testing.T) {
+	authenticator := &CliAuthenticator{}
+
 	// Before any auth
 	currentAuth, err := existingAuth()
 	if err != nil {
@@ -65,7 +69,7 @@ func TestExistingAuth(t *testing.T) {
 	}
 
 	// After one auth
-	err = Authenticator.StoreAuth(u)
+	err = authenticator.StoreAuth(u)
 	if err != nil {
 		t.Errorf("%v should be nil", err)
 	}

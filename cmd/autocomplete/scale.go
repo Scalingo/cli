@@ -3,9 +3,9 @@ package autocomplete
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func ScaleAutoComplete(c *cli.Context) error {
@@ -14,7 +14,10 @@ func ScaleAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	processes, err := client.AppsPs(appName)
 	if err != nil {
 		return errgo.Mask(err)

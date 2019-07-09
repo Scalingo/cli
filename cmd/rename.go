@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	RenameCommand = cli.Command{
+	renameCommand = cli.Command{
 		Name:     "rename",
 		Category: "App Management",
 		Flags: []cli.Flag{
@@ -23,7 +23,6 @@ var (
 		},
 		Usage:       "Rename an application",
 		Description: "Rename an app\n  Example:\n    'scalingo rename --app my-app --new-name my-app-production'",
-		Before:      AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			newName := c.String("new-name")

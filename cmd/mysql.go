@@ -28,7 +28,6 @@ var (
 
     # See also 'mongo-console' and 'pgsql-console'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			opts := db.MySQLConsoleOpts{

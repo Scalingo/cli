@@ -3,13 +3,16 @@ package keys
 import (
 	"os"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func List() error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	keys, err := c.KeysList()
 	if err != nil {
 		return errgo.Mask(err)

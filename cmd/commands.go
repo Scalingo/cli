@@ -1,16 +1,101 @@
 package cmd
 
 import (
+	"os"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/session"
+	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/urfave/cli"
 )
 
+type AppCommands struct {
+	commands []cli.Command
+}
+
+type Command struct {
+	cli.Command
+	// Regional flag not available if Global is true
+	Global bool
+}
+
+func (cmds *AppCommands) AddCommand(cmd Command) {
+	if !cmd.Global {
+		regionFlag := cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
+		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
+	}
+	action := cmd.Command.Action.(func(c *cli.Context))
+	cmd.Command.Action = func(c *cli.Context) {
+		token := os.Getenv("SCALINGO_API_TOKEN")
+
+		currentUser, err := config.C.CurrentUser()
+		if err != nil || currentUser == nil {
+			err := session.Login(session.LoginOpts{APIToken: token})
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			Token: token,
+		})
+		if err != nil {
+			panic(err)
+		}
+		currentRegion := c.GlobalString("region")
+		if currentRegion == "" {
+			currentRegion = c.String("region")
+		}
+
+		if config.C.ScalingoRegion == "" && currentRegion == "" {
+			region := getDefaultRegion(regions)
+			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+			currentRegion = region.Name
+		}
+
+		if currentRegion != "" {
+			config.C.ScalingoRegion = currentRegion
+		}
+		action(c)
+	}
+	cmds.commands = append(cmds.commands, cmd.Command)
+}
+
+func getDefaultRegion(regionsCache config.RegionsCache) scalingo.Region {
+	defaultRegion := regionsCache.Regions[0]
+	for _, region := range regionsCache.Regions {
+		if region.Default {
+			defaultRegion = region
+			break
+		}
+	}
+	return defaultRegion
+}
+
+func (cmds *AppCommands) Commands() []cli.Command {
+	return cmds.commands
+}
+
+func NewAppCommands() *AppCommands {
+	cmds := AppCommands{}
+	for _, cmd := range regionalCommands {
+		cmds.AddCommand(Command{Command: cmd})
+	}
+	for _, cmd := range globalCommands {
+		cmds.AddCommand(Command{Global: true, Command: cmd})
+	}
+	return &cmds
+}
+
 var (
-	Commands = []cli.Command{
+	regionalCommands = []cli.Command{
 		// Apps
 		appsCommand,
 		CreateCommand,
 		DestroyCommand,
-		RenameCommand,
+		renameCommand,
+		appsInfoCommand,
 
 		// Apps Actions
 		LogsCommand,
@@ -89,7 +174,7 @@ var (
 		BackupListCommand,
 		BackupDownloadCommand,
 
-		// TODO: Alerts
+		// Alerts
 		alertsListCommand,
 		alertsAddCommand,
 		alertsUpdateCommand,
@@ -118,12 +203,23 @@ var (
 		autoscalersDisableCommand,
 		autoscalersEnableCommand,
 
+		gitSetup,
+		gitShow,
+	}
+
+	globalCommands = []cli.Command{
+		// SSH keys
+		ListSSHKeyCommand,
+		AddSSHKeyCommand,
+		RemoveSSHKeyCommand,
+
 		// Sessions
 		LoginCommand,
 		LogoutCommand,
-		SignUpCommand,
+		RegionsListCommand,
+		ConfigCommand,
 		selfCommand,
-		whoamiCommand, // `self` alias
+		whoamiCommand,
 
 		// Version
 		UpdateCommand,

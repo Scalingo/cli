@@ -3,18 +3,21 @@ package keys
 import (
 	"fmt"
 
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/cli/config"
 )
 
 func Remove(name string) error {
-	k, err := keyByName(name)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	k, err := keyByName(c, name)
 	if err != nil {
 		return errgo.Mask(err)
 	}
-
-	c := config.ScalingoClient()
 	err = c.KeysDelete(k.ID)
 	if err != nil {
 		return errgo.Mask(err)
@@ -24,8 +27,7 @@ func Remove(name string) error {
 	return nil
 }
 
-func keyByName(name string) (*scalingo.Key, error) {
-	c := config.ScalingoClient()
+func keyByName(c *scalingo.Client, name string) (*scalingo.Key, error) {
 	keys, err := c.KeysList()
 	if err != nil {
 		return nil, errgo.Mask(err)

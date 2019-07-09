@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/logs"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
@@ -25,12 +25,16 @@ type LogsRes struct {
 }
 
 func Logs(appName string, stream bool, n int, filter string) error {
-	err := checkFilter(appName, filter)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	err = checkFilter(c, appName, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	c := config.ScalingoClient()
 	res, err := c.LogsURL(appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -65,7 +69,7 @@ func Logs(appName string, stream bool, n int, filter string) error {
 	return nil
 }
 
-func checkFilter(appName string, filter string) error {
+func checkFilter(c *scalingo.Client, appName string, filter string) error {
 	if filter == "" {
 		return nil
 	}
@@ -74,7 +78,6 @@ func checkFilter(appName string, filter string) error {
 		return nil
 	}
 
-	c := config.ScalingoClient()
 	processes, err := c.AppsPs(appName)
 	if err != nil {
 		return errgo.Mask(err)

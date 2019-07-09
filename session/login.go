@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo"
@@ -29,11 +29,6 @@ func Login(opts LoginOpts) error {
 		return loginWithToken(opts.APIToken)
 	}
 
-	if config.AuthenticatedUser != nil {
-		io.Statusf("You are already logged as %s (%s)!\n", config.AuthenticatedUser.Email, config.AuthenticatedUser.Username)
-		return nil
-	}
-	io.Status("Currently unauthenticated")
 	if !opts.PasswordOnly {
 		io.Info("Trying login with SSH…")
 		err := loginWithSSH(opts.SSHIdentity)
@@ -73,7 +68,10 @@ func loginWithToken(token string) error {
 
 func loginWithSSH(identity string) error {
 	debug.Println("Login through SSH, identity:", identity)
-	client, _, err := netssh.Connect(identity)
+	client, _, err := netssh.Connect(netssh.ConnectOpts{
+		Host:     config.C.ScalingoSshHost,
+		Identity: identity,
+	})
 	if err != nil {
 		return errors.Wrap(err, "fail to connect to SSH server")
 	}
@@ -106,7 +104,7 @@ func loginWithSSH(identity string) error {
 		return errgo.Notef(err, "fail to get current hostname")
 	}
 
-	c := config.ScalingoUnauthenticatedClient()
+	c := config.ScalingoUnauthenticatedAuthClient()
 	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
 		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 	}, scalingo.LoginParams{
@@ -124,7 +122,7 @@ func loginWithSSH(identity string) error {
 }
 
 func finalizeLogin(token string) error {
-	c := config.ScalingoClientFromToken(token)
+	c := config.ScalingoAuthClientFromToken(token)
 	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)

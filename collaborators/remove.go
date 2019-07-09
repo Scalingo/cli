@@ -3,10 +3,10 @@ package collaborators
 import (
 	"errors"
 
-	"github.com/Scalingo/go-scalingo"
-	"gopkg.in/errgo.v1"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
+	"gopkg.in/errgo.v1"
 )
 
 var (
@@ -14,7 +14,12 @@ var (
 )
 
 func Remove(app, email string) error {
-	collaborator, err := getFromEmail(app, email)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	collaborator, err := getFromEmail(c, app, email)
 	if err != nil {
 		if err == notFound {
 			io.Error(email + " is not a collaborator of " + app + ".")
@@ -23,8 +28,6 @@ func Remove(app, email string) error {
 			return errgo.Mask(err, errgo.Any)
 		}
 	}
-
-	c := config.ScalingoClient()
 	err = c.CollaboratorRemove(app, collaborator.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -34,8 +37,7 @@ func Remove(app, email string) error {
 	return nil
 }
 
-func getFromEmail(app, email string) (scalingo.Collaborator, error) {
-	c := config.ScalingoClient()
+func getFromEmail(c *scalingo.Client, app, email string) (scalingo.Collaborator, error) {
 	collaborators, err := c.CollaboratorsList(app)
 	if err != nil {
 		return scalingo.Collaborator{}, errgo.Mask(err, errgo.Any)

@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	ConfigVersionV2 = "2.0"
+	ConfigVersionV2  = "2.0"
+	ConfigVersionV21 = "2.1"
 )
 
 type ConfigData struct {
@@ -28,7 +29,7 @@ type CredentialsData struct {
 	User   *scalingo.User `json:"user"`
 }
 
-type ConfigPerHostV2 map[string]*CredentialsData
+type ConfigPerHostV2 map[string]CredentialsData
 
 type UserToken struct {
 	Token string `json:"token"`

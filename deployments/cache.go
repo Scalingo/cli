@@ -6,9 +6,12 @@ import (
 )
 
 func ResetCache(app string) error {
-	c := config.ScalingoClient()
-	err := c.DeploymentCacheReset(app)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
+	err = c.DeploymentCacheReset(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

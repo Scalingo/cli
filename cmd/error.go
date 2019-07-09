@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
@@ -55,14 +55,24 @@ func (r *ReportError) Report() {
 }
 
 func errorQuit(err error) {
-	newReportError(err).Report()
+	currentUser, autherr := config.C.CurrentUser()
+	if autherr != nil {
+		debug.Println("Fail to get current user")
+		debug.Println(errgo.Details(err))
+	}
+
+	newReportError(currentUser, err).Report()
 	rollbar.Wait()
 
 	if httpclient.IsRequestFailedError(errgo.Cause(err)) &&
 		errgo.Cause(err).(*httpclient.RequestFailedError).Code == 401 {
-		session.DestroyToken()
-		io.Errorf("You are currently logged in as %s.\n", config.AuthenticatedUser.Username)
-		io.Errorf("Are you sure %s is a collaborator of this app?\n", config.AuthenticatedUser.Username)
+		if currentUser != nil {
+			session.DestroyToken()
+			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
+			io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
+		} else {
+			io.Errorf("Failed to read credentials for current user: %v", autherr)
+		}
 	} else {
 		io.Error("An error occured:")
 		debug.Println(errgo.Details(err))
@@ -72,10 +82,10 @@ func errorQuit(err error) {
 	os.Exit(1)
 }
 
-func newReportError(err error) *ReportError {
+func newReportError(currentUser *scalingo.User, err error) *ReportError {
 	r := &ReportError{
 		Time:    time.Now(),
-		User:    config.AuthenticatedUser,
+		User:    currentUser,
 		Error:   err,
 		Command: strings.Join(os.Args, " "),
 		Version: config.Version,

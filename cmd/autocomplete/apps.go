@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
@@ -32,7 +32,10 @@ func appsList() ([]*scalingo.App, error) {
 	apps, err = appsAutoCompleteCache()
 	if err != nil {
 		debug.Println("fail to get applications autocomplete cache make GET request", err)
-		c := config.ScalingoClient()
+		c, err := config.ScalingoClient()
+		if err != nil {
+			return nil, errgo.Notef(err, "fail to get Scalingo client")
+		}
 		apps, err = c.AppsList()
 		if err != nil || len(apps) == 0 {
 			return nil, errgo.Mask(err)

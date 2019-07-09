@@ -17,7 +17,10 @@ func LogsArchives(appName string, page int) error {
 		page = 1
 	}
 
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
 	logsRes, err := c.LogsArchives(appName, page)
 	if err != nil {

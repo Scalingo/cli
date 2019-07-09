@@ -20,7 +20,6 @@ var (
 		Description: ` Delete the deployment cache (in case of corruption mostly)
     $ scalingo -a myapp deployment-delete-cache
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
@@ -42,7 +41,6 @@ var (
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			err := deployments.List(currentApp)
@@ -59,7 +57,6 @@ var (
 		Description: ` Get the logs of an app deployment
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) == 1 {
@@ -83,7 +80,6 @@ var (
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			err := deployments.Stream(&deployments.StreamOpts{
@@ -108,7 +104,6 @@ var (
 
     # See also commands 'deployments'
 `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			args := c.Args()
 			if len(args) != 1 && len(args) != 2 {

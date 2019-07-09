@@ -8,7 +8,12 @@ import (
 )
 
 func Add(app string, params scalingo.AlertAddParams) error {
-	a, err := config.ScalingoClient().AlertAdd(app, params)
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	a, err := c.AlertAdd(app, params)
 	if err != nil {
 		return errgo.Mask(err)
 	}

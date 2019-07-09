@@ -22,7 +22,7 @@ import (
 
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
@@ -48,13 +48,17 @@ type RunOpts struct {
 type runContext struct {
 	app                     string
 	attachURL               string
+	scalingoClient          *scalingo.Client
 	waitingTextOutputWriter stdio.Writer
 	stdinCopyFunc           func(stdio.Writer, stdio.Reader) (int64, error)
 	stdoutCopyFunc          func(stdio.Writer, stdio.Reader) (int64, error)
 }
 
 func Run(opts RunOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
 	firstReadDone := make(chan struct{})
 	ctx := &runContext{
@@ -62,6 +66,7 @@ func Run(opts RunOpts) error {
 		waitingTextOutputWriter: os.Stderr,
 		stdinCopyFunc:           stdio.Copy,
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),
+		scalingoClient:          c,
 	}
 	if opts.Type != "" {
 		processes, err := c.AppsPs(opts.App)
@@ -182,7 +187,7 @@ func Run(opts RunOpts) error {
 		for {
 			select {
 			case s := <-signals:
-				run.HandleSignal(s, socket, ctx.attachURL)
+				run.HandleSignal(ctx.scalingoClient, s, socket, ctx.attachURL)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
@@ -255,7 +260,7 @@ func (ctx *runContext) exitCode() (int, error) {
 		return -1, errgo.Mask(err, errgo.Any)
 	}
 
-	token, err := config.ScalingoClient().GetAccessToken()
+	token, err := ctx.scalingoClient.GetAccessToken()
 	if err != nil {
 		return -1, errgo.Notef(err, "fail to generate auth")
 	}
@@ -303,7 +308,7 @@ func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	token, err := config.ScalingoClient().GetAccessToken()
+	token, err := ctx.scalingoClient.GetAccessToken()
 
 	if err != nil {
 		return nil, nil, errgo.Notef(err, "fail to generate auth")
@@ -501,7 +506,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	token, err := config.ScalingoClient().GetAccessToken()
+	token, err := ctx.scalingoClient.GetAccessToken()
 	if err != nil {
 		return errgo.Notef(err, "fail to generate token")
 	}

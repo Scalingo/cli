@@ -13,7 +13,10 @@ func Add(app string, domain string, cert string, key string) error {
 		return errgo.Mask(err)
 	}
 
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	d, err := c.DomainsAdd(app, scalingo.Domain{
 		Name:    domain,
 		TLSCert: certContent,

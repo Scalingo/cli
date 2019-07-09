@@ -10,7 +10,10 @@ import (
 )
 
 func Logs(app, deployment string) error {
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	deploy, err := client.Deployment(app, deployment)
 
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1"
 )
 
@@ -16,7 +17,12 @@ type RedisConsoleOpts struct {
 }
 
 func RedisConsole(opts RedisConsoleOpts) error {
-	redisURL, _, password, err := dbURL(opts.App, "SCALINGO_REDIS", []string{"redis://"})
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	redisURL, _, password, err := dbURL(c, opts.App, "SCALINGO_REDIS", []string{"redis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

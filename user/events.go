@@ -8,7 +8,10 @@ import (
 )
 
 func Events(paginationOpts scalingo.PaginationOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	appEvents, pagination, err := c.UserEventsList(paginationOpts)
 	if err != nil {
 		return errgo.Mask(err)

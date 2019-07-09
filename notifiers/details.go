@@ -13,17 +13,26 @@ import (
 )
 
 func Details(app, ID string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	baseNotifier, err := c.NotifierByID(app, ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	notifier := baseNotifier.Specialize()
-	displayDetails(notifier)
+
+	eventTypes, err := c.EventTypesList()
+	if err != nil {
+		return errgo.Notef(err, "fail to list event types")
+	}
+
+	displayDetails(notifier, eventTypes)
 	return nil
 }
 
-func displayDetails(notifier scalingo.DetailedNotifier) {
+func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventType) {
 	t := tablewriter.NewWriter(os.Stdout)
 	// Basic data
 	data := [][]string{
@@ -44,10 +53,18 @@ func displayDetails(notifier scalingo.DetailedNotifier) {
 
 	//Selected events
 	if !notifier.GetSendAllEvents() {
-		if len(notifier.GetSelectedEvents()) <= 0 {
+		if len(notifier.GetSelectedEventIDs()) <= 0 {
 			t.Append([]string{"Selected events", ""})
 		}
-		for i, e := range notifier.GetSelectedEvents() {
+		for i, id := range notifier.GetSelectedEventIDs() {
+			var e scalingo.EventType
+			for _, t := range types {
+				if t.ID == id {
+					e = t
+					break
+				}
+			}
+
 			if i == 0 {
 				t.Append([]string{"Selected events", e.Name})
 			} else {

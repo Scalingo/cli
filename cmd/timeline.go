@@ -4,8 +4,8 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/urfave/cli"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -21,7 +21,6 @@ var (
 		Description: `List the actions done by the owner and collaborators of an app:
 
     $ scalingo -a myapp timeline`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error

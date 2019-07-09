@@ -1,7 +1,11 @@
 package run
 
-import "net"
-import "os"
+import (
+	"net"
+	"os"
+
+	scalingo "github.com/Scalingo/go-scalingo"
+)
 
 func NotifiedSignals() chan os.Signal {
 	signals := make(chan os.Signal)
@@ -12,6 +16,6 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	return
 }
 
-func HandleSignal(s os.Signal, socket net.Conn, runUrl string) {
+func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
 	return
 }

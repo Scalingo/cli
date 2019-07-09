@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo"
@@ -36,7 +36,17 @@ type TunnelOpts struct {
 }
 
 func Tunnel(opts TunnelOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
+	region, err := config.GetRegion(config.C, config.C.ScalingoRegion, config.GetRegionOpts{})
+	if err != nil {
+		return errgo.Notef(err, "fail to retrieve region information")
+	}
+	sshhost := region.SSH
+
 	environ, err := c.VariablesListWithoutAlias(opts.App)
 	if err != nil {
 		return errgo.Mask(err)
@@ -53,7 +63,10 @@ func Tunnel(opts TunnelOpts) error {
 	}
 	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbUrl.Host)
 
-	client, key, err := netssh.Connect(opts.Identity)
+	client, key, err := netssh.Connect(netssh.ConnectOpts{
+		Host:     sshhost,
+		Identity: opts.Identity,
+	})
 	if err != nil {
 		if err == netssh.ErrNoAuthSucceed {
 			return errgo.Notef(err, "please use the flag '-i /path/to/private/key' to specify your private key")
@@ -122,7 +135,7 @@ func Tunnel(opts TunnelOpts) error {
 					waitingConnectionM.Lock()
 					fmt.Println("Connection broken, reconnecting...")
 					for err != nil {
-						client, err = netssh.ConnectToSSHServerWithKey(key)
+						client, err = netssh.ConnectToSSHServerWithKey(sshhost, key)
 						if err != nil {
 							fmt.Println("Fail to reconnect, waiting 10 seconds...")
 							time.Sleep(10 * time.Second)

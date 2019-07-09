@@ -19,7 +19,6 @@ var (
 
 		# See also 'addons' and 'backup-download'
 		`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			addon := addonName(c)
@@ -48,7 +47,6 @@ var (
 		$ scalingo -a myapp --addon addon_uuid backup-download --backup my_backup
 
 		# See also 'backups' and 'addons'`,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			addon := addonName(c)

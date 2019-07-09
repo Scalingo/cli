@@ -1,5 +1,23 @@
 # Changelog
 
+### To be Released
+
+### 1.14.0
+
+* Use user's default region [#411](https://github.com/Scalingo/cli/pull/441)
+
+### 1.13.0
+
+* Add the `apps-info` command [#438](https://github.com/Scalingo/cli/pull/438)
+* Display request ID in debug logs [#435](https://github.com/Scalingo/cli/pull/435)
+* Add `git-setup` and `git-show` commands [#431](https://github.com/Scalingo/cli/pull/431)
+* Remove dependency to an old Git lib for a more battle tested one [#434](https://github.com/Scalingo/cli/pull/434)
+
+### 1.12.0
+
+* Initial support for multi-region [#425](https://github.com/Scalingo/cli/pull/425)
+* [self] Check logged in user with the API [#427](https://github.com/Scalingo/cli/pull/427)
+
 ### 1.11.0
 
 * [alerts] Add support for the duration_before_trigger attribute [#407](https://github.com/Scalingo/cli/pull/407)

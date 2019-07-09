@@ -23,7 +23,6 @@ var (
      'scalingo --app my-app scale web:1:XL'
      'scalingo --app my-app scale web:+1 worker:-1'
      `,
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) == 0 {
 				err := cli.ShowCommandHelp(c, "scale")

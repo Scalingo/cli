@@ -17,8 +17,12 @@ func Destroy(app string, ID string) error {
 	if ID == "" {
 		return errgo.New("no ID defined")
 	}
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 
-	notifier, err := getNotifier(app, ID)
+	notifier, err := getNotifier(c, app, ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -36,7 +40,6 @@ func Destroy(app string, ID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationID, ID)
 	}
 
-	c := config.ScalingoClient()
 	err = c.NotifierDestroy(app, notifier.GetID())
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -46,8 +49,7 @@ func Destroy(app string, ID string) error {
 	return nil
 }
 
-func getNotifier(app string, ID string) (scalingo.DetailedNotifier, error) {
-	c := config.ScalingoClient()
+func getNotifier(c *scalingo.Client, app string, ID string) (scalingo.DetailedNotifier, error) {
 	resources, err := c.NotifiersList(app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)

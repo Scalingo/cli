@@ -13,7 +13,10 @@ import (
 )
 
 func ListBackups(app, addon string) error {
-	client := config.ScalingoClient()
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
 	backups, err := client.BackupList(app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to least backups")

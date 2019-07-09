@@ -15,11 +15,10 @@ var (
 		Usage:    "List the domains of an application",
 		Description: `List all the custom domains of an application:
 
-    $ scalingo -a myapp domains
+    $ scalingo --app my-app domains
 
     # See also commands 'domains-add' and 'domains-remove'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -52,7 +51,6 @@ var (
 
     # See also commands 'domains' and 'domains-remove'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -90,7 +88,6 @@ var (
 
     # See also commands 'domains' and 'domains-add'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -126,7 +123,6 @@ var (
 
 		# See also commands 'domains' and 'domains-add'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			var err error
@@ -157,7 +153,6 @@ var (
 
     # See also commands 'domains', 'domains-add' and 'unset-canonical-domain'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 1 {
@@ -186,7 +181,6 @@ var (
 
     # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {

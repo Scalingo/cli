@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/go-scalingo"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
@@ -37,7 +37,11 @@ type statusData struct {
 // deployments.
 // The StreamOpts.DeploymentID argument is optional.
 func Stream(opts *StreamOpts) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	app, err := c.AppsShow(opts.AppName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

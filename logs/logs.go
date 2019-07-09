@@ -14,7 +14,7 @@ import (
 	stdio "io"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/debug"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/fatih/color"
@@ -29,7 +29,11 @@ type WSEvent struct {
 }
 
 func Dump(logsURL string, n int, filter string) error {
-	c := config.ScalingoClient()
+	c, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client")
+	}
+
 	res, err := c.Logs(logsURL, n, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

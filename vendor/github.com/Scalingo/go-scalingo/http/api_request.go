@@ -129,6 +129,7 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Fail to query %s: %v", req.HTTPRequest.Host, err)
 	}
+	debug.Printf(io.Indent("Request ID: %v", 6), res.Header.Get("X-Request-Id"))
 	debug.Printf(io.Indent("Duration: %v", 6), time.Now().Sub(now))
 
 	if req.Expected.Contains(res.StatusCode) {
