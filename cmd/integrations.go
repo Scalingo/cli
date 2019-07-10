@@ -76,7 +76,7 @@ var (
 		Usage:    "Destroy a link between external integration and your account",
 		Description: `Destroy a link between external integration and your account:
 
-	$ scalingo integrations-destroy integration-type OR scalingo integrations-import-keys integration-uuid
+	$ scalingo integrations-destroy integration-type OR scalingo integrations-destroy integration-uuid
 
 	# See also commands 'integrations', 'integrations-create', 'integrations-import-keys'`,
 
