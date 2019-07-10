@@ -2,62 +2,60 @@ package integrations
 
 import (
 	"fmt"
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 	"os"
 
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 	"github.com/olekukonko/tablewriter"
 )
 
-func ImportKeys(integrationName string) error {
+func ImportKeys(integration string) error {
+	var id string
+	var name string
+
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	k, err := integrationByName(c, integrationName)
+	if !utils.IsUUID(integration) {
+		i, err := integrationByName(c, integration)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+
+		id = i.ID
+		name = i.ScmType
+	} else {
+		i, err := integrationByUUID(c, integration)
+		if err != nil {
+			return errgo.Mask(err)
+		}
+
+		id = integration
+		name = i.ScmType
+	}
+
+	importedKeys, err := c.IntegrationsImportKeys(id)
 	if err != nil {
-		fmt.Printf("\nfindbyname error\n")
 		return errgo.Mask(err)
 	}
 
-	fmt.Print("\n\n")
-
-	importedKeys, err := c.IntegrationsImportKeys(k.ID)
-	if err != nil {
-		fmt.Printf("\nimport keys error\n")
-		return errgo.Mask(err)
+	nbrKeys := len(importedKeys)
+	if nbrKeys == 0 {
+		fmt.Printf("0 keys imported from %s.\n", name)
+		return nil
 	}
-
-	fmt.Printf("\n%#v\n", importedKeys)
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetColWidth(60)
 	t.SetHeader([]string{"Name", "Content"})
-
 	for _, k := range importedKeys {
 		t.Append([]string{k.Name, k.Content[0:20] + "..." + k.Content[len(k.Content)-30:]})
 	}
-
 	t.Render()
 
-	nbrKeys := len(importedKeys)
-	fmt.Printf("%d keys has been imported from %s.\n", nbrKeys, integrationName)
+	fmt.Printf("%d keys has been imported from %s.\n", nbrKeys, name)
 	return nil
-}
-
-func integrationByName(c *scalingo.Client, name string) (*scalingo.Integration, error) {
-	integrations, err := c.IntegrationsList()
-	if err != nil {
-		return nil, errgo.Mask(err)
-	}
-
-	for _, k := range integrations {
-		if k.ScmType == name {
-			return &k, nil
-		}
-	}
-
-	return nil, errgo.New("no such integration '" + name + "'")
 }

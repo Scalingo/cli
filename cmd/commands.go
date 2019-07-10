@@ -3,11 +3,11 @@ package cmd
 import (
 	"os"
 
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
-	scalingo "github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
-	"github.com/urfave/cli"
+	"github.com/Scalingo/go-scalingo"
 )
 
 type AppCommands struct {
@@ -37,26 +37,28 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 			}
 		}
 
-		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
-			Token: token,
-		})
-		if err != nil {
-			panic(err)
-		}
-		currentRegion := c.GlobalString("region")
-		if currentRegion == "" {
-			currentRegion = c.String("region")
-		}
+		/*
+			regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+				Token: token,
+			})
+			if err != nil {
+				panic(err)
+			}
+			currentRegion := c.GlobalString("region")
+			if currentRegion == "" {
+				currentRegion = c.String("region")
+			}
 
-		if config.C.ScalingoRegion == "" && currentRegion == "" {
-			region := getDefaultRegion(regions)
-			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
-			currentRegion = region.Name
-		}
+			if config.C.ScalingoRegion == "" && currentRegion == "" {
+				region := getDefaultRegion(regions)
+				debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+				currentRegion = region.Name
+			}
 
-		if currentRegion != "" {
-			config.C.ScalingoRegion = currentRegion
-		}
+			if currentRegion != "" {
+				config.C.ScalingoRegion = currentRegion
+			}
+		*/
 		action(c)
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)
@@ -185,16 +187,6 @@ var (
 		// Stats
 		StatsCommand,
 
-		// SSH keys
-		ListSSHKeyCommand,
-		AddSSHKeyCommand,
-		RemoveSSHKeyCommand,
-
-		// Integrations
-		IntegrationsListCommand,
-		IntegrationsCreateCommand,
-		IntegrationsDestroyCommand,
-
 		// Autoscalers
 		autoscalersListCommand,
 		autoscalersAddCommand,
@@ -212,6 +204,12 @@ var (
 		ListSSHKeyCommand,
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
+
+		// Integrations
+		IntegrationsListCommand,
+		IntegrationsCreateCommand,
+		IntegrationsDestroyCommand,
+		IntegrationsImportKeysCommand,
 
 		// Sessions
 		LoginCommand,

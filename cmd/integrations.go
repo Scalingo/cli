@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/integrations"
-	"github.com/urfave/cli"
 )
 
 var (
@@ -15,9 +16,8 @@ var (
 
 	$ scalingo integrations
 
-	# See also commands 'integrations-create', 'integrations-destroy'`,
+	# See also commands 'integrations-create', 'integrations-destroy', 'integrations-import-keys'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			err := integrations.List()
 			if err != nil {
@@ -25,7 +25,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "integrations")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations")
 		},
 	}
 
@@ -41,9 +41,8 @@ var (
 
 	$ scalingo integrations-create --type integration-type --url integration-url --token integration-token
 
-	# See also commands 'integrations', 'integrations-destroy'`,
+	# See also commands 'integrations', 'integrations-destroy', 'integrations-import-keys'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			var err error
 			if len(c.Args()) == 1 {
@@ -59,7 +58,7 @@ var (
 
 				err = integrations.Create(c.Args()[0], url, token)
 			} else {
-				cli.ShowCommandHelp(c, "integrations-create")
+				_ = cli.ShowCommandHelp(c, "integrations-create")
 			}
 
 			if err != nil {
@@ -67,7 +66,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "integrations-create")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-create")
 		},
 	}
 
@@ -77,17 +76,16 @@ var (
 		Usage:    "Destroy a link between external integration and your account",
 		Description: `Destroy a link between external integration and your account:
 
-	$ scalingo integrations-destroy integration-type
+	$ scalingo integrations-destroy integration-type OR scalingo integrations-import-keys integration-uuid
 
-	# See also commands 'integrations', 'integrations-create'`,
+	# See also commands 'integrations', 'integrations-create', 'integrations-import-keys'`,
 
-		Before: AuthenticateHook,
 		Action: func(c *cli.Context) {
 			var err error
 			if len(c.Args()) == 1 {
 				err = integrations.Destroy(c.Args()[0])
 			} else {
-				cli.ShowCommandHelp(c, "integrations-destroy")
+				_ = cli.ShowCommandHelp(c, "integrations-destroy")
 			}
 
 			if err != nil {
@@ -95,7 +93,34 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "integrations-destroy")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-destroy")
+		},
+	}
+
+	IntegrationsImportKeysCommand = cli.Command{
+		Name:     "integrations-import-keys",
+		Category: "Integrations",
+		Usage:    "Import public SSH keys from external integration",
+		Description: `Import public SSH keys from external integration:
+
+	$ scalingo integrations-import-keys integration-type OR scalingo integrations-import-keys integration-uuid
+
+	# See also commands 'integrations', 'integrations-create', 'integrations-destroy'`,
+
+		Action: func(c *cli.Context) {
+			var err error
+			if len(c.Args()) == 1 {
+				err = integrations.ImportKeys(c.Args()[0])
+			} else {
+				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-import-keys")
 		},
 	}
 )
