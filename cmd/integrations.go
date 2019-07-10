@@ -39,13 +39,23 @@ var (
 		Usage: "Create a link between external integration and your account",
 		Description: `Create a link between external integration and your account:
 
-	$ scalingo integrations-create --type integration-type --url integration-url --token integration-token
+	For github.com and gitlab.com:
+	$ scalingo integrations-create github
+					  OR
+	$ scalingo integrations-create gitlab
+
+	For github enterprise and gitlab self hosted instances:
+	$ scalingo integrations-create integration-type --url integration-url --token integration-token
+
+	Examples:
+	$ scalingo integrations-create github-enterprise --url https://ghe.example.com --token ...
+	$ scalingo integrations-create gitlab-self-hosted --url https://gitlab.example.com --token ...
 
 	# See also commands 'integrations', 'integrations-destroy', 'integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
 			var err error
-			if len(c.Args()) == 1 {
+			if len(c.Args()) >= 1 && len(c.Args()) <= 5 {
 				url := c.String("url")
 				if url == "<url>" {
 					url = ""

@@ -20,11 +20,13 @@ func List() error {
 		return errgo.Mask(err)
 	}
 
-	nbrKeys := len(integrations)
-	if nbrKeys == 0 {
-		fmt.Printf("0 integrations linked to your scalingo account\n")
+	nbrIntegrations := len(integrations)
+	if nbrIntegrations == 0 {
+		fmt.Printf("0 integration is linked with your Scalingo account.\n")
 		return nil
 	}
+
+	fmt.Printf("You already have %d integration(s) linked with your Scalingo account :\n", nbrIntegrations)
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetColWidth(60)
