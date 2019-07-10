@@ -9,7 +9,7 @@ src/code.google.com
 Godeps/Readme
 
 # Executable
-main
+scalingo-cli
 
 # IDE
 .idea/
