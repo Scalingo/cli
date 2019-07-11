@@ -19,7 +19,7 @@ func Show(app string) error {
 
 	rl, err := c.ScmRepoLinkShow(app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to get repo link for this app")
 	}
 
 	if rl == nil {
@@ -29,7 +29,7 @@ func Show(app string) error {
 
 	i, err := c.IntegrationsShow(rl.AuthIntegrationID)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to get integration of this repo link")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
