@@ -10,7 +10,8 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:cef59acf254c5de4b8eb05bd9e5523808172ee8c3c3800b6a313e729a141bb64"
+  branch = "feature/102/add_integrations_calls"
+  digest = "1:0112905611e5eb123b2e57c9575f6571924741599b4cc0beaa7fb830467352d1"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +22,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "ca1ed8d5da7913aa57edf5eff69cbc13cc813d35"
-  version = "v2.4.6"
+  revision = "5783344b1ed5467ec8f7b72b6e5ba36ab1f01d5f"
 
 [[projects]]
   branch = "master"
@@ -85,6 +85,14 @@
   packages = ["gomock"]
   pruneopts = "NUT"
   revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:ab3ec1fe3e39bac4b3ab63390767766622be35b7cab03f47f787f9ec60522a53"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
   version = "v1.1.1"
 
 [[projects]]
@@ -364,6 +372,7 @@
     "github.com/cheggaaa/pb",
     "github.com/dustin/go-humanize",
     "github.com/fatih/color",
+    "github.com/google/uuid",
     "github.com/heroku/hk/term",
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",
