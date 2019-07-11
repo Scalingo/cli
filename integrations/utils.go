@@ -12,9 +12,9 @@ func integrationByName(c *scalingo.Client, name string) (*scalingo.Integration, 
 		return nil, errgo.Mask(err)
 	}
 
-	for _, k := range integrations {
-		if k.ScmType == name {
-			return &k, nil
+	for _, i := range integrations {
+		if i.ScmType == name {
+			return &i, nil
 		}
 	}
 
@@ -27,4 +27,19 @@ func integrationByUUID(c *scalingo.Client, uuid string) (*scalingo.Integration, 
 		return nil, errgo.New("not linked integration or unknown integration")
 	}
 	return integration, nil
+}
+
+func checkIfIntegrationAlreadyExist(c *scalingo.Client, name string) (bool, error) {
+	integrations, err := c.IntegrationsList()
+	if err != nil {
+		return false, errgo.Notef(err, "fail to get integrations list")
+	}
+
+	for _, i := range integrations {
+		if i.ScmType == name {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
