@@ -153,6 +153,9 @@ var (
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
 
+		// Repo Link
+		RepoLinkShowCommand,
+
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersDetailsCommand,
