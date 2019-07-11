@@ -41,13 +41,24 @@ func ScalingoRepo(directory string, remoteName string) (string, error) {
 	for _, remote := range remotes {
 		if remote.Config().Name == remoteName ||
 			remote.Config().Name == altRemoteName {
-			// The URL looks like git@host:appName.git. The following line extract
-			// the application name from it.
-			splittedURL := strings.SplitN(strings.TrimSuffix(remote.Config().URLs[0], ".git"), ":", 2)
+			// The Git remote URL may look like:
+			// - agora-fr1: git@host:appName.git
+			// - osc-fr1: ssh://git@host:port/appName.git
+			// - GitHub: git@github.com:owner/appName.git
+			//
+			// The following line extract the application name from it.
+			splittedURL := strings.Split(strings.TrimSuffix(remote.Config().URLs[0], ".git"), ":")
 			if len(splittedURL) < 2 {
 				return "", errgo.Notef(err, "fail to parse remote URL")
 			}
-			return splittedURL[1], nil
+			appName := splittedURL[len(splittedURL)-1]
+			// appName may contain "port/appName" or "owner/appName". We keep the part
+			// after the slash.
+			i := strings.LastIndex(appName, "/")
+			if i != -1 {
+				appName = appName[i+1:]
+			}
+			return appName, nil
 		}
 	}
 	return "", errgo.Newf("Scalingo Git remote hasn't been found")
