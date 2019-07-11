@@ -2,6 +2,7 @@ package integrations
 
 import (
 	"fmt"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"

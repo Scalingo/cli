@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 )
 
 type AppCommands struct {
@@ -37,28 +38,26 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 			}
 		}
 
-		/*
-			regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
-				Token: token,
-			})
-			if err != nil {
-				panic(err)
-			}
-			currentRegion := c.GlobalString("region")
-			if currentRegion == "" {
-				currentRegion = c.String("region")
-			}
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			Token: token,
+		})
+		if err != nil {
+			panic(err)
+		}
+		currentRegion := c.GlobalString("region")
+		if currentRegion == "" {
+			currentRegion = c.String("region")
+		}
 
-			if config.C.ScalingoRegion == "" && currentRegion == "" {
-				region := getDefaultRegion(regions)
-				debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
-				currentRegion = region.Name
-			}
+		if config.C.ScalingoRegion == "" && currentRegion == "" {
+			region := getDefaultRegion(regions)
+			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+			currentRegion = region.Name
+		}
 
-			if currentRegion != "" {
-				config.C.ScalingoRegion = currentRegion
-			}
-		*/
+		if currentRegion != "" {
+			config.C.ScalingoRegion = currentRegion
+		}
 		action(c)
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)

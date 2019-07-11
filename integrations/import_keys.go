@@ -2,14 +2,15 @@ package integrations
 
 import (
 	"fmt"
-	"gopkg.in/errgo.v1"
 	"os"
 	"strings"
+
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/olekukonko/tablewriter"
 )
 
 func ImportKeys(integration string) error {

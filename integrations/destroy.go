@@ -2,11 +2,11 @@ package integrations
 
 import (
 	"fmt"
-	"github.com/Scalingo/cli/utils"
 
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 )
 
 func Destroy(integration string) error {
