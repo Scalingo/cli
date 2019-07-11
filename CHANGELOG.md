@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* Fix Git remote URL parsing to detect app name on Outscale [#443](https://github.com/Scalingo/cli/pull/443)
+
 ### 1.14.0
 
 * Use user's default region [#411](https://github.com/Scalingo/cli/pull/441)
