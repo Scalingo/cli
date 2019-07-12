@@ -3,6 +3,7 @@ package repo_link
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/olekukonko/tablewriter"
@@ -17,28 +18,31 @@ func Show(app string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	rl, err := c.ScmRepoLinkShow(app)
+	repoLink, err := c.ScmRepoLinkShow(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to get repo link for this app")
 	}
-
-	if rl == nil {
+	if repoLink == nil {
 		fmt.Printf("No repo link is linked with '%s' app.\n", app)
 		return nil
 	}
 
-	i, err := c.IntegrationsShow(rl.AuthIntegrationID)
+	i, err := c.IntegrationsShow(repoLink.AuthIntegrationID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get integration of this repo link")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{
-		"ID", "App ID", "Integration ID", "Integration Name", "Owner", "Repo", "Branch", "Created At",
+		"App ID", "Integration ID", "Integration Name", "Owner", "Repo", "Branch", "Created At",
+		"Auto Deploy", "Review Apps Deploy", "Delete on close", "Delete on stale",
 	})
 	t.Append([]string{
-		rl.ID, rl.AppID, rl.AuthIntegrationID, i.ScmType,
-		rl.Owner, rl.Repo, rl.Branch, rl.CreatedAt.Format(time.RFC1123),
+		repoLink.AppID, repoLink.AuthIntegrationID, i.ScmType,
+		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(time.RFC1123),
+		strconv.FormatBool(repoLink.AutoDeployEnabled), strconv.FormatBool(repoLink.DeployReviewAppsEnabled),
+		fmt.Sprintf("%v (%d)", repoLink.DeleteOnCloseEnabled, repoLink.HoursBeforeDeleteOnClose),
+		fmt.Sprintf("%v (%d)", repoLink.DeleteOnStaleEnabled, repoLink.HoursBeforeDeleteStale),
 	})
 	t.Render()
 

@@ -62,6 +62,6 @@ func Create(app, integration, link string) error {
 		return errgo.Notef(err, "fail to create the repo link")
 	}
 
-	fmt.Printf("RepoLink '%s' for app '%s' has been created.\n", name, app)
+	fmt.Printf("Repo link with '%s' integration has been created for app '%s'.\n", name, app)
 	return nil
 }

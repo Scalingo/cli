@@ -9,7 +9,7 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Update(app string, repoLinkID string, params scalingo.ScmRepoLinkParams) error {
+func Update(app string, params scalingo.ScmRepoLinkParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
@@ -19,19 +19,17 @@ func Update(app string, repoLinkID string, params scalingo.ScmRepoLinkParams) er
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	check, err := checkRepoLinkExist(c, app, repoLinkID)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-	if check == false {
-		return errgo.Newf("RepoLink '%s' doesn't exist for app '%s'", repoLinkID, app)
-	}
-
-	_, err = c.ScmRepoLinkUpdate(app, repoLinkID, params)
+	// Get RepoLink of App
+	repoLink, err := c.ScmRepoLinkShow(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("RepoLink '%s' has been updated for app '%s'.\n", repoLinkID, app)
+	_, err = c.ScmRepoLinkUpdate(app, repoLink.ID, params)
+	if err != nil {
+		return errgo.Mask(err)
+	}
+
+	fmt.Printf("RepoLink has been updated for app '%s'.\n", app)
 	return nil
 }
