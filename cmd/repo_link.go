@@ -50,8 +50,7 @@ var (
 	Examples:
 	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
 
-		# See also 'repo-link', 'repo-link-update' and 'repo-link-delete'
-`,
+		# See also 'repo-link', 'repo-link-update' and 'repo-link-delete'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -69,6 +68,36 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-create")
+		},
+	}
+
+	RepoLinkDeleteCommand = cli.Command{
+		Name:     "repo-link-delete",
+		Category: "Repo Link",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Delete a repo link linked with your app",
+		Description: `Delete a repo link linked with your app:
+
+	$ scalingo -a myapp repo-link-delete repo-link-uuid
+
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update'`,
+		Action: func(c *cli.Context) {
+			var err error
+
+			currentApp := appdetect.CurrentApp(c)
+
+			if len(c.Args()) == 1 {
+				err = repo_link.Delete(currentApp, c.Args()[0])
+			} else {
+				_ = cli.ShowCommandHelp(c, "repo-link-delete")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-delete")
 		},
 	}
 )
