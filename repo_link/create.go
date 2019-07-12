@@ -2,9 +2,11 @@ package repo_link
 
 import (
 	"fmt"
-	"github.com/Scalingo/cli/integrations"
-	"gopkg.in/errgo.v1"
 	"net/url"
+
+	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/integrations"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
@@ -53,8 +55,8 @@ func Create(app, integration, link string) error {
 	}
 
 	_, err = c.ScmRepoLinkAdd(app, scalingo.ScmRepoLinkParams{
-		Source:            &link,
-		AuthIntegrationID: &id,
+		Source:            link,
+		AuthIntegrationID: id,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to create the repo link")

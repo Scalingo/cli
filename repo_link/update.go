@@ -6,9 +6,10 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo"
 )
 
-func Delete(app string, repoLinkID string) error {
+func Update(app string, repoLinkID string, params scalingo.ScmRepoLinkParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
@@ -26,11 +27,11 @@ func Delete(app string, repoLinkID string) error {
 		return errgo.Newf("RepoLink '%s' doesn't exist for app '%s'", repoLinkID, app)
 	}
 
-	err = c.ScmRepoLinkDelete(app, repoLinkID)
+	_, err = c.ScmRepoLinkUpdate(app, repoLinkID, params)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("RepoLink '%s' has been deleted from app '%s'.\n", repoLinkID, app)
+	fmt.Printf("RepoLink '%s' has been updated for app '%s'.\n", repoLinkID, app)
 	return nil
 }

@@ -156,6 +156,7 @@ var (
 		// Repo Link
 		RepoLinkShowCommand,
 		RepoLinkCreateCommand,
+		RepoLinkUpdateCommand,
 		RepoLinkDeleteCommand,
 
 		// Notifiers
