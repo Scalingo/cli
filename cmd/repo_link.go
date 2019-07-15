@@ -6,7 +6,6 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/repo_link"
-	"github.com/Scalingo/go-scalingo"
 )
 
 var (
@@ -77,13 +76,13 @@ var (
 		Name:     "repo-link-update",
 		Category: "Repo Link",
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "branch", Usage: "Branch", EnvVar: ""},
-			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy", EnvVar: ""},
-			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review apps", EnvVar: ""},
-			cli.StringFlag{Name: "delete-on-close", Usage: "Enable delete review apps when pull request is closed", EnvVar: ""},
-			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "", EnvVar: ""},
-			cli.StringFlag{Name: "delete-stale", Usage: "", EnvVar: ""},
-			cli.StringFlag{Name: "hours-before-delete-stale", Usage: "", EnvVar: ""},
+			cli.StringFlag{Name: "branch", Usage: "Branch used in auto-deploy"},
+			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy of application after each branch change"},
+			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
+			cli.StringFlag{Name: "delete-on-close", Usage: "Enable auto-delete of review apps when pull request is closed"},
+			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "Given time delay of auto-delete of review apps when pull request is closed"},
+			cli.StringFlag{Name: "delete-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "hours-before-delete-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
 		},
 		Usage: "Update the repo link linked with your app",
 		Description: ` Update the repo link linked with your application:
@@ -101,18 +100,13 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 
-			params := scalingo.ScmRepoLinkParams{
-				Branch:                   c.String("branch"),
-				AutoDeployEnabled:        c.Bool("auto-deploy"),
-				DeployReviewAppsEnabled:  c.Bool("deploy-review-apps"),
-				DestroyOnCloseEnabled:    c.Bool("delete-on-close"),
-				HoursBeforeDeleteOnClose: c.Uint("hours-before-delete-on-close"),
-				DestroyStaleEnabled:      c.Bool("delete-stale"),
-				HoursBeforeDeleteStale:   c.Uint("hours-before-delete-stale"),
+			params, err := repo_link.CheckAndFillParams(c, currentApp)
+			if err != nil {
+				errorQuit(err)
 			}
 
 			if len(c.Args()) == 0 {
-				err = repo_link.Update(currentApp, params)
+				err = repo_link.Update(currentApp, *params)
 			} else {
 				_ = cli.ShowCommandHelp(c, "repo-link-update")
 			}
