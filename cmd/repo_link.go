@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -99,6 +100,10 @@ var (
 			var err error
 
 			currentApp := appdetect.CurrentApp(c)
+
+			if c.NumFlags() == 0 {
+				errorQuit(errgo.New("No options is defined. One or more options has to be defined."))
+			}
 
 			params, err := repo_link.CheckAndFillParams(c, currentApp)
 			if err != nil {
