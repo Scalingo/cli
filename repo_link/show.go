@@ -42,7 +42,7 @@ func Show(app string) error {
 		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(time.RFC1123),
 		strconv.FormatBool(repoLink.AutoDeployEnabled), strconv.FormatBool(repoLink.DeployReviewAppsEnabled),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteOnCloseEnabled, repoLink.HoursBeforeDeleteOnClose),
-		fmt.Sprintf("%v (%d)", repoLink.DeleteOnStaleEnabled, repoLink.HoursBeforeDeleteStale),
+		fmt.Sprintf("%v (%d)", repoLink.DeleteStaleEnabled, repoLink.HoursBeforeDeleteStale),
 	})
 	t.Render()
 
