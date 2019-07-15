@@ -158,6 +158,7 @@ var (
 		RepoLinkCreateCommand,
 		RepoLinkUpdateCommand,
 		RepoLinkDeleteCommand,
+		RepoLinkManualDeployCommand,
 
 		// Notifiers
 		NotifiersListCommand,

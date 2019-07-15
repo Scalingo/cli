@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/urfave/cli"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -18,7 +17,7 @@ var (
 		Description: ` Show repo link linked with your application:
 	$ scalingo -a myapp repo-link
 
-		# See also 'repo-link-create', 'repo-link-update' and 'repo-link-delete'`,
+		# See also 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -52,7 +51,7 @@ var (
 	Examples:
 	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
 
-		# See also 'repo-link', 'repo-link-update' and 'repo-link-delete'`,
+		# See also 'repo-link', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -95,14 +94,15 @@ var (
 	$ scalingo -a myapp repo-link-update --delete-on-close true --hours-before-delete-on-close 1
 	$ scalingo -a myapp repo-link-update --delete-stale true --hours-before-delete-stale 2
 
-		# See also 'repo-link', 'repo-link-create' and 'repo-link-delete'`,
+		# See also 'repo-link', 'repo-link-create', 'repo-link-delete' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
 			var err error
 
 			currentApp := appdetect.CurrentApp(c)
 
 			if c.NumFlags() == 0 {
-				errorQuit(errgo.New("No options is defined. One or more options has to be defined."))
+				_ = cli.ShowCommandHelp(c, "repo-link-update")
+				return
 			}
 
 			params, err := repo_link.CheckAndFillParams(c, currentApp)
@@ -134,7 +134,7 @@ var (
 
 	$ scalingo -a myapp repo-link-delete
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update'`,
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -152,6 +152,36 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-delete")
+		},
+	}
+
+	RepoLinkManualDeployCommand = cli.Command{
+		Name:     "repo-link-manual-deploy",
+		Category: "Repo Link",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Trigger a deployment from the state of the branch specified.",
+		Description: `Trigger a deployment from the state of the branch specified:
+
+	$ scalingo -a myapp repo-link-manual-deploy mybranch
+
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update' and 'repo-link-delete'`,
+		Action: func(c *cli.Context) {
+			var err error
+
+			currentApp := appdetect.CurrentApp(c)
+
+			if len(c.Args()) == 1 {
+				err = repo_link.ManualDeploy(currentApp, c.Args()[0])
+			} else {
+				_ = cli.ShowCommandHelp(c, "repo-link-manual-deploy")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-deploy")
 		},
 	}
 )
