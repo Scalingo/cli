@@ -95,6 +95,7 @@ type App struct {
 	} `json:"owner"`
 	GitUrl         string     `json:"git_url"`
 	Url            string     `json:"url"`
+	BaseURL        string     `json:"base_url"`
 	Status         AppStatus  `json:"status"`
 	LastDeployedAt *time.Time `json:"last_deployed_at"`
 	LastDeployedBy string     `json:"last_deployed_by"`

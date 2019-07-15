@@ -193,6 +193,9 @@ var (
 		autoscalersDisableCommand,
 		autoscalersEnableCommand,
 
+		// Migrations
+		migrationCreateCommand,
+
 		gitSetup,
 		gitShow,
 	}

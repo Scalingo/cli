@@ -10,7 +10,8 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:cef59acf254c5de4b8eb05bd9e5523808172ee8c3c3800b6a313e729a141bb64"
+  branch = "fix/storky/1/add_region_migrations_service"
+  digest = "1:4b4fe97b2176af557fb42ff6f6b8ce1b459c3a13e8d834e8121361325ec8f280"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +22,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "ca1ed8d5da7913aa57edf5eff69cbc13cc813d35"
-  version = "v2.4.6"
+  revision = "2e6a4ba636fedafc598b305692117c13d0184536"
 
 [[projects]]
   branch = "master"
@@ -86,6 +86,14 @@
   pruneopts = "NUT"
   revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
   version = "v1.1.1"
+
+[[projects]]
+  digest = "1:e45cda0965bf660df6421580001ef40e322a9b29b7b27e9f69568d9a999ec9b7"
+  name = "github.com/gosuri/uilive"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "4512d98b127f3f3a1b7c3cf1104969fdd17b31d9"
+  version = "v0.0.3"
 
 [[projects]]
   digest = "1:447011f2b96902f1472411da1d874c6a1b9e27ec6bbcde548a3f9282eaf2f162"
@@ -364,6 +372,7 @@
     "github.com/cheggaaa/pb",
     "github.com/dustin/go-humanize",
     "github.com/fatih/color",
+    "github.com/gosuri/uilive",
     "github.com/heroku/hk/term",
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",
