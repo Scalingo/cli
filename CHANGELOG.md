@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.14.1
+
 * Fix Git remote URL parsing to detect app name on Outscale [#443](https://github.com/Scalingo/cli/pull/443)
 
 ### 1.14.0
