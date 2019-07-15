@@ -81,8 +81,8 @@ var (
 			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
 			cli.StringFlag{Name: "delete-on-close", Usage: "Enable auto-delete of review apps when pull request is closed"},
 			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "Given time delay of auto-delete of review apps when pull request is closed"},
-			cli.StringFlag{Name: "delete-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
-			cli.StringFlag{Name: "hours-before-delete-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "delete-on-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "hours-before-delete-on-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
 		},
 		Usage: "Update the repo link linked with your app",
 		Description: ` Update the repo link linked with your application:
@@ -92,7 +92,7 @@ var (
 	$ scalingo -a myapp repo-link-update --branch master
 	$ scalingo -a myapp repo-link-update --auto-deploy true --branch test --deploy-review-apps true
 	$ scalingo -a myapp repo-link-update --delete-on-close true --hours-before-delete-on-close 1
-	$ scalingo -a myapp repo-link-update --delete-stale true --hours-before-delete-stale 2
+	$ scalingo -a myapp repo-link-update --delete-on-stale true --hours-before-delete-on-stale 2
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-delete' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {

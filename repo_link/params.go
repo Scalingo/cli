@@ -29,8 +29,8 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.ScmRepoLinkParams
 		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),
 		DestroyOnCloseEnabled:    paramsChecker.lookupDeleteOnClose(),
 		HoursBeforeDeleteOnClose: paramsChecker.lookupHoursBeforeDeleteOnClose(),
-		DestroyStaleEnabled:      paramsChecker.lookupDeleteStale(),
-		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDeleteStale(),
+		DestroyStaleEnabled:      paramsChecker.lookupDeleteOnStale(),
+		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDeleteOnStale(),
 	}
 
 	return params, nil
@@ -90,17 +90,17 @@ func (p *ParamsChecker) lookupHoursBeforeDeleteOnClose() *uint {
 	return nil
 }
 
-func (p *ParamsChecker) lookupDeleteStale() *bool {
-	deleteStale := p.ctx.Bool("delete-stale")
+func (p *ParamsChecker) lookupDeleteOnStale() *bool {
+	deleteStale := p.ctx.Bool("delete-on-stale")
 
-	if p.repoLink.DeleteOnStaleEnabled != deleteStale {
+	if p.repoLink.DeleteStaleEnabled != deleteStale {
 		return &deleteStale
 	}
 	return nil
 }
 
-func (p *ParamsChecker) lookupHoursBeforeDeleteStale() *uint {
-	hoursBeforeDeleteStale := p.ctx.Uint("hours-before-delete-stale")
+func (p *ParamsChecker) lookupHoursBeforeDeleteOnStale() *uint {
+	hoursBeforeDeleteStale := p.ctx.Uint("hours-before-delete-on-stale")
 
 	if p.repoLink.HoursBeforeDeleteStale != hoursBeforeDeleteStale {
 		return &hoursBeforeDeleteStale
