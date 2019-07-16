@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/region_migrations"
 	"github.com/urfave/cli"
 )
@@ -84,9 +85,8 @@ var (
 				errorQuit(err)
 			}
 		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.RegionMigrationsAutoComplete(c)
+		},
 	}
 )
-
-//scalingo migrations-create -a app --to osc-fr1 --follow
-//scalingo migrations-follow migration-id
-//scalingo migrations
