@@ -43,4 +43,4 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-utils"
-  version = "5.5.10"
+  version = "^5"
