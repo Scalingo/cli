@@ -26,7 +26,8 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  version = "^2"
+  # version = "^2"
+  branch = "fix/cli/447/regions_cache_only_regional_commands"
 
 [[constraint]]
   branch = "master"
@@ -40,3 +41,7 @@
   non-go = true
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/Scalingo/go-utils"
+  version = "5.5.10"

@@ -93,7 +93,7 @@ func (c *Client) TokenExchange(token string) (string, error) {
 	var btRes BearerTokenRes
 	err = json.NewDecoder(res.Body).Decode(&btRes)
 	if err != nil {
-		return "", errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
+		return "", errgo.Notef(err, "invalid response from authentication service")
 	}
 
 	return btRes.Token, nil

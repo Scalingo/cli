@@ -70,6 +70,7 @@ type AppsPsRes struct {
 type AppsCreateOpts struct {
 	Name      string `json:"name"`
 	ParentApp string `json:"parent_id"`
+	StackID   string `json:"stack_id"`
 }
 
 type AppResponse struct {
@@ -91,7 +92,6 @@ type App struct {
 		ID       string `json:"id"`
 		Username string `json:"username"`
 		Email    string `json:"email"`
-		Billable bool   `json:"billable"`
 	} `json:"owner"`
 	GitUrl         string     `json:"git_url"`
 	Url            string     `json:"url"`
