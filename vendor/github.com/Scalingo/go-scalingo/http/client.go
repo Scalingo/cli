@@ -211,7 +211,7 @@ func (c *client) DoRequest(req *APIRequest, data interface{}) error {
 		return nil
 	}
 
-	err = ParseJSON(res, data)
+	err = parseJSON(res, data)
 	if err != nil {
 		return errgo.Notef(err, "fail to parse JSON of subresource response")
 	}

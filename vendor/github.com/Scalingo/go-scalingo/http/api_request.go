@@ -147,7 +147,7 @@ func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 	return c.HTTPClient().Do(req)
 }
 
-func ParseJSON(res *http.Response, data interface{}) error {
+func parseJSON(res *http.Response, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return errgo.Newf("fail to read body of request %v, %v", res.Request, err)

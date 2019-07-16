@@ -89,32 +89,32 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 	switch res.StatusCode {
 	case 400:
 		var badRequestError BadRequestError
-		err := ParseJSON(res, &badRequestError)
+		err := parseJSON(res, &badRequestError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
 	case 401:
 		var apiErr APIError
-		ParseJSON(res, &apiErr)
+		parseJSON(res, &apiErr)
 		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
 	case 402:
 		var paymentRequiredErr PaymentRequiredError
-		err := ParseJSON(res, &paymentRequiredErr)
+		err := parseJSON(res, &paymentRequiredErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
 	case 404:
 		var notFoundErr NotFoundError
-		err := ParseJSON(res, &notFoundErr)
+		err := parseJSON(res, &notFoundErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: notFoundErr, Req: req}
 	case 422:
 		var unprocessableError UnprocessableEntity
-		err := ParseJSON(res, &unprocessableError)
+		err := parseJSON(res, &unprocessableError)
 		if err != nil {
 			return err
 		}
