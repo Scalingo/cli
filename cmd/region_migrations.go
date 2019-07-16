@@ -57,6 +57,34 @@ var (
 			}
 		},
 	}
+
+	migrationFollowCommand = cli.Command{
+		Name:     "migrations-follow",
+		Category: "Region migrations",
+		Flags: []cli.Flag{
+			appFlag,
+		},
+		Usage: "List all migrations linked to an app",
+		Description: `List all migrations linked to an app
+   Example
+	   'scalingo --app my-app migrations-follow migration-id'
+		`,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "migrations-create")
+				return
+			}
+
+			migrationID := c.Args()[0]
+
+			err := region_migrations.Follow(currentApp, migrationID)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+	}
 )
 
 //scalingo migrations-create -a app --to osc-fr1 --follow

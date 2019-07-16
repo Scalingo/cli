@@ -196,6 +196,7 @@ var (
 		// Migrations
 		migrationCreateCommand,
 		migrationListCommand,
+		migrationFollowCommand,
 
 		gitSetup,
 		gitShow,

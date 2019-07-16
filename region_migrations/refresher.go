@@ -110,8 +110,10 @@ func (r *Refresher) migrationRefresher() error {
 }
 
 func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionMigration) {
+	defer w.Flush()
+
 	if migration == nil {
-		fmt.Fprint(w, color.BlueString("%s Loading migration informations", r.loader()))
+		fmt.Fprint(w, color.BlueString("%s Loading migration informations\n", r.loader()))
 		return
 	}
 
@@ -131,7 +133,6 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		r.writeStep(w, migration.Steps[len(migration.Steps)-1-i])
 	}
 
-	w.Flush()
 }
 
 func (r *Refresher) writeStep(w *uilive.Writer, step scalingo.Step) {
