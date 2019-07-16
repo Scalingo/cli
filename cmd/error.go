@@ -10,11 +10,12 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	httpclient "github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-utils/errors"
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
 )
@@ -64,8 +65,9 @@ func errorQuit(err error) {
 	newReportError(currentUser, err).Report()
 	rollbar.Wait()
 
-	if httpclient.IsRequestFailedError(errgo.Cause(err)) &&
-		errgo.Cause(err).(*httpclient.RequestFailedError).Code == 401 {
+	rootError := errors.ErrgoRoot(err)
+	if httpclient.IsRequestFailedError(rootError) &&
+		rootError.(*httpclient.RequestFailedError).Code == 401 {
 		if currentUser != nil {
 			session.DestroyToken()
 			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
@@ -92,8 +94,9 @@ func newReportError(currentUser *scalingo.User, err error) *ReportError {
 		System:  newSysinfo(),
 	}
 
-	if httpclient.IsRequestFailedError(errgo.Cause(err)) {
-		r.FailedRequest = errgo.Cause(err).(*httpclient.RequestFailedError).Req.HTTPRequest
+	rootError := errors.ErrgoRoot(err)
+	if httpclient.IsRequestFailedError(rootError) {
+		r.FailedRequest = rootError.(*httpclient.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r

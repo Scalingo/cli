@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/pkg/errors"
+	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-utils/errors"
 	"gopkg.in/errgo.v1"
 )
 
@@ -36,10 +36,10 @@ func Login(opts LoginOpts) error {
 			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
 			io.Error("SSH connection failed.")
 			if opts.SSH {
-				if errors.Cause(err) == netssh.ErrNoAuthSucceed {
-					return errors.Wrap(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
+				if errors.ErrgoRoot(err) == netssh.ErrNoAuthSucceed {
+					return errgo.Notef(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
 				}
-				return errors.Wrap(err, "fail to login with SSH")
+				return errgo.Notef(err, "fail to login with SSH")
 			}
 		} else {
 			return nil
@@ -73,7 +73,7 @@ func loginWithSSH(identity string) error {
 		Identity: identity,
 	})
 	if err != nil {
-		return errors.Wrap(err, "fail to connect to SSH server")
+		return errgo.Notef(err, "fail to connect to SSH server")
 	}
 	channel, reqs, err := client.OpenChannel("session", []byte{})
 	if err != nil {

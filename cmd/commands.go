@@ -32,7 +32,7 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 			if err != nil || currentUser == nil {
 				err := session.Login(session.LoginOpts{APIToken: token})
 				if err != nil {
-					panic(err)
+					errorQuit(err)
 				}
 			}
 
@@ -40,7 +40,7 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 				Token: token,
 			})
 			if err != nil {
-				panic(err)
+				errorQuit(err)
 			}
 			currentRegion := c.GlobalString("region")
 			if currentRegion == "" {

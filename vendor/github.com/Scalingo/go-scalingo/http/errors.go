@@ -91,7 +91,7 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 		var badRequestError BadRequestError
 		err := ParseJSON(res, &badRequestError)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
 	case 401:
@@ -102,21 +102,21 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 		var paymentRequiredErr PaymentRequiredError
 		err := ParseJSON(res, &paymentRequiredErr)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
 	case 404:
 		var notFoundErr NotFoundError
 		err := ParseJSON(res, &notFoundErr)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: notFoundErr, Req: req}
 	case 422:
 		var unprocessableError UnprocessableEntity
 		err := ParseJSON(res, &unprocessableError)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: unprocessableError, Req: req}
 	case 500:
