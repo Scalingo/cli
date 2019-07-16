@@ -10,8 +10,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "fix/cli/447/regions_cache_only_regional_commands"
-  digest = "1:53a81d441cd6bb785c984db6845afd14dc0d0264762e53cbf47e31be65f09756"
+  digest = "1:4a377ca0c8cd39a986606a6a36321c16d65087bead22d1779a2409ea96a82094"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -22,7 +21,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "0a630071adfbcf7677221d52f0a850460ba10e23"
+  revision = "ae4fb22e5394111dc5f3ffd97e8969f0a4e2b846"
+  version = "2.4.8"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
