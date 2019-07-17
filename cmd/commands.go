@@ -159,6 +159,7 @@ var (
 		RepoLinkUpdateCommand,
 		RepoLinkDeleteCommand,
 		RepoLinkManualDeployCommand,
+		RepoLinkManualReviewAppCommand,
 
 		// Notifiers
 		NotifiersListCommand,

@@ -17,7 +17,7 @@ var (
 		Description: ` Show repo link linked with your application:
 	$ scalingo -a myapp repo-link
 
-		# See also 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		# See also 'repo-link-create', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy', 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -51,7 +51,7 @@ var (
 	Examples:
 	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
 
-		# See also 'repo-link', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		# See also 'repo-link', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -94,7 +94,7 @@ var (
 	$ scalingo -a myapp repo-link-update --delete-on-close true --hours-before-delete-on-close 1
 	$ scalingo -a myapp repo-link-update --delete-on-stale true --hours-before-delete-on-stale 2
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		# See also 'repo-link', 'repo-link-create', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -134,7 +134,7 @@ var (
 
 	$ scalingo -a myapp repo-link-delete
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update' and 'repo-link-manual-deploy'`,
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -159,12 +159,12 @@ var (
 		Name:     "repo-link-manual-deploy",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Trigger a deployment from the state of the branch specified.",
-		Description: `Trigger a deployment from the state of the branch specified:
+		Usage:    "Trigger a manual deployment from the state of the branch specified.",
+		Description: `Trigger a manual deployment from the state of the branch specified:
 
 	$ scalingo -a myapp repo-link-manual-deploy mybranch
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update' and 'repo-link-delete'`,
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			var err error
 
@@ -182,6 +182,40 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-deploy")
+		},
+	}
+
+	RepoLinkManualReviewAppCommand = cli.Command{
+		Name:     "repo-link-manual-review-app",
+		Category: "Repo Link",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Trigger a manual deployment of review app from the state of the pull/merge request id specified.",
+		Description: `Trigger a manual deployment of review app from the state of the pull/merge request id specified:
+
+	$ scalingo -a myapp repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
+	$ scalingo -a myapp repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
+
+	Example:
+	$ scalingo -a myapp repo-link-manual-review-app 42
+
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		Action: func(c *cli.Context) {
+			var err error
+
+			currentApp := appdetect.CurrentApp(c)
+
+			if len(c.Args()) == 1 {
+				err = repo_link.ManualReviewApp(currentApp, c.Args()[0])
+			} else {
+				_ = cli.ShowCommandHelp(c, "repo-link-manual-review-app")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-review-app")
 		},
 	}
 )

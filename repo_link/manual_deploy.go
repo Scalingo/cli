@@ -29,6 +29,6 @@ func ManualDeploy(app, branch string) error {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("Manual deploy triggered for app '%s'.\n", app)
+	fmt.Printf("Manual deployment triggered for app '%s' on branch '%s'.\n", app, branch)
 	return nil
 }

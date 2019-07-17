@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Delete(app string) error {
+func ManualReviewApp(app, pullRequestID string) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
@@ -23,16 +23,12 @@ func Delete(app string) error {
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	if repoLink == nil {
-		fmt.Println("This application has no repo link linked.")
-		return nil
-	}
 
-	err = c.ScmRepoLinkDelete(app, repoLink.ID)
+	err = c.ScmRepoLinkManualReviewApp(app, repoLink.ID, pullRequestID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	fmt.Printf("Current repo link has been deleted from app '%s'.\n", app)
+	fmt.Printf("Manual review app deployment triggered for app '%s' with pull/merge request id '%s'.\n", app, pullRequestID)
 	return nil
 }
