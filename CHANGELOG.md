@@ -3,6 +3,8 @@
 ### To be Released
 
 * Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
+* Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
+* Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
 
 ### 1.14.1
 
