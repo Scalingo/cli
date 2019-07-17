@@ -10,7 +10,8 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:4a377ca0c8cd39a986606a6a36321c16d65087bead22d1779a2409ea96a82094"
+  branch = "fix/cli/450/backups-create"
+  digest = "1:b2e677d01dfad0a49766ee24fe1b82b2e689057cb83344eaac17c9dbea0d4bea"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +22,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "ae4fb22e5394111dc5f3ffd97e8969f0a4e2b846"
-  version = "2.4.8"
+  revision = "1d0a19c28f4729cc9c3d4ac8e3677920dfa60649"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"

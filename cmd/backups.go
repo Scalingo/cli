@@ -16,14 +16,34 @@ var (
 		Usage:    "List backups for an addon",
 		Flags:    []cli.Flag{appFlag, addonFlag},
 		Description: `  List all available backups for an addon:
-		$ scalingo --app myapp --addon addon_uuid backups
+		$ scalingo --app my-app --addon addon_uuid backups
 
-		# See also 'addons' and 'backup-download'
+		# See also 'addons' and 'backups-download'
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			addon := addonName(c)
 			err := db.ListBackups(currentApp, addon)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+	}
+
+	backupsCreateCommand = cli.Command{
+		Name:     "backups-create",
+		Category: "Addons",
+		Usage:    "Ask for a new backup",
+		Flags:    []cli.Flag{appFlag, addonFlag},
+		Description: `  Ask for a new backup of your addon:
+		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
+
+		# See also 'backups' and 'addons'`,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			addon := addonName(c)
+
+			err := db.CreateBackup(currentApp, addon)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -45,7 +65,7 @@ var (
 			Usage: "Do not show progress bar and loading messages",
 		}},
 		Description: `  Download a specific backup:
-		$ scalingo -a myapp --addon addon_uuid backup-download --backup my_backup
+		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
 
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
