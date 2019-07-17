@@ -5,11 +5,12 @@ import (
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/io"
 	"github.com/urfave/cli"
 )
 
 var (
-	BackupListCommand = cli.Command{
+	backupsListCommand = cli.Command{
 		Name:     "backups",
 		Category: "Addons",
 		Usage:    "List backups for an addon",
@@ -29,8 +30,8 @@ var (
 		},
 	}
 
-	BackupDownloadCommand = cli.Command{
-		Name:     "backup-download",
+	backupsDownloadCommand = cli.Command{
+		Name:     "backups-download",
 		Category: "Addons",
 		Usage:    "Download a backup",
 		Flags: []cli.Flag{appFlag, addonFlag, cli.StringFlag{
@@ -66,5 +67,17 @@ var (
 				errorQuit(err)
 			}
 		},
+	}
+
+	backupDownloadCommand = cli.Command{
+		Name:        "backup-download",
+		Category:    backupsDownloadCommand.Category,
+		Usage:       backupsDownloadCommand.Usage,
+		Description: backupsDownloadCommand.Description,
+		Before: func(*cli.Context) error {
+			io.Warningf("DEPRECATED: please use backups-download instead of this command\n\n")
+			return nil
+		},
+		Action: backupsDownloadCommand.Action,
 	}
 )
