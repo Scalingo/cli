@@ -27,15 +27,6 @@ func Create(app, integration, link string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	repoLink, err := c.ScmRepoLinkShow(app)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-	if repoLink != nil {
-		fmt.Printf("A repo link is already linked with app '%s'.\n", app)
-		return nil
-	}
-
 	if !utils.IsUUID(integration) {
 		i, err := integrations.IntegrationByName(c, integration)
 		if err != nil {
@@ -54,7 +45,7 @@ func Create(app, integration, link string) error {
 		name = i.ScmType
 	}
 
-	_, err = c.ScmRepoLinkAdd(app, scalingo.ScmRepoLinkParams{
+	_, err = c.ScmRepoLinkCreate(app, scalingo.ScmRepoLinkParams{
 		Source:            &link,
 		AuthIntegrationID: &id,
 	})

@@ -19,13 +19,7 @@ func Update(app string, params scalingo.ScmRepoLinkParams) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// Get RepoLink of App
-	repoLink, err := c.ScmRepoLinkShow(app)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
-	_, err = c.ScmRepoLinkUpdate(app, repoLink.ID, params)
+	_, err = c.ScmRepoLinkUpdate(app, params)
 	if err != nil {
 		return errgo.Mask(err)
 	}

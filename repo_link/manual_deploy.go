@@ -18,13 +18,7 @@ func ManualDeploy(app, branch string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// Get RepoLink of App
-	repoLink, err := c.ScmRepoLinkShow(app)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
-	err = c.ScmRepoLinkManualDeploy(app, repoLink.ID, branch)
+	err = c.ScmRepoLinkManualDeploy(app, branch)
 	if err != nil {
 		return errgo.Mask(err)
 	}

@@ -218,4 +218,38 @@ var (
 			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-review-app")
 		},
 	}
+
+	RepoLinkReviewAppsCommand = cli.Command{
+		Name:     "repo-link-review-apps",
+		Category: "Repo Link",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "See reviews apps for th",
+		Description: `Trigger a manual deployment of review app from the state of the pull/merge request id specified:
+
+	$ scalingo -a myapp repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
+	$ scalingo -a myapp repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
+
+	Example:
+	$ scalingo -a myapp repo-link-manual-review-app 42
+
+		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		Action: func(c *cli.Context) {
+			var err error
+
+			currentApp := appdetect.CurrentApp(c)
+
+			if len(c.Args()) == 1 {
+				err = repo_link.ManualReviewApp(currentApp, c.Args()[0])
+			} else {
+				_ = cli.ShowCommandHelp(c, "repo-link-manual-review-app")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-review-app")
+		},
+	}
 )

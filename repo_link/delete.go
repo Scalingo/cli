@@ -18,17 +18,7 @@ func Delete(app string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// Get RepoLink of App
-	repoLink, err := c.ScmRepoLinkShow(app)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-	if repoLink == nil {
-		fmt.Println("This application has no repo link linked.")
-		return nil
-	}
-
-	err = c.ScmRepoLinkDelete(app, repoLink.ID)
+	err = c.ScmRepoLinkDelete(app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

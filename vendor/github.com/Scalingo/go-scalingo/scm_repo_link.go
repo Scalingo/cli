@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/go-scalingo/http"
 )
 
+<<<<<<< HEAD
 type SCMRepoLinkService interface {
 	SCMRepoLinkShow(app string) (*SCMRepoLink, error)
 	SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error)
@@ -18,6 +19,18 @@ type SCMRepoLinkService interface {
 	SCMRepoLinkManualReviewApp(app, pullRequestId string) error
 	SCMRepoLinkDeployments(app string) ([]*Deployment, error)
 	SCMRepoLinkReviewApps(app string) ([]*ReviewApp, error)
+=======
+type ScmRepoLinkService interface {
+	ScmRepoLinkShow(app string) (*ScmRepoLink, error)
+	ScmRepoLinkCreate(app string, params ScmRepoLinkParams) (*ScmRepoLink, error)
+	ScmRepoLinkUpdate(app string, params ScmRepoLinkParams) (*ScmRepoLink, error)
+	ScmRepoLinkDelete(app string) error
+
+	ScmRepoLinkManualDeploy(app, branch string) error
+	ScmRepoLinkManualReviewApp(app, pullRequestId string) error
+	ScmRepoLinkDeployments(app string) ([]*Deployment, error)
+	ScmRepoLinkReviewApps(app string) ([]*ReviewApp, error)
+>>>>>>> Rework all commands to delete repo link id
 }
 
 type SCMRepoLinkParams struct {
@@ -60,10 +73,17 @@ type SCMRepoLinkLinker struct {
 }
 
 type ScmRepoLinkResponse struct {
+<<<<<<< HEAD
 	SCMRepoLink *SCMRepoLink `json:"scm_repo_link"`
 }
 
 type SCMRepoLinkDeploymentsResponse struct {
+=======
+	ScmRepoLink *ScmRepoLink `json:"scm_repo_link"`
+}
+
+type ScmRepoLinkDeploymentsResponse struct {
+>>>>>>> Rework all commands to delete repo link id
 	Deployments []*Deployment `json:"deployments"`
 }
 
@@ -73,7 +93,11 @@ type SCMRepoLinkReviewAppsResponse struct {
 
 var _ SCMRepoLinkService = (*Client)(nil)
 
+<<<<<<< HEAD
 func (c *Client) SCMRepoLinkShow(app string) (*SCMRepoLink, error) {
+=======
+func (c *Client) ScmRepoLinkShow(app string) (*ScmRepoLink, error) {
+>>>>>>> Rework all commands to delete repo link id
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "GET",
@@ -83,45 +107,76 @@ func (c *Client) SCMRepoLinkShow(app string) (*SCMRepoLink, error) {
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get this SCM repo link")
 	}
+<<<<<<< HEAD
 	return res.SCMRepoLink, nil
 }
 
 func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error) {
+=======
+	return res.ScmRepoLink, nil
+}
+
+func (c *Client) ScmRepoLinkCreate(app string, params ScmRepoLinkParams) (*ScmRepoLink, error) {
+>>>>>>> Rework all commands to delete repo link id
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{201},
+<<<<<<< HEAD
 		Params:   map[string]SCMRepoLinkParams{"scm_repo_link": params},
+=======
+		Params:   map[string]ScmRepoLinkParams{"scm_repo_link": params},
+>>>>>>> Rework all commands to delete repo link id
 	}, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create the SCM repo link")
 	}
+<<<<<<< HEAD
 
 	return res.SCMRepoLink, nil
 }
 
 func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error) {
+=======
+
+	return res.ScmRepoLink, nil
+}
+
+func (c *Client) ScmRepoLinkUpdate(app string, params ScmRepoLinkParams) (*ScmRepoLink, error) {
+>>>>>>> Rework all commands to delete repo link id
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{200},
+<<<<<<< HEAD
 		Params:   map[string]SCMRepoLinkParams{"scm_repo_link": params},
+=======
+		Params:   map[string]ScmRepoLinkParams{"scm_repo_link": params},
+>>>>>>> Rework all commands to delete repo link id
 	}, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to update this SCM repo link")
 	}
 
+<<<<<<< HEAD
 	return res.SCMRepoLink, nil
 }
 
 func (c *Client) SCMRepoLinkDelete(app string) error {
+=======
+	return res.ScmRepoLink, nil
+}
+
+func (c *Client) ScmRepoLinkDelete(app string) error {
+>>>>>>> Rework all commands to delete repo link id
 	_, err := c.ScalingoAPI().Do(&http.APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{204},
 	})
+<<<<<<< HEAD
 	if err != nil {
 		return errgo.Notef(err, "fail to delete this SCM repo link")
 	}
@@ -129,6 +184,12 @@ func (c *Client) SCMRepoLinkDelete(app string) error {
 }
 
 func (c *Client) SCMRepoLinkManualDeploy(app, branch string) error {
+=======
+	return err
+}
+
+func (c *Client) ScmRepoLinkManualDeploy(app, branch string) error {
+>>>>>>> Rework all commands to delete repo link id
 	_, err := c.ScalingoAPI().Do(&http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_deploy",
@@ -141,7 +202,11 @@ func (c *Client) SCMRepoLinkManualDeploy(app, branch string) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (c *Client) SCMRepoLinkManualReviewApp(app, pullRequestId string) error {
+=======
+func (c *Client) ScmRepoLinkManualReviewApp(app, pullRequestId string) error {
+>>>>>>> Rework all commands to delete repo link id
 	_, err := c.ScalingoAPI().Do(&http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_review_app",
@@ -154,8 +219,13 @@ func (c *Client) SCMRepoLinkManualReviewApp(app, pullRequestId string) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (c *Client) SCMRepoLinkDeployments(app string) ([]*Deployment, error) {
 	var res SCMRepoLinkDeploymentsResponse
+=======
+func (c *Client) ScmRepoLinkDeployments(app string) ([]*Deployment, error) {
+	var res ScmRepoLinkDeploymentsResponse
+>>>>>>> Rework all commands to delete repo link id
 
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "GET",
@@ -168,8 +238,13 @@ func (c *Client) SCMRepoLinkDeployments(app string) ([]*Deployment, error) {
 	return res.Deployments, nil
 }
 
+<<<<<<< HEAD
 func (c *Client) SCMRepoLinkReviewApps(app string) ([]*ReviewApp, error) {
 	var res SCMRepoLinkReviewAppsResponse
+=======
+func (c *Client) ScmRepoLinkReviewApps(app string) ([]*ReviewApp, error) {
+	var res ScmRepoLinkReviewAppsResponse
+>>>>>>> Rework all commands to delete repo link id
 
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "GET",

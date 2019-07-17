@@ -18,13 +18,7 @@ func ManualReviewApp(app, pullRequestID string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// Get RepoLink of App
-	repoLink, err := c.ScmRepoLinkShow(app)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
-	err = c.ScmRepoLinkManualReviewApp(app, repoLink.ID, pullRequestID)
+	err = c.ScmRepoLinkManualReviewApp(app, pullRequestID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
