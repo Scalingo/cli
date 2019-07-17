@@ -10,7 +10,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:cef59acf254c5de4b8eb05bd9e5523808172ee8c3c3800b6a313e729a141bb64"
+  digest = "1:4a377ca0c8cd39a986606a6a36321c16d65087bead22d1779a2409ea96a82094"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +21,16 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "ca1ed8d5da7913aa57edf5eff69cbc13cc813d35"
-  version = "v2.4.6"
+  revision = "ae4fb22e5394111dc5f3ffd97e8969f0a4e2b846"
+  version = "2.4.8"
+
+[[projects]]
+  digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
+  name = "github.com/Scalingo/go-utils"
+  packages = ["errors"]
+  pruneopts = "NUT"
+  revision = "f09d2d5f826a81e3272cf7e14f6d26eb398f5b80"
+  version = "v5.5.10"
 
 [[projects]]
   branch = "master"
@@ -31,6 +39,14 @@
   packages = ["."]
   pruneopts = "NUT"
   revision = "009166a695a2f516c749a26b4ac1f183d89aa336"
+
+[[projects]]
+  branch = "master"
+  digest = "1:433a2ff0ef4e2f8634614aab3174783c5ff80120b487712db96cc3712f409583"
+  name = "github.com/bmizerany/assert"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28"
 
 [[projects]]
   digest = "1:bbf61f7710ce4136a5a3a0f49d82127ecc71a8177d5b9dbd3f156b8c9bffb075"
@@ -118,6 +134,22 @@
   pruneopts = "NUT"
   revision = "81db2a75821ed34e682567d48be488a1c3121088"
   version = "0.5"
+
+[[projects]]
+  digest = "1:7b21c7fc5551b46d1308b4ffa9e9e49b66c7a8b0ba88c0130474b0e7a20d859f"
+  name = "github.com/kr/pretty"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "73f6ac0b30a98e433b289500d779f50c1a6f0712"
+  version = "v0.1.0"
+
+[[projects]]
+  digest = "1:c3a7836b5904db0f8b609595b619916a6831cb35b8b714aec39f96d00c6155d8"
+  name = "github.com/kr/text"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
+  version = "v0.1.0"
 
 [[projects]]
   digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
@@ -359,7 +391,9 @@
     "github.com/Scalingo/go-scalingo/debug",
     "github.com/Scalingo/go-scalingo/http",
     "github.com/Scalingo/go-scalingo/io",
+    "github.com/Scalingo/go-utils/errors",
     "github.com/andrew-d/go-termutil",
+    "github.com/bmizerany/assert",
     "github.com/briandowns/spinner",
     "github.com/cheggaaa/pb",
     "github.com/dustin/go-humanize",
