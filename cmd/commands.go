@@ -172,6 +172,7 @@ var (
 
 		// Backups
 		backupsListCommand,
+		backupsCreateCommand,
 		backupsDownloadCommand,
 		backupDownloadCommand,
 
