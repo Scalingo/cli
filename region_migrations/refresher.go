@@ -113,16 +113,16 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 	defer w.Flush()
 
 	if migration == nil {
-		fmt.Fprint(w, color.BlueString("%s Loading migration informations\n", r.loader()))
+		fmt.Fprint(w, color.BlueString("%s Loading migration information\n", r.loader()))
 		return
 	}
 
 	fmt.Fprintf(w, "Migrating app: %s\n", migration.AppName)
 	fmt.Fprintf(w.Newline(), "Destination: %s\n", migration.Destination)
 	if migration.NewAppID == "" {
-		fmt.Fprintf(w.Newline(), "New app id: %s\n", color.BlueString("N/A"))
+		fmt.Fprintf(w.Newline(), "New app ID: %s\n", color.BlueString("N/A"))
 	} else {
-		fmt.Fprintf(w.Newline(), "New app id: %s\n", migration.NewAppID)
+		fmt.Fprintf(w.Newline(), "New app ID: %s\n", migration.NewAppID)
 	}
 	fmt.Fprintf(w.Newline(), "Status: %s\n", formatMigrationStatus(migration.Status))
 	if migration.Status == scalingo.RegionMigrationStatusScheduled {

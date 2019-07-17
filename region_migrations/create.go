@@ -15,7 +15,6 @@ func Create(app string, destination string) error {
 	migration, err := c.CreateRegionMigration(app, scalingo.RegionMigrationParams{
 		Destination: destination,
 	})
-
 	if err != nil {
 		return errgo.Notef(err, "fail to create migration")
 	}

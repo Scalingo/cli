@@ -20,7 +20,7 @@ func List(appId string) error {
 		return errgo.Notef(err, "fail to list migrations")
 	}
 	if len(migrations) == 0 {
-		fmt.Println("No migrations found for this app")
+		fmt.Println("No migration found for this app")
 		return nil
 	}
 

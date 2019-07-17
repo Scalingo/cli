@@ -49,7 +49,7 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		if len(domains) > 0 {
 			parsed, err := url.Parse(app.BaseURL)
 			if err != nil {
-				fmt.Printf("You need to change the CNAME record of the yours domains to point to the new region.")
+				fmt.Printf("You need to change the CNAME record of your domains to point to the new region.")
 				return nil
 			}
 			fmt.Printf("You need to change the CNAME record of the following domains to point to '%s'\n", parsed.Host)
@@ -60,20 +60,20 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		return nil
 	}
 
-	color.Red("The migration failed because of the following error:\n")
+	color.Red("The migration failed because of the following errors:\n")
 
 	for i, _ := range migration.Steps {
 		step := migration.Steps[len(migration.Steps)-1-i]
 		if step.Status == scalingo.StepStatusError {
 			if step.Logs == "" {
-				color.Red("- The step: %s failed.\n", step.Name)
+ 				color.Red("- Step %s failed\n", step.Name) 
 			} else {
 				color.Red("- Step %s failed: %s\n", step.Name, step.Logs)
 			}
 		}
 	}
 
-	fmt.Println("The application has been rolled back to it's working state.")
+	fmt.Println("The application has been rolled back to its working state.")
 	fmt.Println("Contact support@scalingo.com to troubleshoot this issue.")
 
 	return nil

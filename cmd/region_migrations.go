@@ -65,8 +65,8 @@ var (
 		Flags: []cli.Flag{
 			appFlag,
 		},
-		Usage: "List all migrations linked to an app",
-		Description: `List all migrations linked to an app
+		Usage: "Follow a running migration",
+		Description: `Follow a running migration
    Example
 	   'scalingo --app my-app migrations-follow migration-id'
 		`,
