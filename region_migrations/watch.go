@@ -49,10 +49,10 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		if len(domains) > 0 {
 			parsed, err := url.Parse(app.BaseURL)
 			if err != nil {
-				fmt.Printf("You need to change the CNAME record of your domains to point to the new region.")
+				fmt.Printf("You need to change the DNS record of your domains to point to the new region.")
 				return nil
 			}
-			fmt.Printf("You need to change the CNAME record of the following domains to point to '%s'\n", parsed.Host)
+			fmt.Printf("You need to change the DNS record of the following domains to point to '%s'\n", parsed.Host)
 			for _, domain := range domains {
 				fmt.Printf(" - %s\n", domain.Name)
 			}
@@ -66,7 +66,7 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		step := migration.Steps[len(migration.Steps)-1-i]
 		if step.Status == scalingo.StepStatusError {
 			if step.Logs == "" {
- 				color.Red("- Step %s failed\n", step.Name) 
+				color.Red("- Step %s failed\n", step.Name)
 			} else {
 				color.Red("- Step %s failed: %s\n", step.Name, step.Logs)
 			}
