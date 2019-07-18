@@ -10,7 +10,8 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:b2e677d01dfad0a49766ee24fe1b82b2e689057cb83344eaac17c9dbea0d4bea"
+  branch = "fix/cli/452/backups-create"
+  digest = "1:1b1e5e168c9103a13c1b3978e4701a1f8b9e82f84123767366fbbe403dd73bb4"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +22,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "7e0c415c47355ebbc2a0cdec84cfd8711ec4fa1b"
-  version = "2.4.9"
+  revision = "84b1a4afd387fe3da03d1abc0de854b29ade1d5b"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
@@ -49,12 +49,12 @@
   revision = "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28"
 
 [[projects]]
-  digest = "1:bbf61f7710ce4136a5a3a0f49d82127ecc71a8177d5b9dbd3f156b8c9bffb075"
+  digest = "1:bc99231577a2fc8db75a37df2ac608cd46702fb18f021db80c466946e69da76e"
   name = "github.com/briandowns/spinner"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "dd69c579ff204842e8962816987f838e2c2c18d8"
-  version = "1.4"
+  revision = "e3fb08e7443c496a847cb2eef48e3883f3e12c38"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:21562b59c496f4cbd7a40beaa257ac6761002dd3e36259f532216082abace8b1"
