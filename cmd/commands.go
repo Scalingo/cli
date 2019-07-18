@@ -3,6 +3,8 @@ package cmd
 import (
 	"os"
 
+	"github.com/Scalingo/go-scalingo/debug"
+
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/config"
