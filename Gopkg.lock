@@ -10,8 +10,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "fix/storky/1/add_region_migrations_service"
-  digest = "1:4b4fe97b2176af557fb42ff6f6b8ce1b459c3a13e8d834e8121361325ec8f280"
+  digest = "1:b2e677d01dfad0a49766ee24fe1b82b2e689057cb83344eaac17c9dbea0d4bea"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -22,7 +21,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "2e6a4ba636fedafc598b305692117c13d0184536"
+  revision = "7e0c415c47355ebbc2a0cdec84cfd8711ec4fa1b"
+  version = "2.4.9"
 
 [[projects]]
   branch = "master"

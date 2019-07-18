@@ -26,7 +26,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  branch = "fix/storky/1/add_region_migrations_service"
+  version = "^2"
 
 [[constraint]]
   branch = "master"

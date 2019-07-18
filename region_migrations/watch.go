@@ -2,9 +2,11 @@ package region_migrations
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/fatih/color"
 	errgo "gopkg.in/errgo.v1"
@@ -29,33 +31,61 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 	if migration.Status == scalingo.RegionMigrationStatusDone {
 		newRegionClient, err := config.ScalingoClientForRegion(migration.Destination)
 		if err != nil {
-			color.Green("The application has been migrated!\n")
+			showGenericMigrationSuccessMessage()
 			return nil
 		}
 
 		app, err := newRegionClient.AppsShow(appId)
 		if err != nil {
-			color.Green("The application has been migrated!\n")
+			showGenericMigrationSuccessMessage()
 			return nil
 		}
 
 		domains, err := newRegionClient.DomainsList(appId)
 		if err != nil {
+			showGenericMigrationSuccessMessage()
 			color.Green("The application has been migrated!\n")
 			return nil
 		}
 
 		color.Green("Your application is now available at: %s\n\n", app.BaseURL)
-		if len(domains) > 0 {
-			parsed, err := url.Parse(app.BaseURL)
-			if err != nil {
-				fmt.Printf("You need to change the DNS record of your domains to point to the new region.")
-				return nil
+
+		if len(domains) == 0 {
+			return nil
+		}
+
+		dnsARecord := ""
+		dnsCNAMERecord := ""
+		parsed, err := url.Parse(app.BaseURL)
+		if err != nil {
+			fmt.Println("You need to change the DNS record of your domains to point to the new region.")
+			fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
+			return nil
+		}
+		dnsCNAMERecord = parsed.Host
+		addresses, err := net.LookupHost(parsed.Host)
+		if err == nil && len(addresses) > 0 {
+			dnsARecord = addresses[0]
+		}
+
+		showDoc := false
+		fmt.Printf("You need to make the following changes to your DNS records:")
+		for _, domain := range domains {
+			isCNAME, err := utils.IsCNAME(domain.Name)
+			if err != nil || (!isCNAME && dnsARecord == "") {
+				fmt.Printf("- %s record should be changed", domain.Name)
+				showDoc = true
 			}
-			fmt.Printf("You need to change the DNS record of the following domains to point to '%s'\n", parsed.Host)
-			for _, domain := range domains {
-				fmt.Printf(" - %s\n", domain.Name)
+			if isCNAME {
+				fmt.Printf("- CNAME record of %s should be changed to %s", domain.Name, dnsCNAMERecord)
+			} else {
+				fmt.Printf("- A record of %s should be changed to %s", domain.Name, dnsARecord)
 			}
+		}
+
+		if showDoc {
+			fmt.Println("To configure your DNS record, check out our documentation:")
+			fmt.Println("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
 		}
 		return nil
 	}
@@ -77,4 +107,10 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 	fmt.Println("Contact support@scalingo.com to troubleshoot this issue.")
 
 	return nil
+}
+
+func showGenericMigrationSuccessMessage() {
+	color.Green("The application has been migrated!\n")
+	fmt.Println("You need to change the DNS record of your domains to point to the new region.")
+	fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
 }

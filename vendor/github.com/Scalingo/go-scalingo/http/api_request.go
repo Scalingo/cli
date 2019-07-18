@@ -18,7 +18,6 @@ import (
 var (
 	defaultEndpoint   = "https://api.scalingo.com"
 	defaultAPIVersion = "1"
-	ErrNoAuth         = errgo.New("authentication required")
 )
 
 type APIRequest struct {
@@ -52,7 +51,7 @@ func (c *client) FillDefaultValues(req *APIRequest) error {
 		var err error
 		req.Token, err = c.TokenGenerator().GetAccessToken()
 		if err != nil {
-			return ErrNoAuth
+			return errgo.Notef(err, "fail to get the access token for this request")
 		}
 	}
 
@@ -75,7 +74,7 @@ func (statuses Statuses) Contains(status int) bool {
 func (c *client) Do(req *APIRequest) (*http.Response, error) {
 	err := c.FillDefaultValues(req)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Notef(err, "fail to fill client with default values")
 	}
 
 	endpoint := req.URL + req.Endpoint
@@ -91,22 +90,22 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 	case "WITH_BODY":
 		buffer, err := json.Marshal(req.Params)
 		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
+			return nil, errgo.Notef(err, "fail to marshal params")
 		}
 		reader := bytes.NewReader(buffer)
 		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, reader)
 		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
+			return nil, errgo.Notef(err, "fail to initialize the 'WITH_BODY' query")
 		}
 	case "GET", "DELETE":
 		values, err := req.BuildQueryFromParams()
 		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
+			return nil, errgo.Notef(err, "fail to build the query params")
 		}
 		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
 		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, nil)
 		if err != nil {
-			return nil, errgo.Mask(err, errgo.Any)
+			return nil, errgo.Notef(err, "fail to initialize the '%s' query", req.Method)
 		}
 	}
 
@@ -148,7 +147,7 @@ func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 	return c.HTTPClient().Do(req)
 }
 
-func ParseJSON(res *http.Response, data interface{}) error {
+func parseJSON(res *http.Response, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return errgo.Newf("fail to read body of request %v, %v", res.Request, err)
