@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 )
 
 func Show(app string) error {
@@ -39,7 +39,7 @@ func Show(app string) error {
 	})
 	t.Append([]string{
 		repoLink.AppID, repoLink.AuthIntegrationID, i.ScmType,
-		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(time.RFC1123),
+		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(utils.TIME_CLI),
 		strconv.FormatBool(repoLink.AutoDeployEnabled), strconv.FormatBool(repoLink.DeployReviewAppsEnabled),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteOnCloseEnabled, repoLink.HoursBeforeDeleteOnClose),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteStaleEnabled, repoLink.HoursBeforeDeleteStale),

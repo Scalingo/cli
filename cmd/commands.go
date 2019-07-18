@@ -161,6 +161,9 @@ var (
 		RepoLinkManualDeployCommand,
 		RepoLinkManualReviewAppCommand,
 
+		// Review Apps
+		ReviewAppsShowCommand,
+
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersDetailsCommand,
