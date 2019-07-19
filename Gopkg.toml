@@ -26,8 +26,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  #version = "^2"
-  branch = "fix/cli/452/backups-create"
+  version = "^2"
 
 [[constraint]]
   branch = "master"
