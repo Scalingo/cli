@@ -56,12 +56,12 @@ func (c *Client) BackupList(app string, addonID string) ([]Backup, error) {
 }
 
 func (c *Client) BackupCreate(app, addonID string) (*Backup, error) {
-	var backup Backup
-	err := c.DBAPI(app, addonID).SubresourceAdd("databases", addonID, "backups", nil, &backup)
+	var backupRes BackupRes
+	err := c.DBAPI(app, addonID).SubresourceAdd("databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to order a new backup creation")
+		return nil, errgo.Notef(err, "fail to schedule a new backup")
 	}
-	return &backup, nil
+	return &backupRes.Backup, nil
 }
 
 func (c *Client) BackupShow(app, addonID, backup string) (*Backup, error) {
