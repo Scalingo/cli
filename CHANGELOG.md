@@ -7,6 +7,7 @@
 * Only fill regions cache for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
 * Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
 * Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
+* Add `migrations`, `migrations-create` and `migrations-follow` [#446](https://github.com/Scalingo/cli/pull/446)
 
 ### 1.14.1
 
