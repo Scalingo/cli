@@ -28,6 +28,7 @@ type API interface {
 	NotifiersService
 	OperationsService
 	RegionsService
+	RegionMigrationsService
 	RunsService
 	SignUpService
 	SourcesService

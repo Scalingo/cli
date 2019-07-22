@@ -5,19 +5,20 @@ import (
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/io"
 	"github.com/urfave/cli"
 )
 
 var (
-	BackupListCommand = cli.Command{
+	backupsListCommand = cli.Command{
 		Name:     "backups",
 		Category: "Addons",
 		Usage:    "List backups for an addon",
 		Flags:    []cli.Flag{appFlag, addonFlag},
 		Description: `  List all available backups for an addon:
-		$ scalingo --app myapp --addon addon_uuid backups
+		$ scalingo --app my-app --addon addon_uuid backups
 
-		# See also 'addons' and 'backup-download'
+		# See also 'addons' and 'backups-download'
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -29,8 +30,28 @@ var (
 		},
 	}
 
-	BackupDownloadCommand = cli.Command{
-		Name:     "backup-download",
+	backupsCreateCommand = cli.Command{
+		Name:     "backups-create",
+		Category: "Addons",
+		Usage:    "Ask for a new backup",
+		Flags:    []cli.Flag{appFlag, addonFlag},
+		Description: `  Ask for a new backup of your addon:
+		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
+
+		# See also 'backups' and 'addons'`,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			addon := addonName(c)
+
+			err := db.CreateBackup(currentApp, addon)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+	}
+
+	backupsDownloadCommand = cli.Command{
+		Name:     "backups-download",
 		Category: "Addons",
 		Usage:    "Download a backup",
 		Flags: []cli.Flag{appFlag, addonFlag, cli.StringFlag{
@@ -44,7 +65,7 @@ var (
 			Usage: "Do not show progress bar and loading messages",
 		}},
 		Description: `  Download a specific backup:
-		$ scalingo -a myapp --addon addon_uuid backup-download --backup my_backup
+		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
 
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
@@ -66,5 +87,17 @@ var (
 				errorQuit(err)
 			}
 		},
+	}
+
+	backupDownloadCommand = cli.Command{
+		Name:        "backup-download",
+		Category:    backupsDownloadCommand.Category,
+		Usage:       backupsDownloadCommand.Usage,
+		Description: backupsDownloadCommand.Description,
+		Before: func(*cli.Context) error {
+			io.Warningf("DEPRECATED: please use backups-download instead of this command\n\n")
+			return nil
+		},
+		Action: backupsDownloadCommand.Action,
 	}
 )

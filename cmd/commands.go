@@ -171,8 +171,10 @@ var (
 		InfluxDBConsoleCommand,
 
 		// Backups
-		BackupListCommand,
-		BackupDownloadCommand,
+		backupsListCommand,
+		backupsCreateCommand,
+		backupsDownloadCommand,
+		backupDownloadCommand,
 
 		// Alerts
 		alertsListCommand,

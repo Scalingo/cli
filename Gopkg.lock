@@ -10,7 +10,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:4a377ca0c8cd39a986606a6a36321c16d65087bead22d1779a2409ea96a82094"
+  digest = "1:c54d32e7c6375aa967c464259b7fcecbc9fa14e279e3b3d907970569543d9b38"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -21,8 +21,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "ae4fb22e5394111dc5f3ffd97e8969f0a4e2b846"
-  version = "2.4.8"
+  revision = "23b38a4cb4e2bc6fb316b0e51e96a81e734405df"
+  version = "v2.5.0"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
@@ -49,12 +49,12 @@
   revision = "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28"
 
 [[projects]]
-  digest = "1:bbf61f7710ce4136a5a3a0f49d82127ecc71a8177d5b9dbd3f156b8c9bffb075"
+  digest = "1:bc99231577a2fc8db75a37df2ac608cd46702fb18f021db80c466946e69da76e"
   name = "github.com/briandowns/spinner"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "dd69c579ff204842e8962816987f838e2c2c18d8"
-  version = "1.4"
+  revision = "e3fb08e7443c496a847cb2eef48e3883f3e12c38"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:21562b59c496f4cbd7a40beaa257ac6761002dd3e36259f532216082abace8b1"
