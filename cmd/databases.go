@@ -48,9 +48,16 @@ var (
 				params.ScheduledAt = &scheduleAt
 			}
 
-			database, err := db.BackupsConfiguration(currentApp, addon, params)
-			if err != nil {
-				errorQuit(err)
+			var database scalingo.Database
+			var err error
+
+			if disable || scheduleAt != 0 {
+				database, err = db.BackupsConfiguration(currentApp, addon, params)
+				if err != nil {
+					errorQuit(err)
+				}
+			} else {
+				database, err = db.Show(currentApp, addon)
 			}
 			if database.PeriodicBackupsEnabled {
 				io.Statusf("Periodic backups will be done daily at %d:00 UTC\n", database.PeriodicBackupsScheduledAt)
