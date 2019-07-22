@@ -16,17 +16,14 @@ var (
 		Category: "Addons",
 		Usage:    "Configure the periodic backups of a database",
 		Flags: []cli.Flag{appFlag, addonFlag, cli.IntFlag{
-			Name:  "scheduled-at",
-			Usage: "Hour of the day of the periodic backups (UTC)",
+			Name:  "schedule-at",
+			Usage: "Enable daily backups and schedule them at the specified hour of the day (UTC)",
 		}, cli.BoolFlag{
 			Name:  "disable",
 			Usage: "Disable the periodic backups",
-		}, cli.BoolFlag{
-			Name:  "enable",
-			Usage: "Enable the periodic backups",
 		}},
-		Description: `  Configure the periodic backups of a databas:
-		$ scalingo --app myapp --addon addon_uuid backups-config
+		Description: `  Configure the periodic backups of a database:
+		$ scalingo --app myapp --addon addon_uuid backups-config --schedule-at 3
 
 		# See also 'addons' and 'backup-download'
 		`,
@@ -35,31 +32,28 @@ var (
 			addon := addonName(c)
 			params := scalingo.PeriodicBackupsConfigParams{}
 
-			enable := c.Bool("enable")
+			scheduleAt := c.Int("schedule-at")
 			disable := c.Bool("disable")
-			if enable && disable {
-				errorQuit(errors.New("You cannot use both --enable and --disable at the same time"))
+			if scheduleAt != 0 && disable {
+				errorQuit(errors.New("You cannot use both --schedule-at and --disable at the same time"))
 			}
-			if enable {
-				t := true
-				params.Enabled = &t
-			}
+
 			if disable {
 				f := false
 				params.Enabled = &f
 			}
-
-			scheduledAt := c.Int("scheduled-at")
-			if scheduledAt != 0 {
-				params.ScheduledAt = &scheduledAt
+			if scheduleAt != 0 {
+				t := true
+				params.Enabled = &t
+				params.ScheduledAt = &scheduleAt
 			}
 
-			db, err := db.BackupsConfiguration(currentApp, addon, params)
+			database, err := db.BackupsConfiguration(currentApp, addon, params)
 			if err != nil {
 				errorQuit(err)
 			}
-			if db.PeriodicBackupsEnabled {
-				io.Statusf("Periodic backups will be done daily at %d:00 UTC\n", db.PeriodicBackupsScheduledAt)
+			if database.PeriodicBackupsEnabled {
+				io.Statusf("Periodic backups will be done daily at %d:00 UTC\n", database.PeriodicBackupsScheduledAt)
 			} else {
 				io.Statusf("Periodic backups are disabled")
 			}
