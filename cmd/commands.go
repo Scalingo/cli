@@ -24,40 +24,40 @@ func (cmds *AppCommands) AddCommand(cmd Command) {
 	if !cmd.Global {
 		regionFlag := cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
-	}
-	action := cmd.Command.Action.(func(c *cli.Context))
-	cmd.Command.Action = func(c *cli.Context) {
-		token := os.Getenv("SCALINGO_API_TOKEN")
+		action := cmd.Command.Action.(func(c *cli.Context))
+		cmd.Command.Action = func(c *cli.Context) {
+			token := os.Getenv("SCALINGO_API_TOKEN")
 
-		currentUser, err := config.C.CurrentUser()
-		if err != nil || currentUser == nil {
-			err := session.Login(session.LoginOpts{APIToken: token})
-			if err != nil {
-				panic(err)
+			currentUser, err := config.C.CurrentUser()
+			if err != nil || currentUser == nil {
+				err := session.Login(session.LoginOpts{APIToken: token})
+				if err != nil {
+					errorQuit(err)
+				}
 			}
-		}
 
-		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
-			Token: token,
-		})
-		if err != nil {
-			panic(err)
-		}
-		currentRegion := c.GlobalString("region")
-		if currentRegion == "" {
-			currentRegion = c.String("region")
-		}
+			regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+				Token: token,
+			})
+			if err != nil {
+				errorQuit(err)
+			}
+			currentRegion := c.GlobalString("region")
+			if currentRegion == "" {
+				currentRegion = c.String("region")
+			}
 
-		if config.C.ScalingoRegion == "" && currentRegion == "" {
-			region := getDefaultRegion(regions)
-			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
-			currentRegion = region.Name
-		}
+			if config.C.ScalingoRegion == "" && currentRegion == "" {
+				region := getDefaultRegion(regions)
+				debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+				currentRegion = region.Name
+			}
 
-		if currentRegion != "" {
-			config.C.ScalingoRegion = currentRegion
+			if currentRegion != "" {
+				config.C.ScalingoRegion = currentRegion
+			}
+			action(c)
 		}
-		action(c)
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)
 }
@@ -171,8 +171,10 @@ var (
 		InfluxDBConsoleCommand,
 
 		// Backups
-		BackupListCommand,
-		BackupDownloadCommand,
+		backupsListCommand,
+		backupsCreateCommand,
+		backupsDownloadCommand,
+		backupDownloadCommand,
 
 		// Alerts
 		alertsListCommand,

@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.14.0
+# Scalingo-CLI v1.14.1
 
 This repository contains the command line utility for the public PaaS Scalingo
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.14.0
+   1.14.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -201,7 +201,7 @@ Bump new version number in:
 - `VERSION`
 - `config/version.go`
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.14.0`.
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.14.1`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.

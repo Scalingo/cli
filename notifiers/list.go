@@ -16,7 +16,7 @@ func List(app string) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := c.NotifiersList(app)
+	notifiers, err := c.NotifiersList(app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -29,11 +29,15 @@ func List(app string) error {
 		return errgo.Notef(err, "fail to list event types")
 	}
 
-	for _, r := range resources {
+	for _, notifier := range notifiers {
+		selectedEvents := "All"
+		if !notifier.GetSendAllEvents() {
+			selectedEvents = eventTypesToString(eventTypes, notifier.GetSelectedEventIDs())
+		}
 		t.Append([]string{
-			r.GetID(), string(r.GetType()), r.GetName(),
-			strconv.FormatBool(r.IsActive()), strconv.FormatBool(r.GetSendAllEvents()),
-			eventTypesToString(eventTypes, r.GetSelectedEventIDs()),
+			notifier.GetID(), string(notifier.GetType()), notifier.GetName(),
+			strconv.FormatBool(notifier.IsActive()), strconv.FormatBool(notifier.GetSendAllEvents()),
+			selectedEvents,
 		})
 	}
 	t.Render()

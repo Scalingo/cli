@@ -2,6 +2,16 @@
 
 ### To be Released
 
+* Fill the regions cache only for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
+* Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
+* Only fill regions cache for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
+* Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
+* Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
+
+### 1.14.1
+
+* Fix Git remote URL parsing to detect app name on Outscale [#443](https://github.com/Scalingo/cli/pull/443)
+
 ### 1.14.0
 
 * Use user's default region [#411](https://github.com/Scalingo/cli/pull/441)

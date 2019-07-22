@@ -40,3 +40,7 @@
   non-go = true
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/Scalingo/go-utils"
+  version = "^5"

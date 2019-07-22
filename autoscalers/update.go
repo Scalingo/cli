@@ -4,6 +4,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-utils/errors"
 	errgo "gopkg.in/errgo.v1"
 )
 
@@ -15,7 +16,7 @@ func Update(app, containerType string, params scalingo.AutoscalerUpdateParams) e
 
 	autoscaler, err := getFromContainerType(c, app, containerType)
 	if err != nil {
-		if errgo.Cause(err) == ErrNotFound {
+		if errors.ErrgoRoot(err) == ErrNotFound {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
 		}

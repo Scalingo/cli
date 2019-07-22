@@ -10,7 +10,7 @@ import (
 
 type BackupsService interface {
 	BackupList(app, addonID string) ([]Backup, error)
-	BackupCreate(app, addonID string) error
+	BackupCreate(app, addonID string) (*Backup, error)
 	BackupShow(app, addonID, backupID string) (*Backup, error)
 	BackupDownloadURL(app, addonID, backupID string) (string, error)
 }
@@ -55,12 +55,13 @@ func (c *Client) BackupList(app string, addonID string) ([]Backup, error) {
 	return backupRes.Backups, nil
 }
 
-func (c *Client) BackupCreate(app, addonID string) error {
-	err := c.DBAPI(app, addonID).SubresourceAdd("databases", addonID, "backups", nil, nil)
+func (c *Client) BackupCreate(app, addonID string) (*Backup, error) {
+	var backupRes BackupRes
+	err := c.DBAPI(app, addonID).SubresourceAdd("databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
-		return errgo.Notef(err, "fail to order a new backup creation")
+		return nil, errgo.Notef(err, "fail to schedule a new backup")
 	}
-	return nil
+	return &backupRes.Backup, nil
 }
 
 func (c *Client) BackupShow(app, addonID, backup string) (*Backup, error) {
