@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
@@ -17,7 +18,7 @@ var (
 		Usage:    "Configure the periodic backups of a database",
 		Flags: []cli.Flag{appFlag, addonFlag, cli.IntFlag{
 			Name:  "schedule-at",
-			Usage: "Enable daily backups and schedule them at the specified hour of the day (UTC)",
+			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone)",
 		}, cli.BoolFlag{
 			Name:  "disable-scheduling",
 			Usage: "Disable the periodic backups",
@@ -30,8 +31,8 @@ var (
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			addon := addonName(c)
-			params := scalingo.PeriodicBackupsConfigParams{}
 
+			params := scalingo.PeriodicBackupsConfigParams{}
 			scheduleAt := c.Int("schedule-at")
 			disable := c.Bool("disable-scheduling")
 			if scheduleAt != 0 && disable {
@@ -45,12 +46,13 @@ var (
 			if scheduleAt != 0 {
 				t := true
 				params.Enabled = &t
-				params.ScheduledAt = &scheduleAt
+				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, time.Local)
+				hour := localTime.UTC().Hour()
+				params.ScheduledAt = &hour
 			}
 
 			var database scalingo.Database
 			var err error
-
 			if disable || scheduleAt != 0 {
 				database, err = db.BackupsConfiguration(currentApp, addon, params)
 				if err != nil {
@@ -60,9 +62,12 @@ var (
 				database, err = db.Show(currentApp, addon)
 			}
 			if database.PeriodicBackupsEnabled {
-				io.Statusf("Periodic backups will be done daily at %d:00 UTC\n", database.PeriodicBackupsScheduledAt)
+				scheduledAtUTC := time.Date(1986, 7, 22, database.PeriodicBackupsScheduledAt, 0, 0, 0, time.UTC)
+				scheduledAt := scheduledAtUTC.In(time.Local)
+				zone, _ := time.Now().In(time.Local).Zone()
+				io.Statusf("Periodic backups will be done daily at %d:00 %s\n", scheduledAt.Hour(), zone)
 			} else {
-				io.Statusf("Periodic backups are disabled")
+				io.Status("Periodic backups are disabled")
 			}
 		},
 	}
