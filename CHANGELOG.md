@@ -2,11 +2,11 @@
 
 ### To be Released
 
-* Fill the regions cache only for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
 * Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
 * Only fill regions cache for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
 * Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
 * Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
+* Add periodic backups configuration commands [#455](https://github.com/Scalingo/cli/pull/455)
 
 ### 1.14.1
 
