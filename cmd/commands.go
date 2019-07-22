@@ -170,6 +170,9 @@ var (
 		PgSQLConsoleCommand,
 		InfluxDBConsoleCommand,
 
+		// Databases
+		databaseBackupsConfig,
+
 		// Backups
 		backupsListCommand,
 		backupsCreateCommand,
