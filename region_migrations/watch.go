@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/fatih/color"

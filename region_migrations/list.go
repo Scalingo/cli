@@ -1,12 +1,12 @@
 package region_migrations
 
 import (
-	"fmt"
 	"os"
 	"sort"
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	errgo "gopkg.in/errgo.v1"
