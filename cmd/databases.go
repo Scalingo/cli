@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Scalingo/cli/appdetect"
@@ -16,15 +19,19 @@ var (
 		Name:     "backups-config",
 		Category: "Addons",
 		Usage:    "Configure the periodic backups of a database",
-		Flags: []cli.Flag{appFlag, addonFlag, cli.IntFlag{
+		Flags: []cli.Flag{appFlag, addonFlag, cli.StringFlag{
 			Name:  "schedule-at",
-			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone)",
+			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone). It is also possible to specify the timezone to use.",
 		}, cli.BoolFlag{
 			Name:  "unschedule",
 			Usage: "Disable the periodic backups",
 		}},
 		Description: `  Configure the periodic backups of a database:
-		$ scalingo --app myapp --addon addon_uuid backups-config --schedule-at 3
+
+Examples
+ $ scalingo --app myapp --addon addon_uuid backups-config --schedule-at 3
+ $ scalingo --app myapp --addon addon_uuid backups-config --schedule-at "3 Europe/Paris"
+ $ scalingo --app myapp --addon addon_uuid backups-config --unschedule
 
 		# See also 'addons' and 'backup-download'
 		`,
@@ -33,9 +40,9 @@ var (
 			addon := addonName(c)
 
 			params := scalingo.PeriodicBackupsConfigParams{}
-			scheduleAt := c.Int("schedule-at")
+			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
-			if scheduleAt != 0 && disable {
+			if scheduleAtFlag != "" && disable {
 				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
@@ -43,17 +50,21 @@ var (
 				f := false
 				params.Enabled = &f
 			}
-			if scheduleAt != 0 {
+			if scheduleAtFlag != "" {
 				t := true
 				params.Enabled = &t
-				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, time.Local)
+				scheduleAt, loc, err := parseScheduleAtFlag(scheduleAtFlag)
+				if err != nil {
+					errorQuit(err)
+				}
+				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, loc)
 				hour := localTime.UTC().Hour()
 				params.ScheduledAt = &hour
 			}
 
 			var database scalingo.Database
 			var err error
-			if disable || scheduleAt != 0 {
+			if disable || scheduleAtFlag != "" {
 				database, err = db.BackupsConfiguration(currentApp, addon, params)
 				if err != nil {
 					errorQuit(err)
@@ -72,3 +83,28 @@ var (
 		},
 	}
 )
+
+func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
+	scheduleAt, err := strconv.Atoi(flag)
+	if err == nil {
+		// In this case, the schedule-at flag equals a single number
+		return scheduleAt, time.Local, nil
+	}
+
+	// From now on the schedule-at flag is a number and a timezone such as
+	// "3 Europe/Paris"
+	s := strings.Split(flag, " ")
+	if len(s) < 2 {
+		return -1, nil, errors.New("fail to parse the schedule-at flag")
+	}
+	scheduleAt, err = strconv.Atoi(s[0])
+	if err != nil {
+		return -1, nil, errors.New("fail to parse the schedule-at flag")
+	}
+	loc, err := time.LoadLocation(s[1])
+	if err != nil {
+		return -1, nil, fmt.Errorf("unknown timezone '%s'", s[1])
+	}
+
+	return scheduleAt, loc, nil
+}
