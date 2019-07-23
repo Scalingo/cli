@@ -44,7 +44,6 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		domains, err := newRegionClient.DomainsList(appId)
 		if err != nil {
 			showGenericMigrationSuccessMessage()
-			color.Green("\n\n\nThe application has been migrated!\n")
 			return nil
 		}
 
@@ -58,8 +57,8 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		dnsCNAMERecord := ""
 		parsed, err := url.Parse(app.BaseURL)
 		if err != nil {
-			fmt.Println("You need to change the DNS record of your domains to point to the new region.")
-			fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
+			io.Warning("You need to change the DNS record of your domains to point to the new region.")
+			io.Status("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
 			return nil
 		}
 		dnsCNAMERecord = parsed.Host
@@ -69,23 +68,23 @@ func WatchMigration(client *scalingo.Client, appId, id string) error {
 		}
 
 		showDoc := false
-		fmt.Printf("You need to make the following changes to your DNS records:\n")
+		io.Status("You need to make the following changes to your DNS records:\n")
 		for _, domain := range domains {
 			isCNAME, err := utils.IsCNAME(domain.Name)
 			if err != nil || (!isCNAME && dnsARecord == "") {
-				fmt.Printf("- %s record should be changed\n", domain.Name)
+				io.Infof("- %s record should be changed\n", domain.Name)
 				showDoc = true
 			}
 			if isCNAME {
-				fmt.Printf("- CNAME record of %s should be changed to %s\n", domain.Name, dnsCNAMERecord)
+				io.Infof("- CNAME record of %s should be changed to %s\n", domain.Name, dnsCNAMERecord)
 			} else {
-				fmt.Printf("- A record of %s should be changed to %s\n", domain.Name, dnsARecord)
+				io.Infof("- A record of %s should be changed to %s\n", domain.Name, dnsARecord)
 			}
 		}
 
 		if showDoc {
-			fmt.Println("To configure your DNS record, check out our documentation:")
-			fmt.Println("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
+			io.Info("To configure your DNS record, check out our documentation:")
+			io.Info("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
 		}
 		return nil
 	}

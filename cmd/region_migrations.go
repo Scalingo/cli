@@ -74,7 +74,7 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "migrations-create")
+				cli.ShowCommandHelp(c, "migrations-follow")
 				return
 			}
 

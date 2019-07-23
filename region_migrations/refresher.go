@@ -57,7 +57,6 @@ func (r *Refresher) Stop() {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	r.stop = true
-
 }
 
 func (r *Refresher) screenRefresher() {
@@ -89,7 +88,7 @@ func (r *Refresher) migrationRefresher() error {
 		migration, err := client.ShowRegionMigration(r.appID, r.migrationID)
 		if err != nil {
 			r.Stop()
-			return errgo.Notef(err, "fail to refresh migration")
+			return errgo.Notef(err, "fail to get migration")
 		}
 
 		r.lock.Lock()
