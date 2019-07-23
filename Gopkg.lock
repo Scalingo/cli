@@ -104,6 +104,14 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:e45cda0965bf660df6421580001ef40e322a9b29b7b27e9f69568d9a999ec9b7"
+  name = "github.com/gosuri/uilive"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "4512d98b127f3f3a1b7c3cf1104969fdd17b31d9"
+  version = "v0.0.3"
+
+[[projects]]
   digest = "1:447011f2b96902f1472411da1d874c6a1b9e27ec6bbcde548a3f9282eaf2f162"
   name = "github.com/heroku/hk"
   packages = ["term"]
@@ -398,6 +406,7 @@
     "github.com/cheggaaa/pb",
     "github.com/dustin/go-humanize",
     "github.com/fatih/color",
+    "github.com/gosuri/uilive",
     "github.com/heroku/hk/term",
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",

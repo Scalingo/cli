@@ -202,6 +202,29 @@ func ScalingoClient() (*scalingo.Client, error) {
 	return scalingo.NewClient(config), nil
 }
 
+func ScalingoClientForRegion(region string) (*scalingo.Client, error) {
+	authenticator := &CliAuthenticator{}
+	_, token, err := authenticator.LoadAuth()
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to load credentials")
+	}
+
+	regionConfig, err := GetRegion(C, region, GetRegionOpts{
+		Token: token.Token,
+	})
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get region")
+	}
+
+	config := C.scalingoClientBaseConfig(ClientConfigOpts{
+		APIToken: token.Token,
+	})
+
+	config.APIEndpoint = regionConfig.API
+	config.DatabaseAPIEndpoint = regionConfig.DatabaseAPI
+	return scalingo.NewClient(config), nil
+}
+
 func ScalingoUnauthenticatedAuthClient() *scalingo.Client {
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{AuthOnly: true})
 	return scalingo.NewClient(config)
