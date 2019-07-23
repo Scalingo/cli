@@ -78,6 +78,15 @@ type DatabaseRes struct {
 	Database Database `json:"database"`
 }
 
+func (c *Client) DatabaseShow(app, addonID string) (Database, error) {
+	var db Database
+	err := c.DBAPI(app, addonID).ResourceGet("databases", addonID, nil, &db)
+	if err != nil {
+		return Database{}, errgo.Notef(err, "fail to get the database")
+	}
+	return db, nil
+}
+
 type PeriodicBackupsConfigParams struct {
 	ScheduledAt *int  `json:"periodic_backups_scheduled_at,omitempty"`
 	Enabled     *bool `json:"periodic_backups_enabled,omitempty"`
