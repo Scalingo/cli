@@ -20,7 +20,7 @@ var (
 			Name:  "schedule-at",
 			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone)",
 		}, cli.BoolFlag{
-			Name:  "disable-scheduling",
+			Name:  "unschedule",
 			Usage: "Disable the periodic backups",
 		}},
 		Description: `  Configure the periodic backups of a database:
@@ -34,9 +34,9 @@ var (
 
 			params := scalingo.PeriodicBackupsConfigParams{}
 			scheduleAt := c.Int("schedule-at")
-			disable := c.Bool("disable-scheduling")
+			disable := c.Bool("unschedule")
 			if scheduleAt != 0 && disable {
-				errorQuit(errors.New("You cannot use both --schedule-at and --disable-scheduling at the same time"))
+				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
 			if disable {
