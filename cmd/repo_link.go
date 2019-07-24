@@ -159,7 +159,7 @@ var (
 		Name:     "repo-link-manual-deploy",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Trigger a manual deployment from the state of the branch specified.",
+		Usage:    "Trigger a manual deployment from the state of the branch specified",
 		Description: `Trigger a manual deployment from the state of the branch specified:
 
 	$ scalingo -a myapp repo-link-manual-deploy mybranch
@@ -189,7 +189,7 @@ var (
 		Name:     "repo-link-manual-review-app",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Trigger a manual deployment of review app from the state of the pull/merge request id specified.",
+		Usage:    "Trigger a manual deployment of review app from the state of the pull/merge request id specified",
 		Description: `Trigger a manual deployment of review app from the state of the pull/merge request id specified:
 
 	$ scalingo -a myapp repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)

@@ -148,6 +148,10 @@ COMMANDS:
      user-timeline  List the events you have done on the platform
      timeline       List the actions related to a given app
 
+   Git:
+     git-setup  Configure the Git remote for this application
+     git-show   Display the Git remote URL for this application
+
    Global:
      apps       List your apps
      create, c  Create a new app
@@ -158,6 +162,12 @@ COMMANDS:
      signup     Create your Scalingo account
      self       Get the logged in profile
      whoami     Get the logged in profile
+     
+   Integrations:
+     integrations              List your external integrations
+     integrations-create       Create a link between external integration and your account
+     integrations-destroy      Destroy a link between external integration and your account
+     integrations-import-keys  Import public SSH keys from external integration
 
    Notifiers:
      notifiers          List your notifiers
@@ -169,15 +179,26 @@ COMMANDS:
    Notifiers - Global:
      notification-platforms  List all notification platforms
 
+   Public SSH Keys:
+     keys         List your SSH public keys
+     keys-add     Add a public SSH key to deploy your apps
+     keys-remove  Remove a public SSH key
+
    Region migrations:
      migrations-create  Migrate an app to another region
      migrations         List all migrations linked to an app
      migrations-follow  Follow a running migration
 
-   Public SSH Keys:
-     keys         List your SSH public keys
-     keys-add     Add a public SSH key to deploy your apps
-     keys-remove  Remove a public SSH key
+   Repo Link:
+     repo-link                    Show repo link linked with your app
+     repo-link-create             Create a repo link between your scm integration and your app
+     repo-link-update             Update the repo link linked with your app
+     repo-link-delete             Delete repo link linked with your app
+     repo-link-manual-deploy      Trigger a manual deployment from the state of the branch specified
+     repo-link-manual-review-app  Trigger a manual deployment of review app from the state of the pull/merge request id specified
+
+   Review Apps:
+     review-apps  See review apps of parent application
 
    Runtime Stacks:
      stacks      List the available runtime stacks
