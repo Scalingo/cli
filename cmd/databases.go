@@ -45,6 +45,16 @@ Examples
 			if scheduleAtFlag != "" && disable {
 				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
 			}
+			database, err := db.Show(currentApp, addon)
+			if err != nil {
+				errorQuit(err)
+			}
+			if scheduleAtFlag != "" && len(database.PeriodicBackupsScheduledAt) > 1 {
+				msg := "Your database is backed up multiple times a day at " +
+					formatScheduledAt(database.PeriodicBackupsScheduledAt) +
+					". Please ask the support to update the frequency of these backups."
+				errorQuit(errors.New(msg))
+			}
 
 			if disable {
 				f := false
@@ -62,21 +72,14 @@ Examples
 				params.ScheduledAt = &hour
 			}
 
-			var database scalingo.Database
-			var err error
 			if disable || scheduleAtFlag != "" {
 				database, err = db.BackupsConfiguration(currentApp, addon, params)
 				if err != nil {
 					errorQuit(err)
 				}
-			} else {
-				database, err = db.Show(currentApp, addon)
 			}
 			if database.PeriodicBackupsEnabled {
-				scheduledAtUTC := time.Date(1986, 7, 22, database.PeriodicBackupsScheduledAt, 0, 0, 0, time.UTC)
-				scheduledAt := scheduledAtUTC.In(time.Local)
-				zone, _ := time.Now().In(time.Local).Zone()
-				io.Statusf("Periodic backups will be done daily at %d:00 %s\n", scheduledAt.Hour(), zone)
+				io.Statusf("Periodic backups will be done daily at %s\n", formatScheduledAt(database.PeriodicBackupsScheduledAt))
 			} else {
 				io.Status("Periodic backups are disabled")
 			}
@@ -107,4 +110,16 @@ func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
 	}
 
 	return scheduleAt, loc, nil
+}
+
+func formatScheduledAt(hours []int) string {
+	hoursStr := make([]string, len(hours))
+	for i, h := range hours {
+		hUTC := time.Date(1986, 7, 22, h, 0, 0, 0, time.UTC)
+		hLocal := hUTC.In(time.Local)
+		hoursStr[i] = strconv.Itoa(hLocal.Hour())
+	}
+
+	tz, _ := time.Now().In(time.Local).Zone()
+	return fmt.Sprintf("%s:00 %s", strings.Join(hoursStr, ":00, "), tz)
 }

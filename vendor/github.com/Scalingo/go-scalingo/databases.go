@@ -35,7 +35,7 @@ type Database struct {
 	CurrentOperationID         string              `json:"current_operation_id"`
 	Cluster                    bool                `json:"cluster"`
 	PeriodicBackupsEnabled     bool                `json:"periodic_backups_enabled"`
-	PeriodicBackupsScheduledAt int                 `json:"periodic_backups_scheduled_at"` // Hour of the day of the periodic backups (UTC)
+	PeriodicBackupsScheduledAt []int               `json:"periodic_backups_scheduled_at"` // Hours of the day of the periodic backups (UTC)
 }
 
 type InstanceStatus string
@@ -65,13 +65,13 @@ const (
 )
 
 type Instance struct {
-	ID       string         `json:"id"`
-	Hostname string         `json:"hostname"`
-	Port     int            `json:"port"`
-	Status   InstanceStatus `json:"status"`
-	Type     InstanceType   `json:"type"`
-	Features []string       `json:"features"`
-	SandIP   string         `json:"sand_ip"`
+	ID        string         `json:"id"`
+	Hostname  string         `json:"hostname"`
+	Port      int            `json:"port"`
+	Status    InstanceStatus `json:"status"`
+	Type      InstanceType   `json:"type"`
+	Features  []string       `json:"features"`
+	PrivateIP string         `json:"private_ip"`
 }
 
 type DatabaseRes struct {
@@ -79,12 +79,12 @@ type DatabaseRes struct {
 }
 
 func (c *Client) DatabaseShow(app, addonID string) (Database, error) {
-	var db Database
-	err := c.DBAPI(app, addonID).ResourceGet("databases", addonID, nil, &db)
+	var res DatabaseRes
+	err := c.DBAPI(app, addonID).ResourceGet("databases", addonID, nil, &res)
 	if err != nil {
 		return Database{}, errgo.Notef(err, "fail to get the database")
 	}
-	return db, nil
+	return res.Database, nil
 }
 
 type PeriodicBackupsConfigParams struct {

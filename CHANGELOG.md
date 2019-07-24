@@ -7,6 +7,7 @@
 * Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
 * Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
 * Add periodic backups configuration commands [#455](https://github.com/Scalingo/cli/pull/455)
+* PeriodicBackupsScheduledAt can contain multiple values [#457](https://github.com/Scalingo/cli/pull/457)
 
 ### 1.14.1
 
