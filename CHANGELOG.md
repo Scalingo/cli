@@ -8,6 +8,7 @@
 * Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
 * Add `migrations`, `migrations-create` and `migrations-follow` [#446](https://github.com/Scalingo/cli/pull/446)
 * Add periodic backups configuration commands [#455](https://github.com/Scalingo/cli/pull/455)
+* PeriodicBackupsScheduledAt can contain multiple values [#457](https://github.com/Scalingo/cli/pull/457)
 
 ### 1.14.1
 
