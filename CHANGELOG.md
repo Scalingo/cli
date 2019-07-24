@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.15.0
+
 * Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
 * Only fill regions cache for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
 * Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
