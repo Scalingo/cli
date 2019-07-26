@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/repo_link"
+	"github.com/Scalingo/go-scalingo"
 )
 
 var (
@@ -41,15 +42,31 @@ var (
 	RepoLinkCreateCommand = cli.Command{
 		Name:     "repo-link-create",
 		Category: "Repo Link",
-		Flags:    []cli.Flag{appFlag},
-		Usage:    "Create a repo link between your scm integration and your app",
+		Flags: []cli.Flag{
+			appFlag,
+			cli.StringFlag{Name: "branch", Usage: "Branch used in auto-deploy"},
+			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy of application after each branch change"},
+			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
+			cli.StringFlag{Name: "delete-on-close", Usage: "Enable auto-delete of review apps when pull request is closed"},
+			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "Given time delay of auto-delete of review apps when pull request is closed"},
+			cli.StringFlag{Name: "delete-on-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "hours-before-delete-on-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
+		},
+		Usage: "Create a repo link between your scm integration and your app",
 		Description: ` Create a repo link between your scm integration and your application:
-	$ scalingo -a myapp repo-link-create <integration-name> <repo-http-url>
+	$ scalingo -a myapp repo-link-create <integration-name> <repo-http-url> [options]
 									   OR
-	$ scalingo -a myapp repo-link-create <integration-uuid> <repo-http-url>
+	$ scalingo -a myapp repo-link-create <integration-uuid> <repo-http-url> [options]
+
+	List of integrations available:
+	- github => GitHub.com
+	- github-enterprise => GitHub Enterprise (private instance)
+	- gitlab => GitLab.com
+	- gitlab-self-hosted => GitLab Self-hosted (private instance)
 
 	Examples:
 	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
+	$ scalingo -a test-app repo-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy true
 
 		# See also 'repo-link', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
@@ -58,7 +75,25 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 
 			if len(c.Args()) == 2 {
-				err = repo_link.Create(currentApp, c.Args()[0], c.Args()[1])
+				branch := c.String("branch")
+				autoDeploy := c.Bool("auto-deploy")
+				deployReviewApps := c.Bool("deploy-review-apps")
+				deleteOnClose := c.Bool("delete-on-close")
+				hoursBeforeDeleteOnClose := c.Uint("hours-before-delete-on-close")
+				deleteStale := c.Bool("delete-on-stale")
+				hoursBeforeDeleteStale := c.Uint("hours-before-delete-on-stale")
+
+				params := scalingo.ScmRepoLinkParams{
+					Branch:                   &branch,
+					AutoDeployEnabled:        &autoDeploy,
+					DeployReviewAppsEnabled:  &deployReviewApps,
+					DestroyOnCloseEnabled:    &deleteOnClose,
+					HoursBeforeDeleteOnClose: &hoursBeforeDeleteOnClose,
+					DestroyStaleEnabled:      &deleteStale,
+					HoursBeforeDeleteStale:   &hoursBeforeDeleteStale,
+				}
+
+				err = repo_link.Create(currentApp, c.Args()[0], c.Args()[1], params)
 			} else {
 				_ = cli.ShowCommandHelp(c, "repo-link-create")
 			}
@@ -75,7 +110,8 @@ var (
 	RepoLinkUpdateCommand = cli.Command{
 		Name:     "repo-link-update",
 		Category: "Repo Link",
-		Flags: []cli.Flag{appFlag,
+		Flags: []cli.Flag{
+			appFlag,
 			cli.StringFlag{Name: "branch", Usage: "Branch used in auto-deploy"},
 			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy of application after each branch change"},
 			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
@@ -86,7 +122,7 @@ var (
 		},
 		Usage: "Update the repo link linked with your app",
 		Description: ` Update the repo link linked with your application:
-	$ scalingo -a myapp repo-link-update --<options>
+	$ scalingo -a myapp repo-link-update [options]
 
 	Examples:
 	$ scalingo -a myapp repo-link-update --branch master

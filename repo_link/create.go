@@ -6,14 +6,13 @@ import (
 
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/cli/integrations"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/integrations"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Create(app, integration, link string) error {
+func Create(app, integration, link string, params scalingo.ScmRepoLinkParams) error {
 	var id string
 	var name string
 
@@ -45,10 +44,10 @@ func Create(app, integration, link string) error {
 		name = i.ScmType
 	}
 
-	_, err = c.ScmRepoLinkCreate(app, scalingo.ScmRepoLinkParams{
-		Source:            &link,
-		AuthIntegrationID: &id,
-	})
+	params.Source = &link
+	params.AuthIntegrationID = &id
+
+	_, err = c.ScmRepoLinkCreate(app, params)
 	if err != nil {
 		return errgo.Notef(err, "fail to create the repo link")
 	}
