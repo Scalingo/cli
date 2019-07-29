@@ -1,8 +1,9 @@
 package scalingo
 
 import (
-	"github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/http"
 )
 
 type IntegrationsService interface {

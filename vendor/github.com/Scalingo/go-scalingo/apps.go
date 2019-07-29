@@ -70,6 +70,7 @@ type AppsPsRes struct {
 type AppsCreateOpts struct {
 	Name      string `json:"name"`
 	ParentApp string `json:"parent_id"`
+	StackID   string `json:"stack_id"`
 }
 
 type AppResponse struct {
@@ -91,10 +92,10 @@ type App struct {
 		ID       string `json:"id"`
 		Username string `json:"username"`
 		Email    string `json:"email"`
-		Billable bool   `json:"billable"`
 	} `json:"owner"`
 	GitUrl         string     `json:"git_url"`
 	Url            string     `json:"url"`
+	BaseURL        string     `json:"base_url"`
 	Status         AppStatus  `json:"status"`
 	LastDeployedAt *time.Time `json:"last_deployed_at"`
 	LastDeployedBy string     `json:"last_deployed_by"`

@@ -10,8 +10,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "feature/102/add_integrations_calls"
-  digest = "1:0112905611e5eb123b2e57c9575f6571924741599b4cc0beaa7fb830467352d1"
+  digest = "1:460dacd97f77efaba34cab160e911f8ec597dd17916b2c239d64fbbc296e74c7"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -22,7 +21,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "5783344b1ed5467ec8f7b72b6e5ba36ab1f01d5f"
+  revision = "88264cb54ca6cb62023a3f635c0bfbb1b7182e6a"
+  version = "v2.5.3"
 
 [[projects]]
   branch = "master"

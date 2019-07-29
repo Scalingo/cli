@@ -26,8 +26,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  branch = "feature/102/add_integrations_calls" # For dev @todo remove later
-  #version = "^2"
+  version = "^2"
 
 [[constraint]]
   branch = "master"
@@ -39,7 +38,7 @@
 
 [[constraint]]
   name = "github.com/google/uuid"
-  version = "v1.1.1"
+  version = "^v1"
 
 [prune]
   non-go = true
