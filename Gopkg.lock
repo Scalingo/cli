@@ -25,6 +25,14 @@
   version = "v2.5.3"
 
 [[projects]]
+  digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
+  name = "github.com/Scalingo/go-utils"
+  packages = ["errors"]
+  pruneopts = "NUT"
+  revision = "f09d2d5f826a81e3272cf7e14f6d26eb398f5b80"
+  version = "v5.5.10"
+
+[[projects]]
   branch = "master"
   digest = "1:9c94adb84080287919cda31447549e0ce8f8cc2067e19ce51537cf4572868d36"
   name = "github.com/andrew-d/go-termutil"
@@ -33,12 +41,20 @@
   revision = "009166a695a2f516c749a26b4ac1f183d89aa336"
 
 [[projects]]
-  digest = "1:bbf61f7710ce4136a5a3a0f49d82127ecc71a8177d5b9dbd3f156b8c9bffb075"
+  branch = "master"
+  digest = "1:433a2ff0ef4e2f8634614aab3174783c5ff80120b487712db96cc3712f409583"
+  name = "github.com/bmizerany/assert"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "b7ed37b82869576c289d7d97fb2bbd8b64a0cb28"
+
+[[projects]]
+  digest = "1:bc99231577a2fc8db75a37df2ac608cd46702fb18f021db80c466946e69da76e"
   name = "github.com/briandowns/spinner"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "dd69c579ff204842e8962816987f838e2c2c18d8"
-  version = "1.4"
+  revision = "e3fb08e7443c496a847cb2eef48e3883f3e12c38"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:21562b59c496f4cbd7a40beaa257ac6761002dd3e36259f532216082abace8b1"
@@ -96,6 +112,14 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:e45cda0965bf660df6421580001ef40e322a9b29b7b27e9f69568d9a999ec9b7"
+  name = "github.com/gosuri/uilive"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "4512d98b127f3f3a1b7c3cf1104969fdd17b31d9"
+  version = "v0.0.3"
+
+[[projects]]
   digest = "1:447011f2b96902f1472411da1d874c6a1b9e27ec6bbcde548a3f9282eaf2f162"
   name = "github.com/heroku/hk"
   packages = ["term"]
@@ -126,6 +150,22 @@
   pruneopts = "NUT"
   revision = "81db2a75821ed34e682567d48be488a1c3121088"
   version = "0.5"
+
+[[projects]]
+  digest = "1:7b21c7fc5551b46d1308b4ffa9e9e49b66c7a8b0ba88c0130474b0e7a20d859f"
+  name = "github.com/kr/pretty"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "73f6ac0b30a98e433b289500d779f50c1a6f0712"
+  version = "v0.1.0"
+
+[[projects]]
+  digest = "1:c3a7836b5904db0f8b609595b619916a6831cb35b8b714aec39f96d00c6155d8"
+  name = "github.com/kr/text"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f"
+  version = "v0.1.0"
 
 [[projects]]
   digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
@@ -367,12 +407,15 @@
     "github.com/Scalingo/go-scalingo/debug",
     "github.com/Scalingo/go-scalingo/http",
     "github.com/Scalingo/go-scalingo/io",
+    "github.com/Scalingo/go-utils/errors",
     "github.com/andrew-d/go-termutil",
+    "github.com/bmizerany/assert",
     "github.com/briandowns/spinner",
     "github.com/cheggaaa/pb",
     "github.com/dustin/go-humanize",
     "github.com/fatih/color",
     "github.com/google/uuid",
+    "github.com/gosuri/uilive",
     "github.com/heroku/hk/term",
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",

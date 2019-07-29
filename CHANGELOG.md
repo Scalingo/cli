@@ -2,6 +2,24 @@
 
 ### To be Released
 
+### 1.15.1
+
+* Broken retro-compatibility of the `backup-download` command [#460](https://github.com/Scalingo/cli/pull/460)
+
+### 1.15.0
+
+* Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
+* Only fill regions cache for regional commands [#449](https://github.com/Scalingo/cli/pull/449)
+* Add `backups-create` command [#452](https://github.com/Scalingo/cli/pull/452)
+* Deprecate `backup-download` in favor of `backups-download` [#452](https://github.com/Scalingo/cli/pull/452)
+* Add `migrations`, `migrations-create` and `migrations-follow` [#446](https://github.com/Scalingo/cli/pull/446)
+* Add periodic backups configuration commands [#455](https://github.com/Scalingo/cli/pull/455)
+* PeriodicBackupsScheduledAt can contain multiple values [#457](https://github.com/Scalingo/cli/pull/457)
+
+### 1.14.1
+
+* Fix Git remote URL parsing to detect app name on Outscale [#443](https://github.com/Scalingo/cli/pull/443)
+
 ### 1.14.0
 
 * Use user's default region [#411](https://github.com/Scalingo/cli/pull/441)

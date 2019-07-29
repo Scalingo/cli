@@ -19,7 +19,7 @@ func ListBackups(app, addon string) error {
 	}
 	backups, err := client.BackupList(app, addon)
 	if err != nil {
-		return errgo.Notef(err, "fail to least backups")
+		return errgo.Notef(err, "fail to list backups")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

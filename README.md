@@ -1,8 +1,8 @@
-# Scalingo-CLI v1.14.0
+# Scalingo-CLI v1.15.1
 
 This repository contains the command line utility for the public PaaS Scalingo
 
-https://scalingo.com
+[https://scalingo.com](https://scalingo.com)
 
 ## How to build?
 
@@ -52,7 +52,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.14.0
+   1.15.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -61,12 +61,15 @@ COMMANDS:
      help  Shows a list of commands or help for one command
 
    Addons:
-     addons           List used add-ons
-     addons-add       Provision an add-on for your application
-     addons-remove    Remove an existing addon from your app
-     addons-upgrade   Upgrade or downgrade an add-on attached to your app
-     backups          List backups for an addon
-     backup-download  Download a backup
+     addons            List used add-ons
+     addons-add        Provision an add-on for your application
+     addons-remove     Remove an existing addon from your app
+     addons-upgrade    Upgrade or downgrade an add-on attached to your app
+     backups-config    Configure the periodic backups of a database
+     backups           List backups for an addon
+     backups-create    Ask for a new backup
+     backups-download  Download a backup
+     backup-download   Download a backup
 
    Addons - Global:
      addons-list   List all addons
@@ -164,6 +167,11 @@ COMMANDS:
    Notifiers - Global:
      notification-platforms  List all notification platforms
 
+   Region migrations:
+     migrations-create  Migrate an app to another region
+     migrations         List all migrations linked to an app
+     migrations-follow  Follow a running migration
+
    Public SSH Keys:
      keys         List your SSH public keys
      keys-add     Add a public SSH key to deploy your apps
@@ -172,6 +180,12 @@ COMMANDS:
    Runtime Stacks:
      stacks      List the available runtime stacks
      stacks-set  Set the runtime stack of an app
+
+   SCM Integrations:
+     scm-integrations              List your scm integrations
+     scm-integrations-create       Create a link between scm integration and your account
+     scm-integrations-destroy      Destroy a link between scm integration and your account
+     scm-integrations-import-keys  Import public SSH keys from scm integration
 
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
@@ -201,7 +215,7 @@ Bump new version number in:
 - `VERSION`
 - `config/version.go`
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.14.0`.
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.15.1`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.

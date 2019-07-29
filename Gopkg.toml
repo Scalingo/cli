@@ -40,6 +40,10 @@
   name = "github.com/google/uuid"
   version = "^v1"
 
+[[constraint]]
+  name = "github.com/Scalingo/go-utils"
+  version = "^5"
+
 [prune]
   non-go = true
   go-tests = true

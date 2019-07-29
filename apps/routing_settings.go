@@ -3,7 +3,6 @@ package apps
 import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/pkg/errors"
 	"gopkg.in/errgo.v1"
 )
 
@@ -15,7 +14,7 @@ func ForceHTTPS(appName string, enable bool) error {
 
 	_, err = c.AppsForceHTTPS(appName, enable)
 	if err != nil {
-		return errors.Wrap(err, "fail to configure force-https feature")
+		return errgo.Notef(err, "fail to configure force-https feature")
 	}
 
 	var action string
@@ -36,7 +35,7 @@ func StickySession(appName string, enable bool) error {
 	}
 	_, err = c.AppsStickySession(appName, enable)
 	if err != nil {
-		return errors.Wrap(err, "fail to configure sticky-session feature")
+		return errgo.Notef(err, "fail to configure sticky-session feature")
 	}
 
 	var action string
