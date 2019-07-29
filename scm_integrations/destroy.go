@@ -1,11 +1,10 @@
-package integrations
+package scm_integrations
 
 import (
-	"fmt"
-
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 )
 
@@ -21,7 +20,7 @@ func Destroy(integration string) error {
 	if !utils.IsUUID(integration) {
 		i, err := IntegrationByName(c, integration)
 		if err != nil {
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to get integration by name")
 		}
 
 		id = i.ID
@@ -29,7 +28,7 @@ func Destroy(integration string) error {
 	} else {
 		i, err := IntegrationByUUID(c, integration)
 		if err != nil {
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to get integration by uuid")
 		}
 
 		id = integration
@@ -38,9 +37,9 @@ func Destroy(integration string) error {
 
 	err = c.IntegrationsDestroy(id)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to destroy integration")
 	}
 
-	fmt.Printf("Integration '%s' has been deleted.\n", name)
+	io.Statusf("Integration '%s' has been deleted.\n", name)
 	return nil
 }
