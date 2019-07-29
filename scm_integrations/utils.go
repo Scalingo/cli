@@ -1,4 +1,4 @@
-package integrations
+package scm_integrations
 
 import (
 	"gopkg.in/errgo.v1"
@@ -9,7 +9,7 @@ import (
 func integrationByName(c *scalingo.Client, name string) (*scalingo.Integration, error) {
 	integrations, err := c.IntegrationsList()
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Notef(err, "fail to get integrations")
 	}
 
 	for _, i := range integrations {
@@ -18,7 +18,7 @@ func integrationByName(c *scalingo.Client, name string) (*scalingo.Integration, 
 		}
 	}
 
-	return nil, errgo.New("not linked integration or unknown integration : '" + name + "'")
+	return nil, errgo.New("not linked integration or unknown integration '" + name + "'")
 }
 
 func integrationByUUID(c *scalingo.Client, uuid string) (*scalingo.Integration, error) {

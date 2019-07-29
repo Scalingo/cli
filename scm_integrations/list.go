@@ -1,13 +1,13 @@
-package integrations
+package scm_integrations
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 )
 
 func List() error {
@@ -18,16 +18,16 @@ func List() error {
 
 	integrations, err := c.IntegrationsList()
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to get integrations")
 	}
 
 	nbrIntegrations := len(integrations)
 	if nbrIntegrations == 0 {
-		fmt.Printf("0 integration is linked with your Scalingo account.\n")
+		io.Status("No integration is linked with your Scalingo account.")
 		return nil
 	}
 
-	fmt.Printf("You already have %d integration(s) linked with your Scalingo account :\n", nbrIntegrations)
+	io.Statusf("You already have %d integration(s) linked with your Scalingo account:\n", nbrIntegrations)
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetColWidth(60)

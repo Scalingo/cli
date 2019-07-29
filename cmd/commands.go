@@ -204,11 +204,11 @@ var (
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
 
-		// Integrations
-		IntegrationsListCommand,
-		IntegrationsCreateCommand,
-		IntegrationsDestroyCommand,
-		IntegrationsImportKeysCommand,
+		// SCM Integrations
+		scmIntegrationsListCommand,
+		scmIntegrationsCreateCommand,
+		scmIntegrationsDestroyCommand,
+		scmIntegrationsImportKeysCommand,
 
 		// Sessions
 		LoginCommand,

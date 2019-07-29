@@ -1,7 +1,6 @@
-package integrations
+package scm_integrations
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -9,6 +8,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 )
@@ -26,7 +26,7 @@ func ImportKeys(integration string) error {
 	if !utils.IsUUID(integration) {
 		i, err := integrationByName(c, integration)
 		if err != nil {
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to get integration by name")
 		}
 
 		id = i.ID
@@ -34,7 +34,7 @@ func ImportKeys(integration string) error {
 	} else {
 		i, err := integrationByUUID(c, integration)
 		if err != nil {
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to get integration by uuid")
 		}
 
 		id = integration
@@ -43,18 +43,18 @@ func ImportKeys(integration string) error {
 
 	importedKeys, err := c.IntegrationsImportKeys(id)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to import keys")
 	}
 
 	nbrKeys := len(importedKeys)
 	if nbrKeys == 0 {
 		alreadyImportedKeys, err := keysContainsName(c, name)
 		if err != nil {
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to get already imported keys")
 		}
 
-		fmt.Printf("0 key imported from %s.\n\n", name)
-		fmt.Printf("You already have %d key(s) that has been previously imported from %s :\n", len(alreadyImportedKeys), name)
+		io.Statusf("0 key imported from %s.\n\n", name)
+		io.Statusf("You already have %d key(s) that has been previously imported from %s:\n", len(alreadyImportedKeys), name)
 		keys = alreadyImportedKeys
 	} else {
 		keys = importedKeys
@@ -69,7 +69,7 @@ func ImportKeys(integration string) error {
 	t.Render()
 
 	if nbrKeys != 0 {
-		fmt.Printf("%d key(s) has been imported from %s.\n", nbrKeys, name)
+		io.Statusf("%d key(s) have been imported from %s.\n", nbrKeys, name)
 	}
 	return nil
 }
@@ -77,7 +77,7 @@ func ImportKeys(integration string) error {
 func keysContainsName(c *scalingo.Client, name string) ([]scalingo.Key, error) {
 	keys, err := c.KeysList()
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Notef(err, "fail to get keys")
 	}
 
 	var keysAlreadyImported []scalingo.Key

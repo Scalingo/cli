@@ -1,136 +1,165 @@
 package cmd
 
 import (
+	"net/url"
+
 	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/integrations"
+	"github.com/Scalingo/cli/scm_integrations"
 )
 
 var (
-	IntegrationsListCommand = cli.Command{
-		Name:     "integrations",
-		Category: "Integrations",
-		Usage:    "List your external integrations",
-		Description: `List all the external integrations associated with your account:
+	scmIntegrationsListCommand = cli.Command{
+		Name:     "scm-integrations",
+		Category: "SCM Integrations",
+		Usage:    "List your scm integrations",
+		Description: `List all the scm integrations associated with your account:
 
-	$ scalingo integrations
+	$ scalingo scm-integrations
 
-	# See also commands 'integrations-create', 'integrations-destroy', 'integrations-import-keys'`,
+	# See also commands 'scm-integrations-create', 'scm-integrations-destroy', 'scm-integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
-			err := integrations.List()
+			err := scm_integrations.List()
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations")
 		},
 	}
 
-	IntegrationsCreateCommand = cli.Command{
-		Name:     "integrations-create",
-		Category: "Integrations",
+	scmIntegrationsCreateCommand = cli.Command{
+		Name:     "scm-integrations-create",
+		Category: "SCM Integrations",
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "url", Usage: "URL of the integration", Value: "<url>", EnvVar: ""},
-			cli.StringFlag{Name: "token", Usage: "Token of the integration", Value: "<token>", EnvVar: ""},
+			cli.StringFlag{Name: "url", Usage: "URL of the scm integration"},
+			cli.StringFlag{Name: "token", Usage: "Token of the scm integration"},
 		},
-		Usage: "Create a link between external integration and your account",
-		Description: `Create a link between external integration and your account:
+		Usage: "Create a link between scm integration and your account",
+		Description: `Create a link between scm integration and your account:
 
-	For github.com and gitlab.com:
-	$ scalingo integrations-create github
-					  OR
-	$ scalingo integrations-create gitlab
+	For github.com:
+	$ scalingo scm-integrations-create github
 
-	For github enterprise and gitlab self hosted instances:
-	$ scalingo integrations-create integration-type --url integration-url --token integration-token
+	For gitlab.com:
+	$ scalingo scm-integrations-create gitlab
+
+	For GitHub Enterprise:
+	$ scalingo scm-integrations-create github-enterprise --url https://ghe.example.com --token personal-access-token
+
+	For GitLab Self-hosted:
+	$ scalingo scm-integrations-create gitlab-self-hosted --url https://gitlab.example.com --token personal-access-token
+
+	# See also commands 'scm-integrations', 'scm-integrations-destroy', 'scm-integrations-import-keys'`,
+
+		Action: func(c *cli.Context) {
+			if c.NArg() != 1 {
+				_ = cli.ShowCommandHelp(c, "scm-integrations-create")
+				return
+			}
+
+			link := c.String("url")
+			token := c.String("token")
+
+			switch c.Args()[0] {
+			case "github", "gitlab":
+				break
+			case "github-enterprise", "gitlab-self-hosted":
+				if link == "" || token == "" {
+					errorQuit(errgo.New("URL or Token is not set"))
+				}
+
+				u, err := url.Parse(link)
+				if err != nil || u.Scheme == "" || u.Host == "" {
+					errorQuit(errgo.New("URL is not a valid url"))
+				}
+			default:
+				errorQuit(errgo.New(
+					"Unknown scm integration, available scm integrations : github, github-enterprise, gitlab, gitlab-self-hosted",
+				))
+			}
+
+			args := scm_integrations.CreateArgs{
+				ScmType: c.Args()[0],
+				Url:     link,
+				Token:   token,
+			}
+
+			err := scm_integrations.Create(args)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations-create")
+		},
+	}
+
+	scmIntegrationsDestroyCommand = cli.Command{
+		Name:     "scm-integrations-destroy",
+		Category: "SCM Integrations",
+		Usage:    "Destroy a link between scm integration and your account",
+		Description: `Destroy a link between scm integration and your account:
+
+	$ scalingo scm-integrations-destroy integration-type
+	OR
+	$ scalingo scm-integrations-destroy integration-uuid
 
 	Examples:
-	$ scalingo integrations-create github-enterprise --url https://ghe.example.com --token ...
-	$ scalingo integrations-create gitlab-self-hosted --url https://gitlab.example.com --token ...
+	$ scalingo scm-integrations-destroy github-enterprise
+	$ scalingo scm-integrations-destroy gitlab
 
-	# See also commands 'integrations', 'integrations-destroy', 'integrations-import-keys'`,
+	# See also commands 'scm-integrations', 'scm-integrations-create', 'scm-integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
-			var err error
-			if len(c.Args()) >= 1 && len(c.Args()) <= 5 {
-				url := c.String("url")
-				if url == "<url>" {
-					url = ""
-				}
-
-				token := c.String("token")
-				if token == "<token>" {
-					token = ""
-				}
-
-				err = integrations.Create(c.Args()[0], url, token)
-			} else {
-				_ = cli.ShowCommandHelp(c, "integrations-create")
+			if c.NArg() != 1 {
+				_ = cli.ShowCommandHelp(c, "scm-integrations-destroy")
+				return
 			}
 
+			err := scm_integrations.Destroy(c.Args()[0])
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-create")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations-destroy")
 		},
 	}
 
-	IntegrationsDestroyCommand = cli.Command{
-		Name:     "integrations-destroy",
-		Category: "Integrations",
-		Usage:    "Destroy a link between external integration and your account",
-		Description: `Destroy a link between external integration and your account:
+	scmIntegrationsImportKeysCommand = cli.Command{
+		Name:     "scm-integrations-import-keys",
+		Category: "SCM Integrations",
+		Usage:    "Import public SSH keys from scm integration",
+		Description: `Import public SSH keys from scm integration:
 
-	$ scalingo integrations-destroy integration-type OR scalingo integrations-destroy integration-uuid
+	$ scalingo scm-integrations-import-keys integration-type
+	OR
+	$ scalingo scm-integrations-import-keys integration-uuid
 
-	# See also commands 'integrations', 'integrations-create', 'integrations-import-keys'`,
+	Examples:
+	$ scalingo scm-integrations-import-keys github
+	$ scalingo scm-integrations-import-keys gitlab-self-hosted
+
+	# See also commands 'scm-integrations', 'scm-integrations-create', 'scm-integrations-destroy'`,
 
 		Action: func(c *cli.Context) {
-			var err error
-			if len(c.Args()) == 1 {
-				err = integrations.Destroy(c.Args()[0])
-			} else {
-				_ = cli.ShowCommandHelp(c, "integrations-destroy")
+			if c.NArg() != 1 {
+				_ = cli.ShowCommandHelp(c, "scm-integrations-import-keys")
+				return
 			}
 
+			err := scm_integrations.ImportKeys(c.Args()[0])
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-destroy")
-		},
-	}
-
-	IntegrationsImportKeysCommand = cli.Command{
-		Name:     "integrations-import-keys",
-		Category: "Integrations",
-		Usage:    "Import public SSH keys from external integration",
-		Description: `Import public SSH keys from external integration:
-
-	$ scalingo integrations-import-keys integration-type OR scalingo integrations-import-keys integration-uuid
-
-	# See also commands 'integrations', 'integrations-create', 'integrations-destroy'`,
-
-		Action: func(c *cli.Context) {
-			var err error
-			if len(c.Args()) == 1 {
-				err = integrations.ImportKeys(c.Args()[0])
-			} else {
-				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
-			}
-
-			if err != nil {
-				errorQuit(err)
-			}
-		},
-		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-import-keys")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations-import-keys")
 		},
 	}
 )
