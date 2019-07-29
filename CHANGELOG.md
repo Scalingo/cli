@@ -2,6 +2,10 @@
 
 ### To be Released
 
+### 1.15.1
+
+* Broken retro-compatibility of the `backup-download` command [#460](https://github.com/Scalingo/cli/pull/460)
+
 ### 1.15.0
 
 * Bugfix if notifier send all events [#453](https://github.com/Scalingo/cli/pull/453)
