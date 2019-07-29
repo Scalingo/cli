@@ -94,6 +94,7 @@ var (
 		Category:    backupsDownloadCommand.Category,
 		Usage:       backupsDownloadCommand.Usage,
 		Description: backupsDownloadCommand.Description,
+		Flags:       backupsDownloadCommand.Flags,
 		Before: func(*cli.Context) error {
 			io.Warningf("DEPRECATED: please use backups-download instead of this command\n\n")
 			return nil
