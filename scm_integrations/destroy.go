@@ -5,41 +5,24 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/cli/utils"
 )
 
-func Destroy(integration string) error {
-	var id string
-	var name string
-
+func Destroy(id string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	if !utils.IsUUID(integration) {
-		i, err := IntegrationByName(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get integration by name")
-		}
-
-		id = i.ID
-		name = i.ScmType
-	} else {
-		i, err := IntegrationByUUID(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get integration by uuid")
-		}
-
-		id = integration
-		name = i.ScmType
+	integration, err := c.IntegrationsShow(id)
+	if err != nil {
+		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
 	}
 
 	err = c.IntegrationsDestroy(id)
 	if err != nil {
-		return errgo.Notef(err, "fail to destroy integration")
+		return errgo.Notef(err, "fail to destroy SCM integration")
 	}
 
-	io.Statusf("Integration '%s' has been deleted.\n", name)
+	io.Statusf("Your Scalingo account and your '%s' account are unlinked.\n", integration.ScmType)
 	return nil
 }

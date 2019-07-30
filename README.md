@@ -162,12 +162,6 @@ COMMANDS:
      signup     Create your Scalingo account
      self       Get the logged in profile
      whoami     Get the logged in profile
-     
-   Integrations:
-     integrations              List your external integrations
-     integrations-create       Create a link between external integration and your account
-     integrations-destroy      Destroy a link between external integration and your account
-     integrations-import-keys  Import public SSH keys from external integration
 
    Notifiers:
      notifiers          List your notifiers
