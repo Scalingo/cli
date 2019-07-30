@@ -6,40 +6,13 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func integrationByName(c *scalingo.Client, name string) (*scalingo.Integration, error) {
-	integrations, err := c.IntegrationsList()
+func checkIfIntegrationAlreadyExist(c *scalingo.Client, id string) (bool, error) {
+	integrations, err := c.IntegrationsShow(id)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get integrations")
+		return false, errgo.Notef(err, "fail to show SCM integrations")
 	}
-
-	for _, i := range integrations {
-		if i.ScmType == name {
-			return &i, nil
-		}
+	if integrations != nil {
+		return true, nil
 	}
-
-	return nil, errgo.New("not linked integration or unknown integration '" + name + "'")
-}
-
-func integrationByUUID(c *scalingo.Client, uuid string) (*scalingo.Integration, error) {
-	integration, err := c.IntegrationsShow(uuid)
-	if err != nil {
-		return nil, errgo.New("not linked integration or unknown integration")
-	}
-	return integration, nil
-}
-
-func checkIfIntegrationAlreadyExist(c *scalingo.Client, name string) (bool, error) {
-	integrations, err := c.IntegrationsList()
-	if err != nil {
-		return false, errgo.Notef(err, "fail to get integrations list")
-	}
-
-	for _, i := range integrations {
-		if i.ScmType == name {
-			return true, nil
-		}
-	}
-
 	return false, nil
 }

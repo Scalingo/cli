@@ -8,14 +8,15 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/scm_integrations"
+	"github.com/Scalingo/go-scalingo"
 )
 
 var (
 	scmIntegrationsListCommand = cli.Command{
 		Name:     "scm-integrations",
 		Category: "SCM Integrations",
-		Usage:    "List your scm integrations",
-		Description: `List all the scm integrations associated with your account:
+		Usage:    "List your SCM integrations",
+		Description: `List all the SCM integrations associated with your account:
 
 	$ scalingo scm-integrations
 
@@ -36,11 +37,11 @@ var (
 		Name:     "scm-integrations-create",
 		Category: "SCM Integrations",
 		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "url", Usage: "URL of the scm integration"},
-			cli.StringFlag{Name: "token", Usage: "Token of the scm integration"},
+			cli.StringFlag{Name: "url", Usage: "URL of the SCM integration"},
+			cli.StringFlag{Name: "token", Usage: "Token of the SCM integration"},
 		},
-		Usage: "Create a link between scm integration and your account",
-		Description: `Create a link between scm integration and your account:
+		Usage: "Link your Scalingo account with your account on a SCM tool",
+		Description: `Link your Scalingo account with your account on a SCM tool:
 
 	For github.com:
 	$ scalingo scm-integrations-create github
@@ -65,27 +66,27 @@ var (
 			link := c.String("url")
 			token := c.String("token")
 
-			switch c.Args()[0] {
-			case "github", "gitlab":
+			switch scalingo.SCMType(c.Args()[0]) {
+			case scalingo.SCMGithubType, scalingo.SCMGitlabType:
 				break
-			case "github-enterprise", "gitlab-self-hosted":
+			case scalingo.SCMGithubEnterpriseType, scalingo.SCMGitlabSelfHostedType:
 				if link == "" || token == "" {
-					errorQuit(errgo.New("URL or Token is not set"))
+					errorQuit(errgo.New("both --url and --token must be set"))
 				}
 
 				u, err := url.Parse(link)
 				if err != nil || u.Scheme == "" || u.Host == "" {
-					errorQuit(errgo.New("URL is not a valid url"))
+					errorQuit(errgo.Newf("'%s' is not a valid URL", link))
 				}
 			default:
 				errorQuit(errgo.New(
-					"Unknown scm integration, available scm integrations : github, github-enterprise, gitlab, gitlab-self-hosted",
+					"Unknown SCM integration, available SCM integrations: github, github-enterprise, gitlab, gitlab-self-hosted",
 				))
 			}
 
 			args := scm_integrations.CreateArgs{
-				ScmType: c.Args()[0],
-				Url:     link,
+				SCMType: c.Args()[0],
+				URL:     link,
 				Token:   token,
 			}
 
@@ -102,8 +103,8 @@ var (
 	scmIntegrationsDestroyCommand = cli.Command{
 		Name:     "scm-integrations-destroy",
 		Category: "SCM Integrations",
-		Usage:    "Destroy a link between scm integration and your account",
-		Description: `Destroy a link between scm integration and your account:
+		Usage:    "Unlink your Scalingo account and your account on a SCM tool",
+		Description: `Unlink your Scalingo account and your account on a SCM tool:
 
 	$ scalingo scm-integrations-destroy integration-type
 	OR
@@ -134,8 +135,8 @@ var (
 	scmIntegrationsImportKeysCommand = cli.Command{
 		Name:     "scm-integrations-import-keys",
 		Category: "SCM Integrations",
-		Usage:    "Import public SSH keys from scm integration",
-		Description: `Import public SSH keys from scm integration:
+		Usage:    "Import public SSH keys from SCM account",
+		Description: `Import public SSH keys from SCM account:
 
 	$ scalingo scm-integrations-import-keys integration-type
 	OR

@@ -5,11 +5,12 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
 type CreateArgs struct {
-	ScmType string
-	Url     string
+	SCMType string
+	URL     string
 	Token   string
 }
 
@@ -19,26 +20,26 @@ func Create(args CreateArgs) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrationExist, err := checkIfIntegrationAlreadyExist(c, args.ScmType)
+	integrationExist, err := checkIfIntegrationAlreadyExist(c, args.SCMType)
 	if err != nil {
-		return errgo.Notef(err, "fail to check if integration exist")
+		return errgo.Notef(err, "fail to check if SCM integration exist")
 	}
 	if integrationExist {
-		io.Statusf("Integration '%s' is already linked with your Scalingo account.\n", args.ScmType)
+		io.Statusf("SCM Integration '%s' is already linked with your Scalingo account.\n", args.SCMType)
 		return nil
 	}
 
-	if args.ScmType == "github" || args.ScmType == "gitlab" {
-		io.Statusf("Please follow this url to create the %s integration :\n", args.ScmType)
-		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthUrl, args.ScmType)
+	if args.SCMType == string(scalingo.SCMGithubType) || args.SCMType == string(scalingo.SCMGitlabType) {
+		io.Statusf("Please follow this URL to create the %s SCM integration :\n", args.SCMType)
+		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthUrl, args.SCMType)
 		return nil
 	}
 
-	_, err = c.IntegrationsCreate(args.ScmType, args.Url, args.Token)
+	_, err = c.IntegrationsCreate(args.SCMType, args.URL, args.Token)
 	if err != nil {
-		return errgo.Notef(err, "fail to create integration")
+		return errgo.Notef(err, "fail to create the SCM integration")
 	}
 
-	io.Statusf("Integration '%s' has been added.\n", args.ScmType)
+	io.Statusf("Your Scalingo account has been linked to your '%s' account.\n", args.SCMType)
 	return nil
 }

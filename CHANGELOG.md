@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* Add `scm-integrations`, `scm-integrations-create`, `scm-integrations-destroy` and `scm-integrations-import-keys` commands [#444](https://github.com/Scalingo/cli/pull/444)
+
 ### 1.15.1
 
 * Broken retro-compatibility of the `backup-download` command [#460](https://github.com/Scalingo/cli/pull/460)

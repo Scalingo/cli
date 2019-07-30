@@ -182,10 +182,10 @@ COMMANDS:
      stacks-set  Set the runtime stack of an app
 
    SCM Integrations:
-     scm-integrations              List your scm integrations
-     scm-integrations-create       Create a link between scm integration and your account
-     scm-integrations-destroy      Destroy a link between scm integration and your account
-     scm-integrations-import-keys  Import public SSH keys from scm integration
+     scm-integrations              List your SCM integrations
+     scm-integrations-create       Create a link between SCM integration and your account
+     scm-integrations-destroy      Destroy a link between SCM integration and your account
+     scm-integrations-import-keys  Import public SSH keys from SCM integration
 
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]

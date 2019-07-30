@@ -9,13 +9,10 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 )
 
-func ImportKeys(integration string) error {
-	var id string
-	var name string
+func ImportKeys(id string) error {
 	var keys []scalingo.Key
 
 	c, err := config.ScalingoClient()
@@ -23,22 +20,9 @@ func ImportKeys(integration string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	if !utils.IsUUID(integration) {
-		i, err := integrationByName(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get integration by name")
-		}
-
-		id = i.ID
-		name = i.ScmType
-	} else {
-		i, err := integrationByUUID(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get integration by uuid")
-		}
-
-		id = integration
-		name = i.ScmType
+	integration, err := c.IntegrationsShow(id)
+	if err != nil {
+		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
 	}
 
 	importedKeys, err := c.IntegrationsImportKeys(id)
@@ -48,13 +32,22 @@ func ImportKeys(integration string) error {
 
 	nbrKeys := len(importedKeys)
 	if nbrKeys == 0 {
-		alreadyImportedKeys, err := keysContainsName(c, name)
+		alreadyImportedKeys, err := keysContainsName(c, integration.ScmType)
 		if err != nil {
-			return errgo.Notef(err, "fail to get already imported keys")
+			return errgo.Notef(err, "fail to list already imported keys")
+		}
+		alreadyImportedKeysLength := len(alreadyImportedKeys)
+
+		pluralKey := ""
+		if alreadyImportedKeysLength > 1 {
+			pluralKey = "s"
 		}
 
-		io.Statusf("0 key imported from %s.\n\n", name)
-		io.Statusf("You already have %d key(s) that has been previously imported from %s:\n", len(alreadyImportedKeys), name)
+		io.Statusf("0 key imported from %s.\n\n", integration.ScmType)
+		io.Statusf(
+			"You already have %d key%s that has been previously imported from %s:\n",
+			alreadyImportedKeysLength, pluralKey, integration.ScmType,
+		)
 		keys = alreadyImportedKeys
 	} else {
 		keys = importedKeys
@@ -69,7 +62,11 @@ func ImportKeys(integration string) error {
 	t.Render()
 
 	if nbrKeys != 0 {
-		io.Statusf("%d key(s) have been imported from %s.\n", nbrKeys, name)
+		pluralKey := ""
+		if nbrKeys > 1 {
+			pluralKey = "s"
+		}
+		io.Statusf("%d key%s have been imported from %s.\n", nbrKeys, pluralKey, integration.ScmType)
 	}
 	return nil
 }
@@ -87,9 +84,16 @@ func keysContainsName(c *scalingo.Client, name string) ([]scalingo.Key, error) {
 			continue
 		}
 
-		if name == "gitlab" && !strings.Contains(k.Name, "gitlab-self-hosted") {
-			keysAlreadyImported = append(keysAlreadyImported, k)
-		} else if name == "github" && !strings.Contains(k.Name, "github-enterprise") {
+		switch scalingo.SCMType(name) {
+		case scalingo.SCMGitlabType:
+			if !strings.Contains(k.Name, string(scalingo.SCMGitlabSelfHostedType)) {
+				keysAlreadyImported = append(keysAlreadyImported, k)
+			}
+		case scalingo.SCMGithubType:
+			if !strings.Contains(k.Name, string(scalingo.SCMGithubEnterpriseType)) {
+				keysAlreadyImported = append(keysAlreadyImported, k)
+			}
+		case scalingo.SCMGithubEnterpriseType, scalingo.SCMGitlabSelfHostedType:
 			keysAlreadyImported = append(keysAlreadyImported, k)
 		}
 	}

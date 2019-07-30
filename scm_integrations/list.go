@@ -18,16 +18,21 @@ func List() error {
 
 	integrations, err := c.IntegrationsList()
 	if err != nil {
-		return errgo.Notef(err, "fail to get integrations")
+		return errgo.Notef(err, "fail to list SCM integrations")
 	}
 
 	nbrIntegrations := len(integrations)
 	if nbrIntegrations == 0 {
-		io.Status("No integration is linked with your Scalingo account.")
+		io.Status("Your Scalingo account is not linked to any SCM integrations.")
 		return nil
 	}
 
-	io.Statusf("You already have %d integration(s) linked with your Scalingo account:\n", nbrIntegrations)
+	pluralIntegration := ""
+	if nbrIntegrations > 1 {
+		pluralIntegration = "s"
+	}
+
+	io.Statusf("You already have %d SCM integration%s linked with your Scalingo account:\n", nbrIntegrations, pluralIntegration)
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetColWidth(60)

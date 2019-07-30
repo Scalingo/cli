@@ -6,6 +6,16 @@ import (
 	"github.com/Scalingo/go-scalingo/http"
 )
 
+type SCMType string
+
+// Type of SCM integrations
+const (
+	SCMGithubType           SCMType = "github"             // GitHub
+	SCMGithubEnterpriseType SCMType = "github-enterprise"  // GitHub Enterprise (private instance)
+	SCMGitlabType           SCMType = "gitlab"             // GitLab.com
+	SCMGitlabSelfHostedType SCMType = "gitlab-self-hosted" // GitLab self-hosted (private instance)
+)
+
 type IntegrationsService interface {
 	IntegrationsList() ([]Integration, error)
 	IntegrationsCreate(scmType string, url string, accessToken string) (*Integration, error)

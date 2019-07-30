@@ -37,10 +37,6 @@
   version = "1.0.28"
 
 [[constraint]]
-  name = "github.com/google/uuid"
-  version = "^v1"
-
-[[constraint]]
   name = "github.com/Scalingo/go-utils"
   version = "^5"
 
