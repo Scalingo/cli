@@ -3,7 +3,6 @@ package stacks
 import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
 
@@ -12,31 +11,14 @@ func Set(app string, stack string) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	stacks, err := c.StacksList()
+
+	res, err := c.AppsSetStack(app, stack)
 	if err != nil {
-		return errgo.Notef(err, "fail to list available stacks")
+		return errgo.Notef(err, "fail to set stack %v", stack)
 	}
 
-	var stackToSet scalingo.Stack
-	for _, apistack := range stacks {
-		if apistack.Name == stack || apistack.ID == stack {
-			stackToSet = apistack
-			break
-		}
-	}
-
-	if stackToSet.ID == "" {
-		return errgo.Newf("stack '%v' is unknown.", stack)
-	}
-
-	_, err = c.AppsSetStack(app, stackToSet.ID)
-	if err != nil {
-		return errgo.Notef(err, "fail to set stack %v (%v)", stackToSet.Name, stackToSet.ID)
-	}
-
-	io.Statusf("Stack of %v has been set to %v (%v)\n", io.Bold(app), io.Bold(stackToSet.Name), stackToSet.ID)
+	io.Statusf("Stack of %v has been set to %v (%v)\n", io.Bold(app), io.Bold(stack), res.StackID)
 	io.Infof(io.Gray("Deployment cache of %v has been reseted\n"), app)
 
 	return nil
-
 }

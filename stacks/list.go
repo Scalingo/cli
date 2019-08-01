@@ -2,6 +2,7 @@ package stacks
 
 import (
 	"os"
+	"strings"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
@@ -20,14 +21,14 @@ func List() error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name", "Description", "Default?"})
+	t.SetHeader([]string{"ID", "Name", "Description", "Aliases", "Default?"})
 
 	for _, stack := range stacks {
 		defaultText := "No"
 		if stack.Default {
 			defaultText = "Yes"
 		}
-		t.Append([]string{stack.ID, stack.Name, stack.Description, defaultText})
+		t.Append([]string{stack.ID, stack.Name, stack.Description, strings.Join(stack.Aliases, ", "), defaultText})
 	}
 	t.Render()
 	return nil
