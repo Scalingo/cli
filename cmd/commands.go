@@ -217,7 +217,7 @@ var (
 		// SCM Integrations
 		scmIntegrationsListCommand,
 		scmIntegrationsCreateCommand,
-		scmIntegrationsDestroyCommand,
+		scmIntegrationsDeleteCommand,
 		scmIntegrationsImportKeysCommand,
 
 		// Sessions

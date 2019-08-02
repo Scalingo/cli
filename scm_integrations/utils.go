@@ -7,7 +7,7 @@ import (
 )
 
 func checkIfIntegrationAlreadyExist(c *scalingo.Client, id string) (bool, error) {
-	integrations, err := c.IntegrationsShow(id)
+	integrations, err := c.SCMIntegrationsShow(id)
 	if err != nil {
 		return false, errgo.Notef(err, "fail to show SCM integrations")
 	}

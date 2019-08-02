@@ -20,7 +20,7 @@ var (
 
 	$ scalingo scm-integrations
 
-	# See also commands 'scm-integrations-create', 'scm-integrations-destroy', 'scm-integrations-import-keys'`,
+	# See also commands 'scm-integrations-create', 'scm-integrations-delete', 'scm-integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
 			err := scm_integrations.List()
@@ -55,7 +55,7 @@ var (
 	For GitLab Self-hosted:
 	$ scalingo scm-integrations-create gitlab-self-hosted --url https://gitlab.example.com --token personal-access-token
 
-	# See also commands 'scm-integrations', 'scm-integrations-destroy', 'scm-integrations-import-keys'`,
+	# See also commands 'scm-integrations', 'scm-integrations-delete', 'scm-integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
 			if c.NArg() != 1 {
@@ -65,8 +65,9 @@ var (
 
 			link := c.String("url")
 			token := c.String("token")
+			scmType := scalingo.SCMType(c.Args()[0])
 
-			switch scalingo.SCMType(c.Args()[0]) {
+			switch scmType {
 			case scalingo.SCMGithubType, scalingo.SCMGitlabType:
 				break
 			case scalingo.SCMGithubEnterpriseType, scalingo.SCMGitlabSelfHostedType:
@@ -85,7 +86,7 @@ var (
 			}
 
 			args := scm_integrations.CreateArgs{
-				SCMType: c.Args()[0],
+				SCMType: scmType,
 				URL:     link,
 				Token:   token,
 			}
@@ -100,35 +101,35 @@ var (
 		},
 	}
 
-	scmIntegrationsDestroyCommand = cli.Command{
-		Name:     "scm-integrations-destroy",
+	scmIntegrationsDeleteCommand = cli.Command{
+		Name:     "scm-integrations-delete",
 		Category: "SCM Integrations",
 		Usage:    "Unlink your Scalingo account and your account on a SCM tool",
 		Description: `Unlink your Scalingo account and your account on a SCM tool:
 
-	$ scalingo scm-integrations-destroy integration-type
+	$ scalingo scm-integrations-delete integration-type
 	OR
-	$ scalingo scm-integrations-destroy integration-uuid
+	$ scalingo scm-integrations-delete integration-uuid
 
 	Examples:
-	$ scalingo scm-integrations-destroy github-enterprise
-	$ scalingo scm-integrations-destroy gitlab
+	$ scalingo scm-integrations-delete github-enterprise
+	$ scalingo scm-integrations-delete gitlab
 
 	# See also commands 'scm-integrations', 'scm-integrations-create', 'scm-integrations-import-keys'`,
 
 		Action: func(c *cli.Context) {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "scm-integrations-destroy")
+				_ = cli.ShowCommandHelp(c, "scm-integrations-delete")
 				return
 			}
 
-			err := scm_integrations.Destroy(c.Args()[0])
+			err := scm_integrations.Delete(c.Args()[0])
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations-destroy")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scm-integrations-delete")
 		},
 	}
 
@@ -146,7 +147,7 @@ var (
 	$ scalingo scm-integrations-import-keys github
 	$ scalingo scm-integrations-import-keys gitlab-self-hosted
 
-	# See also commands 'scm-integrations', 'scm-integrations-create', 'scm-integrations-destroy'`,
+	# See also commands 'scm-integrations', 'scm-integrations-create', 'scm-integrations-delete'`,
 
 		Action: func(c *cli.Context) {
 			if c.NArg() != 1 {

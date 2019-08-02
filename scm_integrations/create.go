@@ -9,7 +9,7 @@ import (
 )
 
 type CreateArgs struct {
-	SCMType string
+	SCMType scalingo.SCMType
 	URL     string
 	Token   string
 }
@@ -20,7 +20,7 @@ func Create(args CreateArgs) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrationExist, err := checkIfIntegrationAlreadyExist(c, args.SCMType)
+	integrationExist, err := checkIfIntegrationAlreadyExist(c, args.SCMType.Str())
 	if err != nil {
 		return errgo.Notef(err, "fail to check if SCM integration exist")
 	}
@@ -29,13 +29,13 @@ func Create(args CreateArgs) error {
 		return nil
 	}
 
-	if args.SCMType == string(scalingo.SCMGithubType) || args.SCMType == string(scalingo.SCMGitlabType) {
+	if args.SCMType == scalingo.SCMGithubType || args.SCMType == scalingo.SCMGitlabType {
 		io.Statusf("Please follow this URL to create the %s SCM integration :\n", args.SCMType)
 		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthUrl, args.SCMType)
 		return nil
 	}
 
-	_, err = c.IntegrationsCreate(args.SCMType, args.URL, args.Token)
+	_, err = c.SCMIntegrationsCreate(args.SCMType, args.URL, args.Token)
 	if err != nil {
 		return errgo.Notef(err, "fail to create the SCM integration")
 	}

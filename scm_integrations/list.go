@@ -16,7 +16,7 @@ func List() error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrations, err := c.IntegrationsList()
+	integrations, err := c.SCMIntegrationsList()
 	if err != nil {
 		return errgo.Notef(err, "fail to list SCM integrations")
 	}
@@ -38,7 +38,7 @@ func List() error {
 	t.SetColWidth(60)
 	t.SetHeader([]string{"ID", "Type", "URL", "Username", "Email"})
 	for _, i := range integrations {
-		t.Append([]string{i.ID, i.ScmType, i.Url, i.Username, i.Email})
+		t.Append([]string{i.ID, i.SCMType.Str(), i.URL, i.Username, i.Email})
 	}
 	t.Render()
 	return nil
