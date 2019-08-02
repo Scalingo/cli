@@ -11,7 +11,6 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/go-scalingo/debug"
 	httpclient "github.com/Scalingo/go-scalingo/http"
@@ -69,7 +68,6 @@ func errorQuit(err error) {
 	if httpclient.IsRequestFailedError(rootError) &&
 		rootError.(*httpclient.RequestFailedError).Code == 401 {
 		if currentUser != nil {
-			session.DestroyToken()
 			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
 			io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
 		} else {
