@@ -183,9 +183,9 @@ COMMANDS:
 
    SCM Integrations:
      scm-integrations              List your SCM integrations
-     scm-integrations-create       Create a link between SCM integration and your account
-     scm-integrations-destroy      Destroy a link between SCM integration and your account
-     scm-integrations-import-keys  Import public SSH keys from SCM integration
+     scm-integrations-create       Link your Scalingo account with your account on a SCM tool
+     scm-integrations-delete       Unlink your Scalingo account and your account on a SCM tool
+     scm-integrations-import-keys  Import public SSH keys from SCM account
 
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
