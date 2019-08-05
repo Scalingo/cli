@@ -1,11 +1,10 @@
 package repo_link
 
 import (
-	"fmt"
-
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 )
 
 func ManualReviewApp(app, pullRequestID string) error {
@@ -18,11 +17,11 @@ func ManualReviewApp(app, pullRequestID string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	err = c.ScmRepoLinkManualReviewApp(app, pullRequestID)
+	err = c.SCMRepoLinkManualReviewApp(app, pullRequestID)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to trigger manual review app")
 	}
 
-	fmt.Printf("Manual review app deployment triggered for app '%s' with pull/merge request id '%s'.\n", app, pullRequestID)
+	io.Statusf("Manual review app deployment triggered for app '%s' with pull/merge request id '%s'.\n", app, pullRequestID)
 	return nil
 }

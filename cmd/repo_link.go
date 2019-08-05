@@ -83,7 +83,7 @@ var (
 				deleteStale := c.Bool("delete-on-stale")
 				hoursBeforeDeleteStale := c.Uint("hours-before-delete-on-stale")
 
-				params := scalingo.ScmRepoLinkParams{
+				params := scalingo.SCMRepoLinkParams{
 					Branch:                   &branch,
 					AutoDeployEnabled:        &autoDeploy,
 					DeployReviewAppsEnabled:  &deployReviewApps,

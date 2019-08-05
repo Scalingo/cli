@@ -9,21 +9,21 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func CheckAndFillParams(c *cli.Context, app string) (*scalingo.ScmRepoLinkParams, error) {
+func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkParams, error) {
 	sc, err := config.ScalingoClient()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get Scalingo client")
 	}
 
 	// Get RepoLink of App
-	repoLink, err := sc.ScmRepoLinkShow(app)
+	repoLink, err := sc.SCMRepoLinkShow(app)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Notef(err, "fail to get repo link")
 	}
 
 	// Get params
 	paramsChecker := NewParamsChecker(repoLink, c)
-	params := &scalingo.ScmRepoLinkParams{
+	params := &scalingo.SCMRepoLinkParams{
 		Branch:                   paramsChecker.lookupBranch(),
 		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
 		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),
@@ -37,11 +37,11 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.ScmRepoLinkParams
 }
 
 type ParamsChecker struct {
-	repoLink *scalingo.ScmRepoLink
+	repoLink *scalingo.SCMRepoLink
 	ctx      *cli.Context
 }
 
-func NewParamsChecker(repoLink *scalingo.ScmRepoLink, ctx *cli.Context) *ParamsChecker {
+func NewParamsChecker(repoLink *scalingo.SCMRepoLink, ctx *cli.Context) *ParamsChecker {
 	return &ParamsChecker{repoLink: repoLink, ctx: ctx}
 }
 

@@ -1,21 +1,16 @@
 package repo_link
 
 import (
-	"fmt"
 	"net/url"
 
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/integrations"
-	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Create(app, integration, link string, params scalingo.ScmRepoLinkParams) error {
-	var id string
-	var name string
-
+func Create(app, id, link string, params scalingo.SCMRepoLinkParams) error {
 	u, err := url.Parse(link)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
 		return errgo.New("Source repo url is not a valid http url")
@@ -26,41 +21,28 @@ func Create(app, integration, link string, params scalingo.ScmRepoLinkParams) er
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	repoLink, err := c.ScmRepoLinkShow(app)
+	repoLink, err := c.SCMRepoLinkShow(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to get repo link for this app")
 	}
 	if repoLink != nil {
-		fmt.Printf("Your app is already linked with an integration.\n")
+		io.Status("Your app is already linked with an integration.")
 		return nil
 	}
 
-	if !utils.IsUUID(integration) {
-		i, err := integrations.IntegrationByName(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get the integration")
-		}
-
-		id = i.ID
-		name = i.ScmType
-	} else {
-		i, err := integrations.IntegrationByUUID(c, integration)
-		if err != nil {
-			return errgo.Notef(err, "fail to get the integration")
-		}
-
-		id = integration
-		name = i.ScmType
+	integration, err := c.SCMIntegrationsShow(id)
+	if err != nil {
+		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
 	}
 
 	params.Source = &link
-	params.AuthIntegrationID = &id
+	params.AuthIntegrationUUID = &id
 
-	_, err = c.ScmRepoLinkCreate(app, params)
+	_, err = c.SCMRepoLinkCreate(app, params)
 	if err != nil {
 		return errgo.Notef(err, "fail to create the repo link")
 	}
 
-	fmt.Printf("Repo link with '%s' integration has been created for app '%s'.\n", name, app)
+	io.Statusf("Repo link with '%s' integration has been created for app '%s'.\n", integration.SCMType, app)
 	return nil
 }

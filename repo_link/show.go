@@ -9,6 +9,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 )
 
@@ -18,16 +19,16 @@ func Show(app string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	repoLink, err := c.ScmRepoLinkShow(app)
+	repoLink, err := c.SCMRepoLinkShow(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to get repo link for this app")
 	}
 	if repoLink == nil {
-		fmt.Printf("No repo link is linked with '%s' app.\n", app)
+		io.Statusf("No repo link is linked with '%s' app.\n", app)
 		return nil
 	}
 
-	i, err := c.IntegrationsShow(repoLink.AuthIntegrationID)
+	i, err := c.SCMIntegrationsShow(repoLink.AuthIntegrationUUID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get integration of this repo link")
 	}
@@ -38,7 +39,7 @@ func Show(app string) error {
 		"Auto Deploy", "Review Apps Deploy", "Delete on close", "Delete on stale",
 	})
 	t.Append([]string{
-		repoLink.AppID, repoLink.AuthIntegrationID, i.ScmType,
+		repoLink.AppID, repoLink.AuthIntegrationUUID, i.SCMType.Str(),
 		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(utils.TIME_CLI),
 		strconv.FormatBool(repoLink.AutoDeployEnabled), strconv.FormatBool(repoLink.DeployReviewAppsEnabled),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteOnCloseEnabled, repoLink.HoursBeforeDeleteOnClose),
