@@ -20,10 +20,7 @@ func Create(args CreateArgs) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrationExist, err := checkIfIntegrationAlreadyExist(c, args.SCMType.Str())
-	if err != nil {
-		return errgo.Notef(err, "fail to check if SCM integration exist")
-	}
+	integrationExist := checkIfIntegrationAlreadyExist(c, args.SCMType.Str())
 	if integrationExist {
 		io.Statusf("SCM Integration '%s' is already linked with your Scalingo account.\n", args.SCMType)
 		return nil
