@@ -3,6 +3,7 @@
 ### To be Released
 
 * Add support for stack aliases [#461](https://github.com/Scalingo/cli/pull/461)
+* Bugfix: Do not disconnect user if the API returns 401 [#462](https://github.com/Scalingo/cli/issues/462)
 
 ### 1.15.1
 
