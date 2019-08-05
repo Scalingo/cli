@@ -36,7 +36,7 @@ func Create(app, id, link string, params scalingo.SCMRepoLinkParams) error {
 	}
 
 	params.Source = &link
-	params.AuthIntegrationUUID = &id
+	params.AuthIntegrationUUID = &integration.ID
 
 	_, err = c.SCMRepoLinkCreate(app, params)
 	if err != nil {
