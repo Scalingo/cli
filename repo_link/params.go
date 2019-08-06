@@ -22,7 +22,7 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkParams
 	}
 
 	// Get params
-	paramsChecker := NewParamsChecker(repoLink, c)
+	paramsChecker := newParamsChecker(repoLink, c)
 	params := &scalingo.SCMRepoLinkParams{
 		Branch:                   paramsChecker.lookupBranch(),
 		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
@@ -41,7 +41,7 @@ type ParamsChecker struct {
 	ctx      *cli.Context
 }
 
-func NewParamsChecker(repoLink *scalingo.SCMRepoLink, ctx *cli.Context) *ParamsChecker {
+func newParamsChecker(repoLink *scalingo.SCMRepoLink, ctx *cli.Context) *ParamsChecker {
 	return &ParamsChecker{repoLink: repoLink, ctx: ctx}
 }
 
