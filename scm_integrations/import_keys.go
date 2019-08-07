@@ -43,9 +43,15 @@ func ImportKeys(id string) error {
 			pluralKey = "s"
 		}
 
-		io.Statusf("0 key imported from %s.\n\n", integration.SCMType)
+		io.Statusf("0 key imported from %s.\n", integration.SCMType)
+		if alreadyImportedKeysLength == 0 {
+			io.Infof("No public key is available in your %s account\n", integration.SCMType)
+			return nil
+		}
+		io.Info()
+
 		io.Statusf(
-			"You already have %d key%s that has been previously imported from %s:\n",
+			"%d key%s have already been imported from %s:\n",
 			alreadyImportedKeysLength, pluralKey, integration.SCMType,
 		)
 		keys = alreadyImportedKeys
