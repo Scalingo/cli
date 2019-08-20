@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ReviewAppsShowCommand = cli.Command{
+	reviewAppsShowCommand = cli.Command{
 		Name:     "review-apps",
 		Category: "Review Apps",
 		Flags:    []cli.Flag{appFlag},

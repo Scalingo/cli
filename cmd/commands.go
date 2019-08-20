@@ -155,15 +155,15 @@ var (
 		AddonsUpgradeCommand,
 
 		// Repo Link
-		RepoLinkShowCommand,
-		RepoLinkCreateCommand,
-		RepoLinkUpdateCommand,
-		RepoLinkDeleteCommand,
-		RepoLinkManualDeployCommand,
-		RepoLinkManualReviewAppCommand,
+		repoLinkShowCommand,
+		repoLinkCreateCommand,
+		repoLinkUpdateCommand,
+		repoLinkDeleteCommand,
+		repoLinkManualDeployCommand,
+		repoLinkManualReviewAppCommand,
 
 		// Review Apps
-		ReviewAppsShowCommand,
+		reviewAppsShowCommand,
 
 		// Notifiers
 		NotifiersListCommand,

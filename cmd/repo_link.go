@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	RepoLinkShowCommand = cli.Command{
+	repoLinkShowCommand = cli.Command{
 		Name:     "repo-link",
 		Category: "Repo Link",
 		Usage:    "Show repo link linked with your app",
@@ -39,7 +39,7 @@ var (
 		},
 	}
 
-	RepoLinkCreateCommand = cli.Command{
+	repoLinkCreateCommand = cli.Command{
 		Name:     "repo-link-create",
 		Category: "Repo Link",
 		Flags: []cli.Flag{
@@ -107,7 +107,7 @@ var (
 		},
 	}
 
-	RepoLinkUpdateCommand = cli.Command{
+	repoLinkUpdateCommand = cli.Command{
 		Name:     "repo-link-update",
 		Category: "Repo Link",
 		Flags: []cli.Flag{
@@ -161,7 +161,7 @@ var (
 		},
 	}
 
-	RepoLinkDeleteCommand = cli.Command{
+	repoLinkDeleteCommand = cli.Command{
 		Name:     "repo-link-delete",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
@@ -191,7 +191,7 @@ var (
 		},
 	}
 
-	RepoLinkManualDeployCommand = cli.Command{
+	repoLinkManualDeployCommand = cli.Command{
 		Name:     "repo-link-manual-deploy",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
@@ -221,7 +221,7 @@ var (
 		},
 	}
 
-	RepoLinkManualReviewAppCommand = cli.Command{
+	repoLinkManualReviewAppCommand = cli.Command{
 		Name:     "repo-link-manual-review-app",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
