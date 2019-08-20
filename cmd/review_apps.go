@@ -17,18 +17,15 @@ var (
 		Usage:    "See review apps of parent application",
 		Description: `See review apps of parent application:
 
-	$ scalingo -a myapp review-apps`,
+	$ scalingo --app my-app review-apps`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 0 {
-				err = review_apps.Show(currentApp)
-			} else {
-				_ = cli.ShowCommandHelp(c, "review-apps")
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "review-apps")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			err := review_apps.Show(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}

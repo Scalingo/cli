@@ -10,8 +10,8 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Create(app, id, link string, params scalingo.SCMRepoLinkParams) error {
-	u, err := url.Parse(link)
+func Create(app, integrationType, integrationURL string, params scalingo.SCMRepoLinkParams) error {
+	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
 		return errgo.New("Source repo url is not a valid http url")
 	}
@@ -30,12 +30,12 @@ func Create(app, id, link string, params scalingo.SCMRepoLinkParams) error {
 		return nil
 	}
 
-	integration, err := c.SCMIntegrationsShow(id)
+	integration, err := c.SCMIntegrationsShow(integrationType)
 	if err != nil {
 		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
 	}
 
-	params.Source = &link
+	params.Source = &integrationURL
 	params.AuthIntegrationUUID = &integration.ID
 
 	_, err = c.SCMRepoLinkCreate(app, params)

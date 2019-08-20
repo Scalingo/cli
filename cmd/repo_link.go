@@ -16,20 +16,17 @@ var (
 		Usage:    "Show repo link linked with your app",
 		Flags:    []cli.Flag{appFlag},
 		Description: ` Show repo link linked with your application:
-	$ scalingo -a myapp repo-link
+	$ scalingo --app my-app repo-link
 
 		# See also 'repo-link-create', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy', 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 0 {
-				err = repo_link.Show(currentApp)
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link")
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "repo-link")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			err := repo_link.Show(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -54,11 +51,11 @@ var (
 		},
 		Usage: "Create a repo link between your scm integration and your app",
 		Description: ` Create a repo link between your scm integration and your application:
-	$ scalingo -a myapp repo-link-create <integration-name> <repo-http-url> [options]
+	$ scalingo --app my-app repo-link-create <integration-name> <repo-http-url> [options]
 									   OR
-	$ scalingo -a myapp repo-link-create <integration-uuid> <repo-http-url> [options]
+	$ scalingo --app my-app repo-link-create <integration-uuid> <repo-http-url> [options]
 
-	List of integrations available:
+	List of available integrations:
 	- github => GitHub.com
 	- github-enterprise => GitHub Enterprise (private instance)
 	- gitlab => GitLab.com
@@ -70,34 +67,33 @@ var (
 
 		# See also 'repo-link', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 2 {
-				branch := c.String("branch")
-				autoDeploy := c.Bool("auto-deploy")
-				deployReviewApps := c.Bool("deploy-review-apps")
-				deleteOnClose := c.Bool("delete-on-close")
-				hoursBeforeDeleteOnClose := c.Uint("hours-before-delete-on-close")
-				deleteStale := c.Bool("delete-on-stale")
-				hoursBeforeDeleteStale := c.Uint("hours-before-delete-on-stale")
-
-				params := scalingo.SCMRepoLinkParams{
-					Branch:                   &branch,
-					AutoDeployEnabled:        &autoDeploy,
-					DeployReviewAppsEnabled:  &deployReviewApps,
-					DestroyOnCloseEnabled:    &deleteOnClose,
-					HoursBeforeDeleteOnClose: &hoursBeforeDeleteOnClose,
-					DestroyStaleEnabled:      &deleteStale,
-					HoursBeforeDeleteStale:   &hoursBeforeDeleteStale,
-				}
-
-				err = repo_link.Create(currentApp, c.Args()[0], c.Args()[1], params)
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link-create")
+			if len(c.Args()) != 2 {
+				cli.ShowCommandHelp(c, "repo-link-create")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			integrationType := c.Args()[0]
+			integrationURL := c.Args()[1]
+			branch := c.String("branch")
+			autoDeploy := c.Bool("auto-deploy")
+			deployReviewApps := c.Bool("deploy-review-apps")
+			deleteOnClose := c.Bool("delete-on-close")
+			hoursBeforeDeleteOnClose := c.Uint("hours-before-delete-on-close")
+			deleteStale := c.Bool("delete-on-stale")
+			hoursBeforeDeleteStale := c.Uint("hours-before-delete-on-stale")
+
+			params := scalingo.SCMRepoLinkParams{
+				Branch:                   &branch,
+				AutoDeployEnabled:        &autoDeploy,
+				DeployReviewAppsEnabled:  &deployReviewApps,
+				DestroyOnCloseEnabled:    &deleteOnClose,
+				HoursBeforeDeleteOnClose: &hoursBeforeDeleteOnClose,
+				DestroyStaleEnabled:      &deleteStale,
+				HoursBeforeDeleteStale:   &hoursBeforeDeleteStale,
+			}
+
+			err := repo_link.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -122,36 +118,28 @@ var (
 		},
 		Usage: "Update the repo link linked with your app",
 		Description: ` Update the repo link linked with your application:
-	$ scalingo -a myapp repo-link-update [options]
+	$ scalingo --app my-app repo-link-update [options]
 
 	Examples:
-	$ scalingo -a myapp repo-link-update --branch master
-	$ scalingo -a myapp repo-link-update --auto-deploy true --branch test --deploy-review-apps true
-	$ scalingo -a myapp repo-link-update --delete-on-close true --hours-before-delete-on-close 1
-	$ scalingo -a myapp repo-link-update --delete-on-stale true --hours-before-delete-on-stale 2
+	$ scalingo --app my-app repo-link-update --branch master
+	$ scalingo --app my-app repo-link-update --auto-deploy true --branch test --deploy-review-apps true
+	$ scalingo --app my-app repo-link-update --delete-on-close true --hours-before-delete-on-close 1
+	$ scalingo --app my-app repo-link-update --delete-on-stale true --hours-before-delete-on-stale 2
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if c.NumFlags() == 0 {
-				_ = cli.ShowCommandHelp(c, "repo-link-update")
+			if c.NumFlags() == 0 || len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "repo-link-update")
 				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
 			params, err := repo_link.CheckAndFillParams(c, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
 
-			if len(c.Args()) == 0 {
-				err = repo_link.Update(currentApp, *params)
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link-update")
-			}
-
+			err = repo_link.Update(currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -168,20 +156,17 @@ var (
 		Usage:    "Delete repo link linked with your app",
 		Description: `Delete repo link linked with your app:
 
-	$ scalingo -a myapp repo-link-delete
+	$ scalingo --app my-app repo-link-delete
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 0 {
-				err = repo_link.Delete(currentApp)
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link-delete")
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "repo-link-delete")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			err := repo_link.Delete(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -198,20 +183,18 @@ var (
 		Usage:    "Trigger a manual deployment from the state of the branch specified",
 		Description: `Trigger a manual deployment from the state of the branch specified:
 
-	$ scalingo -a myapp repo-link-manual-deploy mybranch
+	$ scalingo --app my-app repo-link-manual-deploy mybranch
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 1 {
-				err = repo_link.ManualDeploy(currentApp, c.Args()[0])
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link-manual-deploy")
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "repo-link-manual-deploy")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			branchName := c.Args()[0]
+			err := repo_link.ManualDeploy(currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -228,24 +211,22 @@ var (
 		Usage:    "Trigger a manual deployment of review app from the state of the pull/merge request id specified",
 		Description: `Trigger a manual deployment of review app from the state of the pull/merge request id specified:
 
-	$ scalingo -a myapp repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
-	$ scalingo -a myapp repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
+	$ scalingo --app my-app repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
+	$ scalingo --app my-app repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
 
 	Example:
-	$ scalingo -a myapp repo-link-manual-review-app 42
+	$ scalingo --app my-app repo-link-manual-review-app 42
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
-			var err error
-
-			currentApp := appdetect.CurrentApp(c)
-
-			if len(c.Args()) == 1 {
-				err = repo_link.ManualReviewApp(currentApp, c.Args()[0])
-			} else {
-				_ = cli.ShowCommandHelp(c, "repo-link-manual-review-app")
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "repo-link-manual-review-app")
+				return
 			}
 
+			currentApp := appdetect.CurrentApp(c)
+			pullRequestID := c.Args()[0]
+			err := repo_link.ManualReviewApp(currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}
