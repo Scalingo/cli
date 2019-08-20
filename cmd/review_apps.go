@@ -14,8 +14,8 @@ var (
 		Name:     "review-apps",
 		Category: "Review Apps",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "See review apps of parent application",
-		Description: `See review apps of parent application:
+		Usage:    "Show review apps of the parent application",
+		Description: `Show review apps of the parent application:
 
 	$ scalingo --app my-app review-apps`,
 		Action: func(c *cli.Context) {

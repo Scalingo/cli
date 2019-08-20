@@ -51,9 +51,9 @@ var (
 		},
 		Usage: "Create a repo link between your scm integration and your app",
 		Description: ` Create a repo link between your scm integration and your application:
-	$ scalingo --app my-app repo-link-create <integration-name> <repo-http-url> [options]
+	$ scalingo --app my-app repo-link-create <integration-name> <repo-url> [options]
 									   OR
-	$ scalingo --app my-app repo-link-create <integration-uuid> <repo-http-url> [options]
+	$ scalingo --app my-app repo-link-create <integration-uuid> <repo-url> [options]
 
 	List of available integrations:
 	- github => GitHub.com
@@ -180,8 +180,8 @@ var (
 		Name:     "repo-link-manual-deploy",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Trigger a manual deployment from the state of the branch specified",
-		Description: `Trigger a manual deployment from the state of the branch specified:
+		Usage:    "Trigger a manual deployment of the specified branch",
+		Description: `Trigger a manual deployment of the specified branch:
 
 	$ scalingo --app my-app repo-link-manual-deploy mybranch
 
@@ -208,8 +208,8 @@ var (
 		Name:     "repo-link-manual-review-app",
 		Category: "Repo Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Trigger a manual deployment of review app from the state of the pull/merge request id specified",
-		Description: `Trigger a manual deployment of review app from the state of the pull/merge request id specified:
+		Usage:    "Trigger a review app creation of the pull/merge request ID specified",
+		Description: `Trigger a review app creation of the pull/merge request ID specified:
 
 	$ scalingo --app my-app repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
 	$ scalingo --app my-app repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)

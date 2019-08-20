@@ -23,6 +23,6 @@ func Update(app string, params scalingo.SCMRepoLinkParams) error {
 		return errgo.Notef(err, "fail to update repo link")
 	}
 
-	io.Statusf("RepoLink has been updated for app '%s'.\n", app)
+	io.Statusf("Repo link has been updated for app '%s'.\n", app)
 	return nil
 }

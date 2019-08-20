@@ -36,7 +36,7 @@ func Show(app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{
 		"App ID", "Integration ID", "Integration Name", "Owner", "Repo", "Branch", "Created At",
-		"Auto Deploy", "Review Apps Deploy", "Delete on close", "Delete on stale",
+		"Auto Deploy", "Review Apps Deploy", "Delete on Close", "Delete on Stale",
 	})
 	t.Append([]string{
 		repoLink.AppID, repoLink.AuthIntegrationUUID, i.SCMType.Str(),

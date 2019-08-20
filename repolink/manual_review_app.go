@@ -19,9 +19,9 @@ func ManualReviewApp(app, pullRequestID string) error {
 
 	err = c.SCMRepoLinkManualReviewApp(app, pullRequestID)
 	if err != nil {
-		return errgo.Notef(err, "fail to trigger manual review app")
+		return errgo.Notef(err, "fail to manually create a review app")
 	}
 
-	io.Statusf("Manual review app deployment triggered for app '%s' with pull/merge request id '%s'.\n", app, pullRequestID)
+	io.Statusf("Manual review app created for app '%s' with pull/merge request id '%s'.\n", app, pullRequestID)
 	return nil
 }

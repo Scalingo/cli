@@ -23,7 +23,7 @@ func Show(app string) error {
 		return errgo.Notef(err, "fail to get review apps for this app")
 	}
 	if len(reviewApps) == 0 {
-		io.Statusf("No review apps for '%s' app or app specified is not a parent app.\n", app)
+		io.Statusf("No review app for '%s' or specified app is not a parent app.\n", app)
 		return nil
 	}
 
