@@ -181,6 +181,12 @@ COMMANDS:
      stacks      List the available runtime stacks
      stacks-set  Set the runtime stack of an app
 
+   SCM Integrations:
+     scm-integrations              List your SCM integrations
+     scm-integrations-create       Link your Scalingo account with your account on a SCM tool
+     scm-integrations-delete       Unlink your Scalingo account and your account on a SCM tool
+     scm-integrations-import-keys  Import public SSH keys from SCM account
+
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]

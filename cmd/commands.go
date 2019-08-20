@@ -3,11 +3,12 @@ package cmd
 import (
 	"os"
 
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
-	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/go-scalingo/debug"
-	"github.com/urfave/cli"
 )
 
 type AppCommands struct {
@@ -212,6 +213,12 @@ var (
 		ListSSHKeyCommand,
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
+
+		// SCM Integrations
+		scmIntegrationsListCommand,
+		scmIntegrationsCreateCommand,
+		scmIntegrationsDeleteCommand,
+		scmIntegrationsImportKeysCommand,
 
 		// Sessions
 		LoginCommand,

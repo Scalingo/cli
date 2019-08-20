@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* Add `scm-integrations`, `scm-integrations-create`, `scm-integrations-destroy` and `scm-integrations-import-keys` commands [#444](https://github.com/Scalingo/cli/pull/444)
 * Bugfix: Do not disconnect user if the API returns 401 [#462](https://github.com/Scalingo/cli/issues/462)
 
 ### 1.15.1
