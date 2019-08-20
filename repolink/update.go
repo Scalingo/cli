@@ -1,13 +1,14 @@
-package repo_link
+package repolink
 
 import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo"
 )
 
-func Delete(app string) error {
+func Update(app string, params scalingo.SCMRepoLinkParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
@@ -17,11 +18,11 @@ func Delete(app string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	err = c.SCMRepoLinkDelete(app)
+	_, err = c.SCMRepoLinkUpdate(app, params)
 	if err != nil {
-		return errgo.Notef(err, "fail to delete repo link")
+		return errgo.Notef(err, "fail to update repo link")
 	}
 
-	io.Statusf("Current repo link has been deleted from app '%s'.\n", app)
+	io.Statusf("RepoLink has been updated for app '%s'.\n", app)
 	return nil
 }

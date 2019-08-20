@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/repo_link"
+	"github.com/Scalingo/cli/repolink"
 	"github.com/Scalingo/go-scalingo"
 )
 
@@ -26,7 +26,7 @@ var (
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := repo_link.Show(currentApp)
+			err := repolink.Show(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -93,7 +93,7 @@ var (
 				HoursBeforeDeleteStale:   &hoursBeforeDeleteStale,
 			}
 
-			err := repo_link.Create(currentApp, integrationType, integrationURL, params)
+			err := repolink.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -134,12 +134,12 @@ var (
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			params, err := repo_link.CheckAndFillParams(c, currentApp)
+			params, err := repolink.CheckAndFillParams(c, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
 
-			err = repo_link.Update(currentApp, *params)
+			err = repolink.Update(currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -166,7 +166,7 @@ var (
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := repo_link.Delete(currentApp)
+			err := repolink.Delete(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -194,7 +194,7 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 			branchName := c.Args()[0]
-			err := repo_link.ManualDeploy(currentApp, branchName)
+			err := repolink.ManualDeploy(currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -226,7 +226,7 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 			pullRequestID := c.Args()[0]
-			err := repo_link.ManualReviewApp(currentApp, pullRequestID)
+			err := repolink.ManualReviewApp(currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}

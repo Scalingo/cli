@@ -1,4 +1,4 @@
-package repo_link
+package repolink
 
 import (
 	"net/url"
