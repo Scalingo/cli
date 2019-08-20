@@ -40,7 +40,7 @@ func Show(app string) error {
 	})
 	t.Append([]string{
 		repoLink.AppID, repoLink.AuthIntegrationUUID, i.SCMType.Str(),
-		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(utils.TIME_CLI),
+		repoLink.Owner, repoLink.Repo, repoLink.Branch, repoLink.CreatedAt.Format(utils.TimeFormat),
 		strconv.FormatBool(repoLink.AutoDeployEnabled), strconv.FormatBool(repoLink.DeployReviewAppsEnabled),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteOnCloseEnabled, repoLink.HoursBeforeDeleteOnClose),
 		fmt.Sprintf("%v (%d)", repoLink.DeleteStaleEnabled, repoLink.HoursBeforeDeleteStale),

@@ -30,7 +30,7 @@ func Show(app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"App", "PR", "PR Branch", "Created At", "Status"})
 	for _, ra := range reviewApps {
-		date := ra.CreatedAt.Local().Format(utils.TIME_CLI)
+		date := ra.CreatedAt.Local().Format(utils.TimeFormat)
 
 		t.Append([]string{
 			ra.AppName, fmt.Sprintf("%d", ra.PullRequest.Number), ra.PullRequest.BranchName,
