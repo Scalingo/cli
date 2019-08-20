@@ -10,7 +10,6 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
 )
 
 type AppCommands struct {
