@@ -25,10 +25,10 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkParams
 		Branch:                   paramsChecker.lookupBranch(),
 		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
 		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),
-		DestroyOnCloseEnabled:    paramsChecker.lookupDeleteOnClose(),
-		HoursBeforeDeleteOnClose: paramsChecker.lookupHoursBeforeDeleteOnClose(),
-		DestroyStaleEnabled:      paramsChecker.lookupDeleteOnStale(),
-		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDeleteOnStale(),
+		DestroyOnCloseEnabled:    paramsChecker.lookupDestroyOnClose(),
+		HoursBeforeDeleteOnClose: paramsChecker.lookupHoursBeforeDestroyOnClose(),
+		DestroyStaleEnabled:      paramsChecker.lookupDestroyOnStale(),
+		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDestroyOnStale(),
 	}
 
 	return params, nil
@@ -70,38 +70,38 @@ func (p *ParamsChecker) lookupDeployReviewApps() *bool {
 	return nil
 }
 
-func (p *ParamsChecker) lookupDeleteOnClose() *bool {
-	deleteOnClose := p.ctx.Bool("delete-on-close")
+func (p *ParamsChecker) lookupDestroyOnClose() *bool {
+	destroyOnClose := p.ctx.Bool("destroy-on-close")
 
-	if p.repoLink.DeployReviewAppsEnabled != deleteOnClose {
-		return &deleteOnClose
+	if p.repoLink.DeployReviewAppsEnabled != destroyOnClose {
+		return &destroyOnClose
 	}
 	return nil
 }
 
-func (p *ParamsChecker) lookupHoursBeforeDeleteOnClose() *uint {
-	hoursBeforeDeleteOnClose := p.ctx.Uint("hours-before-delete-on-close")
+func (p *ParamsChecker) lookupHoursBeforeDestroyOnClose() *uint {
+	hoursBeforeDestroyOnClose := p.ctx.Uint("hours-before-destroy-on-close")
 
-	if p.repoLink.HoursBeforeDeleteOnClose != hoursBeforeDeleteOnClose {
-		return &hoursBeforeDeleteOnClose
+	if p.repoLink.HoursBeforeDeleteOnClose != hoursBeforeDestroyOnClose {
+		return &hoursBeforeDestroyOnClose
 	}
 	return nil
 }
 
-func (p *ParamsChecker) lookupDeleteOnStale() *bool {
-	deleteStale := p.ctx.Bool("delete-on-stale")
+func (p *ParamsChecker) lookupDestroyOnStale() *bool {
+	destroyOnStale := p.ctx.Bool("destroy-on-stale")
 
-	if p.repoLink.DeleteStaleEnabled != deleteStale {
-		return &deleteStale
+	if p.repoLink.DeleteStaleEnabled != destroyOnStale {
+		return &destroyOnStale
 	}
 	return nil
 }
 
-func (p *ParamsChecker) lookupHoursBeforeDeleteOnStale() *uint {
-	hoursBeforeDeleteStale := p.ctx.Uint("hours-before-delete-on-stale")
+func (p *ParamsChecker) lookupHoursBeforeDestroyOnStale() *uint {
+	hoursBeforeDestroyOnStale := p.ctx.Uint("hours-before-destroy-on-stale")
 
-	if p.repoLink.HoursBeforeDeleteStale != hoursBeforeDeleteStale {
-		return &hoursBeforeDeleteStale
+	if p.repoLink.HoursBeforeDeleteStale != hoursBeforeDestroyOnStale {
+		return &hoursBeforeDestroyOnStale
 	}
 	return nil
 }

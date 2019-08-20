@@ -41,13 +41,13 @@ var (
 		Category: "Repo Link",
 		Flags: []cli.Flag{
 			appFlag,
-			cli.StringFlag{Name: "branch", Usage: "Branch used in auto-deploy"},
-			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy of application after each branch change"},
-			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
-			cli.StringFlag{Name: "delete-on-close", Usage: "Enable auto-delete of review apps when pull request is closed"},
-			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "Given time delay of auto-delete of review apps when pull request is closed"},
-			cli.StringFlag{Name: "delete-on-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
-			cli.StringFlag{Name: "hours-before-delete-on-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
+			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.StringFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.StringFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			cli.StringFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Create a repo link between your scm integration and your app",
 		Description: ` Create a repo link between your scm integration and your application:
@@ -78,19 +78,19 @@ var (
 			branch := c.String("branch")
 			autoDeploy := c.Bool("auto-deploy")
 			deployReviewApps := c.Bool("deploy-review-apps")
-			deleteOnClose := c.Bool("delete-on-close")
-			hoursBeforeDeleteOnClose := c.Uint("hours-before-delete-on-close")
-			deleteStale := c.Bool("delete-on-stale")
-			hoursBeforeDeleteStale := c.Uint("hours-before-delete-on-stale")
+			destroyOnClose := c.Bool("destroy-on-close")
+			hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
+			destroyOnStale := c.Bool("destroy-on-stale")
+			hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
 			params := scalingo.SCMRepoLinkParams{
 				Branch:                   &branch,
 				AutoDeployEnabled:        &autoDeploy,
 				DeployReviewAppsEnabled:  &deployReviewApps,
-				DestroyOnCloseEnabled:    &deleteOnClose,
-				HoursBeforeDeleteOnClose: &hoursBeforeDeleteOnClose,
-				DestroyStaleEnabled:      &deleteStale,
-				HoursBeforeDeleteStale:   &hoursBeforeDeleteStale,
+				DestroyOnCloseEnabled:    &destroyOnClose,
+				HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
+				DestroyStaleEnabled:      &destroyOnStale,
+				HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
 			}
 
 			err := repolink.Create(currentApp, integrationType, integrationURL, params)
@@ -108,13 +108,13 @@ var (
 		Category: "Repo Link",
 		Flags: []cli.Flag{
 			appFlag,
-			cli.StringFlag{Name: "branch", Usage: "Branch used in auto-deploy"},
-			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto-deploy of application after each branch change"},
-			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto-deploy of review app when new pull request is opened"},
-			cli.StringFlag{Name: "delete-on-close", Usage: "Enable auto-delete of review apps when pull request is closed"},
-			cli.StringFlag{Name: "hours-before-delete-on-close", Usage: "Given time delay of auto-delete of review apps when pull request is closed"},
-			cli.StringFlag{Name: "delete-on-stale", Usage: "Enable auto-delete of review apps when no deploy/commits is happen"},
-			cli.StringFlag{Name: "hours-before-delete-on-stale", Usage: "Given time delay of auto-delete of review apps when no deploy/commits is happen"},
+			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
+			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.StringFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.StringFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			cli.StringFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Update the repo link linked with your app",
 		Description: ` Update the repo link linked with your application:
@@ -123,8 +123,8 @@ var (
 	Examples:
 	$ scalingo --app my-app repo-link-update --branch master
 	$ scalingo --app my-app repo-link-update --auto-deploy true --branch test --deploy-review-apps true
-	$ scalingo --app my-app repo-link-update --delete-on-close true --hours-before-delete-on-close 1
-	$ scalingo --app my-app repo-link-update --delete-on-stale true --hours-before-delete-on-stale 2
+	$ scalingo --app my-app repo-link-update --destroy-on-close true --hours-before-destroy-on-close 1
+	$ scalingo --app my-app repo-link-update --destroy-on-stale true --hours-before-destroy-on-stale 2
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
