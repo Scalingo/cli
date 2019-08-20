@@ -13,7 +13,7 @@ import (
 func Create(app, integrationType, integrationURL string, params scalingo.SCMRepoLinkParams) error {
 	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
-		return errgo.New("Source repo url is not a valid http url")
+		return errgo.New("Source repo url is not a valid HTTP url")
 	}
 
 	c, err := config.ScalingoClient()
@@ -26,7 +26,7 @@ func Create(app, integrationType, integrationURL string, params scalingo.SCMRepo
 		return errgo.Notef(err, "fail to get repo link for this app")
 	}
 	if repoLink != nil {
-		io.Status("Your app is already linked with an integration.")
+		io.Statusf("Your app is already integrated with %s/%s#%s.\n", repoLink.Owner, repoLink.Repo, repoLink.Branch)
 		return nil
 	}
 

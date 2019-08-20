@@ -15,13 +15,11 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkParams
 		return nil, errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// Get RepoLink of App
 	repoLink, err := sc.SCMRepoLinkShow(app)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get repo link")
 	}
 
-	// Get params
 	paramsChecker := newParamsChecker(repoLink, c)
 	params := &scalingo.SCMRepoLinkParams{
 		Branch:                   paramsChecker.lookupBranch(),
