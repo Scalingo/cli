@@ -40,8 +40,8 @@ var (
 			cli.StringFlag{Name: "url", Usage: "URL of the SCM integration"},
 			cli.StringFlag{Name: "token", Usage: "Token of the SCM integration"},
 		},
-		Usage: "Link your Scalingo account with your account on a SCM tool",
-		Description: `Link your Scalingo account with your account on a SCM tool:
+		Usage: "Link your Scalingo account with your account on a SCM tool (such as github.com)",
+		Description: `Link your Scalingo account with your account on a SCM tool. After creating the link, you will be able to automatically deploy when pushing to your SCM repository, or create Review Apps for all pull requests created.
 
 	For github.com:
 	$ scalingo scm-integrations-create github
