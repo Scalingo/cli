@@ -2,12 +2,17 @@ package cmd
 
 import (
 	"errors"
+	"net/url"
 
+	"github.com/juju/errgo"
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/integrationlink"
+	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/scmintegrations"
 	"github.com/Scalingo/go-scalingo"
 )
 
@@ -57,9 +62,9 @@ var (
 		},
 		Usage: "Link your Scalingo application to an integration",
 		Description: ` Link your Scalingo application to an integration:
-	$ scalingo --app my-app integration-link-create <integration-name> <repo-url> [options]
+	$ scalingo --app my-app integration-link-create <repository URL> [options]
 									   OR
-	$ scalingo --app my-app integration-link-create <integration-uuid> <repo-url> [options]
+	$ scalingo --app my-app integration-link-create <repository URL> [options]
 
 	List of available integrations:
 	- github => GitHub.com
@@ -68,19 +73,47 @@ var (
 	- gitlab-self-hosted => GitLab Self-hosted (private instance)
 
 	Examples:
-	$ scalingo -a test-app integration-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
-	$ scalingo -a test-app integration-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy
+	$ scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce
+	$ scalingo --app my-app integration-link-create https://ghe.example.org/test/frontend-app --branch master --auto-deploy
 
 		# See also 'integration-link', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
-			if len(c.Args()) != 2 {
+			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "integration-link-create")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			integrationType := c.Args()[0]
-			integrationURL := c.Args()[1]
+			integrationURL := c.Args()[0]
+			integrationType, err := scmintegrations.GetTypeFromURL(integrationURL)
+			if err != nil {
+				if err != scmintegrations.ErrNotFound {
+					errorQuit(err)
+				}
+				// If no integration matches the given URL, display a helpful status
+				// message
+				u, err := url.Parse(integrationURL)
+				if err != nil {
+					errorQuit(errgo.Notef(err, "fail to parse the integration URL"))
+				}
+				switch u.Host {
+				case "github.com":
+					io.Error("No GitHub integration found, please follow this URL to add it:")
+					io.Errorf("%s/users/github/link\n", config.C.ScalingoAuthUrl)
+				case "gitlab.com":
+					io.Error("No GitLab integration found, please follow this URL to add it:")
+					io.Errorf("%s/users/gitlab/link\n", config.C.ScalingoAuthUrl)
+				default:
+					io.Errorf("No integration found for URL %s.\n", integrationURL)
+					io.Errorf("Please run the command:\n")
+					io.Errorf("scalingo integrations-add gitlab-self-hosted|github-enterprise --url %s://%s --token <personal-access-token>\n", u.Scheme, u.Host)
+				}
+				return
+			}
+
+			if len(c.Args()) == 1 {
+				// TODO If number of flags is 0, make it interactive
+			}
 			branch := c.String("branch")
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
@@ -118,7 +151,7 @@ var (
 				HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
 			}
 
-			err := integrationlink.Create(currentApp, integrationType, integrationURL, params)
+			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				errorQuit(err)
 			}

@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Create(app, integrationType, integrationURL string, params scalingo.SCMRepoLinkParams) error {
+func Create(app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkParams) error {
 	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
 		return errors.New("source repository URL is not valid")
@@ -31,7 +31,7 @@ func Create(app, integrationType, integrationURL string, params scalingo.SCMRepo
 		return nil
 	}
 
-	integration, err := c.SCMIntegrationsShow(integrationType)
+	integration, err := c.SCMIntegrationsShow(string(integrationType))
 	if err != nil {
 		return errgo.Notef(err, "fail to get the integration")
 	}
