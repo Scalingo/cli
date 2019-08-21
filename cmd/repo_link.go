@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/appdetect"
@@ -42,12 +44,16 @@ var (
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
-			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.StringFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.StringFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
-			cli.StringFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
-			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
+			cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.UintFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Create a repo link between your scm integration and your app",
 		Description: ` Create a repo link between your scm integration and your application:
@@ -63,7 +69,7 @@ var (
 
 	Examples:
 	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
-	$ scalingo -a test-app repo-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy true
+	$ scalingo -a test-app repo-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy
 
 		# See also 'repo-link', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
@@ -77,10 +83,29 @@ var (
 			integrationURL := c.Args()[1]
 			branch := c.String("branch")
 			autoDeploy := c.Bool("auto-deploy")
+			noAutoDeploy := c.Bool("no-auto-deploy")
+			if autoDeploy && noAutoDeploy {
+				errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
+			}
+
 			deployReviewApps := c.Bool("deploy-review-apps")
+			noDeployReviewApps := c.Bool("no-deploy-review-apps")
+			if deployReviewApps && noDeployReviewApps {
+				errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
+			}
+
 			destroyOnClose := c.Bool("destroy-on-close")
+			noDestroyOnClose := c.Bool("no-destroy-on-close")
+			if destroyOnClose && noDestroyOnClose {
+				errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
+			}
 			hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
+
 			destroyOnStale := c.Bool("destroy-on-stale")
+			noDestroyOnStale := c.Bool("no-destroy-on-stale")
+			if destroyOnStale && noDestroyOnStale {
+				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
+			}
 			hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
 			params := scalingo.SCMRepoLinkParams{
@@ -109,11 +134,15 @@ var (
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
-			cli.StringFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.StringFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.StringFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.StringFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
-			cli.StringFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Update the repo link linked with your app",
@@ -122,15 +151,35 @@ var (
 
 	Examples:
 	$ scalingo --app my-app repo-link-update --branch master
-	$ scalingo --app my-app repo-link-update --auto-deploy true --branch test --deploy-review-apps true
-	$ scalingo --app my-app repo-link-update --destroy-on-close true --hours-before-destroy-on-close 1
-	$ scalingo --app my-app repo-link-update --destroy-on-stale true --hours-before-destroy-on-stale 2
+	$ scalingo --app my-app repo-link-update --auto-deploy --branch test --deploy-review-apps
+	$ scalingo --app my-app repo-link-update --destroy-on-close --hours-before-destroy-on-close 1
+	$ scalingo --app my-app repo-link-update --destroy-on-stale --hours-before-destroy-on-stale 2
 
 		# See also 'repo-link', 'repo-link-create', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if c.NumFlags() == 0 || len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "repo-link-update")
 				return
+			}
+			autoDeploy := c.Bool("auto-deploy")
+			noAutoDeploy := c.Bool("no-auto-deploy")
+			if autoDeploy && noAutoDeploy {
+				errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
+			}
+			deployReviewApps := c.Bool("deploy-review-apps")
+			noDeployReviewApps := c.Bool("no-deploy-review-apps")
+			if deployReviewApps && noDeployReviewApps {
+				errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
+			}
+			destroyOnClose := c.Bool("destroy-on-close")
+			noDestroyOnClose := c.Bool("no-destroy-on-close")
+			if destroyOnClose && noDestroyOnClose {
+				errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
+			}
+			destroyOnStale := c.Bool("destroy-on-stale")
+			noDestroyOnStale := c.Bool("no-destroy-on-stale")
+			if destroyOnStale && noDestroyOnStale {
+				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
 			}
 
 			currentApp := appdetect.CurrentApp(c)
