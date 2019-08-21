@@ -1,14 +1,13 @@
-package repolink
+package integrationlink
 
 import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo"
 )
 
-func Update(app string, params scalingo.SCMRepoLinkParams) error {
+func ManualDeploy(app, branch string) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
@@ -18,11 +17,11 @@ func Update(app string, params scalingo.SCMRepoLinkParams) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	_, err = c.SCMRepoLinkUpdate(app, params)
+	err = c.SCMRepoLinkManualDeploy(app, branch)
 	if err != nil {
-		return errgo.Notef(err, "fail to update repo link")
+		return errgo.Notef(err, "fail to trigger manual deploy")
 	}
 
-	io.Statusf("Repo link has been updated for app '%s'.\n", app)
+	io.Statusf("Manual deployment triggered for app '%s' on branch '%s'.\n", app, branch)
 	return nil
 }

@@ -163,6 +163,14 @@ COMMANDS:
      self       Get the logged in profile
      whoami     Get the logged in profile
 
+   Integration Link:
+     integration-link                    Show repo link linked with your app
+     integration-link-create             Create a repo link between your scm integration and your app
+     integration-link-update             Update the repo link linked with your app
+     integration-link-delete             Delete repo link linked with your app
+     integration-link-manual-deploy      Trigger a manual deployment of the specified branch
+     integration-link-manual-review-app  Trigger a review app creation of the pull/merge request ID specified
+
    Integrations:
      integrations              List your integrations
      integrations-add          Link your Scalingo account with your account on a tool such as github.com
@@ -188,14 +196,6 @@ COMMANDS:
      migrations-create  Migrate an app to another region
      migrations         List all migrations linked to an app
      migrations-follow  Follow a running migration
-
-   Repo Link:
-     repo-link                    Show repo link linked with your app
-     repo-link-create             Create a repo link between your scm integration and your app
-     repo-link-update             Update the repo link linked with your app
-     repo-link-delete             Delete repo link linked with your app
-     repo-link-manual-deploy      Trigger a manual deployment from the state of the branch specified
-     repo-link-manual-review-app  Trigger a manual deployment of review app from the state of the pull/merge request id specified
 
    Review Apps:
      review-apps  See review apps of parent application

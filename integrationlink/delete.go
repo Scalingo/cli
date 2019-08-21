@@ -1,4 +1,4 @@
-package repolink
+package integrationlink
 
 import (
 	"gopkg.in/errgo.v1"
@@ -8,10 +8,6 @@ import (
 )
 
 func Delete(app string) error {
-	if app == "" {
-		return errgo.New("no app defined")
-	}
-
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
@@ -22,6 +18,6 @@ func Delete(app string) error {
 		return errgo.Notef(err, "fail to delete repo link")
 	}
 
-	io.Statusf("Current repo link has been deleted from app '%s'.\n", app)
+	io.Statusf("Current integration link has been deleted from app '%s'.\n", app)
 	return nil
 }

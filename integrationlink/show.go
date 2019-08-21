@@ -1,4 +1,4 @@
-package repolink
+package integrationlink
 
 import (
 	"fmt"
@@ -21,16 +21,16 @@ func Show(app string) error {
 
 	repoLink, err := c.SCMRepoLinkShow(app)
 	if err != nil {
-		return errgo.Notef(err, "fail to get repo link for this app")
+		return errgo.Notef(err, "fail to get integration link for this app")
 	}
 	if repoLink == nil {
-		io.Statusf("No repo link is linked with '%s' app.\n", app)
+		io.Statusf("Your app '%s' has no integration link.\n", app)
 		return nil
 	}
 
 	i, err := c.SCMIntegrationsShow(repoLink.AuthIntegrationUUID)
 	if err != nil {
-		return errgo.Notef(err, "fail to get integration of this repo link")
+		return errgo.Notef(err, "fail to get integration information of this integration link")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

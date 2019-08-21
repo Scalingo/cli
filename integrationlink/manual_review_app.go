@@ -1,4 +1,4 @@
-package repolink
+package integrationlink
 
 import (
 	"gopkg.in/errgo.v1"

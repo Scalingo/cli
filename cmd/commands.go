@@ -154,13 +154,13 @@ var (
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
 
-		// Repo Link
-		repoLinkShowCommand,
-		repoLinkCreateCommand,
-		repoLinkUpdateCommand,
-		repoLinkDeleteCommand,
-		repoLinkManualDeployCommand,
-		repoLinkManualReviewAppCommand,
+		// Integration Link
+		integrationLinkShowCommand,
+		integrationLinkCreateCommand,
+		integrationLinkUpdateCommand,
+		integrationLinkDeleteCommand,
+		integrationLinkManualDeployCommand,
+		integrationLinkManualReviewAppCommand,
 
 		// Review Apps
 		reviewAppsShowCommand,

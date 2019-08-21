@@ -7,40 +7,40 @@ import (
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/repolink"
+	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/go-scalingo"
 )
 
 var (
-	repoLinkShowCommand = cli.Command{
-		Name:     "repo-link",
-		Category: "Repo Link",
-		Usage:    "Show repo link linked with your app",
+	integrationLinkShowCommand = cli.Command{
+		Name:     "integration-link",
+		Category: "Integration Link",
+		Usage:    "Show integration link of your app",
 		Flags:    []cli.Flag{appFlag},
-		Description: ` Show repo link linked with your application:
-	$ scalingo --app my-app repo-link
+		Description: ` Show integration link of your app:
+	$ scalingo --app my-app integration-link
 
-		# See also 'repo-link-create', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy', 'repo-link-manual-review-app'`,
+		# See also 'integration-link-create', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy', 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
-				cli.ShowCommandHelp(c, "repo-link")
+				cli.ShowCommandHelp(c, "integration-link")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := repolink.Show(currentApp)
+			err := integrationlink.Show(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link")
 		},
 	}
 
-	repoLinkCreateCommand = cli.Command{
-		Name:     "repo-link-create",
-		Category: "Repo Link",
+	integrationLinkCreateCommand = cli.Command{
+		Name:     "integration-link-create",
+		Category: "Integration Link",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
@@ -55,11 +55,11 @@ var (
 			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			cli.UintFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
-		Usage: "Create a repo link between your scm integration and your app",
-		Description: ` Create a repo link between your scm integration and your application:
-	$ scalingo --app my-app repo-link-create <integration-name> <repo-url> [options]
+		Usage: "Link your Scalingo application to an integration",
+		Description: ` Link your Scalingo application to an integration:
+	$ scalingo --app my-app integration-link-create <integration-name> <repo-url> [options]
 									   OR
-	$ scalingo --app my-app repo-link-create <integration-uuid> <repo-url> [options]
+	$ scalingo --app my-app integration-link-create <integration-uuid> <repo-url> [options]
 
 	List of available integrations:
 	- github => GitHub.com
@@ -68,13 +68,13 @@ var (
 	- gitlab-self-hosted => GitLab Self-hosted (private instance)
 
 	Examples:
-	$ scalingo -a test-app repo-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
-	$ scalingo -a test-app repo-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy
+	$ scalingo -a test-app integration-link-create gitlab https://gitlab.com/gitlab-org/gitlab-ce
+	$ scalingo -a test-app integration-link-create github-enterprise https://ghe.example.org/test/frontend-app --branch master --auto-deploy
 
-		# See also 'repo-link', 'repo-link-update', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
+		# See also 'integration-link', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 2 {
-				cli.ShowCommandHelp(c, "repo-link-create")
+				cli.ShowCommandHelp(c, "integration-link-create")
 				return
 			}
 
@@ -118,19 +118,19 @@ var (
 				HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
 			}
 
-			err := repolink.Create(currentApp, integrationType, integrationURL, params)
+			err := integrationlink.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-create")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-create")
 		},
 	}
 
-	repoLinkUpdateCommand = cli.Command{
-		Name:     "repo-link-update",
-		Category: "Repo Link",
+	integrationLinkUpdateCommand = cli.Command{
+		Name:     "integration-link-update",
+		Category: "Integration Link",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
@@ -145,20 +145,20 @@ var (
 			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
-		Usage: "Update the repo link linked with your app",
-		Description: ` Update the repo link linked with your application:
-	$ scalingo --app my-app repo-link-update [options]
+		Usage: "Update the integration link parameters",
+		Description: ` Update the integration link parameters:
+	$ scalingo --app my-app integration-link-update [options]
 
 	Examples:
-	$ scalingo --app my-app repo-link-update --branch master
-	$ scalingo --app my-app repo-link-update --auto-deploy --branch test --deploy-review-apps
-	$ scalingo --app my-app repo-link-update --destroy-on-close --hours-before-destroy-on-close 1
-	$ scalingo --app my-app repo-link-update --destroy-on-stale --hours-before-destroy-on-stale 2
+	$ scalingo --app my-app integration-link-update --branch master
+	$ scalingo --app my-app integration-link-update --auto-deploy --branch test --deploy-review-apps
+	$ scalingo --app my-app integration-link-update --destroy-on-close --hours-before-destroy-on-close 1
+	$ scalingo --app my-app integration-link-update --destroy-on-stale --hours-before-destroy-on-stale 2
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-delete', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
+		# See also 'integration-link', 'integration-link-create', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if c.NumFlags() == 0 || len(c.Args()) != 0 {
-				cli.ShowCommandHelp(c, "repo-link-update")
+				cli.ShowCommandHelp(c, "integration-link-update")
 				return
 			}
 			autoDeploy := c.Bool("auto-deploy")
@@ -183,105 +183,105 @@ var (
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			params, err := repolink.CheckAndFillParams(c, currentApp)
+			params, err := integrationlink.CheckAndFillParams(c, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
 
-			err = repolink.Update(currentApp, *params)
+			err = integrationlink.Update(currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-update")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-update")
 		},
 	}
 
-	repoLinkDeleteCommand = cli.Command{
-		Name:     "repo-link-delete",
-		Category: "Repo Link",
+	integrationLinkDeleteCommand = cli.Command{
+		Name:     "integration-link-delete",
+		Category: "Integration Link",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "Delete repo link linked with your app",
-		Description: `Delete repo link linked with your app:
+		Usage:    "Delete the link between your Scalingo application and the integration",
+		Description: `Delete the link between your Scalingo application and the integration:
 
-	$ scalingo --app my-app repo-link-delete
+	$ scalingo --app my-app integration-link-delete
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-manual-deploy' and 'repo-link-manual-review-app'`,
+		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
-				cli.ShowCommandHelp(c, "repo-link-delete")
+				cli.ShowCommandHelp(c, "integration-link-delete")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := repolink.Delete(currentApp)
+			err := integrationlink.Delete(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-delete")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-delete")
 		},
 	}
 
-	repoLinkManualDeployCommand = cli.Command{
-		Name:     "repo-link-manual-deploy",
-		Category: "Repo Link",
+	integrationLinkManualDeployCommand = cli.Command{
+		Name:     "integration-link-manual-deploy",
+		Category: "Integration Link",
 		Flags:    []cli.Flag{appFlag},
 		Usage:    "Trigger a manual deployment of the specified branch",
 		Description: `Trigger a manual deployment of the specified branch:
 
-	$ scalingo --app my-app repo-link-manual-deploy mybranch
+	$ scalingo --app my-app integration-link-manual-deploy mybranch
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-review-app'`,
+		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "repo-link-manual-deploy")
+				cli.ShowCommandHelp(c, "integration-link-manual-deploy")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
 			branchName := c.Args()[0]
-			err := repolink.ManualDeploy(currentApp, branchName)
+			err := integrationlink.ManualDeploy(currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-deploy")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-deploy")
 		},
 	}
 
-	repoLinkManualReviewAppCommand = cli.Command{
-		Name:     "repo-link-manual-review-app",
-		Category: "Repo Link",
+	integrationLinkManualReviewAppCommand = cli.Command{
+		Name:     "integration-link-manual-review-app",
+		Category: "Integration Link",
 		Flags:    []cli.Flag{appFlag},
 		Usage:    "Trigger a review app creation of the pull/merge request ID specified",
 		Description: `Trigger a review app creation of the pull/merge request ID specified:
 
-	$ scalingo --app my-app repo-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
-	$ scalingo --app my-app repo-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
+	$ scalingo --app my-app integration-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
+	$ scalingo --app my-app integration-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
 
 	Example:
-	$ scalingo --app my-app repo-link-manual-review-app 42
+	$ scalingo --app my-app integration-link-manual-review-app 42
 
-		# See also 'repo-link', 'repo-link-create', 'repo-link-update', 'repo-link-delete' and 'repo-link-manual-deploy'`,
+		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-deploy'`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "repo-link-manual-review-app")
+				cli.ShowCommandHelp(c, "integration-link-manual-review-app")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
 			pullRequestID := c.Args()[0]
-			err := repolink.ManualReviewApp(currentApp, pullRequestID)
+			err := integrationlink.ManualReviewApp(currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "repo-link-manual-review-app")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-review-app")
 		},
 	}
 )
