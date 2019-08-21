@@ -15,8 +15,8 @@ var (
 		Usage:     "Get the logs archives of your applications",
 		Description: `Get the logs archives of your applications
    Example:
-     Get most recents archives : 'scalingo --app my-app logs-archives'
-     Get a specific page : 'scalingo --app my-app logs-archives -p 5'`,
+     Get most recents archives: 'scalingo --app my-app logs-archives'
+     Get a specific page: 'scalingo --app my-app logs-archives -p 5'`,
 		Flags: []cli.Flag{appFlag,
 			cli.IntFlag{Name: "page, p", Usage: "Page number", EnvVar: ""},
 		},
