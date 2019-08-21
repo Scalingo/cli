@@ -226,11 +226,10 @@ var (
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
 
-		// SCM Integrations
-		scmIntegrationsListCommand,
-		scmIntegrationsCreateCommand,
-		scmIntegrationsDeleteCommand,
-		scmIntegrationsImportKeysCommand,
+		integrationsListCommand,
+		integrationsAddCommand,
+		integrationsDeleteCommand,
+		integrationsImportKeysCommand,
 
 		// Sessions
 		LoginCommand,

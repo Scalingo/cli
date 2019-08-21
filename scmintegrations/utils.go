@@ -1,4 +1,4 @@
-package scm_integrations
+package scmintegrations
 
 import (
 	"github.com/Scalingo/go-scalingo"

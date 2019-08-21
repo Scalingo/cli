@@ -163,6 +163,12 @@ COMMANDS:
      self       Get the logged in profile
      whoami     Get the logged in profile
 
+   Integrations:
+     integrations              List your integrations
+     integrations-add          Link your Scalingo account with your account on a tool such as github.com
+     integrations-delete       Unlink your Scalingo account and your account on a tool such as github.com
+     integrations-import-keys  Import public SSH keys from integration account
+
    Notifiers:
      notifiers          List your notifiers
      notifiers-details  Show details of your notifiers
@@ -197,12 +203,6 @@ COMMANDS:
    Runtime Stacks:
      stacks      List the available runtime stacks
      stacks-set  Set the runtime stack of an app
-
-   SCM Integrations:
-     scm-integrations              List your SCM integrations
-     scm-integrations-create       Link your Scalingo account with your account on a SCM tool
-     scm-integrations-delete       Unlink your Scalingo account and your account on a SCM tool
-     scm-integrations-import-keys  Import public SSH keys from SCM account
 
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
