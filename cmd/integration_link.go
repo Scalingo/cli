@@ -3,9 +3,11 @@ package cmd
 import (
 	"errors"
 	"net/url"
+	"strconv"
 
-	"github.com/juju/errgo"
+	"github.com/AlecAivazis/survey"
 	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -111,44 +113,49 @@ var (
 				return
 			}
 
+			var params scalingo.SCMRepoLinkParams
 			if len(c.Args()) == 1 {
-				// TODO If number of flags is 0, make it interactive
-			}
-			branch := c.String("branch")
-			autoDeploy := c.Bool("auto-deploy")
-			noAutoDeploy := c.Bool("no-auto-deploy")
-			if autoDeploy && noAutoDeploy {
-				errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
-			}
+				params, err = interactiveCreate()
+				if err != nil {
+					errorQuit(err)
+				}
+			} else {
+				branch := c.String("branch")
+				autoDeploy := c.Bool("auto-deploy")
+				noAutoDeploy := c.Bool("no-auto-deploy")
+				if autoDeploy && noAutoDeploy {
+					errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
+				}
 
-			deployReviewApps := c.Bool("deploy-review-apps")
-			noDeployReviewApps := c.Bool("no-deploy-review-apps")
-			if deployReviewApps && noDeployReviewApps {
-				errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
-			}
+				deployReviewApps := c.Bool("deploy-review-apps")
+				noDeployReviewApps := c.Bool("no-deploy-review-apps")
+				if deployReviewApps && noDeployReviewApps {
+					errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
+				}
 
-			destroyOnClose := c.Bool("destroy-on-close")
-			noDestroyOnClose := c.Bool("no-destroy-on-close")
-			if destroyOnClose && noDestroyOnClose {
-				errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
-			}
-			hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
+				destroyOnClose := c.Bool("destroy-on-close")
+				noDestroyOnClose := c.Bool("no-destroy-on-close")
+				if destroyOnClose && noDestroyOnClose {
+					errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
+				}
+				hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
 
-			destroyOnStale := c.Bool("destroy-on-stale")
-			noDestroyOnStale := c.Bool("no-destroy-on-stale")
-			if destroyOnStale && noDestroyOnStale {
-				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
-			}
-			hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
+				destroyOnStale := c.Bool("destroy-on-stale")
+				noDestroyOnStale := c.Bool("no-destroy-on-stale")
+				if destroyOnStale && noDestroyOnStale {
+					errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
+				}
+				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
-			params := scalingo.SCMRepoLinkParams{
-				Branch:                   &branch,
-				AutoDeployEnabled:        &autoDeploy,
-				DeployReviewAppsEnabled:  &deployReviewApps,
-				DestroyOnCloseEnabled:    &destroyOnClose,
-				HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
-				DestroyStaleEnabled:      &destroyOnStale,
-				HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
+				params = scalingo.SCMRepoLinkParams{
+					Branch:                   &branch,
+					AutoDeployEnabled:        &autoDeploy,
+					DeployReviewAppsEnabled:  &deployReviewApps,
+					DestroyOnCloseEnabled:    &destroyOnClose,
+					HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
+					DestroyStaleEnabled:      &destroyOnStale,
+					HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
+				}
 			}
 
 			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
@@ -318,3 +325,102 @@ var (
 		},
 	}
 )
+
+func interactiveCreate() (scalingo.SCMRepoLinkParams, error) {
+	var params scalingo.SCMRepoLinkParams
+	qs := []*survey.Question{
+		{
+			Name:   "branch",
+			Prompt: &survey.Input{Message: "Branch to auto-deploy (empty to disable):"},
+		},
+		{
+			Name: "auto-review-apps",
+			Prompt: &survey.Confirm{
+				Message: "Automatically deploy review apps:",
+				Default: false,
+			},
+		},
+	}
+
+	answers := struct {
+		Branch         string
+		AutoReviewApps bool `survey:"auto-review-apps"`
+	}{}
+	err := survey.Ask(qs, &answers)
+	if err != nil {
+		return params, err
+	}
+
+	t := true
+	if answers.Branch != "" {
+		params.Branch = &answers.Branch
+		params.AutoDeployEnabled = &t
+	}
+	if !answers.AutoReviewApps {
+		return params, nil
+	}
+
+	params.DeployReviewAppsEnabled = &t
+
+	destroyOnClose := true
+	err = survey.AskOne(&survey.Confirm{
+		Message: "Automatically destroy review apps when the pull/merge request is closed:",
+		Default: true,
+	}, &destroyOnClose, nil)
+	if err != nil {
+		return params, err
+	}
+	params.DestroyOnCloseEnabled = &destroyOnClose
+	if destroyOnClose {
+		answerHoursBeforeDestroyOnClose := "0"
+		err = survey.AskOne(&survey.Input{
+			Message: "Hours before automatically destroying the review apps:",
+			Default: "0",
+		}, &answerHoursBeforeDestroyOnClose, validateHoursBeforeDelete)
+		if err != nil {
+			return params, err
+		}
+		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
+		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
+		params.HoursBeforeDeleteOnClose = &hoursBeforeDestroyOnClose
+	}
+
+	destroyOnStale := true
+	err = survey.AskOne(&survey.Confirm{
+		Message: "Automatically destroy review apps after some time without deploy/commits:",
+		Default: true,
+	}, &destroyOnStale, nil)
+	if err != nil {
+		return params, err
+	}
+	params.DestroyStaleEnabled = &destroyOnStale
+	if destroyOnStale {
+		answerHoursBeforeDestroyOnStale := "0"
+		err = survey.AskOne(&survey.Input{
+			Message: "Hours before automatically destroying the review apps:",
+			Default: "0",
+		}, &answerHoursBeforeDestroyOnStale, validateHoursBeforeDelete)
+		if err != nil {
+			return params, err
+		}
+		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
+		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
+		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
+	}
+	return params, nil
+}
+
+func validateHoursBeforeDelete(ans interface{}) error {
+	str, ok := ans.(string)
+	if !ok {
+		return errors.New("must be a string")
+	}
+	i, err := strconv.ParseUint(str, 10, 32)
+	if err != nil {
+		return err
+	}
+	if i < 0 {
+		return errors.New("must be positive")
+	}
+	return nil
+}

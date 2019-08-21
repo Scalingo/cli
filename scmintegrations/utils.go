@@ -7,7 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/juju/errgo"
+	"gopkg.in/errgo.v1"
 )
 
 func checkIfIntegrationAlreadyExist(c *scalingo.Client, id string) bool {
