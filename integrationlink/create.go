@@ -2,6 +2,7 @@ package integrationlink
 
 import (
 	"errors"
+	"fmt"
 	"net/url"
 
 	"gopkg.in/errgo.v1"
@@ -22,18 +23,22 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
+	integration, err := c.SCMIntegrationsShow(string(integrationType))
+	if err != nil {
+		return errgo.Notef(err, "fail to get the integration")
+	}
+
 	repoLink, err := c.SCMRepoLinkShow(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to get the integration link for this app")
 	}
 	if repoLink != nil {
-		io.Statusf("Your app is already linked to %s/%s#%s.\n", repoLink.Owner, repoLink.Repo, repoLink.Branch)
+		io.Statusf("Your app is already linked to %s/%s/%s", integration.URL, repoLink.Owner, repoLink.Repo)
+		if repoLink.Branch != "" {
+			fmt.Printf("#%s", repoLink.Branch)
+		}
+		fmt.Printf(".\n")
 		return nil
-	}
-
-	integration, err := c.SCMIntegrationsShow(string(integrationType))
-	if err != nil {
-		return errgo.Notef(err, "fail to get the integration")
 	}
 
 	params.Source = &integrationURL
@@ -44,6 +49,6 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 		return errgo.Notef(err, "fail to create the repo link")
 	}
 
-	io.Statusf("Your app '%s' is linked to the repository %s.\n", app, integration.URL)
+	io.Statusf("Your app '%s' is linked to the repository %s.\n", app, integrationURL)
 	return nil
 }
