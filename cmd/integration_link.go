@@ -328,6 +328,9 @@ var (
 
 func interactiveCreate() (scalingo.SCMRepoLinkParams, error) {
 	var params scalingo.SCMRepoLinkParams
+	if config.C.DisableInteractive {
+		return params, errors.New("need at least one integration link parameter")
+	}
 	qs := []*survey.Question{
 		{
 			Name:   "branch",
