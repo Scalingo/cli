@@ -142,6 +142,7 @@ func (config Config) CurrentUser() (*scalingo.User, error) {
 }
 
 type ClientConfigOpts struct {
+	Region   string
 	APIToken string
 	AuthOnly bool
 }
@@ -149,6 +150,7 @@ type ClientConfigOpts struct {
 func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.ClientConfig {
 	return scalingo.ClientConfig{
 		TLSConfig:    TlsConfig,
+		Region:       opts.Region,
 		AuthEndpoint: config.ScalingoAuthUrl,
 		APIToken:     opts.APIToken,
 	}
@@ -179,14 +181,14 @@ func ScalingoClientFromToken(token string) (*scalingo.Client, error) {
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create Scalingo client")
 	}
-	return scalingo.NewClient(config), nil
+	return scalingo.New(config)
 }
 
-func ScalingoAuthClientFromToken(token string) *scalingo.Client {
+func ScalingoAuthClientFromToken(token string) (*scalingo.Client, error) {
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{
 		AuthOnly: true, APIToken: token,
 	})
-	return scalingo.NewClient(config)
+	return scalingo.New(config)
 }
 
 func ScalingoClient() (*scalingo.Client, error) {
@@ -199,7 +201,7 @@ func ScalingoClient() (*scalingo.Client, error) {
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create Scalingo client")
 	}
-	return scalingo.NewClient(config), nil
+	return scalingo.New(config)
 }
 
 func ScalingoClientForRegion(region string) (*scalingo.Client, error) {
@@ -209,25 +211,17 @@ func ScalingoClientForRegion(region string) (*scalingo.Client, error) {
 		return nil, errgo.Notef(err, "fail to load credentials")
 	}
 
-	regionConfig, err := GetRegion(C, region, GetRegionOpts{
-		Token: token.Token,
-	})
-	if err != nil {
-		return nil, errgo.Notef(err, "fail to get region")
-	}
-
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{
+		Region:   region,
 		APIToken: token.Token,
 	})
 
-	config.APIEndpoint = regionConfig.API
-	config.DatabaseAPIEndpoint = regionConfig.DatabaseAPI
-	return scalingo.NewClient(config), nil
+	return scalingo.New(config)
 }
 
-func ScalingoUnauthenticatedAuthClient() *scalingo.Client {
+func ScalingoUnauthenticatedAuthClient() (*scalingo.Client, error) {
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{AuthOnly: true})
-	return scalingo.NewClient(config)
+	return scalingo.New(config)
 }
 
 func HomeDir() string {

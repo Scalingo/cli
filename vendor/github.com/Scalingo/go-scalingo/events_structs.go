@@ -74,8 +74,12 @@ const (
 	EventStopApp            EventTypeName = "stop_app"
 	EventCrash              EventTypeName = "crash"
 	EventDeployment         EventTypeName = "deployment"
-	EventLinkGithub         EventTypeName = "link_github"
-	EventUnlinkGithub       EventTypeName = "unlink_github"
+	EventLinkSCM            EventTypeName = "link_scm"
+	EventUnlinkSCM          EventTypeName = "unlink_scm"
+	EventAuthorizeGithub    EventTypeName = "authorize_github"
+	EventAuthorizeGitLab    EventTypeName = "authorize_gitlab"
+	EventRevokeGithub       EventTypeName = "revoke_github"
+	EventRevokeGitLab       EventTypeName = "revoke_gitlab"
 	EventRun                EventTypeName = "run"
 	EventNewDomain          EventTypeName = "new_domain"
 	EventEditDomain         EventTypeName = "edit_domain"
@@ -99,8 +103,6 @@ const (
 	EventAddCredit          EventTypeName = "add_credit"
 	EventAddPaymentMethod   EventTypeName = "add_payment_method"
 	EventAddVoucher         EventTypeName = "add_voucher"
-	EventAuthorizeGithub    EventTypeName = "authorize_github"
-	EventRevokeGithub       EventTypeName = "revoke_github"
 	EventNewKey             EventTypeName = "new_key"
 	EventDeleteKey          EventTypeName = "delete_key"
 	EventPaymentAttempt     EventTypeName = "payment_attempt"
@@ -109,6 +111,10 @@ const (
 	EventDeleteAlert        EventTypeName = "delete_alert"
 	EventNewAutoscaler      EventTypeName = "new_autoscaler"
 	EventDeleteAutoscaler   EventTypeName = "delete_autoscaler"
+	// EventLinkGithub and EventUnlinkGithub events are kept for
+	// retro-compatibility. They are replaced by SCM events.
+	EventLinkGithub   EventTypeName = "link_github"
+	EventUnlinkGithub EventTypeName = "unlink_github"
 )
 
 type EventNewAppType struct {
@@ -195,9 +201,8 @@ type EventRestartType struct {
 func (ev *EventRestartType) String() string {
 	if len(ev.TypeData.Scope) != 0 {
 		return fmt.Sprintf("containers %v have been restarted", ev.TypeData.Scope)
-	} else {
-		return fmt.Sprintf("containers have been restarted")
 	}
+	return fmt.Sprintf("containers have been restarted")
 }
 
 type EventRestartTypeData struct {
@@ -299,11 +304,47 @@ type EventLinkGithubTypeData struct {
 
 type EventUnlinkGithubType struct {
 	Event
-	TypeData EventLinkGithubTypeData `json:"type_data"`
+	TypeData EventUnlinkGithubTypeData `json:"type_data"`
 }
 
 func (ev *EventUnlinkGithubType) String() string {
 	return fmt.Sprintf("app has been unlinked from Github repository '%s'", ev.TypeData.RepoName)
+}
+
+type EventUnlinkGithubTypeData struct {
+	RepoName         string `json:"repo_name"`
+	UnlinkerUsername string `json:"unlinker_username"`
+	GithubSource     string `json:"github_source"`
+}
+
+type EventLinkSCMType struct {
+	Event
+	TypeData EventLinkSCMTypeData `json:"type_data"`
+}
+
+func (ev *EventLinkSCMType) String() string {
+	return fmt.Sprintf("app has been linked to repository '%s'", ev.TypeData.RepoName)
+}
+
+type EventLinkSCMTypeData struct {
+	RepoName       string `json:"repo_name"`
+	LinkerUsername string `json:"linker_username"`
+	Source         string `json:"source"`
+}
+
+type EventUnlinkSCMType struct {
+	Event
+	TypeData EventUnlinkSCMTypeData `json:"type_data"`
+}
+
+func (ev *EventUnlinkSCMType) String() string {
+	return fmt.Sprintf("app has been unlinked from repository '%s'", ev.TypeData.RepoName)
+}
+
+type EventUnlinkSCMTypeData struct {
+	RepoName         string `json:"repo_name"`
+	UnlinkerUsername string `json:"unlinker_username"`
+	Source           string `json:"source"`
 }
 
 type EventRunType struct {
@@ -828,10 +869,18 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventScaleType{Event: ev}
 	case EventCrash:
 		e = &EventCrashType{Event: ev}
-	case EventLinkGithub:
-		e = &EventLinkGithubType{Event: ev}
-	case EventUnlinkGithub:
-		e = &EventUnlinkGithubType{Event: ev}
+	case EventLinkSCM:
+		e = &EventLinkSCMType{Event: ev}
+	case EventUnlinkSCM:
+		e = &EventUnlinkSCMType{Event: ev}
+	case EventAuthorizeGithub:
+		e = &EventAuthorizeGithubType{Event: ev}
+	case EventAuthorizeGitLab:
+		e = &EventAuthorizeGitLabType{Event: ev}
+	case EventRevokeGithub:
+		e = &EventRevokeGithubType{Event: ev}
+	case EventRevokeGitLab:
+		e = &EventRevokeGitLabType{Event: ev}
 	case EventDeployment:
 		e = &EventDeploymentType{Event: ev}
 	case EventRun:
@@ -880,8 +929,6 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventAddPaymentMethodType{Event: ev}
 	case EventAddVoucher:
 		e = &EventAddVoucherType{Event: ev}
-	case EventAuthorizeGithub:
-		e = &EventAuthorizeGithubType{Event: ev}
 	case EventNewKey:
 		e = &EventNewKeyType{Event: ev}
 	case EventDeleteKey:
@@ -898,6 +945,12 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventNewAutoscalerType{Event: ev}
 	case EventDeleteAutoscaler:
 		e = &EventDeleteAutoscalerType{Event: ev}
+	// Deprecated events. Replaced by equivalent with SCM in the name instead of
+	// Github
+	case EventLinkGithub:
+		e = &EventLinkGithubType{Event: ev}
+	case EventUnlinkGithub:
+		e = &EventUnlinkGithubType{Event: ev}
 	default:
 		return pev
 	}

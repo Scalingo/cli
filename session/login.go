@@ -104,7 +104,10 @@ func loginWithSSH(identity string) error {
 		return errgo.Notef(err, "fail to get current hostname")
 	}
 
-	c := config.ScalingoUnauthenticatedAuthClient()
+	c, err := config.ScalingoUnauthenticatedAuthClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
+	}
 	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
 		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 	}, scalingo.LoginParams{
@@ -122,7 +125,10 @@ func loginWithSSH(identity string) error {
 }
 
 func finalizeLogin(token string) error {
-	c := config.ScalingoAuthClientFromToken(token)
+	c, err := config.ScalingoAuthClientFromToken(token)
+	if err != nil {
+		return errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+	}
 	user, err := c.Self()
 	if err != nil {
 		return errgo.Mask(err)

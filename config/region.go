@@ -45,7 +45,11 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 	}
 
 	debug.Println("[Regions] Get the list of regions to fill the cache")
-	regions, err := ScalingoAuthClientFromToken(token.Token).RegionsList()
+	client, err := ScalingoAuthClientFromToken(token.Token)
+	if err != nil {
+		return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+	}
+	regions, err := client.RegionsList()
 	if err != nil {
 		return RegionsCache{}, errgo.Notef(err, "fail to list available regions")
 	}

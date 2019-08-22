@@ -229,7 +229,10 @@ func tryAuth() (*scalingo.User, string, error) {
 	otpRequired := false
 	retryAuth := true
 
-	c := ScalingoUnauthenticatedAuthClient()
+	c, err := ScalingoUnauthenticatedAuthClient()
+	if err != nil {
+		return nil, "", errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
+	}
 
 	loginParams := scalingo.LoginParams{}
 	var apiToken scalingo.Token
@@ -268,10 +271,13 @@ func tryAuth() (*scalingo.User, string, error) {
 		}
 	}
 
-	client := ScalingoAuthClientFromToken(apiToken.Token)
+	client, err := ScalingoAuthClientFromToken(apiToken.Token)
+	if err != nil {
+		return nil, "", errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+	}
 	userInformation, err := client.Self()
 	if err != nil {
-		return nil, "", errgo.NoteMask(err, "fail to get account data", errgo.Any)
+		return nil, "", errgo.Notef(err, "fail to get account data")
 	}
 
 	return userInformation, apiToken.Token, nil

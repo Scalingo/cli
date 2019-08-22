@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -18,25 +17,17 @@ const (
 
 var apisConfig = map[string]apiConfig{
 	AuthAPI: {
-		DefaultEndpoint:  "https://auth.scalingo.com",
-		EnvironmentKey:   "SCALINGO_AUTH_URL",
 		HasVersionPrefix: true,
 	},
 	ScalingoAPI: {
-		DefaultEndpoint:  "https://api.scalingo.com",
-		EnvironmentKey:   "SCALINGO_API_URL",
 		HasVersionPrefix: true,
 	},
 	DBAPI: {
-		DefaultEndpoint: "https://db-api.scalingo.com",
-		EnvironmentKey:  "SCALINGO_DB_URL",
-		Prefix:          "/api",
+		Prefix: "/api",
 	},
 }
 
 type apiConfig struct {
-	DefaultEndpoint  string
-	EnvironmentKey   string
 	HasVersionPrefix bool
 	Prefix           string
 }
@@ -201,6 +192,10 @@ func (c *client) SubresourceUpdate(resource, resourceID, subresource, id string,
 }
 
 func (c *client) DoRequest(req *APIRequest, data interface{}) error {
+	if c.endpoint == "" {
+		return errgo.New("API Endpoint is not defined, did you forget to pass the Region field to the New method?")
+	}
+
 	res, err := c.Do(req)
 	if err != nil {
 		return err
@@ -224,12 +219,6 @@ func (c *client) TokenGenerator() TokenGenerator {
 
 func (c *client) BaseURL() string {
 	endpoint := c.endpoint
-	if endpoint == "" {
-		endpoint = c.apiConfig.DefaultEndpoint
-		if os.Getenv(c.apiConfig.EnvironmentKey) != "" {
-			endpoint = os.Getenv(c.apiConfig.EnvironmentKey)
-		}
-	}
 
 	if c.prefix != "" {
 		return fmt.Sprintf("%s%s", endpoint, c.prefix)
