@@ -1,8 +1,17 @@
 package scalingo
 
 import (
+	"sync"
+
 	"github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
+)
+
+var (
+	ErrRegionNotFound = errgo.New("Region not found")
+
+	regionCache      map[string]Region = map[string]Region{}
+	regionCacheMutex *sync.Mutex       = &sync.Mutex{}
 )
 
 type RegionsService interface {
@@ -33,4 +42,26 @@ func (c *Client) RegionsList() ([]Region, error) {
 		return nil, errgo.Notef(err, "fail to call GET /regions")
 	}
 	return res.Regions, nil
+}
+
+func (c *Client) getRegion(regionName string) (Region, error) {
+	regionCacheMutex.Lock()
+	defer regionCacheMutex.Unlock()
+
+	if _, ok := regionCache[regionName]; !ok {
+		regions, err := c.RegionsList()
+		if err != nil {
+			return Region{}, errgo.Notef(err, "fail to list regions")
+		}
+
+		for _, region := range regions {
+			regionCache[region.Name] = region
+		}
+	}
+
+	region, ok := regionCache[regionName]
+	if !ok {
+		return Region{}, ErrRegionNotFound
+	}
+	return region, nil
 }

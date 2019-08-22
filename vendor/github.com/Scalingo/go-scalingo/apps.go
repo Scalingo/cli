@@ -69,8 +69,8 @@ type AppsPsRes struct {
 
 type AppsCreateOpts struct {
 	Name      string `json:"name"`
-	ParentApp string `json:"parent_id"`
-	StackID   string `json:"stack_id"`
+	ParentApp string `json:"parent_id,omitempty"`
+	StackID   string `json:"stack_id,omitempty"`
 }
 
 type AppResponse struct {

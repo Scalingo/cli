@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/go-scalingo/http"
+	errgo "gopkg.in/errgo.v1"
 )
 
 type API interface {
@@ -57,17 +58,44 @@ type ClientConfig struct {
 	AuthEndpoint        string
 	DatabaseAPIEndpoint string
 	APIToken            string
+	Region              string
 
 	// StaticTokenGenerator is present for retrocompatibility with legacy tokens
 	// DEPRECATED, Use standard APIToken field for normal operations
 	StaticTokenGenerator *StaticTokenGenerator
 }
 
-func NewClient(cfg ClientConfig) *Client {
-	client := &Client{
+func New(cfg ClientConfig) (*Client, error) {
+	// Apply defaults
+	if cfg.AuthEndpoint == "" {
+		cfg.AuthEndpoint = "https://auth.scalingo.com"
+	}
+
+	// If there's no region defined return the client as is
+	if cfg.Region == "" {
+		return &Client{
+			config: cfg,
+		}, nil
+	}
+
+	// if a region was defined, create a temp client to query the auth service for region list
+	// then create the real client
+	tmpClient := &Client{
 		config: cfg,
 	}
-	return client
+
+	region, err := tmpClient.getRegion(cfg.Region)
+	if err == ErrRegionNotFound {
+		return nil, err
+	} else if err != nil {
+		return nil, errgo.Notef(err, "fail to get region informations")
+	}
+
+	cfg.APIEndpoint = region.API
+	cfg.DatabaseAPIEndpoint = region.DatabaseAPI
+	return &Client{
+		config: cfg,
+	}, nil
 }
 
 func (c *Client) ScalingoAPI() http.Client {
