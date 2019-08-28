@@ -9,7 +9,9 @@
   `integration-link-delete`, `integration-link-manual-deploy`,
   `integration-link-manual-review-app` commands
   [#458](https://github.com/Scalingo/cli/pull/458)
-* Add support for new SCM-related events [#467](https://github.com/Scalingo/cli/pull/467)
+* Add support for new SCM-related events
+  [#467](https://github.com/Scalingo/cli/pull/467) and
+  [#472](https://github.com/Scalingo/cli/pull/472)
 * Bugfix: Do not disconnect user if the API returns 401 [#462](https://github.com/Scalingo/cli/issues/462)
 * Add duration to the deployments list [#477](https://github.com/Scalingo/cli/issues/477)
 * Add support for new_user event [#473](https://github.com/Scalingo/cli/issues/473)
