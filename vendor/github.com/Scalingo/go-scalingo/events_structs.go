@@ -64,6 +64,7 @@ type EventUser struct {
 type EventTypeName string
 
 const (
+	EventNewUser            EventTypeName = "new_user"
 	EventNewApp             EventTypeName = "new_app"
 	EventEditApp            EventTypeName = "edit_app"
 	EventDeleteApp          EventTypeName = "delete_app"
@@ -76,10 +77,10 @@ const (
 	EventDeployment         EventTypeName = "deployment"
 	EventLinkSCM            EventTypeName = "link_scm"
 	EventUnlinkSCM          EventTypeName = "unlink_scm"
+	EventNewIntegration     EventTypeName = "new_integration"
+	EventDeleteIntegration  EventTypeName = "delete_integration"
 	EventAuthorizeGithub    EventTypeName = "authorize_github"
-	EventAuthorizeGitLab    EventTypeName = "authorize_gitlab"
 	EventRevokeGithub       EventTypeName = "revoke_github"
-	EventRevokeGitLab       EventTypeName = "revoke_gitlab"
 	EventRun                EventTypeName = "run"
 	EventNewDomain          EventTypeName = "new_domain"
 	EventEditDomain         EventTypeName = "edit_domain"
@@ -116,6 +117,18 @@ const (
 	EventLinkGithub   EventTypeName = "link_github"
 	EventUnlinkGithub EventTypeName = "unlink_github"
 )
+
+type EventNewUserType struct {
+	Event
+	TypeData EventNewUserTypeData `json:"type_data"`
+}
+
+func (ev *EventNewUserType) String() string {
+	return fmt.Sprintf("You joined Scalingo. Hooray!")
+}
+
+type EventNewUserTypeData struct {
+}
 
 type EventNewAppType struct {
 	Event
@@ -851,6 +864,8 @@ func (pev *Event) Specialize() DetailedEvent {
 	var e DetailedEvent
 	ev := *pev
 	switch ev.Type {
+	case EventNewUser:
+		e = &EventNewUserType{Event: ev}
 	case EventNewApp:
 		e = &EventNewAppType{Event: ev}
 	case EventEditApp:
@@ -873,14 +888,14 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventLinkSCMType{Event: ev}
 	case EventUnlinkSCM:
 		e = &EventUnlinkSCMType{Event: ev}
+	case EventNewIntegration:
+		e = &EventNewIntegrationType{Event: ev}
+	case EventDeleteIntegration:
+		e = &EventDeleteIntegrationType{Event: ev}
 	case EventAuthorizeGithub:
 		e = &EventAuthorizeGithubType{Event: ev}
-	case EventAuthorizeGitLab:
-		e = &EventAuthorizeGitLabType{Event: ev}
 	case EventRevokeGithub:
 		e = &EventRevokeGithubType{Event: ev}
-	case EventRevokeGitLab:
-		e = &EventRevokeGitLabType{Event: ev}
 	case EventDeployment:
 		e = &EventDeploymentType{Event: ev}
 	case EventRun:
