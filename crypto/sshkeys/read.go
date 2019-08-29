@@ -3,6 +3,7 @@ package sshkeys
 import (
 	"encoding/asn1"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -31,7 +32,7 @@ func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 	block, _ := pem.Decode(privateKeyContent)
 	if block == nil {
 		return nil, fmt.Errorf(
-			"Failed to read key '%s': is not in the PEM format", path)
+			"failed to read key '%s': is not in the PEM format", path)
 	}
 
 	privateKey := &PrivateKey{Block: block, Path: path}
@@ -45,10 +46,10 @@ func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 	signer, err := privateKey.Signer()
 	if err != nil {
 		if err, ok := err.(asn1.StructuralError); ok && strings.HasPrefix(err.Msg, "tags don't match") || err.Msg == "length too large" {
-			return nil, errgo.Newf("Fail to decrypt SSH key, invalid password.")
+			return nil, errors.New("fail to decrypt SSH key, invalid password")
 		}
 		if err, ok := err.(asn1.SyntaxError); ok && err.Msg == "trailing data" {
-			return nil, errgo.Newf("The password was OK, but something went wrong.\n" +
+			return nil, errors.New("The password was OK, but something went wrong.\n" +
 				"Please re-run the command with the environment variable DEBUG=1 " +
 				"and create an issue with the command output: https://github.com/Scalingo/cli/issues")
 		}

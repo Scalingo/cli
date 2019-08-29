@@ -33,7 +33,7 @@ func (p *PrivateKey) Decrypt() error {
 		p.PasswordMethod = term.Password
 	}
 
-	password, err := p.PasswordMethod("Encrypted SSH Key, password: ")
+	password, err := p.PasswordMethod("Encrypted SSH key, password: ")
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -43,13 +43,13 @@ func (p *PrivateKey) Decrypt() error {
 		key := genDES3Key(password, iv)
 		decryptedKey, err = decryptKey(p.Block.Bytes, iv, key, des.NewTripleDESCipher)
 		if err != nil {
-			return errgo.Newf("Key is tagged DES-ECE3-CBC, but is not: %v", err)
+			return errgo.Newf("key is tagged DES-ECE3-CBC, but is not: %v", err)
 		}
 	case "AES-128-CBC":
 		key := genAESKey(password, iv)
 		decryptedKey, err = decryptKey(p.Block.Bytes, iv, key, aes.NewCipher)
 		if err != nil {
-			return errgo.Newf("Key is tagged AES-128-CBC, but is not: %v", err)
+			return errgo.Newf("key is tagged AES-128-CBC, but is not: %v", err)
 		}
 	}
 	decryptedBlock := &pem.Block{}
