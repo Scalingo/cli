@@ -22,12 +22,12 @@ import (
 
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"gopkg.in/errgo.v1"
 )
 
@@ -328,10 +328,10 @@ func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
 		host := strings.Split(url.Host, ":")[0]
-		config := *config.TlsConfig
-		config.ServerName = host
-		tls_conn := tls.Client(dial, &config)
-		conn = httputil.NewClientConn(tls_conn, nil)
+		tlsConfig := config.TlsConfig.Clone()
+		tlsConfig.ServerName = host
+		tlsConn := tls.Client(dial, tlsConfig)
+		conn = httputil.NewClientConn(tlsConn, nil)
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)
 	} else {
