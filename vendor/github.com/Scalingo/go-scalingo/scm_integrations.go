@@ -16,6 +16,13 @@ const (
 	SCMGitlabSelfHostedType SCMType = "gitlab-self-hosted" // GitLab self-hosted (private instance)
 )
 
+var SCMTypeDisplay = map[SCMType]string{
+	SCMGithubType:           "GitHub",
+	SCMGitlabType:           "GitLab",
+	SCMGithubEnterpriseType: "GitHub Enterprise",
+	SCMGitlabSelfHostedType: "GitLab self-hosted",
+}
+
 func (t SCMType) Str() string {
 	return string(t)
 }
