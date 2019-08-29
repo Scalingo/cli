@@ -20,7 +20,7 @@ var (
 func ReadPrivateKey(path string) (ssh.Signer, error) {
 	privateKeyContent, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Notef(err, "fail to read the private key file")
 	}
 	return readPrivateKeyWithContent(path, privateKeyContent)
 }
@@ -38,7 +38,7 @@ func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 	if privateKey.IsEncrypted() {
 		err := privateKey.Decrypt()
 		if err != nil {
-			return nil, errgo.Mask(err)
+			return nil, errgo.Notef(err, "fail to decrypt the private key")
 		}
 	}
 

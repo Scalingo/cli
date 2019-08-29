@@ -28,7 +28,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 		var agentConnection stdio.Closer
 		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
 		if err != nil {
-			return nil, nil, errgo.Mask(err)
+			return nil, nil, errgo.Notef(err, "fail to read the private key from SSH agent")
 		}
 		defer agentConnection.Close()
 	}
@@ -39,7 +39,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 		}
 		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
 		if err != nil {
-			return nil, nil, errgo.Mask(err)
+			return nil, nil, errgo.Notef(err, "fail to read the private key")
 		}
 		privateKeys = append(privateKeys, privateKey)
 	}

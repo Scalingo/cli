@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/term"
+	"github.com/Scalingo/go-scalingo/debug"
+	"gopkg.in/errgo.v1"
 )
 
 func (p *PrivateKey) Decrypt() error {
