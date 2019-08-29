@@ -1,7 +1,9 @@
 package deployments
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
@@ -22,11 +24,19 @@ func List(app string) error {
 
 	} else {
 		t := tablewriter.NewWriter(os.Stdout)
-		t.SetHeader([]string{"ID", "Date", "User", "Git Ref", "Status"})
+		t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status"})
 
 		for _, deployment := range deployments {
+			var duration string
+			if deployment.Duration != 0 {
+				d, _ := time.ParseDuration(fmt.Sprintf("%ds", deployment.Duration))
+				duration = d.String()
+			} else {
+				duration = "n/a"
+			}
 			t.Append([]string{deployment.ID,
 				deployment.CreatedAt.Format("2006/01/02 15:04:05"),
+				duration,
 				deployment.User.Username,
 				deployment.GitRef,
 				string(deployment.Status),
