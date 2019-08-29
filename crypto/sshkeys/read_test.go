@@ -21,7 +21,7 @@ var (
 )
 
 func TestInvalidKey(t *testing.T) {
-	_, err := ReadPrivateKeyWithContent("n/a", invalidKey)
+	_, err := readPrivateKeyWithContent("n/a", invalidKey)
 	if err == nil {
 		t.Error("expect error, got nil")
 	}
@@ -31,7 +31,7 @@ func TestInvalidKey(t *testing.T) {
 }
 
 func TestUnencryptedKey(t *testing.T) {
-	s, err := ReadPrivateKeyWithContent("n/a", unencryptedRSAKey)
+	s, err := readPrivateKeyWithContent("n/a", unencryptedRSAKey)
 	if err != nil {
 		t.Error("expect nil, got", err)
 	}

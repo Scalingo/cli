@@ -22,10 +22,10 @@ func ReadPrivateKey(path string) (ssh.Signer, error) {
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	return ReadPrivateKeyWithContent(path, privateKeyContent)
+	return readPrivateKeyWithContent(path, privateKeyContent)
 }
 
-func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signer, error) {
+func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signer, error) {
 	// We parse the private key on our own first so that we can
 	// show a nicer error if the private key has a password.
 	block, _ := pem.Decode(privateKeyContent)
@@ -52,7 +52,7 @@ func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 				"Please re-run the command with the environment variable DEBUG=1 " +
 				"and create an issue with the command output: https://github.com/Scalingo/cli/issues")
 		}
-		return nil, errgo.Newf("Invalid SSH key or password: %v", err)
+		return nil, errgo.Notef(err, "invalid SSH key or password")
 	}
 
 	return signer, nil
