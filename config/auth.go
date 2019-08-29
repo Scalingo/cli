@@ -77,7 +77,7 @@ func SetCurrentUser(user *scalingo.User, token string) error {
 func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 	authConfig, err := existingAuth()
 	if err != nil {
-		return errgo.Mask(err)
+		return err
 	}
 
 	var c auth.ConfigPerHostV2
@@ -104,7 +104,7 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to marshal the configuration to JSON")
 	}
 
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)

@@ -1,5 +1,7 @@
 # Scalingo-CLI v1.15.1
 
+[![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
+
 This repository contains the command line utility for the public PaaS Scalingo
 
 [https://scalingo.com](https://scalingo.com)
