@@ -2,6 +2,7 @@ package sshkeys
 
 import (
 	"encoding/pem"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -21,7 +22,7 @@ func (p *PrivateKey) Signer() (ssh.Signer, error) {
 }
 
 func (p *PrivateKey) IsEncrypted() bool {
-	return p.Block.Headers["Proc-Type"] == "4,ENCRYPTED"
+	return strings.Contains(p.Block.Headers["Proc-Type"], "ENCRYPTED")
 }
 
 func (p *PrivateKey) IsCipherImplemented(cipher string) bool {
