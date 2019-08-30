@@ -8,6 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	scalingo "github.com/Scalingo/go-scalingo"
 )
 
 func List() error {
@@ -38,7 +39,7 @@ func List() error {
 	t.SetColWidth(60)
 	t.SetHeader([]string{"ID", "Type", "URL", "Username", "Email"})
 	for _, i := range integrations {
-		t.Append([]string{i.ID, i.SCMType.Str(), i.URL, i.Username, i.Email})
+		t.Append([]string{i.ID, scalingo.SCMTypeDisplay[i.SCMType], i.URL, i.Username, i.Email})
 	}
 	t.Render()
 	return nil

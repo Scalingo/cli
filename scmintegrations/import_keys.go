@@ -43,16 +43,16 @@ func ImportKeys(id string) error {
 			pluralKey = "s"
 		}
 
-		io.Statusf("0 key imported from %s.\n", integration.SCMType)
+		io.Statusf("0 key imported from %s.\n", scalingo.SCMTypeDisplay[integration.SCMType])
 		if alreadyImportedKeysLength == 0 {
-			io.Infof("No public key is available in your %s account\n", integration.SCMType)
+			io.Infof("No public key is available in your %s account\n", scalingo.SCMTypeDisplay[integration.SCMType])
 			return nil
 		}
 		io.Info()
 
 		io.Statusf(
 			"%d key%s have already been imported from %s:\n",
-			alreadyImportedKeysLength, pluralKey, integration.SCMType,
+			alreadyImportedKeysLength, pluralKey, scalingo.SCMTypeDisplay[integration.SCMType],
 		)
 		keys = alreadyImportedKeys
 	} else {
@@ -72,7 +72,7 @@ func ImportKeys(id string) error {
 		if nbrKeys > 1 {
 			pluralKey = "s"
 		}
-		io.Statusf("%d key%s have been imported from %s.\n", nbrKeys, pluralKey, integration.SCMType)
+		io.Statusf("%d key%s have been imported from %s.\n", nbrKeys, pluralKey, scalingo.SCMTypeDisplay[integration.SCMType])
 	}
 	return nil
 }
