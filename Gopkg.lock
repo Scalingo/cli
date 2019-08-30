@@ -18,7 +18,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:a5f9d7f4806e4a7d9bcea5eb81f5d0c8faee5d4d49e9d157463601edf9d132f3"
+  digest = "1:0ad0aa9c48ef0dc07b2b2e51212698493d48c5d47c1e874f8ec6609471d2dc80"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -29,8 +29,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "1ab26f416f38103cf17310691f47eb23d8152993"
-  version = "v3.0.2"
+  revision = "aab97e66f012a256e7f39785fa1451d70258940b"
+  version = "v3.0.3"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
@@ -71,6 +71,14 @@
   pruneopts = "NUT"
   revision = "f907f6f5dd81f77c2bbc1cde92e4c5a04720cb11"
   version = "v1.0.28"
+
+[[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "NUT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
@@ -240,6 +248,14 @@
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "NUT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -258,6 +274,17 @@
   ]
   pruneopts = "NUT"
   revision = "1ac3a1ac202429a54835fe8408a92880156b489d"
+  version = "v1.4.0"
+
+[[projects]]
+  digest = "1:7096df4a9258067bb9ff5da62864a645d38dd94cd3f273ff4ab54d0de548a348"
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "require",
+  ]
+  pruneopts = "NUT"
+  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
   version = "v1.4.0"
 
 [[projects]]
@@ -425,6 +452,14 @@
   revision = "ec4a0fea49c7b46c2aeb0b51aac55779c607e52b"
   version = "v0.1.2"
 
+[[projects]]
+  digest = "1:18108594151654e9e696b27b181b953f9a90b16bf14d253dd1b397b025a1487f"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -447,6 +482,8 @@
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",
     "github.com/pkg/errors",
+    "github.com/stretchr/testify/assert",
+    "github.com/stretchr/testify/require",
     "github.com/stvp/rollbar",
     "github.com/urfave/cli",
     "golang.org/x/crypto/ssh",

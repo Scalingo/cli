@@ -13,6 +13,11 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+const (
+	Success = "✔"
+	Error   = "✘"
+)
+
 // Ask the user wheter or not he wants to break his free trial. If not, return without doing
 // anything. If yes, call the given callback function.
 func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {

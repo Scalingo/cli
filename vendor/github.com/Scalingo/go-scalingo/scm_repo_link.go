@@ -104,7 +104,7 @@ func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRe
 func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
-		Method:   "UPDATE",
+		Method:   "PATCH",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{200},
 		Params:   map[string]SCMRepoLinkParams{"scm_repo_link": params},

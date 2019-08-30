@@ -1,5 +1,8 @@
 package scalingo
 
+func (e *EventNewUserType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
 func (e *EventNewAppType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -30,16 +33,16 @@ func (e *EventLinkSCMType) TypeDataPtr() interface{} {
 func (e *EventUnlinkSCMType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventNewIntegrationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventDeleteIntegrationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
 func (e *EventAuthorizeGithubType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 func (e *EventRevokeGithubType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-func (e *EventAuthorizeGitLabType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-func (e *EventRevokeGitLabType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 func (e *EventRunType) TypeDataPtr() interface{} {

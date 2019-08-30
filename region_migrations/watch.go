@@ -13,11 +13,6 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
-const (
-	SUCCESS = "✔"
-	ERROR   = "✘"
-)
-
 func WatchMigration(client *scalingo.Client, appId, id string) error {
 	refresher := NewRefresher(client, appId, id)
 	migration, err := refresher.Start()
