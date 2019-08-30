@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	scalingo "github.com/Scalingo/go-scalingo"
 )
 
 func Delete(id string) error {
@@ -23,6 +24,6 @@ func Delete(id string) error {
 		return errgo.Notef(err, "fail to destroy SCM integration")
 	}
 
-	io.Statusf("Your Scalingo account and your '%s' account are unlinked.\n", integration.SCMType)
+	io.Statusf("Your Scalingo account and your %s account are unlinked.\n", scalingo.SCMTypeDisplay[integration.SCMType])
 	return nil
 }
