@@ -90,7 +90,7 @@ var (
 			}
 
 			var params scalingo.SCMRepoLinkParams
-			if len(c.Args()) == 1 {
+			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
 					errorQuit(err)
