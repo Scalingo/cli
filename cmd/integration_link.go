@@ -2,18 +2,15 @@ package cmd
 
 import (
 	"errors"
-	"net/url"
 	"strconv"
 
 	"github.com/AlecAivazis/survey"
 	"github.com/urfave/cli"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/integrationlink"
-	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
 	"github.com/Scalingo/go-scalingo"
 )
@@ -89,28 +86,7 @@ var (
 			integrationURL := c.Args()[0]
 			integrationType, err := scmintegrations.GetTypeFromURL(integrationURL)
 			if err != nil {
-				if err != scmintegrations.ErrNotFound {
-					errorQuit(err)
-				}
-				// If no integration matches the given URL, display a helpful status
-				// message
-				u, err := url.Parse(integrationURL)
-				if err != nil {
-					errorQuit(errgo.Notef(err, "fail to parse the integration URL"))
-				}
-				switch u.Host {
-				case "github.com":
-					io.Error("No GitHub integration found, please follow this URL to add it:")
-					io.Errorf("%s/users/github/link\n", config.C.ScalingoAuthUrl)
-				case "gitlab.com":
-					io.Error("No GitLab integration found, please follow this URL to add it:")
-					io.Errorf("%s/users/gitlab/link\n", config.C.ScalingoAuthUrl)
-				default:
-					io.Errorf("No integration found for URL %s.\n", integrationURL)
-					io.Errorf("Please run the command:\n")
-					io.Errorf("scalingo integrations-add gitlab-self-hosted|github-enterprise --url %s://%s --token <personal-access-token>\n", u.Scheme, u.Host)
-				}
-				return
+				errorQuit(err)
 			}
 
 			var params scalingo.SCMRepoLinkParams
