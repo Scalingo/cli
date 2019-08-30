@@ -16,7 +16,7 @@ var (
 		Usage:    "List the alerts of an application",
 		Description: `List all the alerts of an application:
 
-    $ scalingo -a my-app alerts
+    $ scalingo --app my-app alerts
 
     # See also commands 'alerts-add', 'alerts-update' and 'alerts-remove'`,
 

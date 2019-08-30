@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
@@ -140,9 +141,9 @@ func (r *Refresher) writeStep(w *uilive.Writer, step scalingo.Step) {
 	case scalingo.StepStatusRunning:
 		result = color.BlueString(fmt.Sprintf("%s %s...", r.loader(), step.Name))
 	case scalingo.StepStatusDone:
-		result = color.GreenString(fmt.Sprintf("%s %s Done!", SUCCESS, step.Name))
+		result = color.GreenString(fmt.Sprintf("%s %s Done!", utils.Success, step.Name))
 	case scalingo.StepStatusError:
-		result = color.RedString(fmt.Sprintf("%s %s FAILED!", ERROR, step.Name))
+		result = color.RedString(fmt.Sprintf("%s %s FAILED!", utils.Error, step.Name))
 	}
 	fmt.Fprintf(w.Newline(), "%s\n", result)
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
@@ -35,7 +36,7 @@ func List(app string) error {
 				duration = "n/a"
 			}
 			t.Append([]string{deployment.ID,
-				deployment.CreatedAt.Format("2006/01/02 15:04:05"),
+				deployment.CreatedAt.Format(utils.TimeFormat),
 				duration,
 				deployment.User.Username,
 				deployment.GitRef,

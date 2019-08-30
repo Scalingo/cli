@@ -1,4 +1,4 @@
-package scm_integrations
+package scmintegrations
 
 import (
 	"gopkg.in/errgo.v1"

@@ -148,6 +148,10 @@ COMMANDS:
      user-timeline  List the events you have done on the platform
      timeline       List the actions related to a given app
 
+   Git:
+     git-setup  Configure the Git remote for this application
+     git-show   Display the Git remote URL for this application
+
    Global:
      apps       List your apps
      create, c  Create a new app
@@ -159,6 +163,20 @@ COMMANDS:
      self       Get the logged in profile
      whoami     Get the logged in profile
 
+   Integration Link:
+     integration-link                    Show repo link linked with your app
+     integration-link-create             Create a repo link between your scm integration and your app
+     integration-link-update             Update the repo link linked with your app
+     integration-link-delete             Delete repo link linked with your app
+     integration-link-manual-deploy      Trigger a manual deployment of the specified branch
+     integration-link-manual-review-app  Trigger a review app creation of the pull/merge request ID specified
+
+   Integrations:
+     integrations              List your integrations
+     integrations-add          Link your Scalingo account with your account on a tool such as github.com
+     integrations-delete       Unlink your Scalingo account and your account on a tool such as github.com
+     integrations-import-keys  Import public SSH keys from integration account
+
    Notifiers:
      notifiers          List your notifiers
      notifiers-details  Show details of your notifiers
@@ -169,25 +187,22 @@ COMMANDS:
    Notifiers - Global:
      notification-platforms  List all notification platforms
 
-   Region migrations:
-     migrations-create  Migrate an app to another region
-     migrations         List all migrations linked to an app
-     migrations-follow  Follow a running migration
-
    Public SSH Keys:
      keys         List your SSH public keys
      keys-add     Add a public SSH key to deploy your apps
      keys-remove  Remove a public SSH key
 
+   Region migrations:
+     migrations-create  Migrate an app to another region
+     migrations         List all migrations linked to an app
+     migrations-follow  Follow a running migration
+
+   Review Apps:
+     review-apps  See review apps of parent application
+
    Runtime Stacks:
      stacks      List the available runtime stacks
      stacks-set  Set the runtime stack of an app
-
-   SCM Integrations:
-     scm-integrations              List your SCM integrations
-     scm-integrations-create       Link your Scalingo account with your account on a SCM tool
-     scm-integrations-delete       Unlink your Scalingo account and your account on a SCM tool
-     scm-integrations-import-keys  Import public SSH keys from SCM account
 
 GLOBAL OPTIONS:
    --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]

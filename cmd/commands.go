@@ -3,12 +3,13 @@ package cmd
 import (
 	"os"
 
+	"github.com/Scalingo/go-scalingo/debug"
+
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
 )
 
 type AppCommands struct {
@@ -153,6 +154,17 @@ var (
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
 
+		// Integration Link
+		integrationLinkShowCommand,
+		integrationLinkCreateCommand,
+		integrationLinkUpdateCommand,
+		integrationLinkDeleteCommand,
+		integrationLinkManualDeployCommand,
+		integrationLinkManualReviewAppCommand,
+
+		// Review Apps
+		reviewAppsShowCommand,
+
 		// Notifiers
 		NotifiersListCommand,
 		NotifiersDetailsCommand,
@@ -214,11 +226,10 @@ var (
 		AddSSHKeyCommand,
 		RemoveSSHKeyCommand,
 
-		// SCM Integrations
-		scmIntegrationsListCommand,
-		scmIntegrationsCreateCommand,
-		scmIntegrationsDeleteCommand,
-		scmIntegrationsImportKeysCommand,
+		integrationsListCommand,
+		integrationsAddCommand,
+		integrationsDeleteCommand,
+		integrationsImportKeysCommand,
 
 		// Sessions
 		LoginCommand,

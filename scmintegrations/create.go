@@ -1,4 +1,4 @@
-package scm_integrations
+package scmintegrations
 
 import (
 	"gopkg.in/errgo.v1"
@@ -27,7 +27,7 @@ func Create(args CreateArgs) error {
 	}
 
 	if args.SCMType == scalingo.SCMGithubType || args.SCMType == scalingo.SCMGitlabType {
-		io.Statusf("Please follow this URL to create the %s SCM integration :\n", args.SCMType)
+		io.Statusf("Please follow this URL to create the %s SCM integration:\n", args.SCMType)
 		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthUrl, args.SCMType)
 		return nil
 	}

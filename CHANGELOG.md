@@ -2,7 +2,13 @@
 
 ### To be Released
 
-* Add `scm-integrations`, `scm-integrations-create`, `scm-integrations-destroy` and `scm-integrations-import-keys` commands [#444](https://github.com/Scalingo/cli/pull/444)
+* Add `integrations`, `integrations-add`, `integrations-delete` and
+  `integrations-import-keys` commands
+  [#444](https://github.com/Scalingo/cli/pull/444)
+* Add `integration-link`, `integration-link-create`, `integration-link-update`,
+  `integration-link-delete`, `integration-link-manual-deploy`,
+  `integration-link-manual-review-app` commands
+  [#458](https://github.com/Scalingo/cli/pull/458)
 * Add support for new SCM-related events [#467](https://github.com/Scalingo/cli/pull/467)
 * Bugfix: Do not disconnect user if the API returns 401 [#462](https://github.com/Scalingo/cli/issues/462)
 * Add duration to the deployments list [#477](https://github.com/Scalingo/cli/issues/477)

@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:a1f18e71cb99b34fd1767982eb9896f90d6d78ddbc3bd6b7ed6cdcdd9ef6b46f"
+  name = "github.com/AlecAivazis/survey"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "3db8b5dd7b2875d268abf7c1feb59bd929f6b838"
+  version = "v1.8.5"
+
+[[projects]]
   branch = "master"
   digest = "1:08dcd5fd9153189d126eb0634d512263ab26dfd27a0e5850db10738bca908196"
   name = "github.com/Scalingo/envconfig"
@@ -63,6 +71,14 @@
   pruneopts = "NUT"
   revision = "f907f6f5dd81f77c2bbc1cde92e4c5a04720cb11"
   version = "v1.0.28"
+
+[[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "NUT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
@@ -136,6 +152,14 @@
   revision = "d14ea06fba99483203c19d92cfcd13ebe73135f4"
 
 [[projects]]
+  branch = "master"
+  digest = "1:cf68a79fd02ab0f6942b9567d03d054b6568212fcc22de2a4afdefd096923749"
+  name = "github.com/kballard/go-shellquote"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "95032a82bc518f77982ea72343cc1ade730072f0"
+
+[[projects]]
   digest = "1:29e44e9481a689be0093a0033299b95741d394a97b28e0273c21afe697873a22"
   name = "github.com/kevinburke/ssh_config"
   packages = ["."]
@@ -184,6 +208,14 @@
   version = "v0.0.2"
 
 [[projects]]
+  branch = "master"
+  digest = "1:063d55b87e200bced5e2be658cc70acafb4c5bbc4afa04d4b82f66298b73d089"
+  name = "github.com/mgutz/ansi"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "9520e82c474b0a04dd04f8a40959027271bab992"
+
+[[projects]]
   digest = "1:f9f72e583aaacf1d1ac5d6121abd4afd3c690baa9e14e1d009df26bf831ba347"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
@@ -216,6 +248,14 @@
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "NUT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -234,6 +274,17 @@
   ]
   pruneopts = "NUT"
   revision = "1ac3a1ac202429a54835fe8408a92880156b489d"
+  version = "v1.4.0"
+
+[[projects]]
+  digest = "1:7096df4a9258067bb9ff5da62864a645d38dd94cd3f273ff4ab54d0de548a348"
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "require",
+  ]
+  pruneopts = "NUT"
+  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
   version = "v1.4.0"
 
 [[projects]]
@@ -309,6 +360,17 @@
   ]
   pruneopts = "NUT"
   revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
+
+[[projects]]
+  digest = "1:2aa0d267d5c26ea42681819f747f48d9a595dafc3715f276d91f7240f5b780a2"
+  name = "gopkg.in/AlecAivazis/survey.v1"
+  packages = [
+    "core",
+    "terminal",
+  ]
+  pruneopts = "NUT"
+  revision = "3db8b5dd7b2875d268abf7c1feb59bd929f6b838"
+  version = "v1.8.5"
 
 [[projects]]
   branch = "v1"
@@ -390,10 +452,19 @@
   revision = "ec4a0fea49c7b46c2aeb0b51aac55779c607e52b"
   version = "v0.1.2"
 
+[[projects]]
+  digest = "1:18108594151654e9e696b27b181b953f9a90b16bf14d253dd1b397b025a1487f"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/AlecAivazis/survey",
     "github.com/Scalingo/envconfig",
     "github.com/Scalingo/go-scalingo",
     "github.com/Scalingo/go-scalingo/debug",
@@ -411,6 +482,8 @@
     "github.com/howeyc/gopass",
     "github.com/olekukonko/tablewriter",
     "github.com/pkg/errors",
+    "github.com/stretchr/testify/assert",
+    "github.com/stretchr/testify/require",
     "github.com/stvp/rollbar",
     "github.com/urfave/cli",
     "golang.org/x/crypto/ssh",
