@@ -2,6 +2,7 @@ package db
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net"
 	"strings"
@@ -22,14 +23,18 @@ func RedisConsole(opts RedisConsoleOpts) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	redisURL, _, password, err := dbURL(c, opts.App, "SCALINGO_REDIS", []string{"redis://"})
+	redisURL, _, password, err := dbURL(c, opts.App, "SCALINGO_REDIS", []string{"redis://", "rediss://"})
 	if err != nil {
-		return errgo.Mask(err)
+		return err
+	}
+
+	if redisURL.Scheme == "rediss" {
+		return fmt.Errorf("Redis console is not available when TLS connections are enforced")
 	}
 
 	host, port, err := net.SplitHostPort(redisURL.Host)
 	if err != nil {
-		return errgo.Newf("%v has an invalid host", redisURL)
+		return fmt.Errorf("%v has an invalid host", redisURL)
 	}
 
 	runOpts := apps.RunOpts{
@@ -42,7 +47,7 @@ func RedisConsole(opts RedisConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run redis console: %v", err)
+		return fmt.Errorf("fail to run Redis console: %v", err)
 	}
 
 	return nil
