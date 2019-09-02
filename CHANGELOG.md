@@ -12,9 +12,13 @@
 * Add support for new SCM-related events
   [#467](https://github.com/Scalingo/cli/pull/467) and
   [#458](https://github.com/Scalingo/cli/pull/458)
-* Bugfix: Do not disconnect user if the API returns 401 [#462](https://github.com/Scalingo/cli/issues/462)
-* Add duration to the deployments list [#477](https://github.com/Scalingo/cli/issues/477)
-* Add support for new_user event [#473](https://github.com/Scalingo/cli/issues/473)
+* Bugfix: Do not disconnect user if the API returns 401
+  [#463](https://github.com/Scalingo/cli/pull/463)
+* Add duration to the deployments list
+  [#477](https://github.com/Scalingo/cli/pull/477)
+* Add support for new_user event [#473](https://github.com/Scalingo/cli/pull/473)
+* [Redis console] Better error message if TLS connections are enforced
+  [#480](https://github.com/Scalingo/cli/pull/480)
 
 ### 1.15.1
 
