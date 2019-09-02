@@ -344,7 +344,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkParams, error) {
 	destroyOnClose := true
 	err = survey.AskOne(&survey.Confirm{
 		Message: "Automatically destroy review apps when the pull/merge request is closed:",
-		Default: true,
+		Default: destroyOnClose,
 	}, &destroyOnClose, nil)
 	if err != nil {
 		return params, err
@@ -364,10 +364,10 @@ func interactiveCreate() (scalingo.SCMRepoLinkParams, error) {
 		params.HoursBeforeDeleteOnClose = &hoursBeforeDestroyOnClose
 	}
 
-	destroyOnStale := true
+	destroyOnStale := false
 	err = survey.AskOne(&survey.Confirm{
 		Message: "Automatically destroy review apps after some time without deploy/commits:",
-		Default: true,
+		Default: destroyOnStale,
 	}, &destroyOnStale, nil)
 	if err != nil {
 		return params, err
