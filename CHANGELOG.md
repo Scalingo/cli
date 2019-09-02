@@ -19,6 +19,8 @@
 * Add support for new_user event [#473](https://github.com/Scalingo/cli/pull/473)
 * [Redis console] Better error message if TLS connections are enforced
   [#480](https://github.com/Scalingo/cli/pull/480)
+* Default "Destroy on Stale" for interactive integration link creation is "No"
+  [#485](https://github.com/Scalingo/cli/pull/485)
 
 ### 1.15.1
 
