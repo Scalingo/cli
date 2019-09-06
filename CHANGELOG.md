@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.16.0
+
 * Add `integrations`, `integrations-add`, `integrations-delete` and
   `integrations-import-keys` commands
   [#444](https://github.com/Scalingo/cli/pull/444)
