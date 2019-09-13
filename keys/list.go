@@ -9,13 +9,13 @@ import (
 )
 
 func List() error {
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoAuthClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	keys, err := c.KeysList()
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to list SSH keys")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

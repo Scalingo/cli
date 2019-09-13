@@ -22,7 +22,7 @@ type Command struct {
 	Global bool
 }
 
-func (cmds *AppCommands) AddCommand(cmd Command) {
+func (cmds *AppCommands) addCommand(cmd Command) {
 	if !cmd.Global {
 		regionFlag := cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
@@ -82,10 +82,10 @@ func (cmds *AppCommands) Commands() []cli.Command {
 func NewAppCommands() *AppCommands {
 	cmds := AppCommands{}
 	for _, cmd := range regionalCommands {
-		cmds.AddCommand(Command{Command: cmd})
+		cmds.addCommand(Command{Command: cmd})
 	}
 	for _, cmd := range globalCommands {
-		cmds.AddCommand(Command{Global: true, Command: cmd})
+		cmds.addCommand(Command{Global: true, Command: cmd})
 	}
 	return &cmds
 }
@@ -222,9 +222,9 @@ var (
 
 	globalCommands = []cli.Command{
 		// SSH keys
-		ListSSHKeyCommand,
-		AddSSHKeyCommand,
-		RemoveSSHKeyCommand,
+		listSSHKeyCommand,
+		addSSHKeyCommand,
+		removeSSHKeyCommand,
 
 		integrationsListCommand,
 		integrationsAddCommand,

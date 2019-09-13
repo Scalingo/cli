@@ -26,7 +26,7 @@ func Add(name string, path string) error {
 		return errgo.Notef(err, "fail to read the key file")
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoAuthClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
