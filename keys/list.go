@@ -15,7 +15,7 @@ func List() error {
 	}
 	keys, err := c.KeysList()
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to list SSH keys")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
