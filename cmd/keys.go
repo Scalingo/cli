@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ListSSHKeyCommand = cli.Command{
+	listSSHKeyCommand = cli.Command{
 		Name:     "keys",
 		Category: "Public SSH Keys",
 		Usage:    "List your SSH public keys",
@@ -28,7 +28,7 @@ var (
 		},
 	}
 
-	AddSSHKeyCommand = cli.Command{
+	addSSHKeyCommand = cli.Command{
 		Name:     "keys-add",
 		Category: "Public SSH Keys",
 		Usage:    "Add a public SSH key to deploy your apps",
@@ -53,7 +53,7 @@ var (
 		},
 	}
 
-	RemoveSSHKeyCommand = cli.Command{
+	removeSSHKeyCommand = cli.Command{
 		Name:     "keys-remove",
 		Category: "Public SSH Keys",
 		Usage:    "Remove a public SSH key",
