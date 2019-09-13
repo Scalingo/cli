@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Global commands do not need to query the list of regions
+  [#487](https://github.com/Scalingo/cli/pull/487)
+
 ### 1.16.0
 
 * Add `integrations`, `integrations-add`, `integrations-delete` and
