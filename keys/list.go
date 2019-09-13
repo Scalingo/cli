@@ -9,7 +9,7 @@ import (
 )
 
 func List() error {
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoAuthClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}

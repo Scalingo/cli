@@ -7,7 +7,7 @@ import (
 )
 
 func Self() error {
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoAuthClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo API client")
 	}

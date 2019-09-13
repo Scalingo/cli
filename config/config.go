@@ -191,6 +191,15 @@ func ScalingoAuthClientFromToken(token string) (*scalingo.Client, error) {
 	return scalingo.New(config)
 }
 
+func ScalingoAuthClient() (*scalingo.Client, error) {
+	auth := &CliAuthenticator{}
+	_, token, err := auth.LoadAuth()
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to load authentication")
+	}
+	return ScalingoAuthClientFromToken(token.Token)
+}
+
 func ScalingoClient() (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth()
