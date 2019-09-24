@@ -153,6 +153,7 @@ func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.Cl
 		Region:       opts.Region,
 		AuthEndpoint: config.ScalingoAuthUrl,
 		APIToken:     opts.APIToken,
+		UserAgent:    "Scalingo CLI v" + Version,
 	}
 }
 

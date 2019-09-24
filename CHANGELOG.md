@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Do not get the SCM integration when showing the integration link
+  [#492](https://github.com/Scalingo/cli/pull/492)
+
 ### 1.16.1
 
 * Global commands do not need to query the list of regions
