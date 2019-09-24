@@ -6,9 +6,9 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkParams, error) {
+func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdateParams, error) {
 	paramsChecker := newParamsChecker(c)
-	params := &scalingo.SCMRepoLinkParams{
+	params := &scalingo.SCMRepoLinkUpdateParams{
 		Branch:                   paramsChecker.lookupBranch(),
 		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
 		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),

@@ -10,8 +10,8 @@ import (
 
 type SCMRepoLinkService interface {
 	SCMRepoLinkShow(app string) (*SCMRepoLink, error)
-	SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error)
-	SCMRepoLinkUpdate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error)
+	SCMRepoLinkCreate(app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error)
+	SCMRepoLinkUpdate(app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
 	SCMRepoLinkDelete(app string) error
 
 	SCMRepoLinkManualDeploy(app, branch string) error
@@ -20,11 +20,21 @@ type SCMRepoLinkService interface {
 	SCMRepoLinkReviewApps(app string) ([]*ReviewApp, error)
 }
 
-type SCMRepoLinkParams struct {
+type SCMRepoLinkCreateParams struct {
 	Source                   *string `json:"source,omitempty"`
 	Branch                   *string `json:"branch,omitempty"`
 	AuthIntegrationUUID      *string `json:"auth_integration_uuid,omitempty"`
 	SCMIntegrationUUID       *string `json:"scm_integration_uuid,omitempty"`
+	AutoDeployEnabled        *bool   `json:"auto_deploy_enabled,omitempty"`
+	DeployReviewAppsEnabled  *bool   `json:"deploy_review_apps_enabled,omitempty"`
+	DestroyOnCloseEnabled    *bool   `json:"delete_on_close_enabled,omitempty"`
+	HoursBeforeDeleteOnClose *uint   `json:"hours_before_delete_on_close,omitempty"`
+	DestroyStaleEnabled      *bool   `json:"delete_stale_enabled,omitempty"`
+	HoursBeforeDeleteStale   *uint   `json:"hours_before_delete_stale,omitempty"`
+}
+
+type SCMRepoLinkUpdateParams struct {
+	Branch                   *string `json:"branch,omitempty"`
 	AutoDeployEnabled        *bool   `json:"auto_deploy_enabled,omitempty"`
 	DeployReviewAppsEnabled  *bool   `json:"deploy_review_apps_enabled,omitempty"`
 	DestroyOnCloseEnabled    *bool   `json:"delete_on_close_enabled,omitempty"`
@@ -40,6 +50,7 @@ type SCMRepoLink struct {
 	Owner                    string            `json:"owner"`
 	Repo                     string            `json:"repo"`
 	Branch                   string            `json:"branch"`
+	SCMType                  SCMType           `json:"scm_type"`
 	CreatedAt                time.Time         `json:"created_at"`
 	UpdatedAt                time.Time         `json:"updated_at"`
 	AutoDeployEnabled        bool              `json:"auto_deploy_enabled"`
@@ -86,13 +97,13 @@ func (c *Client) SCMRepoLinkShow(app string) (*SCMRepoLink, error) {
 	return res.SCMRepoLink, nil
 }
 
-func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error) {
+func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{201},
-		Params:   map[string]SCMRepoLinkParams{"scm_repo_link": params},
+		Params:   map[string]SCMRepoLinkCreateParams{"scm_repo_link": params},
 	}, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create the SCM repo link")
@@ -101,13 +112,13 @@ func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkParams) (*SCMRe
 	return res.SCMRepoLink, nil
 }
 
-func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkParams) (*SCMRepoLink, error) {
+func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
 	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{200},
-		Params:   map[string]SCMRepoLinkParams{"scm_repo_link": params},
+		Params:   map[string]SCMRepoLinkUpdateParams{"scm_repo_link": params},
 	}, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to update this SCM repo link")

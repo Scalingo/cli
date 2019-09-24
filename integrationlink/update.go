@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Update(app string, params scalingo.SCMRepoLinkParams) error {
+func Update(app string, params scalingo.SCMRepoLinkUpdateParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}

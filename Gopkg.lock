@@ -18,7 +18,8 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:0ad0aa9c48ef0dc07b2b2e51212698493d48c5d47c1e874f8ec6609471d2dc80"
+  branch = "fix/cli/491/integration_link_no_integration_link"
+  digest = "1:d0f590733c4de9f0289beb145576ead06763b61b89e6ed79d044d3277eccb8f0"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -29,8 +30,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "aab97e66f012a256e7f39785fa1451d70258940b"
-  version = "v3.0.3"
+  revision = "470c5ce457167611fe539548c5616a1d716feb0d"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"

@@ -27,18 +27,13 @@ func Show(app string) error {
 		return nil
 	}
 
-	i, err := c.SCMIntegrationsShow(repoLink.AuthIntegrationUUID)
-	if err != nil {
-		return errgo.Notef(err, "fail to get integration information of this integration link")
-	}
-
 	fmt.Printf("%s: %s (%s)\n",
 		color.New(color.FgYellow).Sprint("Application"),
 		app, repoLink.AppID,
 	)
 	fmt.Printf("%s: %s (%s)\n",
 		color.New(color.FgYellow).Sprint("Integration"),
-		scalingo.SCMTypeDisplay[i.SCMType], repoLink.AuthIntegrationUUID,
+		scalingo.SCMTypeDisplay[repoLink.SCMType], repoLink.AuthIntegrationUUID,
 	)
 	fmt.Println()
 

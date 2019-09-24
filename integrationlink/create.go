@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/go-scalingo"
 )
 
-func Create(app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkParams) error {
+func Create(app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkCreateParams) error {
 	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
 		return errors.New("source repository URL is not valid")

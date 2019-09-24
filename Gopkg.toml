@@ -26,7 +26,8 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  version = "^3"
+  # version = "^3"
+  branch = "fix/cli/491/integration_link_no_integration_link"
 
 [[constraint]]
   branch = "master"

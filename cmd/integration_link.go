@@ -89,7 +89,7 @@ var (
 				errorQuit(err)
 			}
 
-			var params scalingo.SCMRepoLinkParams
+			var params scalingo.SCMRepoLinkCreateParams
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
@@ -123,7 +123,7 @@ var (
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
-				params = scalingo.SCMRepoLinkParams{
+				params = scalingo.SCMRepoLinkCreateParams{
 					Branch:                   &branch,
 					AutoDeployEnabled:        &autoDeploy,
 					DeployReviewAppsEnabled:  &deployReviewApps,
@@ -302,8 +302,8 @@ var (
 	}
 )
 
-func interactiveCreate() (scalingo.SCMRepoLinkParams, error) {
-	var params scalingo.SCMRepoLinkParams
+func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
+	var params scalingo.SCMRepoLinkCreateParams
 	if config.C.DisableInteractive {
 		return params, errors.New("need at least one integration link parameter")
 	}
