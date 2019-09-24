@@ -70,8 +70,12 @@ func (err NotFoundError) Error() string {
 		return fmt.Sprintf("The application was not found, did you make a typo?")
 	} else if err.Resource == "container_type" {
 		return fmt.Sprintf("This type of container was not found, please ensure it is present in your Procfile\n→ http://doc.scalingo.com/internals/procfile")
-	} else {
+	} else if err.Resource != "" {
 		return fmt.Sprintf("The %s was not found", err.Resource)
+	} else {
+		// Sometimes the API does not return a resource in the body, but the error
+		// message is self-explained.
+		return err.Err
 	}
 }
 
