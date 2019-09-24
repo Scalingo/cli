@@ -4,6 +4,8 @@
 
 * Do not get the SCM integration when showing the integration link
   [#492](https://github.com/Scalingo/cli/pull/492)
+* Better handling of 404 from auth query
+  [#493](https://github.com/Scalingo/cli/pull/493)
 
 ### 1.16.1
 
