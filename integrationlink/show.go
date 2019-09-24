@@ -35,6 +35,10 @@ func Show(app string) error {
 		color.New(color.FgYellow).Sprint("Integration"),
 		scalingo.SCMTypeDisplay[repoLink.SCMType], repoLink.AuthIntegrationUUID,
 	)
+	fmt.Printf("%s: %s\n",
+		color.New(color.FgYellow).Sprint("Linker"),
+		repoLink.Linker.Username,
+	)
 	fmt.Println()
 
 	fmt.Printf("%s: %s/%s\n",
