@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -11,7 +12,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/go-scalingo/debug"
-	"github.com/Scalingo/go-scalingo/io"
+	pkgio "github.com/Scalingo/go-scalingo/io"
 	"gopkg.in/errgo.v1"
 )
 
@@ -80,6 +81,7 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 	endpoint := req.URL + req.Endpoint
 
 	// Execute the HTTP request according to the HTTP method
+	var body io.Reader
 	switch req.Method {
 	case "PATCH":
 		fallthrough
@@ -92,26 +94,25 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to marshal params")
 		}
-		reader := bytes.NewReader(buffer)
-		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, reader)
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to initialize the 'WITH_BODY' query")
-		}
+		body = bytes.NewReader(buffer)
 	case "GET", "DELETE":
 		values, err := req.BuildQueryFromParams()
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to build the query params")
 		}
 		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
-		req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, nil)
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to initialize the '%s' query", req.Method)
-		}
 	}
 
+	req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, body)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to initialize the '%s' query", req.Method)
+	}
+	req.HTTPRequest.Header.Add("User-Agent", c.userAgent)
+
 	debug.Printf("[API] %v %v\n", req.HTTPRequest.Method, req.HTTPRequest.URL)
-	debug.Printf(io.Indent(fmt.Sprintf("Headers: %v", req.HTTPRequest.Header), 6))
-	debug.Printf(io.Indent("Params: %v", 6), req.Params)
+	debug.Printf(pkgio.Indent(fmt.Sprintf("User Agent: %v", req.HTTPRequest.UserAgent()), 6))
+	debug.Printf(pkgio.Indent(fmt.Sprintf("Headers: %v", req.HTTPRequest.Header), 6))
+	debug.Printf(pkgio.Indent("Params: %v", 6), req.Params)
 
 	if req.Token != "" {
 		req.HTTPRequest.Header.Add("Authorization", fmt.Sprintf("Bearer %s", req.Token))
@@ -128,8 +129,8 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Fail to query %s: %v", req.HTTPRequest.Host, err)
 	}
-	debug.Printf(io.Indent("Request ID: %v", 6), res.Header.Get("X-Request-Id"))
-	debug.Printf(io.Indent("Duration: %v", 6), time.Now().Sub(now))
+	debug.Printf(pkgio.Indent("Request ID: %v", 6), res.Header.Get("X-Request-Id"))
+	debug.Printf(pkgio.Indent("Duration: %v", 6), time.Now().Sub(now))
 
 	if req.Expected.Contains(res.StatusCode) {
 		return res, nil

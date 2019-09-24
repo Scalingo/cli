@@ -53,6 +53,7 @@ type Client interface {
 }
 
 type ClientConfig struct {
+	UserAgent      string
 	Timeout        time.Duration
 	TLSConfig      *tls.Config
 	APIVersion     string
@@ -63,6 +64,7 @@ type ClientConfig struct {
 type client struct {
 	tokenGenerator TokenGenerator
 	endpoint       string
+	userAgent      string
 	apiConfig      apiConfig
 	httpClient     *http.Client
 	prefix         string
@@ -96,6 +98,7 @@ func NewClient(api string, cfg ClientConfig) Client {
 		prefix:         prefix,
 		endpoint:       cfg.Endpoint,
 		tokenGenerator: cfg.TokenGenerator,
+		userAgent:      cfg.UserAgent,
 		apiConfig:      config,
 		httpClient: &http.Client{
 			Timeout: cfg.Timeout,
