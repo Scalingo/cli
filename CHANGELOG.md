@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Activating review apps breaks free trial
+  [#495](https://github.com/Scalingo/cli/pull/495)
+
 ### 1.16.2
 
 * Do not get the SCM integration when showing the integration link
