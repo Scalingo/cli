@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb"
 	errgo "gopkg.in/errgo.v1"
@@ -78,6 +79,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		return errgo.Notef(err, "fail to get backup download URL")
 	}
 
+	debug.Println("Temporary URL to download backup is: ", downloadURL)
 	// Start the download
 	resp, err := http.Get(downloadURL)
 	if err != nil {
