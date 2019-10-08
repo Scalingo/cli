@@ -13,10 +13,15 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
+type RefreshOpts struct {
+	ExpectedStatuses []scalingo.RegionMigrationStatus
+}
+
 type Refresher struct {
 	appID       string
 	migrationID string
 	client      *scalingo.Client
+	opts        RefreshOpts
 
 	lock                 *sync.Mutex
 	migration            *scalingo.RegionMigration
@@ -28,7 +33,7 @@ type Refresher struct {
 	currentLoadersStep int
 }
 
-func NewRefresher(client *scalingo.Client, appID, migrationID string) *Refresher {
+func NewRefresher(client *scalingo.Client, appID, migrationID string, opts RefreshOpts) *Refresher {
 	return &Refresher{
 		appID:                appID,
 		migrationID:          migrationID,
@@ -100,7 +105,7 @@ func (r *Refresher) migrationRefresher() error {
 			return nil
 		}
 
-		if isMigrationDone(&migration) {
+		if r.shouldStop(migration) {
 			r.Stop()
 			return nil
 		}
@@ -150,4 +155,21 @@ func (r *Refresher) writeStep(w *uilive.Writer, step scalingo.Step) {
 
 func (r *Refresher) loader() string {
 	return spinner.CharSets[11][r.currentLoadersStep]
+}
+
+func (r *Refresher) shouldStop(m scalingo.RegionMigration) bool {
+	switch m.Status {
+	case scalingo.RegionMigrationStatusError:
+		return true
+	case scalingo.RegionMigrationStatusDone:
+		return true
+	}
+
+	for _, status := range r.opts.ExpectedStatuses {
+		if m.Status == status {
+			return true
+		}
+	}
+
+	return false
 }

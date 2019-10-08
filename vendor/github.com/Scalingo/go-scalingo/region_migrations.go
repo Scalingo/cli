@@ -3,15 +3,26 @@ package scalingo
 import (
 	"time"
 
+	"github.com/Scalingo/go-scalingo/http"
 	errgo "gopkg.in/errgo.v1"
 )
 
 const (
-	RegionMigrationStatusScheduled      RegionMigrationStatus = "scheduled"
-	RegionMigrationStatusPreflightError RegionMigrationStatus = "preflight-error"
-	RegionMigrationStatusRunning        RegionMigrationStatus = "running"
-	RegionMigrationStatusError          RegionMigrationStatus = "error"
-	RegionMigrationStatusDone           RegionMigrationStatus = "done"
+	RegionMigrationStatusScheduled        RegionMigrationStatus = "scheduled"
+	RegionMigrationStatusPreflightSuccess RegionMigrationStatus = "preflight-success"
+	RegionMigrationStatusPreflightError   RegionMigrationStatus = "preflight-error"
+	RegionMigrationStatusRunning          RegionMigrationStatus = "running"
+	RegionMigrationStatusPrepared         RegionMigrationStatus = "prepared"
+	RegionMigrationStatusDataMigrated     RegionMigrationStatus = "data-migrated"
+	RegionMigrationStatusAborted          RegionMigrationStatus = "aborted"
+	RegionMigrationStatusError            RegionMigrationStatus = "error"
+	RegionMigrationStatusDone             RegionMigrationStatus = "done"
+
+	RegionMigrationStepAbort     RegionMigrationStep = "abort"
+	RegionMigrationStepPreflight RegionMigrationStep = "preflight"
+	RegionMigrationStepPrepare   RegionMigrationStep = "prepare"
+	RegionMigrationStepData      RegionMigrationStep = "data"
+	RegionMigrationStepFinalize  RegionMigrationStep = "finalize"
 
 	StepStatusRunning StepStatus = "running"
 	StepStatusDone    StepStatus = "done"
@@ -20,6 +31,7 @@ const (
 
 type RegionMigrationsService interface {
 	CreateRegionMigration(appID string, params RegionMigrationParams) (RegionMigration, error)
+	RunRegionMigrationStep(appID, migrationID string, step RegionMigrationStep) error
 	ShowRegionMigration(appID, migrationID string) (RegionMigration, error)
 	ListRegionMigrations(appID string) ([]RegionMigration, error)
 }
@@ -42,6 +54,7 @@ type RegionMigration struct {
 
 type StepStatus string
 type RegionMigrationStatus string
+type RegionMigrationStep string
 type Steps []Step
 
 type Step struct {
@@ -62,6 +75,19 @@ func (c *Client) CreateRegionMigration(appID string, params RegionMigrationParam
 	}
 
 	return migration, nil
+}
+
+func (c *Client) RunRegionMigrationStep(appID, migrationID string, step RegionMigrationStep) error {
+	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + appID + "/region_migrations/" + migrationID + "/run",
+		Params:   map[string]RegionMigrationStep{"step": step},
+		Expected: http.Statuses{204},
+	}, nil)
+	if err != nil {
+		return errgo.Notef(err, "fail to schedule migration step")
+	}
+	return nil
 }
 
 func (c *Client) ShowRegionMigration(appID, migrationID string) (RegionMigration, error) {

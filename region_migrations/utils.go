@@ -22,15 +22,3 @@ func formatMigrationStatus(status scalingo.RegionMigrationStatus) string {
 
 	return color.BlueString(strStatus)
 }
-
-func isMigrationDone(m *scalingo.RegionMigration) bool {
-	switch m.Status {
-	case scalingo.RegionMigrationStatusPreflightError:
-		return true
-	case scalingo.RegionMigrationStatusError:
-		return true
-	case scalingo.RegionMigrationStatusDone:
-		return true
-	}
-	return false
-}

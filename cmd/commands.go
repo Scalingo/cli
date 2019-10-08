@@ -213,6 +213,8 @@ var (
 
 		// Migrations
 		migrationCreateCommand,
+		migrationRunCommand,
+		migrationAbortCommand,
 		migrationListCommand,
 		migrationFollowCommand,
 

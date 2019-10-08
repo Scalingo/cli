@@ -4,31 +4,32 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/region_migrations"
+	scalingo "github.com/Scalingo/go-scalingo"
 	"github.com/urfave/cli"
 )
 
 var (
 	migrationCreateCommand = cli.Command{
-		Name:     "migrations-create",
+		Name:     "migration-create",
 		Category: "Region migrations",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "to", Usage: "Select the destination region"},
 		},
-		Usage: "Migrate an app to another region",
+		Usage: "Start a migrating an app to another region",
 		Description: `Migrate an app to another region.
 	 Example
-	   'scalingo --app my-app migrations-create --to osc-fr1'
+	   'scalingo --app my-app migration-create --to osc-fr1'
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
-				cli.ShowCommandHelp(c, "migrations-create")
+				cli.ShowCommandHelp(c, "migration-create")
 				return
 			}
 
 			if c.String("to") == "" {
-				cli.ShowCommandHelp(c, "migrations-create")
+				cli.ShowCommandHelp(c, "migration-create")
 				return
 			}
 
@@ -38,6 +39,79 @@ var (
 			}
 		},
 	}
+	migrationRunCommand = cli.Command{
+		Name:     "migration-run",
+		Category: "Region migrations",
+		Flags: []cli.Flag{
+			appFlag,
+			cli.BoolFlag{Name: "prepare", Usage: "Create an empty canevas on the new region"},
+			cli.BoolFlag{Name: "data", Usage: "Import databases (and their data) to the new region"},
+			cli.BoolFlag{Name: "finalize", Usage: "Stop the old app and start the new one"},
+		},
+		Usage: "Run a specific migration step",
+		Description: `Run a migration step:
+	 Example
+	   'scalingo --app my-app migration-run --prepare migration-id'
+		`,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "migration-run")
+				return
+			}
+			var step scalingo.RegionMigrationStep
+			migrationID := c.Args()[0]
+			currentApp := appdetect.CurrentApp(c)
+			stepsFound := 0
+			if c.Bool("prepare") {
+				stepsFound++
+				step = scalingo.RegionMigrationStepPrepare
+			}
+			if c.Bool("data") {
+				stepsFound++
+				step = scalingo.RegionMigrationStepData
+			}
+			if c.Bool("finalize") {
+				stepsFound++
+				step = scalingo.RegionMigrationStepFinalize
+			}
+			if stepsFound != 1 {
+				cli.ShowCommandHelp(c, "migration-run")
+				return
+			}
+
+			err := region_migrations.Run(currentApp, migrationID, step)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+	}
+
+	migrationAbortCommand = cli.Command{
+		Name:     "migration-abort",
+		Category: "Region migrations",
+		Flags: []cli.Flag{
+			appFlag,
+		},
+		Usage: "Abort a migration",
+		Description: `Abort a running migration
+   Example
+	   'scalingo --app my-app migration-abort migration-id'`,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "migration-run")
+				return
+			}
+
+			migrationID := c.Args()[0]
+			currentApp := appdetect.CurrentApp(c)
+
+			err := region_migrations.Abort(currentApp, migrationID)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+	}
+
 	migrationListCommand = cli.Command{
 		Name:     "migrations",
 		Category: "Region migrations",
@@ -60,7 +134,7 @@ var (
 	}
 
 	migrationFollowCommand = cli.Command{
-		Name:     "migrations-follow",
+		Name:     "migration-follow",
 		Category: "Region migrations",
 		Flags: []cli.Flag{
 			appFlag,
@@ -68,13 +142,13 @@ var (
 		Usage: "Follow a running migration",
 		Description: `Follow a running migration
    Example
-	   'scalingo --app my-app migrations-follow migration-id'
+	   'scalingo --app my-app migration-follow migration-id'
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "migrations-follow")
+				cli.ShowCommandHelp(c, "migration-follow")
 				return
 			}
 
