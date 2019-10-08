@@ -15,6 +15,7 @@ import (
 
 type RefreshOpts struct {
 	ExpectedStatuses []scalingo.RegionMigrationStatus
+	HiddenSteps      []string
 }
 
 type Refresher struct {
@@ -135,7 +136,10 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 	}
 
 	for i, _ := range migration.Steps {
-		r.writeStep(w, migration.Steps[len(migration.Steps)-1-i])
+		step := migration.Steps[len(migration.Steps)-1-i]
+		if r.shouldShowStep(step) {
+			r.writeStep(w, migration.Steps[len(migration.Steps)-1-i])
+		}
 	}
 
 }
@@ -165,6 +169,10 @@ func (r *Refresher) shouldStop(m scalingo.RegionMigration) bool {
 		return true
 	}
 
+	if r.opts.ExpectedStatuses == nil {
+		return false
+	}
+
 	for _, status := range r.opts.ExpectedStatuses {
 		if m.Status == status {
 			return true
@@ -172,4 +180,17 @@ func (r *Refresher) shouldStop(m scalingo.RegionMigration) bool {
 	}
 
 	return false
+}
+
+func (r *Refresher) shouldShowStep(step scalingo.Step) bool {
+	if r.opts.HiddenSteps == nil {
+		return true
+	}
+
+	for _, id := range r.opts.HiddenSteps {
+		if id == step.ID {
+			return false
+		}
+	}
+	return true
 }
