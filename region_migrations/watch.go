@@ -1,6 +1,8 @@
 package region_migrations
 
 import (
+	"fmt"
+
 	scalingo "github.com/Scalingo/go-scalingo"
 	errgo "gopkg.in/errgo.v1"
 )
@@ -22,10 +24,12 @@ func WatchMigration(client *scalingo.Client, appId, migrationId string, opts Ref
 }
 
 func migrationFinished(appId string, migration scalingo.RegionMigration) {
+	fmt.Printf("\n\n")
 	switch migration.Status {
 	case scalingo.RegionMigrationStatusDone:
 		showMigrationStatusSuccess(appId, migration)
 	case scalingo.RegionMigrationStatusError:
+		fallthrough
 	case scalingo.RegionMigrationStatusPreflightError:
 		showMigrationStatusFailed(appId, migration)
 	case scalingo.RegionMigrationStatusPreflightSuccess:
@@ -34,5 +38,7 @@ func migrationFinished(appId string, migration scalingo.RegionMigration) {
 		showMigrationStatusPrepared(appId, migration)
 	case scalingo.RegionMigrationStatusDataMigrated:
 		showMigrationStatusDataMigrated(appId, migration)
+	case scalingo.RegionMigrationStatusAborted:
+		showMigrationStatusAborted(appId, migration)
 	}
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func ConfirmPrepare(migration scalingo.RegionMigration) bool {
-	fmt.Println("Note: Prepare will create an empty canevas. This won't modify your production application")
+	fmt.Printf("Note: Prepare will create an empty canevas. This won't modify your production application\n\n")
 	fmt.Println("The following operations will be achieved:")
 	fmt.Println(" - Mark your app as migrating (preventing you from modifying it)")
 	fmt.Printf(" - Create the new app in the region '%s'\n", migration.Destination)

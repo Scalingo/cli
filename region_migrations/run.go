@@ -79,6 +79,7 @@ func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
 
 	err = WatchMigration(c, app, migrationId, RefreshOpts{
 		ExpectedStatuses: expectedStatuses,
+		HiddenSteps:      previousStepIDs,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to watch migration")
@@ -93,18 +94,31 @@ func Abort(app, migrationId string) error {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
+	migration, err := c.ShowRegionMigration(app, migrationId)
+	if err != nil {
+		return errgo.Notef(err, "fail to show region migration")
+	}
+
+	previousStepIDs := []string{}
+
+	for _, step := range migration.Steps {
+		previousStepIDs = append(previousStepIDs, step.ID)
+	}
+
 	err = c.RunRegionMigrationStep(app, migrationId, scalingo.RegionMigrationStepAbort)
 	if err != nil {
 		return errgo.Notef(err, "fail to run abort step")
 	}
 
 	err = WatchMigration(c, app, migrationId, RefreshOpts{
-		ExpectedStatuses: []scalingo.RegionMigrationStatus{},
+		ExpectedStatuses: []scalingo.RegionMigrationStatus{
+			scalingo.RegionMigrationStatusAborted,
+		},
+		HiddenSteps: previousStepIDs,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to watch migration")
 	}
 
 	return nil
-
 }

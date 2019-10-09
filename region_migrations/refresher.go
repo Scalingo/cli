@@ -46,6 +46,7 @@ func NewRefresher(client *scalingo.Client, appID, migrationID string, opts Refre
 		migrationRefreshTime: 1 * time.Second,
 		wg:                   &sync.WaitGroup{},
 		currentLoadersStep:   0,
+		opts:                 opts,
 	}
 }
 
@@ -123,6 +124,7 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		return
 	}
 
+	fmt.Fprintf(w, "Migration ID: %s\n", migration.ID)
 	fmt.Fprintf(w, "Migrating app: %s\n", migration.AppName)
 	fmt.Fprintf(w.Newline(), "Destination: %s\n", migration.Destination)
 	if migration.NewAppID == "" {
@@ -135,10 +137,9 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		fmt.Fprintf(w.Newline(), "%s Waiting for the migration to start\n", r.loader())
 	}
 
-	for i, _ := range migration.Steps {
-		step := migration.Steps[len(migration.Steps)-1-i]
+	for _, step := range migration.Steps {
 		if r.shouldShowStep(step) {
-			r.writeStep(w, migration.Steps[len(migration.Steps)-1-i])
+			r.writeStep(w, step)
 		}
 	}
 

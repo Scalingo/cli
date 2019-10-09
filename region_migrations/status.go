@@ -31,7 +31,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 		return
 	}
 
-	color.Green("\n\n\nYour application is now available at: %s\n\n", app.BaseURL)
+	color.Green("Your application is now available at: %s\n\n", app.BaseURL)
 
 	if len(domains) == 0 {
 		return
@@ -73,7 +73,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 	return
 }
 func showGenericMigrationSuccessMessage() {
-	color.Green("\n\n\nThe application has been migrated!\n")
+	color.Green("The application has been migrated!\n")
 	fmt.Println("You need to change the DNS record of your domains to point to the new region.")
 	fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
 }
@@ -115,4 +115,10 @@ func showMigrationStatusDataMigrated(appId string, migration scalingo.RegionMigr
 	fmt.Printf("Data has been migrated to the '%s' region\n", migration.Destination)
 	fmt.Printf("You can finalize the migration with:\n")
 	fmt.Printf("scalingo --app %s migration-run --finalize %s\n", appId, migration.ID)
+}
+
+func showMigrationStatusAborted(appId string, migration scalingo.RegionMigration) {
+	fmt.Printf("The migration '%s' has been aborted\n", migration.ID)
+	fmt.Printf("You can retry it with:\n")
+	fmt.Printf("scalingo --app %s migration-create --to %s\n", appId, migration.Destination)
 }
