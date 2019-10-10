@@ -26,6 +26,10 @@ type (
 		Err      string `json:"error"`
 	}
 
+	ForbiddenError struct {
+		Err string `json:"error"`
+	}
+
 	UnprocessableEntity struct {
 		Errors map[string][]string `json:"errors"`
 	}
@@ -87,6 +91,10 @@ func (err UnprocessableEntity) Error() string {
 	return strings.Join(errArray, "\n")
 }
 
+func (err ForbiddenError) Error() string {
+	return fmt.Sprintf("Request forbidden (403): %v", err.Err)
+}
+
 func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 	debug.Printf("APIRequest Error: [%d] %s %s%s", res.StatusCode, req.Method, req.URL, req.Endpoint)
 	defer res.Body.Close()
@@ -109,6 +117,13 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
+	case 403:
+		var forbiddenError ForbiddenError
+		err := parseJSON(res, &forbiddenError)
+		if err != nil {
+			return err
+		}
+		return &RequestFailedError{Code: res.StatusCode, APIError: forbiddenError, Req: req}
 	case 404:
 		var notFoundErr NotFoundError
 		err := parseJSON(res, &notFoundErr)
