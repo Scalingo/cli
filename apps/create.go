@@ -18,6 +18,9 @@ func Create(appName string, remote string, buildpack string) error {
 
 	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
+		if utils.IsRegionDisabledError(err) {
+			return handleRegionDisabledError(appName, c)
+		}
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			return errgo.Mask(err, errgo.Any)
 		}
@@ -40,6 +43,34 @@ func Create(appName string, remote string, buildpack string) error {
 		fmt.Printf("Git repository detected: remote %s added\n→ 'git push %s master' to deploy your app\n", remote, remote)
 	} else {
 		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add %s %s\n→ git push %s master\n", remote, app.GitUrl, remote)
+	}
+	return nil
+}
+
+func handleRegionDisabledError(appName string, c *scalingo.Client) error {
+	regions, rerr := c.RegionsList()
+	if rerr != nil {
+		return errgo.Notef(rerr, "region is disabled, failed to list available regions")
+	}
+	if len(regions) <= 1 {
+		return errgo.New("region is disabled and there is no other available region")
+	}
+	firstRegion := regions[0]
+	if firstRegion.Name == config.C.ScalingoRegion {
+		firstRegion = regions[1]
+	}
+
+	fmt.Printf("Application creation has been disabled on the currently used region: %v\n\n", config.C.ScalingoRegion)
+	fmt.Printf("Either configure your CLI to use another default region, then create your application:\n")
+	fmt.Printf("    scalingo config --region %s\n    scalingo create %s\n", firstRegion.Name, appName)
+	fmt.Printf("\nOr use the region flag to specify the region explicitely for this command:\n")
+	fmt.Printf("    scalingo --region %s create %s\n", firstRegion.Name, appName)
+	fmt.Printf("\nList of available regions:\n")
+	for _, region := range regions {
+		if region.Name == config.C.ScalingoRegion {
+			continue
+		}
+		fmt.Printf("- %v (%v)\n", region.Name, region.DisplayName)
 	}
 	return nil
 }
