@@ -13,6 +13,7 @@ import (
 type (
 	BadRequestError struct {
 		ErrMessage string `json:"error"`
+		Code       string `json:"code"`
 	}
 
 	PaymentRequiredError struct {
@@ -27,7 +28,8 @@ type (
 	}
 
 	ForbiddenError struct {
-		Err string `json:"error"`
+		Err  string `json:"error"`
+		Code string `json:"code"`
 	}
 
 	UnprocessableEntity struct {
