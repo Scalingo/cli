@@ -2,6 +2,12 @@
 
 ### To be Released
 
+### 1.16.3
+
+* Display a better error message when app and addon creation are disabled on a
+  region [#503](https://github.com/Scalingo/cli/pull/503),
+  [#504](https://github.com/Scalingo/cli/pull/504)
+
 ### 1.16.2
 
 * Do not get the SCM integration when showing the integration link
