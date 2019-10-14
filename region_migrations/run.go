@@ -8,7 +8,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
-func Create(app string, destination string) error {
+func Create(app string, destination string, dstAppName string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
@@ -16,6 +16,7 @@ func Create(app string, destination string) error {
 
 	migration, err := c.CreateRegionMigration(app, scalingo.RegionMigrationParams{
 		Destination: destination,
+		DstAppName:  dstAppName,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to create migration")

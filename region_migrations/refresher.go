@@ -125,7 +125,7 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 	}
 
 	fmt.Fprintf(w, "Migration ID: %s\n", migration.ID)
-	fmt.Fprintf(w, "Migrating app: %s\n", migration.AppName)
+	fmt.Fprintf(w, "Migrating app: %s\n", migration.SrcAppName)
 	fmt.Fprintf(w.Newline(), "Destination: %s\n", migration.Destination)
 	if migration.NewAppID == "" {
 		fmt.Fprintf(w.Newline(), "New app ID: %s\n", color.BlueString("N/A"))

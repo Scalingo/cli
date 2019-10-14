@@ -38,11 +38,13 @@ type RegionMigrationsService interface {
 
 type RegionMigrationParams struct {
 	Destination string `json:"destination"`
+	DstAppName  string `json:"dst_app_name"`
 }
 
 type RegionMigration struct {
 	ID          string                `json:"id"`
-	AppName     string                `json:"app_name"`
+	SrcAppName  string                `json:"src_app_name"`
+	DstAppName  string                `json:"dst_app_name"`
 	AppID       string                `json:"app_id"`
 	NewAppID    string                `json:"new_app_id"`
 	Destination string                `json:"destination"`
