@@ -16,7 +16,6 @@ func ConfirmPrepare(migration scalingo.RegionMigration) bool {
 	fmt.Println(" - Import environment variables")
 	fmt.Println(" - Import SCM configuration")
 	fmt.Println(" - Import collaborators")
-	fmt.Println(" - Import SCM configuration")
 	fmt.Println(" - Import domains and TLS certificates")
 	fmt.Println(" - Import application settings")
 	fmt.Println(" - Import application formation")
