@@ -38,11 +38,13 @@ type RegionMigrationsService interface {
 
 type RegionMigrationParams struct {
 	Destination string `json:"destination"`
+	DstAppName  string `json:"dst_app_name"`
 }
 
 type RegionMigration struct {
 	ID          string                `json:"id"`
-	AppName     string                `json:"app_name"`
+	SrcAppName  string                `json:"src_app_name"`
+	DstAppName  string                `json:"dst_app_name"`
 	AppID       string                `json:"app_id"`
 	NewAppID    string                `json:"new_app_id"`
 	Destination string                `json:"destination"`
@@ -85,7 +87,7 @@ func (c *Client) RunRegionMigrationStep(appID, migrationID string, step RegionMi
 		Expected: http.Statuses{204},
 	}, nil)
 	if err != nil {
-		return errgo.Notef(err, "fail to schedule migration step")
+		return errgo.Notef(err, "fail to run migration step")
 	}
 	return nil
 }

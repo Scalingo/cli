@@ -15,6 +15,7 @@ var (
 		Flags: []cli.Flag{
 			appFlag,
 			cli.StringFlag{Name: "to", Usage: "Select the destination region"},
+			cli.StringFlag{Name: "new-name", Usage: "Name of the app in the destination region (same as origin by default)"},
 		},
 		Usage: "Start a migrating an app to another region",
 		Description: `Migrate an app to another region.
@@ -33,7 +34,7 @@ var (
 				return
 			}
 
-			err := region_migrations.Create(currentApp, c.String("to"))
+			err := region_migrations.Create(currentApp, c.String("to"), c.String("new-name"))
 			if err != nil {
 				errorQuit(err)
 			}
