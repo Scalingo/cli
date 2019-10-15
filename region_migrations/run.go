@@ -81,6 +81,7 @@ func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
 	err = WatchMigration(c, app, migrationId, RefreshOpts{
 		ExpectedStatuses: expectedStatuses,
 		HiddenSteps:      previousStepIDs,
+		CurrentStep:      step,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to watch migration")
@@ -116,6 +117,7 @@ func Abort(app, migrationId string) error {
 			scalingo.RegionMigrationStatusAborted,
 		},
 		HiddenSteps: previousStepIDs,
+		CurrentStep: scalingo.RegionMigrationStepAbort,
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to watch migration")

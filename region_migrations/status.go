@@ -78,7 +78,7 @@ func showGenericMigrationSuccessMessage() {
 	fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
 }
 
-func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration) {
+func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
 	color.Red("The migration failed because of the following errors:\n")
 
 	for i, _ := range migration.Steps {
@@ -92,8 +92,11 @@ func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration)
 		}
 	}
 
-	fmt.Println("To rollback your application to a working state, run:")
-	fmt.Printf("scalingo --app %s migration-abort %s\n\n", appId, migration.ID)
+	if opts.CurrentStep != scalingo.RegionMigrationStepAbort {
+		fmt.Println("To rollback your application to a working state, run:")
+		fmt.Printf("scalingo --app %s migration-abort %s\n\n", appId, migration.ID)
+	}
+
 	fmt.Println("You can contact support@scalingo.com to troubleshoot this issue.")
 }
 

@@ -18,12 +18,12 @@ func WatchMigration(client *scalingo.Client, appId, migrationId string, opts Ref
 		return nil
 	}
 
-	migrationFinished(appId, *migration)
+	migrationFinished(appId, *migration, opts)
 
 	return nil
 }
 
-func migrationFinished(appId string, migration scalingo.RegionMigration) {
+func migrationFinished(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
 	fmt.Printf("\n\n")
 	switch migration.Status {
 	case scalingo.RegionMigrationStatusDone:
@@ -31,7 +31,7 @@ func migrationFinished(appId string, migration scalingo.RegionMigration) {
 	case scalingo.RegionMigrationStatusError:
 		fallthrough
 	case scalingo.RegionMigrationStatusPreflightError:
-		showMigrationStatusFailed(appId, migration)
+		showMigrationStatusFailed(appId, migration, opts)
 	case scalingo.RegionMigrationStatusPreflightSuccess:
 		showMigrationStatusPreflightSuccess(appId, migration)
 	case scalingo.RegionMigrationStatusPrepared:

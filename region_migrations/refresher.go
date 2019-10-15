@@ -16,6 +16,7 @@ import (
 type RefreshOpts struct {
 	ExpectedStatuses []scalingo.RegionMigrationStatus
 	HiddenSteps      []string
+	CurrentStep      scalingo.RegionMigrationStep
 }
 
 type Refresher struct {
