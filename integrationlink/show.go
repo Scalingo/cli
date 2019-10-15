@@ -9,6 +9,8 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-utils/errors"
 	"github.com/fatih/color"
 )
 
@@ -19,12 +21,12 @@ func Show(app string) error {
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(app)
-	if err != nil {
-		return errgo.Notef(err, "fail to get integration link for this app")
-	}
-	if repoLink == nil {
+	if scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError); ok && scerr.Code == 404 {
 		io.Statusf("Your app '%s' has no integration link.\n", app)
 		return nil
+	}
+	if err != nil {
+		return errgo.Notef(err, "fail to get integration link for this app")
 	}
 
 	fmt.Printf("%s: %s (%s)\n",
