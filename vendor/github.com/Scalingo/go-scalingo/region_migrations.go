@@ -87,7 +87,7 @@ func (c *Client) RunRegionMigrationStep(appID, migrationID string, step RegionMi
 		Expected: http.Statuses{204},
 	}, nil)
 	if err != nil {
-		return errgo.Notef(err, "fail to schedule migration step")
+		return errgo.Notef(err, "fail to run migration step")
 	}
 	return nil
 }

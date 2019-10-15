@@ -18,8 +18,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "feature/storky_run_endpoint"
-  digest = "1:ff5fc7b6104f84946f23df91d788310f9d64fd05ffa06d17d5ae00f892e57501"
+  digest = "1:841b02745d3c178285fe3fd510a7faaa87651c4c9939979805edb56040d28fbc"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -30,7 +29,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "e1374a7fb8bf6aade6f17212ece9b32829d03bb3"
+  revision = "226f5e46f779d41b3a3174f78571f4d8687b63c2"
+  version = "v3.0.8"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
