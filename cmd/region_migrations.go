@@ -17,7 +17,7 @@ var (
 			cli.StringFlag{Name: "to", Usage: "Select the destination region"},
 			cli.StringFlag{Name: "new-name", Usage: "Name of the app in the destination region (same as origin by default)"},
 		},
-		Usage: "Start a migrating an app to another region",
+		Usage: "Start migrating an app to another region",
 		Description: `Migrate an app to another region.
 	 Example
 	   'scalingo --app my-app migration-create --to osc-fr1'
