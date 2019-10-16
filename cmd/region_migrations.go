@@ -45,7 +45,7 @@ var (
 		Category: "Region migrations",
 		Flags: []cli.Flag{
 			appFlag,
-			cli.BoolFlag{Name: "prepare", Usage: "Create an empty canevas on the new region"},
+			cli.BoolFlag{Name: "prepare", Usage: "Create an empty canvas on the new region"},
 			cli.BoolFlag{Name: "data", Usage: "Import databases (and their data) to the new region"},
 			cli.BoolFlag{Name: "finalize", Usage: "Stop the old app and start the new one"},
 		},
