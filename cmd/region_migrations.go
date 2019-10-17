@@ -17,7 +17,7 @@ var (
 			cli.StringFlag{Name: "to", Usage: "Select the destination region"},
 			cli.StringFlag{Name: "new-name", Usage: "Name of the app in the destination region (same as origin by default)"},
 		},
-		Usage: "Start a migrating an app to another region",
+		Usage: "Start migrating an app to another region",
 		Description: `Migrate an app to another region.
 	 Example
 	   'scalingo --app my-app migration-create --to osc-fr1'
@@ -45,7 +45,7 @@ var (
 		Category: "Region migrations",
 		Flags: []cli.Flag{
 			appFlag,
-			cli.BoolFlag{Name: "prepare", Usage: "Create an empty canevas on the new region"},
+			cli.BoolFlag{Name: "prepare", Usage: "Create an empty canvas on the new region"},
 			cli.BoolFlag{Name: "data", Usage: "Import databases (and their data) to the new region"},
 			cli.BoolFlag{Name: "finalize", Usage: "Stop the old app and start the new one"},
 		},

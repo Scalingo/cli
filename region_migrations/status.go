@@ -75,7 +75,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 func showGenericMigrationSuccessMessage() {
 	color.Green("The application has been migrated!\n")
 	fmt.Println("You need to change the DNS record of your domains to point to the new region.")
-	fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more informations")
+	fmt.Println("See: https://doc.scalingo.com/platform/app/domain#configure-your-domain-name for more information")
 }
 
 func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
