@@ -123,5 +123,10 @@ func showMigrationStatusDataMigrated(appId string, migration scalingo.RegionMigr
 func showMigrationStatusAborted(appId string, migration scalingo.RegionMigration) {
 	fmt.Printf("The migration '%s' has been aborted\n", migration.ID)
 	fmt.Printf("You can retry it with:\n")
-	fmt.Printf("scalingo --app %s migration-create --to %s\n", appId, migration.Destination)
+	fmt.Printf("scalingo --app %s migration-create --to %s", appId, migration.Destination)
+	if migration.DstAppName != migration.SrcAppName {
+		fmt.Printf(" --new-name %s \n", migration.DstAppName)
+	} else {
+		fmt.Printf("\n")
+	}
 }
