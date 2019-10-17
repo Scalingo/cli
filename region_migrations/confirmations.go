@@ -37,7 +37,9 @@ func ConfirmData(migration scalingo.RegionMigration) bool {
 
 func ConfirmFinalize(migration scalingo.RegionMigration) bool {
 	fmt.Println("The following operations will be achieved:")
-	fmt.Println(" - Stop your old app")
+	if migration.Status != scalingo.RegionMigrationStatusDataMigrated {
+		fmt.Println(" - Stop your old app")
+	}
 	fmt.Println(" - Start the new app")
 	fmt.Printf(" - Redirect the traffic coming to '%s' on the old region to '%s' on '%s'\n", migration.SrcAppName, migration.DstAppName, migration.Destination)
 
