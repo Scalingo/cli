@@ -40,13 +40,13 @@ func Create(app string, destination string, dstAppName string) error {
 	return nil
 }
 
-func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
+func Run(app, migrationID string, step scalingo.RegionMigrationStep) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migration, err := c.ShowRegionMigration(app, migrationId)
+	migration, err := c.ShowRegionMigration(app, migrationID)
 	if err != nil {
 		return errgo.Notef(err, "fail to show region migration")
 	}
@@ -55,7 +55,7 @@ func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
 	if !shouldContinue {
 		fmt.Println("The operation has been aborted. You can restart it later.")
 		fmt.Println("If you want to abort the migration, run:")
-		fmt.Printf("scalingo --app %s migration-abort %s\n", app, migrationId)
+		fmt.Printf("scalingo --app %s migration-abort %s\n", app, migrationID)
 		return nil
 	}
 	expectedStatuses := []scalingo.RegionMigrationStatus{}
@@ -73,12 +73,12 @@ func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
 		previousStepIDs = append(previousStepIDs, step.ID)
 	}
 
-	err = c.RunRegionMigrationStep(app, migrationId, step)
+	err = c.RunRegionMigrationStep(app, migrationID, step)
 	if err != nil {
 		return errgo.Notef(err, "fail to run %s step", step)
 	}
 
-	err = WatchMigration(c, app, migrationId, RefreshOpts{
+	err = WatchMigration(c, app, migrationID, RefreshOpts{
 		ExpectedStatuses: expectedStatuses,
 		HiddenSteps:      previousStepIDs,
 		CurrentStep:      step,
@@ -90,13 +90,13 @@ func Run(app, migrationId string, step scalingo.RegionMigrationStep) error {
 	return nil
 }
 
-func Abort(app, migrationId string) error {
+func Abort(app, migrationID string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migration, err := c.ShowRegionMigration(app, migrationId)
+	migration, err := c.ShowRegionMigration(app, migrationID)
 	if err != nil {
 		return errgo.Notef(err, "fail to show region migration")
 	}
@@ -107,12 +107,12 @@ func Abort(app, migrationId string) error {
 		previousStepIDs = append(previousStepIDs, step.ID)
 	}
 
-	err = c.RunRegionMigrationStep(app, migrationId, scalingo.RegionMigrationStepAbort)
+	err = c.RunRegionMigrationStep(app, migrationID, scalingo.RegionMigrationStepAbort)
 	if err != nil {
 		return errgo.Notef(err, "fail to run abort step")
 	}
 
-	err = WatchMigration(c, app, migrationId, RefreshOpts{
+	err = WatchMigration(c, app, migrationID, RefreshOpts{
 		ExpectedStatuses: []scalingo.RegionMigrationStatus{
 			scalingo.RegionMigrationStatusAborted,
 		},

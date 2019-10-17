@@ -11,7 +11,7 @@ func ConfirmPrepare(migration scalingo.RegionMigration) bool {
 	fmt.Printf("Note: Prepare will create an empty canevas. This won't modify your production application\n\n")
 	fmt.Println("The following operations will be achieved:")
 	fmt.Println(" - Mark your app as migrating (preventing you from modifying it)")
-	fmt.Printf(" - Create the new app in the region '%s'\n", migration.Destination)
+	fmt.Printf(" - Create the new app named %s in the region '%s'\n", migration.DstAppName, migration.Destination)
 	fmt.Println(" - Import the last deployment")
 	fmt.Println(" - Import environment variables")
 	fmt.Println(" - Import SCM configuration")
@@ -39,7 +39,7 @@ func ConfirmFinalize(migration scalingo.RegionMigration) bool {
 	fmt.Println("The following operations will be achieved:")
 	fmt.Println(" - Stop your old app")
 	fmt.Println(" - Start the new app")
-	fmt.Printf(" - Redirect the traffic coming to the old region to the application on '%s'\n", migration.Destination)
+	fmt.Printf(" - Redirect the traffic coming to '%s' on the old region to '%s' on '%s'\n", migration.SrcAppName, migration.DstAppName, migration.Destination)
 
 	return askContinue("Continue?")
 }
