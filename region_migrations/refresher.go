@@ -13,10 +13,17 @@ import (
 	errgo "gopkg.in/errgo.v1"
 )
 
+type RefreshOpts struct {
+	ExpectedStatuses []scalingo.RegionMigrationStatus
+	HiddenSteps      []string
+	CurrentStep      scalingo.RegionMigrationStep
+}
+
 type Refresher struct {
 	appID       string
 	migrationID string
 	client      *scalingo.Client
+	opts        RefreshOpts
 
 	lock                 *sync.Mutex
 	migration            *scalingo.RegionMigration
@@ -28,7 +35,7 @@ type Refresher struct {
 	currentLoadersStep int
 }
 
-func NewRefresher(client *scalingo.Client, appID, migrationID string) *Refresher {
+func NewRefresher(client *scalingo.Client, appID, migrationID string, opts RefreshOpts) *Refresher {
 	return &Refresher{
 		appID:                appID,
 		migrationID:          migrationID,
@@ -40,6 +47,7 @@ func NewRefresher(client *scalingo.Client, appID, migrationID string) *Refresher
 		migrationRefreshTime: 1 * time.Second,
 		wg:                   &sync.WaitGroup{},
 		currentLoadersStep:   0,
+		opts:                 opts,
 	}
 }
 
@@ -100,7 +108,7 @@ func (r *Refresher) migrationRefresher() error {
 			return nil
 		}
 
-		if isMigrationDone(&migration) {
+		if r.shouldStop(migration) {
 			r.Stop()
 			return nil
 		}
@@ -117,7 +125,8 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		return
 	}
 
-	fmt.Fprintf(w, "Migrating app: %s\n", migration.AppName)
+	fmt.Fprintf(w, "Migration ID: %s\n", migration.ID)
+	fmt.Fprintf(w, "Migrating app: %s\n", migration.SrcAppName)
 	fmt.Fprintf(w.Newline(), "Destination: %s\n", migration.Destination)
 	if migration.NewAppID == "" {
 		fmt.Fprintf(w.Newline(), "New app ID: %s\n", color.BlueString("N/A"))
@@ -129,8 +138,10 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		fmt.Fprintf(w.Newline(), "%s Waiting for the migration to start\n", r.loader())
 	}
 
-	for i, _ := range migration.Steps {
-		r.writeStep(w, migration.Steps[len(migration.Steps)-1-i])
+	for _, step := range migration.Steps {
+		if r.shouldShowStep(step) {
+			r.writeStep(w, step)
+		}
 	}
 
 }
@@ -150,4 +161,38 @@ func (r *Refresher) writeStep(w *uilive.Writer, step scalingo.Step) {
 
 func (r *Refresher) loader() string {
 	return spinner.CharSets[11][r.currentLoadersStep]
+}
+
+func (r *Refresher) shouldStop(m scalingo.RegionMigration) bool {
+	switch m.Status {
+	case scalingo.RegionMigrationStatusError:
+		return true
+	case scalingo.RegionMigrationStatusDone:
+		return true
+	}
+
+	if r.opts.ExpectedStatuses == nil {
+		return false
+	}
+
+	for _, status := range r.opts.ExpectedStatuses {
+		if m.Status == status {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (r *Refresher) shouldShowStep(step scalingo.Step) bool {
+	if r.opts.HiddenSteps == nil {
+		return true
+	}
+
+	for _, id := range r.opts.HiddenSteps {
+		if id == step.ID {
+			return false
+		}
+	}
+	return true
 }
