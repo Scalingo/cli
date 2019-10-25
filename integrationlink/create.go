@@ -1,7 +1,6 @@
 package integrationlink
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 
@@ -10,12 +9,14 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-utils/errors"
 )
 
 func Create(app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkCreateParams) error {
 	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
-		return errors.New("source repository URL is not valid")
+		return errgo.New("source repository URL is not valid")
 	}
 
 	c, err := config.ScalingoClient()
@@ -29,7 +30,7 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(app)
-	if err != nil {
+	if scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError); !ok || (ok && scerr.Code != 404) {
 		return errgo.Notef(err, "fail to get the integration link for this app")
 	}
 	if repoLink != nil {
