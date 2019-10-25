@@ -28,10 +28,7 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 		return errgo.Notef(err, "fail to get the integration")
 	}
 
-	repoLink, err := c.SCMRepoLinkShow(app)
-	if err != nil {
-		return errgo.Notef(err, "fail to get the integration link for this app")
-	}
+	repoLink, _ := c.SCMRepoLinkShow(app)
 	if repoLink != nil {
 		io.Statusf("Your app is already linked to %s/%s/%s", integration.URL, repoLink.Owner, repoLink.Repo)
 		if repoLink.Branch != "" {
