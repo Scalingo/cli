@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* Bugfix: Unable to create integration link for an app [#510](https://github.com/Scalingo/cli/pull/510)
+
 ### 1.16.3
 
 * Display a better error message when app and addon creation are disabled on a
