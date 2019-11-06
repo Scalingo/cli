@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.16.4
+
 * Bugfix: Unable to create integration link for an app [#510](https://github.com/Scalingo/cli/pull/510)
 
 ### 1.16.3
