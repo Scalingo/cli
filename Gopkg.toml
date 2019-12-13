@@ -40,11 +40,15 @@
   name = "github.com/Scalingo/go-utils"
   version = "^5"
 
+[[constraint]]
+  name = "github.com/ScaleFT/sshkeys"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/urfave/cli"
+  version = "^1"
+
 [prune]
   non-go = true
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/ScaleFT/sshkeys"
