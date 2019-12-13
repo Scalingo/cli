@@ -17,6 +17,8 @@ type PrivateKey struct {
 	PasswordMethod
 }
 
+type PasswordMethod func(prompt string) (string, error)
+
 func (p *PrivateKey) Signer() (ssh.Signer, error) {
 	if p.IsEncrypted() {
 		if p.PasswordMethod == nil {
@@ -49,11 +51,3 @@ func (p *PrivateKey) isOpenSSHEncrypted() bool {
 	}
 	return false
 }
-
-func DummyPasswordMethod(password string) PasswordMethod {
-	return func(prompt string) (string, error) {
-		return prompt, nil
-	}
-}
-
-type PasswordMethod func(prompt string) (string, error)
