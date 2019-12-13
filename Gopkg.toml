@@ -46,7 +46,12 @@
 
 [[constraint]]
   name = "github.com/urfave/cli"
-  version = "^1"
+  version = "1.22.0"
+
+# Fix urfave/cli 1.22.0 dependency bug : https://github.com/urfave/cli/issues/888
+[[override]]
+  name = "github.com/russross/blackfriday"
+  version = "1.5.2"
 
 [prune]
   non-go = true
