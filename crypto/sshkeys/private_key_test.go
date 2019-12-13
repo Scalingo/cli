@@ -1,20 +1,45 @@
 package sshkeys
 
-import "testing"
+import (
+	"encoding/pem"
+	"testing"
 
-func TestIsEncrypted(t *testing.T) {
-	pk := &PrivateKey{Path: "n/a", Block: unencryptedPEM}
-	if pk.IsEncrypted() {
-		t.Error("expected false")
+	"github.com/stretchr/testify/require"
+)
+
+func pemDecode(keyToDecode []byte) *pem.Block {
+	block, _ := pem.Decode(keyToDecode)
+	return block
+}
+
+func TestPrivateKey_IsEncrypted(t *testing.T) {
+	cases := []struct {
+		Name          string
+		PrivateKey    *PrivateKey
+		ExpectBoolean bool
+	}{
+		{
+			Name:          "Unencrypted RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(unencryptedRSAKey)},
+			ExpectBoolean: false,
+		},
+		{
+			Name:          "Encrypted AES RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(aesRSA)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Encrypted DES3 RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(des3RSA)},
+			ExpectBoolean: true,
+		},
 	}
 
-	pk = &PrivateKey{Path: "n/a", Block: aesRSAPEM}
-	if !pk.IsEncrypted() {
-		t.Error("expected true")
-	}
+	for _, c := range cases {
+		t.Run(c.Name, func(t *testing.T) {
+			boolean := c.PrivateKey.IsEncrypted()
 
-	pk = &PrivateKey{Path: "n/a", Block: des3RSAPEM}
-	if !pk.IsEncrypted() {
-		t.Error("expected true")
+			require.Equal(t, c.ExpectBoolean, boolean)
+		})
 	}
 }
