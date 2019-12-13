@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* Bugfix: Encrypted key with new OpenSSH format header for private keys was broken [#513](https://github.com/Scalingo/cli/pull/513)
+
 ### 1.16.4
 
 * Bugfix: Unable to create integration link for an app [#510](https://github.com/Scalingo/cli/pull/510)

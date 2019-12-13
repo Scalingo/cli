@@ -1,36 +1,90 @@
 package sshkeys
 
-import "testing"
+import (
+	"encoding/pem"
+	"testing"
 
-func TestIsEncrypted(t *testing.T) {
-	pk := &PrivateKey{Path: "n/a", Block: unencryptedPEM}
-	if pk.IsEncrypted() {
-		t.Error("expected false")
-	}
+	"github.com/stretchr/testify/require"
+)
 
-	pk = &PrivateKey{Path: "n/a", Block: aesRSAPEM}
-	if !pk.IsEncrypted() {
-		t.Error("expected true")
-	}
-
-	pk = &PrivateKey{Path: "n/a", Block: des3RSAPEM}
-	if !pk.IsEncrypted() {
-		t.Error("expected true")
-	}
+func pemDecode(keyToDecode []byte) *pem.Block {
+	block, _ := pem.Decode(keyToDecode)
+	return block
 }
 
-func TestIsCipherImplemented(t *testing.T) {
-	pk := &PrivateKey{Path: "n/a", Block: aesRSAPEM}
-	if !pk.IsCipherImplemented(pk.cipher()) {
-		t.Error("expected true")
+func TestPrivateKey_IsEncrypted(t *testing.T) {
+	cases := []struct {
+		Name          string
+		PrivateKey    *PrivateKey
+		ExpectBoolean bool
+	}{
+		{
+			Name:          "Unencrypted RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(unencryptedRSAKey)},
+			ExpectBoolean: false,
+		},
+		{
+			Name:          "Encrypted AES RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(aesRSA)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Encrypted AES RSA Key (Mac OS Maverick)",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(aesRSAMacOSMaverick)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Encrypted AES RSA Key (Mac OS Yosemite)",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(aesRSAMacOSYosemite)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Encrypted DES3 RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(des3RSA)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Encrypted DES3 RSA Key with Long Passphrase",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(des3RSALongPassphrase)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Unencrypted OpenSSH RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(unencryptedOpenSSHRSA)},
+			ExpectBoolean: false,
+		},
+		{
+			Name:          "Encrypted OpenSSH RSA Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(openSSHRSA)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Unencrypted OpenSSH ecdsa Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(unencryptedOpenSSHecdsa)},
+			ExpectBoolean: false,
+		},
+		{
+			Name:          "Encrypted OpenSSH ecdsa Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(openSSHecdsa)},
+			ExpectBoolean: true,
+		},
+		{
+			Name:          "Unencrypted OpenSSH ed25519 Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(unencryptedOpenSSHed25519)},
+			ExpectBoolean: false,
+		},
+		{
+			Name:          "Encrypted OpenSSH ed25519 Key",
+			PrivateKey:    &PrivateKey{Path: "n/a", Block: pemDecode(openSSHed25519)},
+			ExpectBoolean: true,
+		},
 	}
 
-	pk = &PrivateKey{Path: "n/a", Block: des3RSAPEM}
-	if !pk.IsCipherImplemented(pk.cipher()) {
-		t.Error("expected true")
-	}
+	for _, c := range cases {
+		t.Run(c.Name, func(t *testing.T) {
+			boolean := c.PrivateKey.IsEncrypted()
 
-	if pk.IsCipherImplemented("ANOTHER_CIPHER") {
-		t.Error("expected false")
+			require.Equal(t, c.ExpectBoolean, boolean)
+		})
 	}
 }

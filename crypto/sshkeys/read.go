@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Scalingo/cli/config"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 var (
@@ -30,17 +31,10 @@ func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 	// show a nicer error if the private key has a password.
 	block, _ := pem.Decode(privateKeyContent)
 	if block == nil {
-		return nil, fmt.Errorf(
-			"Failed to read key '%s': is not in the PEM format", path)
+		return nil, fmt.Errorf("Failed to read key '%s': is not in the PEM format", path)
 	}
 
 	privateKey := &PrivateKey{Block: block, Path: path}
-	if privateKey.IsEncrypted() {
-		err := privateKey.Decrypt()
-		if err != nil {
-			return nil, errgo.Mask(err)
-		}
-	}
 
 	signer, err := privateKey.Signer()
 	if err != nil {
