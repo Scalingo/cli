@@ -1,16 +1,14 @@
-cli
 build
 *swp
 bin
-pkg
 scalingo/scalingo
 scalingo/scalingo.exe
-src/github.com
 src/code.google.com
 Godeps/Readme
 
 # Executable
 scalingo-cli
+main
 
 # IDE
 .idea/
