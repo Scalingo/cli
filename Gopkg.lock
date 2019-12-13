@@ -11,6 +11,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:944462a4838e838a5ad0b8e4f81d9fc6e73d075d20c48909047bcd8b3365322b"
+  name = "github.com/ScaleFT/sshkeys"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "82451a80368171b074c7129d43b47fc2773f6e9f"
+
+[[projects]]
+  branch = "master"
   digest = "1:08dcd5fd9153189d126eb0634d512263ab26dfd27a0e5850db10738bca908196"
   name = "github.com/Scalingo/envconfig"
   packages = ["."]
@@ -79,6 +87,14 @@
   pruneopts = "NUT"
   revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
   version = "v1.1.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:ba7a16a2e6d8dd7f4b1ff138101009697b3aedaba32db075bc36ab33db2c058f"
+  name = "github.com/dchest/bcrypt_pbkdf"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "83f37f9c154a678179d11e218bff73ebe5717f99"
 
 [[projects]]
   digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
@@ -467,6 +483,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/AlecAivazis/survey",
+    "github.com/ScaleFT/sshkeys",
     "github.com/Scalingo/envconfig",
     "github.com/Scalingo/go-scalingo",
     "github.com/Scalingo/go-scalingo/debug",
