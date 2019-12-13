@@ -27,7 +27,7 @@ func (p *PrivateKey) Signer() (ssh.Signer, error) {
 
 		password, err := p.PasswordMethod("Encrypted SSH Key, password: ")
 		if err != nil {
-			return nil, errgo.Mask(err)
+			return nil, errgo.Notef(err, "fail to get the SSH key password")
 		}
 
 		return sshkeys.ParseEncryptedPrivateKey(pem.EncodeToMemory(p.Block), []byte(password))
@@ -37,10 +37,10 @@ func (p *PrivateKey) Signer() (ssh.Signer, error) {
 }
 
 func (p *PrivateKey) IsEncrypted() bool {
-	return p.Block.Headers["Proc-Type"] == "4,ENCRYPTED" || p.isOpenSSHEncrypted()
+	return p.Block.Headers["Proc-Type"] == "4,ENCRYPTED" || p.isOpenSSHFormatEncrypted()
 }
 
-func (p *PrivateKey) isOpenSSHEncrypted() bool {
+func (p *PrivateKey) isOpenSSHFormatEncrypted() bool {
 	if p.Block.Type != "OPENSSH PRIVATE KEY" {
 		return false
 	}
