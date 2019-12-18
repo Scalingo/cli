@@ -30,7 +30,7 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(app)
-	if scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError); !ok || (ok && scerr.Code != 404) {
+	if scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError); ok || (ok && scerr.Code != 404) {
 		return errgo.Notef(err, "fail to get the integration link for this app")
 	}
 	if repoLink != nil {
