@@ -1,7 +1,6 @@
 package db
 
 import (
-	"errors"
 	"fmt"
 	stdio "io"
 	"net"
@@ -22,7 +21,6 @@ import (
 )
 
 var (
-	errTimeout      = errors.New("timeout")
 	connIDGenerator = make(chan int)
 	defaultPort     = 10000
 	defaultBind     = "127.0.0.1"
@@ -215,7 +213,7 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 			return nil
 		}
 
-		return errTimeout
+		return err
 	}
 	return nil
 }
