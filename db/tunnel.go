@@ -13,10 +13,10 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
 )
@@ -25,12 +25,14 @@ var (
 	errTimeout      = errors.New("timeout")
 	connIDGenerator = make(chan int)
 	defaultPort     = 10000
+	defaultBind     = "127.0.0.1"
 )
 
 type TunnelOpts struct {
 	App       string
 	DBEnvVar  string
 	Identity  string
+	Bind      string
 	Port      int
 	Reconnect bool
 }
@@ -63,7 +65,8 @@ func Tunnel(opts TunnelOpts) error {
 	}
 	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbUrl.Host)
 
-	client, key, err := netssh.Connect(netssh.ConnectOpts{
+	// Just test the connection
+	client, _, err := netssh.Connect(netssh.ConnectOpts{
 		Host:     sshhost,
 		Identity: opts.Identity,
 	})
@@ -73,16 +76,19 @@ func Tunnel(opts TunnelOpts) error {
 		}
 		return errgo.Notef(err, "fail to connect to SSH server")
 	}
-	waitingConnectionM := &sync.Mutex{}
+	client.Close()
 
 	if opts.Port == 0 {
 		opts.Port = defaultPort
+	}
+	if opts.Bind == "" {
+		opts.Bind = defaultBind
 	}
 
 	var tcpAddr *net.TCPAddr
 	var sock *net.TCPListener
 	for {
-		tcpAddr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", opts.Port))
+		tcpAddr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", opts.Bind, opts.Port))
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -117,13 +123,26 @@ func Tunnel(opts TunnelOpts) error {
 			return errgo.Mask(err)
 		}
 		debug.Println("New local connection")
-		// Checking not in reconnection process
-		waitingConnectionM.Lock()
-		waitingConnectionM.Unlock()
 
 		go func() {
 			for {
-				err := handleConnToTunnel(client, dbUrl, connToTunnel, errs)
+				var client *ssh.Client
+				retryConnect := true
+				for retryConnect {
+					// Do not reuse key since the connection to the SSH agent might be broken
+					client, _, err = netssh.Connect(netssh.ConnectOpts{
+						Host:     sshhost,
+						Identity: opts.Identity,
+					})
+					if err != nil {
+						fmt.Println("Fail to reconnect, waiting 10 seconds...")
+						time.Sleep(10 * time.Second)
+					} else {
+						retryConnect = false
+					}
+				}
+
+				err = handleConnToTunnel(client, dbUrl, connToTunnel, errs)
 				if err != nil {
 					debug.Println("Error happened in tunnel", err)
 					if !opts.Reconnect {
@@ -131,20 +150,10 @@ func Tunnel(opts TunnelOpts) error {
 						return
 					}
 				}
-				if err == errTimeout {
-					waitingConnectionM.Lock()
-					fmt.Println("Connection broken, reconnecting...")
-					for err != nil {
-						client, err = netssh.ConnectToSSHServerWithKey(sshhost, key)
-						if err != nil {
-							fmt.Println("Fail to reconnect, waiting 10 seconds...")
-							time.Sleep(10 * time.Second)
-						}
-					}
-					fmt.Println("Reconnected!")
-					waitingConnectionM.Unlock()
+				// If err is nil, the connection has been closed normally, close the routine
+				if err == nil {
+					return
 				}
-				break
 			}
 		}()
 	}
@@ -198,6 +207,14 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 	fmt.Printf("End of connection [%d]\n", connID)
 	// Connection timeout
 	if err != nil && strings.Contains(err.Error(), "use of closed network") {
+
+		// If the connection has been closed by the CLIENT, we must stop here and return a nil error
+		// If the connection has been closed by the SERVER, we must return a errTimeout and retry the connection
+		clientClosedConnectionTest := fmt.Sprintf("%s->%s: use of closed network connection", sock.LocalAddr(), sock.RemoteAddr()) // Golang error checking 101 <3
+		if strings.Contains(err.Error(), clientClosedConnectionTest) {
+			return nil
+		}
+
 		return errTimeout
 	}
 	return nil
