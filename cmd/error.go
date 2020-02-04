@@ -82,7 +82,8 @@ func errorQuit(err error) {
 				// "https://api.agora-fr1.scalingo.com/v1"
 				apiURL, _ := url.Parse(requestFailedErr.Req.URL)
 				region := strings.Split(apiURL.Host, ".")[1]
-				io.Errorf("The application was not found on the region %s. You can try on a different region with 'scalingo --region osc-fr1 ...'.\n", region)
+				io.Errorf("The application was not found on the region %s.\n", region)
+				io.Error("You can try on a different region with 'scalingo --region osc-fr1 ...'.")
 			} else {
 				io.Error("An error occured:")
 				debug.Println(errgo.Details(err))
