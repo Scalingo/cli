@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"os/user"
 	"runtime"
@@ -65,13 +66,28 @@ func errorQuit(err error) {
 	rollbar.Wait()
 
 	rootError := errors.ErrgoRoot(err)
-	if httpclient.IsRequestFailedError(rootError) &&
-		rootError.(*httpclient.RequestFailedError).Code == 401 {
-		if currentUser != nil {
-			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
-			io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
-		} else {
-			io.Errorf("Failed to read credentials for current user: %v", autherr)
+	if httpclient.IsRequestFailedError(rootError) {
+		requestFailedErr := rootError.(*httpclient.RequestFailedError)
+		if requestFailedErr.Code == 401 {
+			if currentUser != nil {
+				io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
+				io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
+			} else {
+				io.Errorf("Failed to read credentials for current user: %v", autherr)
+			}
+		} else if requestFailedErr.Code == 404 {
+			notFoundErr := requestFailedErr.APIError.(httpclient.NotFoundError)
+			if notFoundErr.Resource == "app" {
+				// apiURL contains something like:
+				// "https://api.agora-fr1.scalingo.com/v1"
+				apiURL, _ := url.Parse(requestFailedErr.Req.URL)
+				region := strings.Split(apiURL.Host, ".")[1]
+				io.Errorf("The application was not found on the region %s. You can try on a different region with 'scalingo --region osc-fr1 ...'.\n", region)
+			} else {
+				io.Error("An error occured:")
+				debug.Println(errgo.Details(err))
+				fmt.Println(io.Indent(err.Error(), 7))
+			}
 		}
 	} else {
 		io.Error("An error occured:")
