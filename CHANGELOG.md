@@ -3,6 +3,7 @@
 ### To be Released
 
 * Add `--bind` arg to `db-tunnel` command that let us bind a custom host (and not only 127.0.0.1) [#517](https://github.com/Scalingo/cli/pull/517)
+* Error message if unknown app suggests to try on a different region [#519](https://github.com/Scalingo/cli/pull/519)
 
 * Bugfix: Encrypted key with new OpenSSH format header for private keys was broken [#513](https://github.com/Scalingo/cli/pull/513)
 * Bugfix: db-tunnel: better handling of short lived connections  [#517](https://github.com/Scalingo/cli/pull/517)
