@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.16.4
+# Scalingo-CLI v1.16.5
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -54,7 +54,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.16.4
+   1.16.5
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -240,7 +240,7 @@ $ git commit -m "Bump version 1.16.5"
 $ git push origin master
 ```
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.4`.
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.5`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.
