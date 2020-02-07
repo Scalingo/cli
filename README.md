@@ -6,7 +6,7 @@ This repository contains the command line utility for the public PaaS Scalingo
 
 [https://scalingo.com](https://scalingo.com)
 
-## How to build?
+## How to Build?
 
 The project is using Go, then you need a running Go environment: [Official documentation](https://golang.org/doc/install)
 
@@ -19,13 +19,13 @@ go get github.com/Scalingo/cli/scalingo
 That's it, you've build the latest version of the Scalingo CLI (the binary will be present in `$GOPATH/bin/scalingo`)
 
 
-## How to upgrade?
+## How to Upgrade?
 
 ```
 go get -u github.com/Scalingo/cli/scalingo
 ```
 
-## Run behind a proxy
+## Run Behind a Proxy
 
 You have to setup the following environment variables:
 
@@ -34,7 +34,7 @@ HTTP_PROXY=http://<proxy host>:<proxy port>
 HTTPS_PROXY=https://<proxy host>:<proxy port>
 ```
 
-## Disable update checking
+## Disable Update Checking
 
 By default the CLI is making an HTTP request to learn if a newer version is available.
 To disable this feature, define the environment variable:
@@ -43,7 +43,7 @@ To disable this feature, define the environment variable:
 DISABLE_UPDATE_CHECKER=true
 ```
 
-## Command help
+## Command Help
 
 ```
 
@@ -212,7 +212,7 @@ GLOBAL OPTIONS:
    --version, -v             print the version
 ```
 
-## Development setup
+## Development Setup
 
 In order to build the current development version and use it against the development services:
 
@@ -222,7 +222,7 @@ go build .
 SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234 ./scalingo login --api-token <admin user API token>
 ```
 
-## Release a new version
+## Release a New Version
 
 Bump new version number in:
 
