@@ -232,6 +232,14 @@ Bump new version number in:
 - `VERSION`
 - `config/version.go`
 
+And commit these changes:
+
+```bash
+$ git add .
+$ git commit -m "Bump version 1.16.5"
+$ git push origin master
+```
+
 Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.4`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
