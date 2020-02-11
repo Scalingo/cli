@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.16.6
+
 * Bugfix: integration-link-create: command will always fail if there's already a link [#520](https://github.com/Scalingo/cli/issues/520)
 
 ### 1.16.5

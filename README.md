@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.16.5
+# Scalingo-CLI v1.16.6
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -54,7 +54,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.16.5
+   1.16.6
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
