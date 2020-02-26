@@ -84,6 +84,8 @@ func errorQuit(err error) {
 				region := strings.Split(apiURL.Host, ".")[1]
 				io.Errorf("The application was not found on the region %s.\n", region)
 				io.Error("You can try on a different region with 'scalingo --region osc-fr1 ...'.")
+				io.Error("")
+				io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
 			} else {
 				io.Error("An error occured:")
 				debug.Println(errgo.Details(err))
