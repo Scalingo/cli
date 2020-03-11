@@ -63,7 +63,7 @@ func createRemoteInRepository(repository *git.Repository, remoteName string, url
 		errWrapped := utils.WrapError(err, "fail to create the Git remote")
 		if err == git.ErrRemoteExists {
 			errWrapped = utils.WrapError(err, "fail to create the Git remote"+
-				" (maybe you want use the force option to override the remote put)")
+				" (maybe you want use the force option to override the remote url)")
 		}
 		return errWrapped
 	}
