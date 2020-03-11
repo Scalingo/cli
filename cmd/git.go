@@ -16,6 +16,9 @@ var (
 			cli.StringFlag{
 				Name: "remote, r", Value: "scalingo",
 				Usage: "Specify the remote name"},
+			cli.BoolFlag{
+				Name:  "force, f",
+				Usage: "Replace remote url even if remote already exist"},
 		},
 		Description: `Add a Git remote to the current folder.
 
@@ -29,7 +32,8 @@ var (
 			}
 
 			err := git.Setup(appdetect.CurrentApp(c), git.SetupParams{
-				RemoteName: c.String("r"),
+				RemoteName:     c.String("r"),
+				ForcePutRemote: c.Bool("f"),
 			})
 			if err != nil {
 				errorQuit(err)
