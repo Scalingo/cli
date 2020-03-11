@@ -4,6 +4,8 @@
 
 * Improve error message if unknown app, suggests to try on a different region
   [#524](https://github.com/Scalingo/cli/pull/524)
+* Correctly display error messages from the API
+  [#528](https://github.com/Scalingo/cli/pull/528)
 
 ### 1.16.6
 
