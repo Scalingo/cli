@@ -4,6 +4,8 @@
 
 * Improve error message if unknown app, suggests to try on a different region
   [#524](https://github.com/Scalingo/cli/pull/524)
+* Add option `--force` to the command `git-setup`
+  [#527](https://github.com/Scalingo/cli/pull/527)
 * Correctly display error messages from the API
   [#528](https://github.com/Scalingo/cli/pull/528)
 
