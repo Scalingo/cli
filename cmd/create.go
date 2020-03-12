@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/urfave/cli"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 		Usage: "Create a new app",
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 1 {
-				cli.ShowCommandHelp(c, "create")
+				_ = cli.ShowCommandHelp(c, "create")
 				return
 			}
 			err := apps.Create(c.Args()[0], c.String("remote"), c.String("buildpack"))
@@ -28,7 +29,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "create")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "create")
 		},
 	}
 )
