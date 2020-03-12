@@ -67,38 +67,51 @@ func errorQuit(err error) {
 
 	rootError := errors.ErrgoRoot(err)
 	if httpclient.IsRequestFailedError(rootError) {
-		requestFailedErr := rootError.(*httpclient.RequestFailedError)
-		if requestFailedErr.Code == 401 {
-			if currentUser != nil {
-				io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
-				io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
-			} else {
-				io.Errorf("Failed to read credentials for current user: %v", autherr)
-			}
-		} else if requestFailedErr.Code == 404 {
-			notFoundErr := requestFailedErr.APIError.(httpclient.NotFoundError)
-			if notFoundErr.Resource == "app" {
-				// apiURL contains something like:
-				// "https://api.agora-fr1.scalingo.com/v1"
-				apiURL, _ := url.Parse(requestFailedErr.Req.URL)
-				region := strings.Split(apiURL.Host, ".")[1]
-				io.Errorf("The application was not found on the region %s.\n", region)
-				io.Error("You can try on a different region with 'scalingo --region osc-fr1 ...'.")
-				io.Error("")
-				io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
-			} else {
-				io.Error("An error occured:")
-				debug.Println(errgo.Details(err))
-				fmt.Println(io.Indent(err.Error(), 7))
-			}
-		}
+		displayRequestFailedError(rootError, currentUser, autherr, err)
 	} else {
-		io.Error("An error occured:")
-		debug.Println(errgo.Details(err))
-		fmt.Println(io.Indent(err.Error(), 7))
+		displayError(err)
 	}
 
 	os.Exit(1)
+}
+
+func displayError(err error) {
+	io.Error("An error occurred:")
+	debug.Println(errgo.Details(err))
+	message := err.Error()
+	fmt.Println(io.Indent(message, 7))
+}
+
+func displayRequestFailedError(rootError error, currentUser *scalingo.User, autherr error, err error) {
+	requestFailedErr := rootError.(*httpclient.RequestFailedError)
+	if requestFailedErr.Code == 401 {
+		if currentUser != nil {
+			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
+			io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
+		} else {
+			io.Errorf("Failed to read credentials for current user: %v", autherr)
+		}
+		return
+	}
+	if requestFailedErr.Code == 404 {
+		notFoundErr := requestFailedErr.APIError.(httpclient.NotFoundError)
+		if notFoundErr.Resource == "app" {
+			// apiURL contains something like:
+			// "https://api.agora-fr1.scalingo.com/v1"
+			apiURL, _ := url.Parse(requestFailedErr.Req.URL)
+			region := strings.Split(apiURL.Host, ".")[1]
+			io.Errorf("The application was not found on the region %s.\n", region)
+			io.Error("You can try on a different region with 'scalingo --region osc-fr1 ...'.")
+			io.Error("")
+			io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
+		} else {
+			io.Error("An error occured:")
+			debug.Println(errgo.Details(err))
+			fmt.Println(io.Indent(err.Error(), 7))
+		}
+		return
+	}
+	displayError(err)
 }
 
 func newReportError(currentUser *scalingo.User, err error) *ReportError {
