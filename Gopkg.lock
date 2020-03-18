@@ -26,7 +26,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  digest = "1:841b02745d3c178285fe3fd510a7faaa87651c4c9939979805edb56040d28fbc"
+  digest = "1:928b29bb7a0ff17d58d133e700e44efcf28287e64788b4fbd7409e94c30c0c78"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -37,8 +37,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "226f5e46f779d41b3a3174f78571f4d8687b63c2"
-  version = "v3.0.8"
+  revision = "30b4c45dce163a12a2afba6a3b82dde3b32c3e57"
+  version = "v4.3.0"
 
 [[projects]]
   digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
@@ -105,6 +105,14 @@
   revision = "83f37f9c154a678179d11e218bff73ebe5717f99"
 
 [[projects]]
+  digest = "1:7a6852b35eb5bbc184561443762d225116ae630c26a7c4d90546619f1e7d2ad2"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
   name = "github.com/dustin/go-humanize"
   packages = ["."]
@@ -136,12 +144,12 @@
   version = "v1.6.0"
 
 [[projects]]
-  digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
+  digest = "1:7ae311278f7ccaa724de8f2cdec0a507ba3ee6dea8c77237e8157bcf64b0f28b"
   name = "github.com/golang/mock"
   packages = ["gomock"]
   pruneopts = "NUT"
-  revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
-  version = "v1.1.1"
+  revision = "3a35fb6e3e18b9dbfee291262260dee7372d2a92"
+  version = "v1.4.3"
 
 [[projects]]
   digest = "1:e45cda0965bf660df6421580001ef40e322a9b29b7b27e9f69568d9a999ec9b7"
