@@ -29,7 +29,10 @@ func Provision(app, addon, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := c.AddonProvision(app, addon, planID)
+	params, err := c.AddonProvision(app, scalingo.AddonProvisionParams{
+		AddonProviderID: addon,
+		PlanID:          planID,
+	})
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			return errgo.Notef(err, "Fail to provision addon %v", addon)

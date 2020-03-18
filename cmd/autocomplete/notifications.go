@@ -18,10 +18,10 @@ func NotificationsRemoveAutoComplete(c *cli.Context) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.NotificationsList(appName)
+	resources, err := client.NotifiersList(appName)
 	if err == nil {
 		for _, resource := range resources {
-			fmt.Println(resource.ID)
+			fmt.Println(resource.GetID())
 		}
 	}
 

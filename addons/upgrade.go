@@ -3,6 +3,7 @@ package addons
 import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	scalingo "github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
 
@@ -30,7 +31,9 @@ func Upgrade(app, addonID, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := c.AddonUpgrade(app, addon.ID, planID)
+	params, err := c.AddonUpgrade(app, addon.ID, scalingo.AddonUpgradeParams{
+		PlanID: planID,
+	})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

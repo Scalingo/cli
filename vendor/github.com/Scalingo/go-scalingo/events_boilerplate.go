@@ -96,15 +96,6 @@ func (e *EventEditVariableType) TypeDataPtr() interface{} {
 func (e *EventEditVariablesType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
-func (e *EventNewNotificationType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-func (e *EventEditNotificationType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-func (e *EventDeleteNotificationType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
 func (e *EventDeleteVariableType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }

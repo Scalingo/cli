@@ -64,54 +64,54 @@ type EventUser struct {
 type EventTypeName string
 
 const (
-	EventNewUser            EventTypeName = "new_user"
-	EventNewApp             EventTypeName = "new_app"
-	EventEditApp            EventTypeName = "edit_app"
-	EventDeleteApp          EventTypeName = "delete_app"
-	EventRenameApp          EventTypeName = "rename_app"
-	EventTransferApp        EventTypeName = "transfer_app"
-	EventRestart            EventTypeName = "restart"
-	EventScale              EventTypeName = "scale"
-	EventStopApp            EventTypeName = "stop_app"
-	EventCrash              EventTypeName = "crash"
-	EventDeployment         EventTypeName = "deployment"
-	EventLinkSCM            EventTypeName = "link_scm"
-	EventUnlinkSCM          EventTypeName = "unlink_scm"
-	EventNewIntegration     EventTypeName = "new_integration"
-	EventDeleteIntegration  EventTypeName = "delete_integration"
-	EventAuthorizeGithub    EventTypeName = "authorize_github"
-	EventRevokeGithub       EventTypeName = "revoke_github"
-	EventRun                EventTypeName = "run"
-	EventNewDomain          EventTypeName = "new_domain"
-	EventEditDomain         EventTypeName = "edit_domain"
-	EventDeleteDomain       EventTypeName = "delete_domain"
-	EventNewAddon           EventTypeName = "new_addon"
-	EventUpgradeAddon       EventTypeName = "upgrade_addon"
-	EventUpgradeDatabase    EventTypeName = "upgrade_database"
-	EventDeleteAddon        EventTypeName = "delete_addon"
-	EventResumeAddon        EventTypeName = "resume_addon"
-	EventSuspendAddon       EventTypeName = "suspend_addon"
-	EventNewCollaborator    EventTypeName = "new_collaborator"
-	EventAcceptCollaborator EventTypeName = "accept_collaborator"
-	EventDeleteCollaborator EventTypeName = "delete_collaborator"
-	EventNewVariable        EventTypeName = "new_variable"
-	EventEditVariable       EventTypeName = "edit_variable"
-	EventEditVariables      EventTypeName = "edit_variables"
-	EventDeleteVariable     EventTypeName = "delete_variable"
-	EventNewNotification    EventTypeName = "new_notification"
-	EventEditNotification   EventTypeName = "edit_notification"
-	EventDeleteNotification EventTypeName = "delete_notification"
-	EventAddCredit          EventTypeName = "add_credit"
-	EventAddPaymentMethod   EventTypeName = "add_payment_method"
-	EventAddVoucher         EventTypeName = "add_voucher"
-	EventNewKey             EventTypeName = "new_key"
-	EventDeleteKey          EventTypeName = "delete_key"
-	EventPaymentAttempt     EventTypeName = "payment_attempt"
-	EventNewAlert           EventTypeName = "new_alert"
-	EventAlert              EventTypeName = "alert"
-	EventDeleteAlert        EventTypeName = "delete_alert"
-	EventNewAutoscaler      EventTypeName = "new_autoscaler"
-	EventDeleteAutoscaler   EventTypeName = "delete_autoscaler"
+	EventNewUser              EventTypeName = "new_user"
+	EventNewApp               EventTypeName = "new_app"
+	EventEditApp              EventTypeName = "edit_app"
+	EventDeleteApp            EventTypeName = "delete_app"
+	EventRenameApp            EventTypeName = "rename_app"
+	EventTransferApp          EventTypeName = "transfer_app"
+	EventRestart              EventTypeName = "restart"
+	EventScale                EventTypeName = "scale"
+	EventStopApp              EventTypeName = "stop_app"
+	EventCrash                EventTypeName = "crash"
+	EventDeployment           EventTypeName = "deployment"
+	EventLinkSCM              EventTypeName = "link_scm"
+	EventUnlinkSCM            EventTypeName = "unlink_scm"
+	EventNewIntegration       EventTypeName = "new_integration"
+	EventDeleteIntegration    EventTypeName = "delete_integration"
+	EventAuthorizeGithub      EventTypeName = "authorize_github"
+	EventRevokeGithub         EventTypeName = "revoke_github"
+	EventRun                  EventTypeName = "run"
+	EventNewDomain            EventTypeName = "new_domain"
+	EventEditDomain           EventTypeName = "edit_domain"
+	EventDeleteDomain         EventTypeName = "delete_domain"
+	EventNewAddon             EventTypeName = "new_addon"
+	EventUpgradeAddon         EventTypeName = "upgrade_addon"
+	EventUpgradeDatabase      EventTypeName = "upgrade_database"
+	EventDeleteAddon          EventTypeName = "delete_addon"
+	EventResumeAddon          EventTypeName = "resume_addon"
+	EventSuspendAddon         EventTypeName = "suspend_addon"
+	EventNewCollaborator      EventTypeName = "new_collaborator"
+	EventAcceptCollaborator   EventTypeName = "accept_collaborator"
+	EventDeleteCollaborator   EventTypeName = "delete_collaborator"
+	EventNewVariable          EventTypeName = "new_variable"
+	EventEditVariable         EventTypeName = "edit_variable"
+	EventEditVariables        EventTypeName = "edit_variables"
+	EventDeleteVariable       EventTypeName = "delete_variable"
+	EventAddCredit            EventTypeName = "add_credit"
+	EventAddPaymentMethod     EventTypeName = "add_payment_method"
+	EventAddVoucher           EventTypeName = "add_voucher"
+	EventNewKey               EventTypeName = "new_key"
+	EventDeleteKey            EventTypeName = "delete_key"
+	EventPaymentAttempt       EventTypeName = "payment_attempt"
+	EventNewAlert             EventTypeName = "new_alert"
+	EventAlert                EventTypeName = "alert"
+	EventDeleteAlert          EventTypeName = "delete_alert"
+	EventNewAutoscaler        EventTypeName = "new_autoscaler"
+	EventDeleteAutoscaler     EventTypeName = "delete_autoscaler"
+	EventAddonUpdated         EventTypeName = "addon_updated"
+	EventStartRegionMigration EventTypeName = "start_region_migration"
+
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
 	EventLinkGithub   EventTypeName = "link_github"
@@ -685,47 +685,6 @@ type EventDeleteVariableTypeData struct {
 	EventVariable
 }
 
-type EventNotification struct {
-	NotificationType string `json:"notification_type"`
-	Active           bool   `json:"active"`
-	WebhookURL       string `json:"webhook_url"`
-}
-
-func (n *EventNotification) String() string {
-	state := "disabled"
-	if n.Active {
-		state = "enabled"
-	}
-	return fmt.Sprintf("%s: %s (%s)", n.NotificationType, n.WebhookURL, state)
-}
-
-type EventNewNotificationType struct {
-	Event
-	TypeData EventNotification `json:"type_data"`
-}
-
-func (ev *EventNewNotificationType) String() string {
-	return ev.TypeData.String()
-}
-
-type EventEditNotificationType struct {
-	Event
-	TypeData EventNotification `json:"type_data"`
-}
-
-func (ev *EventEditNotificationType) String() string {
-	return ev.TypeData.String()
-}
-
-type EventDeleteNotificationType struct {
-	Event
-	TypeData EventNotification `json:"type_data"`
-}
-
-func (ev *EventDeleteNotificationType) String() string {
-	return ev.TypeData.String()
-}
-
 type EventPaymentAttemptTypeData struct {
 	Amount        float32 `json:"amount"`
 	PaymentMethod string  `json:"payment_method"`
@@ -860,6 +819,48 @@ func (ev *EventDeleteAutoscalerType) String() string {
 	return fmt.Sprintf("Alert deleted about %s on container %s", d.Metric, d.ContainerType)
 }
 
+type EventStartRegionMigrationTypeData struct {
+	MigrationID string `json:"migration_id"`
+	Destination string `json:"destination"`
+	Source      string `json:"source"`
+	DstAppName  string `json:"dst_app_name"`
+}
+
+type EventStartRegionMigrationType struct {
+	Event
+	TypeData EventStartRegionMigrationTypeData `json:"type_data"`
+}
+
+func (ev *EventStartRegionMigrationType) String() string {
+	return fmt.Sprintf("Application region migration started from %s to %s/%s", ev.TypeData.Source, ev.TypeData.Destination, ev.TypeData.DstAppName)
+}
+
+type EventAddonUpdatedTypeData struct {
+	AddonID           string `json:"addon_id"`
+	AddonPlanName     string `json:"addon_plan_name"`
+	AddonResourceID   string `json:"addon_resource_id"`
+	AddonProviderID   string `json:"addon_provider_id"`
+	AddonProviderName string `json:"addon_provider_name"`
+
+	// Status has only two items when is updated, the old value and the new value, in this order
+	Status []AddonStatus `json:"status"`
+	// AttributesChanged contain names of changed attributes
+	AttributesChanged []string `json:"attributes_changed"`
+}
+
+type EventAddonUpdatedType struct {
+	Event
+	TypeData EventAddonUpdatedTypeData `json:"type_data"`
+}
+
+func (ev *EventAddonUpdatedType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf(
+		"Addon %s %s updated, status %v -> %v",
+		d.AddonProviderName, d.AddonResourceID, d.Status[0], d.Status[1],
+	)
+}
+
 func (pev *Event) Specialize() DetailedEvent {
 	var e DetailedEvent
 	ev := *pev
@@ -932,12 +933,6 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventEditVariablesType{Event: ev}
 	case EventDeleteVariable:
 		e = &EventDeleteVariableType{Event: ev}
-	case EventNewNotification:
-		e = &EventNewNotificationType{Event: ev}
-	case EventEditNotification:
-		e = &EventEditNotificationType{Event: ev}
-	case EventDeleteNotification:
-		e = &EventDeleteNotificationType{Event: ev}
 	case EventAddCredit:
 		e = &EventAddCreditType{Event: ev}
 	case EventAddPaymentMethod:
@@ -960,6 +955,10 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventNewAutoscalerType{Event: ev}
 	case EventDeleteAutoscaler:
 		e = &EventDeleteAutoscalerType{Event: ev}
+	case EventStartRegionMigration:
+		e = &EventStartRegionMigrationType{Event: ev}
+	case EventAddonUpdated:
+		e = &EventAddonUpdatedType{Event: ev}
 	// Deprecated events. Replaced by equivalent with SCM in the name instead of
 	// Github
 	case EventLinkGithub:
