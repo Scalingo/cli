@@ -92,7 +92,7 @@ func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration,
 		}
 	}
 
-	if opts.CurrentStep != scalingo.RegionMigrationStepAbort {
+	if opts.CurrentStep != scalingo.RegionMigrationStepAbort && migration.Status != scalingo.RegionMigrationStatusPreflightError {
 		fmt.Println("To rollback your application to a working state, run:")
 		fmt.Printf("scalingo --app %s migration-abort %s\n\n", appId, migration.ID)
 	}
