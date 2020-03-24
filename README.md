@@ -253,3 +253,6 @@ scalingo --region agora-fr1 -a cli-download-service restart
 ```
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
+
+> [Changelog] CLI - Release of version 1.16.7 https://cli.scalingo.com - More
+> news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
