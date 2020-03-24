@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.16.7
+
 * Improve error message if unknown app, suggests to try on a different region
   [#524](https://github.com/Scalingo/cli/pull/524)
 * Add option `--force` to the command `git-setup`
