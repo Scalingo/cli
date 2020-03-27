@@ -25,7 +25,6 @@ type API interface {
 	LogsArchivesService
 	LogsService
 	NotificationPlatformsService
-	NotificationsService
 	NotifiersService
 	OperationsService
 	RegionsService
@@ -141,7 +140,11 @@ func (c *Client) AuthAPI() http.Client {
 	if c.authClient != nil {
 		return c.authClient
 	}
+
 	var tokenGenerator http.TokenGenerator
+	if c.config.StaticTokenGenerator != nil {
+		tokenGenerator = c.config.StaticTokenGenerator
+	}
 	if len(c.config.APIToken) != 0 {
 		tokenGenerator = http.NewAPITokenGenerator(c, c.config.APIToken)
 	}

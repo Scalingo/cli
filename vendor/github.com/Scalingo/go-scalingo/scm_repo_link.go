@@ -24,7 +24,6 @@ type SCMRepoLinkCreateParams struct {
 	Source                   *string `json:"source,omitempty"`
 	Branch                   *string `json:"branch,omitempty"`
 	AuthIntegrationUUID      *string `json:"auth_integration_uuid,omitempty"`
-	SCMIntegrationUUID       *string `json:"scm_integration_uuid,omitempty"`
 	AutoDeployEnabled        *bool   `json:"auto_deploy_enabled,omitempty"`
 	DeployReviewAppsEnabled  *bool   `json:"deploy_review_apps_enabled,omitempty"`
 	DestroyOnCloseEnabled    *bool   `json:"delete_on_close_enabled,omitempty"`
@@ -54,7 +53,6 @@ type SCMRepoLink struct {
 	CreatedAt                time.Time         `json:"created_at"`
 	UpdatedAt                time.Time         `json:"updated_at"`
 	AutoDeployEnabled        bool              `json:"auto_deploy_enabled"`
-	SCMIntegrationUUID       string            `json:"scm_integration_uuid"`
 	AuthIntegrationUUID      string            `json:"auth_integration_uuid"`
 	DeployReviewAppsEnabled  bool              `json:"deploy_review_apps_enabled"`
 	DeleteOnCloseEnabled     bool              `json:"delete_on_close_enabled"`
