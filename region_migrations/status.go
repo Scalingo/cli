@@ -94,7 +94,7 @@ func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration,
 
 	if opts.CurrentStep != scalingo.RegionMigrationStepAbort {
 		fmt.Println("To rollback your application to a working state, run:")
-		fmt.Printf("scalingo --app %s migration-abort %s\n\n", appId, migration.ID)
+		fmt.Printf("scalingo --region %s --app %s migration-abort %s\n\n", migration.Source, appId, migration.ID)
 	}
 
 	fmt.Println("You can contact support@scalingo.com to troubleshoot this issue.")
@@ -103,27 +103,27 @@ func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration,
 func showMigrationStatusPreflightSuccess(appId string, migration scalingo.RegionMigration) {
 	fmt.Printf("Your app can be migrated to the %s zone.\n", migration.Destination)
 	fmt.Printf("To start the migration launch:\n\n")
-	fmt.Printf("scalingo --app %s migration-run --prepare %s\n", appId, migration.ID)
+	fmt.Printf("scalingo --region %s --app %s migration-run --prepare %s\n", migration.Source, appId, migration.ID)
 }
 
 func showMigrationStatusPrepared(appId string, migration scalingo.RegionMigration) {
 	fmt.Printf("Application on region '%s' has been prepared, you can now:\n", migration.Destination)
 	fmt.Printf("- Let us migrate your data to '%s' newly created databases with:\n", migration.Destination)
-	fmt.Printf("scalingo --app %s migration-run --data %s\n", appId, migration.ID)
+	fmt.Printf("scalingo --region %s --app %s migration-run --data %s\n", migration.Source, appId, migration.ID)
 	fmt.Printf("- Handle data migration manually, then finalizing the migration with:\n")
-	fmt.Printf("scalingo --app %s migration-run --finalize %s\n", appId, migration.ID)
+	fmt.Printf("scalingo --region %s --app %s migration-run --finalize %s\n", migration.Source, appId, migration.ID)
 }
 
 func showMigrationStatusDataMigrated(appId string, migration scalingo.RegionMigration) {
 	fmt.Printf("Data has been migrated to the '%s' region\n", migration.Destination)
 	fmt.Printf("You can finalize the migration with:\n")
-	fmt.Printf("scalingo --app %s migration-run --finalize %s\n", appId, migration.ID)
+	fmt.Printf("scalingo --region %s --app %s migration-run --finalize %s\n", migration.Source, appId, migration.ID)
 }
 
 func showMigrationStatusAborted(appId string, migration scalingo.RegionMigration) {
 	fmt.Printf("The migration '%s' has been aborted\n", migration.ID)
 	fmt.Printf("You can retry it with:\n")
-	fmt.Printf("scalingo --app %s migration-create --to %s", appId, migration.Destination)
+	fmt.Printf("scalingo --region %s --app %s migration-create --to %s", migration.Source, appId, migration.Destination)
 	if migration.DstAppName != migration.SrcAppName {
 		fmt.Printf(" --new-name %s \n", migration.DstAppName)
 	} else {
