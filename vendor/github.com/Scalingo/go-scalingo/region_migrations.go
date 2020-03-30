@@ -47,6 +47,7 @@ type RegionMigration struct {
 	DstAppName  string                `json:"dst_app_name"`
 	AppID       string                `json:"app_id"`
 	NewAppID    string                `json:"new_app_id"`
+	Source      string                `json:"source"`
 	Destination string                `json:"destination"`
 	Status      RegionMigrationStatus `json:"status"`
 	StartedAt   time.Time             `json:"started_at"`

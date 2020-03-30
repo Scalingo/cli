@@ -55,7 +55,7 @@ func Run(app, migrationID string, step scalingo.RegionMigrationStep) error {
 	if !shouldContinue {
 		fmt.Println("The current step has been canceled. You can restart it later.")
 		fmt.Println("If you want to abort the migration, run:")
-		fmt.Printf("scalingo --app %s migration-abort %s\n", app, migrationID)
+		fmt.Printf("scalingo --region %s --app %s migration-abort %s\n", migration.Source, app, migrationID)
 		return nil
 	}
 	expectedStatuses := []scalingo.RegionMigrationStatus{}

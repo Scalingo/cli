@@ -3,7 +3,7 @@ package addons
 import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo"
 	"gopkg.in/errgo.v1"
 )
 
