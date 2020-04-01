@@ -101,9 +101,11 @@ func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration,
 }
 
 func showMigrationStatusPreflightSuccess(appId string, migration scalingo.RegionMigration) {
-	fmt.Printf("Your app can be migrated to the %s zone.\n", migration.Destination)
-	fmt.Printf("To start the migration launch:\n\n")
+	fmt.Printf("Your app can be migrated to the %s zone.\n\n", migration.Destination)
+	fmt.Printf("- Start the migration with:\n")
 	fmt.Printf("scalingo --region %s --app %s migration-run --prepare %s\n", migration.Source, appId, migration.ID)
+	fmt.Printf("- Abort the migration with:\n")
+	fmt.Printf("scalingo --region %s --app %s migration-abort %s\n", migration.Source, appId, migration.ID)
 }
 
 func showMigrationStatusPrepared(appId string, migration scalingo.RegionMigration) {
