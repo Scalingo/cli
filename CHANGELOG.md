@@ -2,6 +2,12 @@
 
 ### To be Released
 
+### 1.16.8
+
+* Better output for migration commands
+  [#540](https://github.com/Scalingo/cli/pull/540)
+  [#542](https://github.com/Scalingo/cli/pull/542)
+
 ### 1.16.7
 
 * Improve error message if unknown app, suggests to try on a different region

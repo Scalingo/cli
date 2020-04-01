@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.16.7
+# Scalingo-CLI v1.16.8
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -54,7 +54,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.16.7
+   1.16.8
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -236,11 +236,11 @@ And commit these changes:
 
 ```bash
 $ git add .
-$ git commit -m "Bump version 1.16.7"
+$ git commit -m "Bump version 1.16.8"
 $ git push origin master
 ```
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.7`.
+Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.8`.
 
 Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
 the zip archives created by the `make-release.sh` script to this release.
@@ -254,5 +254,5 @@ scalingo --region agora-fr1 -a cli-download-service restart
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.16.7 https://cli.scalingo.com - More
+> [Changelog] CLI - Release of version 1.16.8 https://cli.scalingo.com - More
 > news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
