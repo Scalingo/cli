@@ -27,6 +27,7 @@ type Refresher struct {
 
 	lock                 *sync.Mutex
 	migration            *scalingo.RegionMigration
+	errCount             int
 	stop                 bool
 	screenRefreshTime    time.Duration
 	migrationRefreshTime time.Duration
@@ -47,6 +48,7 @@ func NewRefresher(client *scalingo.Client, appID, migrationID string, opts Refre
 		migrationRefreshTime: 1 * time.Second,
 		wg:                   &sync.WaitGroup{},
 		currentLoadersStep:   0,
+		errCount:             0,
 		opts:                 opts,
 	}
 }
@@ -75,10 +77,11 @@ func (r *Refresher) screenRefresher() {
 		r.lock.Lock()
 		stop := r.stop
 		migration := r.migration
+		errCount := r.errCount
 		r.lock.Unlock()
 		r.currentLoadersStep = (r.currentLoadersStep + 1) % len(spinner.CharSets[11])
 
-		r.writeMigration(writer, migration)
+		r.writeMigration(writer, migration, errCount)
 		if stop {
 			return
 		}
@@ -93,16 +96,28 @@ func (r *Refresher) migrationRefresher() error {
 	client := r.client
 	r.lock.Unlock()
 
+	errCount := 0
+
+	var migration *scalingo.RegionMigration
+
 	for {
-		migration, err := client.ShowRegionMigration(r.appID, r.migrationID)
+		newMigration, err := client.ShowRegionMigration(r.appID, r.migrationID)
 		if err != nil {
-			r.Stop()
-			return errgo.Notef(err, "fail to get migration")
+			errCount++
+			if errCount > 10 {
+				r.Stop()
+				return errgo.Notef(err, "fail to get migration")
+			}
+			time.Sleep(10 * time.Second)
+		} else {
+			migration = &newMigration
+			errCount = 0
 		}
 
 		r.lock.Lock()
 		stop := r.stop
-		r.migration = &migration
+		r.migration = migration
+		r.errCount = errCount
 		r.lock.Unlock()
 		if stop {
 			return nil
@@ -117,16 +132,20 @@ func (r *Refresher) migrationRefresher() error {
 	}
 }
 
-func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionMigration) {
+func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionMigration, errCount int) {
 	defer w.Flush()
 
+	if errCount != 0 {
+		fmt.Fprintf(w.Newline(), color.RedString("Connection lost. Retrying (%v/10)\n", errCount))
+	}
+
 	if migration == nil {
-		fmt.Fprint(w, color.BlueString("%s Loading migration information\n", r.loader()))
+		fmt.Fprint(w.Newline(), color.BlueString("%s Loading migration information\n", r.loader()))
 		return
 	}
 
-	fmt.Fprintf(w, "Migration ID: %s\n", migration.ID)
-	fmt.Fprintf(w, "Migrating app: %s\n", migration.SrcAppName)
+	fmt.Fprintf(w.Newline(), "Migration ID: %s\n", migration.ID)
+	fmt.Fprintf(w.Newline(), "Migrating app: %s\n", migration.SrcAppName)
 	fmt.Fprintf(w.Newline(), "Destination: %s\n", migration.Destination)
 	if migration.NewAppID == "" {
 		fmt.Fprintf(w.Newline(), "New app ID: %s\n", color.BlueString("N/A"))
@@ -163,7 +182,10 @@ func (r *Refresher) loader() string {
 	return spinner.CharSets[11][r.currentLoadersStep]
 }
 
-func (r *Refresher) shouldStop(m scalingo.RegionMigration) bool {
+func (r *Refresher) shouldStop(m *scalingo.RegionMigration) bool {
+	if m == nil {
+		return false
+	}
 	switch m.Status {
 	case scalingo.RegionMigrationStatusError:
 		return true
