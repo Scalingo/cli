@@ -33,6 +33,10 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 
 	color.Green("Your application is now available at: %s\n\n", app.BaseURL)
 
+	io.Status("You will also need to change the Git URL of your repository.")
+	io.Info("To change the git remote URL use:")
+	io.Infof("git remote set-url scalingo %s \n\n", app.GitUrl)
+
 	if len(domains) == 0 {
 		return
 	}
@@ -70,6 +74,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 		io.Info("To configure your DNS record, check out our documentation:")
 		io.Info("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
 	}
+
 	return
 }
 func showGenericMigrationSuccessMessage() {
