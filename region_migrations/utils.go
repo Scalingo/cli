@@ -12,7 +12,9 @@ func formatMigrationStatus(status scalingo.RegionMigrationStatus) string {
 		fallthrough
 	case scalingo.RegionMigrationStatusDataMigrated:
 		fallthrough
-	case scalingo.RegionMigrationStatusScheduled:
+	case scalingo.RegionMigrationStatusAborting:
+		fallthrough
+	case scalingo.RegionMigrationStatusCreated:
 		return color.BlueString(strStatus)
 	case scalingo.RegionMigrationStatusRunning:
 		return color.YellowString(strStatus)

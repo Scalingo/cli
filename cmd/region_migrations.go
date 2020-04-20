@@ -141,7 +141,7 @@ var (
 			appFlag,
 		},
 		Usage: "Follow a running migration",
-		Description: `Follow a running migration
+		Description: `Listen for new events on a migration
    Example
 	   'scalingo --app my-app migration-follow migration-id'
 		`,

@@ -11,5 +11,7 @@ func Follow(appID, migrationID string) error {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	return WatchMigration(c, appID, migrationID, RefreshOpts{})
+	return WatchMigration(c, appID, migrationID, RefreshOpts{
+		ShowHints: true,
+	})
 }

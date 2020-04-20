@@ -14,6 +14,7 @@ import (
 )
 
 type RefreshOpts struct {
+	ShowHints        bool
 	ExpectedStatuses []scalingo.RegionMigrationStatus
 	HiddenSteps      []string
 	CurrentStep      scalingo.RegionMigrationStep
@@ -134,7 +135,11 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 		fmt.Fprintf(w.Newline(), "New app ID: %s\n", migration.NewAppID)
 	}
 	fmt.Fprintf(w.Newline(), "Status: %s\n", formatMigrationStatus(migration.Status))
-	if migration.Status == scalingo.RegionMigrationStatusScheduled {
+	if r.opts.ShowHints {
+		fmt.Fprintf(w.Newline(), "%s\n", r.hintFor(migration))
+
+	}
+	if migration.Status == scalingo.RegionMigrationStatusCreated {
 		fmt.Fprintf(w.Newline(), "%s Waiting for the migration to start\n", r.loader())
 	}
 
@@ -195,4 +200,30 @@ func (r *Refresher) shouldShowStep(step scalingo.Step) bool {
 		}
 	}
 	return true
+}
+
+func (r *Refresher) hintFor(m *scalingo.RegionMigration) string {
+	switch m.Status {
+	case scalingo.RegionMigrationStatusAborted:
+		return "The migration has been aborted. No update will be posted here."
+	case scalingo.RegionMigrationStatusCreated:
+		return "The migration has been created. The preflight checks will begin shortly."
+	case scalingo.RegionMigrationStatusPreflightError:
+		return "There was an error during the preflight checks. No update will be posted here."
+	case scalingo.RegionMigrationStatusPreflightSuccess:
+		return "The preflight checks were successfull. Waiting on the user to start the 'prepare' step."
+	case scalingo.RegionMigrationStatusRunning:
+		return "The migration is currently running."
+	case scalingo.RegionMigrationStatusPrepared:
+		return "The migration has been prepared. Waiting on the user to start the 'data' or 'finalize' step."
+	case scalingo.RegionMigrationStatusDataMigrated:
+		return "The addon has been migrated. Waiting on the user to start the 'finalize' step."
+	case scalingo.RegionMigrationStatusError:
+		return "There was an error while running the migration. Waiting on the user to 'abort' it."
+	case scalingo.RegionMigrationStatusDone:
+		return "The migration is done. No update will be posted here."
+	case scalingo.RegionMigrationStatusAborting:
+		return "The migration will be aborted shortly. The abort process will begin shortly."
+	}
+	return ""
 }
