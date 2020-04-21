@@ -38,7 +38,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-utils"
-  version = "^5"
+  version = "^6"
 
 [[constraint]]
   name = "github.com/ScaleFT/sshkeys"
