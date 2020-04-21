@@ -1,7 +1,7 @@
 package errors
 
 import (
-	"bytes"
+	"fmt"
 	"strings"
 )
 
@@ -11,14 +11,18 @@ type ValidationErrors struct {
 }
 
 func (v *ValidationErrors) Error() string {
-	var buffer bytes.Buffer
+	var builder strings.Builder
+	index := 0
 
-	for field, errors := range v.Errors {
-		buffer.WriteString(field)
-		buffer.WriteString("=")
-		buffer.WriteString(strings.Join(errors, ","))
+	for field, errs := range v.Errors {
+		index++
+		builder.WriteString(fmt.Sprintf("%s=%s", field, strings.Join(errs, ", ")))
+		if index < len(v.Errors) {
+			builder.WriteString(" ")
+		}
 	}
-	return buffer.String()
+
+	return builder.String()
 }
 
 // ValidationErrorsBuilder is used to provide a simple way to create a ValidationErrors struct. The typical usecase is:

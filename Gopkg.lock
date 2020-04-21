@@ -41,12 +41,15 @@
   version = "v4.4.0"
 
 [[projects]]
-  digest = "1:a1dcc4e2d5a5980c31901ea884435b64917fdd523eacb5d6171023b80eaa25a8"
+  digest = "1:ab7f2d565135ccc3b35eb2427819fbca0501d582eba5091e684275022d3ff3ba"
   name = "github.com/Scalingo/go-utils"
-  packages = ["errors"]
+  packages = [
+    "errors",
+    "retry",
+  ]
   pruneopts = "NUT"
-  revision = "f09d2d5f826a81e3272cf7e14f6d26eb398f5b80"
-  version = "v5.5.10"
+  revision = "621a06b086d3a17768bd978b1d3cda8b7dcf4089"
+  version = "v6.3.0"
 
 [[projects]]
   branch = "master"
@@ -514,6 +517,7 @@
     "github.com/Scalingo/go-scalingo/http",
     "github.com/Scalingo/go-scalingo/io",
     "github.com/Scalingo/go-utils/errors",
+    "github.com/Scalingo/go-utils/retry",
     "github.com/andrew-d/go-termutil",
     "github.com/bmizerany/assert",
     "github.com/briandowns/spinner",

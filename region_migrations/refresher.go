@@ -1,12 +1,14 @@
 package region_migrations
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
 
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-utils/retry"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 	"github.com/gosuri/uilive"
@@ -29,6 +31,7 @@ type Refresher struct {
 	lock                 *sync.Mutex
 	migration            *scalingo.RegionMigration
 	errCount             int
+	maxErrors            int
 	stop                 bool
 	screenRefreshTime    time.Duration
 	migrationRefreshTime time.Duration
@@ -50,6 +53,7 @@ func NewRefresher(client *scalingo.Client, appID, migrationID string, opts Refre
 		wg:                   &sync.WaitGroup{},
 		currentLoadersStep:   0,
 		errCount:             0,
+		maxErrors:            0,
 		opts:                 opts,
 	}
 }
@@ -79,16 +83,24 @@ func (r *Refresher) screenRefresher() {
 		stop := r.stop
 		migration := r.migration
 		errCount := r.errCount
+		maxErrors := r.maxErrors
 		r.lock.Unlock()
 		r.currentLoadersStep = (r.currentLoadersStep + 1) % len(spinner.CharSets[11])
 
-		r.writeMigration(writer, migration, errCount)
+		r.writeMigration(writer, migration, errCount, maxErrors)
 		if stop {
 			return
 		}
 
 		time.Sleep(r.screenRefreshTime)
 	}
+}
+
+func (r *Refresher) onRefreshError(ctx context.Context, err error, currentAttempt, maxAttempt int) {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+	r.errCount = currentAttempt + 1
+	r.maxErrors = maxAttempt
 }
 
 func (r *Refresher) migrationRefresher() error {
@@ -99,26 +111,34 @@ func (r *Refresher) migrationRefresher() error {
 
 	errCount := 0
 
-	var migration *scalingo.RegionMigration
+	retrier := retry.New(
+		retry.WithMaxAttempts(10),
+		retry.WithWaitDuration(10*time.Second),
+		retry.WithErrorCallback(r.onRefreshError),
+	)
 
 	for {
-		newMigration, err := client.ShowRegionMigration(r.appID, r.migrationID)
-		if err != nil {
-			errCount++
-			if errCount > 10 {
-				r.Stop()
-				return errgo.Notef(err, "fail to get migration")
+		err := retrier.Do(context.Background(), func(ctx context.Context) error {
+			migration, err := client.ShowRegionMigration(r.appID, r.migrationID)
+			if err != nil {
+				return err
 			}
-			time.Sleep(10 * time.Second)
-		} else {
-			migration = &newMigration
-			errCount = 0
+			r.lock.Lock()
+			r.errCount = 0
+			r.migration = &migration
+			r.errCount = errCount
+			r.lock.Unlock()
+			return nil
+		})
+
+		if err != nil {
+			r.Stop()
+			return errgo.Notef(err, "fail to get migration")
 		}
 
 		r.lock.Lock()
+		migration := r.migration
 		stop := r.stop
-		r.migration = migration
-		r.errCount = errCount
 		r.lock.Unlock()
 		if stop {
 			return nil
@@ -133,11 +153,11 @@ func (r *Refresher) migrationRefresher() error {
 	}
 }
 
-func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionMigration, errCount int) {
+func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionMigration, errCount, maxErrors int) {
 	defer w.Flush()
 
 	if errCount != 0 {
-		fmt.Fprintf(w.Newline(), color.RedString("Connection lost. Retrying (%v/10)\n", errCount))
+		fmt.Fprintf(w.Newline(), color.RedString("Connection lost. Retrying (%v/%v)\n", errCount, maxErrors))
 	}
 
 	if migration == nil {
