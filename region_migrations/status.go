@@ -5,11 +5,12 @@ import (
 	"net"
 	"net/url"
 
+	"github.com/fatih/color"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
-	"github.com/fatih/color"
 )
 
 func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration) {
@@ -34,7 +35,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 	color.Green("Your application is now available at: %s\n\n", app.BaseURL)
 
 	io.Status("You will also need to change the Git URL of your repository.")
-	io.Info("To change the git remote URL use:")
+	io.Info("To change the Git remote URL use:")
 	io.Infof("git remote set-url scalingo %s \n\n", app.GitUrl)
 
 	if len(domains) == 0 {
