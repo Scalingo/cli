@@ -75,8 +75,6 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 		io.Info("To configure your DNS record, check out our documentation:")
 		io.Info("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
 	}
-
-	return
 }
 func showGenericMigrationSuccessMessage() {
 	color.Green("The application has been migrated!\n")
@@ -87,7 +85,7 @@ func showGenericMigrationSuccessMessage() {
 func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
 	color.Red("The migration failed because of the following errors:\n")
 
-	for i, _ := range migration.Steps {
+	for i := range migration.Steps {
 		step := migration.Steps[len(migration.Steps)-1-i]
 		if step.Status == scalingo.StepStatusError {
 			if step.Logs == "" {
