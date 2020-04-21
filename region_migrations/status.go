@@ -5,11 +5,12 @@ import (
 	"net"
 	"net/url"
 
+	"github.com/fatih/color"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo"
-	"github.com/fatih/color"
 )
 
 func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration) {
@@ -34,7 +35,7 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 	color.Green("Your application is now available at: %s\n\n", app.BaseURL)
 
 	io.Status("You will also need to change the Git URL of your repository.")
-	io.Info("To change the git remote URL use:")
+	io.Info("To change the Git remote URL use:")
 	io.Infof("git remote set-url scalingo %s \n\n", app.GitUrl)
 
 	if len(domains) == 0 {
@@ -74,8 +75,6 @@ func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration
 		io.Info("To configure your DNS record, check out our documentation:")
 		io.Info("- https://doc.scalingo.com/platform/app/domain#configure-your-domain-name")
 	}
-
-	return
 }
 func showGenericMigrationSuccessMessage() {
 	color.Green("The application has been migrated!\n")
@@ -86,7 +85,7 @@ func showGenericMigrationSuccessMessage() {
 func showMigrationStatusFailed(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
 	color.Red("The migration failed because of the following errors:\n")
 
-	for i, _ := range migration.Steps {
+	for i := range migration.Steps {
 		step := migration.Steps[len(migration.Steps)-1-i]
 		if step.Status == scalingo.StepStatusError {
 			if step.Logs == "" {
