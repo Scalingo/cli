@@ -46,7 +46,7 @@
 
 [[constraint]]
   name = "github.com/urfave/cli"
-  version = "1.22.0"
+  version = "1.x"
 
 # Fix urfave/cli 1.22.0 dependency bug : https://github.com/urfave/cli/issues/888
 [[override]]
