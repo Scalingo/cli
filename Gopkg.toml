@@ -26,7 +26,8 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  version = "^4"
+  # version = "^4"
+  branch = "fix/cli/556/addon_updated"
 
 [[constraint]]
   branch = "master"
