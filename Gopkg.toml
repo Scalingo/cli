@@ -26,7 +26,8 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  version = "^4"
+  # version = "^4"
+  branch = "fix/cli/556/addon_updated"
 
 [[constraint]]
   branch = "master"
@@ -34,7 +35,7 @@
 
 [[constraint]]
   name = "github.com/cheggaaa/pb"
-  version = "1.0.28"
+  version = "1.x"
 
 [[constraint]]
   name = "github.com/Scalingo/go-utils"
@@ -46,7 +47,7 @@
 
 [[constraint]]
   name = "github.com/urfave/cli"
-  version = "1.22.0"
+  version = "1.x"
 
 # Fix urfave/cli 1.22.0 dependency bug : https://github.com/urfave/cli/issues/888
 [[override]]
