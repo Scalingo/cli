@@ -218,9 +218,17 @@ func (ev *EventRestartType) String() string {
 	return fmt.Sprintf("containers have been restarted")
 }
 
+func (ev *EventRestartType) Who() string {
+	if ev.TypeData.AddonName != "" {
+		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+	} else {
+		return ev.Who()
+	}
+}
+
 type EventRestartTypeData struct {
-	Scope         []string `json:"scope"`
-	AddonProvider string   `json:"addon_provider"`
+	Scope     []string `json:"scope"`
+	AddonName string   `json:"addon_name"`
 }
 
 type EventStopAppType struct {
@@ -644,7 +652,8 @@ func (ev *EventEditVariableType) String() string {
 
 type EventEditVariableTypeData struct {
 	EventVariable
-	OldValue string `json:"old_value"`
+	OldValue  string `json:"old_value"`
+	AddonName string `json:"addon_name"`
 }
 
 type EventEditVariablesType struct {
@@ -664,6 +673,14 @@ func (ev *EventEditVariablesType) String() string {
 		res += fmt.Sprintf(" %s removed", ev.TypeData.DeletedVars.Names())
 	}
 	return res
+}
+
+func (ev *EventEditVariableType) Who() string {
+	if ev.TypeData.AddonName != "" {
+		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+	} else {
+		return ev.Who()
+	}
 }
 
 type EventEditVariablesTypeData struct {
