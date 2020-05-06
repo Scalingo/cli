@@ -22,6 +22,7 @@ type API interface {
 	EventsService
 	KeysService
 	LoginService
+	LogDrainsService
 	LogsArchivesService
 	LogsService
 	NotificationPlatformsService
