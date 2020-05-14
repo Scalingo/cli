@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	scalingoio "github.com/Scalingo/go-scalingo/io"
 
 	"gopkg.in/errgo.v1"

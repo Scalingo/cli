@@ -2,17 +2,20 @@ package deployments
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	stdio "io"
 	"strings"
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
 )
+
+var ErrDeploymentFailed = errors.New("Deployment failed")
 
 type StreamOpts struct {
 	AppName      string
@@ -117,6 +120,9 @@ func Stream(opts *StreamOpts) error {
 				statuses[event.ID] = statusData.Content
 
 				if !anyDeployment && scalingo.IsFinishedString(scalingo.DeploymentStatus(statusData.Content)) {
+					if scalingo.HasFailedString(scalingo.DeploymentStatus(statusData.Content)) {
+						return ErrDeploymentFailed
+					}
 					return nil
 				}
 			case "new":
