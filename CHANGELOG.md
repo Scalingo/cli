@@ -5,6 +5,7 @@
 * Region Migration: Better output for the `migration-follow` command to explain what is happening [#549](https://github.com/Scalingo/cli/pull/549)
 * Region Migration: Retry if it fails to refresh the migration status [#550](https://github.com/Scalingo/cli/pull/550)
 * Region Migration: Add instructions to change local Git URL at the end of the migration [#551](https://github.com/Scalingo/cli/pull/551)
+* Deployment: Send a non 0 exit code when a deployment fails [#563](https://github.com/Scalingo/cli/pull/563)
 * Bugfix: fix support for `addon_updated` and `start_region_migration` event type [#558](https://github.com/Scalingo/cli/pull/558)
 * Bugfix: fix author of `restart` and `edit_variable` when it's an addon [#558](https://github.com/Scalingo/cli/pull/558)
 
