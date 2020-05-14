@@ -7,6 +7,9 @@
 * Region Migration: Add instructions to change local Git URL at the end of the migration [#551](https://github.com/Scalingo/cli/pull/551)
 * Bugfix: fix support for `addon_updated` and `start_region_migration` event type [#558](https://github.com/Scalingo/cli/pull/558)
 * Bugfix: fix author of `restart` and `edit_variable` when it's an addon [#558](https://github.com/Scalingo/cli/pull/558)
+* Add log drains list command
+  [#560](https://github.com/Scalingo/cli/pull/560)
+  [go-scalingo #163](https://github.com/Scalingo/go-scalingo/pull/163)
 
 ### 1.16.8
 
