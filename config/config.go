@@ -9,22 +9,27 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/Scalingo/envconfig"
-	"github.com/Scalingo/go-scalingo"
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/envconfig"
+	"github.com/Scalingo/go-scalingo"
 )
 
 type ConfigFile struct {
 	Region string `json:"region"`
 }
 
+var (
+	// Injected from compiler when making a release
+	RollbarToken = ""
+)
+
 type Config struct {
 	ApiVersion           string
 	DisableInteractive   bool
 	DisableUpdateChecker bool
 	UnsecureSsl          bool
-	RollbarToken         string
 
 	// Override region configuration
 	ScalingoApiUrl  string
@@ -58,7 +63,6 @@ var (
 		"SCALINGO_REGION":    "",
 		"API_VERSION":        "1",
 		"UNSECURE_SSL":       "false",
-		"ROLLBAR_TOKEN":      "",
 		"CONFIG_DIR":         ".config/scalingo",
 		"CACHE_DIR":          ".cache/scalingo",
 		"AUTH_FILE":          "auth",
@@ -114,7 +118,7 @@ func init() {
 	}
 	C.Logger = log.New(C.logFile, "", log.LstdFlags)
 
-	rollbar.Token = C.RollbarToken
+	rollbar.Token = RollbarToken
 	rollbar.Platform = "client"
 	rollbar.Environment = "production"
 	rollbar.ErrorWriter = C.logFile
