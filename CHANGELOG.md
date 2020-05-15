@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.17.0
+
 * Region Migration: Better output for the `migration-follow` command to explain what is happening [#549](https://github.com/Scalingo/cli/pull/549)
 * Region Migration: Retry if it fails to refresh the migration status [#550](https://github.com/Scalingo/cli/pull/550)
 * Region Migration: Add instructions to change local Git URL at the end of the migration [#551](https://github.com/Scalingo/cli/pull/551)
