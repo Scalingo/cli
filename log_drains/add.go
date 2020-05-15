@@ -10,15 +10,14 @@ import (
 func Add(app string, params scalingo.LogDrainAddParams) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "fail to get Scalingo client to add a log drain")
 	}
 
 	d, err := c.LogDrainAdd(app, params)
-
 	if err != nil {
 		return errgo.Notef(err, "fail to add drain to the application")
 	}
 
-	io.Status("Log Drain", d.Drain.URL, "has been add to the application")
+	io.Status("Log drain", d.Drain.URL, "has been added to the application")
 	return nil
 }

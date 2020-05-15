@@ -40,24 +40,24 @@ var (
 	logDrainsAddCommand = cli.Command{
 		Name:     "log-drains-add",
 		Category: "Log drains",
-		Usage:    "Add a log drains to an application",
+		Usage:    "Add a log drain to an application",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
 			cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
 			cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
 			cli.StringFlag{Name: "port", Usage: "Port of logs management service"},
 			cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
-			cli.StringFlag{Name: "drain-region", Usage: "Region used by logs management service to identify their servers"},
+			cli.StringFlag{Name: "drain-region", Usage: "Used by certain logs management service to identify the region of their servers"},
 		},
 		Description: `Add a log drain to an application:
 
 	Examples:
-		$ scalingo -a myapp log-drains-add --type datadog --token token --drain-region region
-		$ scalingo -a myapp log-drains-add --type ovh-graylog --token token --host tag1.logs.ovh.com
-		$ scalingo -a myapp log-drains-add --type logentries --token token
-		$ scalingo -a myapp log-drains-add --type papertrail --host logsN.papertrailapp.com --port 12345
-		$ scalingo -a myapp log-drains-add --type syslog --host example.com --port 12345
-		$ scalingo -a myapp log-drains-add --type elk --url https://USER:TOKEN@logstash-app-name.osc-fr1.scalingo.io
+		$ scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
+		$ scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com
+		$ scalingo --app my-app log-drains-add --type logentries --token 123456789abcdef
+		$ scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345
+		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
+		$ scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io
 
 	# See also commands 'log-drains'`,
 
