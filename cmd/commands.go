@@ -219,6 +219,7 @@ var (
 		migrationFollowCommand,
 
 		// Log drains
+		logDrainsAddCommand,
 		logDrainsListCommand,
 
 		gitSetup,

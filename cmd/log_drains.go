@@ -4,6 +4,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/log_drains"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/urfave/cli"
 )
 
@@ -15,7 +16,9 @@ var (
 		Usage:    "List the log drains of an application",
 		Description: `List all the log drains of an application:
 
-    $ scalingo --app my-app log-drains`,
+	$ scalingo --app my-app log-drains
+
+	# See also commands 'log-drains-add'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -25,6 +28,50 @@ var (
 			}
 
 			err := log_drains.List(currentApp)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
+		},
+	}
+
+	logDrainsAddCommand = cli.Command{
+		Name:     "log-drains-add",
+		Category: "Log drains",
+		Usage:    "Add a log drains to an application",
+		Flags: []cli.Flag{appFlag,
+			cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
+			cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
+			cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
+			cli.StringFlag{Name: "port", Usage: "Port of logs management service"},
+			cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
+			cli.StringFlag{Name: "drain-region", Usage: "Region used by logs management service to identify their servers"},
+		},
+		Description: `Add a log drain to an application:
+
+	Examples:
+		$ scalingo -a myapp log-drains-add --type datadog --token token --drain-region region
+		$ scalingo -a myapp log-drains-add --type ovh-graylog --token token --host tag1.logs.ovh.com
+		$ scalingo -a myapp log-drains-add --type logentries --token token
+		$ scalingo -a myapp log-drains-add --type papertrail --host logsN.papertrailapp.com --port 12345
+		$ scalingo -a myapp log-drains-add --type syslog --host example.com --port 12345
+		$ scalingo -a myapp log-drains-add --type elk --url https://USER:TOKEN@logstash-app-name.osc-fr1.scalingo.io
+
+	# See also commands 'log-drains'`,
+
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+
+			err := log_drains.Add(currentApp, scalingo.LogDrainAddParams{
+				Type:        c.String("type"),
+				URL:         c.String("url"),
+				Host:        c.String("host"),
+				Port:        c.String("port"),
+				Token:       c.String("token"),
+				DrainRegion: c.String("drain-region"),
+			})
 			if err != nil {
 				errorQuit(err)
 			}
