@@ -240,13 +240,22 @@ $ git commit -m "Bump version 1.16.8"
 $ git push origin master
 ```
 
-Build the new version for all platforms with: `./dists/make-release.sh -v 1.16.8`.
+Build the new version for all platforms with:
 
-Tag and release a new version on GitHub [here](https://github.com/Scalingo/cli/releases/new). Attach
-the zip archives created by the `make-release.sh` script to this release.
+```sh
+./dists/make-release.sh -v 1.16.8
+```
 
-Last, restart the Scalingo application `cli-download-service`. It serves as cache between GitHub and
-our customers for a more efficient check of what is the new CLI version. Type:
+The script asks you for a Rollbar token available in the shared keychain under
+the "Rollbar CLI Token" note.
+
+Tag and release a new version on GitHub
+[here](https://github.com/Scalingo/cli/releases/new). Attach the zip archives
+created by the `make-release.sh` script to this release.
+
+Last, restart the Scalingo application `cli-download-service`. It serves as
+cache between GitHub and our customers for a more efficient check of what is the
+new CLI version. Type:
 
 ```
 scalingo --region agora-fr1 -a cli-download-service restart
