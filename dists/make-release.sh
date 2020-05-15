@@ -5,7 +5,7 @@ set -e
 
 VERSION=""
 
-while getopts v:d: OPT; do
+while getopts v: OPT; do
   case $OPT in
     v)
       VERSION=$OPTARG
@@ -14,16 +14,18 @@ while getopts v:d: OPT; do
 done
 
 if [ -z $VERSION ] ; then
-  echo "$0 -v <version> [-d]"
+  echo "Usage: $0 -v <version>" >&2
   exit 1
 fi
 
-mkdir -p bin/$VERSION
-
 bin_dir="bin/$VERSION"
+mkdir -p $bin_dir
 
-git checkout dists
-git rebase master
+read -p "Which Rollbar token should be used in this release: " ROLLBAR_TOKEN
+if [[ -z $ROLLBAR_TOKEN ]]; then
+  echo "Rollbar token is mandatory" >&2
+  exit 2
+fi
 
 function build_for() {
   local os=$1
@@ -35,9 +37,10 @@ function build_for() {
     [ -e "./scalingo" ] && rm ./scalingo
     [ -e "./scalingo.exe" ] && rm ./scalingo.exe
     GOOS=$os GOARCH=$arch go build -ldflags " \
-     -X main.buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` \
-     -X main.githash=`git rev-parse HEAD`
-     -X main.VERSION=$VERSION"
+      -X main.buildstamp=$(date -u '+%Y-%m-%d_%I:%M:%S%p') \
+      -X main.githash=$(git rev-parse HEAD) \
+      -X main.VERSION=$VERSION \
+      -X github.com/Scalingo/cli/config.RollbarToken=$ROLLBAR_TOKEN"
 
     release_dir="scalingo_${VERSION}_${os}_${arch}"
     archive_dir="$bin_dir/$release_dir"
@@ -79,5 +82,3 @@ fi
 if uname -a | grep -iq Cygwin ; then
   build_for windows
 fi
-
-git checkout master
