@@ -18,6 +18,6 @@ func Add(app string, params scalingo.LogDrainAddParams) error {
 		return errgo.Notef(err, "fail to add drain to the application")
 	}
 
-	io.Status("Log drain", d.Drain.URL, "has been added to the application")
+	io.Status("Log drain", d.Drain.URL, "has been added to the application", app)
 	return nil
 }
