@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	httpclient "github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
 )
 
@@ -22,13 +21,8 @@ type LogDrain struct {
 	DrainRegion string `json:"drain_region"`
 }
 
-type logDrainReq struct {
-	Drain LogDrain `json:"drain"`
-}
-
 type LogDrainRes struct {
 	Drain LogDrain `json:"drain"`
-	Error string   `json:"error"`
 }
 
 func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
@@ -51,7 +45,7 @@ type LogDrainAddParams struct {
 
 func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error) {
 	var logDrainRes LogDrainRes
-	payload := logDrainReq{
+	payload := LogDrainRes{
 		Drain: LogDrain{
 			Type:        params.Type,
 			URL:         params.URL,
@@ -62,20 +56,9 @@ func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes
 		},
 	}
 
-	req := &httpclient.APIRequest{
-		Method:   "POST",
-		Endpoint: "/apps/" + app + "/log_drains",
-		Expected: httpclient.Statuses{201, 422},
-		Params:   payload,
-	}
-
-	err := c.ScalingoAPI().DoRequest(req, &logDrainRes)
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "log_drains", payload, &logDrainRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to add drain")
-	}
-
-	if logDrainRes.Error != "" {
-		return nil, errgo.Notef(err, logDrainRes.Error)
 	}
 
 	return &logDrainRes, nil
