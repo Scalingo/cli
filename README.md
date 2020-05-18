@@ -2,21 +2,24 @@
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
-This repository contains the command line utility for the public PaaS Scalingo
+This repository contains the command line utility for the public PaaS Scalingo.
 
-[https://scalingo.com](https://scalingo.com)
+Visit our [website](https://scalingo.com).
 
 ## How to Build?
 
-The project is using Go, then you need a running Go environment: [Official documentation](https://golang.org/doc/install)
+The project is using Go, then you need a running Go environment: [Official
+documentation](https://golang.org/doc/install)
 
-Once that's done, all you have to do is to `go get` the project, with the following command:
+Once that's done, all you have to do is to `go get` the project, with the
+following command:
 
 ```
 go get github.com/Scalingo/cli/scalingo
 ```
 
-That's it, you've build the latest version of the Scalingo CLI (the binary will be present in `$GOPATH/bin/scalingo`)
+That's it, you've build the latest version of the Scalingo CLI (the binary will
+be present in `$GOPATH/bin/scalingo`)
 
 
 ## How to Upgrade?
@@ -36,8 +39,8 @@ HTTPS_PROXY=https://<proxy host>:<proxy port>
 
 ## Disable Update Checking
 
-By default the CLI is making an HTTP request to learn if a newer version is available.
-To disable this feature, define the environment variable:
+By default the CLI is making an HTTP request to learn if a newer version is
+available. To disable this feature, define the environment variable:
 
 ```
 DISABLE_UPDATE_CHECKER=true
@@ -54,7 +57,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.16.8
+   1.17.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -224,6 +227,8 @@ SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234
 
 ## Release a New Version
 
+### New Version Bump
+
 Bump new version number in:
 
 - `.goxc.json`
@@ -235,15 +240,39 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
+$ git checkout master
 $ git add .
-$ git commit -m "Bump version 1.16.8"
+$ git commit -m "Bump version 1.17.0"
 $ git push origin master
 ```
+
+### (optional) Cherry Pick Commits Included in the Release
+
+You may want to cherry pick the commits to include in the release. You first
+need to get the commit ID of the previous release (let's call it `base commit
+ID`). Then create a new branch and cherry pick all the commits you need, from
+the oldest to the most recent. Use the commit ID of the merge of every pull
+request you want to include in your release. Don't forget to also cherry pick
+the commit for the version bump.
+
+```bash
+git checkout <base commit ID>
+git checkout -b v1.17.1
+git cherry-pick -m 1 <commit ID number 1>
+git cherry-pick -m 1 <commit ID number 2>
+...
+git cherry-pick -m 1 <commit ID number X>
+git push --set-upstream origin v1.17.0
+git tag 1.17.0
+git push --tags
+```
+
+### Build the New Release
 
 Build the new version for all platforms with:
 
 ```sh
-./dists/make-release.sh -v 1.16.8
+./dists/make-release.sh -v 1.17.0
 ```
 
 The script asks you for a Rollbar token available in the shared keychain under
@@ -263,5 +292,5 @@ scalingo --region agora-fr1 -a cli-download-service restart
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.16.8 https://cli.scalingo.com - More
+> [Changelog] CLI - Release of version 1.17.0 https://cli.scalingo.com - More
 > news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
