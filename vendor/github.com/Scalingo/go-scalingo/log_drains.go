@@ -6,13 +6,23 @@ import (
 
 type LogDrainsService interface {
 	LogDrainsList(app string) ([]LogDrain, error)
+	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
 }
 
 var _ LogDrainsService = (*Client)(nil)
 
 type LogDrain struct {
-	AppID string `json:"app_id"`
-	URL   string `json:"url"`
+	AppID       string `json:"app_id"`
+	URL         string `json:"url"`
+	Type        string `json:"type"`
+	Host        string `json:"host"`
+	Port        string `json:"port"`
+	Token       string `json:"token"`
+	DrainRegion string `json:"drain_region"`
+}
+
+type LogDrainRes struct {
+	Drain LogDrain `json:"drain"`
 }
 
 func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
@@ -22,4 +32,34 @@ func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
 		return nil, errgo.Notef(err, "fail to list the log drains")
 	}
 	return logDrainsRes, nil
+}
+
+type LogDrainAddParams struct {
+	Type        string `json:"type"`
+	URL         string `json:"url"`
+	Port        string `json:"port"`
+	Host        string `json:"host"`
+	Token       string `json:"token"`
+	DrainRegion string `json:"drain_region"`
+}
+
+func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error) {
+	var logDrainRes LogDrainRes
+	payload := LogDrainRes{
+		Drain: LogDrain{
+			Type:        params.Type,
+			URL:         params.URL,
+			Host:        params.Host,
+			Port:        params.Port,
+			Token:       params.Token,
+			DrainRegion: params.DrainRegion,
+		},
+	}
+
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "log_drains", payload, &logDrainRes)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to add drain")
+	}
+
+	return &logDrainRes, nil
 }

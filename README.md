@@ -91,6 +91,7 @@ COMMANDS:
    App Management:
      destroy                 Destroy an app /!\
      rename                  Rename an application
+     apps-info               Display the application information
      logs, l                 Get the logs of your applications
      logs-archives, la       Get the logs archives of your applications
      run, r                  Run any command for your app
@@ -162,15 +163,14 @@ COMMANDS:
      logout     Logout from Scalingo
      regions    List available regions
      config     Configure the CLI
-     signup     Create your Scalingo account
      self       Get the logged in profile
      whoami     Get the logged in profile
 
    Integration Link:
-     integration-link                    Show repo link linked with your app
-     integration-link-create             Create a repo link between your scm integration and your app
-     integration-link-update             Update the repo link linked with your app
-     integration-link-delete             Delete repo link linked with your app
+     integration-link                    Show integration link of your app
+     integration-link-create             Link your Scalingo application to an integration
+     integration-link-update             Update the integration link parameters
+     integration-link-delete             Delete the link between your Scalingo application and the integration
      integration-link-manual-deploy      Trigger a manual deployment of the specified branch
      integration-link-manual-review-app  Trigger a review app creation of the pull/merge request ID specified
 
@@ -179,6 +179,10 @@ COMMANDS:
      integrations-add          Link your Scalingo account with your account on a tool such as github.com
      integrations-delete       Unlink your Scalingo account and your account on a tool such as github.com
      integrations-import-keys  Import public SSH keys from integration account
+
+   Log drains:
+     log-drains-add  Add a log drain to an application
+     log-drains      List the log drains of an application
 
    Notifiers:
      notifiers          List your notifiers
@@ -196,12 +200,14 @@ COMMANDS:
      keys-remove  Remove a public SSH key
 
    Region migrations:
-     migrations-create  Migrate an app to another region
-     migrations         List all migrations linked to an app
-     migrations-follow  Follow a running migration
+     migration-create  Start migrating an app to another region
+     migration-run     Run a specific migration step
+     migration-abort   Abort a migration
+     migrations        List all migrations linked to an app
+     migration-follow  Follow a running migration
 
    Review Apps:
-     review-apps  See review apps of parent application
+     review-apps  Show review apps of the parent application
 
    Runtime Stacks:
      stacks      List the available runtime stacks
