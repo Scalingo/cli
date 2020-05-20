@@ -1,12 +1,16 @@
 package scalingo
 
 import (
+	"net/http"
+
+	httpclient "github.com/Scalingo/go-scalingo/http"
 	"gopkg.in/errgo.v1"
 )
 
 type LogDrainsService interface {
 	LogDrainsList(app string) ([]LogDrain, error)
 	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
+	LogDrainRemove(app, URL string) error
 }
 
 var _ LogDrainsService = (*Client)(nil)
@@ -19,6 +23,10 @@ type LogDrain struct {
 	Port        string `json:"port"`
 	Token       string `json:"token"`
 	DrainRegion string `json:"drain_region"`
+}
+
+type logDrainReq struct {
+	Drain LogDrain `json:"drain"`
 }
 
 type LogDrainRes struct {
@@ -62,4 +70,26 @@ func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes
 	}
 
 	return &logDrainRes, nil
+}
+
+func (c *Client) LogDrainRemove(app, URL string) error {
+	var logDrainRes LogDrainRes
+	payload := make(map[string]string)
+	payload = map[string]string{
+		"url": URL,
+	}
+
+	req := &httpclient.APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/log_drains",
+		Expected: httpclient.Statuses{http.StatusOK},
+		Params:   payload,
+	}
+
+	err := c.ScalingoAPI().DoRequest(req, &logDrainRes)
+	if err != nil {
+		return errgo.Notef(err, "fail to delete log drain")
+	}
+
+	return nil
 }
