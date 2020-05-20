@@ -26,7 +26,7 @@
 
 [[constraint]]
   name = "github.com/Scalingo/go-scalingo"
-  version = "^4"
+  branch = "feature/cli/554/add_log_drains_del_cmd"
 
 [[constraint]]
   branch = "master"
