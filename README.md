@@ -219,8 +219,6 @@ GLOBAL OPTIONS:
    --remote value, -r value  Name of the remote (default: "scalingo")
    --region value            Name of the region to use
    --version, -v             print the version
-
-Fail to run command: flag: help requested
 ```
 
 ## Development Setup
