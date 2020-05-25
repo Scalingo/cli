@@ -69,8 +69,7 @@ func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes
 }
 
 func (c *Client) LogDrainRemove(app, URL string) error {
-	payload := make(map[string]string)
-	payload = map[string]string{
+	payload := map[string]string{
 		"url": URL,
 	}
 
