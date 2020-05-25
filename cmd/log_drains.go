@@ -18,7 +18,7 @@ var (
 
 	$ scalingo --app my-app log-drains
 
-	# See also commands 'log-drains-add'`,
+	# See also commands 'log-drains-add', 'log-drains-remove'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -59,7 +59,7 @@ var (
 		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
 		$ scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io
 
-	# See also commands 'log-drains'`,
+	# See also commands 'log-drains', 'log-drains-remove'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -78,6 +78,36 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
+		},
+	}
+
+	logDrainsRemoveCommand = cli.Command{
+		Name:     "log-drains-remove",
+		Category: "Log drains",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Remove a log drain from an application",
+		Description: `Remove a log drain from an application:
+
+	$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
+
+	# See also commands 'log-drains-add', 'log-drains'`,
+
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			var err error
+			if len(c.Args()) == 1 {
+				err = log_drains.Remove(currentApp, c.Args()[0])
+			} else {
+				cli.ShowCommandHelp(c, "log-drains-remove")
+			}
+
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
+			autocomplete.LogDrainsRemoveAutoComplete(c)
 		},
 	}
 )

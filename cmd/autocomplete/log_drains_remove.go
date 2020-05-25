@@ -8,7 +8,7 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func DomainsRemoveAutoComplete(c *cli.Context) error {
+func LogDrainsRemoveAutoComplete(c *cli.Context) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
@@ -18,13 +18,13 @@ func DomainsRemoveAutoComplete(c *cli.Context) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	domains, err := client.DomainsList(appName)
+	drains, err := client.LogDrainsList(appName)
 	if err != nil {
-		return errgo.Notef(err, "fail to get domains list")
+		return errgo.Notef(err, "fail to get log drains list")
 	}
 
-	for _, domain := range domains {
-		fmt.Println(domain.Name)
+	for _, drain := range drains {
+		fmt.Println(drain.URL)
 	}
 
 	return nil

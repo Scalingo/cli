@@ -8,6 +8,9 @@
 * Add log drains add command
   [#561](https://github.com/Scalingo/cli/pull/561)
   [go-scalingo #164](https://github.com/Scalingo/go-scalingo/pull/164)
+* Add log drains delete command
+  [#567](https://github.com/Scalingo/cli/pull/567)
+  [go-scalingo #167](https://github.com/Scalingo/go-scalingo/pull/167)
 
 ### 1.17.0
 

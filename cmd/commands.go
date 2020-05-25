@@ -221,6 +221,7 @@ var (
 		// Log drains
 		logDrainsAddCommand,
 		logDrainsListCommand,
+		logDrainsRemoveCommand,
 
 		gitSetup,
 		gitShow,
