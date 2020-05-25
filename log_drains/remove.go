@@ -9,12 +9,12 @@ import (
 func Remove(app string, URL string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "fail to get Scalingo client to remove a log drain from the application")
 	}
 
 	err = c.LogDrainRemove(app, URL)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to remove the log drain from the application")
 	}
 
 	io.Status("The log drain:", URL, "has been deleted")

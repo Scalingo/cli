@@ -90,7 +90,7 @@ var (
 
 	$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
 
-	# See also commands 'log-drains-add', 'log-drains' and 'log-drains'`,
+	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
