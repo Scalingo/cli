@@ -26,8 +26,7 @@
   revision = "8eb48cc6f27eafda8e3a9627edba494a1d229a01"
 
 [[projects]]
-  branch = "feature/cli/554/add_log_drains_del_cmd"
-  digest = "1:07201e6d503d992dfe159527dac247af0a27b3ec608e958d10ba77b98055f708"
+  digest = "1:08eece729c1bef63ba65ac49a2dda812a07c69f489178917c6fe227f8d89301e"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -38,7 +37,8 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "0f54664864f4de65ff77cb47eb1eb79eaf16a63b"
+  revision = "69d49c22431d4655ab091eeb3e527de5413e67e6"
+  version = "v4.5.3"
 
 [[projects]]
   digest = "1:ab7f2d565135ccc3b35eb2427819fbca0501d582eba5091e684275022d3ff3ba"
