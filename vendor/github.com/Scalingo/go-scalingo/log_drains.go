@@ -25,10 +25,6 @@ type LogDrain struct {
 	DrainRegion string `json:"drain_region"`
 }
 
-type logDrainReq struct {
-	Drain LogDrain `json:"drain"`
-}
-
 type LogDrainRes struct {
 	Drain LogDrain `json:"drain"`
 }
@@ -73,7 +69,6 @@ func (c *Client) LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes
 }
 
 func (c *Client) LogDrainRemove(app, URL string) error {
-	var logDrainRes LogDrainRes
 	payload := make(map[string]string)
 	payload = map[string]string{
 		"url": URL,
@@ -82,11 +77,11 @@ func (c *Client) LogDrainRemove(app, URL string) error {
 	req := &httpclient.APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/apps/" + app + "/log_drains",
-		Expected: httpclient.Statuses{http.StatusOK},
+		Expected: httpclient.Statuses{http.StatusNoContent},
 		Params:   payload,
 	}
 
-	err := c.ScalingoAPI().DoRequest(req, &logDrainRes)
+	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
 		return errgo.Notef(err, "fail to delete log drain")
 	}
