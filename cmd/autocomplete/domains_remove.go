@@ -19,11 +19,12 @@ func DomainsRemoveAutoComplete(c *cli.Context) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	domains, err := client.DomainsList(appName)
-	if err == nil {
+	if err != nil {
+		return errgo.Notef(err, "fail to get domains list")
+	}
 
-		for _, domain := range domains {
-			fmt.Println(domain.Name)
-		}
+	for _, domain := range domains {
+		fmt.Println(domain.Name)
 	}
 
 	return nil
