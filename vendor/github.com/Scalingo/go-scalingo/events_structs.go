@@ -222,7 +222,7 @@ func (ev *EventRestartType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
 	} else {
-		return ev.Who()
+		return ev.Event.Who()
 	}
 }
 
@@ -600,7 +600,7 @@ func (ev *EventUpgradeDatabaseType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
 	} else {
-		return ev.Who()
+		return ev.Event.Who()
 	}
 }
 
@@ -622,7 +622,7 @@ func (ev *EventNewVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
 	} else {
-		return ev.Who()
+		return ev.Event.Who()
 	}
 }
 
@@ -679,7 +679,7 @@ func (ev *EventEditVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
 	} else {
-		return ev.Who()
+		return ev.Event.Who()
 	}
 }
 

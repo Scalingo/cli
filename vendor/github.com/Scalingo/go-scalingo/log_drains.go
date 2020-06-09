@@ -29,13 +29,17 @@ type LogDrainRes struct {
 	Drain LogDrain `json:"drain"`
 }
 
+type LogDrainsRes struct {
+	Drains []LogDrain `json:"drains"`
+}
+
 func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
-	var logDrainsRes []LogDrain
+	var logDrainsRes LogDrainsRes
 	err := c.ScalingoAPI().SubresourceList("apps", app, "log_drains", nil, &logDrainsRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to list the log drains")
 	}
-	return logDrainsRes, nil
+	return logDrainsRes.Drains, nil
 }
 
 type LogDrainAddParams struct {

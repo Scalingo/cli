@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Fix infinite recursion on some events with `scalingo timeline` [#570](#570)
+* Fix log drain response parsing [#570](#570)
+
 ### 1.18.0
 
 * Add log drains list command
