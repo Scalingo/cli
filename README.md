@@ -235,6 +235,13 @@ SCALINGO_API_URL=http://172.17.0.1:3001 SCALINGO_AUTH_URL=http://172.17.0.1:1234
 
 ### New Version Bump
 
+Get the latest version of the CLI:
+
+```bash
+$ git checkout master
+$ git pull origin master
+```
+
 Bump new version number in:
 
 - `CHANGELOG.md`
@@ -246,7 +253,6 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-$ git checkout master
 $ git add .
 $ git commit -m "Bump version 1.18.1"
 $ git push origin master
