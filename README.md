@@ -269,6 +269,11 @@ git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
 git push --set-upstream origin v1.18.0
+```
+
+### Tag the New Release
+
+```bash
 git tag 1.18.0
 git push --tags
 ```
@@ -282,7 +287,7 @@ Build the new version for all platforms with:
 ```
 
 The script asks you for a Rollbar token available in the shared keychain under
-the "Rollbar CLI Token" note.
+the "CLI Rollbar Token" note.
 
 Tag and release a new version on GitHub
 [here](https://github.com/Scalingo/cli/releases/new). Attach the zip archives
