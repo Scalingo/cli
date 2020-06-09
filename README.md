@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.18.0
+# Scalingo-CLI v1.18.1
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -57,7 +57,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.18.0
+   1.18.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -248,7 +248,7 @@ And commit these changes:
 ```bash
 $ git checkout master
 $ git add .
-$ git commit -m "Bump version 1.18.0"
+$ git commit -m "Bump version 1.18.1"
 $ git push origin master
 ```
 
@@ -263,18 +263,18 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.18.0
+git checkout -b v1.18.1
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.18.0
+git push --set-upstream origin v1.18.1
 ```
 
 ### Tag the New Release
 
 ```bash
-git tag 1.18.0
+git tag 1.18.1
 git push --tags
 ```
 
@@ -283,7 +283,7 @@ git push --tags
 Build the new version for all platforms with:
 
 ```sh
-./dists/make-release.sh -v 1.18.0
+./dists/make-release.sh -v 1.18.1
 ```
 
 The script asks you for a Rollbar token available in the shared keychain under
@@ -303,5 +303,5 @@ scalingo --region agora-fr1 -a cli-download-service restart
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.18.0 https://cli.scalingo.com - More
+> [Changelog] CLI - Release of version 1.18.1 https://cli.scalingo.com - More
 > news at https://changelog.scalingo.com #cli #paas #changelog #bugfix

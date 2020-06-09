@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.18.1
+
 * Fix infinite recursion on some events with `scalingo timeline` [#570](#570)
 * Fix log drain response parsing [#570](#570)
 
