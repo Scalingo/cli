@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.18.0
+
 * Add log drains list command
   [#560](https://github.com/Scalingo/cli/pull/560)
   [go-scalingo #163](https://github.com/Scalingo/go-scalingo/pull/163)
