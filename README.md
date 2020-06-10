@@ -311,3 +311,5 @@ You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet
 
 > [Changelog] CLI - Release of version 1.18.1 https://cli.scalingo.com - More
 > news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+
+Add in a tweets thread the changelog of this new version.
