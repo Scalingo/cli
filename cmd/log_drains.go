@@ -12,7 +12,7 @@ var (
 	logDrainsListCommand = cli.Command{
 		Name:     "log-drains",
 		Category: "Log drains",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{appFlag, addonFlag},
 		Usage:    "List the log drains of an application",
 		Description: `List all the log drains of an application:
 
@@ -27,7 +27,19 @@ var (
 				return
 			}
 
-			err := log_drains.List(currentApp)
+			var addonID string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonID = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonID = c.String("addon")
+			}
+
+			var err error
+			if addonID != "" {
+				err = log_drains.ListAddon(currentApp, addonID)
+			} else {
+				err = log_drains.List(currentApp)
+			}
 			if err != nil {
 				errorQuit(err)
 			}
