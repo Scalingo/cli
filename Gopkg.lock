@@ -38,7 +38,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "5ae4a4bb39ea262ebe93cc58e418caad3c5cc072"
+  revision = "95b0b5621996ce192366bae6c31a77328492a18d"
 
 [[projects]]
   digest = "1:ab7f2d565135ccc3b35eb2427819fbca0501d582eba5091e684275022d3ff3ba"
