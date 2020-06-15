@@ -12,11 +12,18 @@ var (
 	logDrainsListCommand = cli.Command{
 		Name:     "log-drains",
 		Category: "Log drains",
-		Flags:    []cli.Flag{appFlag, addonFlag},
-		Usage:    "List the log drains of an application",
+		Flags: []cli.Flag{
+			appFlag,
+			addonFlag,
+		},
+		Usage: "List the log drains of an application",
 		Description: `List all the log drains of an application:
 
-	$ scalingo --app my-app log-drains
+	Use the parameter: "--addon <addon_uuid>" to list log drains of a specific addon
+
+	Examples:
+		$ scalingo --app my-app log-drains
+		$ scalingo --app my-app log-drains --addon ad-9be0fc04-bee6-4981-a403-a9ddbee7bd1f
 
 	# See also commands 'log-drains-add', 'log-drains-remove'`,
 
