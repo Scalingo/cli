@@ -42,12 +42,21 @@ func ListAddon(app string, addonID string) error {
 		}
 	}
 
+	drawTable(addons)
+	return nil
+}
+
+func drawTable(addons []scalingo.LogDrainsAddonRes) {
 	t := tablewriter.NewWriter(os.Stdout)
 
 	t.SetHeader([]string{"Addon name", "Addon plan", "URL"})
 	t.SetAutoMergeCells(true)
 
+	addonsLength := len(addons)
 	for _, addonsDrains := range addons {
+		if len(addonsDrains.Drains) > 1 && addonsLength > 1 {
+			t.SetRowLine(true)
+		}
 		for _, logDrain := range addonsDrains.Drains {
 			t.Append([]string{
 				addonsDrains.Addon.Name,
@@ -57,5 +66,5 @@ func ListAddon(app string, addonID string) error {
 		}
 	}
 	t.Render()
-	return nil
+
 }
