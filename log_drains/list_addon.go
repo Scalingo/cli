@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )
@@ -14,9 +15,31 @@ func ListAddon(app string, addonID string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	logDrainsAddonList, err := c.LogDrainsAddonList(app, addonID)
-	if err != nil {
-		return errgo.Notef(err, "fail to list the log drains")
+	var addons []scalingo.LogDrainsAddonRes
+
+	if addonID != "" {
+		addonsDrains, err := c.LogDrainsAddonList(app, addonID)
+		if err != nil {
+			return errgo.Notef(err, "fail to list the log drains")
+		}
+		addons = make([]scalingo.LogDrainsAddonRes, 1)
+		addons[0] = addonsDrains
+
+	} else {
+		resources, err := c.AddonsList(app)
+		if err != nil {
+			return errgo.Notef(err, "fail to list addons")
+		}
+
+		addons = make([]scalingo.LogDrainsAddonRes, len(resources))
+		for index, resource := range resources {
+			addonsDrains, err := c.LogDrainsAddonList(app, resource.ID)
+			if err != nil {
+				return errgo.Notef(err, "fail to list the log drains")
+			}
+
+			addons[index] = addonsDrains
+		}
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
@@ -24,14 +47,15 @@ func ListAddon(app string, addonID string) error {
 	t.SetHeader([]string{"Addon name", "Addon plan", "URL"})
 	t.SetAutoMergeCells(true)
 
-	for _, logDrain := range logDrainsAddonList.Drains {
-		t.Append([]string{
-			logDrainsAddonList.Addon.Name,
-			logDrainsAddonList.Addon.Plan,
-			logDrain.URL,
-		})
+	for _, addonsDrains := range addons {
+		for _, logDrain := range addonsDrains.Drains {
+			t.Append([]string{
+				addonsDrains.Addon.Name,
+				addonsDrains.Addon.Plan,
+				logDrain.URL,
+			})
+		}
 	}
-
 	t.Render()
 	return nil
 }
