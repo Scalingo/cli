@@ -9,7 +9,7 @@ import (
 
 type LogDrainsService interface {
 	LogDrainsList(app string) ([]LogDrain, error)
-	LogDrainsAddonList(app string, addonID string) ([]LogDrain, error)
+	LogDrainsAddonList(app string, addonID string) (LogDrainsAddonRes, error)
 	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
 	LogDrainRemove(app, URL string) error
 }
@@ -34,6 +34,18 @@ type LogDrainsRes struct {
 	Drains []LogDrain `json:"drains"`
 }
 
+type LogDrainsAddon struct {
+	ID   string `json:"id"`
+	UUID string `json:"uuid"`
+	Name string `json:"name"`
+	Plan string `json:"plan"`
+}
+
+type LogDrainsAddonRes struct {
+	Addon  LogDrainsAddon `json:"addon"`
+	Drains []LogDrain     `json:"drains"`
+}
+
 func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
 	var logDrainsRes LogDrainsRes
 	err := c.ScalingoAPI().SubresourceList("apps", app, "log_drains", nil, &logDrainsRes)
@@ -43,16 +55,20 @@ func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
 	return logDrainsRes.Drains, nil
 }
 
-func (c *Client) LogDrainsAddonList(app string, addonID string) ([]LogDrain, error) {
-	var logDrainsRes LogDrainsRes
-	params := make(map[string]string)
+func (c *Client) LogDrainsAddonList(app string, addonID string) (LogDrainsAddonRes, error) {
+	var logDrainsAddonRes LogDrainsAddonRes
 
-	params["addon_id"] = addonID
-	err := c.ScalingoAPI().SubresourceList("apps", app, "log_drains", params, &logDrainsRes)
-	if err != nil {
-		return nil, errgo.Notef(err, "fail to list the log drains")
+	req := &httpclient.APIRequest{
+		Method:   "GET",
+		Endpoint: "/apps/" + app + "/addons/" + addonID + "/log_drains",
 	}
-	return logDrainsRes.Drains, nil
+
+	err := c.ScalingoAPI().DoRequest(req, &logDrainsAddonRes)
+	if err != nil {
+		return logDrainsAddonRes, errgo.Notef(err, "fail to list the log drains")
+	}
+
+	return logDrainsAddonRes, nil
 }
 
 type LogDrainAddParams struct {

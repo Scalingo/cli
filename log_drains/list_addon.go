@@ -14,17 +14,20 @@ func ListAddon(app string, addonID string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	logDrains, err := c.LogDrainsAddonList(app, addonID)
+	logDrainsAddonList, err := c.LogDrainsAddonList(app, addonID)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the log drains")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
 
-	t.SetHeader([]string{"URL"})
+	t.SetHeader([]string{"Addon name", "Addon plan", "URL"})
+	t.SetAutoMergeCells(true)
 
-	for _, logDrain := range logDrains {
+	for _, logDrain := range logDrainsAddonList.Drains {
 		t.Append([]string{
+			logDrainsAddonList.Addon.Name,
+			logDrainsAddonList.Addon.Plan,
 			logDrain.URL,
 		})
 	}
