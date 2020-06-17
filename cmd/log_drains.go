@@ -14,7 +14,7 @@ var (
 		Category: "Log drains",
 		Flags: []cli.Flag{appFlag,
 			addonFlag,
-			cli.BoolTFlag{Name: "with-addon", Usage: "also list the log drains of all addons"},
+			cli.BoolFlag{Name: "with-addon", Usage: "also list the log drains of all addons"},
 		},
 		Usage: "List the log drains of an application",
 		Description: `List all the log drains of an application:
@@ -44,7 +44,7 @@ var (
 			}
 
 			var err error
-			if addonID != "" || c.String("with-addon") != "" {
+			if addonID != "" || c.String("with-addon") == "true" {
 				err = log_drains.ListAddon(currentApp, addonID)
 			} else {
 				err = log_drains.List(currentApp)
