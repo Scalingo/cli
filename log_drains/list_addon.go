@@ -9,36 +9,36 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+type addonObject struct {
+	Drains    []scalingo.LogDrain
+	AddonName string
+}
+
 func ListAddon(app string, addonID string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	var addons []scalingo.LogDrainsAddonRes
+	resources, err := c.AddonsList(app)
+	if err != nil {
+		return errgo.Notef(err, "fail to list addons")
+	}
 
-	if addonID != "" {
-		addonsDrains, err := c.LogDrainsAddonList(app, addonID)
-		if err != nil {
-			return errgo.Notef(err, "fail to list the log drains")
-		}
-		addons = make([]scalingo.LogDrainsAddonRes, 1)
-		addons[0] = addonsDrains
-
-	} else {
-		resources, err := c.AddonsList(app)
-		if err != nil {
-			return errgo.Notef(err, "fail to list addons")
-		}
-
-		addons = make([]scalingo.LogDrainsAddonRes, len(resources))
-		for index, resource := range resources {
-			addonsDrains, err := c.LogDrainsAddonList(app, resource.ID)
+	addonsToPrint := []addonObject{}
+	for _, resource := range resources {
+		if addonID == resource.ID || addonID == "" {
+			res, err := c.LogDrainsAddonList(app, resource.ID)
 			if err != nil {
 				return errgo.Notef(err, "fail to list the log drains")
 			}
-
-			addons[index] = addonsDrains
+			addonsToPrint = append(addonsToPrint, addonObject{
+				AddonName: resource.AddonProvider.Name,
+				Drains:    res.Drains,
+			})
+			if addonID != "" {
+				break
+			}
 		}
 	}
 
@@ -61,12 +61,11 @@ func ListAddon(app string, addonID string) error {
 		}
 	}
 
-	drawAddonTable(t, addons)
+	drawAddonTable(t, addonsToPrint)
 	return nil
 }
 
-func drawAddonTable(t *tablewriter.Table, addons []scalingo.LogDrainsAddonRes) {
-
+func drawAddonTable(t *tablewriter.Table, addons []addonObject) {
 	addonsLength := len(addons)
 	for _, addonsDrains := range addons {
 		if len(addonsDrains.Drains) > 1 && addonsLength > 1 {
@@ -74,7 +73,7 @@ func drawAddonTable(t *tablewriter.Table, addons []scalingo.LogDrainsAddonRes) {
 		}
 		for _, logDrain := range addonsDrains.Drains {
 			t.Append([]string{
-				addonsDrains.Addon.Name,
+				addonsDrains.AddonName,
 				logDrain.URL,
 			})
 		}
