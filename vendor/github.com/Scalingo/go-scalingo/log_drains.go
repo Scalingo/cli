@@ -9,9 +9,9 @@ import (
 
 type LogDrainsService interface {
 	LogDrainsList(app string) ([]LogDrain, error)
-	LogDrainsAddonList(app string, addonID string) (LogDrainsRes, error)
 	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
 	LogDrainRemove(app, URL string) error
+	LogDrainsAddonList(app string, addonID string) (LogDrainsRes, error)
 }
 
 var _ LogDrainsService = (*Client)(nil)
@@ -53,7 +53,7 @@ func (c *Client) LogDrainsAddonList(app string, addonID string) (LogDrainsRes, e
 
 	err := c.ScalingoAPI().DoRequest(req, &logDrainsRes)
 	if err != nil {
-		return logDrainsRes, errgo.Notef(err, "fail to list the log drains")
+		return logDrainsRes, errgo.Notef(err, "fail to list the log drains from addons")
 	}
 
 	return logDrainsRes, nil

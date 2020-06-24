@@ -27,7 +27,7 @@
 
 [[projects]]
   branch = "feature/cli/571/list_log_drains_by_DB"
-  digest = "1:f575dc5486c8696b2db4eac7f753fedb3b22a86c548cefc619195c88db46a568"
+  digest = "1:7a39ed29e7fbd2528d5126132c3b3f47f157ac5675f75488e789053ed9ed041e"
   name = "github.com/Scalingo/go-scalingo"
   packages = [
     ".",
@@ -38,7 +38,7 @@
     "io",
   ]
   pruneopts = "NUT"
-  revision = "1c955655932de552fc47dc11bf255b430f7cb681"
+  revision = "39bb49cb81f836d07f06a4f84dd868cf25914f21"
 
 [[projects]]
   digest = "1:ab7f2d565135ccc3b35eb2427819fbca0501d582eba5091e684275022d3ff3ba"
