@@ -2,7 +2,6 @@ package log_drains
 
 import (
 	"os"
-	"strings"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
@@ -64,34 +63,19 @@ func List(app string, opts ListAddonOpts) error {
 				}
 			}
 		}
-		drawAddonTable(t, addonsToPrint, opts.WithAddons)
+		drawAddonTable(t, addonsToPrint)
 	}
 
 	t.Render()
 	return nil
 }
 
-func drawAddonTable(t *tablewriter.Table, addons []addonObject, drawSeparateLines bool) {
-	var longestName int
-	var longestURL int
+func drawAddonTable(t *tablewriter.Table, addons []addonObject) {
+	addonsLength := len(addons)
+
 	for _, addonsDrains := range addons {
-		nameLen := len(addonsDrains.AddonName)
-		if longestName < nameLen {
-			longestName = nameLen
-		}
-		for _, logDrain := range addonsDrains.Drains {
-			URLLen := len(logDrain.URL)
-			if longestURL < URLLen {
-				longestURL = URLLen
-			}
-		}
-	}
-	for index, addonsDrains := range addons {
-		if drawSeparateLines && index != 0 {
-			t.Append([]string{
-				strings.Repeat("-", longestName),
-				strings.Repeat("-", longestURL),
-			})
+		if len(addonsDrains.Drains) > 1 && addonsLength > 1 {
+			t.SetRowLine(true)
 		}
 		for _, logDrain := range addonsDrains.Drains {
 			t.Append([]string{
