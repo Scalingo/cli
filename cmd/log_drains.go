@@ -43,12 +43,10 @@ var (
 				addonID = c.String("addon")
 			}
 
-			var err error
-			if addonID != "" || c.Bool("with-addons") {
-				err = log_drains.ListAddon(currentApp, addonID)
-			} else {
-				err = log_drains.List(currentApp)
-			}
+			err := log_drains.List(currentApp, log_drains.ListAddonOpts{
+				WithAddons: c.Bool("with-addons"),
+				AddonID:    addonID,
+			})
 			if err != nil {
 				errorQuit(err)
 			}
