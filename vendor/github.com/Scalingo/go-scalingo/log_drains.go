@@ -46,16 +46,10 @@ func (c *Client) LogDrainsList(app string) ([]LogDrain, error) {
 func (c *Client) LogDrainsAddonList(app string, addonID string) (LogDrainsRes, error) {
 	var logDrainsRes LogDrainsRes
 
-	req := &httpclient.APIRequest{
-		Method:   "GET",
-		Endpoint: "/apps/" + app + "/addons/" + addonID + "/log_drains",
-	}
-
-	err := c.ScalingoAPI().DoRequest(req, &logDrainsRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "addons/"+addonID+"/log_drains", nil, &logDrainsRes)
 	if err != nil {
-		return logDrainsRes, errgo.Notef(err, "fail to list the log drains from addons")
+		return logDrainsRes, errgo.Notef(err, "fail to list the log drains of the addon %s", addonID)
 	}
-
 	return logDrainsRes, nil
 }
 
