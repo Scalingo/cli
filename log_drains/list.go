@@ -9,9 +9,9 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-type addonObject struct {
-	Drains    []scalingo.LogDrain
-	AddonName string
+type printableDrains struct {
+	DrainURLs []scalingo.LogDrain
+	AppName   string
 }
 
 type ListAddonOpts struct {
@@ -25,20 +25,17 @@ func List(app string, opts ListAddonOpts) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "URL"})
-	t.SetAutoMergeCells(true)
+	appToPrint := []printableDrains{}
 
 	if opts.AddonID == "" {
 		logDrains, err := c.LogDrainsList(app)
 		if err != nil {
 			return errgo.Notef(err, "fail to list the log drains")
 		}
-
-		for _, logDrain := range logDrains {
-			t.Append([]string{
-				app,
-				logDrain.URL,
+		if len(logDrains) > 0 {
+			appToPrint = append(appToPrint, printableDrains{
+				AppName:   app,
+				DrainURLs: logDrains,
 			})
 		}
 	}
@@ -48,7 +45,6 @@ func List(app string, opts ListAddonOpts) error {
 			return errgo.Notef(err, "fail to list addons")
 		}
 
-		addonsToPrint := []addonObject{}
 		for _, addon := range addons {
 			if opts.AddonID == addon.ID || opts.WithAddons {
 				res, err := c.LogDrainsAddonList(app, addon.ID)
@@ -56,9 +52,9 @@ func List(app string, opts ListAddonOpts) error {
 					return errgo.Notef(err, "fail to list the log drains of an addon")
 				}
 				if len(res.Drains) > 0 {
-					addonsToPrint = append(addonsToPrint, addonObject{
-						AddonName: addon.AddonProvider.Name,
-						Drains:    res.Drains,
+					appToPrint = append(appToPrint, printableDrains{
+						AppName:   addon.AddonProvider.Name,
+						DrainURLs: res.Drains,
 					})
 				}
 
@@ -67,25 +63,29 @@ func List(app string, opts ListAddonOpts) error {
 				}
 			}
 		}
-		drawAddonTable(t, addonsToPrint)
 	}
 
-	t.Render()
+	drawDrainsTable(appToPrint)
 	return nil
 }
 
-func drawAddonTable(t *tablewriter.Table, addons []addonObject) {
-	addonsLength := len(addons)
+func drawDrainsTable(drains []printableDrains) {
+	t := tablewriter.NewWriter(os.Stdout)
+	t.SetHeader([]string{"Name", "URL"})
+	t.SetAutoMergeCells(true)
 
-	for _, addonsDrains := range addons {
-		if len(addonsDrains.Drains) > 1 && addonsLength > 1 {
+	objLength := len(drains)
+
+	for _, printableDrain := range drains {
+		if len(printableDrain.DrainURLs) > 1 && objLength > 1 {
 			t.SetRowLine(true)
 		}
-		for _, logDrain := range addonsDrains.Drains {
+		for _, drain := range printableDrain.DrainURLs {
 			t.Append([]string{
-				addonsDrains.AddonName,
-				logDrain.URL,
+				printableDrain.AppName,
+				drain.URL,
 			})
 		}
 	}
+	t.Render()
 }
