@@ -12,6 +12,7 @@ type LogDrainsService interface {
 	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
 	LogDrainRemove(app, URL string) error
 	LogDrainsAddonList(app string, addonID string) (LogDrainsRes, error)
+	LogDrainAddonAdd(app string, addonID string, params LogDrainAddParams) (*LogDrainRes, error)
 }
 
 var _ LogDrainsService = (*Client)(nil)
@@ -101,4 +102,25 @@ func (c *Client) LogDrainRemove(app, URL string) error {
 	}
 
 	return nil
+}
+
+func (c *Client) LogDrainAddonAdd(app string, addonID string, params LogDrainAddParams) (*LogDrainRes, error) {
+	var logDrainRes LogDrainRes
+	payload := LogDrainRes{
+		Drain: LogDrain{
+			Type:        params.Type,
+			URL:         params.URL,
+			Host:        params.Host,
+			Port:        params.Port,
+			Token:       params.Token,
+			DrainRegion: params.DrainRegion,
+		},
+	}
+
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "addons/"+addonID+"/log_drains", payload, &logDrainRes)
+	if err != nil {
+		return &logDrainRes, errgo.Notef(err, "fail to add log drain to the addon %s", addonID)
+	}
+
+	return &logDrainRes, nil
 }

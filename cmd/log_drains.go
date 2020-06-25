@@ -61,6 +61,8 @@ var (
 		Category: "Log drains",
 		Usage:    "Add a log drain to an application",
 		Flags: []cli.Flag{appFlag,
+			addonFlag,
+			cli.BoolFlag{Name: "with-addons", Usage: "add the log drains of all addons"},
 			cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
 			cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
 			cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
@@ -78,19 +80,39 @@ var (
 		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
 		$ scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io
 
+	Add a log drain to an addon:
+
+		Use the parameter: "--addon <addon_uuid>" to your add commands to add a log drain to a specific addon
+		Use the parameter: "--with-addons" to list log drains of all addons connected to the application
+
+	Examples:
+		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
+		$ scalingo --app my-app --with-addons log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
+
 	# See also commands 'log-drains', 'log-drains-remove'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 
-			err := log_drains.Add(currentApp, scalingo.LogDrainAddParams{
-				Type:        c.String("type"),
-				URL:         c.String("url"),
-				Host:        c.String("host"),
-				Port:        c.String("port"),
-				Token:       c.String("token"),
-				DrainRegion: c.String("drain-region"),
-			})
+			var addonID string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonID = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonID = c.String("addon")
+			}
+
+			err := log_drains.Add(currentApp, log_drains.ListAddonOpts{
+				WithAddons: c.Bool("with-addons"),
+				AddonID:    addonID,
+			},
+				scalingo.LogDrainAddParams{
+					Type:        c.String("type"),
+					URL:         c.String("url"),
+					Host:        c.String("host"),
+					Port:        c.String("port"),
+					Token:       c.String("token"),
+					DrainRegion: c.String("drain-region"),
+				})
 			if err != nil {
 				errorQuit(err)
 			}
