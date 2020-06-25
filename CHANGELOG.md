@@ -2,6 +2,10 @@
 
 ### To be Released
 
+* Add list log drains by addons command
+  [#572](https://github.com/Scalingo/cli/pull/572)
+  [go-scalingo #172](https://github.com/Scalingo/go-scalingo/pull/172)
+
 ### 1.18.1
 
 * Fix infinite recursion on some events with `scalingo timeline` [#570](#570)

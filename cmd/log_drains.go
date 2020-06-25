@@ -12,11 +12,20 @@ var (
 	logDrainsListCommand = cli.Command{
 		Name:     "log-drains",
 		Category: "Log drains",
-		Flags:    []cli.Flag{appFlag},
-		Usage:    "List the log drains of an application",
+		Flags: []cli.Flag{appFlag,
+			addonFlag,
+			cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
+		},
+		Usage: "List the log drains of an application",
 		Description: `List all the log drains of an application:
 
-	$ scalingo --app my-app log-drains
+	Use the parameter: "--addon <addon_uuid>" to list log drains of a specific addon
+	Use the parameter: "--with-addons" to list log drains of all addons connected to the application
+
+	Examples:
+		$ scalingo --app my-app log-drains
+		$ scalingo --app my-app log-drains --addon ad-9be0fc04-bee6-4981-a403-a9ddbee7bd1f
+		$ scalingo --app my-app log-drains --with-addons
 
 	# See also commands 'log-drains-add', 'log-drains-remove'`,
 
@@ -27,7 +36,17 @@ var (
 				return
 			}
 
-			err := log_drains.List(currentApp)
+			var addonID string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonID = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonID = c.String("addon")
+			}
+
+			err := log_drains.List(currentApp, log_drains.ListAddonOpts{
+				WithAddons: c.Bool("with-addons"),
+				AddonID:    addonID,
+			})
 			if err != nil {
 				errorQuit(err)
 			}
