@@ -25,23 +25,24 @@ func List(app string, opts ListAddonOpts) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	logDrains, err := c.LogDrainsList(app)
-	if err != nil {
-		return errgo.Notef(err, "fail to list the log drains")
-	}
-
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"Name", "URL"})
 	t.SetAutoMergeCells(true)
 
-	if opts.AddonID == "" && !opts.WithAddons {
+	if opts.AddonID == "" {
+		logDrains, err := c.LogDrainsList(app)
+		if err != nil {
+			return errgo.Notef(err, "fail to list the log drains")
+		}
+
 		for _, logDrain := range logDrains {
 			t.Append([]string{
 				app,
 				logDrain.URL,
 			})
 		}
-	} else {
+	}
+	if opts.AddonID != "" || opts.WithAddons {
 		addons, err := c.AddonsList(app)
 		if err != nil {
 			return errgo.Notef(err, "fail to list addons")
@@ -52,12 +53,15 @@ func List(app string, opts ListAddonOpts) error {
 			if opts.AddonID == addon.ID || opts.WithAddons {
 				res, err := c.LogDrainsAddonList(app, addon.ID)
 				if err != nil {
-					return errgo.Notef(err, "fail to list the log drains")
+					return errgo.Notef(err, "fail to list the log drains of an addon")
 				}
-				addonsToPrint = append(addonsToPrint, addonObject{
-					AddonName: addon.AddonProvider.Name,
-					Drains:    res.Drains,
-				})
+				if len(res.Drains) > 0 {
+					addonsToPrint = append(addonsToPrint, addonObject{
+						AddonName: addon.AddonProvider.Name,
+						Drains:    res.Drains,
+					})
+				}
+
 				if !opts.WithAddons {
 					break
 				}
