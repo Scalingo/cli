@@ -7,7 +7,12 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Add(app string, opts ListAddonOpts, params scalingo.LogDrainAddParams) error {
+type AddAddonOpts struct {
+	WithAddons bool
+	AddonID    string
+}
+
+func Add(app string, opts AddAddonOpts, params scalingo.LogDrainAddParams) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to add a log drain")
@@ -20,6 +25,9 @@ func Add(app string, opts ListAddonOpts, params scalingo.LogDrainAddParams) erro
 		} else {
 			io.Status("Log drain", d.Drain.URL, "has been added to the application", app)
 		}
+	}
+	if !opts.WithAddons && opts.AddonID == "" {
+		return nil
 	}
 
 	addons, err := c.AddonsList(app)
