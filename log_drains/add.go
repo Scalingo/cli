@@ -17,7 +17,6 @@ func Add(app string, opts ListAddonOpts, params scalingo.LogDrainAddParams) erro
 		d, err := c.LogDrainAdd(app, params)
 		if err != nil {
 			io.Status("fail to add drain to", "'"+app+"'", "application:\n\t", err)
-			// return errgo.Notef(err, "fail to add drain to the application")
 		} else {
 			io.Status("Log drain", d.Drain.URL, "has been added to the application", app)
 		}
@@ -34,7 +33,6 @@ func Add(app string, opts ListAddonOpts, params scalingo.LogDrainAddParams) erro
 			d, err := c.LogDrainAddonAdd(app, addon.ID, params)
 			if err != nil {
 				io.Status("fail to add drain to", "'"+addon.AddonProvider.Name+"'", "addon:\n\t", err)
-				// return errgo.Notef(err, "fail to add drain to an addon")
 			} else {
 				io.Status("Log drain", d.Drain.URL, "has been added to the addon", addon.AddonProvider.Name)
 			}

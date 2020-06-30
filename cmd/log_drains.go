@@ -83,7 +83,9 @@ var (
 	Add a log drain to an addon:
 
 		Use the parameter: "--addon <addon_uuid>" to your add commands to add a log drain to a specific addon
-		Use the parameter: "--with-addons" to list log drains of all addons connected to the application
+		Use the parameter: "--with-addons" to list log drains of all addons connected to the application.
+
+		Warning: At the moment, all addons except databases cannot throw logs.
 
 	Examples:
 		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2

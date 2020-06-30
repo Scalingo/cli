@@ -119,7 +119,7 @@ func (c *Client) LogDrainAddonAdd(app string, addonID string, params LogDrainAdd
 
 	err := c.ScalingoAPI().SubresourceAdd("apps", app, "addons/"+addonID+"/log_drains", payload, &logDrainRes)
 	if err != nil {
-		return &logDrainRes, errgo.Notef(err, "fail to add log drain to the addon %s", addonID)
+		return nil, errgo.Notef(err, "fail to add log drain to the addon %s", addonID)
 	}
 
 	return &logDrainRes, nil
