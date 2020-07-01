@@ -11,6 +11,7 @@ type LogDrainsService interface {
 	LogDrainsList(app string) ([]LogDrain, error)
 	LogDrainAdd(app string, params LogDrainAddParams) (*LogDrainRes, error)
 	LogDrainRemove(app, URL string) error
+	LogDrainAddonRemove(app, addonID string, URL string) error
 	LogDrainsAddonList(app string, addonID string) (LogDrainsRes, error)
 	LogDrainAddonAdd(app string, addonID string, params LogDrainAddParams) (*LogDrainRes, error)
 }
@@ -99,6 +100,26 @@ func (c *Client) LogDrainRemove(app, URL string) error {
 	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
 		return errgo.Notef(err, "fail to delete log drain")
+	}
+
+	return nil
+}
+
+func (c *Client) LogDrainAddonRemove(app, addonID string, URL string) error {
+	payload := map[string]string{
+		"url": URL,
+	}
+
+	req := &httpclient.APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/addons/" + addonID + "/log_drains",
+		Expected: httpclient.Statuses{http.StatusNoContent},
+		Params:   payload,
+	}
+
+	err := c.ScalingoAPI().DoRequest(req, nil)
+	if err != nil {
+		return errgo.Notef(err, "fail to delete log drain of the addon %s", addonID)
 	}
 
 	return nil

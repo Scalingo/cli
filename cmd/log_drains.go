@@ -133,19 +133,46 @@ var (
 	logDrainsRemoveCommand = cli.Command{
 		Name:     "log-drains-remove",
 		Category: "Log drains",
-		Flags:    []cli.Flag{appFlag},
-		Usage:    "Remove a log drain from an application",
-		Description: `Remove a log drain from an application:
+		Flags: []cli.Flag{
+			appFlag,
+			addonFlag,
+			cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
+		},
+		Usage: "Remove a log drain from an application and addons",
+		Description: `Remove a log drain from an application and all addons connected to the application:
 
-	$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
+		$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
+
+	Remove a log drain from a specific addon:
+		Use the parameter: "--addon <addon_uuid>" to your remove commands to remove a log drain from a specific addon
+
+		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-remove syslog://custom.logstash.com:12345
+
+	Remove a log drain only for the application:
+		Use the parameter: "--only-app" to your remove commands to remove log drain only from the application
+		
+		$ scalingo --app my-app --only-app log-drains-remove syslog://custom.logstash.com:12345
 
 	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(c *cli.Context) {
+			// TODO: survey
 			currentApp := appdetect.CurrentApp(c)
+
+			var addonID string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonID = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonID = c.String("addon")
+			}
+
 			var err error
 			if len(c.Args()) == 1 {
-				err = log_drains.Remove(currentApp, c.Args()[0])
+				err = log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
+					AddonID: addonID,
+					OnlyApp: c.Bool("only-app"),
+					URL:     c.Args()[0],
+				})
 			} else {
 				cli.ShowCommandHelp(c, "log-drains-remove")
 			}
