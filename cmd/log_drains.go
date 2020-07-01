@@ -103,18 +103,23 @@ var (
 				addonID = c.String("addon")
 			}
 
+			if addonID != "" && c.Bool("with-addons") {
+				cli.ShowCommandHelp(c, "log-drains-add")
+				return
+			}
+
 			err := log_drains.Add(currentApp,
-				log_drains.AddAddonOpts{
+				log_drains.AddDrainOpts{
 					WithAddons: c.Bool("with-addons"),
 					AddonID:    addonID,
-				},
-				scalingo.LogDrainAddParams{
-					Type:        c.String("type"),
-					URL:         c.String("url"),
-					Host:        c.String("host"),
-					Port:        c.String("port"),
-					Token:       c.String("token"),
-					DrainRegion: c.String("drain-region"),
+					Params: scalingo.LogDrainAddParams{
+						Type:        c.String("type"),
+						URL:         c.String("url"),
+						Host:        c.String("host"),
+						Port:        c.String("port"),
+						Token:       c.String("token"),
+						DrainRegion: c.String("drain-region"),
+					},
 				})
 			if err != nil {
 				errorQuit(err)
