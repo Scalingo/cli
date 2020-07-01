@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+
+	"github.com/AlecAivazis/survey"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/log_drains"
@@ -156,7 +159,6 @@ var (
 	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(c *cli.Context) {
-			// TODO: survey
 			currentApp := appdetect.CurrentApp(c)
 
 			var addonID string
@@ -164,6 +166,19 @@ var (
 				addonID = c.GlobalString("addon")
 			} else if c.String("addon") != "<addon_id>" {
 				addonID = c.String("addon")
+			}
+
+			if addonID != "" && c.Bool("only-app") {
+				cli.ShowCommandHelp(c, "log-drains-remove")
+				return
+			}
+
+			if addonID == "" && !c.Bool("only-app") {
+				result := askContinue("This operation will delete the log drain " + c.Args()[0] + " for the application and all addons connected to this application")
+				if !result {
+					fmt.Println("Aborted")
+					return
+				}
 			}
 
 			var err error
@@ -187,3 +202,12 @@ var (
 		},
 	}
 )
+
+func askContinue(message string) bool {
+	result := false
+	prompt := &survey.Confirm{
+		Message: message + "\n\tContinue ?",
+	}
+	survey.AskOne(prompt, &result, nil)
+	return result
+}
