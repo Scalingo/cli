@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Add a log drain to an addon
+  [#575](https://github.com/Scalingo/cli/pull/575)
+  [go-scalingo #174](https://github.com/Scalingo/go-scalingo/pull/174)
 * Add list log drains by addons command
   [#572](https://github.com/Scalingo/cli/pull/572)
   [go-scalingo #172](https://github.com/Scalingo/go-scalingo/pull/172)
