@@ -119,7 +119,7 @@ func (c *Client) LogDrainAddonRemove(app, addonID string, URL string) error {
 
 	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
-		return errgo.Notef(err, "fail to delete log drain of the addon %s", addonID)
+		return errgo.Notef(err, "fail to delete log drain %s from the addon %s", URL, addonID)
 	}
 
 	return nil

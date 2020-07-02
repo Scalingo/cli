@@ -19,33 +19,34 @@ func Remove(app string, opts RemoveAddonOpts) error {
 	}
 
 	if opts.AddonID != "" {
-		// addons only
+		// addon only
 		err := c.LogDrainAddonRemove(app, opts.AddonID, opts.URL)
 		if err != nil {
 			return errgo.Notef(err, "fail to remove the log drain from the addon %s", opts.AddonID)
 		}
-		io.Status("The log drain:", opts.URL, "has been deleted from the addon", opts.AddonID)
+		io.Status("The log drain", opts.URL, "has been deleted from the addon", opts.AddonID)
+		return nil
+	}
+
+	err = c.LogDrainRemove(app, opts.URL)
+	if err != nil {
+		io.Status("fail to remove the log drain from the application:", app, "\n\t", err)
 	} else {
-		err = c.LogDrainRemove(app, opts.URL)
+		io.Status("Log drain", opts.URL, "has been deleted from the application", app)
+	}
+
+	if !opts.OnlyApp {
+		addons, err := c.AddonsList(app)
 		if err != nil {
-			io.Status("fail to remove the log drain from the application:", app, "\n\t", err)
-		} else {
-			io.Status("Log drain", opts.URL, "has been deleted from the application", app)
+			return errgo.Notef(err, "fail to list addons to remove log drain")
 		}
 
-		if !opts.OnlyApp {
-			addons, err := c.AddonsList(app)
+		for _, addon := range addons {
+			err := c.LogDrainAddonRemove(app, addon.ID, opts.URL)
 			if err != nil {
-				return errgo.Notef(err, "fail to list addons")
-			}
-
-			for _, addon := range addons {
-				err := c.LogDrainAddonRemove(app, addon.ID, opts.URL)
-				if err != nil {
-					io.Status("fail to remove the log drain from the addon:", addon.AddonProvider.Name, "\n\t", err)
-				} else {
-					io.Status("Log drain", opts.URL, "has been deleted from the addon", addon.AddonProvider.Name)
-				}
+				io.Status("fail to remove the log drain from the addon:", addon.AddonProvider.Name, "\n\t", err)
+			} else {
+				io.Status("Log drain", opts.URL, "has been deleted from the addon", addon.AddonProvider.Name)
 			}
 		}
 	}
