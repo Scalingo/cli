@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+
+	"github.com/AlecAivazis/survey"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/log_drains"
@@ -19,8 +22,8 @@ var (
 		Usage: "List the log drains of an application",
 		Description: `List all the log drains of an application:
 
-	Use the parameter: "--addon <addon_uuid>" to list log drains of a specific addon
-	Use the parameter: "--with-addons" to list log drains of all addons connected to the application
+	Use the parameter "--addon <addon_uuid>" to list log drains of a specific addon
+	Use the parameter "--with-addons" to list log drains of all addons connected to the application
 
 	Examples:
 		$ scalingo --app my-app log-drains
@@ -28,7 +31,6 @@ var (
 		$ scalingo --app my-app log-drains --with-addons
 
 	# See also commands 'log-drains-add', 'log-drains-remove'`,
-
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			if len(c.Args()) != 0 {
@@ -82,8 +84,8 @@ var (
 
 	Add a log drain to an addon:
 
-		Use the parameter: "--addon <addon_uuid>" to your add command to add a log drain to a specific addon
-		Use the parameter: "--with-addons" to list log drains of all addons connected to the application.
+		Use the parameter "--addon <addon_uuid>" to your add command to add a log drain to a specific addon
+		Use the parameter "--with-addons" to list log drains of all addons connected to the application.
 
 		Warning: At the moment, only databases addons are able to throw logs.
 
@@ -133,19 +135,67 @@ var (
 	logDrainsRemoveCommand = cli.Command{
 		Name:     "log-drains-remove",
 		Category: "Log drains",
-		Flags:    []cli.Flag{appFlag},
-		Usage:    "Remove a log drain from an application",
-		Description: `Remove a log drain from an application:
+		Flags: []cli.Flag{
+			appFlag,
+			addonFlag,
+			cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
+		},
+		Usage: "Remove a log drain from an application and its associated addons",
+		Description: `Remove a log drain from an application and all its addons:
 
-	$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
+		$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345
+
+	Remove a log drain from a specific addon:
+		Use the parameter "--addon <addon_uuid>" to remove a log drain from a specific addon
+
+		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-remove syslog://custom.logstash.com:12345
+
+	Remove a log drain only for the application:
+		Use the parameter "--only-app" to remove a log drain only from the application
+
+		$ scalingo --app my-app --only-app log-drains-remove syslog://custom.logstash.com:12345
 
 	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
+
+			var addonID string
+			if c.GlobalString("addon") != "<addon_id>" {
+				addonID = c.GlobalString("addon")
+			} else if c.String("addon") != "<addon_id>" {
+				addonID = c.String("addon")
+			}
+
+			if addonID != "" && c.Bool("only-app") {
+				cli.ShowCommandHelp(c, "log-drains-remove")
+				return
+			}
+
+			message := "This operation will delete the log drain " + c.Args()[0]
+			if addonID == "" && !c.Bool("only-app") {
+				// addons + app
+				message += " for the application and all its addons"
+			} else if addonID != "" && !c.Bool("only-app") {
+				// addon only
+				message += " for the addon " + addonID
+			} else {
+				// app only
+				message += " for the application " + currentApp
+			}
+			result := askContinue(message)
+			if !result {
+				fmt.Println("Aborted")
+				return
+			}
+
 			var err error
 			if len(c.Args()) == 1 {
-				err = log_drains.Remove(currentApp, c.Args()[0])
+				err = log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
+					AddonID: addonID,
+					OnlyApp: c.Bool("only-app"),
+					URL:     c.Args()[0],
+				})
 			} else {
 				cli.ShowCommandHelp(c, "log-drains-remove")
 			}
@@ -160,3 +210,12 @@ var (
 		},
 	}
 )
+
+func askContinue(message string) bool {
+	result := false
+	prompt := &survey.Confirm{
+		Message: message + "\n\tConfirm deletion ?",
+	}
+	survey.AskOne(prompt, &result, nil)
+	return result
+}
