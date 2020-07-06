@@ -65,6 +65,7 @@ var (
 		Flags: []cli.Flag{appFlag,
 			addonFlag,
 			cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
+			cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
 			cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
 			cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
 			cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
@@ -85,9 +86,10 @@ var (
 	Add a log drain to an addon:
 
 		Use the parameter "--addon <addon_uuid>" to your add command to add a log drain to a specific addon
-		Use the parameter "--with-addons" to list log drains of all addons connected to the application.
+		Use the parameter "--with-addons" to add log drains of all addons connected to the application.
+		Use the parameter "--with-databases" to add log drains of all databases connected to the application.
 
-		Warning: At the moment, only databases addons are able to throw logs.
+		Warning: At the moment, only databases addons are able to forward logs to a drain.
 
 	Examples:
 		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
@@ -105,14 +107,18 @@ var (
 				addonID = c.String("addon")
 			}
 
-			if addonID != "" && c.Bool("with-addons") {
+			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				cli.ShowCommandHelp(c, "log-drains-add")
 				return
 			}
 
+			if c.Bool("with-addons") {
+				fmt.Println("Warning: At the moment, only databases addons are able to forward logs to a drain.")
+			}
+
 			err := log_drains.Add(currentApp,
 				log_drains.AddDrainOpts{
-					WithAddons: c.Bool("with-addons"),
+					WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
 					AddonID:    addonID,
 					Params: scalingo.LogDrainAddParams{
 						Type:        c.String("type"),
