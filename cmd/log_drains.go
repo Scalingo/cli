@@ -113,7 +113,7 @@ var (
 			}
 
 			if c.Bool("with-addons") {
-				fmt.Println("Warning: At the moment, only databases addons are able to forward logs to a drain.")
+				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
 			err := log_drains.Add(currentApp,
