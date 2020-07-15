@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
@@ -49,7 +50,7 @@ func List(app string, opts ListAddonOpts) error {
 			if opts.AddonID == addon.ID || opts.WithAddons {
 				res, err := c.LogDrainsAddonList(app, addon.ID)
 				if err != nil {
-					return errgo.Notef(err, "fail to list the log drains of an addon")
+					io.Status(err)
 				}
 				if len(res.Drains) > 0 {
 					appToPrint = append(appToPrint, printableDrains{
