@@ -27,7 +27,7 @@ func List() error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "Role", "Owner"})
+	t.SetHeader([]string{"Name", "Role", "Status"})
 
 	currentUser, err := config.C.CurrentUser()
 	if err != nil {
@@ -36,9 +36,9 @@ func List() error {
 
 	for _, app := range apps {
 		if app.Owner.Email == currentUser.Email {
-			t.Append([]string{app.Name, "owner", "-"})
+			t.Append([]string{app.Name, "owner", string(app.Status)})
 		} else {
-			t.Append([]string{app.Name, "collaborator", fmt.Sprintf("%s <%s>", app.Owner.Username, app.Owner.Email)})
+			t.Append([]string{app.Name, "collaborator", string(app.Status)})
 		}
 	}
 	t.Render()

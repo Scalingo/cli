@@ -11,6 +11,8 @@
 * Add list log drains by addons command
   [#572](https://github.com/Scalingo/cli/pull/572)
   [go-scalingo #172](https://github.com/Scalingo/go-scalingo/pull/172)
+* Update the `apps` command to display the application status
+  [#582](https://github.com/Scalingo/cli/582)
 
 ### 1.18.1
 
