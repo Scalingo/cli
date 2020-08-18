@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Handle new `queued` deployment status
+  [#586](https://github.com/Scalingo/cli/pull/586)
+  [go-scalingo #177](https://github.com/Scalingo/go-scalingo/pull/177)
 * Remove a log drain from an addon
   [#577](https://github.com/Scalingo/cli/pull/577)
   [go-scalingo #175](https://github.com/Scalingo/go-scalingo/pull/175)
