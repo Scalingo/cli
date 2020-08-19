@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.19.0
+
 * Handle new `queued` deployment status
   [#586](https://github.com/Scalingo/cli/pull/586)
   [go-scalingo #177](https://github.com/Scalingo/go-scalingo/pull/177)
