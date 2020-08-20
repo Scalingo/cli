@@ -304,7 +304,7 @@ cache between GitHub and our customers for a more efficient check of what is the
 new CLI version. Type:
 
 ```
-scalingo --region agora-fr1 -a cli-download-service restart
+scalingo --region osc-fr1 -a cli-download-service restart
 ```
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
