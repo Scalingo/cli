@@ -44,7 +44,7 @@ func IsPaymentRequiredAndFreeTrialExceededError(err error) bool {
 		return false
 	}
 	paymentRequiredErr, ok := reqestFailedError.APIError.(http.PaymentRequiredError)
-	if !ok || paymentRequiredErr.Name != "free-trial-exceeded" {
+	if !ok || !strings.HasSuffix(paymentRequiredErr.Name, "free-trial-exceeded") {
 		return false
 	}
 	return true
