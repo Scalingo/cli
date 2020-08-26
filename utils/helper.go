@@ -23,7 +23,7 @@ const (
 func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
 	validate, err := askUserValidation()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to ask for user to validate to break out of free trial")
 	}
 	if !validate {
 		fmt.Println("Do not break free trial.")
@@ -31,7 +31,7 @@ func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
 	}
 	err = c.UserStopFreeTrial()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to stop user free trial")
 	}
 	return callback()
 }
