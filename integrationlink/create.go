@@ -8,6 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/Scalingo/go-scalingo/http"
 	"github.com/Scalingo/go-utils/errors"
@@ -51,7 +52,13 @@ func Create(app string, integrationType scalingo.SCMType, integrationURL string,
 
 	_, err = c.SCMRepoLinkCreate(app, params)
 	if err != nil {
-		return errgo.Notef(err, "fail to create the repo link")
+		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
+			return errgo.Notef(err, "fail to create the repo link")
+		}
+
+		return utils.AskAndStopFreeTrial(c, func() error {
+			return Create(app, integrationType, integrationURL, params)
+		})
 	}
 
 	io.Statusf("Your app '%s' is linked to the repository %s.\n", app, integrationURL)
