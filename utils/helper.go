@@ -29,7 +29,7 @@ func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
 		fmt.Println("Do not break free trial.")
 		return nil
 	}
-	_, err = c.UpdateUser(scalingo.UpdateUserParams{StopFreeTrial: true})
+	err = c.UserStopFreeTrial()
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
