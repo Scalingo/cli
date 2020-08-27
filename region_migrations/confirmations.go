@@ -3,8 +3,8 @@ package region_migrations
 import (
 	"fmt"
 
-	"github.com/AlecAivazis/survey"
 	scalingo "github.com/Scalingo/go-scalingo"
+	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 func ConfirmPrepare(migration scalingo.RegionMigration) bool {
