@@ -1,0 +1,10 @@
+version: '3'
+services:
+  test:
+    build: .
+    volumes:
+      - ./:/go/src/github.com/Scalingo/go-scalingo
+    environment:
+      GO_ENV: test
+      LOGGER_LEVEL: debug
+    command: "true"
