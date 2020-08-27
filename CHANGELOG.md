@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Ask user to end its free trial if asking for automatic deployment of review
+  apps [#588](https://github.com/Scalingo/cli/pull/588)
+
 ### 1.19.0
 
 * Handle new `queued` deployment status

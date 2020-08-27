@@ -23,15 +23,15 @@ const (
 func AskAndStopFreeTrial(c *scalingo.Client, callback func() error) error {
 	validate, err := askUserValidation()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to ask for user to validate to break out of free trial")
 	}
 	if !validate {
 		fmt.Println("Do not break free trial.")
 		return nil
 	}
-	_, err = c.UpdateUser(scalingo.UpdateUserParams{StopFreeTrial: true})
+	err = c.UserStopFreeTrial()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to stop user free trial")
 	}
 	return callback()
 }
@@ -44,7 +44,7 @@ func IsPaymentRequiredAndFreeTrialExceededError(err error) bool {
 		return false
 	}
 	paymentRequiredErr, ok := reqestFailedError.APIError.(http.PaymentRequiredError)
-	if !ok || paymentRequiredErr.Name != "free-trial-exceeded" {
+	if !ok || !strings.HasSuffix(paymentRequiredErr.Name, "free-trial-exceeded") {
 		return false
 	}
 	return true
