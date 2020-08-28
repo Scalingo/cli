@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/AlecAivazis/survey"
 	"github.com/urfave/cli"
+	"gopkg.in/AlecAivazis/survey.v1"
 
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"

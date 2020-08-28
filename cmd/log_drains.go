@@ -3,12 +3,12 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/AlecAivazis/survey"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/log_drains"
 	"github.com/Scalingo/go-scalingo"
 	"github.com/urfave/cli"
+	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var (
