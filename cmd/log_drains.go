@@ -134,7 +134,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
+			autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
 		},
 	}
 

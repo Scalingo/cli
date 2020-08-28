@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo"
@@ -50,7 +51,10 @@ func Deploy(app, archivePath, gitRef string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	scalingoio.Info("Deployment started, streaming output:")
+	scalingoio.Status("Your deployment has been queued and is going to start…")
+
+	go showQueuedWarnings(c, app, deployment.ID)
+
 	debug.Println("Streaming deployment logs of", app, ":", deployment.ID)
 	err = Stream(&StreamOpts{
 		AppName:      app,
@@ -106,4 +110,18 @@ func uploadArchive(uploadURL string, archiveReader io.Reader, archiveSize int64)
 	debug.Println("Uploading archive to ", uploadURL, "with headers", req.Header)
 
 	return http.DefaultClient.Do(req)
+}
+
+func showQueuedWarnings(c *scalingo.Client, appID, deploymentID string) {
+	for {
+		time.Sleep(time.Minute)
+		deployment, err := c.Deployment(appID, deploymentID)
+		if err != nil {
+			debug.Printf("Queued deployment watcher error: %s\n", err.Error())
+		}
+		if deployment.Status != scalingo.StatusQueued {
+			return
+		}
+		scalingoio.Warning("All deployment slots of application owner are currently in use, the deployment will start as soon as one is available.")
+	}
 }

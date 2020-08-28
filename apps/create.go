@@ -23,7 +23,7 @@ func Create(appName string, remote string, buildpack string) error {
 			return handleRegionDisabledError(appName, c)
 		}
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			return errgo.Mask(err, errgo.Any)
+			return errgo.Notef(err, "fail to create the application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(c, func() error {

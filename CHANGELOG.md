@@ -2,6 +2,14 @@
 
 ### To be Released
 
+* Ask user to end its free trial if asking for automatic deployment of review
+  apps [#588](https://github.com/Scalingo/cli/pull/588)
+
+### 1.19.0
+
+* Handle new `queued` deployment status
+  [#586](https://github.com/Scalingo/cli/pull/586)
+  [go-scalingo #177](https://github.com/Scalingo/go-scalingo/pull/177)
 * Remove a log drain from an addon
   [#577](https://github.com/Scalingo/cli/pull/577)
   [go-scalingo #175](https://github.com/Scalingo/go-scalingo/pull/175)
@@ -11,6 +19,8 @@
 * Add list log drains by addons command
   [#572](https://github.com/Scalingo/cli/pull/572)
   [go-scalingo #172](https://github.com/Scalingo/go-scalingo/pull/172)
+* Update the `apps` command to display the application status
+  [#582](https://github.com/Scalingo/cli/pull/582)
 
 ### 1.18.1
 

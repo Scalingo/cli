@@ -25,6 +25,7 @@ type DeploymentStatus string
 
 const (
 	StatusSuccess      DeploymentStatus = "success"
+	StatusQueued       DeploymentStatus = "queued"
 	StatusBuilding     DeploymentStatus = "building"
 	StatusStarting     DeploymentStatus = "starting"
 	StatusPushing      DeploymentStatus = "pushing"
@@ -78,7 +79,8 @@ func (d *Deployment) IsFinished() bool {
 }
 
 func IsFinishedString(status DeploymentStatus) bool {
-	return status != StatusBuilding && status != StatusStarting && status != StatusPushing
+	return status != StatusBuilding && status != StatusStarting &&
+		status != StatusPushing && status != StatusQueued
 }
 
 type DeploymentList struct {
