@@ -74,7 +74,6 @@ func loginWithSSH(identity string) error {
 			return errgo.Notef(err, "fail to ensure region cache")
 		}
 
-		fmt.Printf("%+v\n", regions)
 		defaultRegion, err := regions.Default()
 		if err != nil {
 			return errgo.Notef(err, "fail to find default region")
