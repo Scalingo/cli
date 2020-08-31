@@ -67,9 +67,25 @@ func loginWithToken(token string) error {
 }
 
 func loginWithSSH(identity string) error {
+	host := config.C.ScalingoSshHost
+	if host == "" {
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{})
+		if err != nil {
+			return errgo.Notef(err, "fail to ensure region cache")
+		}
+
+		fmt.Printf("%+v\n", regions)
+		defaultRegion, err := regions.Default()
+		if err != nil {
+			return errgo.Notef(err, "fail to find default region")
+		}
+
+		host = defaultRegion.SSH
+	}
+
 	debug.Println("Login through SSH, identity:", identity)
 	client, _, err := netssh.Connect(netssh.ConnectOpts{
-		Host:     config.C.ScalingoSshHost,
+		Host:     host,
 		Identity: identity,
 	})
 	if err != nil {
