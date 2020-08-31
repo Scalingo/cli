@@ -83,7 +83,7 @@ func loginWithSSH(identity string) error {
 		host = defaultRegion.SSH
 	}
 
-	debug.Println("Login through SSH, identity:", identity)
+	debug.Printf("Login through SSH, Host: %s Identity:%s\n", host, identity)
 	client, _, err := netssh.Connect(netssh.ConnectOpts{
 		Host:     host,
 		Identity: identity,
