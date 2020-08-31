@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 
@@ -14,6 +15,20 @@ import (
 type RegionsCache struct {
 	ExpireAt time.Time         `json:"expire_at"`
 	Regions  []scalingo.Region `json:"regions"`
+}
+
+func (c RegionsCache) Default() (scalingo.Region, error) {
+	if len(c.Regions) == 0 {
+		return scalingo.Region{}, fmt.Errorf("no region found")
+	}
+
+	for _, r := range c.Regions {
+		if r.Default {
+			return r, nil
+		}
+	}
+
+	return scalingo.Region{}, fmt.Errorf("no default region found")
 }
 
 // GetRegionOpts allows the caller to use a custom API token instead of

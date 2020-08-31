@@ -2,7 +2,7 @@
 github.com/ScaleFT/sshkeys
 # github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e
 github.com/Scalingo/envconfig
-# github.com/Scalingo/go-scalingo v4.5.8+incompatible
+# github.com/Scalingo/go-scalingo v4.7.0+incompatible
 github.com/Scalingo/go-scalingo
 github.com/Scalingo/go-scalingo/billing
 github.com/Scalingo/go-scalingo/debug
@@ -39,7 +39,7 @@ github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
-# github.com/golang/mock v1.4.3
+# github.com/golang/mock v1.4.4
 github.com/golang/mock/gomock
 # github.com/gosuri/uilive v0.0.3
 github.com/gosuri/uilive
@@ -93,7 +93,7 @@ github.com/stvp/rollbar
 github.com/urfave/cli
 # github.com/xanzy/ssh-agent v0.2.1
 github.com/xanzy/ssh-agent
-# golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
+# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/cast5
 golang.org/x/crypto/chacha20
@@ -110,14 +110,15 @@ golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/poly1305
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20190628185345-da137c7871d7
+# golang.org/x/net v0.0.0-20200822124328-c89045814202
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-# golang.org/x/sys v0.0.0-20191210023423-ac6580df4449
+# golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
 golang.org/x/sys/cpu
 golang.org/x/sys/unix
 golang.org/x/sys/windows
@@ -125,7 +126,7 @@ golang.org/x/sys/windows
 gopkg.in/AlecAivazis/survey.v1
 gopkg.in/AlecAivazis/survey.v1/core
 gopkg.in/AlecAivazis/survey.v1/terminal
-# gopkg.in/errgo.v1 v1.0.0-20161222125816-442357a80af5
+# gopkg.in/errgo.v1 v1.0.1
 gopkg.in/errgo.v1
 # gopkg.in/src-d/go-billy.v4 v4.3.1
 gopkg.in/src-d/go-billy.v4

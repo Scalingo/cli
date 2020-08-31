@@ -59,7 +59,7 @@ var (
 		"SCALINGO_AUTH_URL":  "https://auth.scalingo.com",
 		"SCALINGO_API_URL":   "",
 		"SCALINGO_DB_URL":    "",
-		"SCALINGO_SSH_HOST":  "scalingo.com:22",
+		"SCALINGO_SSH_HOST":  "",
 		"SCALINGO_REGION":    "",
 		"API_VERSION":        "1",
 		"UNSECURE_SSL":       "false",

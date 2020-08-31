@@ -47,7 +47,7 @@ func (p *PrivateKey) isOpenSSHFormatEncrypted() bool {
 
 	_, err := ssh.ParseRawPrivateKey(pem.EncodeToMemory(p.Block))
 	if err != nil {
-		return strings.Contains(err.Error(), "cannot decode encrypted private keys")
+		return strings.Contains(err.Error(), "this private key is passphrase protected")
 	}
 	return false
 }

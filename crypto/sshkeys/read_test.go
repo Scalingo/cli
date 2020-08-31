@@ -58,12 +58,11 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 			},
 		},
 		{
-			Name:              "Unencrypted OpenSSH ecdsa Key (Unhandled ecdsa)",
+			Name:              "Unencrypted OpenSSH ecdsa Key",
 			PrivateKeyContent: unencryptedOpenSSHecdsa,
 			Expect: func(t *testing.T, signer ssh.Signer, err error) {
-				require.Error(t, err)
-				require.Nil(t, signer)
-				require.Contains(t, err.Error(), "unhandled key type")
+				require.NoError(t, err)
+				require.NotNil(t, signer)
 			},
 		},
 		{

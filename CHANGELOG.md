@@ -4,6 +4,8 @@
 
 * Ask user to end its free trial if asking for automatic deployment of review
   apps [#588](https://github.com/Scalingo/cli/pull/588)
+* Fetch the SSH Login endpoint from our region metadatas
+  [#592](https://github.com/Scalingo/cli/pull/592)
 
 ### 1.19.0
 

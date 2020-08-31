@@ -1,6 +1,15 @@
 # Changelog
 
-## To be Released
+## To Be Released
+
+## 4.7.0
+
+* Add support for route `PATCH /users/stop_free_trial`
+* Deprecate the use of `UpdateUser` to stop a user free trial
+
+## 4.6.0
+
+* Add `queued` deployment status and add it to `IsFinishedString`
 
 ## v4.5.8
 
