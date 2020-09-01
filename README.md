@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.19.0
+# Scalingo-CLI v1.19.1
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -57,7 +57,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.19.0
+   1.19.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -242,21 +242,13 @@ $ git checkout master
 $ git pull origin master
 ```
 
-Bump new version number in:
+And follow the instructions of:
 
-- `CHANGELOG.md`
-- `.goxc.json`
-- `README.md`
-- `VERSION`
-- `config/version.go`
-
-And commit these changes:
-
-```bash
-$ git add .
-$ git commit -m "Bump version 1.18.1"
-$ git push origin master
 ```
+./dists/make-release.sh -v 1.19.1
+```
+The script asks you for a Rollbar token available in the shared keychain under
+the "CLI Rollbar Token" note.
 
 ### (optional) Cherry Pick Commits Included in the Release
 
@@ -269,31 +261,44 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.18.1
+git checkout -b v1.19.1
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.18.1
+git push --set-upstream origin v1.19.1
 ```
 
-### Tag the New Release
+Bump new version number in:
+
+- `CHANGELOG.md`
+- `.goxc.json`
+- `README.md`
+- `VERSION`
+- `config/version.go`
+
+And commit these changes:
 
 ```bash
-git tag 1.18.1
+$ git add .
+$ git commit -m "Bump version 1.19.1"
+$ git push origin master
+```
+
+#### Tag the New Release
+
+```bash
+git tag 1.19.1
 git push --tags
 ```
 
-### Build the New Release
+#### Build the New Release
 
 Build the new version for all platforms with:
 
 ```sh
-./dists/make-release.sh -v 1.18.1
+./dists/make-release.sh -v 1.19.1 -b
 ```
-
-The script asks you for a Rollbar token available in the shared keychain under
-the "CLI Rollbar Token" note.
 
 Tag and release a new version on GitHub
 [here](https://github.com/Scalingo/cli/releases/new). Attach the zip archives
