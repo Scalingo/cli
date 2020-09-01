@@ -6,6 +6,8 @@
   apps [#588](https://github.com/Scalingo/cli/pull/588)
 * Fetch the SSH Login endpoint from our region metadatas
   [#592](https://github.com/Scalingo/cli/pull/592)
+* Fix a panic when log-drains-remove was launched without any args
+  [#595](https://github.com/Scalingo/cli/pull/595)
 
 ### 1.19.0
 

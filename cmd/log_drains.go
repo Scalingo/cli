@@ -165,6 +165,11 @@ var (
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "log-drains-remove")
+				return
+			}
+			drain := c.Args()[0]
 
 			var addonID string
 			if c.GlobalString("addon") != "<addon_id>" {
@@ -178,7 +183,7 @@ var (
 				return
 			}
 
-			message := "This operation will delete the log drain " + c.Args()[0]
+			message := "This operation will delete the log drain " + drain
 			if addonID == "" && !c.Bool("only-app") {
 				// addons + app
 				message += " for the application and all its addons"
@@ -195,16 +200,11 @@ var (
 				return
 			}
 
-			var err error
-			if len(c.Args()) == 1 {
-				err = log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
-					AddonID: addonID,
-					OnlyApp: c.Bool("only-app"),
-					URL:     c.Args()[0],
-				})
-			} else {
-				cli.ShowCommandHelp(c, "log-drains-remove")
-			}
+			err := log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
+				AddonID: addonID,
+				OnlyApp: c.Bool("only-app"),
+				URL:     drain,
+			})
 
 			if err != nil {
 				errorQuit(err)
