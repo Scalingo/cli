@@ -4,7 +4,7 @@
 
 * Ask user to end its free trial if asking for automatic deployment of review
   apps [#588](https://github.com/Scalingo/cli/pull/588)
-* Fetch the SSH Login endpoint from our region metadatas
+* Fetch the SSH Login endpoint from our region metadata
   [#592](https://github.com/Scalingo/cli/pull/592)
 * Fix a panic when log-drains-remove was launched without any args
   [#595](https://github.com/Scalingo/cli/pull/595)
