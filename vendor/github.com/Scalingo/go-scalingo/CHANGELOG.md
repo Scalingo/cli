@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 4.7.1
+
+* Add support for optionally authenticated routes
+
 ## 4.7.0
 
 * Add support for route `PATCH /users/stop_free_trial`
