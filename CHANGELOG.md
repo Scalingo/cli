@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.19.2
+
 * Use an unauthenticated to fetch region cache on login
   [#599](https://github.com/Scalingo/cli/pull/599)
 
