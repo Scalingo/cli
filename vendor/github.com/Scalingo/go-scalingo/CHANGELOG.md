@@ -2,7 +2,9 @@
 
 ## To Be Released
 
-* Do not attempt to generate a token on an unauthenticated client
+## 4.7.1
+
+* Add support for optionally authenticated routes
 
 ## 4.7.0
 

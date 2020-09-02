@@ -48,7 +48,7 @@ type Client interface {
 	Do(req *APIRequest) (*http.Response, error)
 
 	TokenGenerator() TokenGenerator
-	IsAuthenticated() bool
+	IsAuthenticatedClient() bool
 	BaseURL() string
 	HTTPClient() *http.Client
 }
@@ -217,7 +217,7 @@ func (c *client) DoRequest(req *APIRequest, data interface{}) error {
 	return nil
 }
 
-func (c *client) IsAuthenticated() bool {
+func (c *client) IsAuthenticatedClient() bool {
 	return c.tokenGenerator != nil
 }
 

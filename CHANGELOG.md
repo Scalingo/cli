@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Use an unauthenticated to fetch region cache on login
+  [#599](https://github.com/Scalingo/cli/pull/599)
+
 ### 1.19.1
 
 * Ask user to end its free trial if asking for automatic deployment of review
