@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* Do not attempt to generate a token on an unauthenticated client
+
 ## 4.7.0
 
 * Add support for route `PATCH /users/stop_free_trial`

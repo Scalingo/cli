@@ -69,7 +69,9 @@ func loginWithToken(token string) error {
 func loginWithSSH(identity string) error {
 	host := config.C.ScalingoSshHost
 	if host == "" {
-		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{})
+		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			SkipAuth: true,
+		})
 		if err != nil {
 			return errgo.Notef(err, "fail to ensure region cache")
 		}

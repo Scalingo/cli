@@ -2,7 +2,7 @@
 github.com/ScaleFT/sshkeys
 # github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e
 github.com/Scalingo/envconfig
-# github.com/Scalingo/go-scalingo v4.7.0+incompatible
+# github.com/Scalingo/go-scalingo v4.7.1-0.20200902081904-a1e18af6cc4f+incompatible
 github.com/Scalingo/go-scalingo
 github.com/Scalingo/go-scalingo/billing
 github.com/Scalingo/go-scalingo/debug

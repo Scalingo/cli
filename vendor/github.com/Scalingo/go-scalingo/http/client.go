@@ -48,6 +48,7 @@ type Client interface {
 	Do(req *APIRequest) (*http.Response, error)
 
 	TokenGenerator() TokenGenerator
+	IsAuthenticated() bool
 	BaseURL() string
 	HTTPClient() *http.Client
 }
@@ -214,6 +215,10 @@ func (c *client) DoRequest(req *APIRequest, data interface{}) error {
 		return errgo.Notef(err, "fail to parse JSON of subresource response")
 	}
 	return nil
+}
+
+func (c *client) IsAuthenticated() bool {
+	return c.tokenGenerator != nil
 }
 
 func (c *client) TokenGenerator() TokenGenerator {

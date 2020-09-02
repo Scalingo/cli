@@ -34,7 +34,8 @@ func (c RegionsCache) Default() (scalingo.Region, error) {
 // GetRegionOpts allows the caller to use a custom API token instead of
 // the default one of the authentication used
 type GetRegionOpts struct {
-	Token string
+	Token    string
+	SkipAuth bool
 }
 
 func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
@@ -50,20 +51,29 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 		return regionsCache, nil
 	}
 
-	token := &auth.UserToken{Token: opts.Token}
-	if token.Token == "" {
-		auth := &CliAuthenticator{}
-		_, token, err = auth.LoadAuth()
+	var client *scalingo.Client
+	if opts.SkipAuth {
+		client, err = ScalingoUnauthenticatedAuthClient()
 		if err != nil {
-			return RegionsCache{}, errgo.Notef(err, "fail to load authentication")
+			return RegionsCache{}, errgo.Notef(err, "fail to create an unauthenticated client")
+		}
+	} else {
+		token := &auth.UserToken{Token: opts.Token}
+		if token.Token == "" {
+			auth := &CliAuthenticator{}
+			_, token, err = auth.LoadAuth()
+			if err != nil {
+				return RegionsCache{}, errgo.Notef(err, "fail to load authentication")
+			}
+		}
+
+		debug.Println("[Regions] Get the list of regions to fill the cache")
+		client, err = ScalingoAuthClientFromToken(token.Token)
+		if err != nil {
+			return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
 		}
 	}
 
-	debug.Println("[Regions] Get the list of regions to fill the cache")
-	client, err := ScalingoAuthClientFromToken(token.Token)
-	if err != nil {
-		return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
-	}
 	regions, err := client.RegionsList()
 	if err != nil {
 		return RegionsCache{}, errgo.Notef(err, "fail to list available regions")
@@ -71,6 +81,11 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 
 	regionsCache.Regions = regions
 	regionsCache.ExpireAt = time.Now().Add(10 * time.Minute)
+
+	if opts.SkipAuth {
+		return regionsCache, nil
+	}
+
 	fd, err = os.OpenFile(c.RegionsCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
 	if err == nil {
 		json.NewEncoder(fd).Encode(regionsCache)

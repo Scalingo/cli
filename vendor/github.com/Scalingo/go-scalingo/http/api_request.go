@@ -48,7 +48,7 @@ func (c *client) FillDefaultValues(req *APIRequest) error {
 		req.Params = make(map[string]interface{})
 	}
 
-	if !req.NoAuth {
+	if !req.NoAuth && c.IsAuthenticated() {
 		var err error
 		req.Token, err = c.TokenGenerator().GetAccessToken()
 		if err != nil {
