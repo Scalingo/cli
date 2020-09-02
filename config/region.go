@@ -83,6 +83,7 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 	regionsCache.ExpireAt = time.Now().Add(10 * time.Minute)
 
 	if opts.SkipAuth {
+		// If we skipped the authentication the region cache should not be saved since it will not contain regions that are not publicly available (like osc-secnum-fr1)
 		return regionsCache, nil
 	}
 
