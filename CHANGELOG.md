@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Add support for new log drain/addon log drain events
+  [#600](https://github.com/Scalingo/cli/pull/600)
+
 ### 1.19.2
 
 * Use an unauthenticated to fetch region cache on login

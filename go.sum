@@ -11,6 +11,12 @@ github.com/Scalingo/go-scalingo v4.7.0+incompatible h1:CyrlsF9Gm3wHsZppxLs/aRpkQ
 github.com/Scalingo/go-scalingo v4.7.0+incompatible/go.mod h1:EhzCEaOPnaI+IVNzfT/bBxbgNNTj5/V+sQE8d1jvtUg=
 github.com/Scalingo/go-scalingo v4.7.1+incompatible h1:QBljWlTCBU4b8lRarbpfmUf+Kr4EfgwBg/pkB6hxlAI=
 github.com/Scalingo/go-scalingo v4.7.1+incompatible/go.mod h1:EhzCEaOPnaI+IVNzfT/bBxbgNNTj5/V+sQE8d1jvtUg=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200910143556-71ec353020e0+incompatible h1:W87g1AqGIoKNRVqd6Yh4vvwW9yJpCSxws3eGlfaZsGA=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200910143556-71ec353020e0+incompatible/go.mod h1:EhzCEaOPnaI+IVNzfT/bBxbgNNTj5/V+sQE8d1jvtUg=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200911080915-7deb89872a6c+incompatible h1:TteytNmA4b0cuUcaIId/3MZCRezbPfpihKoIh/VKGq4=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200911080915-7deb89872a6c+incompatible/go.mod h1:EhzCEaOPnaI+IVNzfT/bBxbgNNTj5/V+sQE8d1jvtUg=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200911082622-e1477ba54ebe+incompatible h1:lo+J/3ZHLAwz1N+mQFzWfD1H9P8Py65E5YpsNMtpoq4=
+github.com/Scalingo/go-scalingo v4.7.2-0.20200911082622-e1477ba54ebe+incompatible/go.mod h1:EhzCEaOPnaI+IVNzfT/bBxbgNNTj5/V+sQE8d1jvtUg=
 github.com/Scalingo/go-utils v6.3.0+incompatible h1:D+iD/0/n6TuwNNzAkLeqRZixCPWSf3DqZETh65qlnQk=
 github.com/Scalingo/go-utils v6.3.0+incompatible/go.mod h1:YcispJL9BCnNJwWxspalrRQ6zHAYPyNSnDLlfdfhxt8=
 github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 h1:uSoVVbwJiQipAclBbw+8quDsfcvFjOpI5iCf4p/cqCs=
