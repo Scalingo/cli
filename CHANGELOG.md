@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.19.3
+
 * Add support for new log drain/addon log drain events
   [#600](https://github.com/Scalingo/cli/pull/600)
 

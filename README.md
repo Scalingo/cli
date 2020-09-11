@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.19.2
+# Scalingo-CLI v1.19.3
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -57,7 +57,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.19.2
+   1.19.3
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -245,7 +245,7 @@ $ git pull origin master
 And follow the instructions of:
 
 ```
-./dists/make-release.sh -v 1.19.2
+./dists/make-release.sh -v 1.19.3
 ```
 The script asks you for a Rollbar token available in the shared keychain under
 the "CLI Rollbar Token" note.
@@ -261,12 +261,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.19.2
+git checkout -b v1.19.3
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.19.2
+git push --set-upstream origin v1.19.3
 ```
 
 Bump new version number in:
@@ -281,14 +281,14 @@ And commit these changes:
 
 ```bash
 $ git add .
-$ git commit -m "Bump version 1.19.2"
+$ git commit -m "Bump version 1.19.3"
 $ git push origin master
 ```
 
 #### Tag the New Release
 
 ```bash
-git tag 1.19.2
+git tag 1.19.3
 git push --tags
 ```
 
@@ -297,7 +297,7 @@ git push --tags
 Build the new version for all platforms with:
 
 ```sh
-./dists/make-release.sh -v 1.19.2 -b
+./dists/make-release.sh -v 1.19.3 -b
 ```
 
 Tag and release a new version on GitHub
