@@ -2,7 +2,7 @@
 github.com/ScaleFT/sshkeys
 # github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e
 github.com/Scalingo/envconfig
-# github.com/Scalingo/go-scalingo v4.7.1+incompatible
+# github.com/Scalingo/go-scalingo v4.7.2+incompatible
 github.com/Scalingo/go-scalingo
 github.com/Scalingo/go-scalingo/billing
 github.com/Scalingo/go-scalingo/debug
@@ -113,7 +113,7 @@ golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20200822124328-c89045814202
+# golang.org/x/net v0.0.0-20200904194848-62affa334b73
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy

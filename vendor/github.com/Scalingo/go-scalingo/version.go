@@ -1,3 +1,3 @@
 package scalingo
 
-var Version = "4.7.1"
+var Version = "4.7.2"

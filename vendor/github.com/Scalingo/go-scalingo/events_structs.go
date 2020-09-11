@@ -111,6 +111,10 @@ const (
 	EventDeleteAutoscaler     EventTypeName = "delete_autoscaler"
 	EventAddonUpdated         EventTypeName = "addon_updated"
 	EventStartRegionMigration EventTypeName = "start_region_migration"
+	EventNewLogDrain          EventTypeName = "new_log_drain"
+	EventDeleteLogDrain       EventTypeName = "delete_log_drain"
+	EventNewAddonLogDrain     EventTypeName = "new_addon_log_drain"
+	EventDeleteAddonLogDrain  EventTypeName = "delete_addon_log_drain"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -836,22 +840,6 @@ func (ev *EventDeleteAutoscalerType) String() string {
 	return fmt.Sprintf("Alert deleted about %s on container %s", d.Metric, d.ContainerType)
 }
 
-type EventStartRegionMigrationTypeData struct {
-	MigrationID string `json:"migration_id"`
-	Destination string `json:"destination"`
-	Source      string `json:"source"`
-	DstAppName  string `json:"dst_app_name"`
-}
-
-type EventStartRegionMigrationType struct {
-	Event
-	TypeData EventStartRegionMigrationTypeData `json:"type_data"`
-}
-
-func (ev *EventStartRegionMigrationType) String() string {
-	return fmt.Sprintf("Application region migration started from %s to %s/%s", ev.TypeData.Source, ev.TypeData.Destination, ev.TypeData.DstAppName)
-}
-
 type EventAddonUpdatedTypeData struct {
 	AddonID           string `json:"addon_id"`
 	AddonPlanName     string `json:"addon_plan_name"`
@@ -876,6 +864,82 @@ func (ev *EventAddonUpdatedType) String() string {
 		"Addon %s %s updated, status %v -> %v",
 		d.AddonProviderName, d.AddonResourceID, d.Status[0], d.Status[1],
 	)
+}
+
+type EventStartRegionMigrationTypeData struct {
+	MigrationID string `json:"migration_id"`
+	Destination string `json:"destination"`
+	Source      string `json:"source"`
+	DstAppName  string `json:"dst_app_name"`
+}
+
+type EventStartRegionMigrationType struct {
+	Event
+	TypeData EventStartRegionMigrationTypeData `json:"type_data"`
+}
+
+func (ev *EventStartRegionMigrationType) String() string {
+	return fmt.Sprintf("Application region migration started from %s to %s/%s", ev.TypeData.Source, ev.TypeData.Destination, ev.TypeData.DstAppName)
+}
+
+// New log drain
+type EventNewLogDrainTypeData struct {
+	URL string `json:"url"`
+}
+
+type EventNewLogDrainType struct {
+	Event
+	TypeData EventNewLogDrainTypeData `json:"type_data"`
+}
+
+func (ev *EventNewLogDrainType) String() string {
+	return fmt.Sprintf("Log drain added on %s app", ev.AppName)
+}
+
+// Delete log drain
+type EventDeleteLogDrainTypeData struct {
+	URL string `json:"url"`
+}
+
+type EventDeleteLogDrainType struct {
+	Event
+	TypeData EventDeleteLogDrainTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteLogDrainType) String() string {
+	return fmt.Sprintf("Log drain deleted on %s app", ev.AppName)
+}
+
+// New addon log drain
+type EventNewAddonLogDrainTypeData struct {
+	URL       string `json:"url"`
+	AddonUUID string `json:"addon_uuid"`
+	AddonName string `json:"addon_name"`
+}
+
+type EventNewAddonLogDrainType struct {
+	Event
+	TypeData EventNewAddonLogDrainTypeData `json:"type_data"`
+}
+
+func (ev *EventNewAddonLogDrainType) String() string {
+	return fmt.Sprintf("Log drain added for %s addon on %s app", ev.TypeData.AddonName, ev.AppName)
+}
+
+// Delete addon log drain
+type EventDeleteAddonLogDrainTypeData struct {
+	URL       string `json:"url"`
+	AddonUUID string `json:"addon_uuid"`
+	AddonName string `json:"addon_name"`
+}
+
+type EventDeleteAddonLogDrainType struct {
+	Event
+	TypeData EventDeleteAddonLogDrainTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteAddonLogDrainType) String() string {
+	return fmt.Sprintf("Log drain deleted on %s addon for %s app", ev.TypeData.AddonName, ev.AppName)
 }
 
 func (pev *Event) Specialize() DetailedEvent {
@@ -972,10 +1036,18 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventNewAutoscalerType{Event: ev}
 	case EventDeleteAutoscaler:
 		e = &EventDeleteAutoscalerType{Event: ev}
-	case EventStartRegionMigration:
-		e = &EventStartRegionMigrationType{Event: ev}
 	case EventAddonUpdated:
 		e = &EventAddonUpdatedType{Event: ev}
+	case EventStartRegionMigration:
+		e = &EventStartRegionMigrationType{Event: ev}
+	case EventNewLogDrain:
+		e = &EventNewLogDrainType{Event: ev}
+	case EventDeleteLogDrain:
+		e = &EventDeleteLogDrainType{Event: ev}
+	case EventNewAddonLogDrain:
+		e = &EventNewAddonLogDrainType{Event: ev}
+	case EventDeleteAddonLogDrain:
+		e = &EventDeleteAddonLogDrainType{Event: ev}
 	// Deprecated events. Replaced by equivalent with SCM in the name instead of
 	// Github
 	case EventLinkGithub:
