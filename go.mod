@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 	github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e
-	github.com/Scalingo/go-scalingo v4.7.2-0.20200911082622-e1477ba54ebe+incompatible
+	github.com/Scalingo/go-scalingo v4.7.2+incompatible
 	github.com/Scalingo/go-utils v6.3.0+incompatible
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
@@ -26,12 +26,10 @@ require (
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/net v0.0.0-20200822124328-c89045814202
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	gopkg.in/AlecAivazis/survey.v1 v1.8.5
 	gopkg.in/cheggaaa/pb.v1 v1.0.28 // indirect
 	gopkg.in/errgo.v1 v1.0.1
 	gopkg.in/src-d/go-billy.v4 v4.3.1 // indirect
 	gopkg.in/src-d/go-git.v4 v4.12.0
-	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
-	rsc.io/quote/v3 v3.1.0 // indirect
 )

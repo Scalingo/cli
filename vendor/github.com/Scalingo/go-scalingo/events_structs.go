@@ -893,7 +893,7 @@ type EventNewLogDrainType struct {
 }
 
 func (ev *EventNewLogDrainType) String() string {
-	return fmt.Sprintf("Log drain created for %s app", ev.AppName)
+	return fmt.Sprintf("Log drain added on %s app", ev.AppName)
 }
 
 // Delete log drain
@@ -907,12 +907,13 @@ type EventDeleteLogDrainType struct {
 }
 
 func (ev *EventDeleteLogDrainType) String() string {
-	return fmt.Sprintf("Log drain deleted for %s app", ev.AppName)
+	return fmt.Sprintf("Log drain deleted on %s app", ev.AppName)
 }
 
 // New addon log drain
 type EventNewAddonLogDrainTypeData struct {
 	URL       string `json:"url"`
+	AddonUUID string `json:"addon_uuid"`
 	AddonName string `json:"addon_name"`
 }
 
@@ -922,12 +923,13 @@ type EventNewAddonLogDrainType struct {
 }
 
 func (ev *EventNewAddonLogDrainType) String() string {
-	return fmt.Sprintf("Log drain created on %s app for %s addon", ev.AppName, ev.TypeData.AddonName)
+	return fmt.Sprintf("Log drain added for %s addon on %s app", ev.TypeData.AddonName, ev.AppName)
 }
 
 // Delete addon log drain
 type EventDeleteAddonLogDrainTypeData struct {
 	URL       string `json:"url"`
+	AddonUUID string `json:"addon_uuid"`
 	AddonName string `json:"addon_name"`
 }
 
@@ -937,7 +939,7 @@ type EventDeleteAddonLogDrainType struct {
 }
 
 func (ev *EventDeleteAddonLogDrainType) String() string {
-	return fmt.Sprintf("Log drain deleted on %s app for %s addon", ev.AppName, ev.TypeData.AddonName)
+	return fmt.Sprintf("Log drain deleted on %s addon for %s app", ev.TypeData.AddonName, ev.AppName)
 }
 
 func (pev *Event) Specialize() DetailedEvent {

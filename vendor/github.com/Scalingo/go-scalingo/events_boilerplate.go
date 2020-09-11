@@ -138,6 +138,23 @@ func (e *EventAddonUpdatedType) TypeDataPtr() interface{} {
 func (e *EventStartRegionMigrationType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+
+func (e *EventNewLogDrainType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDeleteLogDrainType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventNewAddonLogDrainType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDeleteAddonLogDrainType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
 func (e *EventLinkGithubType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
