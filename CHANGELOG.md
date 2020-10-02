@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* Add informative error in case of container type error
+  [602](https://github.com/Scalingo/cli/pull/602)
+
 ### 1.19.3
 
 * Add support for new log drain/addon log drain events
