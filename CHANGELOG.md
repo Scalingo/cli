@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* Add informative error in case of container type error
+* Add informative error in case of container type error when scaling an application
   [602](https://github.com/Scalingo/cli/pull/602)
 
 ### 1.19.3

@@ -109,8 +109,10 @@ func Scale(app string, sync bool, types []string) error {
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
-			if !ok || reqestFailedError.Code == 422 {
+			reqestFailedError, _ := errors.ErrgoRoot(err).(*http.RequestFailedError)
+
+			// In case of unprocessable, format and return an clear error
+			if reqestFailedError.Code == 422 {
 				return formatContainerTypesError(c, app)
 			}
 
@@ -148,13 +150,15 @@ func Scale(app string, sync bool, types []string) error {
 }
 
 func formatContainerTypesError(c *scalingo.Client, app string) error {
-	containerTypes, _ := c.AppsPs(app)
-	var containerTypesName string
-
+	containerTypes, err := c.AppsPs(app)
+	if err != nil {
+		return errgo.Notef(err, "Fail to get container types.")
+	}
 	if len(containerTypes) == 0 {
-		return errgo.New("You haven't container types yet.\nPlease refer to the documentation to deploy your application.")
+		return errgo.New("You have no container type yet.\nPlease refer to the documentation to deploy your application.")
 	}
 
+	var containerTypesName string
 	for _, containerType := range containerTypes {
 		if containerTypesName == "" {
 			containerTypesName = "'" + containerType.Name + "'"
