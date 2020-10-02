@@ -113,7 +113,7 @@ func Scale(app string, sync bool, types []string) error {
 
 			// In case of unprocessable, format and return an clear error
 			if reqestFailedError.Code == 422 {
-				return formatContainerTypesError(c, app)
+				return formatContainerTypesError(c, app, reqestFailedError)
 			}
 
 			return errgo.Mask(err)
@@ -149,7 +149,7 @@ func Scale(app string, sync bool, types []string) error {
 	return nil
 }
 
-func formatContainerTypesError(c *scalingo.Client, app string) error {
+func formatContainerTypesError(c *scalingo.Client, app string, reqestFailedError *http.RequestFailedError) error {
 	containerTypes, err := c.AppsPs(app)
 	if err != nil {
 		return errgo.Notef(err, "Fail to get container types.")
@@ -167,7 +167,7 @@ func formatContainerTypesError(c *scalingo.Client, app string) error {
 		containerTypesName = containerTypesName + ", '" + containerType.Name + "'"
 	}
 
-	errMessage := `Containers type not found.
+	errMessage := reqestFailedError.APIError.Error() + `
 
 Your available container `
 	if len(containerTypes) > 1 {
