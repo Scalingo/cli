@@ -8,10 +8,12 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-utils/errors"
 	"gopkg.in/errgo.v1"
 )
 
@@ -107,6 +109,11 @@ func Scale(app string, sync bool, types []string) error {
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
+			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
+			if !ok || reqestFailedError.Code == 422 {
+				return formatContainerTypesError(c, app)
+			}
+
 			return errgo.Mask(err)
 		}
 		// If error is Payment Required and user tries to exceed its free trial
@@ -138,6 +145,41 @@ func Scale(app string, sync bool, types []string) error {
 
 	fmt.Println("Your application has been scaled.")
 	return nil
+}
+
+func formatContainerTypesError(c *scalingo.Client, app string) error {
+	containerTypes, _ := c.AppsPs(app)
+	var containerTypesName string
+
+	if len(containerTypes) == 0 {
+		return errgo.New("You haven't container types yet.\nPlease refer to the documentation to deploy your application.")
+	}
+
+	for _, containerType := range containerTypes {
+		if containerTypesName == "" {
+			containerTypesName = "'" + containerType.Name + "'"
+			continue
+		}
+		containerTypesName = containerTypesName + ", '" + containerType.Name + "'"
+	}
+
+	errMessage := `Containers type not found.
+
+Your available container `
+	if len(containerTypes) > 1 {
+		errMessage += "types are"
+	} else {
+		errMessage += "type is"
+	}
+	errMessage += ": " + containerTypesName + `.
+
+Example of usage:
+scalingo --app my-app scale web:2 worker:1
+scalingo --app my-app scale web:1:XL
+scalingo --app my-app scale web:+1 worker:-1
+
+Use 'scalingo scale --help' for more information`
+	return errgo.New(errMessage)
 }
 
 func autoscaleDisableMessage(typesWithAutoscaler []string) string {
