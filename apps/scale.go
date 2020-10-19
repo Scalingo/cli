@@ -109,9 +109,12 @@ func Scale(app string, sync bool, types []string) error {
 	res, err := c.AppsScale(app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			reqestFailedError, _ := errors.ErrgoRoot(err).(*http.RequestFailedError)
+			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
+			if !ok {
+				return errgo.Mask(err)
+			}
 
-			// In case of unprocessable, format and return an clear error
+			// In case of unprocessable, format and return a clear error
 			if reqestFailedError.Code == 422 {
 				return formatContainerTypesError(c, app, reqestFailedError)
 			}
@@ -149,11 +152,13 @@ func Scale(app string, sync bool, types []string) error {
 	return nil
 }
 
-func formatContainerTypesError(c *scalingo.Client, app string, reqestFailedError *http.RequestFailedError) error {
+func formatContainerTypesError(c *scalingo.Client, app string, requestFailedError *http.RequestFailedError) error {
 	containerTypes, err := c.AppsPs(app)
 	if err != nil {
-		return errgo.Notef(err, "Fail to get container types.")
+		debug.Println(fmt.Sprintf("Failed to get container types: %s", err.Error()))
+		return requestFailedError
 	}
+
 	if len(containerTypes) == 0 {
 		return errgo.New("You have no container type yet.\nPlease refer to the documentation to deploy your application.")
 	}
@@ -167,7 +172,7 @@ func formatContainerTypesError(c *scalingo.Client, app string, reqestFailedError
 		containerTypesName = containerTypesName + ", '" + containerType.Name + "'"
 	}
 
-	errMessage := reqestFailedError.APIError.Error() + `
+	errMessage := requestFailedError.APIError.Error() + `
 
 Your available container `
 	if len(containerTypes) > 1 {
