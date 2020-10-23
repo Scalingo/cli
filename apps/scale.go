@@ -111,7 +111,7 @@ func Scale(app string, sync bool, types []string) error {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
 			if !ok {
-				return errgo.Mask(err)
+				return errgo.Notef(err, "request to scale the application failed")
 			}
 
 			// In case of unprocessable, format and return a clear error
