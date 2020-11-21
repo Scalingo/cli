@@ -19,10 +19,10 @@ func List(app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Addon", "ID", "Plan"})
+	t.SetHeader([]string{"Addon", "ID", "Plan", "Status"})
 
 	for _, resource := range resources {
-		t.Append([]string{resource.AddonProvider.Name, resource.ID, resource.Plan.Name})
+		t.Append([]string{resource.AddonProvider.Name, resource.ID, resource.Plan.Name, string(resource.Status)})
 	}
 	t.Render()
 
