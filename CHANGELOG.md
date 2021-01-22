@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* Update Scalingo internal dependencies to the Go Modules version []()
 * Show the addon status on scalingo addons [#604](https://github.com/Scalingo/cli/pull/604)
 * Add informative error in case of container type error when scaling an application
   [602](https://github.com/Scalingo/cli/pull/602)
