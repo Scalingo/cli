@@ -10,9 +10,9 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
-	"github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-utils/errors"
 	"gopkg.in/errgo.v1"
 )

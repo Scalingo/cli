@@ -3,13 +3,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 type AppCommands struct {

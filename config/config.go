@@ -13,7 +13,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/envconfig"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 type ConfigFile struct {

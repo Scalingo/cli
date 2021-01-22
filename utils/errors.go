@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/Scalingo/go-scalingo/http"
+	"github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-utils/errors"
 	"gopkg.in/errgo.v1"
 )

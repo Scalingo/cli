@@ -1,7 +1,7 @@
 package region_migrations
 
 import (
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/fatih/color"
 )
 

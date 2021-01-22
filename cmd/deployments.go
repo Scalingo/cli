@@ -7,7 +7,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
-	"github.com/Scalingo/go-scalingo/io"
+	"github.com/Scalingo/go-scalingo/v4/io"
 	"github.com/urfave/cli"
 )
 

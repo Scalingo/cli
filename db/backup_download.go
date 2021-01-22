@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb"
 	errgo "gopkg.in/errgo.v1"

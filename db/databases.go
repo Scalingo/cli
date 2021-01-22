@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 	errgo "gopkg.in/errgo.v1"
 )
 

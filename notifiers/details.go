@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 )

@@ -2,9 +2,9 @@ package notifiers
 
 import (
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/debug"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"gopkg.in/errgo.v1"
 )
 

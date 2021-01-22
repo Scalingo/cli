@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 type DisplayTimelineOpts struct {

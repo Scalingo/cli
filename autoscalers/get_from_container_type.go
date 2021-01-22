@@ -3,7 +3,7 @@ package autoscalers
 import (
 	"errors"
 
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 	"gopkg.in/errgo.v1"
 )
 
