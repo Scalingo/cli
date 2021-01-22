@@ -46,7 +46,7 @@ github.com/emirpasic/gods/lists/arraylist
 github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
-# github.com/fatih/color v1.7.0
+# github.com/fatih/color v1.10.0
 ## explicit
 github.com/fatih/color
 # github.com/golang/mock v1.4.0
@@ -73,9 +73,9 @@ github.com/kevinburke/ssh_config
 github.com/kr/pretty
 # github.com/kr/text v0.1.0
 github.com/kr/text
-# github.com/mattn/go-colorable v0.1.2
+# github.com/mattn/go-colorable v0.1.8
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.8
+# github.com/mattn/go-isatty v0.0.12
 github.com/mattn/go-isatty
 # github.com/mattn/go-runewidth v0.0.10
 ## explicit
