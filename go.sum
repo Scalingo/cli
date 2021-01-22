@@ -3,8 +3,6 @@ github.com/Netflix/go-expect v0.0.0-20180615182759-c93bf25de8e8 h1:xzYJEypr/85nB
 github.com/Netflix/go-expect v0.0.0-20180615182759-c93bf25de8e8/go.mod h1:oX5x61PbNXchhh0oikYAH+4Pcfw5LKv21+Jnpr6r6Pc=
 github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681 h1:JS2rl38kZmHgWa0xINSaSYH0Whtvem64/4+Ef0+Y5pE=
 github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681/go.mod h1:WfDateMPQ/55dPbZRp5Zxrux5WiEaHsjk9puUhz0KgY=
-github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e h1:VPgY4zWyYpI32SDIexycVDwRQddaK3C1FSr7zxVvhBc=
-github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e/go.mod h1:s5CD+HglVAikWBqmWtE0ON5VET72/rzok0ExzS8ffQ0=
 github.com/Scalingo/go-scalingo/v4 v4.8.2 h1:T9Qqk6t0vrbEAkhQw+J9u9PWBlXNwSb4gkIdWyvajvY=
 github.com/Scalingo/go-scalingo/v4 v4.8.2/go.mod h1:h/GXNV1D+ax8MQngB7wHVfySm7/XZapS0a5m5kJLH1E=
 github.com/Scalingo/go-utils/errors v1.0.0 h1:9+1zBmT+d0kpAReChheUDX0AmT0/OtrDtHdwRymRufA=
@@ -66,6 +64,8 @@ github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99/go.mod h1:1lJo3i
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 h1:Z9n2FFNUXsshfwJMBgNA0RU6/i7WVaAegv3PtuIHPMs=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51/go.mod h1:CzGEWj7cYgsdH8dAjBGEr58BoE7ScuLd+fwFZ44+/x8=
+github.com/kelseyhightower/envconfig v1.4.0 h1:Im6hONhd3pLkfDFsbRgu68RDNkGF1r3dvMUtDTo2cv8=
+github.com/kelseyhightower/envconfig v1.4.0/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa3axMbJDNb//FQX6Gg=
 github.com/kevinburke/ssh_config v0.0.0-20180830205328-81db2a75821e h1:RgQk53JHp/Cjunrr1WlsXSZpqXn+uREuHvUVcK82CV8=
 github.com/kevinburke/ssh_config v0.0.0-20180830205328-81db2a75821e/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=

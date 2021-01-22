@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/kelseyhightower/envconfig"
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/envconfig"
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
@@ -26,28 +26,28 @@ var (
 )
 
 type Config struct {
-	ApiVersion           string
-	DisableInteractive   bool
-	DisableUpdateChecker bool
-	UnsecureSsl          bool
+	ApiVersion           string `envconfig:"API_VERSION"`
+	DisableInteractive   bool   `envconfig:"DISABLE_INTERACTIVE"`
+	DisableUpdateChecker bool   `envconfig:"DISABLE_UPDATE_CHECKER"`
+	UnsecureSsl          bool   `envconfig:"UNSECURE_SSL"`
 
 	// Override region configuration
-	ScalingoApiUrl  string
-	ScalingoAuthUrl string
-	ScalingoDbUrl   string
-	ScalingoRegion  string
-	ScalingoSshHost string
+	ScalingoApiUrl  string `envconfig:"SCALINGO_API_URL"`
+	ScalingoAuthUrl string `envconfig:"SCALINGO_AUTH_URL"`
+	ScalingoDbUrl   string `envconfig:"SCALINGO_DB_URL"`
+	ScalingoRegion  string `envconfig:"SCALINGO_REGION"`
+	ScalingoSshHost string `envconfig:"SCALINGO_SSH_HOST"`
 
 	// Configuration files
-	ConfigDir      string
-	AuthFile       string
-	LogFile        string
-	ConfigFilePath string
+	ConfigDir      string `envconfig:"CONFIG_DIR"`
+	AuthFile       string `envconfig:"AUTH_FILE"`
+	LogFile        string `envconfig:"LOG_FILE"`
+	ConfigFilePath string `envconfig:"CONFIG_FILE_PATH"`
 	ConfigFile     ConfigFile
 
 	// Cache related files
-	CacheDir         string
-	RegionsCachePath string
+	CacheDir         string `envconfig:"CACHE_DIR"`
+	RegionsCachePath string `envconfig:"REGIONS_CACHE_PATH"`
 
 	// Logging
 	logFile *os.File
