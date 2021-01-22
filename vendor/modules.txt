@@ -21,7 +21,7 @@ github.com/andrew-d/go-termutil
 # github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 ## explicit
 github.com/bmizerany/assert
-# github.com/briandowns/spinner v1.6.1
+# github.com/briandowns/spinner v1.12.0
 ## explicit
 github.com/briandowns/spinner
 # github.com/cheggaaa/pb v1.0.28

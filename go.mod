@@ -9,7 +9,7 @@ require (
 	github.com/Scalingo/go-utils/retry v1.0.0
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
-	github.com/briandowns/spinner v1.6.1
+	github.com/briandowns/spinner v1.12.0
 	github.com/cheggaaa/pb v1.0.28
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/dustin/go-humanize v1.0.0
