@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 	"gopkg.in/errgo.v1"
 )
 

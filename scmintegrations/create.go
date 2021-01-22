@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 type CreateArgs struct {

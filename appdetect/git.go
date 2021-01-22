@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"gopkg.in/errgo.v1"
 	"gopkg.in/src-d/go-git.v4"
 	gitconfig "gopkg.in/src-d/go-git.v4/config"

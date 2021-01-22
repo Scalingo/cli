@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Scalingo/cli/config/auth"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

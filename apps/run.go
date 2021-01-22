@@ -26,8 +26,8 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"gopkg.in/errgo.v1"
 )
 
@@ -62,7 +62,7 @@ func Run(opts RunOpts) error {
 
 	firstReadDone := make(chan struct{})
 	ctx := &runContext{
-		app: opts.App,
+		app:                     opts.App,
 		waitingTextOutputWriter: os.Stderr,
 		stdinCopyFunc:           stdio.Copy,
 		stdoutCopyFunc:          io.CopyWithFirstReadChan(firstReadDone),

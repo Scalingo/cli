@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/user"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/urfave/cli"
 )
 

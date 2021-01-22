@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/utils"
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-utils/retry"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"

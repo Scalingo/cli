@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo"
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pkg/errors"
 	"gopkg.in/errgo.v1"

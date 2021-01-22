@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 	errgo "gopkg.in/errgo.v1"

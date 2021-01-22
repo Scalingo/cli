@@ -6,7 +6,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	errgo "gopkg.in/errgo.v1"

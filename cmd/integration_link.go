@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/cli/scmintegrations"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 var (

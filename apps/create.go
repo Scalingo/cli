@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 func Create(appName string, remote string, buildpack string) error {

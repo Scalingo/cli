@@ -15,7 +15,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 
-	"github.com/Scalingo/go-scalingo"
+	"github.com/Scalingo/go-scalingo/v4"
 
 	errgo "gopkg.in/errgo.v1"
 )

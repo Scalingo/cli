@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
-	"github.com/Scalingo/go-scalingo/debug"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
 )
