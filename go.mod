@@ -6,7 +6,8 @@ require (
 	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 	github.com/Scalingo/envconfig v1.0.1-0.20140805214846-8eb48cc6f27e
 	github.com/Scalingo/go-scalingo/v4 v4.8.2 // indirect
-	github.com/Scalingo/go-utils v6.3.0+incompatible
+	github.com/Scalingo/go-utils/errors v1.0.0 // indirect
+	github.com/Scalingo/go-utils/retry v1.0.0 // indirect
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/briandowns/spinner v1.6.1
@@ -21,8 +22,8 @@ require (
 	github.com/howeyc/gopass v0.0.0-20170109162249-bf9dde6d0d2c
 	github.com/mattn/go-runewidth v0.0.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.0-20180506121414-d4647c9c7a84
-	github.com/pkg/errors v0.8.1
-	github.com/stretchr/testify v1.4.0
+	github.com/pkg/errors v0.9.1
+	github.com/stretchr/testify v1.6.1
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
