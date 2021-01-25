@@ -26,7 +26,7 @@ require (
 	github.com/urfave/cli v1.22.5
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73
-	gopkg.in/AlecAivazis/survey.v1 v1.8.5
+	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/cheggaaa/pb.v1 v1.0.28 // indirect
 	gopkg.in/errgo.v1 v1.0.1
 	gopkg.in/src-d/go-git.v4 v4.12.0
