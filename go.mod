@@ -28,5 +28,5 @@ require (
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
-	gopkg.in/src-d/go-git.v4 v4.12.0
+	gopkg.in/src-d/go-git.v4 v4.13.1
 )
