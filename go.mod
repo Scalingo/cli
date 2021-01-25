@@ -10,7 +10,7 @@ require (
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/briandowns/spinner v1.12.0
-	github.com/cheggaaa/pb v1.0.28
+	github.com/cheggaaa/pb v1.0.29
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
@@ -27,7 +27,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
-	gopkg.in/cheggaaa/pb.v1 v1.0.28 // indirect
 	gopkg.in/errgo.v1 v1.0.1
 	gopkg.in/src-d/go-git.v4 v4.12.0
 )
