@@ -13,7 +13,7 @@ require (
 	github.com/cheggaaa/pb v1.0.28
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/dustin/go-humanize v1.0.0
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.10.0
 	github.com/gosuri/uilive v0.0.3
 	github.com/heroku/hk v0.0.0-20140516232726-04afaf7ac071
 	github.com/howeyc/gopass v0.0.0-20170109162249-bf9dde6d0d2c
