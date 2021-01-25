@@ -27,8 +27,8 @@ github.com/briandowns/spinner
 # github.com/cheggaaa/pb v1.0.28
 ## explicit
 github.com/cheggaaa/pb
-# github.com/cpuguy83/go-md2man v1.0.10
-github.com/cpuguy83/go-md2man/md2man
+# github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a
@@ -96,10 +96,12 @@ github.com/pkg/errors
 github.com/pmezard/go-difflib/difflib
 # github.com/rivo/uniseg v0.1.0
 github.com/rivo/uniseg
-# github.com/russross/blackfriday v1.5.2
-github.com/russross/blackfriday
+# github.com/russross/blackfriday/v2 v2.0.1
+github.com/russross/blackfriday/v2
 # github.com/sergi/go-diff v1.0.0
 github.com/sergi/go-diff/diffmatchpatch
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+github.com/shurcooL/sanitized_anchor_name
 # github.com/src-d/gcfg v1.4.0
 github.com/src-d/gcfg
 github.com/src-d/gcfg/scanner
@@ -112,7 +114,7 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli v1.22.0
+# github.com/urfave/cli v1.22.5
 ## explicit
 github.com/urfave/cli
 # github.com/xanzy/ssh-agent v0.2.1
