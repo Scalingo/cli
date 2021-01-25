@@ -1,7 +1,7 @@
 # github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 ## explicit
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.8.2
+# github.com/Scalingo/go-scalingo/v4 v4.9.0
 ## explicit
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -49,7 +49,7 @@ github.com/emirpasic/gods/utils
 # github.com/fatih/color v1.10.0
 ## explicit
 github.com/fatih/color
-# github.com/golang/mock v1.4.0
+# github.com/golang/mock v1.4.4
 github.com/golang/mock/gomock
 # github.com/gosuri/uilive v0.0.3
 ## explicit

@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
-	github.com/Scalingo/go-scalingo/v4 v4.8.2
+	github.com/Scalingo/go-scalingo/v4 v4.9.0
 	github.com/Scalingo/go-utils/errors v1.0.0
 	github.com/Scalingo/go-utils/retry v1.0.0
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
