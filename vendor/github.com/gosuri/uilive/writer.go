@@ -20,7 +20,7 @@ var overFlowHandled bool
 var termWidth int
 
 // Out is the default output writer for the Writer
-var Out = os.Stdout
+var Out = io.Writer(os.Stdout)
 
 // ErrClosedPipe is the error returned when trying to writer is not listening
 var ErrClosedPipe = errors.New("uilive: read/write on closed pipe")
@@ -107,7 +107,7 @@ func (w *Writer) Flush() error {
 func (w *Writer) Start() {
 	if w.ticker == nil {
 		w.ticker = time.NewTicker(w.RefreshInterval)
-		w.tdone = make(chan bool, 1)
+		w.tdone = make(chan bool)
 	}
 
 	go w.Listen()
@@ -116,7 +116,8 @@ func (w *Writer) Start() {
 // Stop stops the listener that updates the terminal
 func (w *Writer) Stop() {
 	w.Flush()
-	close(w.tdone)
+	w.tdone <- true
+	<-w.tdone
 }
 
 // Listen listens for updates to the writer's buffer and flushes to the out provided. It blocks the runtime.
@@ -125,13 +126,14 @@ func (w *Writer) Listen() {
 		select {
 		case <-w.ticker.C:
 			if w.ticker != nil {
-				w.Flush()
+				_ = w.Flush()
 			}
 		case <-w.tdone:
 			w.mtx.Lock()
 			w.ticker.Stop()
 			w.ticker = nil
 			w.mtx.Unlock()
+			close(w.tdone)
 			return
 		}
 	}
