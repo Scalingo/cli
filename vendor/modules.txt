@@ -1,7 +1,7 @@
 # github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 ## explicit
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.8.2
+# github.com/Scalingo/go-scalingo/v4 v4.9.0
 ## explicit
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -21,7 +21,7 @@ github.com/andrew-d/go-termutil
 # github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 ## explicit
 github.com/bmizerany/assert
-# github.com/briandowns/spinner v1.6.1
+# github.com/briandowns/spinner v1.12.0
 ## explicit
 github.com/briandowns/spinner
 # github.com/cheggaaa/pb v1.0.28
@@ -46,10 +46,10 @@ github.com/emirpasic/gods/lists/arraylist
 github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
-# github.com/fatih/color v1.7.0
+# github.com/fatih/color v1.10.0
 ## explicit
 github.com/fatih/color
-# github.com/golang/mock v1.4.0
+# github.com/golang/mock v1.4.4
 github.com/golang/mock/gomock
 # github.com/gosuri/uilive v0.0.3
 ## explicit
@@ -73,9 +73,9 @@ github.com/kevinburke/ssh_config
 github.com/kr/pretty
 # github.com/kr/text v0.1.0
 github.com/kr/text
-# github.com/mattn/go-colorable v0.1.2
+# github.com/mattn/go-colorable v0.1.8
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.8
+# github.com/mattn/go-isatty v0.0.12
 github.com/mattn/go-isatty
 # github.com/mattn/go-runewidth v0.0.10
 ## explicit
@@ -105,7 +105,7 @@ github.com/src-d/gcfg
 github.com/src-d/gcfg/scanner
 github.com/src-d/gcfg/token
 github.com/src-d/gcfg/types
-# github.com/stretchr/testify v1.6.1
+# github.com/stretchr/testify v1.7.0
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
