@@ -4,8 +4,8 @@ github.com/Netflix/go-expect v0.0.0-20180615182759-c93bf25de8e8 h1:xzYJEypr/85nB
 github.com/Netflix/go-expect v0.0.0-20180615182759-c93bf25de8e8/go.mod h1:oX5x61PbNXchhh0oikYAH+4Pcfw5LKv21+Jnpr6r6Pc=
 github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681 h1:JS2rl38kZmHgWa0xINSaSYH0Whtvem64/4+Ef0+Y5pE=
 github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681/go.mod h1:WfDateMPQ/55dPbZRp5Zxrux5WiEaHsjk9puUhz0KgY=
-github.com/Scalingo/go-scalingo/v4 v4.9.0 h1:21xLDam/VtkZoRfeH0/fCV3kR8Jy1wmKdeo1dP9RO3M=
-github.com/Scalingo/go-scalingo/v4 v4.9.0/go.mod h1:JlaXwqOpx21UDJYVLnrMpF9mJaEPu6WGyH4qndbx8Rs=
+github.com/Scalingo/go-scalingo/v4 v4.10.0 h1:ldFKASWFzdPAOiEEevD5gRlykYBJQjTO5CQDB+RRyLY=
+github.com/Scalingo/go-scalingo/v4 v4.10.0/go.mod h1:JlaXwqOpx21UDJYVLnrMpF9mJaEPu6WGyH4qndbx8Rs=
 github.com/Scalingo/go-utils/errors v1.0.0 h1:9+1zBmT+d0kpAReChheUDX0AmT0/OtrDtHdwRymRufA=
 github.com/Scalingo/go-utils/errors v1.0.0/go.mod h1:X1v0A4DBs4exBWGjYsGLo6nsC49vqf2hEVtigTRv7iY=
 github.com/Scalingo/go-utils/retry v1.0.0 h1:aGT9Voe4rVEzn0bZ68x+nyBvk2sJWrzLP37+tTVdCuc=
