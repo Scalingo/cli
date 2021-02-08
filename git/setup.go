@@ -1,12 +1,13 @@
 package git
 
 import (
+	git "github.com/go-git/go-git/v5"
+	gitconfig "github.com/go-git/go-git/v5/config"
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	errgo "gopkg.in/errgo.v1"
-	git "gopkg.in/src-d/go-git.v4"
-	gitconfig "gopkg.in/src-d/go-git.v4/config"
 )
 
 type SetupParams struct {

@@ -12,10 +12,12 @@ require (
 	github.com/cheggaaa/pb v1.0.29
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
+	github.com/go-git/go-git/v5 v5.2.0
 	github.com/gosuri/uilive v0.0.4
 	github.com/heroku/hk v0.0.0-20160226172041-9c27ee3bfe9f
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/kr/pty v1.1.8 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pkg/errors v0.9.1
@@ -29,5 +31,4 @@ require (
 	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
-	gopkg.in/src-d/go-git.v4 v4.13.1
 )
