@@ -146,14 +146,16 @@ func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 func parseJSON(res *http.Response, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return errgo.Newf("fail to read body of request %v, %v", res.Request, err)
+		reqErr := fmt.Sprintf("%v %v", res.Request.Method, res.Request.URL)
+		return errgo.Newf("fail to read body of request %v: %v", reqErr, err)
 	}
 
 	debug.Println(string(body))
 
 	err = json.Unmarshal(body, data)
 	if err != nil {
-		return errgo.Newf("fail to parse JSON of request %v, %v", res.Request, err)
+		reqErr := fmt.Sprintf("%v %v", res.Request.Method, res.Request.URL)
+		return errgo.Newf("fail to parse JSON of request %v: %v", reqErr, err)
 	}
 
 	return nil

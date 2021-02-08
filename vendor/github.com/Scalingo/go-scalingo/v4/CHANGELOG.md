@@ -2,6 +2,13 @@
 
 ## To Be Released
 
+## 4.10.0
+
+* Remove headers from `Request` of `http.parseJSON` returned error
+  [#199](https://github.com/Scalingo/go-scalingo/pull/199)
+* Add missing fields `Plan.SKU` (corresponding catalogue name)
+  [#198](https://github.com/Scalingo/go-scalingo/pull/198) thanks @mackwic
+
 ## 4.9.0
 
 * Add `Flags` field to `App`
