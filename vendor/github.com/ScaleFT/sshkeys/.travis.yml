@@ -5,13 +5,10 @@ sudo: false
 go_import_path: github.com/ScaleFT/sshkeys
 
 go:
-  - 1.9.x
-  - 1.10.x
-  - 1.11.x
-  - tip
+  - "1.13.x"
 
-before_install:
-  - go get -u github.com/stretchr/testify/require github.com/dchest/bcrypt_pbkdf golang.org/x/crypto/ed25519 golang.org/x/crypto/ssh
+env:
+  - GO111MODULE=on
 
 script:
   - go test -v ./...

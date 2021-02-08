@@ -11,6 +11,8 @@
   - gopkg.in/AlecAivazis/survey.v1
   - github.com/cheggaaa/pb
   - gopkg.in/src-d/go-git.v4
+  - github.com/Scalingo/go-scalingo/v4
+  - github.com/ScaleFT/sshkeys
 * Update Scalingo internal dependencies to the Go Modules version [#613](https://github.com/Scalingo/cli/pull/613)
 * Show the addon status on scalingo addons [#604](https://github.com/Scalingo/cli/pull/604)
 * Add informative error in case of container type error when scaling an application

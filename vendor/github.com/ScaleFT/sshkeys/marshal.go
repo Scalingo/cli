@@ -19,6 +19,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+const keySizeAES256 = 32
+
 // Format of private key to use when Marshaling.
 type Format int
 
@@ -209,6 +211,20 @@ func marshalOpenssh(pk interface{}, opts *MarshalOptions) ([]byte, error) {
 		k := opensshED25519{
 			Pub:  key.Public().(ed25519.PublicKey),
 			Priv: key,
+		}
+		data := ssh.Marshal(k)
+		pk1.Keytype = ssh.KeyAlgoED25519
+		pk1.Rest = data
+
+		publicKey, err := ssh.NewPublicKey(key.Public())
+		if err != nil {
+			return nil, err
+		}
+		out.PubKey = string(publicKey.Marshal())
+	case *ed25519.PrivateKey:
+		k := opensshED25519{
+			Pub:  key.Public().(ed25519.PublicKey),
+			Priv: *key,
 		}
 		data := ssh.Marshal(k)
 		pk1.Keytype = ssh.KeyAlgoED25519

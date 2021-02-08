@@ -3,7 +3,7 @@ module github.com/Scalingo/cli
 go 1.15
 
 require (
-	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
+	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 	github.com/Scalingo/go-scalingo/v4 v4.10.0
 	github.com/Scalingo/go-utils/errors v1.0.0
 	github.com/Scalingo/go-utils/retry v1.0.0
@@ -11,7 +11,6 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/briandowns/spinner v1.12.0
 	github.com/cheggaaa/pb v1.0.29
-	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/gosuri/uilive v0.0.4
@@ -24,8 +23,9 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.5
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73
+	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
 	gopkg.in/src-d/go-git.v4 v4.13.1
