@@ -13,6 +13,11 @@
   - gopkg.in/src-d/go-git.v4
   - github.com/Scalingo/go-scalingo/v4
   - github.com/ScaleFT/sshkeys
+  - github.com/heroku/hk
+  - github.com/howeyc/gopass
+  - github.com/olekukonko/tablewriter
+  - golang.org/x/crypto
+  - golang.org/x/net
 * Update Scalingo internal dependencies to the Go Modules version [#613](https://github.com/Scalingo/cli/pull/613)
 * Show the addon status on scalingo addons [#604](https://github.com/Scalingo/cli/pull/604)
 * Add informative error in case of container type error when scaling an application
