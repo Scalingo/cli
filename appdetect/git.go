@@ -7,10 +7,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/go-git/go-git/v5"
+	gitconfig "github.com/go-git/go-git/v5/config"
 	"gopkg.in/errgo.v1"
-	"gopkg.in/src-d/go-git.v4"
-	gitconfig "gopkg.in/src-d/go-git.v4/config"
+
+	"github.com/Scalingo/go-scalingo/v4/debug"
 )
 
 func DetectGit() (string, bool) {
