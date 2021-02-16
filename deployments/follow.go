@@ -17,15 +17,25 @@ import (
 
 var ErrDeploymentFailed = errors.New("Deployment failed")
 
+// DeploymentEventStatus hold all different kind of event handled by deployment stream
+type DeploymentEventStatus string
+
+const (
+	EventKeepalive DeploymentEventStatus = "ping"
+	EventNew       DeploymentEventStatus = "new"
+	EventLog       DeploymentEventStatus = "log"
+	EventStatus    DeploymentEventStatus = "status"
+)
+
 type StreamOpts struct {
 	AppName      string
 	DeploymentID string
 }
 
 type deployEvent struct {
-	ID   string          `json:"id"`
-	Type string          `json:"type"`
-	Data json.RawMessage `json:"data"`
+	ID   string                `json:"id"`
+	Type DeploymentEventStatus `json:"type"`
+	Data json.RawMessage       `json:"data"`
 }
 
 type logData struct {
@@ -88,8 +98,8 @@ func Stream(opts *StreamOpts) error {
 			}
 		} else {
 			switch event.Type {
-			case "ping":
-			case "log":
+			case EventKeepalive:
+			case EventLog:
 				// If we stream logs of a specific deployment and this event is not about this one
 				if !anyDeployment && event.ID != currentDeployment.ID {
 					continue
@@ -101,7 +111,7 @@ func Stream(opts *StreamOpts) error {
 					continue
 				}
 				fmt.Println("[LOG] " + strings.TrimSpace(logData.Content))
-			case "status":
+			case EventStatus:
 				// If we stream logs of a specific deployment and this event is not about this one
 				if !anyDeployment && event.ID != currentDeployment.ID {
 					continue
@@ -125,7 +135,7 @@ func Stream(opts *StreamOpts) error {
 					}
 					return nil
 				}
-			case "new":
+			case EventNew:
 				var newData map[string]*scalingo.Deployment
 				err := json.Unmarshal(event.Data, &newData)
 				if err != nil {
