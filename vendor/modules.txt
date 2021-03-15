@@ -1,7 +1,7 @@
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.11.1
+# github.com/Scalingo/go-scalingo/v4 v4.12.0
 ## explicit
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -100,7 +100,7 @@ github.com/go-git/go-git/v5/utils/merkletrie/filesystem
 github.com/go-git/go-git/v5/utils/merkletrie/index
 github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
-# github.com/golang/mock v1.4.4
+# github.com/golang/mock v1.5.0
 github.com/golang/mock/gomock
 # github.com/gosuri/uilive v0.0.4
 ## explicit

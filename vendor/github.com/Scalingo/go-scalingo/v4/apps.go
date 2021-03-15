@@ -94,20 +94,21 @@ type App struct {
 		Username string `json:"username"`
 		Email    string `json:"email"`
 	} `json:"owner"`
-	GitUrl         string          `json:"git_url"`
-	Url            string          `json:"url"`
-	BaseURL        string          `json:"base_url"`
-	Status         AppStatus       `json:"status"`
-	LastDeployedAt *time.Time      `json:"last_deployed_at"`
-	LastDeployedBy string          `json:"last_deployed_by"`
-	CreatedAt      *time.Time      `json:"created_at"`
-	UpdatedAt      *time.Time      `json:"update_at"`
-	Links          *AppLinks       `json:"links"`
-	StackID        string          `json:"stack_id"`
-	StickySession  bool            `json:"sticky_session"`
-	ForceHTTPS     bool            `json:"force_https"`
-	RouterLogs     bool            `json:"router_logs"`
-	Flags          map[string]bool `json:"flags"`
+	GitUrl         string                 `json:"git_url"`
+	Url            string                 `json:"url"`
+	BaseURL        string                 `json:"base_url"`
+	Status         AppStatus              `json:"status"`
+	LastDeployedAt *time.Time             `json:"last_deployed_at"`
+	LastDeployedBy string                 `json:"last_deployed_by"`
+	CreatedAt      *time.Time             `json:"created_at"`
+	UpdatedAt      *time.Time             `json:"update_at"`
+	Links          *AppLinks              `json:"links"`
+	StackID        string                 `json:"stack_id"`
+	StickySession  bool                   `json:"sticky_session"`
+	ForceHTTPS     bool                   `json:"force_https"`
+	RouterLogs     bool                   `json:"router_logs"`
+	Flags          map[string]bool        `json:"flags"`
+	Limits         map[string]interface{} `json:"limits"`
 }
 
 func (app App) String() string {
