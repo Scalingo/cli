@@ -9,15 +9,15 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Ps(app string) error {
+func Containers(app string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "fail to get Scalingo client to list container types")
 	}
 
-	processes, err := c.AppsPs(app)
+	containers, err := c.AppsPs(app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to list the application container types")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
@@ -26,10 +26,10 @@ func Ps(app string) error {
 	hasAutoscaler := false
 	autoscalers, err := c.AutoscalersList(app)
 	if err != nil {
-		return errgo.NoteMask(err, "fail to list the autoscalers")
+		return errgo.Notef(err, "fail to list the autoscalers")
 	}
 
-	for _, ct := range processes {
+	for _, ct := range containers {
 		name := ct.Name
 
 		for _, a := range autoscalers {
