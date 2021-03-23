@@ -27,7 +27,7 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 
 			if len(c.Args()) == 0 {
-				err := apps.Containers(currentApp)
+				err := apps.ContainerTypes(currentApp)
 				if err != nil {
 					errorQuit(err)
 				}

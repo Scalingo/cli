@@ -23,10 +23,10 @@ type ScaleRes struct {
 
 func Scale(app string, sync bool, types []string) error {
 	var (
-		size        string
-		containers  []scalingo.ContainerType
-		modificator byte
-		err         error
+		size           string
+		containerTypes []scalingo.ContainerType
+		modificator    byte
+		err            error
 	)
 
 	c, err := config.ScalingoClient()
@@ -37,7 +37,7 @@ func Scale(app string, sync bool, types []string) error {
 	typesWithAutoscaler := []string{}
 	autoscalers, err := c.AutoscalersList(app)
 	if err != nil {
-		return errgo.NoteMask(err, "fail to list the autoscalers")
+		return errgo.Notef(err, "fail to list the autoscalers")
 	}
 
 	for _, t := range types {
@@ -56,12 +56,12 @@ func Scale(app string, sync bool, types []string) error {
 			if size != "" {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
-			if containers == nil {
-				containers, err = c.AppsPs(app)
+			if containerTypes == nil {
+				containerTypes, err = c.AppsPs(app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
 				}
-				debug.Println("get container list", containers)
+				debug.Println("get container list", containerTypes)
 			}
 		}
 
@@ -79,7 +79,7 @@ func Scale(app string, sync bool, types []string) error {
 
 		newContainerConfig := scalingo.ContainerType{Name: typeName, Size: size}
 		if modificator != 0 {
-			for _, container := range containers {
+			for _, container := range containerTypes {
 				if container.Name == typeName {
 					if modificator == '-' {
 						newContainerConfig.Amount = container.Amount - int(amount)
@@ -119,7 +119,7 @@ func Scale(app string, sync bool, types []string) error {
 				return formatContainerTypesError(c, app, reqestFailedError)
 			}
 
-			return errgo.Mask(err)
+			return errgo.Notef(err, "fail to scale the Scalingo application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(c, func() error {
@@ -131,7 +131,7 @@ func Scale(app string, sync bool, types []string) error {
 	var scaleRes ScaleRes
 	err = json.NewDecoder(res.Body).Decode(&scaleRes)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to decode API response to scale operation")
 	}
 
 	fmt.Printf("Your application is being scaled to:\n")
@@ -145,7 +145,7 @@ func Scale(app string, sync bool, types []string) error {
 
 	err = handleOperation(app, res)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to handle the scale operation")
 	}
 
 	fmt.Println("Your application has been scaled.")

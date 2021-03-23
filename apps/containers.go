@@ -9,13 +9,13 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Containers(app string) error {
+func ContainerTypes(app string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to list container types")
 	}
 
-	containers, err := c.AppsPs(app)
+	containerTypes, err := c.AppsPs(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application container types")
 	}
@@ -29,22 +29,22 @@ func Containers(app string) error {
 		return errgo.Notef(err, "fail to list the autoscalers")
 	}
 
-	for _, ct := range containers {
-		name := ct.Name
+	for _, containerType := range containerTypes {
+		name := containerType.Name
 
 		for _, a := range autoscalers {
-			if a.ContainerType == ct.Name {
+			if a.ContainerType == containerType.Name {
 				hasAutoscaler = true
 				name += " (*)"
 				break
 			}
 		}
 
-		amount := fmt.Sprintf("%d", ct.Amount)
-		if ct.Command != "" {
-			t.Append([]string{name, amount, ct.Size, "`" + ct.Command + "`"})
+		amount := fmt.Sprintf("%d", containerType.Amount)
+		if containerType.Command != "" {
+			t.Append([]string{name, amount, containerType.Size, "`" + containerType.Command + "`"})
 		} else {
-			t.Append([]string{name, amount, ct.Size, "-"})
+			t.Append([]string{name, amount, containerType.Size, "-"})
 		}
 	}
 
