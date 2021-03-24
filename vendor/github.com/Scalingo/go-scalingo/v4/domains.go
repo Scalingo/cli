@@ -29,6 +29,14 @@ const (
 	LetsEncryptStatusError       LetsEncryptStatus = "error"
 )
 
+type SslStatus string
+
+const (
+	SslStatusPendingDNS  SslStatus = "pending"
+	SslStatusNew         SslStatus = "error"
+	SslStatusCreated     SslStatus = "success"
+)
+
 type ACMEErrorVariables struct {
 	DNSProvider string   `json:"dns_provider"`
 	Variables   []string `json:"variables"`
@@ -45,6 +53,7 @@ type Domain struct {
 	Canonical         bool               `json:"canonical"`
 	LetsEncrypt       bool               `json:"letsencrypt"`
 	LetsEncryptStatus LetsEncryptStatus  `json:"letsencrypt_status"`
+	SslStatus         SslStatus          `json:"ssl_status"`
 	AcmeDNSFqdn       string             `json:"acme_dns_fqdn"`
 	AcmeDNSValue      string             `json:"acme_dns_value"`
 	AcmeDNSError      ACMEErrorVariables `json:"acme_dns_error"`

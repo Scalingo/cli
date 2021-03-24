@@ -4,7 +4,7 @@ github.com/Microsoft/go-winio/pkg/guid
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.12.0
+# github.com/Scalingo/go-scalingo/v4 v4.13.0
 ## explicit
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -188,7 +188,7 @@ golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20210326060303-6b1517762897
+# golang.org/x/net v0.0.0-20210330075724-22f4162a9025
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/internal/socks

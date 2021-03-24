@@ -142,6 +142,7 @@ func (c *Client) DBAPI(app, addon string) http.Client {
 		prefix = c.config.DatabaseAPIPrefix
 	}
 	return http.NewClient(http.DBAPI, http.ClientConfig{
+		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
 		APIConfig:      http.APIConfig{Prefix: prefix},
@@ -168,6 +169,7 @@ func (c *Client) AuthAPI() http.Client {
 		prefix = c.config.AuthPrefix
 	}
 	return http.NewClient(http.AuthAPI, http.ClientConfig{
+		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
 		APIConfig:      http.APIConfig{Prefix: prefix},

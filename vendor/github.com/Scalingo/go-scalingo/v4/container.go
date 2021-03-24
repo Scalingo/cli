@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -13,11 +12,8 @@ type Container struct {
 	Command   string     `json:"command"`
 	Type      string     `json:"type"`
 	TypeIndex int        `json:"type_index"`
+	Label     string     `json:"label"`
 	State     string     `json:"state"`
 	Size      string     `json:"size"`
 	App       *App       `json:"app"`
-}
-
-func (c *Container) FullType() string {
-	return fmt.Sprintf("%v-%v", c.Type, c.TypeIndex)
 }

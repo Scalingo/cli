@@ -2,9 +2,18 @@
 
 ## To Be Released
 
+## 4.13.0
+
+* feat(domain): add SSL status [#207](https://github.com/Scalingo/go-scalingo/pull/207)
+* feat: add user agent to auth and DB API requests [#206](https://github.com/Scalingo/go-scalingo/pull/206)
+* feat(event): add support for notifier events [#205](https://github.com/Scalingo/go-scalingo/pull/205)
+* Add `ContainersStop` to stop a running one-off container [#204](https://github.com/Scalingo/go-scalingo/pull/204)
+* Add `AppsContainersPs` to list all application's containers [#204](https://github.com/Scalingo/go-scalingo/pull/204) and [#208](https://github.com/Scalingo/go-scalingo/pull/208)
+* Add `AppsContainerTypes` and deprecate `AppsPs` [#204](https://github.com/Scalingo/go-scalingo/pull/204) and [#208](https://github.com/Scalingo/go-scalingo/pull/208)
+
 ## 4.12.0
 
-* Add `Limits` field to `App`
+* Add `Limits` field to `App` [#203](https://github.com/Scalingo/go-scalingo/pull/203)
 
 ## 4.11.1
 

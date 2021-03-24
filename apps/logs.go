@@ -78,7 +78,7 @@ func checkFilter(c *scalingo.Client, appName string, filter string) error {
 		return nil
 	}
 
-	processes, err := c.AppsPs(appName)
+	processes, err := c.AppsContainerTypes(appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}
