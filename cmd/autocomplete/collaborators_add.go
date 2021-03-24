@@ -65,7 +65,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	for email, _ := range setEmails {
+	for email := range setEmails {
 		isAlreadyCollaborator := false
 		for _, currentAppCol := range currentAppCollaborators {
 			if currentAppCol.Email == email {
