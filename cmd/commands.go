@@ -105,7 +105,6 @@ var (
 		RunCommand,
 
 		// Apps Process Actions
-		psCommand,
 		scaleCommand,
 		RestartCommand,
 

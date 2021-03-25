@@ -16,7 +16,7 @@ var (
 			cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""},
 		},
 		Usage: "Scale your application instantly",
-		Description: `Scale your application processes.
+		Description: `Scale your application processes. Without argument, this command lists the container types declared in your application.
    Example
      'scalingo --app my-app scale web:2 worker:1'
      'scalingo --app my-app scale web:1 worker:0'
@@ -24,15 +24,15 @@ var (
      'scalingo --app my-app scale web:+1 worker:-1'
      `,
 		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+
 			if len(c.Args()) == 0 {
-				err := cli.ShowCommandHelp(c, "scale")
+				err := apps.ContainerTypes(currentApp)
 				if err != nil {
 					errorQuit(err)
 				}
 				return
 			}
-
-			currentApp := appdetect.CurrentApp(c)
 
 			err := apps.Scale(currentApp, c.Bool("s"), c.Args())
 			if err != nil {
