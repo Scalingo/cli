@@ -276,7 +276,7 @@ func (c *Client) AppsContainersPs(app string) ([]Container, error) {
 	}
 	err := c.ScalingoAPI().DoRequest(req, &containersRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "")
+		return nil, errgo.Notef(err, "fail to execute the GET request to list containers")
 	}
 
 	return containersRes.Containers, nil
@@ -289,7 +289,7 @@ func (c *Client) AppsContainerTypes(app string) ([]ContainerType, error) {
 	}
 	err := c.ScalingoAPI().DoRequest(req, &containerTypesRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errgo.Notef(err, "fail to execute the GET request to list container types")
 	}
 
 	return containerTypesRes.Containers, nil

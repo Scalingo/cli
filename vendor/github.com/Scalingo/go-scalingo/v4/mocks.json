@@ -3,8 +3,8 @@
   "base_package": "github.com/Scalingo/go-scalingo/v4",
   "mocks": [
     {
-      "interface" : "Client",
-      "src_package" : "http"
+      "interface": "Client",
+      "src_package": "http"
     },
     {
       "interface": "TokensService",
@@ -45,6 +45,11 @@
       "src_package": ".",
       "dst_package": "scalingomock",
       "interface": "CollaboratorsService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
+      "interface": "ContainersService"
     },
     {
       "src_package": ".",

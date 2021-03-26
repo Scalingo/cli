@@ -7,6 +7,7 @@
   "github.com/Scalingo/go-scalingo.AutoscalersService": "fe 33 e3 88 66 3e 25 c1 40 79 fc 01 6c aa 19 5e ce f6 f1 e7",
   "github.com/Scalingo/go-scalingo.BackupsService": "fd c3 88 a9 d7 18 80 fa 25 a8 fc ca 9c a1 40 2e 2d 26 ea 36",
   "github.com/Scalingo/go-scalingo.CollaboratorsService": "f7 7e 83 62 5b 67 9c 6c aa 79 f5 94 c7 90 d8 3f f8 42 95 81",
+  "github.com/Scalingo/go-scalingo.ContainersService": "99 3d 27 af 4a bb b2 96 d9 7a e9 1a 40 6b eb 66 bb 9b 72 03",
   "github.com/Scalingo/go-scalingo.DeploymentsService": "ed 32 bd b6 2f 86 a6 10 a8 67 40 f5 94 02 dd ff 0b 3e cb a9",
   "github.com/Scalingo/go-scalingo.DomainsService": "5b 41 a1 fb 96 6d 8b e9 2a 02 25 04 64 75 ca 23 45 ab ac da",
   "github.com/Scalingo/go-scalingo.EventsService": "61 1a ac 54 41 28 f4 7b 66 09 e1 fd 35 79 29 70 f2 a6 5a 61",

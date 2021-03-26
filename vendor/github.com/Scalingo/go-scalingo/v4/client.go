@@ -16,6 +16,7 @@ type API interface {
 	AutoscalersService
 	BackupsService
 	CollaboratorsService
+	ContainersService
 	DeploymentsService
 	DomainsService
 	VariablesService

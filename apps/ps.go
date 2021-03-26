@@ -12,7 +12,7 @@ import (
 func Ps(app string) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "fail to get Scalingo client to list the application containers")
 	}
 
 	containers, err := c.AppsContainersPs(app)
@@ -24,7 +24,7 @@ func Ps(app string) error {
 	t.SetHeader([]string{"Name", "Status", "Command", "Size", "Created At"})
 
 	for _, container := range containers {
-		t.Append([]string{container.Label, container.State, container.Command, container.Size, container.CreatedAt.Format(utils.TimeFormat)})
+		t.Append([]string{container.Label, container.State, container.Command, container.ContainerSize.HumanName, container.CreatedAt.Format(utils.TimeFormat)})
 	}
 	t.Render()
 	return nil
