@@ -33,7 +33,6 @@ func OneOffStop(appName, oneOffLabel string) error {
 
 	err = c.ContainersStop(appName, containerToStop.ID)
 	if err != nil {
-		// TODO filter if it's a 400 error, do not add a Notef.
 		return errgo.Notef(err, "fail to stop the container '%s'", oneOffLabel)
 	}
 
