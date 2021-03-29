@@ -100,9 +100,10 @@ var (
 		appsInfoCommand,
 
 		// Apps Actions
-		LogsCommand,
-		LogsArchivesCommand,
-		RunCommand,
+		logsCommand,
+		logsArchivesCommand,
+		runCommand,
+		oneOffStopCommand,
 
 		// Apps Process Actions
 		psCommand,

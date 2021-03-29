@@ -2,6 +2,12 @@
 
 ### To be Released
 
+* `one-off-stop` command to stop a running one-off container [#633](https://github.com/Scalingo/cli/pull/633)
+* `ps` command returns the list of application's containers [#632](https://github.com/Scalingo/cli/pull/632)
+* `ps` command is renamed `scale` [#631](https://github.com/Scalingo/cli/pull/631)
+* Show the addon status on `scalingo addons` [#604](https://github.com/Scalingo/cli/pull/604)
+* Add informative error in case of container type error when scaling an application
+  [602](https://github.com/Scalingo/cli/pull/602)
 * Update various dependencies:
   - github.com/fatih/color
   - github.com/briandowns/spinner
@@ -19,11 +25,6 @@
   - golang.org/x/crypto
   - golang.org/x/net
 * Update Scalingo internal dependencies to the Go Modules version [#613](https://github.com/Scalingo/cli/pull/613)
-* Show the addon status on `scalingo addons` [#604](https://github.com/Scalingo/cli/pull/604)
-* Add informative error in case of container type error when scaling an application
-  [602](https://github.com/Scalingo/cli/pull/602)
-* `ps` command is renamed `scale` [#631](https://github.com/Scalingo/cli/pull/631)
-* `ps` command returns the list of application's containers [#632](https://github.com/Scalingo/cli/pull/632)
 
 ### 1.19.3
 

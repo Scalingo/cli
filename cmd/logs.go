@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	LogsCommand = cli.Command{
+	logsCommand = cli.Command{
 		Name:      "logs",
 		ShortName: "l",
 		Category:  "App Management",

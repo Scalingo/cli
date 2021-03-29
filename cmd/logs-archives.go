@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	LogsArchivesCommand = cli.Command{
+	logsArchivesCommand = cli.Command{
 		Name:      "logs-archives",
 		ShortName: "la",
 		Category:  "App Management",
