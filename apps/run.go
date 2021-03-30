@@ -69,7 +69,7 @@ func Run(opts RunOpts) error {
 		scalingoClient:          c,
 	}
 	if opts.Type != "" {
-		processes, err := c.AppsPs(opts.App)
+		processes, err := c.AppsContainerTypes(opts.App)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -128,7 +128,7 @@ func Run(opts RunOpts) error {
 	if opts.Detached {
 		fmt.Printf(
 			"Starting one-off '%s' for app '%v'.\nRun `scalingo -a %v logs -F %v` to get the output\n",
-			io.Bold(strings.Join(opts.Cmd, " ")), io.Bold(opts.App), opts.App, runRes.Container.FullType(),
+			io.Bold(strings.Join(opts.Cmd, " ")), io.Bold(opts.App), opts.App, runRes.Container.Label,
 		)
 		return nil
 	}
@@ -146,7 +146,7 @@ func Run(opts RunOpts) error {
 	fmt.Fprintf(
 		ctx.waitingTextOutputWriter,
 		"-----> Connecting to container [%v]...  ",
-		runRes.Container.FullType(),
+		runRes.Container.Label,
 	)
 
 	attachSpinner := io.NewSpinner(ctx.waitingTextOutputWriter)

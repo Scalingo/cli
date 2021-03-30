@@ -18,7 +18,7 @@ func RestartAutoComplete(c *cli.Context) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	processes, err := client.AppsPs(appName)
+	processes, err := client.AppsContainerTypes(appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}

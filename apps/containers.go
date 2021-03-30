@@ -15,7 +15,7 @@ func ContainerTypes(app string) error {
 		return errgo.Notef(err, "fail to get Scalingo client to list container types")
 	}
 
-	containerTypes, err := c.AppsPs(app)
+	containerTypes, err := c.AppsContainerTypes(app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application container types")
 	}

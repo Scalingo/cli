@@ -57,7 +57,7 @@ func Scale(app string, sync bool, types []string) error {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
 			if containerTypes == nil {
-				containerTypes, err = c.AppsPs(app)
+				containerTypes, err = c.AppsContainerTypes(app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
 				}
@@ -153,7 +153,7 @@ func Scale(app string, sync bool, types []string) error {
 }
 
 func formatContainerTypesError(c *scalingo.Client, app string, requestFailedError *http.RequestFailedError) error {
-	containerTypes, err := c.AppsPs(app)
+	containerTypes, err := c.AppsContainerTypes(app)
 	if err != nil {
 		debug.Println(fmt.Sprintf("Failed to get container types: %s", err.Error()))
 		return requestFailedError

@@ -23,6 +23,7 @@
 * Add informative error in case of container type error when scaling an application
   [602](https://github.com/Scalingo/cli/pull/602)
 * `ps` command is renamed `scale` [#631](https://github.com/Scalingo/cli/pull/631)
+* `ps` command returns the list of application's containers [#632](https://github.com/Scalingo/cli/pull/632)
 
 ### 1.19.3
 
