@@ -85,6 +85,11 @@ func displayError(err error) {
 
 func displayRequestFailedError(rootError error, currentUser *scalingo.User, autherr error, err error) {
 	requestFailedErr := rootError.(*httpclient.RequestFailedError)
+	if requestFailedErr.Code == 400 {
+		// In case of bad request error, we only want to display the API error
+		io.Errorf("%s\n", requestFailedErr.APIError)
+		return
+	}
 	if requestFailedErr.Code == 401 {
 		if currentUser != nil {
 			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)

@@ -10,7 +10,7 @@ import (
 var (
 	EnvFlag    = cli.StringSlice([]string{})
 	FilesFlag  = cli.StringSlice([]string{})
-	RunCommand = cli.Command{
+	runCommand = cli.Command{
 		Name:      "run",
 		ShortName: "r",
 		Category:  "App Management",
