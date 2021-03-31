@@ -9,10 +9,11 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	scalingoio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb"
-	errgo "gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 )
 
 type DownloadBackupOpts struct {
@@ -21,6 +22,18 @@ type DownloadBackupOpts struct {
 }
 
 func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error {
+	client, err := config.ScalingoClient()
+	if err != nil {
+		return errgo.Notef(err, "fail to get Scalingo client to download a backup")
+	}
+	if backupID == "" {
+		backups, err := client.BackupList(app, addon)
+		if err != nil {
+			return errgo.Notef(err, "fail to get the most recent backup")
+		}
+		backupID = backups[0].ID
+		scalingoio.Status("Selected the most recent backup")
+	}
 	// Output management (manage -s and -o - flags)
 	var fileWriter io.Writer
 	var logWriter io.Writer
@@ -45,10 +58,6 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	spinner.Start()
 
 	// Get backup metadatas
-	client, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
-	}
 	backup, err := client.BackupShow(app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup")
