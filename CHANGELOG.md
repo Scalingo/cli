@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* Error message are outputted on stderr [#639](https://github.com/Scalingo/cli/pull/639)
 * Automatically prefix the integration URL with https if none is provided [#642](https://github.com/Scalingo/cli/pull/642)
 * `backups-download` downloads the most recent backup if none is specified [#636](https://github.com/Scalingo/cli/pull/636)
 * Add `deployment-cache-delete` as an alias to `deployment-delete-cache` [#635](https://github.com/Scalingo/cli/pull/635)
