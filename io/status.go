@@ -1,14 +1,17 @@
 package io
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func Error(args ...interface{}) {
-	fmt.Print(" !     ")
-	fmt.Println(args...)
+	fmt.Fprint(os.Stderr, " !     ")
+	fmt.Fprintln(os.Stderr, args...)
 }
 
 func Errorf(format string, args ...interface{}) {
-	fmt.Printf(" !     "+format, args...)
+	fmt.Fprintf(os.Stderr, " !     "+format, args...)
 }
 
 func Warning(args ...interface{}) {
