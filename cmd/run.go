@@ -68,12 +68,12 @@ var (
      scalingo run -e VARIABLE=VALUE -e VARIABLE2=OTHER_VALUE rails console
 
    Furthermore, you may want to upload a file, like a database dump or anything
-   useful to you. The option '-f' has been built for this purpose, you can even
+   useful to you. The option '--file' has been built for this purpose. You can even
    upload multiple files if you wish. You will be able to find these files in the
-   '/tmp/uploads' directory of the one-off container.
+   '/tmp/uploads' directory of the one-off container. Each file size cannot exceed 100 MiB.
 
    Example
-     scalingo run -f mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
+     scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 			opts := apps.RunOpts{
