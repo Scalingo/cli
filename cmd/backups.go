@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/io"
@@ -72,11 +70,6 @@ var (
 			currentApp := appdetect.CurrentApp(c)
 			addon := addonName(c)
 			backup := c.String("backup")
-			if backup == "" {
-				fmt.Println("Please specify a backup using the --backup flag")
-				return
-			}
-
 			opts := db.DownloadBackupOpts{
 				Output: c.String("output"),
 				Silent: c.Bool("silent"),
