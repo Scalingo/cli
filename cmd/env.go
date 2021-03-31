@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/env"
@@ -15,9 +17,9 @@ var (
 		Usage:    "Display the environment of your apps",
 		Description: `List all the environment variables:
 
-    $ scalingo -a myapp env
+    $ scalingo --app my-app env
 
-    # See also commands 'env-set' and 'env-unset'`,
+    # See also commands 'env-get', 'env-set' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -37,6 +39,35 @@ var (
 		},
 	}
 
+	envGetCommand = cli.Command{
+		Name:     "env-get",
+		Category: "Environment",
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Get the requested environment variable from your app",
+		Description: `Get the value of a specific environment variable:
+
+    $ scalingo --app my-app env-get VAR1
+
+    # See also commands 'env', 'env-set' and 'env-unset'`,
+
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 1 {
+				cli.ShowCommandHelp(c, "env")
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			variableValue, err := env.Get(currentApp, c.Args()[0])
+			if err != nil {
+				errorQuit(err)
+			}
+			fmt.Println(variableValue)
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "env")
+		},
+	}
+
 	envSetCommand = cli.Command{
 		Name:     "env-set",
 		Category: "Environment",
@@ -44,9 +75,9 @@ var (
 		Usage:    "Set the environment variables of your apps",
 		Description: `Set variables:
 
-    $ scalingo -a myapp env-set VAR1=VAL1 VAR2=VAL2
+    $ scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2
 
-    # See also commands 'env' and 'env-unset'`,
+    # See also commands 'env', 'env-get' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
@@ -73,9 +104,9 @@ var (
 		Usage:    "Unset environment variables of your apps",
 		Description: `Unset variables:
 
-    $ scalingo -a myapp env-unset VAR1 VAR2
+    $ scalingo --app my-app env-unset VAR1 VAR2
 
-    # See also commands 'env' and 'env-set'`,
+    # See also commands 'env', 'env-get' and 'env-set'`,
 
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
