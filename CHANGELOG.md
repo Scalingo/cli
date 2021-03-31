@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* Automatically prefix the integration URL with https if none is provided [#642](https://github.com/Scalingo/cli/pull/642)
 * `backups-download` downloads the most recent backup if none is specified [#636](https://github.com/Scalingo/cli/pull/636)
 * Add `deployment-cache-delete` as an alias to `deployment-delete-cache` [#635](https://github.com/Scalingo/cli/pull/635)
 * `one-off-stop` command to stop a running one-off container [#633](https://github.com/Scalingo/cli/pull/633)
