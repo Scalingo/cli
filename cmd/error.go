@@ -69,6 +69,8 @@ func errorQuit(err error) {
 	rootError := errors.ErrgoRoot(err)
 	if httpclient.IsRequestFailedError(rootError) {
 		displayRequestFailedError(rootError, currentUser, autherr, err)
+	} else if _, ok := rootError.(config.UnknownRegionError); ok {
+		displayError(rootError)
 	} else {
 		displayError(err)
 	}

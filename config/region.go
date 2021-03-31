@@ -12,6 +12,14 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
+type UnknownRegionError struct {
+	regionName string
+}
+
+func (err UnknownRegionError) Error() string {
+	return fmt.Sprintf("invalid region %v", err.regionName)
+}
+
 type RegionsCache struct {
 	ExpireAt time.Time         `json:"expire_at"`
 	Regions  []scalingo.Region `json:"regions"`
@@ -112,5 +120,5 @@ func GetRegion(c Config, name string, opts GetRegionOpts) (scalingo.Region, erro
 			return region, nil
 		}
 	}
-	return scalingo.Region{}, errgo.Notef(err, "invalid region %v", name)
+	return scalingo.Region{}, UnknownRegionError{regionName: name}
 }
