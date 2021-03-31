@@ -132,11 +132,11 @@ var (
 		DomainsSSLCommand,
 
 		// Deployments
-		DeploymentsListCommand,
-		DeploymentLogCommand,
-		DeploymentFollowCommand,
-		DeploymentDeployCommand,
-		DeploymentCacheResetCommand,
+		deploymentsListCommand,
+		deploymentLogCommand,
+		deploymentFollowCommand,
+		deploymentDeployCommand,
+		deploymentCacheResetCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,
