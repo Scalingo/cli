@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	DeploymentCacheResetCommand = cli.Command{
+	deploymentCacheResetCommand = cli.Command{
 		Name:     "deployment-delete-cache",
 		Category: "Deployment",
 		Usage:    "Reset deployment cache",
@@ -29,11 +29,21 @@ var (
 				if err != nil {
 					errorQuit(err)
 				}
-				io.Status(fmt.Sprintf("Deployment cache successfully deleted"))
+				io.Status("Deployment cache successfully deleted")
 			}
 		},
 	}
-	DeploymentsListCommand = cli.Command{
+	// deploymentCacheDeleteCommand is an alias of the command deploymentCacheResetCommand
+	deploymentCacheDeleteCommand = cli.Command{
+		Name:        "deployment-cache-delete",
+		Category:    deploymentCacheResetCommand.Category,
+		Usage:       deploymentCacheResetCommand.Usage,
+		Flags:       deploymentCacheResetCommand.Flags,
+		Description: deploymentCacheResetCommand.Description,
+		Action:      deploymentCacheResetCommand.Action,
+	}
+
+	deploymentsListCommand = cli.Command{
 		Name:     "deployments",
 		Category: "Deployment",
 		Usage:    "List app deployments",
@@ -49,7 +59,7 @@ var (
 			}
 		},
 	}
-	DeploymentLogCommand = cli.Command{
+	deploymentLogCommand = cli.Command{
 		Name:     "deployment-logs",
 		Category: "Deployment",
 		Usage:    "View deployment logs",
@@ -72,7 +82,7 @@ var (
 			autocomplete.DeploymentsAutoComplete(c)
 		},
 	}
-	DeploymentFollowCommand = cli.Command{
+	deploymentFollowCommand = cli.Command{
 		Name:     "deployment-follow",
 		Category: "Deployment",
 		Usage:    "Follow deployment event stream",
@@ -90,7 +100,7 @@ var (
 			}
 		},
 	}
-	DeploymentDeployCommand = cli.Command{
+	deploymentDeployCommand = cli.Command{
 		Name:     "deploy",
 		Category: "Deployment",
 		Usage:    "Trigger a deployment by archive",

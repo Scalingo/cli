@@ -19,6 +19,7 @@ var (
 		},
 	}
 
+	// whoami is an alias of the command selfCommand
 	whoamiCommand = cli.Command{
 		Name:        "whoami",
 		Category:    selfCommand.Category,
