@@ -122,6 +122,7 @@ var (
 
 		// Environment
 		envCommand,
+		envGetCommand,
 		envSetCommand,
 		envUnsetCommand,
 
