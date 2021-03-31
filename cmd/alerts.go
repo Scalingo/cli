@@ -109,7 +109,7 @@ var (
    All flags are optionnal.
 
    Example
-     scalingo --app my-app alerts-update --metric rpm-per-container --target 150 <ID>
+     scalingo --app my-app alerts-update --metric rpm-per-container --limit 150 <ID>
      scalingo --app my-app alerts-update --disabled <ID>
      scalingo --app my-app alerts-update --notifiers 5aaab14dcbf5e7000120fd01 --notifiers 5aaab3cacbf5e7000120fd19 <ID>
 
