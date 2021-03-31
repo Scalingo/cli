@@ -29,7 +29,7 @@ var (
 				if err != nil {
 					errorQuit(err)
 				}
-				io.Status(fmt.Sprintf("Deployment cache successfully deleted"))
+				io.Status("Deployment cache successfully deleted")
 			}
 		},
 	}
