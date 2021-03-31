@@ -137,6 +137,7 @@ var (
 		deploymentFollowCommand,
 		deploymentDeployCommand,
 		deploymentCacheResetCommand,
+		deploymentCacheDeleteCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,

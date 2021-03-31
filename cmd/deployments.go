@@ -33,6 +33,15 @@ var (
 			}
 		},
 	}
+	// deploymentCacheDeleteCommand is an alias of the command deploymentCacheResetCommand
+	deploymentCacheDeleteCommand = cli.Command{
+		Name:        "deployment-cache-delete",
+		Category:    deploymentCacheResetCommand.Category,
+		Usage:       deploymentCacheResetCommand.Usage,
+		Flags:       deploymentCacheResetCommand.Flags,
+		Description: deploymentCacheResetCommand.Description,
+		Action:      deploymentCacheResetCommand.Action,
+	}
 
 	deploymentsListCommand = cli.Command{
 		Name:     "deployments",
