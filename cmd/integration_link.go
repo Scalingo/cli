@@ -17,6 +17,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
 	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
 )
 
@@ -167,6 +168,17 @@ var (
 
 			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
+				scerr, ok := scalingoerrors.ErrgoRoot(err).(*http.RequestFailedError)
+				if ok && scerr.Code == 404 {
+					io.Error("Fail to create SCM repository integration: the repository has not been found")
+					io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
+					if integrationType == scalingo.SCMGithubType || integrationType == scalingo.SCMGithubEnterpriseType {
+						io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-github")
+					} else if integrationType == scalingo.SCMGitlabType || integrationType == scalingo.SCMGitlabSelfHostedType {
+						io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-gitlab")
+					}
+					os.Exit(1)
+				}
 				errorQuit(err)
 			}
 		},
