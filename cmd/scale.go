@@ -26,6 +26,8 @@ var (
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
 
+			// The scale command with no argument displays the list of container
+			// types described for this application
 			if len(c.Args()) == 0 {
 				err := apps.ContainerTypes(currentApp)
 				if err != nil {
