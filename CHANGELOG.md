@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.20.0
+
 * Add `env-get` command to retrieve the value of a specific environment variable [#643](https://github.com/Scalingo/cli/pull/643)
 * Error message are outputted on stderr [#639](https://github.com/Scalingo/cli/pull/639)
 * Automatically prefix the integration URL with https if none is provided [#642](https://github.com/Scalingo/cli/pull/642)
