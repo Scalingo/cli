@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(backup_download): no log on stdout when using '--output -' flag [#646](https://github.com/Scalingo/cli/pull/646)
+
 ### 1.20.0
 
 * Add `env-get` command to retrieve the value of a specific environment variable [#643](https://github.com/Scalingo/cli/pull/643)
