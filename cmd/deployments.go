@@ -69,13 +69,18 @@ var (
 `,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			if len(c.Args()) == 1 {
-				err := deployments.Logs(currentApp, c.Args()[0])
-				if err != nil {
-					errorQuit(err)
-				}
-			} else {
+			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "deployment-logs")
+			}
+
+			deploymentID := ""
+			if len(c.Args()) == 1 {
+				deploymentID = c.Args()[0]
+			}
+
+			err := deployments.Logs(currentApp, deploymentID)
+			if err != nil {
+				errorQuit(err)
 			}
 		},
 		BashComplete: func(c *cli.Context) {

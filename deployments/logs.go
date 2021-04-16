@@ -9,12 +9,23 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func Logs(app, deployment string) error {
+func Logs(app, deploymentID string) error {
 	client, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	deploy, err := client.Deployment(app, deployment)
+	if deploymentID == "" {
+		deployments, err := client.DeploymentList(app)
+		if err != nil {
+			return errgo.Notef(err, "fail to get the most recent deployment")
+		}
+		if len(deployments) == 0 {
+			return errgo.New("This application has not been deployed")
+		}
+		deploymentID = deployments[0].ID
+		io.Infof("-----> Selected the most recent deployment (%s)\n", deploymentID)
+	}
+	deploy, err := client.Deployment(app, deploymentID)
 
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

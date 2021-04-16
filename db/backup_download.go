@@ -47,6 +47,9 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		if err != nil {
 			return errgo.Notef(err, "fail to get the most recent backup")
 		}
+		if len(backups) == 0 {
+			return errgo.New("This addon has no backup")
+		}
 		backupID = backups[0].ID
 		fmt.Fprintln(logWriter, "-----> Selected the most recent backup")
 	}
