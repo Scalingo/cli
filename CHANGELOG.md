@@ -3,6 +3,7 @@
 ### To be Released
 
 * fix(backup_download): no log on stdout when using '--output -' flag [#646](https://github.com/Scalingo/cli/pull/646)
+* `deployment-logs` displays the last deployment logs if none is provided [#647](https://github.com/Scalingo/cli/pull/647)
 
 ### 1.20.0
 
