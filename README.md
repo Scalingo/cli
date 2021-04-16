@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.20.0
+# Scalingo-CLI v1.20.1
 
 [![Codeship Status for Scalingo/cli](https://app.codeship.com/projects/d3ee7f70-ac5f-0137-8f24-1ae29f023aca/status?branch=master)](https://app.codeship.com/projects/362207)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo-cli [global options] command [command options] [arguments...]
 
 VERSION:
-   1.20.0
+   1.20.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -254,12 +254,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.20.0
+git checkout -b v1.20.1
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.20.0
+git push --set-upstream origin v1.20.1
 ```
 
 ### New Version Bump
@@ -276,14 +276,14 @@ And commit these changes:
 
 ```bash
 $ git add .
-$ git commit -m "Bump version 1.20.0"
+$ git commit -m "Bump version 1.20.1"
 $ git push origin master
 ```
 
 #### Tag the New Release
 
 ```bash
-git tag 1.20.0
+git tag 1.20.1
 git push --tags
 ```
 
@@ -292,7 +292,7 @@ git push --tags
 Build the new version for all platforms with:
 
 ```sh
-./dists/make-release.sh -v 1.20.0 -b
+./dists/make-release.sh -v 1.20.1 -b
 ```
 
 Tag and release a new version on GitHub

@@ -7,6 +7,6 @@
    "Include": "INSTALL*,README.md,LICENSE*",
    "Exclude": "*.go"
   },
-  "PackageVersion": "1.20.0",
+  "PackageVersion": "1.20.1",
   "ConfigVersion": "0.9"
 }
