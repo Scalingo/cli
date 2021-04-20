@@ -35,7 +35,7 @@ function build_for() {
   local os=$1
   local archive_type=$2
 
-  for arch in amd64 386 ; do
+  for arch in amd64 arm64 386 ; do
     if [ "$os" = "darwin" ] && [ "$arch" = "386" ] ; then
       continue
     fi
