@@ -113,9 +113,16 @@ var (
 			cli.BoolFlag{Name: "war, w", Usage: "Specify that you want to deploy a WAR file"},
 		},
 		Description: ` Trigger the deployment of a custom archive for your application
-		$ scalingo -a myapp deploy archive.tar.gz
+
+		scalingo deploy <archive path | archive URL> [version reference]
+
+		The version reference is optional (generated from timestamp if none). It is a reference
+		to the code you are deploying, version, commit SHA, etc.
+
+		Examples:
+		$ scalingo -a myapp deploy archive.tar.gz v1.0.0
 		or
-		$ scalingo -a myapp deploy http://example.com/archive.tar.gz
+		$ scalingo -a myapp deploy http://example.com/archive.tar.gz v1.0.0
 
     # See also commands 'deployments'
 `,
