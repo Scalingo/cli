@@ -41,7 +41,7 @@ func Deploy(app, archivePath, gitRef string) error {
 		SourceURL: archiveURL,
 	}
 
-	// TODO gitRef cannot be anything. It is used in the docker tag image. For example, it cannot
+	// gitRef cannot be anything. It is used in the docker tag image. For example, it cannot
 	// start with a dash
 	if strings.TrimSpace(gitRef) != "" {
 		params.GitRef = &gitRef
