@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(integration-link-create): better catch 401 from SCM API
+
 ### 1.20.1
 
 * fix(backup_download): no log on stdout when using '--output -' flag [#646](https://github.com/Scalingo/cli/pull/646)

@@ -169,13 +169,20 @@ var (
 			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				scerr, ok := scalingoerrors.ErrgoRoot(err).(*http.RequestFailedError)
-				if ok && scerr.Code == 404 {
-					io.Error("Fail to create SCM repository integration: the repository has not been found")
-					io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
-					if integrationType == scalingo.SCMGithubType || integrationType == scalingo.SCMGithubEnterpriseType {
-						io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-github")
-					} else if integrationType == scalingo.SCMGitlabType || integrationType == scalingo.SCMGitlabSelfHostedType {
-						io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-gitlab")
+				if ok {
+					if scerr.Code == 404 {
+						io.Error("Fail to create SCM repository integration: the repository has not been found")
+						io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
+						if integrationType == scalingo.SCMGithubType || integrationType == scalingo.SCMGithubEnterpriseType {
+							io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-github")
+						} else if integrationType == scalingo.SCMGitlabType || integrationType == scalingo.SCMGitlabSelfHostedType {
+							io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-gitlab")
+						}
+					} else if scerr.Code == 403 {
+						io.Error("Fail to create SCM repository integration: the SCM API returned a 401 error.")
+						io.Error("Did you revoked the Scalingo token from your profile? In such situation, you may want to remove and re-create the SCM integration.")
+						io.Error("")
+						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
 					}
 					os.Exit(1)
 				}
