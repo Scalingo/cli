@@ -43,7 +43,6 @@ func Add(app string, opts AddDrainOpts) error {
 		}
 
 		if opts.AddonID == addon.ID || opts.WithAddons {
-			// TODO(pc): do we need to test if the addon is a DB ?
 			d, err := c.LogDrainAddonAdd(app, addon.ID, opts.Params)
 			if err != nil {
 				io.Status("fail to add drain to", "'"+addon.AddonProvider.Name+"'", "addon:\n\t", err)
