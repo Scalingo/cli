@@ -3,6 +3,7 @@
 ### To be Released
 
 * feat(integration-link-create): better catch 401 from SCM API
+* bump github.com/fatih/color from 1.10.0 to 1.11.0
 
 ### 1.20.1
 
