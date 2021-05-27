@@ -243,7 +243,6 @@ const (
 )
 
 func colorizeRouterLogs(content string) string {
-
 	var outContent string
 	var stateBeginnedAt int
 
