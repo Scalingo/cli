@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.20.2
+
 * fix(logs) Buffer logs to prevent requests from timing out [#659](https://github.com/Scalingo/cli/pull/659)
 * feat(integration-link-create): better catch 401 from SCM API [#651](https://github.com/Scalingo/cli/pull/651)
 * bump github.com/fatih/color from 1.10.0 to 1.11.0 [#654](https://github.com/Scalingo/cli/pull/654)
