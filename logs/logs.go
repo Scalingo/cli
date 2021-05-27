@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 	"unicode"
 
@@ -20,6 +21,10 @@ import (
 	"github.com/fatih/color"
 	"golang.org/x/net/websocket"
 	errgo "gopkg.in/errgo.v1"
+)
+
+const (
+	logsMaxBufferSize = 150000 // Size of the buffer when querying logs (in lines)
 )
 
 type WSEvent struct {
@@ -46,17 +51,66 @@ func Dump(logsURL string, n int, filter string) error {
 		return nil
 	}
 
-	sr := bufio.NewReader(res.Body)
-	for {
-		bline, err := sr.ReadBytes('\n')
-		if err != nil {
-			break
-		}
-
-		colorizeLogs(string(bline))
+	// Create a buffered channel with a maximum size of the number of log lines
+	// requested.  On medium to good internet connection, we are fetching lines
+	// faster than we can process them.  This buffer is here to get the logs as
+	// fast as possible since the request will time out after 30s.
+	buffSize := n
+	if buffSize > logsMaxBufferSize { // Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
+		buffSize = logsMaxBufferSize
 	}
 
-	return nil
+	// This buffered channel will be used as a buffer between the network
+	// connection and our logs processing pipeline.
+	buff := make(chan string, buffSize)
+	// This waitgroup is used to ensure that the logs processing pipeline is
+	// finished before exiting the method.
+	wg := &sync.WaitGroup{}
+
+	// Start a goroutine that will read from buffered channel and send those
+	// lines to the logs processing pipeline.
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for bline := range buff {
+			colorizeLogs(string(bline))
+		}
+	}()
+
+	// Ensure that all lines are printed out before exiting this method.
+	defer wg.Wait()
+
+	// Here we used bufio to read from the response because we want to easily
+	// split response in lines.
+	// Note: This can look like a duplicate measure with our buffered channel
+	// (buff) however it's not. The reason is that ReadBytes will fill the sr
+	// Reader only if the internal buffer is empty. This means that the first
+	// ReadBytes will fetch 4MB of data from the connection. Then it will use
+	// this internal buffer until it runs out. However if our logs processing
+	// pipeline is slow, it will never query the next 4MB of data. Hence the
+	// buffered channel.
+	sr := bufio.NewReader(res.Body)
+
+	for {
+		// Read one line from the response
+		bline, err := sr.ReadBytes('\n')
+
+		if err != nil {
+			// If there was an error, we will exit, so we can close the buffered
+			// channel and let the goroutine finish its work.
+			close(buff)
+
+			if err == stdio.EOF {
+				// If the error is EOF, it means that we successfully read all of the
+				// response body
+				return nil
+			}
+			// Otherwise there was an error: return it
+			return errgo.Notef(err, "fail to read logs")
+		}
+		// Send the line to the buffer
+		buff <- string(bline)
+	}
 }
 
 func Stream(logsRawURL string, filter string) error {
@@ -189,6 +243,7 @@ const (
 )
 
 func colorizeRouterLogs(content string) string {
+
 	var outContent string
 	var stateBeginnedAt int
 
