@@ -3,6 +3,7 @@
 ### To be Released
 
 * bump github.com/fatih/color from 1.11.0 to 1.12.0: add support for `NO_COLOR` environment variable.
+* bump github.com/briandowns/spinner from 1.12.0 to 1.13.0
 
 ### 1.20.2
 
