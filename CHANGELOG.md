@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* bump github.com/fatih/color from 1.11.0 to 1.12.0: add support for `NO_COLOR` environment variable.
+
 ### 1.20.2
 
 * fix(logs) Buffer logs to prevent requests from timing out [#659](https://github.com/Scalingo/cli/pull/659)
