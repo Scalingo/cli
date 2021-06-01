@@ -12,7 +12,7 @@ require (
 	github.com/cheggaaa/pb v1.0.29
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.12.0
-	github.com/go-git/go-git/v5 v5.3.0
+	github.com/go-git/go-git/v5 v5.4.1
 	github.com/gosuri/uilive v0.0.4
 	github.com/heroku/hk v0.0.0-20160226172041-9c27ee3bfe9f
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
@@ -25,7 +25,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.5
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
+	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20210330075724-22f4162a9025
 	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
