@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb"
@@ -42,6 +43,8 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to download a backup")
 	}
+
+	backupIDs := []string{}
 	if backupID == "" {
 		backups, err := client.BackupList(app, addon)
 		if err != nil {
@@ -50,8 +53,12 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		if len(backups) == 0 {
 			return errgo.New("This addon has no backup")
 		}
-		backupID = backups[0].ID
+		for _, backup := range backups {
+			backupIDs = append(backupIDs, backup.ID)
+		}
 		fmt.Fprintln(logWriter, "-----> Selected the most recent backup")
+	} else {
+		backupIDs = append(backupIDs, backupID)
 	}
 
 	// Start a spinner when loading metadatas
@@ -61,18 +68,28 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	spinner.Start()
 
 	// Get backup metadatas
-	backup, err := client.BackupShow(app, addon, backupID)
-	if err != nil {
-		return errgo.Notef(err, "fail to get backup")
+	var successfulBackup *scalingo.Backup
+	for _, backupID := range backupIDs { // Loop on last backups
+		backup, err := client.BackupShow(app, addon, backupID)
+		if err != nil {
+			return errgo.Notef(err, "fail to get backup")
+		}
+		if backup.Status == scalingo.BackupStatusDone { // Check if the backup is successful
+			successfulBackup = backup
+			break
+		}
+	}
+	if successfulBackup == nil {
+		return errgo.Notef(err, "fail to get a successful backup")
 	}
 
 	// Generate the filename and file writer
 	filepath := ""
 	if !writeToStdout { // No need to generate the filename nor the file writer if we're outputing to stdout
-		filepath = fmt.Sprintf("%s.tar.gz", backup.Name) // Default filename
-		if opts.Output != "" {                           // If the Output flag was defined
+		filepath = fmt.Sprintf("%s.tar.gz", successfulBackup.Name) // Default filename
+		if opts.Output != "" {                                     // If the Output flag was defined
 			if isDir(opts.Output) { // If it's a directory use the default filename in this directory
-				filepath = fmt.Sprintf("%s/%s.tar.gz", opts.Output, backup.Name)
+				filepath = fmt.Sprintf("%s/%s.tar.gz", opts.Output, successfulBackup.Name)
 			} else { // If the output is not a directory use it as the filename
 				filepath = opts.Output
 			}
@@ -86,7 +103,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	}
 
 	// Get the pre-signed download URL
-	downloadURL, err := client.BackupDownloadURL(app, addon, backupID)
+	downloadURL, err := client.BackupDownloadURL(app, addon, successfulBackup.ID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup download URL")
 	}
@@ -100,7 +117,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	defer resp.Body.Close()
 	spinner.Stop()
 	// Stop the spinner, start the progress bar
-	bar := pb.New64(int64(backup.Size)).SetUnits(pb.U_BYTES)
+	bar := pb.New64(int64(successfulBackup.Size)).SetUnits(pb.U_BYTES)
 	bar.Output = logWriter
 	bar.Start()
 	reader := bar.NewProxyReader(resp.Body) // Did I tell you this library is awesome ?
