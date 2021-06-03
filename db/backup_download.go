@@ -49,7 +49,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 			return errgo.Notef(err, "fail to get the most recent backup")
 		}
 		if len(backups) == 0 {
-			return errgo.New("This addon has no backup")
+			return errgo.New("this addon has no backup")
 		}
 		backupID, err = getLastSuccessfulBackup(backups)
 		if err != nil {
@@ -142,5 +142,5 @@ func getLastSuccessfulBackup(backups []scalingo.Backup) (string, error) {
 			return backup.ID, nil
 		}
 	}
-	return "", errgo.New("Can't find any successful backup")
+	return "", errgo.New("can't find any successful backup")
 }
