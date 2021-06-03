@@ -5,6 +5,7 @@
 * bump github.com/fatih/color from 1.11.0 to 1.12.0: add support for `NO_COLOR` environment variable.
 * bump github.com/briandowns/spinner from 1.12.0 to 1.13.0
 * fix(backup-download) Now download the last successful backup [#663](https://github.com/Scalingo/cli/pull/663)
+* fix(review-app-url) add app url in the tablewriter [#664](https://github.com/Scalingo/cli/pull/664)
 
 ### 1.20.2
 
