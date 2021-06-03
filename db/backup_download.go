@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb"
@@ -48,10 +49,13 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 			return errgo.Notef(err, "fail to get the most recent backup")
 		}
 		if len(backups) == 0 {
-			return errgo.New("This addon has no backup")
+			return errgo.New("this addon has no backup")
 		}
-		backupID = backups[0].ID
-		fmt.Fprintln(logWriter, "-----> Selected the most recent backup")
+		backupID, err = getLastSuccessfulBackup(backups)
+		if err != nil {
+			return errgo.Notef(err, "fail to get a successful backup")
+		}
+		fmt.Fprintln(logWriter, "-----> Selected the most recent successful backup")
 	}
 
 	// Start a spinner when loading metadatas
@@ -130,4 +134,13 @@ func isDir(path string) bool {
 	}
 
 	return s.IsDir()
+}
+
+func getLastSuccessfulBackup(backups []scalingo.Backup) (string, error) {
+	for _, backup := range backups {
+		if backup.Status == scalingo.BackupStatusDone {
+			return backup.ID, nil
+		}
+	}
+	return "", errgo.New("can't find any successful backup")
 }
