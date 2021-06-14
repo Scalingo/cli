@@ -104,17 +104,17 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	}
 	defer resp.Body.Close()
 
-	// Return an error if the api return 400
+	// Stop the spinner
+	spinner.Stop()
+
 	if resp.StatusCode != http.StatusOK {
-		spinner.Stop()
 		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
 			URL:         downloadURL,
 			Method:      "GET",
 		})
 	}
 
-	spinner.Stop()
-	// Stop the spinner, start the progress bar
+	// Start the progress bar
 	bar := pb.New64(int64(backup.Size)).SetUnits(pb.U_BYTES)
 	bar.Output = logWriter
 	bar.Start()
