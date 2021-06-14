@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -102,6 +103,16 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		return errgo.Notef(err, "fail to start download")
 	}
 	defer resp.Body.Close()
+
+	// Return an error if the api return 400
+	if resp.StatusCode != http.StatusOK {
+		spinner.Stop()
+		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
+			URL:         downloadURL,
+			Method:      "GET",
+		})
+	}
+
 	spinner.Stop()
 	// Stop the spinner, start the progress bar
 	bar := pb.New64(int64(backup.Size)).SetUnits(pb.U_BYTES)
