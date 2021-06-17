@@ -7,6 +7,7 @@
 * fix(backup-download) Now download the last successful backup [#663](https://github.com/Scalingo/cli/pull/663)
 * fix(review-app-url) add app url in the tablewriter [#664](https://github.com/Scalingo/cli/pull/664)
 * fix(backups-download) print error on stderr if the backup status is not 'done' [#665](https://github.com/Scalingo/cli/pull/665)
+* update go version to 1.6 and replace ioutil by io/os [#666](https://github.com/Scalingo/cli/pull/666)
 
 ### 1.20.2
 

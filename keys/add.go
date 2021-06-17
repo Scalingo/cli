@@ -2,7 +2,6 @@ package keys
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/Scalingo/cli/config"
@@ -21,7 +20,7 @@ func Add(name string, path string) error {
 		return fmt.Errorf("%s: is too large (%v bytes)", path, stat.Size())
 	}
 
-	keyContent, err := ioutil.ReadFile(path)
+	keyContent, err := os.ReadFile(path)
 	if err != nil {
 		return errgo.Notef(err, "fail to read the key file")
 	}

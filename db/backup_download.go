@@ -4,7 +4,6 @@ import (
 	"fmt"
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -37,7 +36,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	}
 
 	if opts.Silent {
-		logWriter = ioutil.Discard
+		logWriter = io.Discard
 	}
 
 	client, err := config.ScalingoClient()
@@ -109,8 +108,8 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 
 	if resp.StatusCode != http.StatusOK {
 		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
-			URL:         downloadURL,
-			Method:      "GET",
+			URL:    downloadURL,
+			Method: "GET",
 		})
 	}
 

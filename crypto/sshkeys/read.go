@@ -4,7 +4,7 @@ import (
 	"encoding/asn1"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -19,7 +19,7 @@ var (
 )
 
 func ReadPrivateKey(path string) (ssh.Signer, error) {
-	privateKeyContent, err := ioutil.ReadFile(path)
+	privateKeyContent, err := os.ReadFile(path)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

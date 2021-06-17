@@ -3,8 +3,8 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/urfave/cli"
 	"github.com/Scalingo/cli/appdetect"
+	"github.com/urfave/cli"
 )
 
 func CurrentAppCompletion(c *cli.Context) string {

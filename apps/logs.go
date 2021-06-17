@@ -2,7 +2,7 @@ package apps
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"strings"
 	"time"
 
@@ -45,7 +45,7 @@ func Logs(appName string, stream bool, n int, filter string) error {
 		return errgo.Newf("fail to query logs: %s", res.Status)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
