@@ -1,7 +1,7 @@
 package domains
 
 import (
-	"io/ioutil"
+	"os"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -65,11 +65,11 @@ func validateSSL(cert, key string) (string, string, error) {
 		return "", "", errgo.New("--key <key path> should be defined")
 	}
 
-	certContent, err := ioutil.ReadFile(cert)
+	certContent, err := os.ReadFile(cert)
 	if err != nil {
 		return "", "", errgo.Mask(err)
 	}
-	keyContent, err := ioutil.ReadFile(key)
+	keyContent, err := os.ReadFile(key)
 	if err != nil {
 		return "", "", errgo.Mask(err)
 	}

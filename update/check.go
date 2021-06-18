@@ -2,7 +2,7 @@ package update
 
 import (
 	"fmt"
-	"io/ioutil"
+	stdio "io"
 	"net/http"
 	"strings"
 	"time"
@@ -72,7 +72,7 @@ func getLastVersion() (string, error) {
 		return "", errgo.Mask(err)
 	}
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}

@@ -2,7 +2,6 @@ package deployments
 
 import (
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -90,7 +89,7 @@ func uploadArchivePath(c *scalingo.Client, archivePath string) (string, error) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(res.Body)
+		body, _ := io.ReadAll(res.Body)
 		return "", errgo.Newf("wrong status code after upload %s, body: %s", res.Status, string(body))
 	}
 

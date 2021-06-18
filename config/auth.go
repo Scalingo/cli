@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"strings"
@@ -300,7 +299,7 @@ func writeAuthFile(authConfig *auth.ConfigData) error {
 
 func existingAuth() (*auth.ConfigData, error) {
 	authConfig := auth.NewConfigData()
-	content, err := ioutil.ReadFile(C.AuthFile)
+	content, err := os.ReadFile(C.AuthFile)
 	if err == nil {
 		// We don't care of the error
 		json.Unmarshal(content, &authConfig)

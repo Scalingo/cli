@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	stdio "io"
-	"io/ioutil"
 	"mime/multipart"
 	"net"
 	"net/http"
@@ -273,7 +272,7 @@ func (ctx *runContext) exitCode() (int, error) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
 		return -1, errgo.Notef(err, "fail to read body when getting exit code")
 	}
@@ -394,7 +393,7 @@ func (ctx *runContext) uploadFiles(endpoint string, files []string) error {
 }
 
 func (ctx *runContext) compressDir(dir string) (string, error) {
-	tmpDir, err := ioutil.TempDir(os.TempDir(), "job-file")
+	tmpDir, err := os.MkdirTemp(os.TempDir(), "job-file")
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
@@ -523,7 +522,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		b, _ := ioutil.ReadAll(res.Body)
+		b, _ := stdio.ReadAll(res.Body)
 		return errgo.Newf("Invalid return code %v (%s)", res.Status, strings.TrimSpace(string(b)))
 	}
 	return nil
