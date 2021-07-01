@@ -12,7 +12,7 @@ require (
 	github.com/cheggaaa/pb v1.0.29
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.12.0
-	github.com/go-git/go-git/v5 v5.4.1
+	github.com/go-git/go-git/v5 v5.4.2
 	github.com/gosuri/uilive v0.0.4
 	github.com/heroku/hk v0.0.0-20160226172041-9c27ee3bfe9f
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
