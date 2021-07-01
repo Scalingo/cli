@@ -8,7 +8,7 @@ require (
 	github.com/Scalingo/go-utils/errors v1.0.0
 	github.com/Scalingo/go-utils/retry v1.0.0
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
-	github.com/briandowns/spinner v1.13.0
+	github.com/briandowns/spinner v1.16.0
 	github.com/cheggaaa/pb v1.0.29
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.12.0
