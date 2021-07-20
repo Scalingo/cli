@@ -17,6 +17,7 @@ type API interface {
 	BackupsService
 	CollaboratorsService
 	ContainersService
+	CronTasksService
 	DeploymentsService
 	DomainsService
 	VariablesService

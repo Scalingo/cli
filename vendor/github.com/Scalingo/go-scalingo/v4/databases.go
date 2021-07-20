@@ -9,8 +9,10 @@ import (
 type DatabaseStatus string
 
 const (
+	DatabaseStatusCreating  DatabaseStatus = "creating"
 	DatabaseStatusRunning   DatabaseStatus = "running"
 	DatabaseStatusMigrating DatabaseStatus = "migrating"
+	DatabaseStatusUpdating  DatabaseStatus = "updating"
 	DatabaseStatusUpgrading DatabaseStatus = "upgrading"
 	DatabaseStatusStopped   DatabaseStatus = "stopped"
 )

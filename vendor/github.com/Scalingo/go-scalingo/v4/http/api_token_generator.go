@@ -3,8 +3,7 @@ package http
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-
+	jwt "github.com/golang-jwt/jwt/v4"
 	errgo "gopkg.in/errgo.v1"
 )
 
