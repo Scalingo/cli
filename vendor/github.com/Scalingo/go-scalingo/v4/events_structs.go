@@ -308,11 +308,12 @@ func (ev *EventDeploymentType) String() string {
 }
 
 type EventDeploymentTypeData struct {
-	DeploymentID string `json:"deployment_id"`
-	Puser        string `json:"pusher"`
-	GitRef       string `json:"git_ref"`
-	Status       string `json:"status"`
-	Duration     int    `json:"duration"`
+	DeploymentID   string `json:"deployment_id"`
+	Pusher          string `json:"pusher"`
+	GitRef         string `json:"git_ref"`
+	Status         string `json:"status"`
+	Duration       int    `json:"duration"`
+	DeploymentUUID string `json:"deployment_uuid"`
 }
 
 type EventLinkGithubType struct {

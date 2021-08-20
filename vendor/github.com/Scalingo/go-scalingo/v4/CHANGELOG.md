@@ -2,6 +2,13 @@
 
 ## To Be Released
 
+## 4.13.1
+
+* build(deps): bump github.com/golang/mock from 1.5.0 to 1.6.0
+* Add `DeploymentUUID` to the deployment event and fix a typo [#216](https://github.com/Scalingo/go-scalingo/pull/216)
+* build(deps): replace deprecated github.com/dgrijalva/jwt-go with github.com/golang-jwt/jwt
+* chore: update from Go 1.13 to 1.17
+
 ## 4.13.0
 
 * feat(domain): add SSL status [#207](https://github.com/Scalingo/go-scalingo/pull/207)
@@ -10,6 +17,7 @@
 * Add `ContainersStop` to stop a running one-off container [#204](https://github.com/Scalingo/go-scalingo/pull/204)
 * Add `AppsContainersPs` to list all application's containers [#204](https://github.com/Scalingo/go-scalingo/pull/204) and [#208](https://github.com/Scalingo/go-scalingo/pull/208)
 * Add `AppsContainerTypes` and deprecate `AppsPs` [#204](https://github.com/Scalingo/go-scalingo/pull/204) and [#208](https://github.com/Scalingo/go-scalingo/pull/208)
+* Add support for route `GET /apps/{app_id}/cron_tasks` [#214](https://github.com/Scalingo/go-scalingo/pull/214)
 
 ## 4.12.0
 

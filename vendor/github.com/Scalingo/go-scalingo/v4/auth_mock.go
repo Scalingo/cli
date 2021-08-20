@@ -9,7 +9,7 @@ import (
 
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-scalingo/v4/http/httpmock"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v4"
 	gomock "github.com/golang/mock/gomock"
 )
 

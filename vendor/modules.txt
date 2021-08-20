@@ -21,7 +21,7 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.13.0
+# github.com/Scalingo/go-scalingo/v4 v4.13.1
 ## explicit
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -52,8 +52,6 @@ github.com/cpuguy83/go-md2man/v2/md2man
 github.com/davecgh/go-spew/spew
 # github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a
 github.com/dchest/bcrypt_pbkdf
-# github.com/dgrijalva/jwt-go v3.2.0+incompatible
-github.com/dgrijalva/jwt-go
 # github.com/dustin/go-humanize v1.0.0
 ## explicit
 github.com/dustin/go-humanize
@@ -123,7 +121,9 @@ github.com/go-git/go-git/v5/utils/merkletrie/filesystem
 github.com/go-git/go-git/v5/utils/merkletrie/index
 github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
-# github.com/golang/mock v1.5.0
+# github.com/golang-jwt/jwt/v4 v4.0.0
+github.com/golang-jwt/jwt/v4
+# github.com/golang/mock v1.6.0
 github.com/golang/mock/gomock
 # github.com/gosuri/uilive v0.0.4
 ## explicit
@@ -202,13 +202,13 @@ golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20210330075724-22f4162a9025
+# golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-# golang.org/x/sys v0.0.0-20210502180810-71e4cd670f79
+# golang.org/x/sys v0.0.0-20210510120138-977fb7262007
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader

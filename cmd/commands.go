@@ -228,6 +228,9 @@ var (
 
 		gitSetup,
 		gitShow,
+
+		// Cron tasks
+		cronTasksListCommand,
 	}
 
 	globalCommands = []cli.Command{
