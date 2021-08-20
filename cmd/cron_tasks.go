@@ -9,17 +9,17 @@ import (
 
 var (
 	cronTasksListCommand = cli.Command{
-		Name:     "cron-jobs",
-		Category: "Cron Jobs",
+		Name:     "cron-tasks",
+		Category: "Cron Tasks",
 		Flags:    []cli.Flag{appFlag},
-		Usage:    "List the cron jobs of an application",
-		Description: `List all the cron jobs of an application:
+		Usage:    "List the cron tasks of an application",
+		Description: `List all the cron tasks of an application:
 
     $ scalingo --app my-app cron-jobs`,
 
 		Action: func(c *cli.Context) {
 			if len(c.Args()) > 0 {
-				cli.ShowCommandHelp(c, "cron-jobs")
+				cli.ShowCommandHelp(c, "cron-tasks")
 				return
 			}
 
@@ -30,7 +30,7 @@ var (
 			}
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "cron-jobs")
+			autocomplete.CmdFlagsAutoComplete(c, "cron-tasks")
 		},
 	}
 )

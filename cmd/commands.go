@@ -229,7 +229,7 @@ var (
 		gitSetup,
 		gitShow,
 
-		// Cron jobs
+		// Cron tasks
 		cronTasksListCommand,
 	}
 
