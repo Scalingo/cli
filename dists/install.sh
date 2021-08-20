@@ -28,13 +28,13 @@ main() {
   }
 
   usage() {
-    echo "Installs scalingo client."
+    echo "Installs Scalingo client."
     echo
     echo "Options:"
     echo "  -h, --help             displays help and exits"
-    echo "  -i, --install-dir DIR  scalingo client installation directory, creating it if"
+    echo "  -i, --install-dir DIR  Scalingo client installation directory, creating it if"
     echo "                         necessary (defaults to /usr/local/bin)"
-    echo "  -y, --yes              overwrites previously installed scalingo client"
+    echo "  -y, --yes              overwrites previously installed Scalingo client"
     echo
   }
 
@@ -143,7 +143,7 @@ main() {
     fi
   fi
 
-  status "Install scalingo client to $target_dir\n"
+  status "Install Scalingo client to $target_dir\n"
   if [ ! -w "$target_dir" ] ; then
     sudo=sudo
     info "sudo required...\n"
@@ -161,7 +161,7 @@ main() {
   $sudo mv $exe_path "$target" ; rc=$?
 
   if [ $rc -ne 0 ] ; then
-    error "Fail to install scalingo client (return $rc)\n"
+    error "Fail to install Scalingo client (return $rc)\n"
   else
     status "Installation completed, the command 'scalingo' is available.\n"
   fi
