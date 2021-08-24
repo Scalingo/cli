@@ -18,7 +18,7 @@ func List(app string) error {
 	}
 	deployments, err := c.DeploymentList(app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to list the application deployments")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
