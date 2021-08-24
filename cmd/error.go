@@ -10,15 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stvp/rollbar"
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-utils/errors"
+	"github.com/stvp/rollbar"
+	"gopkg.in/errgo.v1"
 )
 
 type Sysinfo struct {
