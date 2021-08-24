@@ -10,6 +10,7 @@
 * bump github.com/briandowns/spinner from 1.12.0 to 1.16.0
 * bump github.com/go-git/go-git/v5 from 5.4.1 to 5.4.2
 * feat(command): add command `cron-tasks` to list cron tasks of an application [#670](https://github.com/Scalingo/cli/pull/670)
+* fix(run) allow an equals sign (=) in environment variable values [#674](https://github.com/Scalingo/cli/pull/674)
 
 ### 1.20.2
 
