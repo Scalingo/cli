@@ -21,31 +21,26 @@ func List(app string) error {
 		return errgo.Mask(err)
 	}
 
-	if len(deployments) == 0 {
+	t := tablewriter.NewWriter(os.Stdout)
+	t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status"})
 
-	} else {
-		t := tablewriter.NewWriter(os.Stdout)
-		t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status"})
-
-		for _, deployment := range deployments {
-			var duration string
-			if deployment.Duration != 0 {
-				d, _ := time.ParseDuration(fmt.Sprintf("%ds", deployment.Duration))
-				duration = d.String()
-			} else {
-				duration = "n/a"
-			}
-			t.Append([]string{deployment.ID,
-				deployment.CreatedAt.Format(utils.TimeFormat),
-				duration,
-				deployment.User.Username,
-				deployment.GitRef,
-				string(deployment.Status),
-			})
+	for _, deployment := range deployments {
+		var duration string
+		if deployment.Duration != 0 {
+			d, _ := time.ParseDuration(fmt.Sprintf("%ds", deployment.Duration))
+			duration = d.String()
+		} else {
+			duration = "n/a"
 		}
-		t.Render()
-
+		t.Append([]string{deployment.ID,
+			deployment.CreatedAt.Format(utils.TimeFormat),
+			duration,
+			deployment.User.Username,
+			deployment.GitRef,
+			string(deployment.Status),
+		})
 	}
+	t.Render()
 
 	return nil
 }
