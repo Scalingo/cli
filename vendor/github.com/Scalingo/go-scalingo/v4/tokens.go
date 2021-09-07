@@ -34,10 +34,11 @@ func IsOTPRequired(err error) bool {
 }
 
 type Token struct {
-	ID        int       `json:"int"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	Token     string    `json:"token"`
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	CreatedAt  time.Time `json:"created_at"`
+	LastUsedAt time.Time `json:"last_used_at"`
+	Token      string    `json:"token"`
 }
 
 type LoginParams struct {

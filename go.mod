@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
-	github.com/Scalingo/go-scalingo/v4 v4.13.1
+	github.com/Scalingo/go-scalingo/v4 v4.14.0
 	github.com/Scalingo/go-utils/errors v1.0.0
 	github.com/Scalingo/go-utils/retry v1.0.0
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2

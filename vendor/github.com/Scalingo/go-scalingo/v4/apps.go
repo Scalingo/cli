@@ -108,7 +108,7 @@ type App struct {
 	LastDeployedAt *time.Time             `json:"last_deployed_at"`
 	LastDeployedBy string                 `json:"last_deployed_by"`
 	CreatedAt      *time.Time             `json:"created_at"`
-	UpdatedAt      *time.Time             `json:"update_at"`
+	UpdatedAt      *time.Time             `json:"updated_at"`
 	Links          *AppLinks              `json:"links"`
 	StackID        string                 `json:"stack_id"`
 	StickySession  bool                   `json:"sticky_session"`

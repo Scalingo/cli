@@ -2,6 +2,7 @@ package scalingo
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/Scalingo/go-scalingo/v4/http"
 
@@ -28,12 +29,14 @@ const (
 )
 
 type Addon struct {
-	ID            string         `json:"id"`
-	AppID         string         `json:"app_id"`
-	ResourceID    string         `json:"resource_id"`
-	Status        AddonStatus    `json:"status"`
-	Plan          *Plan          `json:"plan"`
-	AddonProvider *AddonProvider `json:"addon_provider"`
+	ID              string         `json:"id"`
+	AppID           string         `json:"app_id"`
+	ResourceID      string         `json:"resource_id"`
+	Status          AddonStatus    `json:"status"`
+	Plan            *Plan          `json:"plan"`
+	AddonProvider   *AddonProvider `json:"addon_provider"`
+	ProvisionedAt   time.Time      `json:"provisioned_at"`
+	DeprovisionedAt time.Time      `json:"deprovisioned_at"`
 }
 
 type AddonsRes struct {

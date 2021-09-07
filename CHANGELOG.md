@@ -2,15 +2,16 @@
 
 ### To be Released
 
+* fix(backup-download): Now download the last successful backup [#663](https://github.com/Scalingo/cli/pull/663)
+* fix(review-app-url): add app url in the tablewriter [#664](https://github.com/Scalingo/cli/pull/664)
+* fix(backups-download): print error on stderr if the backup status is not 'done' [#665](https://github.com/Scalingo/cli/pull/665)
+* feat(command): add command `cron-tasks` to list cron tasks of an application [#670](https://github.com/Scalingo/cli/pull/670)
+* fix(run): allow an equals sign (=) in environment variable values [#674](https://github.com/Scalingo/cli/pull/674)
 * bump github.com/fatih/color from 1.11.0 to 1.12.0: add support for `NO_COLOR` environment variable.
-* fix(backup-download) Now download the last successful backup [#663](https://github.com/Scalingo/cli/pull/663)
-* fix(review-app-url) add app url in the tablewriter [#664](https://github.com/Scalingo/cli/pull/664)
-* fix(backups-download) print error on stderr if the backup status is not 'done' [#665](https://github.com/Scalingo/cli/pull/665)
 * update go version to 1.16 and replace ioutil by io/os [#666](https://github.com/Scalingo/cli/pull/666)
 * bump github.com/briandowns/spinner from 1.12.0 to 1.16.0
 * bump github.com/go-git/go-git/v5 from 5.4.1 to 5.4.2
-* feat(command): add command `cron-tasks` to list cron tasks of an application [#670](https://github.com/Scalingo/cli/pull/670)
-* fix(run) allow an equals sign (=) in environment variable values [#674](https://github.com/Scalingo/cli/pull/674)
+* bump github.com/Scalingo/go-scalingo/v4 from 4.13.1 to 4.14.0
 
 ### 1.20.2
 
