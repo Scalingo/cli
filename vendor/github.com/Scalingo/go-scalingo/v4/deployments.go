@@ -13,6 +13,7 @@ import (
 
 type DeploymentsService interface {
 	DeploymentList(app string) ([]*Deployment, error)
+	DeploymentListWithPagination(app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error)
 	Deployment(app string, deploy string) (*Deployment, error)
 	DeploymentLogs(deployURL string) (*http.Response, error)
 	DeploymentStream(deployURL string) (*websocket.Conn, error)
@@ -113,6 +114,9 @@ func IsFinishedString(status DeploymentStatus) bool {
 
 type DeploymentList struct {
 	Deployments []*Deployment `json:"deployments"`
+	Meta        struct {
+		PaginationMeta PaginationMeta `json:"pagination"`
+	}
 }
 
 type DeploymentLinks struct {
@@ -135,10 +139,20 @@ func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
 	}
 	err := c.ScalingoAPI().DoRequest(req, &deployments)
 	if err != nil {
-		return []*Deployment{}, errgo.Mask(err, errgo.Any)
+		return []*Deployment{}, errgo.Notef(err, "fail to list the deployments")
 	}
 
 	return deployments.Deployments, nil
+}
+
+func (c *Client) DeploymentListWithPagination(app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error) {
+	var deployments DeploymentList
+	err := c.ScalingoAPI().SubresourceList("apps", app, "deployments", opts.ToMap(), &deployments)
+	if err != nil {
+		return []*Deployment{}, PaginationMeta{}, errgo.Notef(err, "fail to list the deployments with pagination")
+	}
+
+	return deployments.Deployments, deployments.Meta.PaginationMeta, nil
 }
 
 func (c *Client) Deployment(app string, deploy string) (*Deployment, error) {

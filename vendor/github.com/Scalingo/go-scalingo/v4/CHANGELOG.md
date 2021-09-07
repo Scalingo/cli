@@ -2,6 +2,14 @@
 
 ## To Be Released
 
+## 4.14.0
+
+* fix(apps): typo on the `UpdatedAt` field of the Apps [#220](https://github.com/Scalingo/go-scalingo/pull/220)
+* fix(token): correctly deserialize the `ID` [#222](https://github.com/Scalingo/go-scalingo/pull/222)
+* feat(token): add the `LastUsedAt` field [#222](https://github.com/Scalingo/go-scalingo/pull/222)
+* feat(deployments): add the `DeploymentListWithPagination` method [#221](https://github.com/Scalingo/go-scalingo/pull/221)
+* feat(addon): add the `ProvisionedAt` and `DeprovisionedAt` fields [#224](https://github.com/Scalingo/go-scalingo/pull/224)
+
 ## 4.13.1
 
 * build(deps): bump github.com/golang/mock from 1.5.0 to 1.6.0
