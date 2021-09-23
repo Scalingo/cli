@@ -111,6 +111,7 @@ var (
 		Usage:    "Trigger a deployment by archive",
 		Flags: []cli.Flag{appFlag,
 			cli.BoolFlag{Name: "war, w", Usage: "Specify that you want to deploy a WAR file"},
+			cli.BoolFlag{Name: "no-follow", Usage: "Return immediately after the deployment is triggered"},
 		},
 		Description: ` Trigger the deployment of a custom archive for your application
 
@@ -123,8 +124,11 @@ var (
 		$ scalingo -a myapp deploy archive.tar.gz v1.0.0
 		or
 		$ scalingo -a myapp deploy http://example.com/archive.tar.gz v1.0.0
+		or
+		$ scalingo --app my-app deploy --no-follow archive.tar.gz v1.0.0
+		$ scalingo --app my-app deployment-follow
 
-    # See also commands 'deployments'
+    # See also commands 'deployments, deployment-follow'
 `,
 		Action: func(c *cli.Context) {
 			args := c.Args()
@@ -138,15 +142,16 @@ var (
 				gitRef = args[1]
 			}
 			currentApp := appdetect.CurrentApp(c)
+			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
-				err := deployments.DeployWar(currentApp, archivePath, gitRef)
+				err := deployments.DeployWar(currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(err)
 				}
 			} else {
 				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
-				err := deployments.Deploy(currentApp, archivePath, gitRef)
+				err := deployments.Deploy(currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(err)
 				}

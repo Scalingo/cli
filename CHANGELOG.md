@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(deploy): add --no-follow flag to detach deployment logs [#679](https://github.com/Scalingo/cli/pull/679)
+
 ### 1.21.0
 
 * fix(backup-download): Now download the last successful backup [#663](https://github.com/Scalingo/cli/pull/663)
