@@ -24,7 +24,7 @@ type DeployWarRes struct {
 	Deployment *scalingo.Deployment `json:"deployment"`
 }
 
-func DeployWar(appName, warPath, gitRef string) error {
+func DeployWar(appName, warPath, gitRef string, opts DeployOpts) error {
 	var warReadStream io.ReadCloser
 
 	var warSize int64
@@ -92,7 +92,7 @@ func DeployWar(appName, warPath, gitRef string) error {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
 	}
 
-	return Deploy(appName, sources.DownloadURL, gitRef)
+	return Deploy(appName, sources.DownloadURL, gitRef, opts)
 }
 
 func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {

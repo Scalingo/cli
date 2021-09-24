@@ -19,7 +19,11 @@ type DeployRes struct {
 	Deployment *scalingo.Deployment `json:"deployment"`
 }
 
-func Deploy(app, archivePath, gitRef string) error {
+type DeployOpts struct {
+	NoFollow bool
+}
+
+func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
 	c, err := config.ScalingoClient()
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
@@ -52,8 +56,12 @@ func Deploy(app, archivePath, gitRef string) error {
 
 	scalingoio.Status("Your deployment has been queued and is going to start…")
 
-	go showQueuedWarnings(c, app, deployment.ID)
+	if opts.NoFollow {
+		scalingoio.Statusf("The no-follow flag is passed. You can check deployment logs with scalingo --app %s deployment-follow", app)
+		return nil
+	}
 
+	go showQueuedWarnings(c, app, deployment.ID)
 	debug.Println("Streaming deployment logs of", app, ":", deployment.ID)
 	err = Stream(&StreamOpts{
 		AppName:      app,
