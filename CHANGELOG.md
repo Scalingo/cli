@@ -3,6 +3,7 @@
 ### To be Released
 
 * feat(deploy): add --no-follow flag to detach deployment logs [#679](https://github.com/Scalingo/cli/pull/679)
+* build(deps): bump github.com/fatih/color from 1.12.0 to 1.13.0 [#680](https://github.com/Scalingo/cli/pull/680)
 
 ### 1.21.0
 
