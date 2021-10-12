@@ -1,5 +1,7 @@
 # Changelog
 
+* fix(events): fix display for events new_autoscaler and edit_autoscaler in timeline [#684](https://github.com/Scalingo/cli/pull/684)
+
 ### To be Released
 
 * feat(deploy): add --no-follow flag to detach deployment logs [#679](https://github.com/Scalingo/cli/pull/679)
