@@ -21,7 +21,7 @@ type APITokenGenerator struct {
 }
 
 type apiJWTClaims struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func NewAPITokenGenerator(tokensService TokensService, apiToken string) *APITokenGenerator {
@@ -46,7 +46,7 @@ func (t *APITokenGenerator) GetAccessToken() (string, error) {
 		}
 
 		if claims, ok := token.Claims.(*apiJWTClaims); ok {
-			t.currentJWTexp = time.Unix(claims.ExpiresAt, 0)
+			t.currentJWTexp = claims.ExpiresAt.Time
 		} else {
 			return "", errgo.Notef(err, "invalid exp date for jwt token: %v", token.Claims)
 		}

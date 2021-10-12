@@ -2,6 +2,17 @@
 
 ## To Be Released
 
+## 4.14.2
+
+fix(events): change type expected in json parsing from implicit int to explicit string [#230](https://github.com/Scalingo/go-scalingo/pull/230)
+
+## 4.14.1
+
+* build(deps): bump github.com/golang-jwt/jwt/v4 from 4.0.0 to 4.1.0 [#225](https://github.com/Scalingo/go-scalingo/pull/225)
+* chore: use jwt.RegistredClaims instead of jwt.StandardClaims [#227](https://github.com/Scalingo/go-scalingo/pull/227)
+* feat(events): implement event for the edition of an autoscaler. [#228](https://github.com/Scalingo/go-scalingo/pull/228)
+* feat(events): implement event for repeated crash [#229](https://github.com/Scalingo/go-scalingo/pull/229)
+
 ## 4.14.0
 
 * fix(apps): typo on the `UpdatedAt` field of the Apps [#220](https://github.com/Scalingo/go-scalingo/pull/220)
