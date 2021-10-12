@@ -9,8 +9,14 @@ github.com/ProtonMail/go-crypto v0.0.0-20210428141323-04723f9f07d7 h1:YoJbenK9C6
 github.com/ProtonMail/go-crypto v0.0.0-20210428141323-04723f9f07d7/go.mod h1:z4/9nQmJSSwwds7ejkxaJwO37dru3geImFUdJlaLzQo=
 github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5 h1:VauE2GcJNZFun2Och6tIT2zJZK1v6jxALQDA9BIji/E=
 github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5/go.mod h1:gxOHeajFfvGQh/fxlC8oOKBe23xnnJTif00IFFbiT+o=
-github.com/Scalingo/go-scalingo/v4 v4.14.0 h1:klWRZR3wlxAzsfcOOhe2Zc2R+QDWXzUgRne11odtlr8=
-github.com/Scalingo/go-scalingo/v4 v4.14.0/go.mod h1:Ko0alIlXes6cbY9Vj7W3hmhWLAnyrbPeeGFHBEZXmW4=
+github.com/Scalingo/go-scalingo/v4 v4.14.1 h1:2QM7/TOaixLvp3+BsW8kR307LbFwzequzcZoqM/lCyU=
+github.com/Scalingo/go-scalingo/v4 v4.14.1/go.mod h1:GHFZjiKGI3xC0igpx4CtRErBSUmMS0QI6sU080lEkKA=
+github.com/Scalingo/go-scalingo/v4 v4.14.2-0.20211012092626-2b5c0dae107c h1:Yd/udfiixnp7xkAGv131v0ZTxvoAew5TiLnmHN2wP7A=
+github.com/Scalingo/go-scalingo/v4 v4.14.2-0.20211012092626-2b5c0dae107c/go.mod h1:GHFZjiKGI3xC0igpx4CtRErBSUmMS0QI6sU080lEkKA=
+github.com/Scalingo/go-scalingo/v4 v4.14.2-0.20211012094544-a3748506ae9d h1:JTBMFE1C+EKk8zYJFcOs/V2X3vONWDPFxvo9M8iYCNc=
+github.com/Scalingo/go-scalingo/v4 v4.14.2-0.20211012094544-a3748506ae9d/go.mod h1:GHFZjiKGI3xC0igpx4CtRErBSUmMS0QI6sU080lEkKA=
+github.com/Scalingo/go-scalingo/v4 v4.14.2 h1:+2lzo3o0R3rEKO7J9arfWKN1YztkS90SshwLlUVzzb0=
+github.com/Scalingo/go-scalingo/v4 v4.14.2/go.mod h1:GHFZjiKGI3xC0igpx4CtRErBSUmMS0QI6sU080lEkKA=
 github.com/Scalingo/go-utils/errors v1.0.0 h1:9+1zBmT+d0kpAReChheUDX0AmT0/OtrDtHdwRymRufA=
 github.com/Scalingo/go-utils/errors v1.0.0/go.mod h1:X1v0A4DBs4exBWGjYsGLo6nsC49vqf2hEVtigTRv7iY=
 github.com/Scalingo/go-utils/retry v1.0.0 h1:aGT9Voe4rVEzn0bZ68x+nyBvk2sJWrzLP37+tTVdCuc=
@@ -59,8 +65,8 @@ github.com/go-git/go-git-fixtures/v4 v4.2.1 h1:n9gGL1Ct/yIw+nfsfr8s4+sbhT+Ncu2Su
 github.com/go-git/go-git-fixtures/v4 v4.2.1/go.mod h1:K8zd3kDUAykwTdDCr+I0per6Y6vMiRR/nnVTBtavnB0=
 github.com/go-git/go-git/v5 v5.4.2 h1:BXyZu9t0VkbiHtqrsvdq39UDhGJTl1h55VW6CSC4aY4=
 github.com/go-git/go-git/v5 v5.4.2/go.mod h1:gQ1kArt6d+n+BGd+/B/I74HwRTLhth2+zti4ihgckDc=
-github.com/golang-jwt/jwt/v4 v4.0.0 h1:RAqyYixv1p7uEnocuy8P1nru5wprCh/MH2BIlW5z5/o=
-github.com/golang-jwt/jwt/v4 v4.0.0/go.mod h1:/xlHOz8bRuivTWchD4jCa+NbatV+wEUSzwAxVc6locg=
+github.com/golang-jwt/jwt/v4 v4.1.0 h1:XUgk2Ex5veyVFVeLm0xhusUTQybEbexJXrvPNOKkSY0=
+github.com/golang-jwt/jwt/v4 v4.1.0/go.mod h1:/xlHOz8bRuivTWchD4jCa+NbatV+wEUSzwAxVc6locg=
 github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=
 github.com/golang/mock v1.6.0/go.mod h1:p6yTPP+5HYm5mzsMV8JkE6ZKdX+/wYM6Hr+LicevLPs=
 github.com/google/go-cmp v0.2.1-0.20190312032427-6f77996f0c42/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=

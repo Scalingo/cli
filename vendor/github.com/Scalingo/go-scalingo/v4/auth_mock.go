@@ -17,8 +17,8 @@ func MockAuth(ctrl *gomock.Controller) *httpmock.MockClient {
 	mock := httpmock.NewMockClient(ctrl)
 
 	mock.EXPECT().Do(gomock.Any()).DoAndReturn(func(_ *httpclient.APIRequest) (*http.Response, error) {
-		claims := &jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),
+		claims := &jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
 		}
 		jwtToken := jwt.NewWithClaims(jwt.SigningMethodNone, claims)
 		jwt, err := jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)

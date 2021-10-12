@@ -74,6 +74,7 @@ const (
 	EventScale                EventTypeName = "scale"
 	EventStopApp              EventTypeName = "stop_app"
 	EventCrash                EventTypeName = "crash"
+	EventRepeatedCrash        EventTypeName = "repeated_crash"
 	EventDeployment           EventTypeName = "deployment"
 	EventLinkSCM              EventTypeName = "link_scm"
 	EventUnlinkSCM            EventTypeName = "unlink_scm"
@@ -108,6 +109,7 @@ const (
 	EventAlert                EventTypeName = "alert"
 	EventDeleteAlert          EventTypeName = "delete_alert"
 	EventNewAutoscaler        EventTypeName = "new_autoscaler"
+	EventEditAutoscaler       EventTypeName = "edit_autoscaler"
 	EventDeleteAutoscaler     EventTypeName = "delete_autoscaler"
 	EventAddonUpdated         EventTypeName = "addon_updated"
 	EventStartRegionMigration EventTypeName = "start_region_migration"
@@ -298,6 +300,27 @@ type EventCrashTypeData struct {
 	LogsUrl       string `json:"logs_url"`
 }
 
+type EventRepeatedCrashType struct {
+	Event
+	TypeData EventRepeatedCrashTypeData `json:"type_data"`
+}
+
+func (ev *EventRepeatedCrashType) String() string {
+	msg := fmt.Sprintf("container '%v' has crashed repeatedly", ev.TypeData.ContainerType)
+
+	if ev.TypeData.CrashLogs != "" {
+		msg += fmt.Sprintf(" (logs on %s)", ev.TypeData.LogsUrl)
+	}
+
+	return msg
+}
+
+type EventRepeatedCrashTypeData struct {
+	ContainerType string `json:"container_type"`
+	CrashLogs     string `json:"crash_logs"`
+	LogsUrl       string `json:"logs_url"`
+}
+
 type EventDeploymentType struct {
 	Event
 	TypeData EventDeploymentTypeData `json:"type_data"`
@@ -309,7 +332,7 @@ func (ev *EventDeploymentType) String() string {
 
 type EventDeploymentTypeData struct {
 	DeploymentID   string `json:"deployment_id"`
-	Pusher          string `json:"pusher"`
+	Pusher         string `json:"pusher"`
 	GitRef         string `json:"git_ref"`
 	Status         string `json:"status"`
 	Duration       int    `json:"duration"`
@@ -812,8 +835,8 @@ func (ev *EventDeleteAlertType) String() string {
 
 type EventNewAutoscalerTypeData struct {
 	ContainerType string  `json:"container_type"`
-	MinContainers int     `json:"min_containers"`
-	MaxContainers int     `json:"max_containers"`
+	MinContainers int     `json:"min_containers,string"`
+	MaxContainers int     `json:"max_containers,string"`
 	Metric        string  `json:"metric"`
 	Target        float64 `json:"target"`
 	TargetText    string  `json:"target_text"`
@@ -827,6 +850,25 @@ type EventNewAutoscalerType struct {
 func (ev *EventNewAutoscalerType) String() string {
 	d := ev.TypeData
 	return fmt.Sprintf("Autoscaler created about %s on container %s (target: %s)", d.Metric, d.ContainerType, d.TargetText)
+}
+
+type EventEditAutoscalerTypeData struct {
+	ContainerType string  `json:"container_type"`
+	MinContainers int     `json:"min_containers,string"`
+	MaxContainers int     `json:"max_containers,string"`
+	Metric        string  `json:"metric"`
+	Target        float64 `json:"target"`
+	TargetText    string  `json:"target_text"`
+}
+
+type EventEditAutoscalerType struct {
+	Event
+	TypeData EventEditAutoscalerTypeData `json:"type_data"`
+}
+
+func (ev *EventEditAutoscalerType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Autoscaler edited about %s on container %s (target: %s)", d.Metric, d.ContainerType, d.TargetText)
 }
 
 type EventDeleteAutoscalerTypeData struct {
@@ -1112,6 +1154,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDeleteAlertType{Event: ev}
 	case EventNewAutoscaler:
 		e = &EventNewAutoscalerType{Event: ev}
+	case EventEditAutoscaler:
+		e = &EventEditAutoscalerType{Event: ev}
 	case EventDeleteAutoscaler:
 		e = &EventDeleteAutoscalerType{Event: ev}
 	case EventAddonUpdated:

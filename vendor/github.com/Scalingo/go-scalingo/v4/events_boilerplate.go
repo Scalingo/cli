@@ -24,6 +24,9 @@ func (e *EventScaleType) TypeDataPtr() interface{} {
 func (e *EventCrashType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+func (e *EventRepeatedCrashType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
 func (e *EventDeploymentType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -127,6 +130,9 @@ func (e *EventDeleteAlertType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 func (e *EventNewAutoscalerType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+func (e *EventEditAutoscalerType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 func (e *EventDeleteAutoscalerType) TypeDataPtr() interface{} {
