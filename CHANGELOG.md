@@ -7,6 +7,7 @@
 * feat(deploy): add --no-follow flag to detach deployment logs [#679](https://github.com/Scalingo/cli/pull/679)
 * build(deps): bump github.com/fatih/color from 1.12.0 to 1.13.0 [#680](https://github.com/Scalingo/cli/pull/680)
 * fix(events): fix display for events new_autoscaler, edit_autoscaler and repeated_crash in timeline [#684](https://github.com/Scalingo/cli/pull/684)
+* feat(cron-task): Add fields to cron tasks list [#685](https://github.com/Scalingo/cli/pull/685)
 
 ### 1.21.0
 
