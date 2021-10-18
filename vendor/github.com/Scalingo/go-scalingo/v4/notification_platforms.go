@@ -3,11 +3,10 @@ package scalingo
 import (
 	"encoding/json"
 
-	"github.com/Scalingo/go-scalingo/v4/http"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
-
-	errgo "gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type NotificationPlatformsService interface {

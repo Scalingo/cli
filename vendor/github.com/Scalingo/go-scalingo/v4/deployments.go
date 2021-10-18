@@ -6,9 +6,10 @@ import (
 	"net/url"
 	"time"
 
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
+
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type DeploymentsService interface {

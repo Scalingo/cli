@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"time"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	errgo "gopkg.in/errgo.v1"
 )
 
 type NotifiersService interface {

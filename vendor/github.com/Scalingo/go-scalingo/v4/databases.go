@@ -3,7 +3,7 @@ package scalingo
 import (
 	"time"
 
-	errgo "gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 )
 
 type DatabaseStatus string

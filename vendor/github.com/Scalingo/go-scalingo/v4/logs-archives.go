@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"github.com/Scalingo/go-scalingo/v4/http"
+	"gopkg.in/errgo.v1"
 
-	errgo "gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type LogsArchivesService interface {

@@ -1,7 +1,7 @@
 package http
 
 import (
-	errgo "gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 )
 
 type AddonTokenGenerator struct {

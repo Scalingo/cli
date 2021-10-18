@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"time"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/go-scalingo/v4/http"
-	errgo "gopkg.in/errgo.v1"
 )
 
 type TokensService interface {

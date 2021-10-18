@@ -7,6 +7,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-utils/errors"
 )
@@ -32,7 +33,9 @@ func List(app string) error {
 	t.SetHeader([]string{"Command", "Size", "Last execution", "Next execution"})
 
 	for _, job := range cronTasks.Jobs {
-		t.Append([]string{job.Command, job.Size, job.LastExecutionDate.Format("2006-01-02 15:04:05"), job.NextExecutionDate.Format("2006-01-02 15:04:05")})
+		t.Append([]string{job.Command, job.Size,
+			job.LastExecutionDate.Format(utils.TimeFormat),
+			job.NextExecutionDate.Format(utils.TimeFormat)})
 	}
 	t.Render()
 

@@ -1,8 +1,9 @@
 package scalingo
 
 import (
-	"github.com/Scalingo/go-scalingo/v4/http"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type AddonProvidersService interface {
@@ -19,7 +20,7 @@ type Plan struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
-	SKU	    string  `json:"sku"`
+	SKU         string  `json:"sku"`
 }
 
 type PlansParams struct {

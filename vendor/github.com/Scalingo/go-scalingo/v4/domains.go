@@ -32,9 +32,9 @@ const (
 type SslStatus string
 
 const (
-	SslStatusPendingDNS  SslStatus = "pending"
-	SslStatusNew         SslStatus = "error"
-	SslStatusCreated     SslStatus = "success"
+	SslStatusPendingDNS SslStatus = "pending"
+	SslStatusNew        SslStatus = "error"
+	SslStatusCreated    SslStatus = "success"
 )
 
 type ACMEErrorVariables struct {

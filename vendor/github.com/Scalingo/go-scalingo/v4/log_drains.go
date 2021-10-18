@@ -3,8 +3,9 @@ package scalingo
 import (
 	"net/http"
 
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"gopkg.in/errgo.v1"
+
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type LogDrainsService interface {

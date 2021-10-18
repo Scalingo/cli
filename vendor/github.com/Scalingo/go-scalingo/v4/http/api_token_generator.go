@@ -3,8 +3,8 @@ package http
 import (
 	"time"
 
-	jwt "github.com/golang-jwt/jwt/v4"
-	errgo "gopkg.in/errgo.v1"
+	"github.com/golang-jwt/jwt/v4"
+	"gopkg.in/errgo.v1"
 )
 
 type TokensService interface {

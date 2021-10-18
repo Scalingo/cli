@@ -11,9 +11,10 @@ import (
 	"reflect"
 	"time"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	pkgio "github.com/Scalingo/go-scalingo/v4/io"
-	"gopkg.in/errgo.v1"
 )
 
 type APIRequest struct {

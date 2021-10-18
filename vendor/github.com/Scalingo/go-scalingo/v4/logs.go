@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"net/url"
 
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"gopkg.in/errgo.v1"
+
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type LogsService interface {
