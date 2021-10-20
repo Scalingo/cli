@@ -33,9 +33,12 @@ func List(app string) error {
 	t.SetHeader([]string{"Command", "Size", "Last execution", "Next execution"})
 
 	for _, job := range cronTasks.Jobs {
-		t.Append([]string{job.Command, job.Size,
-			job.LastExecutionDate.Format(utils.TimeFormat),
-			job.NextExecutionDate.Format(utils.TimeFormat)})
+		lastExecution := job.LastExecutionDate.Format(utils.TimeFormat)
+		if job.LastExecutionDate.IsZero() {
+			lastExecution = "No previous executions"
+		}
+
+		t.Append([]string{job.Command, job.Size, lastExecution, job.NextExecutionDate.Format(utils.TimeFormat)})
 	}
 	t.Render()
 
