@@ -1,8 +1,9 @@
 package scalingo
 
 import (
-	"github.com/Scalingo/go-scalingo/v4/http"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type EventCategory struct {

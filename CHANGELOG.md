@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+* feat(cron-task): Add fields to cron tasks list [#685](https://github.com/Scalingo/cli/pull/685)
 
 ### 1.21.1
 

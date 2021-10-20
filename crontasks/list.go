@@ -3,11 +3,13 @@ package crontasks
 import (
 	"os"
 
-	"github.com/Scalingo/cli/config"
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
-	"github.com/Scalingo/go-utils/errors"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
+	"github.com/Scalingo/go-utils/errors"
 )
 
 func List(app string) error {
@@ -28,10 +30,15 @@ func List(app string) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetColWidth(60)
-	t.SetHeader([]string{"Command", "Size"})
+	t.SetHeader([]string{"Command", "Size", "Last execution", "Next execution"})
 
 	for _, job := range cronTasks.Jobs {
-		t.Append([]string{job.Command, job.Size})
+		lastExecution := job.LastExecutionDate.Format(utils.TimeFormat)
+		if job.LastExecutionDate.IsZero() {
+			lastExecution = "No previous executions"
+		}
+
+		t.Append([]string{job.Command, job.Size, lastExecution, job.NextExecutionDate.Format(utils.TimeFormat)})
 	}
 	t.Render()
 
