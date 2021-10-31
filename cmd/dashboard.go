@@ -12,10 +12,9 @@ var (
 	dashboardCommand = cli.Command{
 		Name:     "dashboard",
 		Category: "App Management",
-		Flags:    []cli.Flag{appFlag, 
-			cli.StringFlag{Name: "region", Value: "", Usage: "Specify the region which contains the app"},},
-		Usage:    "Open dashboard on default web browser",
-		Description: `Open dashboard on default web browser:
+		Flags:    []cli.Flag{appFlag},
+		Usage:    "Open app dashboard on default web browser",
+		Description: `Open app dashboard on default web browser:
 
 	$ scalingo --region osc-fr1 --app my-app dashboard`,
 		Action: func(c *cli.Context) {
@@ -23,13 +22,13 @@ var (
 				cli.ShowCommandHelp(c, "dashboard")
 				return
 			}
-			if c.String("region") == "" {
+
+			if c.GlobalString("region") == "" {
 				cli.ShowCommandHelp(c, "dashboard")
-				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			err := apps.Dashboard(currentApp, c.String("region"))
+			err := apps.Dashboard(currentApp, c.GlobalString("region"))
 			if err != nil {
 				errorQuit(err)
 			}
