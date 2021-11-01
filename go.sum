@@ -13,8 +13,8 @@ github.com/Scalingo/go-scalingo/v4 v4.14.3 h1:RrEYCWTvD2R7JVFV21FZuJB+t0DZDJwyj6
 github.com/Scalingo/go-scalingo/v4 v4.14.3/go.mod h1:GHFZjiKGI3xC0igpx4CtRErBSUmMS0QI6sU080lEkKA=
 github.com/Scalingo/go-utils/errors v1.0.0 h1:9+1zBmT+d0kpAReChheUDX0AmT0/OtrDtHdwRymRufA=
 github.com/Scalingo/go-utils/errors v1.0.0/go.mod h1:X1v0A4DBs4exBWGjYsGLo6nsC49vqf2hEVtigTRv7iY=
-github.com/Scalingo/go-utils/retry v1.0.0 h1:aGT9Voe4rVEzn0bZ68x+nyBvk2sJWrzLP37+tTVdCuc=
-github.com/Scalingo/go-utils/retry v1.0.0/go.mod h1:Al8G5MSILdOURowTkhPiwTTYhpjXMuBgWJrenjLV1Ac=
+github.com/Scalingo/go-utils/retry v1.1.0 h1:dKi7qAOCWpq5W4dNr+xr50EiEthe+hfCwDDk2y9vXng=
+github.com/Scalingo/go-utils/retry v1.1.0/go.mod h1:fz63mPhkPlpQ+ieqgCe0kd1hQKe+ToQ8gUtRQ5o01ZE=
 github.com/acomagu/bufpipe v1.0.3 h1:fxAGrHZTgQ9w5QqVItgzwj235/uYZYgbXitB+dLupOk=
 github.com/acomagu/bufpipe v1.0.3/go.mod h1:mxdxdup/WdsKVreO5GpW4+M/1CE2sMG4jeGJ2sYmHc4=
 github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2 h1:axBiC50cNZOs7ygH5BgQp4N+aYrZ2DNpWZ1KG3VOSOM=
@@ -139,7 +139,6 @@ github.com/stretchr/testify v1.2.1/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
-github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stvp/rollbar v0.5.1 h1:qvyWbd0RNL5V27MBumqCXlcU7ohmHeEtKX+Czc8oeuw=
@@ -213,5 +212,6 @@ gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.2.4/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.3.0 h1:clyUAQHOM3G0M3f5vQj7LuJrETvjVot3Z5el9nffUtU=
 gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
-gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 h1:tQIYjPdBoyREyB9XMu+nnTclpTYkz2zFM+lzLJFO4gQ=
+gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
