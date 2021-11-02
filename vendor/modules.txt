@@ -32,7 +32,7 @@ github.com/Scalingo/go-scalingo/v4/io
 # github.com/Scalingo/go-utils/errors v1.0.0
 ## explicit
 github.com/Scalingo/go-utils/errors
-# github.com/Scalingo/go-utils/retry v1.0.0
+# github.com/Scalingo/go-utils/retry v1.1.0
 ## explicit
 github.com/Scalingo/go-utils/retry
 # github.com/acomagu/bufpipe v1.0.3
@@ -228,5 +228,5 @@ gopkg.in/AlecAivazis/survey.v1/terminal
 gopkg.in/errgo.v1
 # gopkg.in/warnings.v0 v0.1.2
 gopkg.in/warnings.v0
-# gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+# gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 gopkg.in/yaml.v3
