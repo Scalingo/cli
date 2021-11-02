@@ -120,12 +120,12 @@ var (
 	AddonsInfoCommand = cli.Command{
 		Name:     "addons-info",
 		Category: "Addons",
-		Usage:    "Display infos about add-ons attached to your app",
+		Usage:    "Display information about an add-on attached to your app",
 		Flags:    []cli.Flag{appFlag, addonFlag},
-		Description: ` Display infos about add-ons attached to your app:
+		Description: ` Display information about an add-on attached to your app:
     $ scalingo --app my-app addons-info --addon <addon-id>
 
-		# See also 'addons' and 'addons-add'
+		# See also 'addons' and 'addons-upgrade'
 `,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
