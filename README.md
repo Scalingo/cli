@@ -69,6 +69,7 @@ COMMANDS:
      addons-add        Provision an add-on for your application
      addons-remove     Remove an existing addon from your app
      addons-upgrade    Upgrade or downgrade an add-on attached to your app
+     addons-info       Display infos about add-ons attached to your app
      backups-config    Configure the periodic backups of a database
      backups           List backups for an addon
      backups-create    Ask for a new backup

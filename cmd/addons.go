@@ -120,9 +120,9 @@ var (
 	AddonsInfoCommand = cli.Command{
 		Name:     "addons-info",
 		Category: "Addons",
-		Usage:    "Display infos about add-ons",
-		Flags:    []cli.Flag{appFlag},
-		Description: ` Display infos about add-ons:
+		Usage:    "Display infos about add-ons attached to your app",
+		Flags:    []cli.Flag{appFlag, addonFlag},
+		Description: ` Display infos about add-ons attached to your app:
     $ scalingo --app my-app addons-info --addon <addon-id>
 
 		# See also 'addons' and 'addons-add'
