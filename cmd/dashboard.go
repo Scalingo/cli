@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/config"
 )
 
 var (
@@ -16,19 +17,16 @@ var (
 		Usage:    "Open app dashboard on default web browser",
 		Description: `Open app dashboard on default web browser:
 
-	$ scalingo --region osc-fr1 --app my-app dashboard`,
+	$ scalingo --app my-app dashboard`,
 		Action: func(c *cli.Context) {
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "dashboard")
 				return
 			}
 
-			if c.GlobalString("region") == "" {
-				cli.ShowCommandHelp(c, "dashboard")
-			}
-
 			currentApp := appdetect.CurrentApp(c)
-			err := apps.Dashboard(currentApp, c.GlobalString("region"))
+			currentRegion := config.C.ScalingoRegion
+			err := apps.Dashboard(currentApp, currentRegion)
 			if err != nil {
 				errorQuit(err)
 			}

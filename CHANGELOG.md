@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+* feat(dashboard): add command to open dashboard of specified app on default browser
 
 ### 1.21.2
 
