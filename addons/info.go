@@ -17,22 +17,25 @@ func Info(app, addon string) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
+
 	addonInfo, err := c.AddonShow(app, addon)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to get addon information")
 	}
 
-	dbInfo, err := db.Show(app,addon)
+	dbInfo, err := db.Show(app, addon)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to get database information")
 	}
 
 	forceSsl, internetAccess := "disabled", "disabled"
-	if featuresLen := len(dbInfo.Features); featuresLen > 0 {
-		if featuresLen == 2 {
-			internetAccess = strings.ToLower(dbInfo.Features[1]["status"])
+	for i := range dbInfo.Features {
+		if dbInfo.Features[i]["name"] == "force-ssl" {
+			forceSsl = strings.ToLower(dbInfo.Features[i]["status"])
+		} else if dbInfo.Features[i]["name"] == "publicly-available" {
+			internetAccess = strings.ToLower(dbInfo.Features[i]["status"])
+			break
 		}
-		forceSsl = strings.ToLower(dbInfo.Features[0]["status"])
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
@@ -46,5 +49,4 @@ func Info(app, addon string) error {
 	t.Render()
 
 	return nil
-
 }
