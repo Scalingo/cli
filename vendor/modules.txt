@@ -29,7 +29,7 @@ github.com/Scalingo/go-scalingo/v4/debug
 github.com/Scalingo/go-scalingo/v4/http
 github.com/Scalingo/go-scalingo/v4/http/httpmock
 github.com/Scalingo/go-scalingo/v4/io
-# github.com/Scalingo/go-utils/errors v1.0.0
+# github.com/Scalingo/go-utils/errors v1.1.0
 ## explicit
 github.com/Scalingo/go-utils/errors
 # github.com/Scalingo/go-utils/retry v1.1.0
