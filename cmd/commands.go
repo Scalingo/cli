@@ -156,6 +156,7 @@ var (
 		AddonsAddCommand,
 		AddonsRemoveCommand,
 		AddonsUpgradeCommand,
+		AddonsInfoCommand,
 
 		// Integration Link
 		integrationLinkShowCommand,
