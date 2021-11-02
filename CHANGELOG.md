@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+
 * feat(dashboard): add command `dashboard` to open dashboard of specified app on default browser [#606](https://github.com/Scalingo/cli/pull/686)
 
 ### 1.21.2
