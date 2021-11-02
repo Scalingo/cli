@@ -98,6 +98,7 @@ var (
 		DestroyCommand,
 		renameCommand,
 		appsInfoCommand,
+		openCommand,
 
 		// Apps Actions
 		logsCommand,

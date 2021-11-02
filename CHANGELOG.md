@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+
 * feat(open): add command `open` to open app on default browser [#690](https://github.com/Scalingo/cli/pull/691)
 
 ### 1.21.2
