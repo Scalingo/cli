@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+
 * feat(addons-info): add command `addons-info` to display information of an add-on [#578](https://github.com/Scalingo/cli/pull/689)
 
 ### 1.21.2
