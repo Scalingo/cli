@@ -133,11 +133,11 @@ COMMANDS:
      cron-tasks  List the cron tasks of an application
 
    Databases:
-     redis-console     Run an interactive console with your Redis addon
-     mongo-console     Run an interactive console with your MongoDB addon
-     mysql-console     Run an interactive console with your MySQL addon
-     pgsql-console     Run an interactive console with your PostgreSQL addon
-     influxdb-console  Run an interactive console with your InfluxDB addon
+     redis-console                                       Run an interactive console with your Redis addon
+     mongo-console                                       Run an interactive console with your MongoDB addon
+     mysql-console                                       Run an interactive console with your MySQL addon
+     pgsql-console, psql-console, postgresql-console     Run an interactive console with your PostgreSQL addon
+     influxdb-console                                    Run an interactive console with your InfluxDB addon
 
    Deployment:
      deployments              List app deployments
