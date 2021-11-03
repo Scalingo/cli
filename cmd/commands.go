@@ -99,6 +99,7 @@ var (
 		renameCommand,
 		appsInfoCommand,
 		openCommand,
+		dashboardCommand,
 
 		// Apps Actions
 		logsCommand,

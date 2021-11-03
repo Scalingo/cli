@@ -104,7 +104,8 @@ COMMANDS:
      unset-canonical-domain  Unset a canonical domain.
      db-tunnel               Create an encrypted connection to access your database
      open                    Open app on default web browser
-     
+     dashboard               Open app dashboard on default web browser
+
    Autoscalers:
      autoscalers          List the autoscalers of an application
      autoscalers-add      Add an autoscaler to an application
