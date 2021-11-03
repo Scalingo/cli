@@ -101,6 +101,7 @@ COMMANDS:
      restart                 Restart processes of your app
      force-https
      sticky-session
+     router-logs
      set-canonical-domain    Set a canonical domain.
      unset-canonical-domain  Unset a canonical domain.
      db-tunnel               Create an encrypted connection to access your database
