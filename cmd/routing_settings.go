@@ -12,7 +12,7 @@ var (
 	forceHTTPSCommand = cli.Command{
 		Name:     "force-https",
 		Category: "App Management",
-		Usage:    "",
+		Usage:    "Enable/Disable automatic redirection of traffic to HTTPS for your application",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.BoolFlag{Name: "enable, e", Usage: "Enable force HTTPS (default)"},
@@ -48,7 +48,7 @@ var (
 	stickySessionCommand = cli.Command{
 		Name:     "sticky-session",
 		Category: "App Management",
-		Usage:    "",
+		Usage:    "Enable/Disable sticky sessions for your application",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.BoolFlag{Name: "enable, e", Usage: "Enable sticky session (default)"},
