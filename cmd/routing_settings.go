@@ -84,13 +84,13 @@ var (
 	routerLogsCommand = cli.Command{
 		Name:     "router-logs",
 		Category: "App Management",
-		Usage:    "Enable router logs for your application",
+		Usage:    "Enable/disable router logs for your application",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.BoolFlag{Name: "enable, e", Usage: "Enable router logs"},
 			cli.BoolFlag{Name: "disable, d", Usage: "Disable router logs (default)"},
 		},
-		Description: `Enable router logs for your application.
+		Description: `Enable/disable router logs for your application.
 
    Example
      scalingo --app my-app router-logs --enable
@@ -102,9 +102,9 @@ var (
 				return
 			}
 
-			enable := true
-			if c.IsSet("disable") {
-				enable = false
+			enable := false
+			if c.IsSet("enable") {
+				enable = true
 			}
 
 			err := apps.RouterLogs(currentApp, enable)
