@@ -68,6 +68,6 @@ func RouterLogs(appName string, enable bool) error {
 		action = "disable"
 	}
 
-	io.Statusf("Router logs has been %sd on %s\n", action, appName)
+	io.Statusf("Router logs have been %sd on %s\n", action, appName)
 	return nil
 }
