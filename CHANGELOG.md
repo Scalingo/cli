@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* feat(open): add command `open` to open app on default browser [#691](https://github.com/Scalingo/cli/pull/691)
 * feat(addons-info): add command `addons-info` to display information of an add-on [#689](https://github.com/Scalingo/cli/pull/689)
 * feat(dashboard): add command `dashboard` to open dashboard of specified app on default browser [#686](https://github.com/Scalingo/cli/pull/686)
 * build(deps): bump github.com/Scalingo/go-utils/errors from 1.0.0 to 1.1.0 [#687](https://github.com/Scalingo/cli/pull/687)
