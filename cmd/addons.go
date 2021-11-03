@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/urfave/cli"
 )
 
 var (
@@ -114,6 +115,34 @@ var (
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "addons-upgrade")
 			autocomplete.AddonsUpgradeAutoComplete(c)
+		},
+	}
+	AddonsInfoCommand = cli.Command{
+		Name:     "addons-info",
+		Category: "Addons",
+		Usage:    "Display information about an add-on attached to your app",
+		Flags:    []cli.Flag{appFlag, addonFlag},
+		Description: ` Display information about an add-on attached to your app:
+    $ scalingo --app my-app addons-info --addon <addon-id>
+
+		# See also 'addons' and 'addons-upgrade'
+`,
+		Action: func(c *cli.Context) {
+			if len(c.Args()) != 0 {
+				cli.ShowCommandHelp(c, "addons-info")
+				return
+			}
+
+			currentApp := appdetect.CurrentApp(c)
+			currentAddon := addonName(c)
+
+			err := addons.Info(currentApp, currentAddon)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons-info")
 		},
 	}
 )
