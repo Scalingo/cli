@@ -98,6 +98,7 @@ var (
 		DestroyCommand,
 		renameCommand,
 		appsInfoCommand,
+		dashboardCommand,
 
 		// Apps Actions
 		logsCommand,
