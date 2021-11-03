@@ -3,6 +3,8 @@
 ### To be Released
 
 * feat(open): add command `open` to open app on default browser [#691](https://github.com/Scalingo/cli/pull/691)
+* build(deps): bump github.com/Scalingo/go-utils/errors from 1.0.0 to 1.1.0 [#687](https://github.com/Scalingo/cli/pull/687)
+* build(deps): bump github.com/Scalingo/go-utils/retry from 1.0.0 to 1.1.0 [#688](https://github.com/Scalingo/cli/pull/688)
 
 ### 1.21.2
 
