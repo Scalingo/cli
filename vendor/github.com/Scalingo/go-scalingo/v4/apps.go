@@ -315,12 +315,6 @@ func (c *Client) AppsForceHTTPS(name string, enable bool) (*App, error) {
 	})
 }
 
-func (c *Client) AppsRouterLogs(name string, enable bool) (*App, error) {
-	return c.appsUpdate(name, map[string]interface{}{
-		"router_logs": enable,
-	})
-}
-
 func (c *Client) AppsStickySession(name string, enable bool) (*App, error) {
 	return c.appsUpdate(name, map[string]interface{}{
 		"sticky_session": enable,
