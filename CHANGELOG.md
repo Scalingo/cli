@@ -3,6 +3,8 @@
 ### To be Released
 
 * feat(addons-info): add command `addons-info` to display information of an add-on [#578](https://github.com/Scalingo/cli/pull/689)
+* build(deps): bump github.com/Scalingo/go-utils/errors from 1.0.0 to 1.1.0 [#687](https://github.com/Scalingo/cli/pull/687)
+* build(deps): bump github.com/Scalingo/go-utils/retry from 1.0.0 to 1.1.0 [#688](https://github.com/Scalingo/cli/pull/688)
 
 ### 1.21.2
 

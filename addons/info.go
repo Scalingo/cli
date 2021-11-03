@@ -34,7 +34,6 @@ func Info(app, addon string) error {
 			forceSsl = strings.ToLower(dbInfo.Features[i]["status"])
 		} else if dbInfo.Features[i]["name"] == "publicly-available" {
 			internetAccess = strings.ToLower(dbInfo.Features[i]["status"])
-			break
 		}
 	}
 
