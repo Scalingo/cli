@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* feat(router-logs): add command `router-logs` to enable/disable router-logs on your application [#692](https://github.com/Scalingo/cli/pull/692)
+* feat(router-logs): add command `router-logs` to enable/disable router logs on your application [#692](https://github.com/Scalingo/cli/pull/692)
 * feat(open): add command `open` to open app on default browser [#691](https://github.com/Scalingo/cli/pull/691)
 * feat(addons-info): add command `addons-info` to display information of an add-on [#689](https://github.com/Scalingo/cli/pull/689)
 * feat(dashboard): add command `dashboard` to open dashboard of specified app on default browser [#686](https://github.com/Scalingo/cli/pull/686)
