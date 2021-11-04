@@ -115,6 +115,7 @@ var (
 		// Routing Settings
 		forceHTTPSCommand,
 		stickySessionCommand,
+		routerLogsCommand,
 		setCanonicalDomainCommand,
 		unsetCanonicalDomainCommand,
 
