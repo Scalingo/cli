@@ -19,6 +19,8 @@ import (
 	"runtime"
 	"strings"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/httpclient"
@@ -27,7 +29,6 @@ import (
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	"gopkg.in/errgo.v1"
 )
 
 type RunOpts struct {

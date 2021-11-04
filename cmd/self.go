@@ -9,7 +9,7 @@ import (
 var (
 	selfCommand = cli.Command{
 		Name:        "self",
-		Aliases: 	 []string{"whoami"},
+		Aliases:     []string{"whoami"},
 		Category:    "Global",
 		Usage:       "Get the logged in profile",
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",

@@ -1,9 +1,10 @@
 package db
 
 import (
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
-	errgo "gopkg.in/errgo.v1"
 )
 
 type LogsOpts struct {

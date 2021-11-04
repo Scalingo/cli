@@ -1,9 +1,10 @@
 package db
 
 import (
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
-	errgo "gopkg.in/errgo.v1"
 )
 
 func Show(app, addon string) (scalingo.Database, error) {

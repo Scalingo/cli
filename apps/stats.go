@@ -5,11 +5,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 const (

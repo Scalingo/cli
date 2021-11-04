@@ -3,8 +3,9 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/urfave/cli"
+
+	"github.com/Scalingo/go-scalingo/v4/debug"
 )
 
 func FlagAppAutoComplete(c *cli.Context) bool {

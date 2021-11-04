@@ -14,13 +14,14 @@ import (
 
 	stdio "io"
 
+	"github.com/fatih/color"
+	"golang.org/x/net/websocket"
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	"github.com/fatih/color"
-	"golang.org/x/net/websocket"
-	errgo "gopkg.in/errgo.v1"
 )
 
 const (

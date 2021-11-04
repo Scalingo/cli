@@ -3,9 +3,10 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func CollaboratorsRemoveAutoComplete(c *cli.Context) error {

@@ -6,9 +6,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func DbTunnelAutoComplete(c *cli.Context) error {

@@ -3,10 +3,11 @@ package apps
 import (
 	"os"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/utils"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 )
 
 func Ps(app string) error {

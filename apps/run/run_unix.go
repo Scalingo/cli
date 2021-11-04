@@ -12,11 +12,12 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/heroku/hk/term"
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	"github.com/heroku/hk/term"
-	"gopkg.in/errgo.v1"
 )
 
 type UpdateTtyParams struct {

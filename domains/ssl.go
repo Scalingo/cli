@@ -3,9 +3,10 @@ package domains
 import (
 	"os"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 func DisableSSL(app string, domain string) error {

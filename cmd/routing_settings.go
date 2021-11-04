@@ -116,5 +116,4 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "router-logs")
 		},
 	}
-
 )

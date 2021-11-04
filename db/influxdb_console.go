@@ -4,9 +4,10 @@ import (
 	"net"
 	"strings"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/config"
-	"gopkg.in/errgo.v1"
 )
 
 type InfluxDBConsoleOpts struct {

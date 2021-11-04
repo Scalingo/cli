@@ -25,7 +25,7 @@ var (
 
 			currentApp := appdetect.CurrentApp(c)
 			currentRegion := config.C.ScalingoRegion
-			
+
 			err := apps.Open(currentApp, currentRegion)
 			if err != nil {
 				errorQuit(err)

@@ -4,9 +4,10 @@ import (
 	stdio "io"
 	"os"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 func Logs(app, deploymentID string) error {

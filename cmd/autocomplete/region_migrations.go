@@ -3,9 +3,10 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func RegionMigrationsAutoComplete(c *cli.Context) error {

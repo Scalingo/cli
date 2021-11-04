@@ -3,8 +3,9 @@ package autoscalers
 import (
 	"errors"
 
-	"github.com/Scalingo/go-scalingo/v4"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 var (
