@@ -134,19 +134,18 @@ COMMANDS:
      cron-tasks  List the cron tasks of an application
 
    Databases:
-     redis-console     Run an interactive console with your Redis addon
-     mongo-console     Run an interactive console with your MongoDB addon
-     mysql-console     Run an interactive console with your MySQL addon
-     pgsql-console     Run an interactive console with your PostgreSQL addon
-     influxdb-console  Run an interactive console with your InfluxDB addon
+     redis-console                                       Run an interactive console with your Redis addon
+     mongo-console                                       Run an interactive console with your MongoDB addon
+     mysql-console                                       Run an interactive console with your MySQL addon
+     pgsql-console, psql-console, postgresql-console     Run an interactive console with your PostgreSQL addon
+     influxdb-console                                    Run an interactive console with your InfluxDB addon
 
    Deployment:
-     deployments              List app deployments
-     deployment-logs          View deployment logs
-     deployment-follow        Follow deployment event stream
-     deploy                   Trigger a deployment by archive
-     deployment-delete-cache  Reset deployment cache
-     deployment-cache-delete  Reset deployment cache
+     deployments                                          List app deployments
+     deployment-logs                                      View deployment logs
+     deployment-follow                                    Follow deployment event stream
+     deploy                                               Trigger a deployment by archive
+     deployment-delete-cache, deployment-cache-delete     Reset deployment cache
 
    Display metrics of the running containers:
      stats  Display metrics of the currently running containers
@@ -166,14 +165,13 @@ COMMANDS:
      git-show   Display the Git remote URL for this application
 
    Global:
-     apps       List your apps
-     create, c  Create a new app
-     login      Login to Scalingo platform
-     logout     Logout from Scalingo
-     regions    List available regions
-     config     Configure the CLI
-     self       Get the logged in profile
-     whoami     Get the logged in profile
+     apps               List your apps
+     create, c          Create a new app
+     login              Login to Scalingo platform
+     logout             Logout from Scalingo
+     regions            List available regions
+     config             Configure the CLI
+     self, whoami       Get the logged in profile
 
    Integration Link:
      integration-link                    Show integration link of your app

@@ -10,6 +10,7 @@ import (
 var (
 	PgSQLConsoleCommand = cli.Command{
 		Name:     "pgsql-console",
+		Aliases: []string{"psql-console","postgresql-console"},
 		Category: "Databases",
 		Usage:    "Run an interactive console with your PostgreSQL addon",
 		Flags: []cli.Flag{appFlag,

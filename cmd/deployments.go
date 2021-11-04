@@ -14,6 +14,7 @@ import (
 var (
 	deploymentCacheResetCommand = cli.Command{
 		Name:     "deployment-delete-cache",
+		Aliases:  []string{"deployment-cache-delete"},
 		Category: "Deployment",
 		Usage:    "Reset deployment cache",
 		Flags:    []cli.Flag{appFlag},
@@ -32,15 +33,6 @@ var (
 				io.Status("Deployment cache successfully deleted")
 			}
 		},
-	}
-	// deploymentCacheDeleteCommand is an alias of the command deploymentCacheResetCommand
-	deploymentCacheDeleteCommand = cli.Command{
-		Name:        "deployment-cache-delete",
-		Category:    deploymentCacheResetCommand.Category,
-		Usage:       deploymentCacheResetCommand.Usage,
-		Flags:       deploymentCacheResetCommand.Flags,
-		Description: deploymentCacheResetCommand.Description,
-		Action:      deploymentCacheResetCommand.Action,
 	}
 
 	deploymentsListCommand = cli.Command{

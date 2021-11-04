@@ -141,7 +141,6 @@ var (
 		deploymentFollowCommand,
 		deploymentDeployCommand,
 		deploymentCacheResetCommand,
-		deploymentCacheDeleteCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,
@@ -254,7 +253,6 @@ var (
 		RegionsListCommand,
 		ConfigCommand,
 		selfCommand,
-		whoamiCommand,
 
 		// Version
 		UpdateCommand,
