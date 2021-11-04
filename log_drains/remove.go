@@ -1,9 +1,10 @@
 package log_drains
 
 import (
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 type RemoveAddonOpts struct {

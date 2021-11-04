@@ -6,13 +6,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Scalingo/cli/utils"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-utils/retry"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 	"github.com/gosuri/uilive"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/utils"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-utils/retry"
 )
 
 type RefreshOpts struct {

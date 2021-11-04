@@ -3,9 +3,10 @@ package region_migrations
 import (
 	"fmt"
 
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
-	errgo "gopkg.in/errgo.v1"
 )
 
 func Create(app string, destination string, dstAppName string) error {

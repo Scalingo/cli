@@ -3,12 +3,13 @@ package db
 import (
 	"time"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
 func CreateBackup(app, addon string) error {

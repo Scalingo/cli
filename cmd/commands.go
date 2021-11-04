@@ -115,6 +115,7 @@ var (
 		// Routing Settings
 		forceHTTPSCommand,
 		stickySessionCommand,
+		routerLogsCommand,
 		setCanonicalDomainCommand,
 		unsetCanonicalDomainCommand,
 
@@ -140,7 +141,6 @@ var (
 		deploymentFollowCommand,
 		deploymentDeployCommand,
 		deploymentCacheResetCommand,
-		deploymentCacheDeleteCommand,
 
 		// Collaborators
 		CollaboratorsListCommand,
@@ -253,7 +253,6 @@ var (
 		RegionsListCommand,
 		ConfigCommand,
 		selfCommand,
-		whoamiCommand,
 
 		// Version
 		UpdateCommand,

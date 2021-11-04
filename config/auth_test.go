@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Scalingo/cli/config/auth"
-	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/Scalingo/cli/config/auth"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 func TestStoreAuth(t *testing.T) {

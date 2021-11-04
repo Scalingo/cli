@@ -1,9 +1,10 @@
 package collaborators
 
 import (
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 func Add(app, email string) error {

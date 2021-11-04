@@ -5,10 +5,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/utils"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 )
 
 func List(app string) error {

@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
 	"github.com/Scalingo/go-utils/errors"
-	"gopkg.in/errgo.v1"
 )
 
 type LoginOpts struct {

@@ -7,11 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/io"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
-	"github.com/urfave/cli"
 )
 
 var (

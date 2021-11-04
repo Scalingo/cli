@@ -6,9 +6,10 @@ import (
 	"os"
 	"strings"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"gopkg.in/errgo.v1"
 )
 
 func Rename(appName string, newName string) error {

@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
-	"github.com/urfave/cli"
 )
 
 var (

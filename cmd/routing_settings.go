@@ -1,17 +1,18 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/urfave/cli"
 )
 
 var (
 	forceHTTPSCommand = cli.Command{
 		Name:     "force-https",
 		Category: "App Management",
-		Usage:    "",
+		Usage:    "Enable/Disable automatic redirection of traffic to HTTPS for your application",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.BoolFlag{Name: "enable, e", Usage: "Enable force HTTPS (default)"},
@@ -47,7 +48,7 @@ var (
 	stickySessionCommand = cli.Command{
 		Name:     "sticky-session",
 		Category: "App Management",
-		Usage:    "",
+		Usage:    "Enable/Disable sticky sessions for your application",
 		Flags: []cli.Flag{
 			appFlag,
 			cli.BoolFlag{Name: "enable, e", Usage: "Enable sticky session (default)"},
@@ -77,6 +78,42 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
+		},
+	}
+
+	routerLogsCommand = cli.Command{
+		Name:     "router-logs",
+		Category: "App Management",
+		Usage:    "Enable/disable router logs for your application",
+		Flags: []cli.Flag{
+			appFlag,
+			cli.BoolFlag{Name: "enable, e", Usage: "Enable router logs"},
+			cli.BoolFlag{Name: "disable, d", Usage: "Disable router logs (default)"},
+		},
+		Description: `Enable/disable router logs for your application.
+
+   Example
+     scalingo --app my-app router-logs --enable
+	 `,
+		Action: func(c *cli.Context) {
+			currentApp := appdetect.CurrentApp(c)
+			if len(c.Args()) > 1 {
+				cli.ShowCommandHelp(c, "router-logs")
+				return
+			}
+
+			enable := false
+			if c.IsSet("enable") {
+				enable = true
+			}
+
+			err := apps.RouterLogs(currentApp, enable)
+			if err != nil {
+				errorQuit(err)
+			}
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "router-logs")
 		},
 	}
 )

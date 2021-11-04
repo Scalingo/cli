@@ -9,13 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v4"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
-	"github.com/pkg/errors"
-	"gopkg.in/errgo.v1"
 )
 
 var (

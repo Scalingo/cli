@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func Display(app string) error {

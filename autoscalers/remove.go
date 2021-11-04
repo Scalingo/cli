@@ -1,10 +1,11 @@
 package autoscalers
 
 import (
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-utils/errors"
-	"gopkg.in/errgo.v1"
 )
 
 func Remove(app, containerType string) error {

@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
-	"github.com/urfave/cli"
 )
 
 var (

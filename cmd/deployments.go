@@ -4,16 +4,18 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/go-scalingo/v4/io"
-	"github.com/urfave/cli"
 )
 
 var (
 	deploymentCacheResetCommand = cli.Command{
 		Name:     "deployment-delete-cache",
+		Aliases:  []string{"deployment-cache-delete"},
 		Category: "Deployment",
 		Usage:    "Reset deployment cache",
 		Flags:    []cli.Flag{appFlag},
@@ -32,15 +34,6 @@ var (
 				io.Status("Deployment cache successfully deleted")
 			}
 		},
-	}
-	// deploymentCacheDeleteCommand is an alias of the command deploymentCacheResetCommand
-	deploymentCacheDeleteCommand = cli.Command{
-		Name:        "deployment-cache-delete",
-		Category:    deploymentCacheResetCommand.Category,
-		Usage:       deploymentCacheResetCommand.Usage,
-		Flags:       deploymentCacheResetCommand.Flags,
-		Description: deploymentCacheResetCommand.Description,
-		Action:      deploymentCacheResetCommand.Action,
 	}
 
 	deploymentsListCommand = cli.Command{

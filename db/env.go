@@ -4,8 +4,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo/v4"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 func dbURL(c *scalingo.Client, app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {

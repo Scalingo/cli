@@ -1,13 +1,15 @@
 package cmd
 
 import (
-	"github.com/Scalingo/cli/user"
 	"github.com/urfave/cli"
+
+	"github.com/Scalingo/cli/user"
 )
 
 var (
 	selfCommand = cli.Command{
 		Name:        "self",
+		Aliases:     []string{"whoami"},
 		Category:    "Global",
 		Usage:       "Get the logged in profile",
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
@@ -17,15 +19,5 @@ var (
 				errorQuit(err)
 			}
 		},
-	}
-
-	// whoami is an alias of the command selfCommand
-	whoamiCommand = cli.Command{
-		Name:        "whoami",
-		Category:    selfCommand.Category,
-		Usage:       selfCommand.Usage,
-		Description: selfCommand.Description,
-		Before:      selfCommand.Before,
-		Action:      selfCommand.Action,
 	}
 )

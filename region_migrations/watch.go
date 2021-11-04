@@ -3,8 +3,9 @@ package region_migrations
 import (
 	"fmt"
 
-	scalingo "github.com/Scalingo/go-scalingo/v4"
 	errgo "gopkg.in/errgo.v1"
+
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
 func WatchMigration(client *scalingo.Client, appId, migrationId string, opts RefreshOpts) error {

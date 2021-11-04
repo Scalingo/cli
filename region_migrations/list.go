@@ -5,11 +5,12 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/io"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 )
 
 func List(appId string) error {
