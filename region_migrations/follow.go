@@ -1,8 +1,9 @@
 package region_migrations
 
 import (
-	"github.com/Scalingo/cli/config"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func Follow(appID, migrationID string) error {

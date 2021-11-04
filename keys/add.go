@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func Add(name string, path string) error {

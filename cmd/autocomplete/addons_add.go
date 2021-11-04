@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func AddonsAddAutoComplete(c *cli.Context) error {

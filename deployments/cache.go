@@ -1,8 +1,9 @@
 package deployments
 
 import (
-	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func ResetCache(app string) error {

@@ -3,10 +3,11 @@ package collaborators
 import (
 	"errors"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v4"
-	"gopkg.in/errgo.v1"
 )
 
 var (

@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 func Details(app, ID string) error {

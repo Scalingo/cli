@@ -5,13 +5,14 @@ import (
 	"os"
 	"strings"
 
+	"github.com/stvp/rollbar"
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
-	"github.com/stvp/rollbar"
-	"github.com/urfave/cli"
 )
 
 var (

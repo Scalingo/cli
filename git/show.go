@@ -1,9 +1,10 @@
 package git
 
 import (
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	errgo "gopkg.in/errgo.v1"
 )
 
 func Show(appName string) error {

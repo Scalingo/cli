@@ -6,10 +6,11 @@ import (
 	"os"
 	"time"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	"gopkg.in/errgo.v1"
 )
 
 type UnknownRegionError struct {

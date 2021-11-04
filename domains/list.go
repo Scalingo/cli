@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
 var letsencryptStatusString = map[string]string{

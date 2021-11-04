@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/fatih/color"
 	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func LogsArchives(appName string, page int) error {

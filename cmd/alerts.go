@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/alerts"
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
-	"github.com/urfave/cli"
 )
 
 var (

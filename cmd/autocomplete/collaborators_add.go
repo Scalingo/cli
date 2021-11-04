@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/urfave/cli"
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
-	"github.com/urfave/cli"
-	"gopkg.in/errgo.v1"
 )
 
 func CollaboratorsAddAutoComplete(c *cli.Context) error {

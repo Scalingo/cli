@@ -5,13 +5,14 @@ import (
 
 	"gopkg.in/errgo.v1"
 
+	"github.com/fatih/color"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-utils/errors"
-	"github.com/fatih/color"
 )
 
 func Show(app string) error {

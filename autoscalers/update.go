@@ -1,11 +1,12 @@
 package autoscalers
 
 import (
+	errgo "gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-utils/errors"
-	errgo "gopkg.in/errgo.v1"
 )
 
 func Update(app, containerType string, params scalingo.AutoscalerUpdateParams) error {

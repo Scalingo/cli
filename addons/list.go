@@ -3,9 +3,10 @@ package addons
 import (
 	"os"
 
-	"github.com/Scalingo/cli/config"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func List(app string) error {

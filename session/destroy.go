@@ -1,8 +1,9 @@
 package session
 
 import (
-	"github.com/Scalingo/cli/config"
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/cli/config"
 )
 
 func DestroyToken() error {

@@ -3,8 +3,9 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/urfave/cli"
+
+	"github.com/Scalingo/cli/appdetect"
 )
 
 func FlagRemoteAutoComplete(c *cli.Context) bool {

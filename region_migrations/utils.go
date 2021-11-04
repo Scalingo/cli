@@ -1,8 +1,9 @@
 package region_migrations
 
 import (
-	scalingo "github.com/Scalingo/go-scalingo/v4"
 	"github.com/fatih/color"
+
+	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
 func formatMigrationStatus(status scalingo.RegionMigrationStatus) string {

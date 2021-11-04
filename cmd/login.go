@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
+	"github.com/urfave/cli"
+
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/session"
-	"github.com/urfave/cli"
 )
 
 var (

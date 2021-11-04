@@ -1,9 +1,10 @@
 package db
 
 import (
+	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
+
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/config"
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
 )
 
 type PgSQLConsoleOpts struct {
