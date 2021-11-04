@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* fix(warning-data-stream): change data stream on which warning is displayed from stdout to stderr [#698](https://github.com/Scalingo/cli/pull/698)
 * feat(pgsql-console): add `psql-console` and `postgresql-console` aliases for `pgsql-console` command and replace duplicated commands with aliases [#693](https://github.com/Scalingo/cli/pull/693)
 * feat(router-logs): add command `router-logs` to enable/disable router logs on your application [#692](https://github.com/Scalingo/cli/pull/692)
 * feat(open): add command `open` to open app on default browser [#691](https://github.com/Scalingo/cli/pull/691)
