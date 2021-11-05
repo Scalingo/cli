@@ -225,6 +225,7 @@ func tryAuth() (*scalingo.User, string, error) {
 	if err != nil {
 		return nil, "", errgo.Mask(err, errgo.Any)
 	}
+	fmt.Printf("\n")
 
 	otpRequired := false
 	retryAuth := true
