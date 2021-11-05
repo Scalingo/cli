@@ -1,16 +1,16 @@
-package apps
+package db
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/fatih/color"
-	errgo "gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func LogsArchives(appName string, page int) error {
+func LogsArchives(app, addon string, page int) error {
 	if page < 0 {
 		return errgo.New("Page must be greather than 0.")
 	}
@@ -23,9 +23,14 @@ func LogsArchives(appName string, page int) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	logsRes, err := c.LogsArchives(appName, page)
+	logsRes, err := c.AddonLogsArchives(app, addon, page)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to get addon logs archives")
+	}
+
+	if len(logsRes.Archives) == 0 {
+		fmt.Println("No addon logs archives available.")
+		return nil
 	}
 
 	for _, archive := range logsRes.Archives {
@@ -34,10 +39,6 @@ func LogsArchives(appName string, page int) error {
 		fmt.Println(color.New(color.FgYellow).Sprint("Size: ") + strconv.FormatInt(archive.Size, 10))
 		fmt.Println(color.New(color.FgYellow).Sprint("Url:  ") + archive.Url)
 		fmt.Println("-------")
-	}
-
-	if len(logsRes.Archives) == 0 {
-		fmt.Println("No logs archives available.")
 	}
 
 	return nil

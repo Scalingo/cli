@@ -35,12 +35,9 @@ var (
 				cli.ShowCommandHelp(c, "logs")
 				return
 			}
-			var addonName string
-			if c.GlobalString("addon") != "<addon_id>" {
-				addonName = c.GlobalString("addon")
-			} else if c.String("addon") != "<addon_id>" {
-				addonName = c.String("addon")
-			}
+
+			addonName := addonNameFromFlags(c)
+
 			var err error
 			if addonName == "" {
 				err = apps.Logs(currentApp, c.Bool("f"), c.Int("n"), c.String("F"))

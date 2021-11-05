@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -12,7 +13,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 var (
@@ -38,7 +39,11 @@ Examples
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			addon := addonName(c)
+			addonName := addonNameFromFlags(c)
+			if addonName == "" {
+				fmt.Println("Unable to find the addon name, please use --addon flag.")
+				os.Exit(1)
+			}
 
 			params := scalingo.PeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")
@@ -46,7 +51,7 @@ Examples
 			if scheduleAtFlag != "" && disable {
 				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
 			}
-			database, err := db.Show(currentApp, addon)
+			database, err := db.Show(currentApp, addonName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -74,7 +79,7 @@ Examples
 			}
 
 			if disable || scheduleAtFlag != "" {
-				database, err = db.BackupsConfiguration(currentApp, addon, params)
+				database, err = db.BackupsConfiguration(currentApp, addonName, params)
 				if err != nil {
 					errorQuit(err)
 				}

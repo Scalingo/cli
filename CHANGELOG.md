@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* feat(logs-archives): add logs archives for addons [#694](https://github.com/Scalingo/cli/pull/694)
 * fix(update): change data stream on which warning is displayed from stdout to stderr [#698](https://github.com/Scalingo/cli/pull/698)
 * feat(pgsql-console): add `psql-console` and `postgresql-console` aliases for `pgsql-console` command and replace duplicated commands with aliases [#693](https://github.com/Scalingo/cli/pull/693)
 * feat(router-logs): add command `router-logs` to enable/disable router logs on your application [#692](https://github.com/Scalingo/cli/pull/692)
