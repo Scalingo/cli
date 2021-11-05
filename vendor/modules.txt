@@ -131,9 +131,6 @@ github.com/gosuri/uilive
 # github.com/heroku/hk v0.0.0-20160226172041-9c27ee3bfe9f
 ## explicit
 github.com/heroku/hk/term
-# github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
-## explicit
-github.com/howeyc/gopass
 # github.com/imdario/mergo v0.3.12
 github.com/imdario/mergo
 # github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
@@ -198,21 +195,22 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20211104170005-ce137452f963
 ## explicit
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-# golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
+# golang.org/x/sys v0.0.0-20211103235746-7861aae1554b
+## explicit
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1
+# golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
+## explicit
 golang.org/x/term
 # gopkg.in/AlecAivazis/survey.v1 v1.8.8
 ## explicit

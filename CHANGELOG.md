@@ -10,6 +10,7 @@
 * feat(dashboard): add command `dashboard` to open dashboard of specified app on default browser [#686](https://github.com/Scalingo/cli/pull/686)
 * build(deps): bump github.com/Scalingo/go-utils/errors from 1.0.0 to 1.1.0 [#687](https://github.com/Scalingo/cli/pull/687)
 * build(deps): bump github.com/Scalingo/go-utils/retry from 1.0.0 to 1.1.0 [#688](https://github.com/Scalingo/cli/pull/688)
+* chore(deps): replace github.com/howeyc/gopass with golang.org/x/term
 
 ### 1.21.2
 

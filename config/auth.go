@@ -225,6 +225,7 @@ func tryAuth() (*scalingo.User, string, error) {
 	if err != nil {
 		return nil, "", errgo.Mask(err, errgo.Any)
 	}
+	fmt.Printf("\n")
 
 	otpRequired := false
 	retryAuth := true
@@ -237,18 +238,13 @@ func tryAuth() (*scalingo.User, string, error) {
 	loginParams := scalingo.LoginParams{}
 	var apiToken scalingo.Token
 	for retryAuth {
-		var otp string
-		if otpRequired {
-			otp, err = term.Password("       OTP: ")
-			if err != nil {
-				return nil, "", errgo.NoteMask(err, "fail to get otp", errgo.Any)
-			}
-		}
-
 		loginParams.Identifier = login
 		loginParams.Password = password
 
+		var otp string
 		if otpRequired {
+			appio.Infof("OTP: ")
+			fmt.Scan(&otp)
 			loginParams.OTP = otp
 		}
 
