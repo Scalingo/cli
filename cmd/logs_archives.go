@@ -30,12 +30,8 @@ var (
 				return
 			}
 
-			var addonName string
-			if c.GlobalString("addon") != "<addon_id>" {
-				addonName = c.GlobalString("addon")
-			} else if c.String("addon") != "<addon_id>" {
-				addonName = c.String("addon")
-			}
+			addonName := addonName(c)
+
 			var err error
 			if addonName == "" {
 				err = apps.LogsArchives(currentApp, c.Int("p"))

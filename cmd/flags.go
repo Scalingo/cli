@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/urfave/cli"
@@ -30,10 +29,6 @@ func addonName(c *cli.Context) string {
 		addonName = c.String("addon")
 	} else if os.Getenv("SCALINGO_ADDON") != "" {
 		addonName = os.Getenv("SCALINGO_ADDON")
-	}
-	if addonName == "" {
-		fmt.Println("Unable to find the addon name, please use --addon flag.")
-		os.Exit(1)
 	}
 
 	debug.Println("[ADDON] Addon name is", addonName)
