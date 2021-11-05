@@ -21,7 +21,6 @@ func AddonsRemoveAutoComplete(c *cli.Context) error {
 	}
 	resources, err := client.AddonsList(appName)
 	if err == nil {
-
 		for _, resource := range resources {
 			fmt.Println(resource.ResourceID)
 		}
