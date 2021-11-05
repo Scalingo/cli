@@ -36,7 +36,7 @@ var (
 				return
 			}
 
-			addonName := addonName(c)
+			addonName := addonNameFromFlags(c)
 
 			var err error
 			if addonName == "" {

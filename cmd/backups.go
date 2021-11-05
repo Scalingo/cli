@@ -24,7 +24,7 @@ var (
 		`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			addonName := addonName(c)
+			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")
 				os.Exit(1)
@@ -47,7 +47,7 @@ var (
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			addonName := addonName(c)
+			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")
 				os.Exit(1)
@@ -80,7 +80,7 @@ var (
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
 			currentApp := appdetect.CurrentApp(c)
-			addonName := addonName(c)
+			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")
 				os.Exit(1)

@@ -21,7 +21,7 @@ var (
 	}
 )
 
-func addonName(c *cli.Context) string {
+func addonNameFromFlags(c *cli.Context) string {
 	var addonName string
 	if c.GlobalString("addon") != "<addon_id>" {
 		addonName = c.GlobalString("addon")
