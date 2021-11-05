@@ -17,18 +17,14 @@ require (
 	github.com/heroku/hk v0.0.0-20160226172041-9c27ee3bfe9f
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/kr/pty v1.1.8 // indirect
-	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/pkg/errors v0.9.1
-	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.5
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20211104170005-ce137452f963
-	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
 )
