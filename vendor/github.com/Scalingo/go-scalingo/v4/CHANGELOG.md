@@ -2,6 +2,16 @@
 
 ## To Be Released
 
+## 4.15.1
+
+* chore: generate missing mocks from v4.15.0
+
+## 4.15.0
+
+* feat: add support to list container sizes [#234](https://github.com/Scalingo/go-scalingo/pull/234)
+* feat(addons): add the `AddonLogsArchives` method [#235](https://github.com/Scalingo/go-scalingo/pull/235)
+* feat(apps): add `AppsRouterLogs` method [#236](https://github.com/Scalingo/go-scalingo/pull/236)
+
 ## 4.14.3
 
 * feat(cron-task): Add fields to cron tasks model [#231](https://github.com/Scalingo/go-scalingo/pull/231)

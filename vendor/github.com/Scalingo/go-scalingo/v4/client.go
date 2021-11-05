@@ -18,6 +18,7 @@ type API interface {
 	BackupsService
 	CollaboratorsService
 	ContainersService
+	ContainerSizesService
 	CronTasksService
 	DeploymentsService
 	DomainsService
@@ -36,6 +37,7 @@ type API interface {
 	RunsService
 	SignUpService
 	SourcesService
+	StacksService
 	TokensService
 	UsersService
 	http.TokenGenerator

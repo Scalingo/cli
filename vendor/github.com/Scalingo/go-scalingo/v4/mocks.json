@@ -54,6 +54,11 @@
     {
       "src_package": ".",
       "dst_package": "scalingomock",
+      "interface": "ContainerSizesService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
       "interface": "CronTasksService"
     },
     {
