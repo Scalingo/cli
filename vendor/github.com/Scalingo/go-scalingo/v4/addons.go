@@ -2,6 +2,8 @@ package scalingo
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"strconv"
 	"time"
 
 	"github.com/Scalingo/go-scalingo/v4/http"
@@ -16,6 +18,7 @@ type AddonsService interface {
 	AddonUpgrade(app, addonID string, params AddonUpgradeParams) (AddonRes, error)
 	AddonToken(app, addonID string) (string, error)
 	AddonLogsURL(app, addonID string) (string, error)
+	AddonLogsArchives(app, addonId string, page int) (*LogsArchivesResponse, error)
 }
 
 var _ AddonsService = (*Client)(nil)
@@ -153,4 +156,29 @@ func (c *Client) AddonLogsURL(app, addonID string) (string, error) {
 	}
 
 	return url.URL, nil
+}
+
+func (c *Client) AddonLogsArchives(app, addonID string, page int) (*LogsArchivesResponse, error) {
+	res, err := c.DBAPI(app, addonID).Do(&http.APIRequest{
+		Endpoint: "/databases/" + addonID + "/logs_archives",
+		Params: map[string]string{
+			"page": strconv.FormatInt(int64(page), 10),
+		},
+	})
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get log archives")
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to read body of response")
+	}
+
+	var logsRes = LogsArchivesResponse{}
+	err = json.Unmarshal(body, &logsRes)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to parse response")
+	}
+
+	return &logsRes, nil
 }

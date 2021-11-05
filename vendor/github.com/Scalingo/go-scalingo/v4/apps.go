@@ -36,6 +36,7 @@ type AppsService interface {
 	AppsScale(app string, params *AppsScaleParams) (*http.Response, error)
 	AppsForceHTTPS(name string, enable bool) (*App, error)
 	AppsStickySession(name string, enable bool) (*App, error)
+	AppsRouterLogs(name string, enable bool) (*App, error)
 }
 
 var _ AppsService = (*Client)(nil)

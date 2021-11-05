@@ -31,20 +31,6 @@ type Container struct {
 	ContainerSize ContainerSize `json:"container_size"`
 }
 
-type ContainerSize struct {
-	ID              string `json:"id"`
-	HumanCPU        string `json:"human_cpu"`
-	Name            string `json:"name"`
-	HumanName       string `json:"human_name"`
-	Memory          int64  `json:"memory"`
-	Ordinal         int    `json:"ordinal"`
-	HourlyPrice     int    `json:"hourly_price"`
-	ThirtydaysPrice int    `json:"thirtydays_price"`
-	PidsLimit       int    `json:"pids_limit,omitempty"`
-	Swap            int64  `json:"swap"`
-	SKU             string `json:"sku,omitempty"`
-}
-
 func (c *Client) ContainersStop(appName, containerID string) error {
 	req := &httpclient.APIRequest{
 		Method:   "POST",

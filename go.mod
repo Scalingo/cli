@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
-	github.com/Scalingo/go-scalingo/v4 v4.14.3
+	github.com/Scalingo/go-scalingo/v4 v4.15.0
 	github.com/Scalingo/go-utils/errors v1.1.0
 	github.com/Scalingo/go-utils/retry v1.1.0
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
@@ -27,7 +27,7 @@ require (
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli v1.22.5
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+	golang.org/x/net v0.0.0-20211104170005-ce137452f963
 	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
