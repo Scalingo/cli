@@ -121,20 +121,20 @@ var (
 		Name:     "addons-info",
 		Category: "Addons",
 		Usage:    "Display information about an add-on attached to your app",
-		Flags:    []cli.Flag{appFlag, addonFlag},
+		Flags:    []cli.Flag{appFlag},
 		Description: ` Display information about an add-on attached to your app:
     $ scalingo --app my-app addons-info --addon <addon-id>
 
 		# See also 'addons' and 'addons-upgrade'
 `,
 		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "addons-info")
 				return
 			}
 
 			currentApp := appdetect.CurrentApp(c)
-			currentAddon := addonName(c)
+			currentAddon := c.Args()[0]
 
 			err := addons.Info(currentApp, currentAddon)
 			if err != nil {
