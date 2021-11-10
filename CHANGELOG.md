@@ -2,16 +2,18 @@
 
 ### To be Released
 
+### 1.22.0
+
 * feat(logs-archives): add logs archives for addons [#694](https://github.com/Scalingo/cli/pull/694)
-* fix(update): change data stream on which warning is displayed from stdout to stderr [#698](https://github.com/Scalingo/cli/pull/698)
 * feat(pgsql-console): add `psql-console` and `postgresql-console` aliases for `pgsql-console` command and replace duplicated commands with aliases [#693](https://github.com/Scalingo/cli/pull/693)
 * feat(router-logs): add command `router-logs` to enable/disable router logs on your application [#692](https://github.com/Scalingo/cli/pull/692)
 * feat(open): add command `open` to open app on default browser [#691](https://github.com/Scalingo/cli/pull/691)
 * feat(addons-info): add command `addons-info` to display information of an add-on [#689](https://github.com/Scalingo/cli/pull/689)
 * feat(dashboard): add command `dashboard` to open dashboard of specified app on default browser [#686](https://github.com/Scalingo/cli/pull/686)
+* chore(deps): replace github.com/howeyc/gopass with golang.org/x/term [#703](https://github.com/Scalingo/cli/pull/703)
+* fix(update): change data stream on which warning is displayed from stdout to stderr [#698](https://github.com/Scalingo/cli/pull/698)
 * build(deps): bump github.com/Scalingo/go-utils/errors from 1.0.0 to 1.1.0 [#687](https://github.com/Scalingo/cli/pull/687)
 * build(deps): bump github.com/Scalingo/go-utils/retry from 1.0.0 to 1.1.0 [#688](https://github.com/Scalingo/cli/pull/688)
-* chore(deps): replace github.com/howeyc/gopass with golang.org/x/term
 
 ### 1.21.2
 
