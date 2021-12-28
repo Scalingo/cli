@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(logs): allow to filter logs to only show router logs [#707](https://github.com/Scalingo/cli/pull/707)
+
 ### 1.22.0
 
 * feat(logs-archives): add logs archives for addons [#694](https://github.com/Scalingo/cli/pull/694)

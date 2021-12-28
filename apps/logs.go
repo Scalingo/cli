@@ -79,6 +79,10 @@ func checkFilter(c *scalingo.Client, appName string, filter string) error {
 		return nil
 	}
 
+	if filter == "router" {
+		return nil
+	}
+
 	processes, err := c.AppsContainerTypes(appName)
 	if err != nil {
 		return errgo.Mask(err)
@@ -100,6 +104,7 @@ func checkFilter(c *scalingo.Client, appName string, filter string) error {
 				"%s is not a valid container filter\n\nEXAMPLES:\n"+
 					"\"scalingo logs -F web\": logs of every web containers\n"+
 					"\"scalingo logs -F web-1\": logs of web container 1\n"+
+					"\"scalingo logs -F router\": only router logs\n"+
 					"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
 				f)
 		}
