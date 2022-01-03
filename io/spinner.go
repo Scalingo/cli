@@ -40,7 +40,6 @@ func (s *Spinner) Start() {
 		time.Sleep(100 * time.Millisecond)
 		fmt.Fprintf(s.writer, "\b%c", r)
 	}
-
 }
 
 func (s *Spinner) Stop() {

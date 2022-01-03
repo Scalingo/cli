@@ -291,7 +291,6 @@ func writeAuthFile(authConfig *auth.ConfigData) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
-
 }
 
 func existingAuth() (*auth.ConfigData, error) {

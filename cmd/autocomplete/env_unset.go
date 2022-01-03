@@ -21,7 +21,6 @@ func EnvUnsetAutoComplete(c *cli.Context) error {
 	}
 	variables, err := client.VariablesList(appName)
 	if err == nil {
-
 		for _, v := range variables {
 			fmt.Println(v.Name)
 		}

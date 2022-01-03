@@ -113,7 +113,7 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 			io.Error("")
 			io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
 		} else {
-			io.Error("An error occured:")
+			io.Error("An error occurred:")
 			debug.Println(errgo.Details(err))
 			fmt.Println(io.Indent(err.Error(), 7))
 		}

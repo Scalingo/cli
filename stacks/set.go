@@ -39,5 +39,4 @@ func Set(app string, stack string) error {
 	io.Infof(io.Gray("Deployment cache of %v has been reseted\n"), app)
 
 	return nil
-
 }

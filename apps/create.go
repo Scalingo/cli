@@ -64,7 +64,7 @@ func handleRegionDisabledError(appName string, c *scalingo.Client) error {
 	fmt.Printf("Application creation has been disabled on the currently used region: %v\n\n", config.C.ScalingoRegion)
 	fmt.Printf("Either configure your CLI to use another default region, then create your application:\n")
 	fmt.Printf("    scalingo config --region %s\n    scalingo create %s\n", firstRegion.Name, appName)
-	fmt.Printf("\nOr use the region flag to specify the region explicitely for this command:\n")
+	fmt.Printf("\nOr use the region flag to specify the region explicitly for this command:\n")
 	fmt.Printf("    scalingo --region %s create %s\n", firstRegion.Name, appName)
 	fmt.Printf("\nList of available regions:\n")
 	for _, region := range regions {

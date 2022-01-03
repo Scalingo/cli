@@ -177,7 +177,6 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 	fmt.Fprintf(w.Newline(), "Status: %s\n", formatMigrationStatus(migration.Status))
 	if r.opts.ShowHints {
 		fmt.Fprintf(w.Newline(), "%s\n", r.hintFor(migration))
-
 	}
 	if migration.Status == scalingo.RegionMigrationStatusCreated {
 		fmt.Fprintf(w.Newline(), "%s Waiting for the migration to start\n", r.loader())
@@ -188,7 +187,6 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 			r.writeStep(w, step)
 		}
 	}
-
 }
 
 func (r *Refresher) writeStep(w *uilive.Writer, step scalingo.Step) {
@@ -254,7 +252,7 @@ func (r *Refresher) hintFor(m *scalingo.RegionMigration) string {
 	case scalingo.RegionMigrationStatusPreflightError:
 		return "There was an error during the preflight checks. No update will be posted here."
 	case scalingo.RegionMigrationStatusPreflightSuccess:
-		return "The preflight checks were successfull. Waiting on the user to start the 'prepare' step."
+		return "The preflight checks were successful. Waiting on the user to start the 'prepare' step."
 	case scalingo.RegionMigrationStatusRunning:
 		return "The migration is currently running."
 	case scalingo.RegionMigrationStatusPrepared:

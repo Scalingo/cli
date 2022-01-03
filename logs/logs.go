@@ -164,7 +164,6 @@ func Stream(logsRawURL string, filter string) error {
 					time.Sleep(time.Second * 1)
 				}
 				continue
-
 			} else if strings.Contains(err.Error(), "use of closed network connect") {
 				return nil
 			} else {

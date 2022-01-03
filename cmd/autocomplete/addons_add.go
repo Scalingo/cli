@@ -36,7 +36,6 @@ func AddonsAddAutoComplete(c *cli.Context) error {
 				}
 			}
 		} else {
-
 			for _, resource := range resources {
 				fmt.Println(resource.ID)
 			}
