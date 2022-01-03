@@ -30,5 +30,4 @@ func RegionMigrationsAutoComplete(c *cli.Context) error {
 	}
 
 	return nil
-
 }

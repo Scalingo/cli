@@ -206,7 +206,6 @@ func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, er
 	fmt.Printf("End of connection [%d]\n", connID)
 	// Connection timeout
 	if err != nil && strings.Contains(err.Error(), "use of closed network") {
-
 		// If the connection has been closed by the CLIENT, we must stop here and return a nil error
 		// If the connection has been closed by the SERVER, we must return a errTimeout and retry the connection
 		clientClosedConnectionTest := fmt.Sprintf("%s->%s: use of closed network connection", sock.LocalAddr(), sock.RemoteAddr()) // Golang error checking 101 <3

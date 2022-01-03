@@ -21,7 +21,6 @@ func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
 	}
 	collaborators, err := client.CollaboratorsList(appName)
 	if err == nil {
-
 		for _, col := range collaborators {
 			fmt.Println(col.Email)
 		}

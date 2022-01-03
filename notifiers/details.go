@@ -71,7 +71,6 @@ func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventTy
 			} else {
 				t.Append([]string{"", e.Name})
 			}
-
 		}
 	}
 	t.Render()

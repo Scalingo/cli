@@ -159,5 +159,4 @@ func finalizeLogin(token string) error {
 		return errgo.Mask(err)
 	}
 	return nil
-
 }

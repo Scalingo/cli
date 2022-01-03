@@ -30,7 +30,6 @@ func DbTunnelAutoComplete(c *cli.Context) error {
 		}
 		variables, err := client.VariablesList(appName)
 		if err == nil {
-
 			for _, v := range variables {
 				if matched, err := regexp.Match("SCALINGO_.*_URL", []byte(v.Name)); matched && err == nil {
 					fmt.Println(v.Name)

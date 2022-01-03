@@ -23,7 +23,6 @@ func AddonsUpgradeAutoComplete(c *cli.Context) error {
 	}
 	resources, err := client.AddonsList(appName)
 	if len(os.Args) > 1 && err == nil {
-
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonIDSet := false
 		for _, resource := range resources {
