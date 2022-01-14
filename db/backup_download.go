@@ -7,15 +7,14 @@ import (
 	"os"
 	"time"
 
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
-
 	"github.com/briandowns/spinner"
-	"github.com/cheggaaa/pb"
+	"github.com/cheggaaa/pb/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v4"
 	"github.com/Scalingo/go-scalingo/v4/debug"
+	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type DownloadBackupOpts struct {
@@ -116,15 +115,18 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	}
 
 	// Start the progress bar
-	bar := pb.New64(int64(backup.Size)).SetUnits(pb.U_BYTES)
-	bar.Output = logWriter
+	bar := pb.New64(int64(backup.Size)).
+		Set(pb.Bytes, true).
+		SetWriter(logWriter)
 	bar.Start()
-	reader := bar.NewProxyReader(resp.Body) // Did I tell you this library is awesome ?
+	reader := bar.NewProxyReader(resp.Body) // Did I tell you this library is awesome?
 	_, err = io.Copy(fileWriter, reader)
 	if writeToStdout { // If we were writing the file to Stdout do not print the filepath at the end
 		bar.Finish()
 	} else {
-		bar.FinishPrint(fmt.Sprintf("===> %s", filepath)) // If we weren't writing to stdout append the filepath
+		// If we were writing the backup to a file, write the file path
+		bar.Finish()
+		fmt.Fprintf(logWriter, "===> %s\n", filepath)
 	}
 
 	if err != nil {
