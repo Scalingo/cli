@@ -5,6 +5,7 @@
 * feat(logs): allow to filter logs to only show router logs [#707](https://github.com/Scalingo/cli/pull/707)
 * fix(install): correctly parse the old and new versions [#710](https://github.com/Scalingo/cli/pull/710)
 * fix(run): display an error message for detached one-off with uploaded files [#712](https://github.com/Scalingo/cli/pull/712)
+* fix(run): --region flag in help message [#713](https://github.com/Scalingo/cli/pull/713)
 * build(deps): bump github.com/cheggaaa/pb from 1.0.29 to 3.0.8
 * build(deps): bump github.com/briandowns/spinner from 1.16.0 to 1.18.0
 
