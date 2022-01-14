@@ -125,8 +125,9 @@ main() {
   target="$target_dir/scalingo"
 
   if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
-    new_version=$($exe_path -v | cut -d' ' -f4)
-    old_version=$("$target" -v | cut -d' ' -f4)
+    export DISABLE_UPDATE_CHECKER=true
+    new_version=$($exe_path --version | cut -d' ' -f4)
+    old_version=$("$target" --version | cut -d' ' -f4)
     warn "Scalingo client is already installed (version ${old_version})\n"
     info "Do you want to replace it with version ${new_version}? [Y/n] "
 
