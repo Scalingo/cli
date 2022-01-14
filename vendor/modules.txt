@@ -35,6 +35,9 @@ github.com/Scalingo/go-utils/errors
 # github.com/Scalingo/go-utils/retry v1.1.0
 ## explicit
 github.com/Scalingo/go-utils/retry
+# github.com/VividCortex/ewma v1.2.0
+## explicit
+github.com/VividCortex/ewma
 # github.com/acomagu/bufpipe v1.0.3
 github.com/acomagu/bufpipe
 # github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
@@ -43,9 +46,10 @@ github.com/andrew-d/go-termutil
 # github.com/briandowns/spinner v1.18.0
 ## explicit
 github.com/briandowns/spinner
-# github.com/cheggaaa/pb v1.0.29
+# github.com/cheggaaa/pb/v3 v3.0.8
 ## explicit
-github.com/cheggaaa/pb
+github.com/cheggaaa/pb/v3
+github.com/cheggaaa/pb/v3/termutil
 # github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/davecgh/go-spew v1.1.1
@@ -142,11 +146,13 @@ github.com/kballard/go-shellquote
 github.com/kelseyhightower/envconfig
 # github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351
 github.com/kevinburke/ssh_config
-# github.com/mattn/go-colorable v0.1.9
+# github.com/mattn/go-colorable v0.1.12
+## explicit
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.14
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.9
+# github.com/mattn/go-runewidth v0.0.13
+## explicit
 github.com/mattn/go-runewidth
 # github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 github.com/mgutz/ansi
@@ -163,6 +169,8 @@ github.com/pkg/browser
 github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/rivo/uniseg v0.2.0
+github.com/rivo/uniseg
 # github.com/russross/blackfriday/v2 v2.0.1
 github.com/russross/blackfriday/v2
 # github.com/sergi/go-diff v1.1.0
@@ -201,7 +209,7 @@ golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-# golang.org/x/sys v0.0.0-20211103235746-7861aae1554b
+# golang.org/x/sys v0.0.0-20220111092808-5a964db01320
 ## explicit
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
