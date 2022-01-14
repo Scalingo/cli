@@ -127,8 +127,10 @@ func Run(opts RunOpts) error {
 
 	if opts.Detached {
 		fmt.Printf(
-			"Starting one-off '%s' for app '%v'.\nRun `scalingo -a %v logs -F %v` to get the output\n",
-			io.Bold(strings.Join(opts.Cmd, " ")), io.Bold(opts.App), opts.App, runRes.Container.Label,
+			"Starting one-off '%s' for app '%v'.\n"+
+				"Run `scalingo --region %v --app %v logs --filter %v` to get the output\n",
+			io.Bold(strings.Join(opts.Cmd, " ")), io.Bold(opts.App),
+			config.C.ScalingoRegion, opts.App, runRes.Container.Label,
 		)
 		return nil
 	}
