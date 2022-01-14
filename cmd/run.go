@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/io"
 )
 
 var (
@@ -89,7 +90,16 @@ var (
 			}
 			if (len(c.Args()) == 0 && c.String("t") == "") || (len(c.Args()) > 0 && c.String("t") != "") {
 				cli.ShowCommandHelp(c, "run")
-			} else if err := apps.Run(opts); err != nil {
+				return
+			}
+
+			if opts.Detached && len(opts.Files) > 0 {
+				io.Error("It is currently impossible to use detached one-off with an uploaded file. Please either remove the --detached or --file flags.")
+				return
+			}
+
+			err := apps.Run(opts)
+			if err != nil {
 				errorQuit(err)
 			}
 		},
