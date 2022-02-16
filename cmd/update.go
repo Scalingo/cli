@@ -11,8 +11,8 @@ var (
 	UpdateCommand = cli.Command{
 		Name:     "update",
 		Category: "CLI Internals",
-		Usage:    "Update 'scalingo' client",
-		Description: `Update 'scalingo' client
+		Usage:    "Update 'scalingo' SDK client",
+		Description: `Update 'scalingo' SDK client
    Example
      'scalingo update'`,
 		Action: func(c *cli.Context) {
