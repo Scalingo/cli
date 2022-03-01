@@ -9,7 +9,7 @@ require (
 	github.com/Scalingo/go-utils/retry v1.1.0
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
-	github.com/briandowns/spinner v1.18.0
+	github.com/briandowns/spinner v1.18.1
 	github.com/cheggaaa/pb/v3 v3.0.8
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
