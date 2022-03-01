@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* build(deps): bump github.com/briandowns/spinner from 1.18.0 to 1.18.1
+
 ### 1.22.1
 
 * feat(logs): allow to filter logs to only show router logs [#707](https://github.com/Scalingo/cli/pull/707)
