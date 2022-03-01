@@ -28,6 +28,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/fatih/color"
+	"github.com/mattn/go-isatty"
 )
 
 // errInvalidColor is returned when attempting to set an invalid color
@@ -192,13 +193,14 @@ type Spinner struct {
 // New provides a pointer to an instance of Spinner with the supplied options.
 func New(cs []string, d time.Duration, options ...Option) *Spinner {
 	s := &Spinner{
-		Delay:    d,
-		chars:    cs,
-		color:    color.New(color.FgWhite).SprintFunc(),
-		mu:       &sync.RWMutex{},
-		Writer:   color.Output,
-		active:   false,
-		stopChan: make(chan struct{}, 1),
+		Delay:      d,
+		chars:      cs,
+		color:      color.New(color.FgWhite).SprintFunc(),
+		mu:         &sync.RWMutex{},
+		Writer:     color.Output,
+		stopChan:   make(chan struct{}, 1),
+		active:     false,
+		HideCursor: true,
 	}
 
 	for _, option := range options {
@@ -270,7 +272,7 @@ func (s *Spinner) Active() bool {
 // Start will start the indicator.
 func (s *Spinner) Start() {
 	s.mu.Lock()
-	if s.active {
+	if s.active || !isRunningInTerminal() {
 		s.mu.Unlock()
 		return
 	}
@@ -437,4 +439,9 @@ func GenerateNumberSequence(length int) []string {
 		numSeq[i] = strconv.Itoa(i)
 	}
 	return numSeq
+}
+
+// isRunningInTerminal check if stdout file descriptor is terminal
+func isRunningInTerminal() bool {
+	return isatty.IsTerminal(os.Stdout.Fd())
 }
