@@ -3,6 +3,7 @@
 ### To be Released
 
 * build(deps): bump github.com/briandowns/spinner from 1.18.0 to 1.18.1
+* build(deps): bump github.com/stretchr/testify from 1.7.0 to 1.7.1
 
 ### 1.22.1
 
