@@ -10,11 +10,13 @@ import (
 
 var (
 	DestroyCommand = cli.Command{
-		Name:        "destroy",
-		Category:    "App Management",
-		Flags:       []cli.Flag{appFlag},
-		Usage:       "Destroy an app /!\\",
-		Description: "Destroy an app /!\\ It is not reversible\n  Example:\n    'scalingo destroy my-app'\n    'scalingo -a my-app destroy'",
+		Name:     "destroy",
+		Category: "App Management",
+		Flags: []cli.Flag{appFlag,
+			cli.BoolFlag{Name: "force", Usage: "Force destroy without asking for a confirmation /!\\", EnvVar: ""},
+		},
+		Usage: "Destroy an app /!\\",
+		Description: "Destroy an app /!\\ It is not reversible\n	Example:\n    'scalingo destroy my-app'\n    'scalingo -a my-app destroy --force'\n	",
 		Action: func(c *cli.Context) {
 			var currentApp string
 
@@ -27,7 +29,7 @@ var (
 					currentApp = appdetect.CurrentApp(c)
 				}
 
-				err := apps.Destroy(currentApp)
+				err := apps.Destroy(currentApp, c.Bool("force"))
 				if err != nil {
 					errorQuit(err)
 				}
