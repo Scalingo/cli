@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func Destroy(appName string) error {
+func Destroy(appName string, force bool) error {
 	var validationName string
 
 	c, err := config.ScalingoClient()
@@ -25,15 +25,19 @@ func Destroy(appName string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
-	validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	validationName = strings.Trim(validationName, "\n")
+	if !force {
+		fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
+		validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
+		if err != nil {
+			return errgo.Mask(err, errgo.Any)
+		}
+		validationName = strings.Trim(validationName, "\n")
 
-	if validationName != appName {
-		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
+		if validationName != appName {
+			return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
+		}
+	} else {
+		validationName = appName
 	}
 
 	err = c.AppsDestroy(appName, validationName)
