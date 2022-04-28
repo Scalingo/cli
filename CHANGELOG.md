@@ -4,6 +4,7 @@
 
 * build(deps): bump github.com/briandowns/spinner from 1.18.0 to 1.18.1
 * build(deps): bump github.com/stretchr/testify from 1.7.0 to 1.7.1
+* feat(app): add a flag --force to destroy an app without interactive confirmation [#721](https://github.com/Scalingo/cli/pull/721) 
 
 ### 1.22.1
 
