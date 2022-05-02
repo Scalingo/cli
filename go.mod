@@ -24,7 +24,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.1
 	github.com/stvp/rollbar v0.5.1
-	github.com/urfave/cli v1.22.5
+	github.com/urfave/cli v1.22.8
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20211104170005-ce137452f963
 	golang.org/x/sys v0.0.0-20220111092808-5a964db01320 // indirect
