@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/stacks"
 )
 
@@ -41,7 +41,7 @@ var (
 		# See also 'stacks'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "stacks-set")
 				return

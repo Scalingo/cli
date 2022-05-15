@@ -3,10 +3,10 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 			cli.IntFlag{Name: "page, p", Usage: "Page number", EnvVar: ""},
 		},
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "logs-archives")
 				return

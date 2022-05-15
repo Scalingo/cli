@@ -3,10 +3,10 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			currentRegion := config.C.ScalingoRegion
 
 			err := apps.Open(currentApp, currentRegion)

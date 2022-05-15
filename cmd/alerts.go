@@ -4,8 +4,8 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/alerts"
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
@@ -27,7 +27,7 @@ var (
 				return
 			}
 
-			err := alerts.List(appdetect.CurrentApp(c))
+			err := alerts.List(detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}
@@ -70,7 +70,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			remindEvery := c.Duration("r")
 			durationBeforeTrigger := c.Duration("duration-before-trigger")
 			err := alerts.Add(currentApp, scalingo.AlertAddParams{
@@ -126,7 +126,7 @@ var (
 			}
 
 			alertID := c.Args()[0]
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			params := scalingo.AlertUpdateParams{}
 			if c.IsSet("c") {
 				ct := c.String("c")
@@ -192,7 +192,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			disabled := false
 			err := alerts.Update(currentApp, c.Args()[0], scalingo.AlertUpdateParams{
 				Disabled: &disabled,
@@ -227,7 +227,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			disabled := true
 			err := alerts.Update(currentApp, c.Args()[0], scalingo.AlertUpdateParams{
 				Disabled: &disabled,
@@ -259,7 +259,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := alerts.Remove(currentApp, c.Args()[0])
 			if err != nil {
 				errorQuit(err)

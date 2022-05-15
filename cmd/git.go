@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/git"
 )
 
@@ -32,7 +32,7 @@ var (
 				return
 			}
 
-			err := git.Setup(appdetect.CurrentApp(c), git.SetupParams{
+			err := git.Setup(detect.CurrentApp(c), git.SetupParams{
 				RemoteName:     c.String("remote"),
 				ForcePutRemote: c.Bool("force"),
 			})
@@ -60,7 +60,7 @@ var (
 				return
 			}
 
-			err := git.Show(appdetect.CurrentApp(c))
+			err := git.Show(detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}

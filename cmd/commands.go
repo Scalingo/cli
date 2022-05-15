@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo/v4"
 )
@@ -47,6 +48,11 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 			currentRegion := c.GlobalString("region")
 			if currentRegion == "" {
 				currentRegion = c.String("region")
+			}
+
+			// Detecting Region from git remote
+			if currentRegion == "" {
+				currentRegion = detect.GetRegionFromGitRemote(c, &regions)
 			}
 
 			if config.C.ScalingoRegion == "" && currentRegion == "" {

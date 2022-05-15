@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/region_migrations"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
@@ -24,7 +24,7 @@ var (
 	   'scalingo --app my-app migration-create --to osc-fr1'
 		`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "migration-create")
 				return
@@ -62,7 +62,7 @@ var (
 			}
 			var step scalingo.RegionMigrationStep
 			migrationID := c.Args()[0]
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			stepsFound := 0
 			if c.Bool("prepare") {
 				stepsFound++
@@ -105,7 +105,7 @@ var (
 			}
 
 			migrationID := c.Args()[0]
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 
 			err := region_migrations.Abort(currentApp, migrationID)
 			if err != nil {
@@ -126,7 +126,7 @@ var (
 	   'scalingo --app my-app migrations'
 		`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 
 			err := region_migrations.List(currentApp)
 			if err != nil {
@@ -147,7 +147,7 @@ var (
 	   'scalingo --app my-app migration-follow migration-id'
 		`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "migration-follow")

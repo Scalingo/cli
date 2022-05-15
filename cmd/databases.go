@@ -10,8 +10,8 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v4"
 )
@@ -38,7 +38,7 @@ Examples
 		# See also 'addons' and 'backup-download'
 		`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")

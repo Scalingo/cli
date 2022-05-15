@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
@@ -22,7 +22,7 @@ var (
 				return
 			}
 
-			err := autoscalers.List(appdetect.CurrentApp(c))
+			err := autoscalers.List(detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}
@@ -59,7 +59,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := autoscalers.Add(currentApp, scalingo.AutoscalerAddParams{
 				ContainerType: c.String("c"),
 				Metric:        c.String("m"),
@@ -105,7 +105,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			params := scalingo.AutoscalerUpdateParams{}
 			if c.IsSet("m") {
 				m := c.String("m")
@@ -156,7 +156,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			disabled := false
 			err := autoscalers.Update(currentApp, c.Args()[0], scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
@@ -189,7 +189,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			disabled := true
 			err := autoscalers.Update(currentApp, c.Args()[0], scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
@@ -218,7 +218,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := autoscalers.Remove(currentApp, c.Args()[0])
 			if err != nil {
 				errorQuit(err)

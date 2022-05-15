@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/collaborators"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 		Flags:       []cli.Flag{appFlag},
 		Description: "List all the collaborators of an application and display information about them.",
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "collaborators")
 			} else {
@@ -38,7 +38,7 @@ var (
 		Flags:       []cli.Flag{appFlag},
 		Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email\n scalingo -a myapp collaborators-add user@example.com",
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "collaborators-add")
 			} else {
@@ -61,7 +61,7 @@ var (
 		Flags:       []cli.Flag{appFlag},
 		Description: "Revoke the invitation of collaboration to the given email\n    scalingo -a myapp collaborators-remove user@example.com",
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "collaborators-remove")
 			} else {
