@@ -5,10 +5,10 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -55,7 +55,7 @@ var (
    Example
      $ scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var sshIdentity string
 			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {
 				sshIdentity = "ssh-agent"

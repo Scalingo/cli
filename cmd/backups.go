@@ -6,8 +6,8 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -23,7 +23,7 @@ var (
 		# See also 'addons' and 'backups-download'
 		`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")
@@ -46,7 +46,7 @@ var (
 
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")
@@ -79,7 +79,7 @@ var (
 
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c)
 			if addonName == "" {
 				fmt.Println("Unable to find the addon name, please use --addon flag.")

@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -25,7 +25,7 @@ var (
      'scalingo --app my-app scale web:+1 worker:-1'
      `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 
 			if len(c.Args()) == 0 {
 				err := apps.ContainerTypes(currentApp)

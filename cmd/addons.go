@@ -4,8 +4,8 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/Scalingo/cli/addons"
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 		# See also 'addons-add' and 'addons-remove'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = addons.List(currentApp)
@@ -47,7 +47,7 @@ var (
 		# See also 'addons-list' and 'addons-plans'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 2 {
 				err = addons.Provision(currentApp, c.Args()[0], c.Args()[1])
@@ -74,7 +74,7 @@ var (
 		# See also 'addons' and 'addons-add'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
 				err = addons.Destroy(currentApp, c.Args()[0])
@@ -101,7 +101,7 @@ var (
 		# See also 'addons-plans' and 'addons-remove'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 2 {
 				err = addons.Upgrade(currentApp, c.Args()[0], c.Args()[1])
@@ -133,7 +133,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			currentAddon := c.Args()[0]
 
 			err := addons.Info(currentApp, currentAddon)

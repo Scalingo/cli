@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crontasks"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := crontasks.List(currentApp)
 			if err != nil {
 				errorQuit(err)

@@ -10,9 +10,9 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/AlecAivazis/survey.v1"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
@@ -37,7 +37,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := integrationlink.Show(currentApp)
 			if err != nil {
 				errorQuit(err)
@@ -88,7 +88,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			integrationURL := c.Args()[0]
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
@@ -248,7 +248,7 @@ var (
 				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			params, err := integrationlink.CheckAndFillParams(c, currentApp)
 			if err != nil {
 				errorQuit(err)
@@ -280,7 +280,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := integrationlink.Delete(currentApp)
 			if err != nil {
 				errorQuit(err)
@@ -307,7 +307,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			branchName := c.Args()[0]
 			err := integrationlink.ManualDeploy(currentApp, branchName)
 			if err != nil {
@@ -339,7 +339,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			pullRequestID := c.Args()[0]
 			err := integrationlink.ManualReviewApp(currentApp, pullRequestID)
 			if err != nil {

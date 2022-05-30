@@ -5,8 +5,8 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/env"
 )
 
@@ -23,7 +23,7 @@ var (
     # See also commands 'env-get', 'env-set' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = env.Display(currentApp)
@@ -57,7 +57,7 @@ var (
 				return
 			}
 
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			variableValue, err := env.Get(currentApp, c.Args()[0])
 			if err != nil {
 				errorQuit(err)
@@ -81,7 +81,7 @@ var (
     # See also commands 'env', 'env-get' and 'env-unset'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) > 0 {
 				err = env.Add(currentApp, c.Args())
@@ -110,7 +110,7 @@ var (
     # See also commands 'env', 'env-get' and 'env-set'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) > 0 {
 				err = env.Delete(currentApp, c.Args())

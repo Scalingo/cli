@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -30,7 +30,7 @@ var (
     # See also 'redis-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			opts := db.MongoConsoleOpts{
 				App:  currentApp,
 				Size: c.String("s"),

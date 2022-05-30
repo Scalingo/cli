@@ -6,9 +6,9 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/go-scalingo/v4/io"
 )
 
@@ -26,7 +26,7 @@ var (
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
 			} else {
-				currentApp := appdetect.CurrentApp(c)
+				currentApp := detect.CurrentApp(c)
 				err := deployments.ResetCache(currentApp)
 				if err != nil {
 					errorQuit(err)
@@ -45,7 +45,7 @@ var (
     $ scalingo -a myapp deployments
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := deployments.List(currentApp)
 			if err != nil {
 				errorQuit(err)
@@ -61,7 +61,7 @@ var (
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "deployment-logs")
 			}
@@ -89,7 +89,7 @@ var (
 		$ scalingo -a myapp deployment-follow
 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			err := deployments.Stream(&deployments.StreamOpts{
 				AppName: currentApp,
 			})
@@ -134,7 +134,7 @@ var (
 			if len(args) == 2 {
 				gitRef = args[1]
 			}
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))

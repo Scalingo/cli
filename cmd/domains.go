@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/domains"
 )
 
@@ -21,7 +21,7 @@ var (
     # See also commands 'domains-add' and 'domains-remove'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = domains.List(currentApp)
@@ -53,7 +53,7 @@ var (
     # See also commands 'domains' and 'domains-remove'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
 				cert := c.String("cert")
@@ -90,7 +90,7 @@ var (
     # See also commands 'domains' and 'domains-add'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 1 {
 				err = domains.Remove(currentApp, c.Args()[0])
@@ -125,7 +125,7 @@ var (
 		# See also commands 'domains' and 'domains-add'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 2 && c.Args()[1] == "disable" {
 				err = domains.DisableSSL(currentApp, c.Args()[0])
@@ -155,7 +155,7 @@ var (
     # See also commands 'domains', 'domains-add' and 'unset-canonical-domain'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "set-canonical-domain")
 				return
@@ -183,7 +183,7 @@ var (
     # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "unset-canonical-domain")
 				return

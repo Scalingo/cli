@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
@@ -23,7 +23,7 @@ var (
 
     $ scalingo -a myapp timeline`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			var err error
 			if len(c.Args()) == 0 {
 				err = apps.Events(currentApp, scalingo.PaginationOpts{

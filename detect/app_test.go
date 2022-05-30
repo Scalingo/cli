@@ -1,4 +1,4 @@
-package appdetect
+package detect
 
 import (
 	"testing"
@@ -27,7 +27,7 @@ func TestGetAppNameFromGitRemote(t *testing.T) {
 
 	for msg, test := range tests {
 		t.Run(msg, func(t *testing.T) {
-			appName := getAppNameFromGitRemote(test.url)
+			appName := extractAppNameFromGitRemote(test.url)
 			assert.Equal(t, test.expectedAppName, appName)
 		})
 	}

@@ -6,8 +6,8 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/detect"
 )
 
 func DeploymentsAutoComplete(c *cli.Context) error {
@@ -15,7 +15,7 @@ func DeploymentsAutoComplete(c *cli.Context) error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	currentApp := appdetect.CurrentApp(c)
+	currentApp := detect.CurrentApp(c)
 
 	deployments, err := client.DeploymentList(currentApp)
 	if err != nil {

@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 	  scalingo --app my-app restart web-1`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if err := apps.Restart(currentApp, c.Bool("s"), c.Args()); err != nil {
 				errorQuit(err)
 			}

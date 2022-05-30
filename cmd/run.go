@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 )
 
@@ -77,7 +77,7 @@ var (
    Example
      scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			opts := apps.RunOpts{
 				App:      currentApp,
 				Cmd:      c.Args(),

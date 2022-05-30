@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 	Example
 	  'scalingo --app my-app ps'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "ps")
 				return

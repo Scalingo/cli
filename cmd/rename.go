@@ -5,9 +5,9 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -25,7 +25,7 @@ var (
 		Usage:       "Rename an application",
 		Description: "Rename an app\n  Example:\n    'scalingo rename --app my-app --new-name my-app-production'",
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			newName := c.String("new-name")
 			if newName == "<new name>" {
 				errorQuit(errors.New("--new-name flag should be defined"))

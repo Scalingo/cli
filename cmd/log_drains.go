@@ -6,8 +6,8 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/AlecAivazis/survey.v1"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/log_drains"
 	"github.com/Scalingo/go-scalingo/v4"
 )
@@ -33,7 +33,7 @@ var (
 
 	# See also commands 'log-drains-add', 'log-drains-remove'`,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "log-drains")
 				return
@@ -99,7 +99,7 @@ var (
 	# See also commands 'log-drains', 'log-drains-remove'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 
 			var addonID string
 			if c.GlobalString("addon") != "<addon_id>" {
@@ -165,7 +165,7 @@ var (
 	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) != 1 {
 				cli.ShowCommandHelp(c, "log-drains-remove")
 				return

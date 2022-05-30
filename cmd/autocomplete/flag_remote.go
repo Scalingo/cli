@@ -5,12 +5,12 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/utils"
 )
 
 func FlagRemoteAutoComplete(c *cli.Context) bool {
-	if dir, ok := appdetect.DetectGit(); ok {
-		remoteNames := appdetect.ScalingoRepoAutoComplete(dir)
+	if dir, ok := utils.DetectGit(); ok {
+		remoteNames := utils.ScalingoRepoAutoComplete(dir)
 		for _, name := range remoteNames {
 			fmt.Println(name)
 		}

@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
      scalingo --app my-app force-https --enable
 	 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "force-https")
 				return
@@ -60,7 +60,7 @@ var (
      scalingo --app my-app sticky-session --enable
 	 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "sticky-session")
 				return
@@ -96,7 +96,7 @@ var (
      scalingo --app my-app router-logs --enable
 	 `,
 		Action: func(c *cli.Context) {
-			currentApp := appdetect.CurrentApp(c)
+			currentApp := detect.CurrentApp(c)
 			if len(c.Args()) > 1 {
 				cli.ShowCommandHelp(c, "router-logs")
 				return

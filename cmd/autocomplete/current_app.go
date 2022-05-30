@@ -5,11 +5,15 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/Scalingo/cli/appdetect"
+	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 )
 
 func CurrentAppCompletion(c *cli.Context) string {
 	appName := ""
+	var err error
+
 	if len(os.Args) >= 2 {
 		for i := range os.Args {
 			if i < len(os.Args) && (os.Args[i] == "-a" || os.Args[i] == "--app") {
@@ -22,8 +26,11 @@ func CurrentAppCompletion(c *cli.Context) string {
 	if appName == "" && os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
 	}
-	if dir, ok := appdetect.DetectGit(); appName == "" && ok {
-		appName, _ = appdetect.ScalingoRepo(dir, c.GlobalString("remote"))
+	if dir, ok := utils.DetectGit(); appName == "" && ok {
+		appName, err = detect.GetAppNameFromGitRemote(dir, c.GlobalString("remote"))
+		if err != nil {
+			debug.Println(err)
+		}
 	}
 	return appName
 }
