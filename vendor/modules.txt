@@ -184,7 +184,7 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli v1.22.8
+# github.com/urfave/cli v1.22.9
 ## explicit
 github.com/urfave/cli
 # github.com/xanzy/ssh-agent v0.3.0
