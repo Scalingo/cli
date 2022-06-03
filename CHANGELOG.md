@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* chore(go): chore(go): use go 1.17 [#728](https://github.com/Scalingo/cli/pull/728)
+* chore(go): use go 1.17 [#728](https://github.com/Scalingo/cli/pull/728)
 * feat(app): Region detection from Git remote [#724](https://github.com/Scalingo/cli/pull/724)
 * feat(app): add a flag --force to destroy an app without interactive confirmation [#721](https://github.com/Scalingo/cli/pull/721)
 * build(deps): bump github.com/briandowns/spinner from 1.18.0 to 1.18.1
