@@ -33,7 +33,7 @@ var (
 		Category: "Runtime Stacks",
 		Usage:    "Set the runtime stack of an app",
 		Flags:    []cli.Flag{appFlag},
-		Description: `Set the runtime stack of an app (deployment cache will be reseted):
+		Description: `Set the runtime stack of an app (deployment cache will be reset):
 
 		Example:
 			scalingo --app my-app stacks-set scalingo-18

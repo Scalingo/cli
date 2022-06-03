@@ -36,7 +36,7 @@ func Set(app string, stack string) error {
 	}
 
 	io.Statusf("Stack of %v has been set to %v (%v)\n", io.Bold(app), io.Bold(stackToSet.Name), stackToSet.ID)
-	io.Infof(io.Gray("Deployment cache of %v has been reseted\n"), app)
+	io.Infof(io.Gray("Deployment cache of %v has been reset\n"), app)
 
 	return nil
 }
