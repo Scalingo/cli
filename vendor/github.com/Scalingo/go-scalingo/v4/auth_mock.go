@@ -3,14 +3,15 @@ package scalingo
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang/mock/gomock"
+
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
 	"github.com/Scalingo/go-scalingo/v4/http/httpmock"
-	jwt "github.com/golang-jwt/jwt/v4"
-	gomock "github.com/golang/mock/gomock"
 )
 
 func MockAuth(ctrl *gomock.Controller) *httpmock.MockClient {
@@ -27,7 +28,7 @@ func MockAuth(ctrl *gomock.Controller) *httpmock.MockClient {
 		}
 
 		return &http.Response{
-			Body: ioutil.NopCloser(bytes.NewBuffer([]byte(fmt.Sprintf(`{"token": "%v"}`, jwt)))),
+			Body: io.NopCloser(bytes.NewBuffer([]byte(fmt.Sprintf(`{"token": "%v"}`, jwt)))),
 		}, nil
 	}).AnyTimes()
 	return mock

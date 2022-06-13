@@ -1,4 +1,4 @@
-FROM golang:1.11
+FROM golang:1.17
 MAINTAINER Étienne Michon "etienne@scalingo.com"
 
 RUN go get github.com/cespare/reflex

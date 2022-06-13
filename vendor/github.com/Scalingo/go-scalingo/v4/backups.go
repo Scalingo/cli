@@ -72,7 +72,6 @@ func (c *Client) BackupShow(app, addonID, backup string) (*Backup, error) {
 		return nil, errgo.Notef(err, "fail to get backup")
 	}
 	return &backupRes.Backup, nil
-
 }
 
 func (c *Client) BackupDownloadURL(app, addonID, backupID string) (string, error) {
