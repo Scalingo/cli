@@ -1,1 +1,2 @@
 --ignore-dir=bin
+--ignore-dir=vendor/
