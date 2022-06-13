@@ -20,7 +20,7 @@ func DisableSSL(app string, domain string) error {
 		return errgo.Notef(err, "fail to find the matching domain to disable SSL")
 	}
 
-	_, err = c.DomainsUpdate(app, d.ID, "", "")
+	_, err = c.DomainUnsetCertificate(app, d.ID)
 	if err != nil {
 		return errgo.Notef(err, "fail to unset the domain certificate")
 	}
@@ -44,7 +44,7 @@ func EnableSSL(app, domain, certPath, keyPath string) error {
 		return errgo.Notef(err, "fail to validate the given certificate and key")
 	}
 
-	d, err = c.DomainsUpdate(app, d.ID, certContent, keyContent)
+	d, err = c.DomainSetCertificate(app, d.ID, certContent, keyContent)
 	if err != nil {
 		return errgo.Notef(err, "fail to set the domain certificate")
 	}
