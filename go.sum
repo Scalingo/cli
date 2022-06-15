@@ -13,8 +13,8 @@ github.com/Scalingo/go-scalingo/v4 v4.16.0 h1:PVTSYk+YfQmCGn9KPFQ16SJyC5NAKom5Bm
 github.com/Scalingo/go-scalingo/v4 v4.16.0/go.mod h1:sniKbxDzZSSyXhcAkoX4Kp0EJrgcjNFWMvUTtWohP6I=
 github.com/Scalingo/go-utils/errors v1.1.1 h1:G7zypaDBj0O6QFvX0xL5dMDXbiBgq+3KKuodldtOpg0=
 github.com/Scalingo/go-utils/errors v1.1.1/go.mod h1:gsnGOMma5x3CSgPb8i5eMuHcKi3RvTJ9dWPNRev161c=
-github.com/Scalingo/go-utils/retry v1.1.0 h1:dKi7qAOCWpq5W4dNr+xr50EiEthe+hfCwDDk2y9vXng=
-github.com/Scalingo/go-utils/retry v1.1.0/go.mod h1:fz63mPhkPlpQ+ieqgCe0kd1hQKe+ToQ8gUtRQ5o01ZE=
+github.com/Scalingo/go-utils/retry v1.1.1 h1:zc5HbXbBzf0fo7zMvhEMvx75qaL2FH7SxDhCoBfS7jE=
+github.com/Scalingo/go-utils/retry v1.1.1/go.mod h1:za1k9sUU7fSQEFTv3c4Y8kG/8ybsq6C77sOo3ANEeN4=
 github.com/VividCortex/ewma v1.1.1/go.mod h1:2Tkkvm3sRDVXaiyucHiACn4cqf7DpdyLvmxzcbUokwA=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
