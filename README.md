@@ -302,7 +302,11 @@ Build the new version for all platforms with:
 
 Tag and release a new version on GitHub
 [here](https://github.com/Scalingo/cli/releases/new). Attach the zip archives
-created by the `make-release.sh` script to this release.
+created by the `make-release.sh` script to this release:
+
+```sh
+gh release create v1.23.0 ./bin/1.23.0/scalingo_*.{zip,tar.gz} --generate-notes
+```
 
 Last, restart the Scalingo application `cli-download-service`. It serves as
 cache between GitHub and our customers for a more efficient check of what is the
