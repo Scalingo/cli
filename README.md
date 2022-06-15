@@ -305,7 +305,7 @@ Tag and release a new version on GitHub
 created by the `make-release.sh` script to this release:
 
 ```sh
-gh release create v1.23.0 ./bin/1.23.0/scalingo_*.{zip,tar.gz} --generate-notes
+gh release create 1.23.0 ./bin/1.23.0/scalingo_*.{zip,tar.gz} --generate-notes
 ```
 
 Last, restart the Scalingo application `cli-download-service`. It serves as
