@@ -9,6 +9,7 @@
 * build(deps): bump github.com/briandowns/spinner from 1.18.0 to 1.18.1
 * build(deps): bump github.com/stretchr/testify from 1.7.0 to 1.7.1
 * build(deps): bump github.com/urfave/cli from 1.22.5 to 1.22.8
+* build(deps): bump github.com/Scalingo/go-utils/errors from 1.1.0 to 1.1.1
 
 ### 1.22.1
 
