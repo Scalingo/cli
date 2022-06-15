@@ -1,3 +1,3 @@
-# Package `errors` v1.0.0
+# Package `errors` v1.1.1
 
 The package `errors` contains various utility regarding errors management.
