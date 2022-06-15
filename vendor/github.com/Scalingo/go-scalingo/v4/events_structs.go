@@ -205,7 +205,7 @@ type EventTransferAppType struct {
 
 func (ev *EventTransferAppType) String() string {
 	return fmt.Sprintf(
-		"the application has been transfered to %s (%s)",
+		"the application has been transferred to %s (%s)",
 		ev.TypeData.NewOwner.Username, ev.TypeData.NewOwner.Email,
 	)
 }

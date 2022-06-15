@@ -2,7 +2,7 @@ package scalingo
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"strconv"
 
 	"gopkg.in/errgo.v1"
@@ -43,7 +43,7 @@ func (c *Client) LogsArchivesByCursor(app string, cursor string) (*LogsArchivesR
 		return nil, errgo.Mask(err)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -74,7 +74,7 @@ func (c *Client) LogsArchives(app string, page int) (*LogsArchivesResponse, erro
 		return nil, errgo.Mask(err)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

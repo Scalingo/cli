@@ -139,6 +139,11 @@
     {
       "src_package": ".",
       "dst_package": "scalingomock",
+      "interface": "SCMRepoLinkService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
       "interface": "SignUpService"
     },
     {

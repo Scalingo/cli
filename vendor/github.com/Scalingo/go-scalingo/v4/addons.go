@@ -2,13 +2,13 @@ package scalingo
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"strconv"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v4/http"
-
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type AddonsService interface {
@@ -169,7 +169,7 @@ func (c *Client) AddonLogsArchives(app, addonID string, page int) (*LogsArchives
 		return nil, errgo.Notef(err, "fail to get log archives")
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to read body of response")
 	}

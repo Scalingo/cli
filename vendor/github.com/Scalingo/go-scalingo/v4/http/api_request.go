@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -126,7 +125,7 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 		return nil, fmt.Errorf("Fail to query %s: %v", req.HTTPRequest.Host, err)
 	}
 	debug.Printf(pkgio.Indent("Request ID: %v", 6), res.Header.Get("X-Request-Id"))
-	debug.Printf(pkgio.Indent("Duration: %v", 6), time.Now().Sub(now))
+	debug.Printf(pkgio.Indent("Duration: %v", 6), time.Since(now))
 
 	if req.Expected.Contains(res.StatusCode) {
 		return res, nil
@@ -145,7 +144,7 @@ func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 }
 
 func parseJSON(res *http.Response, data interface{}) error {
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		reqErr := fmt.Sprintf("%v %v", res.Request.Method, res.Request.URL)
 		return errgo.Newf("fail to read body of request %v: %v", reqErr, err)

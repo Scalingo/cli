@@ -17,12 +17,12 @@ func DisableSSL(app string, domain string) error {
 
 	d, err := findDomain(c, app, domain)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to find the matching domain to disable SSL")
 	}
 
-	_, err = c.DomainsUpdate(app, d.ID, "", "")
+	_, err = c.DomainUnsetCertificate(app, d.ID)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to unset the domain certificate")
 	}
 	io.Status("SSL of " + domain + " has been disabled.")
 	return nil
@@ -36,17 +36,17 @@ func EnableSSL(app, domain, certPath, keyPath string) error {
 
 	d, err := findDomain(c, app, domain)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to find the matching domain to enable SSL")
 	}
 
 	certContent, keyContent, err := validateSSL(certPath, keyPath)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to validate the given certificate and key")
 	}
 
-	d, err = c.DomainsUpdate(app, d.ID, certContent, keyContent)
+	d, err = c.DomainSetCertificate(app, d.ID, certContent, keyContent)
 	if err != nil {
-		return errgo.Mask(err)
+		return errgo.Notef(err, "fail to set the domain certificate")
 	}
 
 	io.Status("The certificate and key have been installed for " + d.Name + " (Validity: " + d.Validity.UTC().String() + ")")
@@ -68,11 +68,11 @@ func validateSSL(cert, key string) (string, string, error) {
 
 	certContent, err := os.ReadFile(cert)
 	if err != nil {
-		return "", "", errgo.Mask(err)
+		return "", "", errgo.Notef(err, "fail to read the TLS certificate")
 	}
 	keyContent, err := os.ReadFile(key)
 	if err != nil {
-		return "", "", errgo.Mask(err)
+		return "", "", errgo.Notef(err, "fail to read the private key")
 	}
 	return string(certContent), string(keyContent), nil
 }

@@ -3,3 +3,9 @@
 # IDE
 .idea/
 .vscode/
+
+# Ignore tests binaries
+*.test
+# But take CI env file
+!.env.test
+/_dev/go-cache

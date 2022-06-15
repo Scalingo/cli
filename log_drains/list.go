@@ -49,14 +49,14 @@ func List(app string, opts ListAddonOpts) error {
 
 		for _, addon := range addons {
 			if opts.AddonID == addon.ID || opts.WithAddons {
-				res, err := c.LogDrainsAddonList(app, addon.ID)
+				drains, err := c.LogDrainsAddonList(app, addon.ID)
 				if err != nil {
 					io.Status(err)
 				}
-				if len(res.Drains) > 0 {
+				if len(drains) > 0 {
 					appToPrint = append(appToPrint, printableDrains{
 						AppName:   addon.AddonProvider.Name,
-						DrainURLs: res.Drains,
+						DrainURLs: drains,
 					})
 				}
 

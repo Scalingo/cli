@@ -66,7 +66,7 @@ func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatfor
 	}
 	defer res.Body.Close()
 
-	debug.Printf("[NotificationPlatformByName] reponse: %+v", res.Body)
+	debug.Printf("[NotificationPlatformByName] response: %+v", res.Body)
 	var response PlatformsRes
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
