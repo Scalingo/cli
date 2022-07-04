@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* build(deps): bump github.com/stretchr/testify from 1.7.2 to 1.8.0
+
 ### 1.23.0
 
 * fix(domains): replace DomainsUpdate with Domain\*Certificate [#731](https://github.com/Scalingo/cli/pull/731)
