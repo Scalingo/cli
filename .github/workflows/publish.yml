@@ -28,7 +28,7 @@ jobs:
       - run: go version
 
       - name: Execute the tests
-        run: go test -race -p=1 ./...
+        run: go test -race ./...
 
       - name: Build the binaries
         run: |
