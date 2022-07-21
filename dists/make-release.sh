@@ -80,5 +80,3 @@ fi
 if uname -a | grep -iq Cygwin ; then
   build_for windows
 fi
-
-exit 1
