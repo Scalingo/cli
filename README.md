@@ -279,25 +279,29 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
+git switch --create release/1.23.0
 git add .
 git commit -m "Bump version 1.23.0"
-git push origin master
+git push --set-upstream origin release/1.23.0
+gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
 #### Tag the New Release
 
 ```bash
 git tag 1.23.0
-git push --tags
+git push origin master 1.23.0
 ```
 
-Last, restart the Scalingo application `cli-download-service`. It serves as
-cache between GitHub and our customers for a more efficient check of what is the
-new CLI version. Type:
+Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
 
-```
+When the GitHub Action finished, restart the Scalingo application `cli-download-service`:
+
+```shell
 scalingo --region osc-fr1 --app cli-download-service restart
 ```
+
+It serves as cache between GitHub and our customers for a more efficient check of what is the new CLI version.
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
