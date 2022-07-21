@@ -67,10 +67,7 @@ func updateTtySize(c *scalingo.Client, url string) error {
 		fmt.Sprintf("%d", cols),
 		fmt.Sprintf("%d", lines),
 	}
-	paramsJSON, err := json.Marshal(&params)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
+	paramsJSON, _ := json.Marshal(&params)
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJSON))
 	if err != nil {
