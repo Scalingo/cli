@@ -13,7 +13,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/httpclient"
@@ -58,7 +58,7 @@ func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL strin
 }
 
 func updateTtySize(c *scalingo.Client, url string) error {
-	cols, lines, err := terminal.GetSize(int(os.Stdout.Fd()))
+	cols, lines, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		return errgo.Notef(err, "fail to get the terminal size")
 	}
