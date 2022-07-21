@@ -32,4 +32,4 @@ jobs:
 
       - name: Build the binaries
         run: |
-          ./dists/make-release.sh -v $(cat VERSION) -b
+          ./dists/make-release.sh -v ${{ steps.tag_name.outputs.TAG_NAME }}

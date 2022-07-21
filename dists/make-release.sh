@@ -5,15 +5,11 @@ set -e
 set -x
 
 VERSION=""
-BUILD_ONLY=false
 
 while getopts :v:b OPT; do
   case $OPT in
     v)
       VERSION=$OPTARG
-      ;;
-    b)
-      BUILD_ONLY=true
       ;;
   esac
 done
@@ -68,22 +64,6 @@ function build_for() {
   done
 }
 
-if [ "$BUILD_ONLY" = "false" ]; then
-  current_version=$(cat VERSION)
-  files=(.goxc.json README.md VERSION config/version.go)
-
-  sed -i "s/To be Released/To be Released\n\n### ${VERSION}/g" CHANGELOG.md
-  git add CHANGELOG.md
-
-  for file in ${files[@]}; do
-    sed -i "s/${current_version}/${VERSION}/g" $file
-    git add $file
-  done
-  echo "Tagging version ${VERSION}"
-  git commit -m "Bump ${VERSION}"
-  git tag $VERSION
-fi
-
 if uname -a | grep -iq Linux ; then
   build_for "linux" "tarball"
   build_for "freebsd"
@@ -99,21 +79,6 @@ if uname -a | grep -iq Mingw ; then
 fi
 if uname -a | grep -iq Cygwin ; then
   build_for windows
-fi
-
-if [ "$BUILD_ONLY" = "false" ] ; then
-  git push origin master
-  git push origin $VERSION
-
-  echo "Steps to create the release:"
-  echo "- Go to https://github.com/Scalingo/cli/releases/new"
-  echo "- Set the title to v${VERSION}"
-  echo "- Set the branch to ${VERSION}"
-  echo "- Add all zip and tar.gz from bin/${VERSION}"
-  echo "- Set the content to:"
-  sed -n "/$VERSION/,/$current_version/p" CHANGELOG.md | sed -e '1d;$d'
-  echo -e "\n\nOnce done, restart the cli-download-service with"
-  echo "scalingo --region osc-fr1 -a cli-download-service restart"
 fi
 
 exit 1
