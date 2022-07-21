@@ -26,12 +26,6 @@ fi
 bin_dir="bin/$VERSION"
 mkdir -p $bin_dir
 
-read -p "Which Rollbar token should be used in this release: " ROLLBAR_TOKEN
-if [[ -z $ROLLBAR_TOKEN ]]; then
-  echo "Rollbar token is mandatory" >&2
-  exit 2
-fi
-
 function build_for() {
   local os=$1
   local archive_type=$2
@@ -48,8 +42,7 @@ function build_for() {
     GOOS=$os GOARCH=$arch go build -ldflags " \
       -X main.buildstamp=$(date -u '+%Y-%m-%d_%I:%M:%S%p') \
       -X main.githash=$(git rev-parse HEAD) \
-      -X main.VERSION=$VERSION \
-      -X github.com/Scalingo/cli/config.RollbarToken=$ROLLBAR_TOKEN"
+      -X main.VERSION=$VERSION"
 
     release_dir="scalingo_${VERSION}_${os}_${arch}"
     archive_dir="$bin_dir/$release_dir"
