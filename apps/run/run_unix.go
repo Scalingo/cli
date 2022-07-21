@@ -41,7 +41,7 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	signals <- syscall.SIGWINCH
 }
 
-func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl string) {
+func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
 	switch s {
 	case syscall.SIGINT:
 		socket.Write([]byte{0x03})
@@ -50,7 +50,7 @@ func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl strin
 	case syscall.SIGTSTP:
 		socket.Write([]byte{0x1a})
 	case syscall.SIGWINCH:
-		err := updateTtySize(c, runUrl)
+		err := updateTtySize(c, runURL)
 		if err != nil {
 			debug.Println("WARN: Error when updating terminal size:", err)
 		}
