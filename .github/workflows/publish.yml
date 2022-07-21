@@ -27,5 +27,10 @@ jobs:
           check-latest: true
       - run: go version
 
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          only-new-issues: true
+
       - name: Execute the tests
         run: go test -race -p=1 ./...
