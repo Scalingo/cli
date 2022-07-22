@@ -86,10 +86,12 @@ func displayError(err error) {
 }
 
 func displayRequestFailedError(rootError error, currentUser *scalingo.User, autherr error, err error) {
-	requestFailedErr := rootError.(*httpclient.RequestFailedError)
+	// we can ignore the returned error as it is already checked earlier in the code
+	requestFailedErr, _ := rootError.(*httpclient.RequestFailedError)
 	if requestFailedErr.Code == 400 {
-		// In case of bad request error, we only want to display the API error
-		io.Errorf("%s\n", requestFailedErr.APIError)
+		// In case of bad request error, we only want to display the API error.
+		// The call to strings.ReplaceAll is useful as the API error message may contain a raw \n.
+		io.Errorf("%s\n", strings.ReplaceAll(requestFailedErr.Error(), `\n`, "\n"))
 		return
 	}
 	if requestFailedErr.Code == 401 {
@@ -102,7 +104,8 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 		return
 	}
 	if requestFailedErr.Code == 404 {
-		notFoundErr := requestFailedErr.APIError.(httpclient.NotFoundError)
+		// we can ignore the returned error as it is already checked earlier in the code
+		notFoundErr, _ := requestFailedErr.APIError.(httpclient.NotFoundError)
 		if notFoundErr.Resource == "app" {
 			// apiURL contains something like:
 			// "https://api.agora-fr1.scalingo.com/v1"
