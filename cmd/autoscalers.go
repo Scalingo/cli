@@ -6,7 +6,7 @@ import (
 	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v4"
 )
 
 var (
@@ -48,7 +48,7 @@ var (
    All options are mandatory.
 
    Example
-     scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 1 --max-containers 3
+     scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 2 --max-containers 4
 		`,
 		Action: func(c *cli.Context) {
 			if !isValidAutoscalerAddOpts(c) {
