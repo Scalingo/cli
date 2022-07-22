@@ -1,0 +1,31 @@
+name: Publish
+
+on:
+  push:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GOX_ARCHITECTURES: amd64 386
+    steps:
+      # Currently there is no possibility to get a tag name. Hence we filter the GITHUB_REF variable which contains something like "refs/tags/v2.0.0" if the tag is "v2.0.0". The value can be used with "steps.tag_name.outputs.TAG_NAME"
+      - name: Get tag name
+        if: startsWith(github.ref, 'refs/tags/')
+        id: tag_name
+        run: |
+          echo "::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}"
+          echo "$TAG_NAME"
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Setup Go environment
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
+          check-latest: true
+      - run: go version
+
+      - name: Execute the tests
+        run: go test -race -p=1 ./...
