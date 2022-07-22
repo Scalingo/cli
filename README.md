@@ -274,47 +274,34 @@ Bump new version number in:
 - `CHANGELOG.md`
 - `.goxc.json`
 - `README.md`
-- `VERSION`
 - `config/version.go`
 
 And commit these changes:
 
 ```bash
+git switch --create release/1.23.0
 git add .
 git commit -m "Bump version 1.23.0"
-git push origin master
+git push --set-upstream origin release/1.23.0
+gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
 #### Tag the New Release
 
 ```bash
 git tag 1.23.0
-git push --tags
+git push origin master 1.23.0
 ```
 
-#### Build the New Release
+Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
 
-Build the new version for all platforms with:
+When the GitHub Action finished, restart the Scalingo application `cli-download-service`:
 
-```sh
-./dists/make-release.sh -v 1.23.0 -b
-```
-
-Tag and release a new version on GitHub
-[here](https://github.com/Scalingo/cli/releases/new). Attach the zip archives
-created by the `make-release.sh` script to this release:
-
-```sh
-gh release create 1.23.0 ./bin/1.23.0/scalingo_*.{zip,tar.gz} --generate-notes
-```
-
-Last, restart the Scalingo application `cli-download-service`. It serves as
-cache between GitHub and our customers for a more efficient check of what is the
-new CLI version. Type:
-
-```
+```shell
 scalingo --region osc-fr1 --app cli-download-service restart
 ```
+
+It serves as cache between GitHub and our customers for a more efficient check of what is the new CLI version.
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 

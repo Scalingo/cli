@@ -28,4 +28,16 @@ jobs:
       - run: go version
 
       - name: Execute the tests
-        run: go test -race -p=1 ./...
+        run: go test -race ./...
+
+      - name: Build the binaries
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          ./dists/make-release.sh -v ${{ steps.tag_name.outputs.TAG_NAME }}
+
+      - name: Release the new version
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: Please refer to the [CHANGELOG.md](https://github.com/Scalingo/cli/blob/${{ steps.tag_name.outputs.TAG_NAME }}/CHANGELOG.md) file.
+          files: ./bin/${{ steps.tag_name.outputs.TAG_NAME }}/*.{zip,tar.gz}
