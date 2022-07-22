@@ -13,7 +13,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/heroku/hk/term"
+	"golang.org/x/term"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/httpclient"
@@ -41,7 +41,7 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	signals <- syscall.SIGWINCH
 }
 
-func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl string) {
+func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
 	switch s {
 	case syscall.SIGINT:
 		socket.Write([]byte{0x03})
@@ -50,7 +50,7 @@ func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl strin
 	case syscall.SIGTSTP:
 		socket.Write([]byte{0x1a})
 	case syscall.SIGWINCH:
-		err := updateTtySize(c, runUrl)
+		err := updateTtySize(c, runURL)
 		if err != nil {
 			debug.Println("WARN: Error when updating terminal size:", err)
 		}
@@ -58,25 +58,18 @@ func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runUrl strin
 }
 
 func updateTtySize(c *scalingo.Client, url string) error {
-	cols, err := term.Cols()
+	cols, lines, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	lines, err := term.Lines()
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "fail to get the terminal size")
 	}
 
 	params := UpdateTtyParams{
 		fmt.Sprintf("%d", cols),
 		fmt.Sprintf("%d", lines),
 	}
-	paramsJson, err := json.Marshal(&params)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
+	paramsJSON, _ := json.Marshal(&params)
 
-	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJson))
+	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJSON))
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
