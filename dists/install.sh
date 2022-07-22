@@ -100,7 +100,7 @@ main() {
   done
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
-  trap "clean_install ${tmpdir}" EXIT
+  # trap "clean_install ${tmpdir}" EXIT
 
   version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
   if [ -z "$version" ]; then
@@ -130,9 +130,15 @@ main() {
       tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
       ;;
   esac
-  echo "DONE"
 
   exe_path=${tmpdir}/${dirname}/scalingo
+  if [ ! -f "$exe_path" ]; then
+    echo "" >&2
+    echo "-----> Fail to extract the CLI archive" >&2
+    exit 1
+  fi
+  echo "DONE"
+
   target_dir="${target_dir:-/usr/local/bin}"
   target="$target_dir/scalingo"
 
