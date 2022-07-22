@@ -2,7 +2,6 @@
 
 [ "$DEBUG" = "1" ] && set -x
 set -e
-set -x
 
 VERSION=""
 
