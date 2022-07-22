@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	humanize "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 
@@ -71,20 +71,20 @@ func displayStatsTable(stats []*scalingo.ContainerStat) error {
 			fmt.Sprintf(
 				"%2d%% %v/%v",
 				int(float64(s.MemoryUsage)/float64(s.MemoryLimit)*100),
-				humanize.Bytes(uint64(s.MemoryUsage)),
-				humanize.Bytes(uint64(s.MemoryLimit)),
+				humanize.IBytes(uint64(s.MemoryUsage)),
+				humanize.IBytes(uint64(s.MemoryLimit)),
 			),
 			fmt.Sprintf(
 				"%2d%% %v/%v",
 				int(float64(s.SwapUsage)/float64(s.SwapLimit)*100),
-				humanize.Bytes(uint64(s.SwapUsage)),
-				humanize.Bytes(uint64(s.SwapLimit)),
+				humanize.IBytes(uint64(s.SwapUsage)),
+				humanize.IBytes(uint64(s.SwapLimit)),
 			),
 		})
 		t.Append([]string{
 			"", "",
-			fmt.Sprintf("Highest: %v", humanize.Bytes(uint64(s.HighestMemoryUsage))),
-			fmt.Sprintf("Highest: %v", humanize.Bytes(uint64(s.HighestSwapUsage))),
+			fmt.Sprintf("Highest: %v", humanize.IBytes(uint64(s.HighestMemoryUsage))),
+			fmt.Sprintf("Highest: %v", humanize.IBytes(uint64(s.HighestSwapUsage))),
 		})
 		if i != len(stats)-1 {
 			t.Append([]string{"", "", "", ""})
