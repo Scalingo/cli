@@ -46,7 +46,6 @@ var (
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})
-
 			}
 
 			if err != nil {
