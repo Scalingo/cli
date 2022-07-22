@@ -100,7 +100,7 @@ main() {
   done
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
-  # trap "clean_install ${tmpdir}" EXIT
+  trap "clean_install ${tmpdir}" EXIT
 
   version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
   if [ -z "$version" ]; then
