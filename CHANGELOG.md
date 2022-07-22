@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* fix(install.sh): better error message if fails to get the version [#748](https://github.com/Scalingo/cli/pull/748)
 * feat(logs): possibility to get the addon logs by using its type (e.g. Redis) [#745](https://github.com/Scalingo/cli/pull/745)
 * fix(error): interpret raw newline [#744](https://github.com/Scalingo/cli/pull/744)
 * fix(stats): display memory as IEC size [#742](https://github.com/Scalingo/cli/pull/742)

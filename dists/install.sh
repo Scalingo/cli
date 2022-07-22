@@ -101,13 +101,25 @@ main() {
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
-  version=$(curl -s https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+
+  version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+  if [ -z "$version" ]; then
+    echo "-----> Fail to get the version of the CLI" >&2
+    echo "You probably have an old version of curl. Please check your curl version and update accordingly." >&2
+    exit 1
+  fi
+
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
   url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
 
   status "Downloading Scalingo client...  "
-  curl -s -L -o ${tmpdir}/${archive_name} ${url}
+  curl --silent --fail --location --output ${tmpdir}/${archive_name} ${url}
+  if [ ! -f ${tmpdir}/${archive_name} ]; then
+    echo "" >&2
+    echo "-----> Fail to download the CLI archive" >&2
+    exit 1
+  fi
   echo "DONE"
   status "Extracting...   "
   case $ext in
@@ -118,9 +130,15 @@ main() {
       tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
       ;;
   esac
-  echo "DONE"
 
   exe_path=${tmpdir}/${dirname}/scalingo
+  if [ ! -f "$exe_path" ]; then
+    echo "" >&2
+    echo "-----> Fail to extract the CLI archive" >&2
+    exit 1
+  fi
+  echo "DONE"
+
   target_dir="${target_dir:-/usr/local/bin}"
   target="$target_dir/scalingo"
 
