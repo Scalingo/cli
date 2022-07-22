@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* fix(stats): display memory as IEC size [#742](https://github.com/Scalingo/cli/pull/742)
 * fix(autoscalers): min containers cannot be 1 [#741](https://github.com/Scalingo/cli/pull/741)
 * refactor(run_unix): replace github.com/heroku/hk/term with golang.org/x/term [#740](https://github.com/Scalingo/cli/pull/740)
 * build(deps): bump github.com/stretchr/testify from 1.7.2 to 1.8.0
