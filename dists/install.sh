@@ -101,7 +101,14 @@ main() {
 
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
-  version=$(curl -s https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+
+  version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+  if [ -z "$version" ]; then
+    echo "-----> Fail to get the version of the CLI." >&2
+    echo "You probably have an old version of curl. Please check your curl version and update accordingly." >&2
+    exit 1
+  fi
+
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
   url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
