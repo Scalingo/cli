@@ -11,6 +11,7 @@
 * refactor(run_unix): replace github.com/heroku/hk/term with golang.org/x/term [#740](https://github.com/Scalingo/cli/pull/740)
 * build(deps): bump github.com/stretchr/testify from 1.7.2 to 1.8.0
 * build(deps): bump github.com/cheggaaa/pb/v3 from 3.0.8 to 3.1.0
+* build(deps): bump github.com/briandowns/spinner from 1.18.1 to 1.19.0
 
 ### 1.23.0
 
