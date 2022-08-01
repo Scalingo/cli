@@ -1,7 +1,5 @@
-# Goreleaser documentation at https://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
 builds:
   -
@@ -25,7 +23,6 @@ builds:
     # Custom ldflags templates.
     # https://goreleaser.com/customization/templates/
     ldflags:
-      - -X main.version={{.Version}}
         -X main.buildstamp={{.Date}}
         -X main.githash={{.FullCommit}}
 
@@ -35,8 +32,6 @@ archives:
     wrap_in_directory: true
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
 changelog:
   use: github
   filters:
