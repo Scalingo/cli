@@ -1,0 +1,40 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  -
+    id: scalingo
+    binary: scalingo
+    main: ./scalingo
+    goos:
+      - linux
+      - windows
+      - darwin
+      - freebsd
+      - openbsd
+    goarch:
+      - amd64
+      - arm64
+      - 386
+    ignore:
+      - goos: darwin
+        goarch: 386
+
+    # Custom ldflags templates.
+    # https://goreleaser.com/customization/templates/
+    ldflags:
+        -X main.buildstamp={{.Date}}
+        -X main.githash={{.FullCommit}}
+
+archives:
+  -
+    name_template: 'scalingo_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    wrap_in_directory: true
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

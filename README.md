@@ -272,7 +272,6 @@ git push --set-upstream origin v1.23.0
 Bump new version number in:
 
 - `CHANGELOG.md`
-- `.goxc.json`
 - `README.md`
 - `config/version.go`
 
