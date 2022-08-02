@@ -9,6 +9,7 @@
 * fix(error): interpret raw newline [#744](https://github.com/Scalingo/cli/pull/744)
 * fix(stats): display memory as IEC size [#742](https://github.com/Scalingo/cli/pull/742)
 * fix(autoscalers): min containers cannot be 1 [#741](https://github.com/Scalingo/cli/pull/741)
+* fix(appdetect): Do not crash if there is a remote without any URL [#755](https://github.com/Scalingo/cli/pull/755)
 * refactor(run_unix): replace github.com/heroku/hk/term with golang.org/x/term [#740](https://github.com/Scalingo/cli/pull/740)
 * build(deps): bump github.com/stretchr/testify from 1.7.2 to 1.8.0
 * build(deps): bump github.com/cheggaaa/pb/v3 from 3.0.8 to 3.1.0

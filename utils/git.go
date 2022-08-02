@@ -63,6 +63,10 @@ func ScalingoGitRemotes(directory string) ([]*git.Remote, error) {
 
 	matchedRemotes := []*git.Remote{}
 	for _, remote := range remotes {
+		if len(remote.Config().URLs) == 0 {
+			continue
+		}
+
 		remoteURL := remote.Config().URLs[0]
 		matched, err := regexp.Match(".*scalingo.com:.*.git", []byte(remoteURL))
 		if err != nil || !matched {
