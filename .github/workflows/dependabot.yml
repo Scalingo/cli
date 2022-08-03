@@ -2,7 +2,10 @@ name: Dependabot auto-approve
 on: pull_request
 
 permissions:
+  # Mandatory for both the auto-merge enabling and approval steps
   pull-requests: write
+  # Mandatory for the auto-merge enabling step
+  contents: write
 
 jobs:
   dependabot:
