@@ -7,7 +7,6 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type MySQLConsoleOpts struct {
@@ -16,12 +15,7 @@ type MySQLConsoleOpts struct {
 }
 
 func MySQLConsole(opts MySQLConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
-	}
-
-	mySQLURL, user, password, err := dbURL(c, opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
+	mySQLURL, user, password, err := dbURL(opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
