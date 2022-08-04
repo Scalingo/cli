@@ -16,7 +16,7 @@ func MongoConsole(opts MongoConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_MONGO"
 	}
-	mongoURL, _, _, err := dbURL(opts.App, opts.VariableName, []string{"mongodb://"})
+	mongoURL, _, _, err := dbURL(opts.App, opts.VariableName, []string{"mongodb"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

@@ -16,7 +16,7 @@ func PgSQLConsole(opts PgSQLConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_POSTGRESQL"
 	}
-	postgreSQLURL, user, _, err := dbURL(opts.App, opts.VariableName, []string{"postgres://", "postgis://"})
+	postgreSQLURL, user, _, err := dbURL(opts.App, opts.VariableName, []string{"postgres", "postgis"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

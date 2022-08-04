@@ -19,7 +19,7 @@ func MySQLConsole(opts MySQLConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_MYSQL"
 	}
-	mySQLURL, user, password, err := dbURL(opts.App, opts.VariableName, []string{"mysql://", "mysql2://"})
+	mySQLURL, user, password, err := dbURL(opts.App, opts.VariableName, []string{"mysql", "mysql2"})
 	if err != nil {
 		return errgo.Mask(err)
 	}

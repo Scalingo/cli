@@ -40,7 +40,7 @@ func dbURLFromAPI(appName, envVariableName string, urlSchemes []string) (string,
 	}
 	for _, variable := range variables {
 		for _, scheme := range urlSchemes {
-			if strings.Contains(variable.Name, envVariableName) && strings.HasPrefix(variable.Value, scheme) {
+			if strings.Contains(variable.Name, envVariableName) && strings.HasPrefix(variable.Value, scheme+"://") {
 				return variable.Value, nil
 			}
 		}

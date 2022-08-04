@@ -20,7 +20,7 @@ func RedisConsole(opts RedisConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_REDIS"
 	}
-	redisURL, _, password, err := dbURL(opts.App, opts.VariableName, []string{"redis://", "rediss://"})
+	redisURL, _, password, err := dbURL(opts.App, opts.VariableName, []string{"redis", "rediss"})
 	if err != nil {
 		return err
 	}

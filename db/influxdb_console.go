@@ -19,7 +19,7 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_INFLUX"
 	}
-	influxdbURL, username, password, err := dbURL(opts.App, opts.VariableName, []string{"http://", "https://"})
+	influxdbURL, username, password, err := dbURL(opts.App, opts.VariableName, []string{"http", "https"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
