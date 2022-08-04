@@ -19,8 +19,8 @@ var (
 		Description: ` Run an interactive console with your MySQL addon.
 
    Examples
-    scalingo --app myapp mysql-console
-    scalingo --app myapp mysql-console --size L
+    scalingo --app my-app mysql-console
+    scalingo --app my-app mysql-console --size L
 
    The --size flag makes it easy to specify the size of the container executing
    the MySQL console. Each container size has different price and performance.

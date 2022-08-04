@@ -19,8 +19,8 @@ var (
 		Description: ` Run an interactive console with your MongoDB addon.
 
    Examples
-    scalingo --app myapp mongo-console
-    scalingo --app myapp mongo-console --size L
+    scalingo --app my-app mongo-console
+    scalingo --app my-app mongo-console --size L
 
    The --size flag makes it easy to specify the size of the container executing
    the MongoDB console. Each container size has different price and performance.

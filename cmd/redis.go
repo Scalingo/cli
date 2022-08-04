@@ -19,8 +19,8 @@ var (
 		Description: ` Run an interactive console with your Redis addon.
 
    Examples
-    scalingo --app myapp redis-console
-    scalingo --app myapp redis-console --size L
+    scalingo --app my-app redis-console
+    scalingo --app my-app redis-console --size L
 
    The --size flag makes it easy to specify the size of the container executing
    the Redis console. Each container size has different price and performance.

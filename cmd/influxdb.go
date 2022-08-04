@@ -19,8 +19,8 @@ var (
 		Description: ` Run an interactive console with your InfluxDB addon.
 
    Examples
-    scalingo --app myapp influxdb-console
-    scalingo --app myapp influxdb-console --size L
+    scalingo --app my-app influxdb-console
+    scalingo --app my-app influxdb-console --size L
 
    The --size flag makes it easy to specify the size of the container executing
    the InfluxDB console. Each container size has different price and performance.

@@ -33,15 +33,15 @@ var (
    database.
 
    Example
-     $ scalingo -a my-app db-tunnel SCALINGO_MONGO_URL
-     $ scalingo -a my-app db-tunnel mongodb://user:pass@host:port/db
+     $ scalingo --app my-app db-tunnel SCALINGO_MONGO_URL
+     $ scalingo --app my-app db-tunnel mongodb://user:pass@host:port/db
 
    Once the tunnel is built, the port which has been allocated will be
    displayed (default is 10000), example: "localhost:10000". You can
 	 choose this port manually with the '-p' option.
 
    Example
-     $ scalingo -a my-app db-tunnel -p 20000 MONGO_URL
+     $ scalingo --app my-app db-tunnel -p 20000 MONGO_URL
      Building tunnel to my-app-1.mongo.dbs.scalingo.com:12345
      You can access your database on '127.0.0.1:20000'
 
@@ -53,7 +53,7 @@ var (
    you want to use to authenticate thanks to the '-i' flag.
 
    Example
-     $ scalingo -a rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
+     $ scalingo --app rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
 		Action: func(c *cli.Context) {
 			currentApp := detect.CurrentApp(c)
 			var sshIdentity string
@@ -68,15 +68,15 @@ var (
 				cli.ShowCommandHelp(c, "db-tunnel")
 				return
 			}
-			opts := db.TunnelOpts{
+
+			err := db.Tunnel(db.TunnelOpts{
 				App:       currentApp,
 				DBEnvVar:  c.Args()[0],
 				Identity:  sshIdentity,
 				Port:      c.Int("port"),
 				Bind:      c.String("bind"),
 				Reconnect: c.BoolT("reconnect"),
-			}
-			err := db.Tunnel(opts)
+			})
 			if err != nil {
 				errorQuit(err)
 			}

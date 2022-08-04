@@ -20,8 +20,8 @@ var (
 		Description: ` Run an interactive console with your PostgreSQL addon.
 
    Examples
-    scalingo --app myapp pgsql-console
-    scalingo --app myapp pgsql-console --size L
+    scalingo --app my-app pgsql-console
+    scalingo --app my-app pgsql-console --size L
 
    The --size flag makes it easy to specify the size of the container executing
    the PostgreSQL console. Each container size has different price and performance.
