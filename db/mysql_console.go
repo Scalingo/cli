@@ -10,12 +10,16 @@ import (
 )
 
 type MySQLConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func MySQLConsole(opts MySQLConsoleOpts) error {
-	mySQLURL, user, password, err := dbURL(opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_MYSQL"
+	}
+	mySQLURL, user, password, err := dbURL(opts.App, opts.VariableName, []string{"mysql://", "mysql2://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -34,7 +38,7 @@ func MySQLConsole(opts MySQLConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run MySQL console: %v", err)
+		return errgo.Newf("fail to run MySQL console: %v", err)
 	}
 
 	return nil

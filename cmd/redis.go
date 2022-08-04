@@ -15,12 +15,14 @@ var (
 		Usage:    "Run an interactive console with your Redis addon",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
+			cli.StringFlag{Name: "env, e", Value: "", Usage: "Environment variable name to use for the connection to the database"},
 		},
 		Description: ` Run an interactive console with your Redis addon.
 
    Examples
     scalingo --app my-app redis-console
     scalingo --app my-app redis-console --size L
+    scalingo --app my-app redis-console --env MY_REDIS_URL
 
    The --size flag makes it easy to specify the size of the container executing
    the Redis console. Each container size has different price and performance.
@@ -36,8 +38,9 @@ var (
 			}
 
 			err := db.RedisConsole(db.RedisConsoleOpts{
-				App:  detect.CurrentApp(c),
-				Size: c.String("s"),
+				App:          detect.CurrentApp(c),
+				Size:         c.String("s"),
+				VariableName: c.String("e"),
 			})
 			if err != nil {
 				errorQuit(err)

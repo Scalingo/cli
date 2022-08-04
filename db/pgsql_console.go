@@ -7,12 +7,16 @@ import (
 )
 
 type PgSQLConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func PgSQLConsole(opts PgSQLConsoleOpts) error {
-	postgreSQLURL, user, _, err := dbURL(opts.App, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_POSTGRESQL"
+	}
+	postgreSQLURL, user, _, err := dbURL(opts.App, opts.VariableName, []string{"postgres://", "postgis://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -26,7 +30,7 @@ func PgSQLConsole(opts PgSQLConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run PostgreSQL console: %v", err)
+		return errgo.Newf("fail to run PostgreSQL console: %v", err)
 	}
 
 	return nil

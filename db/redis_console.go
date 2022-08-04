@@ -11,12 +11,16 @@ import (
 )
 
 type RedisConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func RedisConsole(opts RedisConsoleOpts) error {
-	redisURL, _, password, err := dbURL(opts.App, "SCALINGO_REDIS", []string{"redis://", "rediss://"})
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_REDIS"
+	}
+	redisURL, _, password, err := dbURL(opts.App, opts.VariableName, []string{"redis://", "rediss://"})
 	if err != nil {
 		return err
 	}

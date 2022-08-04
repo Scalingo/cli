@@ -7,12 +7,16 @@ import (
 )
 
 type MongoConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func MongoConsole(opts MongoConsoleOpts) error {
-	mongoURL, _, _, err := dbURL(opts.App, "SCALINGO_MONGO", []string{"mongodb"})
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_MONGO"
+	}
+	mongoURL, _, _, err := dbURL(opts.App, opts.VariableName, []string{"mongodb://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -29,7 +33,7 @@ func MongoConsole(opts MongoConsoleOpts) error {
 		Size:       opts.Size,
 	})
 	if err != nil {
-		return errgo.Newf("Fail to run MongoDB console: %v", err)
+		return errgo.Newf("fail to run MongoDB console: %v", err)
 	}
 
 	return nil

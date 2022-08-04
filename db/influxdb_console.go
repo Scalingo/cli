@@ -10,12 +10,16 @@ import (
 )
 
 type InfluxDBConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
-	influxdbURL, username, password, err := dbURL(opts.App, "SCALINGO_INFLUX", []string{"http://", "https://"})
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_INFLUX"
+	}
+	influxdbURL, username, password, err := dbURL(opts.App, opts.VariableName, []string{"http://", "https://"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -42,7 +46,7 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run InfluxDB console: %v", err)
+		return errgo.Newf("fail to run InfluxDB console: %v", err)
 	}
 
 	return nil
