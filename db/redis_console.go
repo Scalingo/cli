@@ -50,7 +50,8 @@ func RedisConsole(opts RedisConsoleOpts) error {
 	return nil
 }
 
-func redisStdinCopy(dst io.Writer, src io.Reader) (written int64, err error) {
+func redisStdinCopy(dst io.Writer, src io.Reader) (int64, error) {
+	var written int64
 	buf := make([]byte, 2*1024)
 	for {
 		nr, er := src.Read(buf)
@@ -62,21 +63,18 @@ func redisStdinCopy(dst io.Writer, src io.Reader) (written int64, err error) {
 				written += int64(nw)
 			}
 			if ew != nil {
-				err = ew
-				break
+				return written, ew
 			}
 			if nr != nw {
-				err = io.ErrShortWrite
-				break
+				return written, io.ErrShortWrite
 			}
 		}
 		if er == io.EOF {
 			break
 		}
 		if er != nil {
-			err = er
-			break
+			return written, er
 		}
 	}
-	return written, err
+	return written, nil
 }
