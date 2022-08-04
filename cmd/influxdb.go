@@ -30,14 +30,16 @@ var (
     # See also 'mongo-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := detect.CurrentApp(c)
-			opts := db.InfluxDBConsoleOpts{
-				App:  currentApp,
-				Size: c.String("s"),
-			}
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "influxdb-console")
-			} else if err := db.InfluxDBConsole(opts); err != nil {
+				return
+			}
+
+			err := db.InfluxDBConsole(db.InfluxDBConsoleOpts{
+				App:  detect.CurrentApp(c),
+				Size: c.String("s"),
+			})
+			if err != nil {
 				errorQuit(err)
 			}
 		},

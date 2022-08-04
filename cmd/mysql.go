@@ -30,14 +30,16 @@ var (
     # See also 'mongo-console' and 'pgsql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := detect.CurrentApp(c)
-			opts := db.MySQLConsoleOpts{
-				App:  currentApp,
-				Size: c.String("s"),
-			}
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "mysql-console")
-			} else if err := db.MySQLConsole(opts); err != nil {
+				return
+			}
+
+			err := db.MySQLConsole(db.MySQLConsoleOpts{
+				App:  detect.CurrentApp(c),
+				Size: c.String("s"),
+			})
+			if err != nil {
 				errorQuit(err)
 			}
 		},

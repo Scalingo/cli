@@ -30,14 +30,16 @@ var (
     # See also 'mongo-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := detect.CurrentApp(c)
-			opts := db.RedisConsoleOpts{
-				App:  currentApp,
-				Size: c.String("s"),
-			}
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "redis-console")
-			} else if err := db.RedisConsole(opts); err != nil {
+				return
+			}
+
+			err := db.RedisConsole(db.RedisConsoleOpts{
+				App:  detect.CurrentApp(c),
+				Size: c.String("s"),
+			})
+			if err != nil {
 				errorQuit(err)
 			}
 		},
