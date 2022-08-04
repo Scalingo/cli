@@ -56,7 +56,7 @@ func redisStdinCopy(dst io.Writer, src io.Reader) (int64, error) {
 	for {
 		nr, er := src.Read(buf)
 		if nr > 0 {
-			toWrite := bytes.Replace(buf[0:nr], []byte{'\n'}, []byte{'\r', '\n'}, -1)
+			toWrite := bytes.ReplaceAll(buf[0:nr], []byte{'\n'}, []byte{'\r', '\n'})
 			nr = len(toWrite)
 			nw, ew := dst.Write(toWrite)
 			if nw > 0 {
