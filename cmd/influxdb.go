@@ -15,12 +15,14 @@ var (
 		Usage:    "Run an interactive console with your InfluxDB addon",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
+			cli.StringFlag{Name: "env, e", Value: "", Usage: "Environment variable name to use for the connection to the database"},
 		},
 		Description: ` Run an interactive console with your InfluxDB addon.
 
    Examples
-    scalingo --app myapp influxdb-console
-    scalingo --app myapp influxdb-console --size L
+    scalingo --app my-app influxdb-console
+    scalingo --app my-app influxdb-console --size L
+    scalingo --app my-app influxdb-console --env MY_INFLUXDB_URL
 
    The --size flag makes it easy to specify the size of the container executing
    the InfluxDB console. Each container size has different price and performance.
@@ -30,14 +32,17 @@ var (
     # See also 'mongo-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := detect.CurrentApp(c)
-			opts := db.InfluxDBConsoleOpts{
-				App:  currentApp,
-				Size: c.String("s"),
-			}
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "influxdb-console")
-			} else if err := db.InfluxDBConsole(opts); err != nil {
+				return
+			}
+
+			err := db.InfluxDBConsole(db.InfluxDBConsoleOpts{
+				App:          detect.CurrentApp(c),
+				Size:         c.String("s"),
+				VariableName: c.String("e"),
+			})
+			if err != nil {
 				errorQuit(err)
 			}
 		},

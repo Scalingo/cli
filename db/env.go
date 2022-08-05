@@ -6,11 +6,11 @@ import (
 
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/cli/config"
 )
 
-func dbURL(c *scalingo.Client, app, envWord string, urlSchemes []string) (*url.URL, string, string, error) {
-	u, err := dbURLFromAPI(c, app, envWord, urlSchemes)
+func dbURL(appName, envVariableName string, urlSchemes []string) (*url.URL, string, string, error) {
+	u, err := dbURLFromAPI(appName, envVariableName, urlSchemes)
 	if err != nil {
 		return nil, "", "", errgo.Mask(err)
 	}
@@ -28,20 +28,25 @@ func dbURL(c *scalingo.Client, app, envWord string, urlSchemes []string) (*url.U
 	return dbURL, user, password, nil
 }
 
-func dbURLFromAPI(c *scalingo.Client, app, envWord string, urlSchemes []string) (string, error) {
-	environ, err := c.VariablesListWithoutAlias(app)
+func dbURLFromAPI(appName, envVariableName string, urlSchemes []string) (string, error) {
+	scalingoClient, err := config.ScalingoClient()
+	if err != nil {
+		return "", errgo.Notef(err, "fail to get Scalingo client to list the variables")
+	}
+
+	variables, err := scalingoClient.VariablesListWithoutAlias(appName)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}
-	for _, variable := range environ {
+	for _, variable := range variables {
 		for _, scheme := range urlSchemes {
-			if strings.Contains(variable.Name, envWord) && strings.HasPrefix(variable.Value, scheme) {
+			if strings.Contains(variable.Name, envVariableName) && strings.HasPrefix(variable.Value, scheme+"://") {
 				return variable.Value, nil
 			}
 		}
 	}
 
-	return "", errgo.Newf("no %v addon detected", strings.ToLower(envWord))
+	return "", errgo.Newf("no %v addon detected", strings.ToLower(envVariableName))
 }
 
 func extractCredentials(u *url.URL) (string, string, error) {

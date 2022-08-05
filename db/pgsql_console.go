@@ -1,24 +1,22 @@
 package db
 
 import (
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type PgSQLConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func PgSQLConsole(opts PgSQLConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_POSTGRESQL"
 	}
-
-	postgreSQLURL, user, _, err := dbURL(c, opts.App, "SCALINGO_POSTGRESQL", []string{"postgres://", "postgis://"})
+	postgreSQLURL, user, _, err := dbURL(opts.App, opts.VariableName, []string{"postgres", "postgis"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -32,7 +30,7 @@ func PgSQLConsole(opts PgSQLConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run PostgreSQL console: %v", err)
+		return errgo.Newf("fail to run PostgreSQL console: %v", err)
 	}
 
 	return nil

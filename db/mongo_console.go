@@ -1,24 +1,22 @@
 package db
 
 import (
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type MongoConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func MongoConsole(opts MongoConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_MONGO"
 	}
-
-	mongoURL, _, _, err := dbURL(c, opts.App, "SCALINGO_MONGO", []string{"mongodb://"})
+	mongoURL, _, _, err := dbURL(opts.App, opts.VariableName, []string{"mongodb"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -28,18 +26,14 @@ func MongoConsole(opts MongoConsoleOpts) error {
 		command = append(command, "--ssl", "--sslAllowInvalidCertificates")
 	}
 
-	command = append(command, "'"+mongoURL.String()+"'")
-
-	runOpts := apps.RunOpts{
+	err = apps.Run(apps.RunOpts{
 		DisplayCmd: "mongo-console",
 		App:        opts.App,
-		Cmd:        command,
+		Cmd:        append(command, "'"+mongoURL.String()+"'"),
 		Size:       opts.Size,
-	}
-
-	err = apps.Run(runOpts)
+	})
 	if err != nil {
-		return errgo.Newf("Fail to run MongoDB console: %v", err)
+		return errgo.Newf("fail to run MongoDB console: %v", err)
 	}
 
 	return nil

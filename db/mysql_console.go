@@ -4,24 +4,22 @@ import (
 	"fmt"
 	"net"
 
-	"gopkg.in/errgo.v1" // "mysql2://" for ruby driver 'mysql2'
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type MySQLConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func MySQLConsole(opts MySQLConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_MYSQL"
 	}
-
-	mySQLURL, user, password, err := dbURL(c, opts.App, "SCALINGO_MYSQL", []string{"mysql://", "mysql2://"})
+	mySQLURL, user, password, err := dbURL(opts.App, opts.VariableName, []string{"mysql", "mysql2"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -40,7 +38,7 @@ func MySQLConsole(opts MySQLConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run MySQL console: %v", err)
+		return errgo.Newf("fail to run MySQL console: %v", err)
 	}
 
 	return nil

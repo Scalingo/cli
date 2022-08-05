@@ -7,21 +7,19 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type InfluxDBConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_INFLUX"
 	}
-
-	influxdbURL, username, password, err := dbURL(c, opts.App, "SCALINGO_INFLUX", []string{"http://", "https://"})
+	influxdbURL, username, password, err := dbURL(opts.App, opts.VariableName, []string{"http", "https"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -48,7 +46,7 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 
 	err = apps.Run(runOpts)
 	if err != nil {
-		return errgo.Newf("Fail to run InfluxDB console: %v", err)
+		return errgo.Newf("fail to run InfluxDB console: %v", err)
 	}
 
 	return nil

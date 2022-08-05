@@ -15,12 +15,14 @@ var (
 		Usage:    "Run an interactive console with your MongoDB addon",
 		Flags: []cli.Flag{appFlag,
 			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
+			cli.StringFlag{Name: "env, e", Value: "", Usage: "Environment variable name to use for the connection to the database"},
 		},
 		Description: ` Run an interactive console with your MongoDB addon.
 
    Examples
-    scalingo --app myapp mongo-console
-    scalingo --app myapp mongo-console --size L
+    scalingo --app my-app mongo-console
+    scalingo --app my-app mongo-console --size L
+    scalingo --app my-app mongo-console --env MY_MONGO_URL
 
    The --size flag makes it easy to specify the size of the container executing
    the MongoDB console. Each container size has different price and performance.
@@ -30,14 +32,17 @@ var (
     # See also 'redis-console' and 'mysql-console'
 `,
 		Action: func(c *cli.Context) {
-			currentApp := detect.CurrentApp(c)
-			opts := db.MongoConsoleOpts{
-				App:  currentApp,
-				Size: c.String("s"),
-			}
 			if len(c.Args()) != 0 {
 				cli.ShowCommandHelp(c, "mongo-console")
-			} else if err := db.MongoConsole(opts); err != nil {
+				return
+			}
+
+			err := db.MongoConsole(db.MongoConsoleOpts{
+				App:          detect.CurrentApp(c),
+				Size:         c.String("s"),
+				VariableName: c.String("e"),
+			})
+			if err != nil {
 				errorQuit(err)
 			}
 		},

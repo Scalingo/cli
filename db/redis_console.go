@@ -7,24 +7,20 @@ import (
 	"net"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/cli/config"
 )
 
 type RedisConsoleOpts struct {
-	App  string
-	Size string
+	App          string
+	Size         string
+	VariableName string
 }
 
 func RedisConsole(opts RedisConsoleOpts) error {
-	c, err := config.ScalingoClient()
-	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+	if opts.VariableName == "" {
+		opts.VariableName = "SCALINGO_REDIS"
 	}
-
-	redisURL, _, password, err := dbURL(c, opts.App, "SCALINGO_REDIS", []string{"redis://", "rediss://"})
+	redisURL, _, password, err := dbURL(opts.App, opts.VariableName, []string{"redis", "rediss"})
 	if err != nil {
 		return err
 	}
@@ -54,33 +50,31 @@ func RedisConsole(opts RedisConsoleOpts) error {
 	return nil
 }
 
-func redisStdinCopy(dst io.Writer, src io.Reader) (written int64, err error) {
+func redisStdinCopy(dst io.Writer, src io.Reader) (int64, error) {
+	var written int64
 	buf := make([]byte, 2*1024)
 	for {
 		nr, er := src.Read(buf)
 		if nr > 0 {
-			toWrite := bytes.Replace(buf[0:nr], []byte{'\n'}, []byte{'\r', '\n'}, -1)
+			toWrite := bytes.ReplaceAll(buf[0:nr], []byte{'\n'}, []byte{'\r', '\n'})
 			nr = len(toWrite)
 			nw, ew := dst.Write(toWrite)
 			if nw > 0 {
 				written += int64(nw)
 			}
 			if ew != nil {
-				err = ew
-				break
+				return written, ew
 			}
 			if nr != nw {
-				err = io.ErrShortWrite
-				break
+				return written, io.ErrShortWrite
 			}
 		}
 		if er == io.EOF {
 			break
 		}
 		if er != nil {
-			err = er
-			break
+			return written, er
 		}
 	}
-	return written, err
+	return written, nil
 }
