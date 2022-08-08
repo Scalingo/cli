@@ -46,18 +46,11 @@ main() {
   uname -a | grep -qi 'Darwin' ; is_darwin=$?
 
   os=$(uname -s | tr '[A-Z]' '[a-z]')
-  ext=zip
-  case $os in
-    linux)
-      ext='tar.gz'
-      ;;
-    darwin)
-      ;;
-    *)
-      echo "Unsupported OS: $(uname -s)"
-      exit 1
-      ;;
-  esac
+  ext='tar.gz'
+  if [ "$os" != "linux" ] && [ "$os" != "darwin" ]; then
+    echo "Unsupported OS: $(uname -s)"
+    exit 1
+  fi
 
   arch=$(uname -m)
   case $arch in
@@ -122,14 +115,7 @@ main() {
   fi
   echo "DONE"
   status "Extracting...   "
-  case $ext in
-    zip)
-      unzip -d "${tmpdir}" "${tmpdir}/${archive_name}"
-      ;;
-    tar.gz)
-      tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
-      ;;
-  esac
+  tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
 
   exe_path=${tmpdir}/${dirname}/scalingo
   if [ ! -f "$exe_path" ]; then
