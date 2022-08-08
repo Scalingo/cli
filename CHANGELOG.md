@@ -2,6 +2,8 @@
 
 ### To be Released
 
+# 1.24.0
+
 * feat(db): environment variable name is customizable [#759](https://github.com/Scalingo/cli/issues/759)
 * feat(goreleaser): use goreleaser to make releases using github action [#752](https://github.com/Scalingo/cli/issues/752)
 * feat(make-release): use gox [#747](https://github.com/Scalingo/cli/pull/747)
