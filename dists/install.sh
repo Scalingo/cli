@@ -47,16 +47,10 @@ main() {
 
   os=$(uname -s | tr '[A-Z]' '[a-z]')
   ext='tar.gz'
-  case $os in
-    linux)
-      ;;
-    darwin)
-      ;;
-    *)
-      echo "Unsupported OS: $(uname -s)"
-      exit 1
-      ;;
-  esac
+  if [ "$os" != "linux" ] && [ "$os" != "darwin" ]; then
+    echo "Unsupported OS: $(uname -s)"
+    exit 1
+  fi
 
   arch=$(uname -m)
   case $arch in
