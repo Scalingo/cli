@@ -274,6 +274,7 @@ Bump new version number in:
 - `CHANGELOG.md`
 - `README.md`
 - `config/version.go`
+- `VERSION`: used by the CLI download service (https://github.com/Scalingo/cli-dl/blob/master/main.go#L16)
 
 And commit these changes:
 
