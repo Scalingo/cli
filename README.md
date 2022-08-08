@@ -285,7 +285,7 @@ git push --set-upstream origin release/1.24.0
 gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
-Once the pull-request merged, you can tag the new release.
+Once the pull request merged, you can tag the new release.
 
 #### Tag the New Release
 
