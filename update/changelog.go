@@ -1,46 +1,25 @@
 package update
 
 import (
-	"bytes"
-	"encoding/json"
+	"context"
 	"fmt"
-	stdio "io"
-	"net/http"
 	"strings"
-	"time"
 
+	"github.com/google/go-github/v45/github"
 	"gopkg.in/errgo.v1"
 )
 
-const (
-	latestReleaseURL = "https://api.github.com/repos/scalingo/cli/releases/latest"
-)
-
-type githubChangelog struct {
-	Body string `json:"body"`
-}
-
 func ShowLastChangelog() error {
-	client := http.Client{
-		Timeout: 4 * time.Second,
-	}
+	ctx := context.Background()
 
-	res, err := client.Get(latestReleaseURL)
-	if err != nil {
-		return errgo.Notef(err, "fail to request last release")
-	}
-	defer res.Body.Close()
-	body, err := stdio.ReadAll(res.Body)
-	if err != nil {
-		return errgo.Notef(err, "fail to read the request of last release")
-	}
+	client := github.NewClient(nil)
+	repoService := client.Repositories
 
-	var changelogBody githubChangelog
-	err = json.NewDecoder(bytes.NewBuffer((body))).Decode(&changelogBody)
+	cliLastRelease, resp, err := repoService.GetLatestRelease(ctx, "scalingo", "cli")
 	if err != nil {
-		return errgo.Notef(err, "fail to decode github tag body")
+		return errgo.Notef(err, "fail to get last CLI release")
 	}
+	fmt.Printf("%v\n\n", strings.ReplaceAll(*cliLastRelease.Body, "\\r\\n", "\r\n"))
 
-	fmt.Printf("%v\n\n", strings.ReplaceAll(changelogBody.Body, "\\r\\n", "\r\n"))
 	return nil
 }
