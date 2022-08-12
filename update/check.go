@@ -1,16 +1,21 @@
 package update
 
 import (
+	"encoding/json"
 	"fmt"
 	stdio "io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"gopkg.in/errgo.v1"
 
+	"github.com/stvp/rollbar"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-scalingo/v4/debug"
 )
 
 const (
@@ -23,6 +28,10 @@ var (
 	gotLastVersion = make(chan struct{})
 	gotAnError     = false
 )
+
+type CLIVersionCache struct {
+	Version string `json:"version"`
+}
 
 func init() {
 	if config.C.DisableUpdateChecker {
@@ -57,12 +66,51 @@ func Check() error {
 	if gotAnError {
 		return errgo.New("Update checker: connection error")
 	}
-	if version == lastVersion {
+
+	if version != lastVersion {
+		io.Errorf(io.BoldRed("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n"), version)
+		io.Errorf(io.BoldRed("Please update to '%s' by reinstalling it: https://cli.scalingo.com\n"), lastVersion)
 		return nil
 	}
 
-	io.Errorf(io.BoldRed("Your Scalingo client (%s) is out-of-date: some features may not work correctly.\n"), version)
-	io.Errorf(io.BoldRed("Please update to '%s' by reinstalling it: https://cli.scalingo.com\n"), lastVersion)
+	return checkCLIVersionCache(version)
+}
+
+func checkCLIVersionCache(version string) error {
+	// Check the cli version cache
+	var cliVersionCache CLIVersionCache
+	fd, err := os.Open(config.C.CLIVersionCachePath)
+	if err == nil {
+		err := json.NewDecoder(fd).Decode(&cliVersionCache)
+		if err != nil {
+			return errgo.Notef(err, "fail to decode cli version cache file")
+		}
+	}
+	defer fd.Close()
+
+	// This case happen if the cli has been upgraded
+	if cliVersionCache.Version != "" && cliVersionCache.Version != version {
+		err := ShowLastChangelog()
+		if err != nil {
+			rollbar.Error(rollbar.ERR, errgo.Notef(err, "fail to show last changelog"))
+		}
+	}
+
+	cliVersionCache.Version = version
+	// Save the version into a cache file.
+	// To be able to track the update and show an accurate changelog.
+	fd, err = os.OpenFile(config.C.CLIVersionCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
+	if err == nil {
+		err := json.NewEncoder(fd).Encode(cliVersionCache)
+		if err != nil {
+			defer fd.Close()
+			return errgo.Notef(err, "fail to encode cli version cache file")
+		}
+	} else {
+		debug.Printf("[VERSION] Failed to save the cli version cache: %v\n", err)
+	}
+	defer fd.Close()
+
 	return nil
 }
 

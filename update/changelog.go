@@ -15,7 +15,7 @@ func ShowLastChangelog() error {
 	client := github.NewClient(nil)
 	repoService := client.Repositories
 
-	cliLastRelease, resp, err := repoService.GetLatestRelease(ctx, "scalingo", "cli")
+	cliLastRelease, _, err := repoService.GetLatestRelease(ctx, "scalingo", "cli")
 	if err != nil {
 		return errgo.Notef(err, "fail to get last CLI release")
 	}

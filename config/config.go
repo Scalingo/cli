@@ -46,8 +46,9 @@ type Config struct {
 	ConfigFile     ConfigFile
 
 	// Cache related files
-	CacheDir         string `envconfig:"CACHE_DIR"`
-	RegionsCachePath string `envconfig:"REGIONS_CACHE_PATH"`
+	CacheDir            string `envconfig:"CACHE_DIR"`
+	RegionsCachePath    string `envconfig:"REGIONS_CACHE_PATH"`
+	CLIVersionCachePath string `envconfig:"CLI_VERSION_CACHE_PATH"`
 
 	// Logging
 	logFile *os.File
@@ -56,19 +57,20 @@ type Config struct {
 
 var (
 	env = map[string]string{
-		"SCALINGO_AUTH_URL":  "https://auth.scalingo.com",
-		"SCALINGO_API_URL":   "",
-		"SCALINGO_DB_URL":    "",
-		"SCALINGO_SSH_HOST":  "",
-		"SCALINGO_REGION":    "",
-		"API_VERSION":        "1",
-		"UNSECURE_SSL":       "false",
-		"CONFIG_DIR":         ".config/scalingo",
-		"CACHE_DIR":          ".cache/scalingo",
-		"AUTH_FILE":          "auth",
-		"CONFIG_FILE_PATH":   "config.json",
-		"REGIONS_CACHE_PATH": "regions.json",
-		"LOG_FILE":           "local.log",
+		"SCALINGO_AUTH_URL":      "https://auth.scalingo.com",
+		"SCALINGO_API_URL":       "",
+		"SCALINGO_DB_URL":        "",
+		"SCALINGO_SSH_HOST":      "",
+		"SCALINGO_REGION":        "",
+		"API_VERSION":            "1",
+		"UNSECURE_SSL":           "false",
+		"CONFIG_DIR":             ".config/scalingo",
+		"CACHE_DIR":              ".cache/scalingo",
+		"AUTH_FILE":              "auth",
+		"CONFIG_FILE_PATH":       "config.json",
+		"REGIONS_CACHE_PATH":     "regions.json",
+		"CLI_VERSION_CACHE_PATH": "cli_version.json",
+		"LOG_FILE":               "local.log",
 	}
 	C         Config
 	TlsConfig *tls.Config
@@ -87,6 +89,7 @@ func init() {
 
 	env["CACHE_DIR"] = filepath.Join(home, env["CACHE_DIR"])
 	env["REGIONS_CACHE_PATH"] = filepath.Join(env["CACHE_DIR"], env["REGIONS_CACHE_PATH"])
+	env["CLI_VERSION_CACHE_PATH"] = filepath.Join(env["CACHE_DIR"], env["CLI_VERSION_CACHE_PATH"])
 
 	for k := range env {
 		vEnv := os.Getenv(k)
