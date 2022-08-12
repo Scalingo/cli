@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/google/go-github/v45/github"
 	"gopkg.in/errgo.v1"
+
+	githubClient "github.com/google/go-github/v45/github"
+
+	"github.com/Scalingo/cli/services/github"
 )
 
-func printRelease(release github.RepositoryRelease) {
+func printRelease(release githubClient.RepositoryRelease) {
 	fmt.Printf("Changelog of the version %v\n\n", release.GetTagName())
 	fmt.Printf("%v\n\n", strings.ReplaceAll(*release.Body, "\\r\\n", "\r\n"))
 }
@@ -17,10 +20,9 @@ func printRelease(release github.RepositoryRelease) {
 func ShowLastChangelog() error {
 	ctx := context.Background()
 
-	client := github.NewClient(nil)
-	repoService := client.Repositories
+	client := github.New()
 
-	cliLastRelease, _, err := repoService.GetLatestRelease(ctx, "scalingo", "cli")
+	cliLastRelease, err := client.GetLatestRelease(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get last CLI release")
 	}
@@ -55,14 +57,13 @@ func ShowChangelog(cacheVersion, newVersion string) error {
 // getLastReleases get last 10 releases.
 // It returns releases in map, the key is the tag, the value is the body of the release.
 // The releases are ordered by the last in first.
-func getLastReleases() ([]*github.RepositoryRelease, error) {
+func getLastReleases() ([]*githubClient.RepositoryRelease, error) {
 	ctx := context.Background()
 
-	client := github.NewClient(nil)
-	repoService := client.Repositories
+	client := github.New()
 
 	// Only show the last 10 releases in maximum
-	cliReleases, _, err := repoService.ListReleases(ctx, "scalingo", "cli", &github.ListOptions{PerPage: 10})
+	cliReleases, err := client.ListReleases(ctx, &githubClient.ListOptions{PerPage: 10})
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to list CLI releases")
 	}
