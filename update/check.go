@@ -90,15 +90,16 @@ func checkCLIVersionCache(version string) error {
 
 	// This case happen if the cli has been upgraded
 	if cliVersionCache.Version != "" && cliVersionCache.Version != version {
-		err := ShowLastChangelog()
+		// Show the changelog of each version since the last installed version.
+		err := ShowChangelog(cliVersionCache.Version, version)
 		if err != nil {
 			rollbar.Error(rollbar.ERR, errgo.Notef(err, "fail to show last changelog"))
 		}
 	}
 
-	cliVersionCache.Version = version
 	// Save the version into a cache file.
 	// To be able to track the update and show an accurate changelog.
+	cliVersionCache.Version = version
 	fd, err = os.OpenFile(config.C.CLIVersionCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
 	if err == nil {
 		err := json.NewEncoder(fd).Encode(cliVersionCache)
