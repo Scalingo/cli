@@ -1,6 +1,7 @@
 build
 *swp
 bin
+dist
 scalingo/scalingo
 scalingo/scalingo.exe
 src/code.google.com

@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(releases): Windows archives should be in the zip format [#769](https://github.com/Scalingo/cli/pull/769)
+
 # 1.24.0
 
 * feat(db): environment variable name is customizable [#759](https://github.com/Scalingo/cli/issues/759)
