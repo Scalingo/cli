@@ -2,6 +2,8 @@
 
 ### To be Released
 
+# 1.24.1
+
 * fix(releases): Windows archives should be in the zip format [#769](https://github.com/Scalingo/cli/pull/769)
 
 # 1.24.0
