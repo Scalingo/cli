@@ -88,8 +88,13 @@ func checkCLIVersionCache(version string) error {
 	}
 	defer fd.Close()
 
+	isCacheFileExists := cliVersionCache.Version != ""
+	isCLIVersionOutdated := cliVersionCache.Version != version
+
 	// This case happen if the cli has been upgraded
-	if cliVersionCache.Version != "" && cliVersionCache.Version != version {
+	if isCacheFileExists && isCLIVersionOutdated {
+		debug.Println("New version detected, printing changelog")
+
 		// Show the changelog of each version since the last installed version.
 		err := ShowChangelog(cliVersionCache.Version, version)
 		if err != nil {
@@ -97,10 +102,23 @@ func checkCLIVersionCache(version string) error {
 		}
 	}
 
-	// Save the version into a cache file.
+	// Save the current CLI version into a cache file.
 	// To be able to track the update and show an accurate changelog.
-	cliVersionCache.Version = version
-	fd, err = os.OpenFile(config.C.CLIVersionCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
+	if !isCacheFileExists || isCLIVersionOutdated {
+		cliVersionCache.Version = version
+		err = saveVersionInCache(cliVersionCache)
+		if err != nil {
+			return errgo.Notef(err, "fail to save the current CLI version in caches")
+		}
+	}
+
+	return nil
+}
+
+func saveVersionInCache(cliVersionCache CLIVersionCache) error {
+	debug.Printf("Saving the CLI version (%s) to the cache file %s\n", cliVersionCache.Version, config.C.CLIVersionCachePath)
+
+	fd, err := os.OpenFile(config.C.CLIVersionCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
 	if err == nil {
 		err := json.NewEncoder(fd).Encode(cliVersionCache)
 		if err != nil {
