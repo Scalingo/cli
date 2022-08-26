@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(releases): Correctly auto generate changelog [#772](https://github.com/Scalingo/cli/pull/772)
+
 # 1.24.1
 
 * fix(releases): Windows archives should be in the zip format [#769](https://github.com/Scalingo/cli/pull/769)

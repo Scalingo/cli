@@ -36,7 +36,7 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 changelog:
-  use: github
+  use: github-native
   filters:
     exclude:
       - '^docs:'
