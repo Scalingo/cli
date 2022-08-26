@@ -70,6 +70,10 @@ type Repository struct {
 	AllowForking              *bool           `json:"allow_forking,omitempty"`
 	DeleteBranchOnMerge       *bool           `json:"delete_branch_on_merge,omitempty"`
 	UseSquashPRTitleAsDefault *bool           `json:"use_squash_pr_title_as_default,omitempty"`
+	SquashMergeCommitTitle    *string         `json:"squash_merge_commit_title,omitempty"`   // Can be one of: "PR_TITLE", "COMMIT_OR_PR_TITLE"
+	SquashMergeCommitMessage  *string         `json:"squash_merge_commit_message,omitempty"` // Can be one of: "PR_BODY", "COMMIT_MESSAGES", "BLANK"
+	MergeCommitTitle          *string         `json:"merge_commit_title,omitempty"`          // Can be one of: "PR_TITLE", "MERGE_MESSAGE"
+	MergeCommitMessage        *string         `json:"merge_commit_message,omitempty"`        // Can be one of: "PR_BODY", "PR_TITLE", "BLANK"
 	Topics                    []string        `json:"topics,omitempty"`
 	Archived                  *bool           `json:"archived,omitempty"`
 	Disabled                  *bool           `json:"disabled,omitempty"`
@@ -374,6 +378,10 @@ type createRepoRequest struct {
 	AllowForking              *bool   `json:"allow_forking,omitempty"`
 	DeleteBranchOnMerge       *bool   `json:"delete_branch_on_merge,omitempty"`
 	UseSquashPRTitleAsDefault *bool   `json:"use_squash_pr_title_as_default,omitempty"`
+	SquashMergeCommitTitle    *string `json:"squash_merge_commit_title,omitempty"`
+	SquashMergeCommitMessage  *string `json:"squash_merge_commit_message,omitempty"`
+	MergeCommitTitle          *string `json:"merge_commit_title,omitempty"`
+	MergeCommitMessage        *string `json:"merge_commit_message,omitempty"`
 }
 
 // Create a new repository. If an organization is specified, the new
@@ -420,6 +428,10 @@ func (s *RepositoriesService) Create(ctx context.Context, org string, repo *Repo
 		AllowForking:              repo.AllowForking,
 		DeleteBranchOnMerge:       repo.DeleteBranchOnMerge,
 		UseSquashPRTitleAsDefault: repo.UseSquashPRTitleAsDefault,
+		SquashMergeCommitTitle:    repo.SquashMergeCommitTitle,
+		SquashMergeCommitMessage:  repo.SquashMergeCommitMessage,
+		MergeCommitTitle:          repo.MergeCommitTitle,
+		MergeCommitMessage:        repo.MergeCommitMessage,
 	}
 
 	req, err := s.client.NewRequest("POST", u, repoReq)
@@ -725,10 +737,10 @@ func (s *RepositoriesService) ListContributors(ctx context.Context, owner string
 // specifies the languages and the number of bytes of code written in that
 // language. For example:
 //
-//     {
-//       "C": 78769,
-//       "Python": 7769
-//     }
+//	{
+//	  "C": 78769,
+//	  "Python": 7769
+//	}
 //
 // GitHub API docs: https://docs.github.com/en/rest/repos/repos#list-repository-languages
 func (s *RepositoriesService) ListLanguages(ctx context.Context, owner string, repo string) (map[string]int, *Response, error) {
@@ -919,6 +931,8 @@ type RequiredStatusCheck struct {
 
 // PullRequestReviewsEnforcement represents the pull request reviews enforcement of a protected branch.
 type PullRequestReviewsEnforcement struct {
+	// Allow specific users, teams, or apps to bypass pull request requirements.
+	BypassPullRequestAllowances *BypassPullRequestAllowances `json:"bypass_pull_request_allowances,omitempty"`
 	// Specifies which users and teams can dismiss pull request reviews.
 	DismissalRestrictions *DismissalRestrictions `json:"dismissal_restrictions,omitempty"`
 	// Specifies if approved reviews are dismissed automatically, when a new commit is pushed.
@@ -934,6 +948,8 @@ type PullRequestReviewsEnforcement struct {
 // enforcement of a protected branch. It is separate from PullRequestReviewsEnforcement above
 // because the request structure is different from the response structure.
 type PullRequestReviewsEnforcementRequest struct {
+	// Allow specific users, teams, or apps to bypass pull request requirements.
+	BypassPullRequestAllowancesRequest *BypassPullRequestAllowancesRequest `json:"bypass_pull_request_allowances,omitempty"`
 	// Specifies which users and teams should be allowed to dismiss pull request reviews.
 	// User and team dismissal restrictions are only available for
 	// organization-owned repositories. Must be nil for personal repositories.
@@ -951,6 +967,8 @@ type PullRequestReviewsEnforcementRequest struct {
 // enforcement of a protected branch. It is separate from PullRequestReviewsEnforcementRequest above
 // because the patch request does not require all fields to be initialized.
 type PullRequestReviewsEnforcementUpdate struct {
+	// Allow specific users, teams, or apps to bypass pull request requirements.
+	BypassPullRequestAllowancesRequest *BypassPullRequestAllowancesRequest `json:"bypass_pull_request_allowances,omitempty"`
 	// Specifies which users and teams can dismiss pull request reviews. Can be omitted.
 	DismissalRestrictionsRequest *DismissalRestrictionsRequest `json:"dismissal_restrictions,omitempty"`
 	// Specifies if approved reviews can be dismissed automatically, when a new commit is pushed. Can be omitted.
@@ -1010,6 +1028,29 @@ type BranchRestrictionsRequest struct {
 	Teams []string `json:"teams"`
 	// The list of app slugs with push access.
 	Apps []string `json:"apps,omitempty"`
+}
+
+// BypassPullRequestAllowances represents the people, teams, or apps who are allowed to bypass required pull requests.
+type BypassPullRequestAllowances struct {
+	// The list of users allowed to bypass pull request requirements.
+	Users []*User `json:"users"`
+	// The list of teams allowed to bypass pull request requirements.
+	Teams []*Team `json:"teams"`
+	// The list of apps allowed to bypass pull request requirements.
+	Apps []*App `json:"apps"`
+}
+
+// BypassPullRequestAllowancesRequest represents the people, teams, or apps who are
+// allowed to bypass required pull requests.
+// It is separate from BypassPullRequestAllowances above because the request structure is
+// different from the response structure.
+type BypassPullRequestAllowancesRequest struct {
+	// The list of user logins allowed to bypass pull request requirements.
+	Users []string `json:"users"`
+	// The list of team slugs allowed to bypass pull request requirements.
+	Teams []string `json:"teams"`
+	// The list of app slugs allowed to bypass pull request requirements.
+	Apps []string `json:"apps"`
 }
 
 // DismissalRestrictions specifies which users and teams can dismiss pull request reviews.

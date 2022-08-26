@@ -13,7 +13,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
 	github.com/go-git/go-git/v5 v5.4.2
-	github.com/google/go-github/v45 v45.2.0
+	github.com/google/go-github/v47 v47.0.0
 	github.com/gosuri/uilive v0.0.4
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5

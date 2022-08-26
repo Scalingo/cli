@@ -169,6 +169,7 @@ main() {
     error "Fail to install Scalingo client (return $rc)\n"
   else
     status "Installation completed, the command 'scalingo' is available.\n"
+    status "Here's what's new in this version:$(echo \\n\\n)$(curl https://api.github.com/repos/scalingo/cli/releases/tags/${version} | grep '"body": ' | cut -d ':' -f2- | cut -d '"' -f2- | sed 's/\\r\\n/\n/g')$(echo \\n\\n)"
   fi
 }
 

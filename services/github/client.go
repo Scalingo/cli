@@ -3,7 +3,7 @@ package github
 import (
 	"context"
 
-	"github.com/google/go-github/v45/github"
+	"github.com/google/go-github/v47/github"
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
 )
@@ -13,25 +13,25 @@ const (
 	repo  = "cli"
 )
 
-type client struct {
+type Client struct {
 	githubRepoService *github.RepositoriesService
 }
 
-func (c client) ListReleases(ctx context.Context, opts *github.ListOptions) ([]*github.RepositoryRelease, error) {
-	repoReleases, githubResponse, error := c.githubRepoService.ListReleases(ctx, owner, repo, opts)
-	debug.Printf("github response: %#v\n", githubResponse)
-	return repoReleases, error
+func (c Client) ListReleases(ctx context.Context, opts *github.ListOptions) ([]*github.RepositoryRelease, error) {
+	repoReleases, githubResponse, err := c.githubRepoService.ListReleases(ctx, owner, repo, opts)
+	debug.Printf("GitHub response: %#v\n", githubResponse)
+	return repoReleases, err
 }
 
-func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
-	repoRelease, githubResponse, error := c.githubRepoService.GetLatestRelease(ctx, owner, repo)
+func (c Client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
+	repoRelease, githubResponse, err := c.githubRepoService.GetLatestRelease(ctx, owner, repo)
 	debug.Printf("github response: %#v\n", githubResponse)
-	return repoRelease, error
+	return repoRelease, err
 }
 
-func New() client {
+func NewClient() Client {
 	githubClient := github.NewClient(nil)
-	return client{
+	return Client{
 		githubRepoService: githubClient.Repositories,
 	}
 }
