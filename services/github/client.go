@@ -30,6 +30,6 @@ func NewClient() Client {
 
 func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
 	repoRelease, githubResponse, err := c.githubRepoService.GetLatestRelease(ctx, owner, repo)
-	debug.Printf("github response: %#v\n", githubResponse)
+	debug.Printf("GitHub response: %#v\n", githubResponse)
 	return repoRelease, err
 }
