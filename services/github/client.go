@@ -6,13 +6,9 @@ import (
 	"time"
 
 	"github.com/google/go-github/v47/github"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
-)
-
-const (
-	owner = "scalingo"
-	repo  = "cli"
 )
 
 type Client interface {
@@ -32,7 +28,14 @@ func NewClient() Client {
 }
 
 func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
-	repoRelease, githubResponse, err := c.githubRepositoriesService.GetLatestRelease(ctx, owner, repo)
+	latestRelease, githubResponse, err := c.githubRepositoriesService.GetLatestRelease(ctx, "Scalingo", "cli")
+	defer githubResponse.Body.Close()
+
 	debug.Printf("GitHub response: %#v\n", githubResponse)
-	return repoRelease, err
+
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get the latest release of the Scalingo/cli repository")
+	}
+
+	return latestRelease, nil
 }
