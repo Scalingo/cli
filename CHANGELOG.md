@@ -3,6 +3,7 @@
 ### To be Released
 
 * fix(releases): Correctly auto generate changelog [#772](https://github.com/Scalingo/cli/pull/772)
+* feat(cli-changelog): add cli-changelog command and show the changelog after an update [#767](https://github.com/Scalingo/cli/pull/767)
 
 # 1.24.1
 

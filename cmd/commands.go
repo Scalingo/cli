@@ -263,6 +263,9 @@ var (
 		// Version
 		UpdateCommand,
 
+		// Changelog
+		changelogCommand,
+
 		// Help
 		HelpCommand,
 	}

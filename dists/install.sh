@@ -169,6 +169,7 @@ main() {
     error "Fail to install Scalingo client (return $rc)\n"
   else
     status "Installation completed, the command 'scalingo' is available.\n"
+    status "Here's what's new in this version:\n\n$(scalingo changelog)\n"
   fi
 }
 
