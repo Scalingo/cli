@@ -5,27 +5,25 @@ import (
 	"fmt"
 	"strings"
 
-	githubClient "github.com/google/go-github/v47/github"
 	"gopkg.in/errgo.v1"
 
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/services/github"
 )
 
-func printRelease(release githubClient.RepositoryRelease) {
-	fmt.Printf("Changelog of the version %v\n\n", release.GetTagName())
-	fmt.Printf("%v\n\n", strings.ReplaceAll(*release.Body, "\\r\\n", "\r\n"))
-}
-
 func ShowLastChangelog() error {
-	ctx := context.Background()
-
-	client := github.NewClient()
-
-	cliLastRelease, err := client.GetLatestRelease(ctx)
+	cliLastRelease, err := github.NewClient().GetLatestRelease(context.Background())
 	if err != nil {
 		return errgo.Notef(err, "fail to get last CLI release")
 	}
-	printRelease(*cliLastRelease)
+
+	if cliLastRelease.GetBody() == "" {
+		io.Warning("GitHub last release is empty")
+		return nil
+	}
+
+	fmt.Printf("Changelog of the version %v\n\n", cliLastRelease.GetTagName())
+	fmt.Printf("%v\n\n", strings.ReplaceAll(cliLastRelease.GetBody(), "\\r\\n", "\r\n"))
 
 	return nil
 }
