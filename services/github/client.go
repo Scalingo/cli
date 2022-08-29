@@ -2,6 +2,8 @@ package github
 
 import (
 	"context"
+	"net/http"
+	"time"
 
 	"github.com/google/go-github/v47/github"
 
@@ -18,18 +20,19 @@ type Client interface {
 }
 
 type client struct {
-	githubRepoService *github.RepositoriesService
+	githubRepositoriesService *github.RepositoriesService
 }
 
 func NewClient() Client {
-	githubClient := github.NewClient(nil)
 	return client{
-		githubRepoService: githubClient.Repositories,
+		githubRepositoriesService: github.NewClient(&http.Client{
+			Timeout: 5 * time.Second,
+		}).Repositories,
 	}
 }
 
 func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
-	repoRelease, githubResponse, err := c.githubRepoService.GetLatestRelease(ctx, owner, repo)
+	repoRelease, githubResponse, err := c.githubRepositoriesService.GetLatestRelease(ctx, owner, repo)
 	debug.Printf("GitHub response: %#v\n", githubResponse)
 	return repoRelease, err
 }
