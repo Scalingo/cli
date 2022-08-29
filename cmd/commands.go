@@ -264,7 +264,7 @@ var (
 		UpdateCommand,
 
 		// Changelog
-		cliChangelogCommand,
+		changelogCommand,
 
 		// Help
 		HelpCommand,

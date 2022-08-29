@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	cliChangelogCommand = cli.Command{
+	changelogCommand = cli.Command{
 		Name:     "changelog",
 		Category: "CLI Internals",
 		Usage:    "Show the scalingo CLI changelog from last version",
