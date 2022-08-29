@@ -11,8 +11,8 @@ var (
 	changelogCommand = cli.Command{
 		Name:     "changelog",
 		Category: "CLI Internals",
-		Usage:    "Show the scalingo CLI changelog from last version",
-		Description: `Show the scalingo CLI changelog from last version
+		Usage:    "Show the Scalingo CLI changelog from last version",
+		Description: `Show the Scalingo CLI changelog from last version
 	Example
 	  'scalingo changelog'`,
 		Action: func(c *cli.Context) {
