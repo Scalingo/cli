@@ -29,7 +29,9 @@ func NewClient() Client {
 
 func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {
 	latestRelease, githubResponse, err := c.githubRepositoriesService.GetLatestRelease(ctx, "Scalingo", "cli")
-	defer githubResponse.Body.Close()
+	if githubResponse != nil && githubResponse.Body != nil {
+		defer githubResponse.Body.Close()
+	}
 
 	debug.Printf("GitHub response: %#v\n", githubResponse)
 
