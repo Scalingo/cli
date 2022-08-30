@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/stvp/rollbar"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -16,10 +16,10 @@ import (
 )
 
 var (
-	completionFlag = "--" + cli.BashCompletionFlag.GetName()
+	completionFlag = "--" + cli.BashCompletionFlag.Names()[0]
 )
 
-func DefaultAction(c *cli.Context) {
+func DefaultAction(c *cli.Context) error {
 	completeMode := false
 
 	for i := range os.Args {
@@ -30,7 +30,7 @@ func DefaultAction(c *cli.Context) {
 	}
 
 	if !completeMode {
-		cmd.HelpCommand.Action.(func(*cli.Context))(c)
+		cmd.HelpCommand.Action(c)
 		cmd.ShowSuggestions(c)
 	} else {
 		i := len(os.Args) - 2
@@ -38,6 +38,8 @@ func DefaultAction(c *cli.Context) {
 			autocomplete.FlagsAutoComplete(c, os.Args[i])
 		}
 	}
+
+	return nil
 }
 
 func ScalingoAppComplete(c *cli.Context) {
@@ -101,15 +103,15 @@ COPYRIGHT:
 func main() {
 	app := cli.NewApp()
 	app.Name = "Scalingo Client"
-	app.Author = "Scalingo Team"
-	app.Email = "hello@scalingo.com"
+	// app.Author = "Scalingo Team"
+	// app.Email = "hello@scalingo.com"
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
-		cli.StringFlag{Name: "addon", Value: "<addon_id>", Usage: "ID of the current addon", EnvVar: "SCALINGO_ADDON"},
-		cli.StringFlag{Name: "app, a", Value: "<name>", Usage: "Name of the app", EnvVar: "SCALINGO_APP"},
-		cli.StringFlag{Name: "remote, r", Value: "scalingo", Usage: "Name of the remote", EnvVar: ""},
-		cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"},
+		&cli.StringFlag{Name: "addon", Value: "<addon_id>", Usage: "ID of the current addon", EnvVars: []string{"SCALINGO_ADDON"}},
+		&cli.StringFlag{Name: "app", Aliases: []string{"a"}, Value: "<name>", Usage: "Name of the app", EnvVars: []string{"SCALINGO_APP"}},
+		&cli.StringFlag{Name: "remote", Aliases: []string{"r"}, Value: "scalingo", Usage: "Name of the remote"},
+		&cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"},
 	}
 	app.EnableBashCompletion = true
 	app.BashComplete = func(c *cli.Context) {

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
@@ -13,9 +13,9 @@ var (
 		Name:     "mongo-console",
 		Category: "Databases",
 		Usage:    "Run an interactive console with your MongoDB addon",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
-			cli.StringFlag{Name: "env, e", Value: "", Usage: "Environment variable name to use for the connection to the database"},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
+			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
 		},
 		Description: ` Run an interactive console with your MongoDB addon.
 
@@ -31,10 +31,10 @@ var (
 
     # See also 'redis-console' and 'mysql-console'
 `,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "mongo-console")
-				return
+				return nil
 			}
 
 			err := db.MongoConsole(db.MongoConsoleOpts{
@@ -45,6 +45,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "mongo-console")

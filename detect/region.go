@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -16,7 +16,7 @@ import (
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository
 // If not found it returns an empty string
 func GetRegionFromGitRemote(c *cli.Context, rc *config.RegionsCache) string {
-	remoteName := c.GlobalString("remote")
+	remoteName := c.String("remote")
 
 	if dir, ok := utils.DetectGit(); ok {
 		remotes, err := utils.ScalingoGitRemotes(dir)

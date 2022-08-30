@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -14,7 +14,7 @@ var (
 	envCommand = cli.Command{
 		Name:     "env",
 		Category: "Environment",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Display the environment of your apps",
 		Description: `List all the environment variables:
 
@@ -22,10 +22,10 @@ var (
 
     # See also commands 'env-get', 'env-set' and 'env-unset'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 0 {
+			if c.Args().Len() == 0 {
 				err = env.Display(currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "env")
@@ -34,6 +34,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "env")
@@ -43,7 +44,7 @@ var (
 	envGetCommand = cli.Command{
 		Name:     "env-get",
 		Category: "Environment",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Get the requested environment variable from your app",
 		Description: `Get the value of a specific environment variable:
 
@@ -51,18 +52,19 @@ var (
 
     # See also commands 'env', 'env-set' and 'env-unset'`,
 
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "env")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			variableValue, err := env.Get(currentApp, c.Args()[0])
+			variableValue, err := env.Get(currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
 			fmt.Println(variableValue)
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "env")
@@ -72,7 +74,7 @@ var (
 	envSetCommand = cli.Command{
 		Name:     "env-set",
 		Category: "Environment",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Set the environment variables of your apps",
 		Description: `Set variables:
 
@@ -80,18 +82,19 @@ var (
 
     # See also commands 'env', 'env-get' and 'env-unset'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) > 0 {
-				err = env.Add(currentApp, c.Args())
+			if c.Args().Len() > 0 {
+				err = env.Add(currentApp, c.Args().Slice())
 			} else {
 				cli.ShowCommandHelp(c, "env-set")
-				return
+				return nil
 			}
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "env-set")
@@ -101,7 +104,7 @@ var (
 	envUnsetCommand = cli.Command{
 		Name:     "env-unset",
 		Category: "Environment",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Unset environment variables of your apps",
 		Description: `Unset variables:
 
@@ -109,17 +112,18 @@ var (
 
     # See also commands 'env', 'env-get' and 'env-set'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) > 0 {
-				err = env.Delete(currentApp, c.Args())
+			if c.Args().Len() > 0 {
+				err = env.Delete(currentApp, c.Args().Slice())
 			} else {
 				cli.ShowCommandHelp(c, "env-unset")
 			}
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "env-unset")

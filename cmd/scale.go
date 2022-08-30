@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -10,11 +10,10 @@ import (
 
 var (
 	scaleCommand = cli.Command{
-		Name:      "scale",
-		ShortName: "s",
-		Category:  "App Management",
-		Flags: []cli.Flag{appFlag,
-			cli.BoolFlag{Name: "synchronous, s", Usage: "Do the scaling synchronously", EnvVar: ""},
+		Name:     "scale",
+		Category: "App Management",
+		Flags: []cli.Flag{&appFlag,
+			&cli.BoolFlag{Name: "synchronous", Aliases: []string{"s"}, Usage: "Do the scaling synchronously"},
 		},
 		Usage: "Scale your application instantly",
 		Description: `Scale your application processes. Without argument, this command lists the container types declared in your application.
@@ -24,21 +23,22 @@ var (
      'scalingo --app my-app scale web:1:XL'
      'scalingo --app my-app scale web:+1 worker:-1'
      `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
-			if len(c.Args()) == 0 {
+			if c.Args().Len() == 0 {
 				err := apps.ContainerTypes(currentApp)
 				if err != nil {
 					errorQuit(err)
 				}
-				return
+				return nil
 			}
 
-			err := apps.Scale(currentApp, c.Bool("s"), c.Args())
+			err := apps.Scale(currentApp, c.Bool("s"), c.Args().Slice())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "scale")

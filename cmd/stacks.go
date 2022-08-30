@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -20,11 +20,12 @@ var (
 
 		# See also 'stacks-set'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			err := stacks.List()
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 	}
 
@@ -32,7 +33,7 @@ var (
 		Name:     "stacks-set",
 		Category: "Runtime Stacks",
 		Usage:    "Set the runtime stack of an app",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Set the runtime stack of an app (deployment cache will be reset):
 
 		Example:
@@ -40,17 +41,18 @@ var (
 
 		# See also 'stacks'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "stacks-set")
-				return
+				return nil
 			}
 
-			err := stacks.Set(currentApp, c.Args()[0])
+			err := stacks.Set(currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.StacksSetAutoComplete(c)

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -10,20 +10,17 @@ import (
 )
 
 var (
-	EnvFlag    = cli.StringSlice([]string{})
-	FilesFlag  = cli.StringSlice([]string{})
 	runCommand = cli.Command{
-		Name:      "run",
-		ShortName: "r",
-		Category:  "App Management",
-		Usage:     "Run any command for your app",
-		Flags: []cli.Flag{appFlag,
-			cli.BoolFlag{Name: "detached, d", Usage: "Run a detached container"},
-			cli.StringFlag{Name: "size, s", Value: "", Usage: "Size of the container"},
-			cli.StringFlag{Name: "type, t", Value: "", Usage: "Procfile Type"},
-			cli.StringSliceFlag{Name: "env, e", Value: &EnvFlag, Usage: "Environment variables"},
-			cli.StringSliceFlag{Name: "file, f", Value: &FilesFlag, Usage: "Files to upload"},
-			cli.BoolFlag{Name: "silent", Usage: "Do not output anything on stderr"},
+		Name:     "run",
+		Category: "App Management",
+		Usage:    "Run any command for your app",
+		Flags: []cli.Flag{&appFlag,
+			&cli.BoolFlag{Name: "detached", Aliases: []string{"d"}, Usage: "Run a detached container"},
+			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
+			&cli.StringFlag{Name: "type", Aliases: []string{"t"}, Value: "", Usage: "Procfile Type"},
+			&cli.StringSliceFlag{Name: "env", Aliases: []string{"e"}, Usage: "Environment variables"},
+			&cli.StringSliceFlag{Name: "file", Aliases: []string{"f"}, Usage: "Files to upload"},
+			&cli.BoolFlag{Name: "silent", Usage: "Do not output anything on stderr"},
 		},
 		Description: `Run command in current app context, a one-off container will be
    start with your application environment loaded.
@@ -76,11 +73,11 @@ var (
 
    Example
      scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			opts := apps.RunOpts{
 				App:      currentApp,
-				Cmd:      c.Args(),
+				Cmd:      c.Args().Slice(),
 				Size:     c.String("s"),
 				Type:     c.String("t"),
 				CmdEnv:   c.StringSlice("e"),
@@ -88,20 +85,21 @@ var (
 				Silent:   c.Bool("silent"),
 				Detached: c.Bool("detached"),
 			}
-			if (len(c.Args()) == 0 && c.String("t") == "") || (len(c.Args()) > 0 && c.String("t") != "") {
+			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
 				cli.ShowCommandHelp(c, "run")
-				return
+				return nil
 			}
 
 			if opts.Detached && len(opts.Files) > 0 {
 				io.Error("It is currently impossible to use detached one-off with an uploaded file. Please either remove the --detached or --file flags.")
-				return
+				return nil
 			}
 
 			err := apps.Run(opts)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "run")

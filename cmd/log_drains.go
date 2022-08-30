@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/AlecAivazis/survey.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -16,9 +16,9 @@ var (
 	logDrainsListCommand = cli.Command{
 		Name:     "log-drains",
 		Category: "Log drains",
-		Flags: []cli.Flag{appFlag,
-			addonFlag,
-			cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
+		Flags: []cli.Flag{&appFlag,
+			&addonFlag,
+			&cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
 		},
 		Usage: "List the log drains of an application",
 		Description: `List all the log drains of an application:
@@ -32,17 +32,15 @@ var (
 		$ scalingo --app my-app log-drains --with-addons
 
 	# See also commands 'log-drains-add', 'log-drains-remove'`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "log-drains")
-				return
+				return nil
 			}
 
 			var addonID string
-			if c.GlobalString("addon") != "<addon_id>" {
-				addonID = c.GlobalString("addon")
-			} else if c.String("addon") != "<addon_id>" {
+			if c.String("addon") != "<addon_id>" {
 				addonID = c.String("addon")
 			}
 
@@ -53,6 +51,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
@@ -63,16 +62,16 @@ var (
 		Name:     "log-drains-add",
 		Category: "Log drains",
 		Usage:    "Add a log drain to an application",
-		Flags: []cli.Flag{appFlag,
-			addonFlag,
-			cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
-			cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
-			cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
-			cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
-			cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
-			cli.StringFlag{Name: "port", Usage: "Port of logs management service"},
-			cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
-			cli.StringFlag{Name: "drain-region", Usage: "Used by certain logs management service to identify the region of their servers"},
+		Flags: []cli.Flag{&appFlag,
+			&addonFlag,
+			&cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
+			&cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
+			&cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
+			&cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
+			&cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
+			&cli.StringFlag{Name: "port", Usage: "Port of logs management service"},
+			&cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
+			&cli.StringFlag{Name: "drain-region", Usage: "Used by certain logs management service to identify the region of their servers"},
 		},
 		Description: `Add a log drain to an application:
 
@@ -98,19 +97,17 @@ var (
 
 	# See also commands 'log-drains', 'log-drains-remove'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
 			var addonID string
-			if c.GlobalString("addon") != "<addon_id>" {
-				addonID = c.GlobalString("addon")
-			} else if c.String("addon") != "<addon_id>" {
+			if c.String("addon") != "<addon_id>" {
 				addonID = c.String("addon")
 			}
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				cli.ShowCommandHelp(c, "log-drains-add")
-				return
+				return nil
 			}
 
 			if c.Bool("with-addons") {
@@ -133,6 +130,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
@@ -143,9 +141,9 @@ var (
 		Name:     "log-drains-remove",
 		Category: "Log drains",
 		Flags: []cli.Flag{
-			appFlag,
-			addonFlag,
-			cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
+			&appFlag,
+			&addonFlag,
+			&cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
 		},
 		Usage: "Remove a log drain from an application and its associated addons",
 		Description: `Remove a log drain from an application and all its addons:
@@ -164,24 +162,22 @@ var (
 
 	# See also commands 'log-drains-add', 'log-drains'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "log-drains-remove")
-				return
+				return nil
 			}
-			drain := c.Args()[0]
+			drain := c.Args().First()
 
 			var addonID string
-			if c.GlobalString("addon") != "<addon_id>" {
-				addonID = c.GlobalString("addon")
-			} else if c.String("addon") != "<addon_id>" {
+			if c.String("addon") != "<addon_id>" {
 				addonID = c.String("addon")
 			}
 
 			if addonID != "" && c.Bool("only-app") {
 				cli.ShowCommandHelp(c, "log-drains-remove")
-				return
+				return nil
 			}
 
 			message := "This operation will delete the log drain " + drain
@@ -198,7 +194,7 @@ var (
 			result := askContinue(message)
 			if !result {
 				fmt.Println("Aborted")
-				return
+				return nil
 			}
 
 			err := log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
@@ -210,6 +206,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")

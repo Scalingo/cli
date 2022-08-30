@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
@@ -14,21 +14,21 @@ import (
 )
 
 type AppCommands struct {
-	commands []cli.Command
+	commands []*cli.Command
 }
 
 type Command struct {
-	cli.Command
+	*cli.Command
 	// Regional flag not available if Global is true
 	Global bool
 }
 
 func (cmds *AppCommands) addCommand(cmd Command) {
 	if !cmd.Global {
-		regionFlag := cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
+		regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
-		action := cmd.Command.Action.(func(c *cli.Context))
-		cmd.Command.Action = func(c *cli.Context) {
+		action := cmd.Command.Action
+		cmd.Command.Action = func(c *cli.Context) error {
 			token := os.Getenv("SCALINGO_API_TOKEN")
 
 			currentUser, err := config.C.CurrentUser()
@@ -45,10 +45,7 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 			if err != nil {
 				errorQuit(err)
 			}
-			currentRegion := c.GlobalString("region")
-			if currentRegion == "" {
-				currentRegion = c.String("region")
-			}
+			currentRegion := c.String("region")
 
 			// Detecting Region from git remote
 			if currentRegion == "" {
@@ -65,6 +62,8 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 				config.C.ScalingoRegion = currentRegion
 			}
 			action(c)
+
+			return nil
 		}
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)
@@ -81,7 +80,7 @@ func getDefaultRegion(regionsCache config.RegionsCache) scalingo.Region {
 	return defaultRegion
 }
 
-func (cmds *AppCommands) Commands() []cli.Command {
+func (cmds *AppCommands) Commands() []*cli.Command {
 	return cmds.commands
 }
 
@@ -97,176 +96,176 @@ func NewAppCommands() *AppCommands {
 }
 
 var (
-	regionalCommands = []cli.Command{
+	regionalCommands = []*cli.Command{
 		// Apps
-		appsCommand,
-		CreateCommand,
-		DestroyCommand,
-		renameCommand,
-		appsInfoCommand,
-		openCommand,
-		dashboardCommand,
+		&appsCommand,
+		&CreateCommand,
+		&DestroyCommand,
+		&renameCommand,
+		&appsInfoCommand,
+		&openCommand,
+		&dashboardCommand,
 
 		// Apps Actions
-		logsCommand,
-		logsArchivesCommand,
-		runCommand,
-		oneOffStopCommand,
+		&logsCommand,
+		&logsArchivesCommand,
+		&runCommand,
+		&oneOffStopCommand,
 
 		// Apps Process Actions
-		psCommand,
-		scaleCommand,
-		RestartCommand,
+		&psCommand,
+		&scaleCommand,
+		&RestartCommand,
 
 		// Routing Settings
-		forceHTTPSCommand,
-		stickySessionCommand,
-		routerLogsCommand,
-		setCanonicalDomainCommand,
-		unsetCanonicalDomainCommand,
+		&forceHTTPSCommand,
+		&stickySessionCommand,
+		&routerLogsCommand,
+		&setCanonicalDomainCommand,
+		&unsetCanonicalDomainCommand,
 
 		// Events
-		UserTimelineCommand,
-		TimelineCommand,
+		&UserTimelineCommand,
+		&TimelineCommand,
 
 		// Environment
-		envCommand,
-		envGetCommand,
-		envSetCommand,
-		envUnsetCommand,
+		&envCommand,
+		&envGetCommand,
+		&envSetCommand,
+		&envUnsetCommand,
 
 		// Domains
-		DomainsListCommand,
-		DomainsAddCommand,
-		DomainsRemoveCommand,
-		DomainsSSLCommand,
+		&DomainsListCommand,
+		&DomainsAddCommand,
+		&DomainsRemoveCommand,
+		&DomainsSSLCommand,
 
 		// Deployments
-		deploymentsListCommand,
-		deploymentLogCommand,
-		deploymentFollowCommand,
-		deploymentDeployCommand,
-		deploymentCacheResetCommand,
+		&deploymentsListCommand,
+		&deploymentLogCommand,
+		&deploymentFollowCommand,
+		&deploymentDeployCommand,
+		&deploymentCacheResetCommand,
 
 		// Collaborators
-		CollaboratorsListCommand,
-		CollaboratorsAddCommand,
-		CollaboratorsRemoveCommand,
+		&CollaboratorsListCommand,
+		&CollaboratorsAddCommand,
+		&CollaboratorsRemoveCommand,
 
 		// Stacks
-		stacksListCommand,
-		stacksSetCommand,
+		&stacksListCommand,
+		&stacksSetCommand,
 
 		// Addons
-		AddonProvidersListCommand,
-		AddonProvidersPlansCommand,
-		AddonsListCommand,
-		AddonsAddCommand,
-		AddonsRemoveCommand,
-		AddonsUpgradeCommand,
-		AddonsInfoCommand,
+		&AddonProvidersListCommand,
+		&AddonProvidersPlansCommand,
+		&AddonsListCommand,
+		&AddonsAddCommand,
+		&AddonsRemoveCommand,
+		&AddonsUpgradeCommand,
+		&AddonsInfoCommand,
 
 		// Integration Link
-		integrationLinkShowCommand,
-		integrationLinkCreateCommand,
-		integrationLinkUpdateCommand,
-		integrationLinkDeleteCommand,
-		integrationLinkManualDeployCommand,
-		integrationLinkManualReviewAppCommand,
+		&integrationLinkShowCommand,
+		&integrationLinkCreateCommand,
+		&integrationLinkUpdateCommand,
+		&integrationLinkDeleteCommand,
+		&integrationLinkManualDeployCommand,
+		&integrationLinkManualReviewAppCommand,
 
 		// Review Apps
-		reviewAppsShowCommand,
+		&reviewAppsShowCommand,
 
 		// Notifiers
-		NotifiersListCommand,
-		NotifiersDetailsCommand,
-		NotifiersAddCommand,
-		NotifiersUpdateCommand,
-		NotifiersRemoveCommand,
+		&NotifiersListCommand,
+		&NotifiersDetailsCommand,
+		&NotifiersAddCommand,
+		&NotifiersUpdateCommand,
+		&NotifiersRemoveCommand,
 
 		// Notification platforms
-		NotificationPlatformListCommand,
+		&NotificationPlatformListCommand,
 
 		// DB Access
-		DbTunnelCommand,
-		RedisConsoleCommand,
-		MongoConsoleCommand,
-		MySQLConsoleCommand,
-		PgSQLConsoleCommand,
-		InfluxDBConsoleCommand,
+		&DbTunnelCommand,
+		&RedisConsoleCommand,
+		&MongoConsoleCommand,
+		&MySQLConsoleCommand,
+		&PgSQLConsoleCommand,
+		&InfluxDBConsoleCommand,
 
 		// Databases
-		databaseBackupsConfig,
+		&databaseBackupsConfig,
 
 		// Backups
-		backupsListCommand,
-		backupsCreateCommand,
-		backupsDownloadCommand,
-		backupDownloadCommand,
+		&backupsListCommand,
+		&backupsCreateCommand,
+		&backupsDownloadCommand,
+		&backupDownloadCommand,
 
 		// Alerts
-		alertsListCommand,
-		alertsAddCommand,
-		alertsUpdateCommand,
-		alertsEnableCommand,
-		alertsDisableCommand,
-		alertsRemoveCommand,
+		&alertsListCommand,
+		&alertsAddCommand,
+		&alertsUpdateCommand,
+		&alertsEnableCommand,
+		&alertsDisableCommand,
+		&alertsRemoveCommand,
 
 		// Stats
-		StatsCommand,
+		&StatsCommand,
 
 		// Autoscalers
-		autoscalersListCommand,
-		autoscalersAddCommand,
-		autoscalersRemoveCommand,
-		autoscalersUpdateCommand,
-		autoscalersDisableCommand,
-		autoscalersEnableCommand,
+		&autoscalersListCommand,
+		&autoscalersAddCommand,
+		&autoscalersRemoveCommand,
+		&autoscalersUpdateCommand,
+		&autoscalersDisableCommand,
+		&autoscalersEnableCommand,
 
 		// Migrations
-		migrationCreateCommand,
-		migrationRunCommand,
-		migrationAbortCommand,
-		migrationListCommand,
-		migrationFollowCommand,
+		&migrationCreateCommand,
+		&migrationRunCommand,
+		&migrationAbortCommand,
+		&migrationListCommand,
+		&migrationFollowCommand,
 
 		// Log drains
-		logDrainsAddCommand,
-		logDrainsListCommand,
-		logDrainsRemoveCommand,
+		&logDrainsAddCommand,
+		&logDrainsListCommand,
+		&logDrainsRemoveCommand,
 
-		gitSetup,
-		gitShow,
+		&gitSetup,
+		&gitShow,
 
 		// Cron tasks
-		cronTasksListCommand,
+		&cronTasksListCommand,
 	}
 
-	globalCommands = []cli.Command{
+	globalCommands = []*cli.Command{
 		// SSH keys
-		listSSHKeyCommand,
-		addSSHKeyCommand,
-		removeSSHKeyCommand,
+		&listSSHKeyCommand,
+		&addSSHKeyCommand,
+		&removeSSHKeyCommand,
 
-		integrationsListCommand,
-		integrationsAddCommand,
-		integrationsDeleteCommand,
-		integrationsImportKeysCommand,
+		&integrationsListCommand,
+		&integrationsAddCommand,
+		&integrationsDeleteCommand,
+		&integrationsImportKeysCommand,
 
 		// Sessions
-		LoginCommand,
-		LogoutCommand,
-		RegionsListCommand,
-		ConfigCommand,
-		selfCommand,
+		&LoginCommand,
+		&LogoutCommand,
+		&RegionsListCommand,
+		&ConfigCommand,
+		&selfCommand,
 
 		// Version
-		UpdateCommand,
+		&UpdateCommand,
 
 		// Changelog
-		changelogCommand,
+		&changelogCommand,
 
 		// Help
-		HelpCommand,
+		&HelpCommand,
 	}
 )

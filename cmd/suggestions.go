@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func ShowSuggestions(c *cli.Context) {
@@ -27,7 +27,7 @@ func ShowSuggestions(c *cli.Context) {
 		}
 	}
 
-	if len(c.Args()) > 0 && len(suggestions) > 0 {
+	if c.Args().Len() > 0 && len(suggestions) > 0 {
 		fmt.Println("You might be looking for:")
 		for _, s := range suggestions {
 			fmt.Printf("  - '%s'\n", s)

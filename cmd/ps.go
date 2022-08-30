@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -13,21 +13,22 @@ var (
 		Name:     "ps",
 		Category: "App Management",
 		Usage:    "Display your application containers",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Display your application containers
 	Example
 	  'scalingo --app my-app ps'`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "ps")
-				return
+				return nil
 			}
 
 			err := apps.Ps(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "ps")

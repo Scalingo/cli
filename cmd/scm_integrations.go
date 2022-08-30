@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/scmintegrations"
@@ -23,11 +23,12 @@ var (
 
 	# See also commands 'integrations-add', 'integrations-delete', 'integrations-import-keys'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			err := scmintegrations.List()
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations")
@@ -37,9 +38,9 @@ var (
 	integrationsAddCommand = cli.Command{
 		Name:     "integrations-add",
 		Category: "Integrations",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "url", Usage: "URL of the integration"},
-			cli.StringFlag{Name: "token", Usage: "Token of the integration"},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "url", Usage: "URL of the integration"},
+			&cli.StringFlag{Name: "token", Usage: "Token of the integration"},
 		},
 		Usage: "Link your Scalingo account with your account on a tool such as github.com",
 		Description: `Link your Scalingo account with your account on a tool. After creating the link, you will be able to automatically deploy when pushing to your repository, or create Review Apps for all pull requests created.
@@ -58,15 +59,15 @@ var (
 
 	# See also commands 'integrations', 'integrations-delete', 'integrations-import-keys'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-add")
-				return
+				return nil
 			}
 
 			integrationURL := c.String("url")
 			token := c.String("token")
-			scmType := scalingo.SCMType(c.Args()[0])
+			scmType := scalingo.SCMType(c.Args().First())
 
 			switch scmType {
 			case scalingo.SCMGithubType, scalingo.SCMGitlabType:
@@ -96,6 +97,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-add")
@@ -118,16 +120,17 @@ var (
 
 	# See also commands 'integrations', 'integrations-add', 'integrations-import-keys'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-delete")
-				return
+				return nil
 			}
 
-			err := scmintegrations.Delete(c.Args()[0])
+			err := scmintegrations.Delete(c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-delete")
@@ -150,16 +153,17 @@ var (
 
 	# See also commands 'integrations', 'integrations-add', 'integrations-delete'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
-				return
+				return nil
 			}
 
-			err := scmintegrations.ImportKeys(c.Args()[0])
+			err := scmintegrations.ImportKeys(c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-import-keys")

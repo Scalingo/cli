@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/collaborators"
@@ -13,11 +13,11 @@ var (
 		Name:        "collaborators",
 		Category:    "Collaborators",
 		Usage:       "List the collaborators of an application",
-		Flags:       []cli.Flag{appFlag},
+		Flags:       []cli.Flag{&appFlag},
 		Description: "List all the collaborators of an application and display information about them.",
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "collaborators")
 			} else {
 				err := collaborators.List(currentApp)
@@ -25,6 +25,7 @@ var (
 					errorQuit(err)
 				}
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "collaborators")
@@ -35,18 +36,19 @@ var (
 		Name:        "collaborators-add",
 		Category:    "Collaborators",
 		Usage:       "Invite someone to work on an application",
-		Flags:       []cli.Flag{appFlag},
+		Flags:       []cli.Flag{&appFlag},
 		Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email\n scalingo -a myapp collaborators-add user@example.com",
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-add")
 			} else {
-				err := collaborators.Add(currentApp, c.Args()[0])
+				err := collaborators.Add(currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)
 				}
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "collaborators-add")
@@ -58,18 +60,19 @@ var (
 		Name:        "collaborators-remove",
 		Category:    "Collaborators",
 		Usage:       "Revoke permission to collaborate on an application",
-		Flags:       []cli.Flag{appFlag},
+		Flags:       []cli.Flag{&appFlag},
 		Description: "Revoke the invitation of collaboration to the given email\n    scalingo -a myapp collaborators-remove user@example.com",
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-remove")
 			} else {
-				err := collaborators.Remove(currentApp, c.Args()[0])
+				err := collaborators.Remove(currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)
 				}
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")

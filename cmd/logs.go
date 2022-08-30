@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -11,10 +11,10 @@ import (
 
 var (
 	logsCommand = cli.Command{
-		Name:      "logs",
-		ShortName: "l",
-		Category:  "App Management",
-		Usage:     "Get the logs of your applications",
+		Name:     "logs",
+		Aliases:  []string{"l"},
+		Category: "App Management",
+		Usage:    "Get the logs of your applications",
 		Description: `Get the logs of your applications
    Example:
      Get 100 lines:          'scalingo --app my-app logs -n 100'
@@ -24,16 +24,16 @@ var (
        'scalingo --app my-app logs -F web'
        'scalingo --app my-app logs -F web-1'
        'scalingo --app my-app logs --follow -F "worker|clock"'`,
-		Flags: []cli.Flag{appFlag, addonFlag,
-			cli.IntFlag{Name: "lines, n", Value: 20, Usage: "Number of log lines to dump", EnvVar: ""},
-			cli.BoolFlag{Name: "follow, f", Usage: "Stream logs of app, (as \"tail -f\")", EnvVar: ""},
-			cli.StringFlag{Name: "filter, F", Usage: "Filter containers logs that will be displayed", EnvVar: ""},
+		Flags: []cli.Flag{&appFlag, &addonFlag,
+			&cli.IntFlag{Name: "lines", Aliases: []string{"n"}, Value: 20, Usage: "Number of log lines to dump"},
+			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},
+			&cli.StringFlag{Name: "filter, F", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "logs")
-				return
+				return nil
 			}
 
 			addonName := addonNameFromFlags(c)
@@ -51,6 +51,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "logs")

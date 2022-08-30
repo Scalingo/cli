@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"
@@ -16,11 +16,11 @@ var (
 		Name:     "db-tunnel",
 		Category: "App Management",
 		Usage:    "Create an encrypted connection to access your database",
-		Flags: []cli.Flag{appFlag,
-			cli.IntFlag{Name: "port, p", Usage: "Local port to bind (default 10000)"},
-			cli.StringFlag{Name: "identity, i", Usage: "SSH Private Key"},
-			cli.StringFlag{Name: "bind, b", Usage: "IP to bind (default 127.0.0.1)"},
-			cli.BoolTFlag{Name: "reconnect", Usage: "true by default, automatically reconnect to the tunnel when disconnected"},
+		Flags: []cli.Flag{&appFlag,
+			&cli.IntFlag{Name: "port", Aliases: []string{"p"}, Usage: "Local port to bind (default 10000)"},
+			&cli.StringFlag{Name: "identity", Aliases: []string{"i"}, Usage: "SSH Private Key"},
+			&cli.StringFlag{Name: "bind", Aliases: []string{"b"}, Usage: "IP to bind (default 127.0.0.1)"},
+			&cli.BoolFlag{Name: "reconnect", Value: true, Usage: "true by default, automatically reconnect to the tunnel when disconnected"},
 		},
 		Description: `Create an SSH-encrypted connection to access your Scalingo database locally.
 
@@ -54,7 +54,7 @@ var (
 
    Example
      $ scalingo --app rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var sshIdentity string
 			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {
@@ -64,22 +64,23 @@ var (
 			} else {
 				sshIdentity = c.String("identity")
 			}
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "db-tunnel")
-				return
+				return nil
 			}
 
 			err := db.Tunnel(db.TunnelOpts{
 				App:       currentApp,
-				DBEnvVar:  c.Args()[0],
+				DBEnvVar:  c.Args().First(),
 				Identity:  sshIdentity,
 				Port:      c.Int("port"),
 				Bind:      c.String("bind"),
-				Reconnect: c.BoolT("reconnect"),
+				Reconnect: c.Bool("reconnect"),
 			})
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")

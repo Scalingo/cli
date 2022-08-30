@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/alerts"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -13,7 +13,7 @@ var (
 	alertsListCommand = cli.Command{
 		Name:     "alerts",
 		Category: "Alerts",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List the alerts of an application",
 		Description: `List all the alerts of an application:
 
@@ -21,16 +21,17 @@ var (
 
     # See also commands 'alerts-add', 'alerts-update' and 'alerts-remove'`,
 
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "alerts")
-				return
+				return nil
 			}
 
 			err := alerts.List(detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts")
@@ -41,14 +42,14 @@ var (
 		Name:     "alerts-add",
 		Category: "Alerts",
 		Usage:    "Add an alert to an application",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
-			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
-			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
-			cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
-			cli.DurationFlag{Name: "remind-every, r", Usage: "Send the alert at regular interval when activated"},
-			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
-			cli.StringSliceFlag{Name: "notifiers, n", Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "container-type", Aliases: []string{"c"}, Usage: "Specify the container type affected by the alert"},
+			&cli.StringFlag{Name: "metric", Aliases: []string{"m"}, Usage: "Specify the metric you want the alert to apply on"},
+			&cli.Float64Flag{Name: "limit", Aliases: []string{"l"}, Usage: "Target value for the metric the alert will maintain"},
+			&cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
+			&cli.DurationFlag{Name: "remind-every", Aliases: []string{"r"}, Usage: "Send the alert at regular interval when activated"},
+			&cli.BoolFlag{Name: "below", Aliases: []string{"b"}, Usage: "Send the alert when metric value is *below* the limit"},
+			&cli.StringSliceFlag{Name: "notifiers", Aliases: []string{"n"}, Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: `Add an alert to an application metric.
 
@@ -61,13 +62,13 @@ var (
 
     # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if !isValidAlertAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "alerts-add")
 				if err != nil {
 					errorQuit(err)
 				}
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -85,6 +86,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
@@ -95,15 +97,15 @@ var (
 		Name:     "alerts-update",
 		Category: "Alerts",
 		Usage:    "Update an alert",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "container-type, c", Usage: "Specify the container type affected by the alert"},
-			cli.StringFlag{Name: "metric, m", Usage: "Specify the metric you want the alert to apply on"},
-			cli.Float64Flag{Name: "limit, l", Usage: "Target value for the metric the alert will maintain"},
-			cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
-			cli.DurationFlag{Name: "remind-every, r", Usage: "Send the alert at regular interval when activated"},
-			cli.BoolFlag{Name: "below, b", Usage: "Send the alert when metric value is *below* the limit"},
-			cli.BoolFlag{Name: "disabled, d", Usage: "Disable the alert (nothing is sent)"},
-			cli.StringSliceFlag{Name: "notifiers, n", Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "container-type", Aliases: []string{"c"}, Usage: "Specify the container type affected by the alert"},
+			&cli.StringFlag{Name: "metric", Aliases: []string{"m"}, Usage: "Specify the metric you want the alert to apply on"},
+			&cli.Float64Flag{Name: "limit", Aliases: []string{"l"}, Usage: "Target value for the metric the alert will maintain"},
+			&cli.DurationFlag{Name: "duration-before-trigger", Usage: "Alert is activated if the value is above the limit for the given duration"},
+			&cli.DurationFlag{Name: "remind-every", Aliases: []string{"r"}, Usage: "Send the alert at regular interval when activated"},
+			&cli.BoolFlag{Name: "below", Aliases: []string{"b"}, Usage: "Send the alert when metric value is *below* the limit"},
+			&cli.BoolFlag{Name: "disabled", Aliases: []string{"d"}, Usage: "Disable the alert (nothing is sent)"},
+			&cli.StringSliceFlag{Name: "notifiers", Aliases: []string{"n"}, Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: `Update an existing alert.
 
@@ -116,16 +118,16 @@ var (
 
    # See also 'alerts-disable' and 'alerts-enable'
 		`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-update")
 				if err != nil {
 					errorQuit(err)
 				}
-				return
+				return nil
 			}
 
-			alertID := c.Args()[0]
+			alertID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
 			params := scalingo.AlertUpdateParams{}
 			if c.IsSet("c") {
@@ -165,6 +167,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
@@ -175,7 +178,7 @@ var (
 		Name:     "alerts-enable",
 		Category: "Alerts",
 		Usage:    "Enable an alert",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Enable an alert.
 
    Example
@@ -183,23 +186,24 @@ var (
 
    # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-enable")
 				if err != nil {
 					errorQuit(err)
 				}
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 			disabled := false
-			err := alerts.Update(currentApp, c.Args()[0], scalingo.AlertUpdateParams{
+			err := alerts.Update(currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-enable")
@@ -210,7 +214,7 @@ var (
 		Name:     "alerts-disable",
 		Category: "Alerts",
 		Usage:    "Disable an alert",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Disable an alert.
 
    Example
@@ -218,23 +222,24 @@ var (
 
    # See also commands 'alerts-update' and 'alerts-remove'
 		`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-disable")
 				if err != nil {
 					errorQuit(err)
 				}
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 			disabled := true
-			err := alerts.Update(currentApp, c.Args()[0], scalingo.AlertUpdateParams{
+			err := alerts.Update(currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-disable")
@@ -245,7 +250,7 @@ var (
 		Name:     "alerts-remove",
 		Category: "Alerts",
 		Usage:    "Remove an alert from an application",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Remove an alert.
 
    Example
@@ -253,17 +258,18 @@ var (
 
    # See also commands 'alerts-add' and 'alerts-update'
 		 `,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "alerts-remove")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := alerts.Remove(currentApp, c.Args()[0])
+			err := alerts.Remove(currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-remove")
@@ -272,7 +278,7 @@ var (
 )
 
 func isValidAlertAddOpts(c *cli.Context) bool {
-	if len(c.Args()) > 0 {
+	if c.Args().Len() > 0 {
 		return false
 	}
 	for _, opt := range []string{"container-type", "metric", "limit"} {

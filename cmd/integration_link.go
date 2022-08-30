@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/AlecAivazis/survey.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -26,15 +26,15 @@ var (
 		Name:     "integration-link",
 		Category: "Integration Link",
 		Usage:    "Show integration link of your app",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` Show integration link of your app:
 	$ scalingo --app my-app integration-link
 
 		# See also 'integration-link-create', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy', 'integration-link-manual-review-app'`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -42,6 +42,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link")
@@ -52,18 +53,18 @@ var (
 		Name:     "integration-link-create",
 		Category: "Integration Link",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
-			cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
-			cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
-			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
-			cli.UintFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
+			&appFlag,
+			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
+			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			&cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			&cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			&cli.UintFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Link your Scalingo application to an integration",
 		Description: ` Link your Scalingo application to an integration:
@@ -82,14 +83,14 @@ var (
 	$ scalingo --app my-app integration-link-create https://ghe.example.org/test/frontend-app --branch master --auto-deploy
 
 		# See also 'integration-link', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-create")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			integrationURL := c.Args()[0]
+			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
 				errorQuit(err)
@@ -188,6 +189,7 @@ var (
 				}
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-create")
@@ -198,18 +200,18 @@ var (
 		Name:     "integration-link-update",
 		Category: "Integration Link",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
-			cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
-			cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
-			cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
-			cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
+			&appFlag,
+			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
+			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
+			&cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			&cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
+			&cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Update the integration link parameters",
 		Description: ` Update the integration link parameters:
@@ -222,10 +224,10 @@ var (
 	$ scalingo --app my-app integration-link-update --destroy-on-stale --hours-before-destroy-on-stale 2
 
 		# See also 'integration-link', 'integration-link-create', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
-		Action: func(c *cli.Context) {
-			if c.NumFlags() == 0 || len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.NumFlags() == 0 || c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-update")
-				return
+				return nil
 			}
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
@@ -258,6 +260,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-update")
@@ -267,17 +270,17 @@ var (
 	integrationLinkDeleteCommand = cli.Command{
 		Name:     "integration-link-delete",
 		Category: "Integration Link",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Delete the link between your Scalingo application and the integration",
 		Description: `Delete the link between your Scalingo application and the integration:
 
 	$ scalingo --app my-app integration-link-delete
 
 		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-delete")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -285,6 +288,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-delete")
@@ -294,25 +298,26 @@ var (
 	integrationLinkManualDeployCommand = cli.Command{
 		Name:     "integration-link-manual-deploy",
 		Category: "Integration Link",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Trigger a manual deployment of the specified branch",
 		Description: `Trigger a manual deployment of the specified branch:
 
 	$ scalingo --app my-app integration-link-manual-deploy mybranch
 
 		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-review-app'`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-deploy")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			branchName := c.Args()[0]
+			branchName := c.Args().First()
 			err := integrationlink.ManualDeploy(currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-deploy")
@@ -322,7 +327,7 @@ var (
 	integrationLinkManualReviewAppCommand = cli.Command{
 		Name:     "integration-link-manual-review-app",
 		Category: "Integration Link",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Trigger a review app creation of the pull/merge request ID specified",
 		Description: `Trigger a review app creation of the pull/merge request ID specified:
 
@@ -333,18 +338,19 @@ var (
 	$ scalingo --app my-app integration-link-manual-review-app 42
 
 		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-deploy'`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-review-app")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			pullRequestID := c.Args()[0]
+			pullRequestID := c.Args().First()
 			err := integrationlink.ManualReviewApp(currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-review-app")
