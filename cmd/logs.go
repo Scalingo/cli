@@ -40,9 +40,9 @@ var (
 
 			var err error
 			if addonName == "" {
-				err = apps.Logs(currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
+				err = apps.Logs(c.Context, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
 			} else {
-				err = db.Logs(currentApp, addonName, db.LogsOpts{
+				err = db.Logs(c.Context, currentApp, addonName, db.LogsOpts{
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})

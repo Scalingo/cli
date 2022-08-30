@@ -20,7 +20,7 @@ var (
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "collaborators")
 			} else {
-				err := collaborators.List(currentApp)
+				err := collaborators.List(c.Context, currentApp)
 				if err != nil {
 					errorQuit(err)
 				}
@@ -43,7 +43,7 @@ var (
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-add")
 			} else {
-				err := collaborators.Add(currentApp, c.Args().First())
+				err := collaborators.Add(c.Context, currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)
 				}
@@ -67,7 +67,7 @@ var (
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-remove")
 			} else {
-				err := collaborators.Remove(currentApp, c.Args().First())
+				err := collaborators.Remove(c.Context, currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)
 				}

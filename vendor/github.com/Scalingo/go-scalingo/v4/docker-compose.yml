@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - ./:/go/src/github.com/Scalingo/go-scalingo
+      - ./_dev/go-cache:/root/.cache
     env_file:
       - .env.test
     stop_signal: SIGKILL

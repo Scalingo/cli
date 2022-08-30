@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -15,13 +16,13 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func handleOperation(app string, res *http.Response) error {
+func handleOperation(ctx context.Context, app string, res *http.Response) error {
 	opURL, err := url.Parse(res.Header.Get("Location"))
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
@@ -36,7 +37,7 @@ func handleOperation(app string, res *http.Response) error {
 
 	go func() {
 		for {
-			op, err = c.OperationsShow(app, opID)
+			op, err = c.OperationsShow(ctx, app, opID)
 			if err != nil {
 				errs <- err
 				break

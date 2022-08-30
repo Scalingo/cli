@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"net/url"
 	"strings"
 
@@ -9,8 +10,8 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func dbURL(appName, envVariableName string, urlSchemes []string) (*url.URL, string, string, error) {
-	u, err := dbURLFromAPI(appName, envVariableName, urlSchemes)
+func dbURL(ctx context.Context, appName, envVariableName string, urlSchemes []string) (*url.URL, string, string, error) {
+	u, err := dbURLFromAPI(ctx, appName, envVariableName, urlSchemes)
 	if err != nil {
 		return nil, "", "", errgo.Mask(err)
 	}
@@ -28,13 +29,13 @@ func dbURL(appName, envVariableName string, urlSchemes []string) (*url.URL, stri
 	return dbURL, user, password, nil
 }
 
-func dbURLFromAPI(appName, envVariableName string, urlSchemes []string) (string, error) {
-	scalingoClient, err := config.ScalingoClient()
+func dbURLFromAPI(ctx context.Context, appName, envVariableName string, urlSchemes []string) (string, error) {
+	scalingoClient, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get Scalingo client to list the variables")
 	}
 
-	variables, err := scalingoClient.VariablesListWithoutAlias(appName)
+	variables, err := scalingoClient.VariablesListWithoutAlias(ctx, appName)
 	if err != nil {
 		return "", errgo.Mask(err)
 	}

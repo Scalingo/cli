@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -54,14 +55,14 @@ type runContext struct {
 	stdoutCopyFunc          func(stdio.Writer, stdio.Reader) (int64, error)
 }
 
-func Run(opts RunOpts) error {
-	c, err := config.ScalingoClient()
+func Run(ctx context.Context, opts RunOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
 	firstReadDone := make(chan struct{})
-	ctx := &runContext{
+	runCtx := &runContext{
 		app:                     opts.App,
 		waitingTextOutputWriter: os.Stderr,
 		stdinCopyFunc:           stdio.Copy,
@@ -69,7 +70,7 @@ func Run(opts RunOpts) error {
 		scalingoClient:          c,
 	}
 	if opts.Type != "" {
-		processes, err := c.AppsContainerTypes(opts.App)
+		processes, err := c.AppsContainerTypes(ctx, opts.App)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -94,32 +95,34 @@ func Run(opts RunOpts) error {
 		opts.Files = []string{}
 	}
 	if opts.Silent {
-		ctx.waitingTextOutputWriter = new(bytes.Buffer)
+		runCtx.waitingTextOutputWriter = new(bytes.Buffer)
 	}
 	if opts.StdinCopyFunc != nil {
-		ctx.stdinCopyFunc = opts.StdinCopyFunc
+		runCtx.stdinCopyFunc = opts.StdinCopyFunc
 	}
 	if opts.StdoutCopyFunc != nil {
-		ctx.stdoutCopyFunc = opts.StdoutCopyFunc
+		runCtx.stdoutCopyFunc = opts.StdoutCopyFunc
 	}
 
-	env, err := ctx.buildEnv(opts.CmdEnv)
+	env, err := runCtx.buildEnv(opts.CmdEnv)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	err = ctx.validateFiles(opts.Files)
+	err = runCtx.validateFiles(opts.Files)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	runRes, err := c.Run(scalingo.RunOpts{
-		App:      opts.App,
-		Command:  opts.Cmd,
-		Env:      env,
-		Size:     opts.Size,
-		Detached: opts.Detached,
-	})
+	runRes, err := c.Run(
+		ctx,
+		scalingo.RunOpts{
+			App:      opts.App,
+			Command:  opts.Cmd,
+			Env:      env,
+			Size:     opts.Size,
+			Detached: opts.Detached,
+		})
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -135,23 +138,23 @@ func Run(opts RunOpts) error {
 		return nil
 	}
 
-	ctx.attachURL = runRes.AttachURL
-	debug.Println("Run Service URL is", ctx.attachURL)
+	runCtx.attachURL = runRes.AttachURL
+	debug.Println("Run Service URL is", runCtx.attachURL)
 
 	if len(opts.Files) > 0 {
-		err := ctx.uploadFiles(ctx.attachURL+"/files", opts.Files)
+		err := runCtx.uploadFiles(ctx, runCtx.attachURL+"/files", opts.Files)
 		if err != nil {
 			return err
 		}
 	}
 
 	fmt.Fprintf(
-		ctx.waitingTextOutputWriter,
+		runCtx.waitingTextOutputWriter,
 		"-----> Connecting to container [%v]...  ",
 		runRes.Container.Label,
 	)
 
-	attachSpinner := io.NewSpinner(ctx.waitingTextOutputWriter)
+	attachSpinner := io.NewSpinner(runCtx.waitingTextOutputWriter)
 	attachSpinner.PostHook = func() {
 		var displayCmd string
 		if opts.DisplayCmd != "" {
@@ -159,11 +162,11 @@ func Run(opts RunOpts) error {
 		} else {
 			displayCmd = strings.Join(opts.Cmd, " ")
 		}
-		fmt.Fprintf(ctx.waitingTextOutputWriter, "\n-----> Process '%v' is starting...  ", displayCmd)
+		fmt.Fprintf(runCtx.waitingTextOutputWriter, "\n-----> Process '%v' is starting...  ", displayCmd)
 	}
 	go attachSpinner.Start()
 
-	res, socket, err := ctx.connectToRunServer()
+	res, socket, err := runCtx.connectToRunServer(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -189,7 +192,7 @@ func Run(opts RunOpts) error {
 		for {
 			select {
 			case s := <-signals:
-				run.HandleSignal(ctx.scalingoClient, s, socket, ctx.attachURL)
+				run.HandleSignal(ctx, runCtx.scalingoClient, s, socket, runCtx.attachURL)
 			case <-stopSignalsMonitoring:
 				signal.Stop(signals)
 				return
@@ -198,16 +201,16 @@ func Run(opts RunOpts) error {
 	}()
 
 	attachSpinner.Stop()
-	startSpinner := io.NewSpinnerWithStopChan(ctx.waitingTextOutputWriter, firstReadDone)
+	startSpinner := io.NewSpinnerWithStopChan(runCtx.waitingTextOutputWriter, firstReadDone)
 	// This method will be executed after first read
 	startSpinner.PostHook = func() {
 		go run.NotifyTermSizeUpdate(signals)
-		fmt.Fprintf(ctx.waitingTextOutputWriter, "\n\n")
+		fmt.Fprintf(runCtx.waitingTextOutputWriter, "\n\n")
 	}
 	go startSpinner.Start()
 
 	go func() {
-		_, err := ctx.stdinCopyFunc(socket, os.Stdin)
+		_, err := runCtx.stdinCopyFunc(socket, os.Stdin)
 		if err != nil {
 			debug.Println("error after reading stdin", err)
 		} else {
@@ -217,7 +220,7 @@ func Run(opts RunOpts) error {
 		}
 	}()
 
-	_, err = ctx.stdoutCopyFunc(os.Stdout, socket)
+	_, err = runCtx.stdoutCopyFunc(os.Stdout, socket)
 
 	stopSignalsMonitoring <- true
 
@@ -227,7 +230,7 @@ func Run(opts RunOpts) error {
 		}
 	}
 
-	exitCode, err := ctx.exitCode()
+	exitCode, err := runCtx.exitCode(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -252,17 +255,17 @@ func (ctx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	return env, nil
 }
 
-func (ctx *runContext) exitCode() (int, error) {
-	if ctx.attachURL == "" {
+func (runCtx *runContext) exitCode(ctx context.Context) (int, error) {
+	if runCtx.attachURL == "" {
 		return -1, errgo.New("No attach URL to connect to")
 	}
 
-	req, err := http.NewRequest("GET", ctx.attachURL+"/wait", nil)
+	req, err := http.NewRequest("GET", runCtx.attachURL+"/wait", nil)
 	if err != nil {
 		return -1, errgo.Mask(err, errgo.Any)
 	}
 
-	token, err := ctx.scalingoClient.GetAccessToken()
+	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 	if err != nil {
 		return -1, errgo.Notef(err, "fail to generate auth")
 	}
@@ -288,7 +291,7 @@ func (ctx *runContext) exitCode() (int, error) {
 		fmt.Println()
 		io.Info("If you need to run long background tasks, the '--detached' should be used")
 		io.Info("In this case, output will be available in the main logs of your application:")
-		io.Info(io.Gray(io.Bold(fmt.Sprintf("  $ scalingo -a %s logs", ctx.app))))
+		io.Info(io.Gray(io.Bold(fmt.Sprintf("  $ scalingo -a %s logs", runCtx.app))))
 		return -127, nil
 	}
 
@@ -301,23 +304,23 @@ func (ctx *runContext) exitCode() (int, error) {
 	return waitRes["exit_code"], nil
 }
 
-func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
-	if ctx.attachURL == "" {
+func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Response, net.Conn, error) {
+	if runCtx.attachURL == "" {
 		return nil, nil, errgo.New("No attach URL to connect to")
 	}
 
-	req, err := http.NewRequest("CONNECT", ctx.attachURL, nil)
+	req, err := http.NewRequest("CONNECT", runCtx.attachURL, nil)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
-	token, err := ctx.scalingoClient.GetAccessToken()
+	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 
 	if err != nil {
 		return nil, nil, errgo.Notef(err, "fail to generate auth")
 	}
 	req.SetBasicAuth("", token)
 
-	url, err := url.Parse(ctx.attachURL)
+	url, err := url.Parse(runCtx.attachURL)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
@@ -359,7 +362,7 @@ func (ctx *runContext) connectToRunServer() (*http.Response, net.Conn, error) {
 	return res, connection, nil
 }
 
-func (ctx *runContext) validateFiles(files []string) error {
+func (runCtx *runContext) validateFiles(files []string) error {
 	for _, file := range files {
 		_, err := os.Stat(file)
 		if err != nil {
@@ -369,7 +372,7 @@ func (ctx *runContext) validateFiles(files []string) error {
 	return nil
 }
 
-func (ctx *runContext) uploadFiles(endpoint string, files []string) error {
+func (runCtx *runContext) uploadFiles(ctx context.Context, endpoint string, files []string) error {
 	for _, file := range files {
 		stat, err := os.Stat(file)
 		if err != nil {
@@ -382,12 +385,12 @@ func (ctx *runContext) uploadFiles(endpoint string, files []string) error {
 		}
 		if stat.IsDir() {
 			dir := file
-			file, err = ctx.compressDir(dir)
+			file, err = runCtx.compressDir(dir)
 			if err != nil {
 				return errgo.Notef(err, "fail to compress directory %s", dir)
 			}
 		}
-		err = ctx.uploadFile(endpoint, file)
+		err = runCtx.uploadFile(ctx, endpoint, file)
 		if err != nil {
 			return errgo.Notef(err, "fail to upload file %s", file)
 		}
@@ -395,7 +398,7 @@ func (ctx *runContext) uploadFiles(endpoint string, files []string) error {
 	return nil
 }
 
-func (ctx *runContext) compressDir(dir string) (string, error) {
+func (runCtx *runContext) compressDir(dir string) (string, error) {
 	tmpDir, err := os.MkdirTemp(os.TempDir(), "job-file")
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
@@ -404,14 +407,14 @@ func (ctx *runContext) compressDir(dir string) (string, error) {
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
-	fmt.Fprintln(ctx.waitingTextOutputWriter, "Compressing directory", dir, "to", fd.Name())
+	fmt.Fprintln(runCtx.waitingTextOutputWriter, "Compressing directory", dir, "to", fd.Name())
 
-	err = ctx.createTarArchive(fd, dir)
+	err = runCtx.createTarArchive(fd, dir)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
 
-	file, err := ctx.compressToGzip(fd.Name())
+	file, err := runCtx.compressToGzip(fd.Name())
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
@@ -419,7 +422,7 @@ func (ctx *runContext) compressDir(dir string) (string, error) {
 	return file, nil
 }
 
-func (ctx *runContext) createTarArchive(fd *os.File, dir string) error {
+func (runCtx *runContext) createTarArchive(fd *os.File, dir string) error {
 	tarFd := tar.NewWriter(fd)
 	defer tarFd.Close()
 	err := filepath.Walk(dir, func(name string, info os.FileInfo, err error) error {
@@ -453,7 +456,7 @@ func (ctx *runContext) createTarArchive(fd *os.File, dir string) error {
 	return nil
 }
 
-func (ctx *runContext) compressToGzip(file string) (string, error) {
+func (runCtx *runContext) compressToGzip(file string) (string, error) {
 	fdSource, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
@@ -475,7 +478,7 @@ func (ctx *runContext) compressToGzip(file string) (string, error) {
 	return fdDest.Name(), nil
 }
 
-func (ctx *runContext) uploadFile(endpoint string, file string) error {
+func (runCtx *runContext) uploadFile(ctx context.Context, endpoint string, file string) error {
 	body := new(bytes.Buffer)
 	name := filepath.Base(file)
 	multipartFile := multipart.NewWriter(body)
@@ -508,7 +511,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	token, err := ctx.scalingoClient.GetAccessToken()
+	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to generate token")
 	}
@@ -516,7 +519,7 @@ func (ctx *runContext) uploadFile(endpoint string, file string) error {
 
 	req.Header.Set("Content-Type", multipartFile.FormDataContentType())
 
-	fmt.Fprintln(ctx.waitingTextOutputWriter, "Upload", file, "to container.")
+	fmt.Fprintln(runCtx.waitingTextOutputWriter, "Upload", file, "to container.")
 	debug.Println("Endpoint:", req.URL)
 
 	res, err := httpclient.Do(req)

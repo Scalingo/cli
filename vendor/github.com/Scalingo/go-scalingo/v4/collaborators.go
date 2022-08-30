@@ -1,6 +1,10 @@
 package scalingo
 
-import "gopkg.in/errgo.v1"
+import (
+	"context"
+
+	"gopkg.in/errgo.v1"
+)
 
 type CollaboratorStatus string
 
@@ -11,9 +15,9 @@ const (
 )
 
 type CollaboratorsService interface {
-	CollaboratorsList(app string) ([]Collaborator, error)
-	CollaboratorAdd(app string, email string) (Collaborator, error)
-	CollaboratorRemove(app string, id string) error
+	CollaboratorsList(ctx context.Context, app string) ([]Collaborator, error)
+	CollaboratorAdd(ctx context.Context, app string, email string) (Collaborator, error)
+	CollaboratorRemove(ctx context.Context, app string, id string) error
 }
 
 var _ CollaboratorsService = (*Client)(nil)
@@ -35,18 +39,18 @@ type CollaboratorRes struct {
 	Collaborator Collaborator `json:"collaborator"`
 }
 
-func (c *Client) CollaboratorsList(app string) ([]Collaborator, error) {
+func (c *Client) CollaboratorsList(ctx context.Context, app string) ([]Collaborator, error) {
 	var collaboratorsRes CollaboratorsRes
-	err := c.ScalingoAPI().SubresourceList("apps", app, "collaborators", nil, &collaboratorsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "collaborators", nil, &collaboratorsRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	return collaboratorsRes.Collaborators, nil
 }
 
-func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error) {
+func (c *Client) CollaboratorAdd(ctx context.Context, app string, email string) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
-	err := c.ScalingoAPI().SubresourceAdd("apps", app, "collaborators", CollaboratorRes{
+	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "collaborators", CollaboratorRes{
 		Collaborator: Collaborator{Email: email},
 	}, &collaboratorRes)
 	if err != nil {
@@ -55,6 +59,6 @@ func (c *Client) CollaboratorAdd(app string, email string) (Collaborator, error)
 	return collaboratorRes.Collaborator, nil
 }
 
-func (c *Client) CollaboratorRemove(app string, id string) error {
-	return c.ScalingoAPI().SubresourceDelete("apps", app, "collaborators", id)
+func (c *Client) CollaboratorRemove(ctx context.Context, app string, id string) error {
+	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "collaborators", id)
 }

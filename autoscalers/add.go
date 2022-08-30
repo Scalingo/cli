@@ -1,6 +1,8 @@
 package autoscalers
 
 import (
+	"context"
+
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -8,13 +10,13 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func Add(app string, params scalingo.AutoscalerAddParams) error {
-	c, err := config.ScalingoClient()
+func Add(ctx context.Context, app string, params scalingo.AutoscalerAddParams) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	autoscaler, err := c.AutoscalerAdd(app, params)
+	autoscaler, err := c.AutoscalerAdd(ctx, app, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

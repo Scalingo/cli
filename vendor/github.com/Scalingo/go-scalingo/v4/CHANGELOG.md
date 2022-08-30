@@ -2,6 +2,19 @@
 
 ## To Be Released
 
+* feat: remove deprecated methods [#263](https://github.com/Scalingo/go-scalingo/pull/263)
+* feat(http): add X-Request-ID if ID is in the context [#262](https://github.com/Scalingo/go-scalingo/pull/262)
+* refactor(events): moved alert related events to events_addon.go [#264](https://github.com/Scalingo/go-scalingo/pull/264)
+* refactor(events): moved addons related events to events_addon.go [#261](https://github.com/Scalingo/go-scalingo/pull/261)
+* refactor(events): moved direct app related events to events_app.go [#260](https://github.com/Scalingo/go-scalingo/pull/260)
+* feat(events): implement two factor auth related events [#259](https://github.com/Scalingo/go-scalingo/pull/259)
+* feat(events): implement token related events [#257](https://github.com/Scalingo/go-scalingo/pull/257)
+* feat(events): implement event for the update of a key [#256](https://github.com/Scalingo/go-scalingo/pull/256)
+* feat(events): implement event for the update of an hds contact [#255](https://github.com/Scalingo/go-scalingo/pull/255)
+* feat(events): implement event for the creation of a data access consent [#255](https://github.com/Scalingo/go-scalingo/pull/255)
+* build(deps): bump github.com/stretchr/testify from 1.7.2 to 1.8.0
+* build(deps): bump github.com/golang-jwt/jwt/v4 from 4.4.1 to 4.4.2
+
 ## 4.16.0
 
 * refactor: replace use of the deprecated ioutil package [#238](https://github.com/Scalingo/go-scalingo/pull/238)

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -13,12 +14,12 @@ import (
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
-func ListBackups(app, addon string) error {
-	client, err := config.ScalingoClient()
+func ListBackups(ctx context.Context, app, addon string) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	backups, err := client.BackupList(app, addon)
+	backups, err := client.BackupList(ctx, app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to list backups")
 	}

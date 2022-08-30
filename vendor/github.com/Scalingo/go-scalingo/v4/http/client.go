@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
@@ -20,19 +21,19 @@ type APIConfig struct {
 }
 
 type Client interface {
-	ResourceList(resource string, payload, data interface{}) error
-	ResourceAdd(resource string, payload, data interface{}) error
-	ResourceGet(resource, resourceID string, payload, data interface{}) error
-	ResourceUpdate(resource, resourceID string, payload, data interface{}) error
-	ResourceDelete(resource, resourceID string) error
+	ResourceList(ctx context.Context, resource string, payload, data interface{}) error
+	ResourceAdd(ctx context.Context, resource string, payload, data interface{}) error
+	ResourceGet(ctx context.Context, resource, resourceID string, payload, data interface{}) error
+	ResourceUpdate(ctx context.Context, resource, resourceID string, payload, data interface{}) error
+	ResourceDelete(ctx context.Context, resource, resourceID string) error
 
-	SubresourceList(resource, resourceID, subresource string, payload, data interface{}) error
-	SubresourceAdd(resource, resourceID, subresource string, payload, data interface{}) error
-	SubresourceGet(resource, resourceID, subresource, id string, payload, data interface{}) error
-	SubresourceUpdate(resource, resourceID, subresource, id string, payload, data interface{}) error
-	SubresourceDelete(resource, resourceID, subresource, id string) error
-	DoRequest(req *APIRequest, data interface{}) error
-	Do(req *APIRequest) (*http.Response, error)
+	SubresourceList(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error
+	SubresourceAdd(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error
+	SubresourceGet(ctx context.Context, resource, resourceID, subresource, id string, payload, data interface{}) error
+	SubresourceUpdate(rctx context.Context, esource, resourceID, subresource, id string, payload, data interface{}) error
+	SubresourceDelete(ctx context.Context, resource, resourceID, subresource, id string) error
+	DoRequest(ctx context.Context, req *APIRequest, data interface{}) error
+	Do(context.Context, *APIRequest) (*http.Response, error)
 
 	TokenGenerator() TokenGenerator
 	IsAuthenticatedClient() bool
@@ -84,24 +85,24 @@ func NewClient(api string, cfg ClientConfig) Client {
 	return &c
 }
 
-func (c *client) ResourceGet(resource, resourceID string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) ResourceGet(ctx context.Context, resource, resourceID string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "GET",
 		Endpoint: "/" + resource + "/" + resourceID,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) ResourceList(resource string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) ResourceList(ctx context.Context, resource string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "GET",
 		Endpoint: "/" + resource,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) ResourceAdd(resource string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) ResourceAdd(ctx context.Context, resource string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "POST",
 		Endpoint: "/" + resource,
 		Expected: Statuses{201},
@@ -109,40 +110,40 @@ func (c *client) ResourceAdd(resource string, payload, data interface{}) error {
 	}, data)
 }
 
-func (c client) ResourceUpdate(resource, resourceID string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c client) ResourceUpdate(ctx context.Context, resource, resourceID string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/" + resource + "/" + resourceID,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) ResourceDelete(resource, resourceID string) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) ResourceDelete(ctx context.Context, resource, resourceID string) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/" + resource + "/" + resourceID,
 		Expected: Statuses{204},
 	}, nil)
 }
 
-func (c *client) SubresourceGet(resource, resourceID, subresource, id string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) SubresourceGet(ctx context.Context, resource, resourceID, subresource, id string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "GET",
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) SubresourceList(resource, resourceID, subresource string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) SubresourceList(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "GET",
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) SubresourceAdd(resource, resourceID, subresource string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) SubresourceAdd(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "POST",
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource,
 		Expected: Statuses{201},
@@ -150,28 +151,28 @@ func (c *client) SubresourceAdd(resource, resourceID, subresource string, payloa
 	}, data)
 }
 
-func (c *client) SubresourceDelete(resource, resourceID, subresource, id string) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) SubresourceDelete(ctx context.Context, resource, resourceID, subresource, id string) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
 		Expected: Statuses{204},
 	}, nil)
 }
 
-func (c *client) SubresourceUpdate(resource, resourceID, subresource, id string, payload, data interface{}) error {
-	return c.DoRequest(&APIRequest{
+func (c *client) SubresourceUpdate(ctx context.Context, resource, resourceID, subresource, id string, payload, data interface{}) error {
+	return c.DoRequest(ctx, &APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
 		Params:   payload,
 	}, data)
 }
 
-func (c *client) DoRequest(req *APIRequest, data interface{}) error {
+func (c *client) DoRequest(ctx context.Context, req *APIRequest, data interface{}) error {
 	if c.endpoint == "" {
 		return errgo.New("API Endpoint is not defined, did you forget to pass the Region field to the New method?")
 	}
 
-	res, err := c.Do(req)
+	res, err := c.Do(ctx, req)
 	if err != nil {
 		return err
 	}

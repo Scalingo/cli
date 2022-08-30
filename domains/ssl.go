@@ -1,6 +1,7 @@
 package domains
 
 import (
+	"context"
 	"os"
 
 	"gopkg.in/errgo.v1"
@@ -9,18 +10,18 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func DisableSSL(app string, domain string) error {
-	c, err := config.ScalingoClient()
+func DisableSSL(ctx context.Context, app string, domain string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	d, err := findDomain(c, app, domain)
+	d, err := findDomain(ctx, c, app, domain)
 	if err != nil {
 		return errgo.Notef(err, "fail to find the matching domain to disable SSL")
 	}
 
-	_, err = c.DomainUnsetCertificate(app, d.ID)
+	_, err = c.DomainUnsetCertificate(ctx, app, d.ID)
 	if err != nil {
 		return errgo.Notef(err, "fail to unset the domain certificate")
 	}
@@ -28,13 +29,13 @@ func DisableSSL(app string, domain string) error {
 	return nil
 }
 
-func EnableSSL(app, domain, certPath, keyPath string) error {
-	c, err := config.ScalingoClient()
+func EnableSSL(ctx context.Context, app, domain, certPath, keyPath string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	d, err := findDomain(c, app, domain)
+	d, err := findDomain(ctx, c, app, domain)
 	if err != nil {
 		return errgo.Notef(err, "fail to find the matching domain to enable SSL")
 	}
@@ -44,7 +45,7 @@ func EnableSSL(app, domain, certPath, keyPath string) error {
 		return errgo.Notef(err, "fail to validate the given certificate and key")
 	}
 
-	d, err = c.DomainSetCertificate(app, d.ID, certContent, keyContent)
+	d, err = c.DomainSetCertificate(ctx, app, d.ID, certContent, keyContent)
 	if err != nil {
 		return errgo.Notef(err, "fail to set the domain certificate")
 	}

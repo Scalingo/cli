@@ -23,7 +23,7 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit; go 1.13
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.16.0
+# github.com/Scalingo/go-scalingo/v4 v4.16.0 => ../go-scalingo
 ## explicit; go 1.17
 github.com/Scalingo/go-scalingo/v4
 github.com/Scalingo/go-scalingo/v4/billing
@@ -34,6 +34,9 @@ github.com/Scalingo/go-scalingo/v4/io
 # github.com/Scalingo/go-utils/errors v1.1.1
 ## explicit; go 1.17
 github.com/Scalingo/go-utils/errors
+# github.com/Scalingo/go-utils/logger v1.2.0
+## explicit; go 1.17
+github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/retry v1.1.1
 ## explicit; go 1.17
 github.com/Scalingo/go-utils/retry
@@ -134,7 +137,7 @@ github.com/go-git/go-git/v5/utils/merkletrie/filesystem
 github.com/go-git/go-git/v5/utils/merkletrie/index
 github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
-# github.com/golang-jwt/jwt/v4 v4.4.1
+# github.com/golang-jwt/jwt/v4 v4.4.2
 ## explicit; go 1.16
 github.com/golang-jwt/jwt/v4
 # github.com/golang/mock v1.6.0
@@ -200,8 +203,9 @@ github.com/russross/blackfriday/v2
 # github.com/sergi/go-diff v1.1.0
 ## explicit; go 1.12
 github.com/sergi/go-diff/diffmatchpatch
-# github.com/shurcooL/sanitized_anchor_name v1.0.0
-## explicit
+# github.com/sirupsen/logrus v1.9.0
+## explicit; go 1.13
+github.com/sirupsen/logrus
 # github.com/stretchr/testify v1.8.0
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
@@ -209,8 +213,6 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli v1.22.9
-## explicit; go 1.11
 # github.com/urfave/cli/v2 v2.11.2
 ## explicit; go 1.18
 github.com/urfave/cli/v2
@@ -246,7 +248,7 @@ golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 golang.org/x/net/websocket
-# golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a
+# golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -271,3 +273,4 @@ gopkg.in/warnings.v0
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
+# github.com/Scalingo/go-scalingo/v4 => ../go-scalingo

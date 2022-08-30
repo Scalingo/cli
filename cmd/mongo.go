@@ -37,7 +37,7 @@ var (
 				return nil
 			}
 
-			err := db.MongoConsole(db.MongoConsoleOpts{
+			err := db.MongoConsole(c.Context, db.MongoConsoleOpts{
 				App:          detect.CurrentApp(c),
 				Size:         c.String("s"),
 				VariableName: c.String("e"),

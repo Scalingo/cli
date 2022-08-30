@@ -1,6 +1,8 @@
 package alerts
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -8,13 +10,13 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func Add(app string, params scalingo.AlertAddParams) error {
-	c, err := config.ScalingoClient()
+func Add(ctx context.Context, app string, params scalingo.AlertAddParams) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	a, err := c.AlertAdd(app, params)
+	a, err := c.AlertAdd(ctx, app, params)
 	if err != nil {
 		return errgo.Mask(err)
 	}

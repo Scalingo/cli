@@ -5,6 +5,7 @@
 package httpmock
 
 import (
+	context "context"
 	http0 "net/http"
 	reflect "reflect"
 
@@ -12,30 +13,30 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockClient is a mock of Client interface
+// MockClient is a mock of Client interface.
 type MockClient struct {
 	ctrl     *gomock.Controller
 	recorder *MockClientMockRecorder
 }
 
-// MockClientMockRecorder is the mock recorder for MockClient
+// MockClientMockRecorder is the mock recorder for MockClient.
 type MockClientMockRecorder struct {
 	mock *MockClient
 }
 
-// NewMockClient creates a new mock instance
+// NewMockClient creates a new mock instance.
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
 	mock := &MockClient{ctrl: ctrl}
 	mock.recorder = &MockClientMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
-// BaseURL mocks base method
+// BaseURL mocks base method.
 func (m *MockClient) BaseURL() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "BaseURL")
@@ -43,42 +44,42 @@ func (m *MockClient) BaseURL() string {
 	return ret0
 }
 
-// BaseURL indicates an expected call of BaseURL
+// BaseURL indicates an expected call of BaseURL.
 func (mr *MockClientMockRecorder) BaseURL() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BaseURL", reflect.TypeOf((*MockClient)(nil).BaseURL))
 }
 
-// Do mocks base method
-func (m *MockClient) Do(arg0 *http.APIRequest) (*http0.Response, error) {
+// Do mocks base method.
+func (m *MockClient) Do(arg0 context.Context, arg1 *http.APIRequest) (*http0.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Do", arg0)
+	ret := m.ctrl.Call(m, "Do", arg0, arg1)
 	ret0, _ := ret[0].(*http0.Response)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Do indicates an expected call of Do
-func (mr *MockClientMockRecorder) Do(arg0 interface{}) *gomock.Call {
+// Do indicates an expected call of Do.
+func (mr *MockClientMockRecorder) Do(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Do", reflect.TypeOf((*MockClient)(nil).Do), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Do", reflect.TypeOf((*MockClient)(nil).Do), arg0, arg1)
 }
 
-// DoRequest mocks base method
-func (m *MockClient) DoRequest(arg0 *http.APIRequest, arg1 interface{}) error {
+// DoRequest mocks base method.
+func (m *MockClient) DoRequest(arg0 context.Context, arg1 *http.APIRequest, arg2 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DoRequest", arg0, arg1)
+	ret := m.ctrl.Call(m, "DoRequest", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DoRequest indicates an expected call of DoRequest
-func (mr *MockClientMockRecorder) DoRequest(arg0, arg1 interface{}) *gomock.Call {
+// DoRequest indicates an expected call of DoRequest.
+func (mr *MockClientMockRecorder) DoRequest(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoRequest", reflect.TypeOf((*MockClient)(nil).DoRequest), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoRequest", reflect.TypeOf((*MockClient)(nil).DoRequest), arg0, arg1, arg2)
 }
 
-// HTTPClient mocks base method
+// HTTPClient mocks base method.
 func (m *MockClient) HTTPClient() *http0.Client {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "HTTPClient")
@@ -86,13 +87,13 @@ func (m *MockClient) HTTPClient() *http0.Client {
 	return ret0
 }
 
-// HTTPClient indicates an expected call of HTTPClient
+// HTTPClient indicates an expected call of HTTPClient.
 func (mr *MockClientMockRecorder) HTTPClient() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HTTPClient", reflect.TypeOf((*MockClient)(nil).HTTPClient))
 }
 
-// IsAuthenticatedClient mocks base method
+// IsAuthenticatedClient mocks base method.
 func (m *MockClient) IsAuthenticatedClient() bool {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsAuthenticatedClient")
@@ -100,153 +101,153 @@ func (m *MockClient) IsAuthenticatedClient() bool {
 	return ret0
 }
 
-// IsAuthenticatedClient indicates an expected call of IsAuthenticatedClient
+// IsAuthenticatedClient indicates an expected call of IsAuthenticatedClient.
 func (mr *MockClientMockRecorder) IsAuthenticatedClient() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAuthenticatedClient", reflect.TypeOf((*MockClient)(nil).IsAuthenticatedClient))
 }
 
-// ResourceAdd mocks base method
-func (m *MockClient) ResourceAdd(arg0 string, arg1, arg2 interface{}) error {
+// ResourceAdd mocks base method.
+func (m *MockClient) ResourceAdd(arg0 context.Context, arg1 string, arg2, arg3 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourceAdd", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "ResourceAdd", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ResourceAdd indicates an expected call of ResourceAdd
-func (mr *MockClientMockRecorder) ResourceAdd(arg0, arg1, arg2 interface{}) *gomock.Call {
+// ResourceAdd indicates an expected call of ResourceAdd.
+func (mr *MockClientMockRecorder) ResourceAdd(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceAdd", reflect.TypeOf((*MockClient)(nil).ResourceAdd), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceAdd", reflect.TypeOf((*MockClient)(nil).ResourceAdd), arg0, arg1, arg2, arg3)
 }
 
-// ResourceDelete mocks base method
-func (m *MockClient) ResourceDelete(arg0, arg1 string) error {
+// ResourceDelete mocks base method.
+func (m *MockClient) ResourceDelete(arg0 context.Context, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourceDelete", arg0, arg1)
+	ret := m.ctrl.Call(m, "ResourceDelete", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ResourceDelete indicates an expected call of ResourceDelete
-func (mr *MockClientMockRecorder) ResourceDelete(arg0, arg1 interface{}) *gomock.Call {
+// ResourceDelete indicates an expected call of ResourceDelete.
+func (mr *MockClientMockRecorder) ResourceDelete(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceDelete", reflect.TypeOf((*MockClient)(nil).ResourceDelete), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceDelete", reflect.TypeOf((*MockClient)(nil).ResourceDelete), arg0, arg1, arg2)
 }
 
-// ResourceGet mocks base method
-func (m *MockClient) ResourceGet(arg0, arg1 string, arg2, arg3 interface{}) error {
+// ResourceGet mocks base method.
+func (m *MockClient) ResourceGet(arg0 context.Context, arg1, arg2 string, arg3, arg4 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourceGet", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "ResourceGet", arg0, arg1, arg2, arg3, arg4)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ResourceGet indicates an expected call of ResourceGet
-func (mr *MockClientMockRecorder) ResourceGet(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+// ResourceGet indicates an expected call of ResourceGet.
+func (mr *MockClientMockRecorder) ResourceGet(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceGet", reflect.TypeOf((*MockClient)(nil).ResourceGet), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceGet", reflect.TypeOf((*MockClient)(nil).ResourceGet), arg0, arg1, arg2, arg3, arg4)
 }
 
-// ResourceList mocks base method
-func (m *MockClient) ResourceList(arg0 string, arg1, arg2 interface{}) error {
+// ResourceList mocks base method.
+func (m *MockClient) ResourceList(arg0 context.Context, arg1 string, arg2, arg3 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourceList", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "ResourceList", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ResourceList indicates an expected call of ResourceList
-func (mr *MockClientMockRecorder) ResourceList(arg0, arg1, arg2 interface{}) *gomock.Call {
+// ResourceList indicates an expected call of ResourceList.
+func (mr *MockClientMockRecorder) ResourceList(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceList", reflect.TypeOf((*MockClient)(nil).ResourceList), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceList", reflect.TypeOf((*MockClient)(nil).ResourceList), arg0, arg1, arg2, arg3)
 }
 
-// ResourceUpdate mocks base method
-func (m *MockClient) ResourceUpdate(arg0, arg1 string, arg2, arg3 interface{}) error {
+// ResourceUpdate mocks base method.
+func (m *MockClient) ResourceUpdate(arg0 context.Context, arg1, arg2 string, arg3, arg4 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResourceUpdate", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "ResourceUpdate", arg0, arg1, arg2, arg3, arg4)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ResourceUpdate indicates an expected call of ResourceUpdate
-func (mr *MockClientMockRecorder) ResourceUpdate(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+// ResourceUpdate indicates an expected call of ResourceUpdate.
+func (mr *MockClientMockRecorder) ResourceUpdate(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceUpdate", reflect.TypeOf((*MockClient)(nil).ResourceUpdate), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResourceUpdate", reflect.TypeOf((*MockClient)(nil).ResourceUpdate), arg0, arg1, arg2, arg3, arg4)
 }
 
-// SubresourceAdd mocks base method
-func (m *MockClient) SubresourceAdd(arg0, arg1, arg2 string, arg3, arg4 interface{}) error {
+// SubresourceAdd mocks base method.
+func (m *MockClient) SubresourceAdd(arg0 context.Context, arg1, arg2, arg3 string, arg4, arg5 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubresourceAdd", arg0, arg1, arg2, arg3, arg4)
+	ret := m.ctrl.Call(m, "SubresourceAdd", arg0, arg1, arg2, arg3, arg4, arg5)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SubresourceAdd indicates an expected call of SubresourceAdd
-func (mr *MockClientMockRecorder) SubresourceAdd(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+// SubresourceAdd indicates an expected call of SubresourceAdd.
+func (mr *MockClientMockRecorder) SubresourceAdd(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceAdd", reflect.TypeOf((*MockClient)(nil).SubresourceAdd), arg0, arg1, arg2, arg3, arg4)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceAdd", reflect.TypeOf((*MockClient)(nil).SubresourceAdd), arg0, arg1, arg2, arg3, arg4, arg5)
 }
 
-// SubresourceDelete mocks base method
-func (m *MockClient) SubresourceDelete(arg0, arg1, arg2, arg3 string) error {
+// SubresourceDelete mocks base method.
+func (m *MockClient) SubresourceDelete(arg0 context.Context, arg1, arg2, arg3, arg4 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubresourceDelete", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "SubresourceDelete", arg0, arg1, arg2, arg3, arg4)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SubresourceDelete indicates an expected call of SubresourceDelete
-func (mr *MockClientMockRecorder) SubresourceDelete(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+// SubresourceDelete indicates an expected call of SubresourceDelete.
+func (mr *MockClientMockRecorder) SubresourceDelete(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceDelete", reflect.TypeOf((*MockClient)(nil).SubresourceDelete), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceDelete", reflect.TypeOf((*MockClient)(nil).SubresourceDelete), arg0, arg1, arg2, arg3, arg4)
 }
 
-// SubresourceGet mocks base method
-func (m *MockClient) SubresourceGet(arg0, arg1, arg2, arg3 string, arg4, arg5 interface{}) error {
+// SubresourceGet mocks base method.
+func (m *MockClient) SubresourceGet(arg0 context.Context, arg1, arg2, arg3, arg4 string, arg5, arg6 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubresourceGet", arg0, arg1, arg2, arg3, arg4, arg5)
+	ret := m.ctrl.Call(m, "SubresourceGet", arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SubresourceGet indicates an expected call of SubresourceGet
-func (mr *MockClientMockRecorder) SubresourceGet(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
+// SubresourceGet indicates an expected call of SubresourceGet.
+func (mr *MockClientMockRecorder) SubresourceGet(arg0, arg1, arg2, arg3, arg4, arg5, arg6 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceGet", reflect.TypeOf((*MockClient)(nil).SubresourceGet), arg0, arg1, arg2, arg3, arg4, arg5)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceGet", reflect.TypeOf((*MockClient)(nil).SubresourceGet), arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 }
 
-// SubresourceList mocks base method
-func (m *MockClient) SubresourceList(arg0, arg1, arg2 string, arg3, arg4 interface{}) error {
+// SubresourceList mocks base method.
+func (m *MockClient) SubresourceList(arg0 context.Context, arg1, arg2, arg3 string, arg4, arg5 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubresourceList", arg0, arg1, arg2, arg3, arg4)
+	ret := m.ctrl.Call(m, "SubresourceList", arg0, arg1, arg2, arg3, arg4, arg5)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SubresourceList indicates an expected call of SubresourceList
-func (mr *MockClientMockRecorder) SubresourceList(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+// SubresourceList indicates an expected call of SubresourceList.
+func (mr *MockClientMockRecorder) SubresourceList(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceList", reflect.TypeOf((*MockClient)(nil).SubresourceList), arg0, arg1, arg2, arg3, arg4)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceList", reflect.TypeOf((*MockClient)(nil).SubresourceList), arg0, arg1, arg2, arg3, arg4, arg5)
 }
 
-// SubresourceUpdate mocks base method
-func (m *MockClient) SubresourceUpdate(arg0, arg1, arg2, arg3 string, arg4, arg5 interface{}) error {
+// SubresourceUpdate mocks base method.
+func (m *MockClient) SubresourceUpdate(arg0 context.Context, arg1, arg2, arg3, arg4 string, arg5, arg6 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubresourceUpdate", arg0, arg1, arg2, arg3, arg4, arg5)
+	ret := m.ctrl.Call(m, "SubresourceUpdate", arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SubresourceUpdate indicates an expected call of SubresourceUpdate
-func (mr *MockClientMockRecorder) SubresourceUpdate(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
+// SubresourceUpdate indicates an expected call of SubresourceUpdate.
+func (mr *MockClientMockRecorder) SubresourceUpdate(arg0, arg1, arg2, arg3, arg4, arg5, arg6 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceUpdate", reflect.TypeOf((*MockClient)(nil).SubresourceUpdate), arg0, arg1, arg2, arg3, arg4, arg5)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubresourceUpdate", reflect.TypeOf((*MockClient)(nil).SubresourceUpdate), arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 }
 
-// TokenGenerator mocks base method
+// TokenGenerator mocks base method.
 func (m *MockClient) TokenGenerator() http.TokenGenerator {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TokenGenerator")
@@ -254,7 +255,7 @@ func (m *MockClient) TokenGenerator() http.TokenGenerator {
 	return ret0
 }
 
-// TokenGenerator indicates an expected call of TokenGenerator
+// TokenGenerator indicates an expected call of TokenGenerator.
 func (mr *MockClientMockRecorder) TokenGenerator() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TokenGenerator", reflect.TypeOf((*MockClient)(nil).TokenGenerator))

@@ -2,6 +2,7 @@ package apps
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -12,15 +13,15 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func Destroy(appName string, force bool) error {
+func Destroy(ctx context.Context, appName string, force bool) error {
 	var validationName string
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	_, err = c.AppsShow(appName)
+	_, err = c.AppsShow(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -40,7 +41,7 @@ func Destroy(appName string, force bool) error {
 		validationName = appName
 	}
 
-	err = c.AppsDestroy(appName, validationName)
+	err = c.AppsDestroy(ctx, appName, validationName)
 	if err != nil {
 		return errgo.Notef(err, "fail to destroy app")
 	}

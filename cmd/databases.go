@@ -51,7 +51,7 @@ Examples
 			if scheduleAtFlag != "" && disable {
 				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
 			}
-			database, err := db.Show(currentApp, addonName)
+			database, err := db.Show(c.Context, currentApp, addonName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -79,7 +79,7 @@ Examples
 			}
 
 			if disable || scheduleAtFlag != "" {
-				database, err = db.BackupsConfiguration(currentApp, addonName, params)
+				database, err = db.BackupsConfiguration(c.Context, currentApp, addonName, params)
 				if err != nil {
 					errorQuit(err)
 				}

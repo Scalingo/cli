@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"os"
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
@@ -23,7 +24,7 @@ type Command struct {
 	Global bool
 }
 
-func (cmds *AppCommands) addCommand(cmd Command) {
+func (cmds *AppCommands) addCommand(ctx context.Context, cmd Command) {
 	if !cmd.Global {
 		regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
@@ -39,7 +40,7 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 				}
 			}
 
-			regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			regions, err := config.EnsureRegionsCache(ctx, config.C, config.GetRegionOpts{
 				Token: token,
 			})
 			if err != nil {
@@ -84,13 +85,13 @@ func (cmds *AppCommands) Commands() []*cli.Command {
 	return cmds.commands
 }
 
-func NewAppCommands() *AppCommands {
+func NewAppCommands(ctx context.Context) *AppCommands {
 	cmds := AppCommands{}
 	for _, cmd := range regionalCommands {
-		cmds.addCommand(Command{Command: cmd})
+		cmds.addCommand(ctx, Command{Command: cmd})
 	}
 	for _, cmd := range globalCommands {
-		cmds.addCommand(Command{Global: true, Command: cmd})
+		cmds.addCommand(ctx, Command{Global: true, Command: cmd})
 	}
 	return &cmds
 }

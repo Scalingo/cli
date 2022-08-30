@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -39,9 +40,9 @@ type DatabaseTypeVersionShowResponse struct {
 	DatabaseTypeVersion DatabaseTypeVersion `json:"database_type_version"`
 }
 
-func (c Client) DatabaseTypeVersion(appID, addonID, versionID string) (DatabaseTypeVersion, error) {
+func (c Client) DatabaseTypeVersion(ctx context.Context, appID, addonID, versionID string) (DatabaseTypeVersion, error) {
 	var res DatabaseTypeVersionShowResponse
-	err := c.DBAPI(appID, addonID).DoRequest(&http.APIRequest{
+	err := c.DBAPI(appID, addonID).DoRequest(ctx, &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/database_type_versions/" + versionID,
 		Expected: http.Statuses{200},

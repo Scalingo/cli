@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"strings"
 
 	"gopkg.in/errgo.v1"
@@ -18,8 +19,8 @@ type LogsOpts struct {
 // Logs displays the addon logs.
 // app may be an app UUID or name.
 // addon may be a addon UUID or an addon type (e.g. MongoDB).
-func Logs(app, addon string, opts LogsOpts) error {
-	c, err := config.ScalingoClient()
+func Logs(ctx context.Context, app, addon string, opts LogsOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
@@ -27,13 +28,13 @@ func Logs(app, addon string, opts LogsOpts) error {
 	addonUUID := addon
 	// If addon does not contain a UUID, we consider it contains an addon type (e.g. MongoDB)
 	if !strings.HasPrefix(addon, "ad-") {
-		addonUUID, err = getAddonUUIDFromType(c, app, addon)
+		addonUUID, err = getAddonUUIDFromType(ctx, c, app, addon)
 		if err != nil {
 			return errgo.Notef(err, "fail to get the addon UUID based on its type")
 		}
 	}
 
-	url, err := c.AddonLogsURL(app, addonUUID)
+	url, err := c.AddonLogsURL(ctx, app, addonUUID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get log URL")
 	}
@@ -52,8 +53,8 @@ func Logs(app, addon string, opts LogsOpts) error {
 	return nil
 }
 
-func getAddonUUIDFromType(addonsClient scalingo.AddonsService, app, addonType string) (string, error) {
-	addons, err := addonsClient.AddonsList(app)
+func getAddonUUIDFromType(ctx context.Context, addonsClient scalingo.AddonsService, app, addonType string) (string, error) {
+	addons, err := addonsClient.AddonsList(ctx, app)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to list the addons to get the type UUID")
 	}

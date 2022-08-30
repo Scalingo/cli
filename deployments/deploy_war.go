@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -24,13 +25,13 @@ type DeployWarRes struct {
 	Deployment *scalingo.Deployment `json:"deployment"`
 }
 
-func DeployWar(appName, warPath, gitRef string, opts DeployOpts) error {
+func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts DeployOpts) error {
 	var warReadStream io.ReadCloser
 
 	var warSize int64
 	var warFileName string
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
@@ -64,7 +65,7 @@ func DeployWar(appName, warPath, gitRef string, opts DeployOpts) error {
 	}
 
 	// Get the sources endpoints
-	sources, err := c.SourcesCreate()
+	sources, err := c.SourcesCreate(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -92,7 +93,7 @@ func DeployWar(appName, warPath, gitRef string, opts DeployOpts) error {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
 	}
 
-	return Deploy(appName, sources.DownloadURL, gitRef, opts)
+	return Deploy(ctx, appName, sources.DownloadURL, gitRef, opts)
 }
 
 func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {

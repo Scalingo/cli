@@ -1,24 +1,26 @@
 package domains
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
-func SetCanonical(app, domain string) error {
-	c, err := config.ScalingoClient()
+func SetCanonical(ctx context.Context, app, domain string) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	d, err := findDomain(c, app, domain)
+	d, err := findDomain(ctx, client, app, domain)
 	if err != nil {
 		return errgo.Mask(err)
 	}
 
-	_, err = c.DomainSetCanonical(app, d.ID)
+	_, err = client.DomainSetCanonical(ctx, app, d.ID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -27,13 +29,13 @@ func SetCanonical(app, domain string) error {
 	return nil
 }
 
-func UnsetCanonical(app string) error {
-	c, err := config.ScalingoClient()
+func UnsetCanonical(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	_, err = c.DomainUnsetCanonical(app)
+	_, err = c.DomainUnsetCanonical(ctx, app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

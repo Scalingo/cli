@@ -10,12 +10,12 @@ import (
 )
 
 func StacksSetAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	stacks, err := client.StacksList()
+	stacks, err := client.StacksList(c.Context)
 	if err != nil {
 		return nil
 	}

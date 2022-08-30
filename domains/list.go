@@ -1,6 +1,7 @@
 package domains
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -19,12 +20,12 @@ var letsencryptStatusString = map[string]string{
 	string(scalingo.LetsEncryptStatusError):       "Error",
 }
 
-func List(app string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	domains, err := c.DomainsList(app)
+	domains, err := c.DomainsList(ctx, app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

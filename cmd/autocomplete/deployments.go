@@ -11,13 +11,13 @@ import (
 )
 
 func DeploymentsAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	currentApp := detect.CurrentApp(c)
 
-	deployments, err := client.DeploymentList(currentApp)
+	deployments, err := client.DeploymentList(c.Context, currentApp)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

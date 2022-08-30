@@ -34,9 +34,9 @@ var (
 
 			var err error
 			if addonName == "" {
-				err = apps.LogsArchives(currentApp, c.Int("p"))
+				err = apps.LogsArchives(c.Context, currentApp, c.Int("p"))
 			} else {
-				err = db.LogsArchives(currentApp, addonName, c.Int("p"))
+				err = db.LogsArchives(c.Context, currentApp, addonName, c.Int("p"))
 			}
 
 			if err != nil {

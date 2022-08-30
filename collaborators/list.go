@@ -1,6 +1,7 @@
 package collaborators
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -13,17 +14,17 @@ const (
 	CollaboratorOwner = "owner"
 )
 
-func List(app string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	collaborators, err := c.CollaboratorsList(app)
+	collaborators, err := c.CollaboratorsList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list collaborators")
 	}
 
-	scapp, err := c.AppsShow(app)
+	scapp, err := c.AppsShow(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to get application information")
 	}

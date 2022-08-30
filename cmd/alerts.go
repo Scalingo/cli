@@ -27,7 +27,7 @@ var (
 				return nil
 			}
 
-			err := alerts.List(detect.CurrentApp(c))
+			err := alerts.List(c.Context, detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}
@@ -74,7 +74,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			remindEvery := c.Duration("r")
 			durationBeforeTrigger := c.Duration("duration-before-trigger")
-			err := alerts.Add(currentApp, scalingo.AlertAddParams{
+			err := alerts.Add(c.Context, currentApp, scalingo.AlertAddParams{
 				ContainerType:         c.String("c"),
 				Metric:                c.String("m"),
 				Limit:                 c.Float64("l"),
@@ -163,7 +163,7 @@ var (
 				params.Notifiers = &n
 			}
 
-			err := alerts.Update(currentApp, alertID, params)
+			err := alerts.Update(c.Context, currentApp, alertID, params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -197,7 +197,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			disabled := false
-			err := alerts.Update(currentApp, c.Args().First(), scalingo.AlertUpdateParams{
+			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
@@ -233,7 +233,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			disabled := true
-			err := alerts.Update(currentApp, c.Args().First(), scalingo.AlertUpdateParams{
+			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
@@ -265,7 +265,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := alerts.Remove(currentApp, c.Args().First())
+			err := alerts.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}

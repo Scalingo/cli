@@ -1,6 +1,7 @@
 package env
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -9,12 +10,12 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Display(app string) error {
-	c, err := config.ScalingoClient()
+func Display(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	vars, err := c.VariablesList(app)
+	vars, err := c.VariablesList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the environment variables")
 	}
@@ -25,12 +26,12 @@ func Display(app string) error {
 	return nil
 }
 
-func Get(appName, variableName string) (string, error) {
-	c, err := config.ScalingoClient()
+func Get(ctx context.Context, appName, variableName string) (string, error) {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get Scalingo client to get an environment variable")
 	}
-	vars, err := c.VariablesListWithoutAlias(appName)
+	vars, err := c.VariablesListWithoutAlias(ctx, appName)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to list the environment variables")
 	}

@@ -167,7 +167,7 @@ var (
 				}
 			}
 
-			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
+			err = integrationlink.Create(c.Context, currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				scerr, ok := scalingoerrors.ErrgoRoot(err).(*http.RequestFailedError)
 				if ok {
@@ -284,7 +284,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Delete(currentApp)
+			err := integrationlink.Delete(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -313,7 +313,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			branchName := c.Args().First()
-			err := integrationlink.ManualDeploy(currentApp, branchName)
+			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -346,7 +346,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			pullRequestID := c.Args().First()
-			err := integrationlink.ManualReviewApp(currentApp, pullRequestID)
+			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}

@@ -1,6 +1,7 @@
 package alerts
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,13 +11,13 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List(app string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	alerts, err := c.AlertsList(app)
+	alerts, err := c.AlertsList(ctx, app)
 	if err != nil {
 		return errgo.Mask(err)
 	}

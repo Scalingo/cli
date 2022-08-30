@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 
 	"gopkg.in/errgo.v1"
@@ -9,9 +10,9 @@ import (
 )
 
 type UsersService interface {
-	Self() (*User, error)
-	UpdateUser(params UpdateUserParams) (*User, error)
-	UserStopFreeTrial() error
+	Self(context.Context) (*User, error)
+	UpdateUser(context.Context, UpdateUserParams) (*User, error)
+	UserStopFreeTrial(context.Context) error
 }
 
 var _ UsersService = (*Client)(nil)
@@ -28,11 +29,11 @@ type SelfResponse struct {
 	User *User `json:"user"`
 }
 
-func (c *Client) Self() (*User, error) {
+func (c *Client) Self(ctx context.Context) (*User, error) {
 	req := &http.APIRequest{
 		Endpoint: "/users/self",
 	}
-	res, err := c.AuthAPI().Do(req)
+	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -49,24 +50,14 @@ func (c *Client) Self() (*User, error) {
 type UpdateUserParams struct {
 	Password string `json:"password,omitempty"`
 	Email    string `json:"email,omitempty"`
-
-	// DEPRECATED: you should use the UserStopFreeTrial method instead
-	StopFreeTrial bool `json:"stop_free_trial,omitempty"`
 }
 
 type UpdateUserResponse struct {
 	User *User `json:"user"`
 }
 
-func (c *Client) UpdateUser(params UpdateUserParams) (*User, error) {
+func (c *Client) UpdateUser(ctx context.Context, params UpdateUserParams) (*User, error) {
 	var user *User
-
-	if params.StopFreeTrial {
-		err := c.UserStopFreeTrial()
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to stop user free trial")
-		}
-	}
 
 	if params.Password != "" || params.Email != "" {
 		req := &http.APIRequest{
@@ -77,7 +68,7 @@ func (c *Client) UpdateUser(params UpdateUserParams) (*User, error) {
 			},
 			Expected: http.Statuses{200},
 		}
-		res, err := c.AuthAPI().Do(req)
+		res, err := c.AuthAPI().Do(ctx, req)
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to execute the query to update the user")
 		}
@@ -95,7 +86,7 @@ func (c *Client) UpdateUser(params UpdateUserParams) (*User, error) {
 	return user, nil
 }
 
-func (c *Client) UserStopFreeTrial() error {
+func (c *Client) UserStopFreeTrial(ctx context.Context) error {
 	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/users/stop_free_trial",
@@ -103,7 +94,7 @@ func (c *Client) UserStopFreeTrial() error {
 		Expected: http.Statuses{200},
 	}
 
-	res, err := c.AuthAPI().Do(req)
+	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
 		return errgo.Notef(err, "fail to execute the query to stop user free trial")
 	}

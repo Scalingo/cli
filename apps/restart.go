@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"gopkg.in/errgo.v1"
@@ -9,15 +10,15 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func Restart(app string, sync bool, args []string) error {
+func Restart(ctx context.Context, app string, sync bool, args []string) error {
 	params := scalingo.AppsRestartParams{Scope: args}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	res, err := c.AppsRestart(app, &params)
+	res, err := c.AppsRestart(ctx, app, &params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -28,7 +29,7 @@ func Restart(app string, sync bool, args []string) error {
 		return nil
 	}
 
-	err = handleOperation(app, res)
+	err = handleOperation(ctx, app, res)
 	if err != nil {
 		return errgo.Mask(err)
 	}

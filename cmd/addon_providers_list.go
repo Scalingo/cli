@@ -14,7 +14,7 @@ var (
 		Description: "List all addons you can add to your app.",
 		Usage:       "List all addons",
 		Action: func(c *cli.Context) error {
-			if err := addon_providers.List(); err != nil {
+			if err := addon_providers.List(c.Context); err != nil {
 				errorQuit(err)
 			}
 			return nil

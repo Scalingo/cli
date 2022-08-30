@@ -23,7 +23,7 @@ var (
 	   SCALINGO_REGION=agora-fr1`,
 		Action: func(c *cli.Context) error {
 			if c.String("region") != "" {
-				err := config.SetRegion(c.String("region"))
+				err := config.SetRegion(c.Context, c.String("region"))
 				if err != nil {
 					errorQuit(err)
 				}

@@ -1,6 +1,8 @@
 package scalingo
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	httpclient "github.com/Scalingo/go-scalingo/v4/http"
@@ -24,18 +26,18 @@ type ContainerSize struct {
 }
 
 type ContainerSizesService interface {
-	ContainerSizesList() ([]ContainerSize, error)
+	ContainerSizesList(ctx context.Context) ([]ContainerSize, error)
 }
 
 var _ ContainerSizesService = (*Client)(nil)
 
-func (c *Client) ContainerSizesList() ([]ContainerSize, error) {
+func (c *Client) ContainerSizesList(ctx context.Context) ([]ContainerSize, error) {
 	req := &httpclient.APIRequest{
 		Endpoint: "/features/container_sizes",
 	}
 
 	resmap := map[string][]ContainerSize{}
-	err := c.ScalingoAPI().DoRequest(req, &resmap)
+	err := c.ScalingoAPI().DoRequest(ctx, req, &resmap)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to request Scalingo API to list the container sizes")
 	}

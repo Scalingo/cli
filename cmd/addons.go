@@ -23,7 +23,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = addons.List(currentApp)
+				err = addons.List(c.Context, currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "addons")
 			}
@@ -51,7 +51,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 2 {
-				err = addons.Provision(currentApp, c.Args().First(), c.Args().Slice()[1])
+				err = addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			} else {
 				cli.ShowCommandHelp(c, "addons-add")
 			}
@@ -79,7 +79,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = addons.Destroy(currentApp, c.Args().First())
+				err = addons.Destroy(c.Context, currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "addons-remove")
 			}
@@ -107,7 +107,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 2 {
-				err = addons.Upgrade(currentApp, c.Args().First(), c.Args().Slice()[1])
+				err = addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			} else {
 				cli.ShowCommandHelp(c, "addons-upgrade")
 			}
@@ -140,7 +140,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			currentAddon := c.Args().First()
 
-			err := addons.Info(currentApp, currentAddon)
+			err := addons.Info(c.Context, currentApp, currentAddon)
 			if err != nil {
 				errorQuit(err)
 			}

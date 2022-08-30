@@ -2,6 +2,7 @@ package apps
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -12,15 +13,15 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func Rename(appName string, newName string) error {
+func Rename(ctx context.Context, appName string, newName string) error {
 	var validationName string
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	_, err = c.AppsShow(appName)
+	_, err = c.AppsShow(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -36,7 +37,7 @@ func Rename(appName string, newName string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
-	_, err = c.AppsRename(appName, newName)
+	_, err = c.AppsRename(ctx, appName, newName)
 	if err != nil {
 		return errgo.Notef(err, "fail to rename app")
 	}

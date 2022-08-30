@@ -1,6 +1,7 @@
 package crontasks
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -12,13 +13,13 @@ import (
 	"github.com/Scalingo/go-utils/errors"
 )
 
-func List(app string) error {
-	client, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	cronTasks, err := client.CronTasksGet(app)
+	cronTasks, err := client.CronTasksGet(ctx, app)
 	if err != nil {
 		rootError := errors.ErrgoRoot(err)
 		if !httpclient.IsRequestFailedError(rootError) || rootError.(*httpclient.RequestFailedError).Code != 404 {

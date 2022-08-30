@@ -15,7 +15,7 @@ var (
 		Description: "List your apps and give some details about them",
 		Usage:       "List your apps",
 		Action: func(c *cli.Context) error {
-			if err := apps.List(); err != nil {
+			if err := apps.List(c.Context); err != nil {
 				errorQuit(err)
 			}
 			return nil
@@ -37,7 +37,7 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if err := apps.Info(currentApp); err != nil {
+			if err := apps.Info(c.Context, currentApp); err != nil {
 				errorQuit(err)
 			}
 			return nil

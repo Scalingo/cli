@@ -5,6 +5,7 @@ package run
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -41,7 +42,7 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	signals <- syscall.SIGWINCH
 }
 
-func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
+func HandleSignal(ctx context.Context, c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
 	switch s {
 	case syscall.SIGINT:
 		socket.Write([]byte{0x03})
@@ -50,14 +51,14 @@ func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL strin
 	case syscall.SIGTSTP:
 		socket.Write([]byte{0x1a})
 	case syscall.SIGWINCH:
-		err := updateTtySize(c, runURL)
+		err := updateTtySize(ctx, c, runURL)
 		if err != nil {
 			debug.Println("WARN: Error when updating terminal size:", err)
 		}
 	}
 }
 
-func updateTtySize(c *scalingo.Client, url string) error {
+func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 	cols, lines, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		return errgo.Notef(err, "fail to get the terminal size")
@@ -73,7 +74,7 @@ func updateTtySize(c *scalingo.Client, url string) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	token, err := c.GetAccessToken()
+	token, err := c.GetAccessToken(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get access token")
 	}

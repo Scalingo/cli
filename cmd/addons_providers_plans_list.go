@@ -18,7 +18,7 @@ var (
 				cli.ShowCommandHelp(c, "addons-plans")
 				return nil
 			}
-			if err := addon_providers.Plans(c.Args().First()); err != nil {
+			if err := addon_providers.Plans(c.Context, c.Args().First()); err != nil {
 				errorQuit(err)
 			}
 			return nil

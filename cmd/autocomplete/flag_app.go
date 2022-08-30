@@ -9,7 +9,7 @@ import (
 )
 
 func FlagAppAutoComplete(c *cli.Context) bool {
-	apps, err := appsList()
+	apps, err := appsList(c.Context)
 	if err != nil {
 		debug.Println("fail to get apps list:", err)
 		return false

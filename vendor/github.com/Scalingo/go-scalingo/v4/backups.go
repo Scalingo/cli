@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 
@@ -10,10 +11,10 @@ import (
 )
 
 type BackupsService interface {
-	BackupList(app, addonID string) ([]Backup, error)
-	BackupCreate(app, addonID string) (*Backup, error)
-	BackupShow(app, addonID, backupID string) (*Backup, error)
-	BackupDownloadURL(app, addonID, backupID string) (string, error)
+	BackupList(ctx context.Context, app, addonID string) ([]Backup, error)
+	BackupCreate(ctx context.Context, app, addonID string) (*Backup, error)
+	BackupShow(ctx context.Context, app, addonID, backupID string) (*Backup, error)
+	BackupDownloadURL(ctx context.Context, app, addonID, backupID string) (string, error)
 }
 
 type BackupStatus string
@@ -47,39 +48,39 @@ type DownloadURLRes struct {
 	DownloadURL string `json:"download_url"`
 }
 
-func (c *Client) BackupList(app string, addonID string) ([]Backup, error) {
+func (c *Client) BackupList(ctx context.Context, app string, addonID string) ([]Backup, error) {
 	var backupRes BackupsRes
-	err := c.DBAPI(app, addonID).SubresourceList("databases", addonID, "backups", nil, &backupRes)
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get backup")
 	}
 	return backupRes.Backups, nil
 }
 
-func (c *Client) BackupCreate(app, addonID string) (*Backup, error) {
+func (c *Client) BackupCreate(ctx context.Context, app, addonID string) (*Backup, error) {
 	var backupRes BackupRes
-	err := c.DBAPI(app, addonID).SubresourceAdd("databases", addonID, "backups", nil, &backupRes)
+	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, "databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to schedule a new backup")
 	}
 	return &backupRes.Backup, nil
 }
 
-func (c *Client) BackupShow(app, addonID, backup string) (*Backup, error) {
+func (c *Client) BackupShow(ctx context.Context, app, addonID, backup string) (*Backup, error) {
 	var backupRes BackupRes
-	err := c.DBAPI(app, addonID).ResourceGet("backups", backup, nil, &backupRes)
+	err := c.DBAPI(app, addonID).ResourceGet(ctx, "backups", backup, nil, &backupRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get backup")
 	}
 	return &backupRes.Backup, nil
 }
 
-func (c *Client) BackupDownloadURL(app, addonID, backupID string) (string, error) {
+func (c *Client) BackupDownloadURL(ctx context.Context, app, addonID, backupID string) (string, error) {
 	req := &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/databases/" + addonID + "/backups/" + backupID + "/archive",
 	}
-	resp, err := c.DBAPI(app, addonID).Do(req)
+	resp, err := c.DBAPI(app, addonID).Do(ctx, req)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get backup archive")
 	}

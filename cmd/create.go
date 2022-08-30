@@ -23,7 +23,7 @@ var (
 				_ = cli.ShowCommandHelp(c, "create")
 				return nil
 			}
-			err := apps.Create(c.Args().First(), c.String("remote"), c.String("buildpack"))
+			err := apps.Create(c.Context, c.Args().First(), c.String("remote"), c.String("buildpack"))
 			if err != nil {
 				errorQuit(err)
 			}

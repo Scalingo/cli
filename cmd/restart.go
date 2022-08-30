@@ -27,7 +27,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if err := apps.Restart(currentApp, c.Bool("s"), c.Args().Slice()); err != nil {
+			if err := apps.Restart(c.Context, currentApp, c.Bool("s"), c.Args().Slice()); err != nil {
 				errorQuit(err)
 			}
 			return nil

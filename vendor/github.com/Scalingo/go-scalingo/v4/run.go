@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 	"strings"
 
@@ -10,7 +11,7 @@ import (
 )
 
 type RunsService interface {
-	Run(opts RunOpts) (*RunRes, error)
+	Run(ctx context.Context, opts RunOpts) (*RunRes, error)
 }
 
 var _ RunsService = (*Client)(nil)
@@ -29,7 +30,7 @@ type RunRes struct {
 	AttachURL string     `json:"attach_url"`
 }
 
-func (c *Client) Run(opts RunOpts) (*RunRes, error) {
+func (c *Client) Run(ctx context.Context, opts RunOpts) (*RunRes, error) {
 	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + opts.App + "/run",
@@ -41,7 +42,7 @@ func (c *Client) Run(opts RunOpts) (*RunRes, error) {
 			"has_uploads": opts.HasUploads,
 		},
 	}
-	res, err := c.ScalingoAPI().Do(req)
+	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

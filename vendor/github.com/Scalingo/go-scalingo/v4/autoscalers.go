@@ -1,13 +1,15 @@
 package scalingo
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 )
 
 type AutoscalersService interface {
-	AutoscalersList(app string) ([]Autoscaler, error)
-	AutoscalerAdd(app string, params AutoscalerAddParams) (*Autoscaler, error)
-	AutoscalerRemove(app string, id string) error
+	AutoscalersList(ctx context.Context, app string) ([]Autoscaler, error)
+	AutoscalerAdd(ctx context.Context, app string, params AutoscalerAddParams) (*Autoscaler, error)
+	AutoscalerRemove(ctx context.Context, app string, id string) error
 }
 
 var _ AutoscalersService = (*Client)(nil)
@@ -31,9 +33,9 @@ type AutoscalerRes struct {
 	Autoscaler Autoscaler `json:"autoscaler"`
 }
 
-func (c *Client) AutoscalersList(app string) ([]Autoscaler, error) {
+func (c *Client) AutoscalersList(ctx context.Context, app string) ([]Autoscaler, error) {
 	var autoscalersRes AutoscalersRes
-	err := c.ScalingoAPI().SubresourceList("apps", app, "autoscalers", nil, &autoscalersRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "autoscalers", nil, &autoscalersRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -48,9 +50,9 @@ type AutoscalerAddParams struct {
 	MaxContainers int     `json:"max_containers"`
 }
 
-func (c *Client) AutoscalerAdd(app string, params AutoscalerAddParams) (*Autoscaler, error) {
+func (c *Client) AutoscalerAdd(ctx context.Context, app string, params AutoscalerAddParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceAdd("apps", app, "autoscalers", AutoscalerRes{
+	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "autoscalers", AutoscalerRes{
 		Autoscaler: Autoscaler{
 			ContainerType: params.ContainerType,
 			Metric:        params.Metric,
@@ -65,9 +67,9 @@ func (c *Client) AutoscalerAdd(app string, params AutoscalerAddParams) (*Autosca
 	return &autoscalerRes.Autoscaler, nil
 }
 
-func (c *Client) AutoscalerShow(app, id string) (*Autoscaler, error) {
+func (c *Client) AutoscalerShow(ctx context.Context, app, id string) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceGet("apps", app, "autoscalers", id, nil, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "autoscalers", id, nil, &autoscalerRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -82,17 +84,17 @@ type AutoscalerUpdateParams struct {
 	Disabled      *bool    `json:"disabled,omitempty"`
 }
 
-func (c *Client) AutoscalerUpdate(app, id string, params AutoscalerUpdateParams) (*Autoscaler, error) {
+func (c *Client) AutoscalerUpdate(ctx context.Context, app, id string, params AutoscalerUpdateParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "autoscalers", id, params, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "autoscalers", id, params, &autoscalerRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	return &autoscalerRes.Autoscaler, nil
 }
 
-func (c *Client) AutoscalerRemove(app, id string) error {
-	err := c.ScalingoAPI().SubresourceDelete("apps", app, "autoscalers", id)
+func (c *Client) AutoscalerRemove(ctx context.Context, app, id string) error {
+	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "autoscalers", id)
 	if err != nil {
 		return errgo.Mask(err)
 	}

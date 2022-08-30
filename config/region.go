@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -47,7 +48,7 @@ type GetRegionOpts struct {
 	SkipAuth bool
 }
 
-func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
+func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (RegionsCache, error) {
 	var regionsCache RegionsCache
 	fd, err := os.Open(c.RegionsCachePath)
 	if err == nil {
@@ -62,7 +63,7 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 
 	var client *scalingo.Client
 	if opts.SkipAuth {
-		client, err = ScalingoUnauthenticatedAuthClient()
+		client, err = ScalingoUnauthenticatedAuthClient(ctx)
 		if err != nil {
 			return RegionsCache{}, errgo.Notef(err, "fail to create an unauthenticated client")
 		}
@@ -77,13 +78,13 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 		}
 
 		debug.Println("[Regions] Get the list of regions to fill the cache")
-		client, err = ScalingoAuthClientFromToken(token.Token)
+		client, err = ScalingoAuthClientFromToken(ctx, token.Token)
 		if err != nil {
 			return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
 		}
 	}
 
-	regions, err := client.RegionsList()
+	regions, err := client.RegionsList(ctx)
 	if err != nil {
 		return RegionsCache{}, errgo.Notef(err, "fail to list available regions")
 	}
@@ -110,8 +111,8 @@ func EnsureRegionsCache(c Config, opts GetRegionOpts) (RegionsCache, error) {
 // GetRegion returns the requested region configuration, use local file system
 // cache if any. In case of cache fault, save on disk for 10 minutes the
 // available regions
-func GetRegion(c Config, name string, opts GetRegionOpts) (scalingo.Region, error) {
-	regionsCache, err := EnsureRegionsCache(c, opts)
+func GetRegion(ctx context.Context, c Config, name string, opts GetRegionOpts) (scalingo.Region, error) {
+	regionsCache, err := EnsureRegionsCache(ctx, c, opts)
 	if err != nil {
 		return scalingo.Region{}, errgo.Notef(err, "fail to get the regions cache")
 	}

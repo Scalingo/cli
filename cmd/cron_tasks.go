@@ -25,7 +25,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := crontasks.List(currentApp)
+			err := crontasks.List(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}

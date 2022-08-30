@@ -1,6 +1,7 @@
 package deployments
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -40,20 +41,20 @@ type statusData struct {
 // We can stream the deployment logs of an application, or we can stream the logs of a specific
 // deployments.
 // The StreamOpts.DeploymentID argument is optional.
-func Stream(opts *StreamOpts) error {
-	c, err := config.ScalingoClient()
+func Stream(ctx context.Context, opts *StreamOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	app, err := c.AppsShow(opts.AppName)
+	app, err := c.AppsShow(ctx, opts.AppName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
 	debug.Println("Opening socket to: " + app.Links.DeploymentsStream)
 
-	conn, err := c.DeploymentStream(app.Links.DeploymentsStream)
+	conn, err := c.DeploymentStream(ctx, app.Links.DeploymentsStream)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -80,7 +81,7 @@ func Stream(opts *StreamOpts) error {
 			if err == stdio.EOF {
 				debug.Println("Remote server broke the connection, reconnecting")
 				for err != nil {
-					conn, err = c.DeploymentStream(app.Links.DeploymentsStream)
+					conn, err = c.DeploymentStream(ctx, app.Links.DeploymentsStream)
 					time.Sleep(time.Second * 1)
 				}
 				continue

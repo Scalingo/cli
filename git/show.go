@@ -1,14 +1,16 @@
 package git
 
 import (
+	"context"
+
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
-func Show(appName string) error {
-	url, err := getGitEndpoint(appName)
+func Show(ctx context.Context, appName string) error {
+	url, err := getGitEndpoint(ctx, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to get the Git endpoint of this app")
 	}
@@ -17,12 +19,12 @@ func Show(appName string) error {
 	return nil
 }
 
-func getGitEndpoint(appName string) (string, error) {
-	c, err := config.ScalingoClient()
+func getGitEndpoint(ctx context.Context, appName string) (string, error) {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get scalingo API client")
 	}
-	app, err := c.AppsShow(appName)
+	app, err := c.AppsShow(ctx, appName)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get application information")
 	}

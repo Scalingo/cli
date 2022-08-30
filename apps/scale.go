@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -22,7 +23,7 @@ type ScaleRes struct {
 	Containers []scalingo.ContainerType `json:"containers"`
 }
 
-func Scale(app string, sync bool, types []string) error {
+func Scale(ctx context.Context, app string, sync bool, types []string) error {
 	var (
 		size           string
 		containerTypes []scalingo.ContainerType
@@ -30,13 +31,13 @@ func Scale(app string, sync bool, types []string) error {
 		err            error
 	)
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	scaleParams := &scalingo.AppsScaleParams{}
 	typesWithAutoscaler := []string{}
-	autoscalers, err := c.AutoscalersList(app)
+	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the autoscalers")
 	}
@@ -58,7 +59,7 @@ func Scale(app string, sync bool, types []string) error {
 				return errgo.Newf("%s is invalid, can't use relative modificator with size, change the size first", t)
 			}
 			if containerTypes == nil {
-				containerTypes, err = c.AppsContainerTypes(app)
+				containerTypes, err = c.AppsContainerTypes(ctx, app)
 				if err != nil {
 					return errgo.Notef(err, "fail to get list of running containers")
 				}
@@ -107,7 +108,7 @@ func Scale(app string, sync bool, types []string) error {
 		}
 	}
 
-	res, err := c.AppsScale(app, scaleParams)
+	res, err := c.AppsScale(ctx, app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
@@ -117,14 +118,14 @@ func Scale(app string, sync bool, types []string) error {
 
 			// In case of unprocessable, format and return a clear error
 			if reqestFailedError.Code == 422 {
-				return formatContainerTypesError(c, app, reqestFailedError)
+				return formatContainerTypesError(ctx, c, app, reqestFailedError)
 			}
 
 			return errgo.Notef(err, "fail to scale the Scalingo application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(c, func() error {
-			return Scale(app, sync, types)
+			return Scale(ctx, app, sync, types)
 		})
 	}
 	defer res.Body.Close()
@@ -144,7 +145,7 @@ func Scale(app string, sync bool, types []string) error {
 		return nil
 	}
 
-	err = handleOperation(app, res)
+	err = handleOperation(ctx, app, res)
 	if err != nil {
 		return errgo.Notef(err, "fail to handle the scale operation")
 	}
@@ -153,8 +154,8 @@ func Scale(app string, sync bool, types []string) error {
 	return nil
 }
 
-func formatContainerTypesError(c *scalingo.Client, app string, requestFailedError *http.RequestFailedError) error {
-	containerTypes, err := c.AppsContainerTypes(app)
+func formatContainerTypesError(ctx context.Context, c *scalingo.Client, app string, requestFailedError *http.RequestFailedError) error {
+	containerTypes, err := c.AppsContainerTypes(ctx, app)
 	if err != nil {
 		debug.Println(fmt.Sprintf("Failed to get container types: %s", err.Error()))
 		return requestFailedError

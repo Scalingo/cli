@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"gopkg.in/errgo.v1"
@@ -10,13 +11,13 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func OneOffStop(appName, oneOffLabel string) error {
-	c, err := config.ScalingoClient()
+func OneOffStop(ctx context.Context, appName, oneOffLabel string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to stop a running one-off")
 	}
 
-	containers, err := c.AppsContainersPs(appName)
+	containers, err := c.AppsContainersPs(ctx, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application containers to get the ID of the container to stop")
 	}
@@ -32,7 +33,7 @@ func OneOffStop(appName, oneOffLabel string) error {
 		return fmt.Errorf("The container '%s' does not exist", oneOffLabel)
 	}
 
-	err = c.ContainersStop(appName, containerToStop.ID)
+	err = c.ContainersStop(ctx, appName, containerToStop.ID)
 	if err != nil {
 		return errgo.Notef(err, "fail to stop the container '%s'", oneOffLabel)
 	}

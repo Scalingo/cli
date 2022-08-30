@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -19,14 +20,14 @@ const (
 	GB = MB * 1024
 )
 
-func Stats(app string, stream bool) error {
-	c, err := config.ScalingoClient()
+func Stats(ctx context.Context, app string, stream bool) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
 	if stream {
-		stats, err := c.AppsStats(app)
+		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
 			return errgo.Mask(err)
 		}
@@ -36,7 +37,7 @@ func Stats(app string, stream bool) error {
 		for {
 			select {
 			case <-ticker.C:
-				stats, err := c.AppsStats(app)
+				stats, err := c.AppsStats(ctx, app)
 				if err != nil {
 					ticker.Stop()
 					return errgo.Mask(err)
@@ -45,7 +46,7 @@ func Stats(app string, stream bool) error {
 			}
 		}
 	} else {
-		stats, err := c.AppsStats(app)
+		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
 			return errgo.Mask(err)
 		}

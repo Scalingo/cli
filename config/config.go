@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -161,14 +162,14 @@ func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.Cl
 	}
 }
 
-func (config Config) scalingoClientConfig(opts ClientConfigOpts) (scalingo.ClientConfig, error) {
+func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfigOpts) (scalingo.ClientConfig, error) {
 	c := config.scalingoClientBaseConfig(opts)
 	if !opts.AuthOnly {
 		if config.ScalingoApiUrl != "" && config.ScalingoDbUrl != "" {
 			c.APIEndpoint = config.ScalingoApiUrl
 			c.DatabaseAPIEndpoint = config.ScalingoDbUrl
 		} else {
-			region, err := GetRegion(config, config.ScalingoRegion, GetRegionOpts{
+			region, err := GetRegion(ctx, config, config.ScalingoRegion, GetRegionOpts{
 				Token: opts.APIToken,
 			})
 			if err != nil {
@@ -181,44 +182,44 @@ func (config Config) scalingoClientConfig(opts ClientConfigOpts) (scalingo.Clien
 	return c, nil
 }
 
-func ScalingoClientFromToken(token string) (*scalingo.Client, error) {
-	config, err := C.scalingoClientConfig(ClientConfigOpts{APIToken: token})
+func ScalingoClientFromToken(ctx context.Context, token string) (*scalingo.Client, error) {
+	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token})
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create Scalingo client")
 	}
-	return scalingo.New(config)
+	return scalingo.New(ctx, config)
 }
 
-func ScalingoAuthClientFromToken(token string) (*scalingo.Client, error) {
+func ScalingoAuthClientFromToken(ctx context.Context, token string) (*scalingo.Client, error) {
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{
 		AuthOnly: true, APIToken: token,
 	})
-	return scalingo.New(config)
+	return scalingo.New(ctx, config)
 }
 
-func ScalingoAuthClient() (*scalingo.Client, error) {
+func ScalingoAuthClient(ctx context.Context) (*scalingo.Client, error) {
 	auth := &CliAuthenticator{}
 	_, token, err := auth.LoadAuth()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to load authentication")
 	}
-	return ScalingoAuthClientFromToken(token.Token)
+	return ScalingoAuthClientFromToken(ctx, token.Token)
 }
 
-func ScalingoClient() (*scalingo.Client, error) {
+func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to load credentials")
 	}
-	config, err := C.scalingoClientConfig(ClientConfigOpts{APIToken: token.Token})
+	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token.Token})
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create Scalingo client")
 	}
-	return scalingo.New(config)
+	return scalingo.New(ctx, config)
 }
 
-func ScalingoClientForRegion(region string) (*scalingo.Client, error) {
+func ScalingoClientForRegion(ctx context.Context, region string) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth()
 	if err != nil {
@@ -230,12 +231,12 @@ func ScalingoClientForRegion(region string) (*scalingo.Client, error) {
 		APIToken: token.Token,
 	})
 
-	return scalingo.New(config)
+	return scalingo.New(ctx, config)
 }
 
-func ScalingoUnauthenticatedAuthClient() (*scalingo.Client, error) {
+func ScalingoUnauthenticatedAuthClient(ctx context.Context) (*scalingo.Client, error) {
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{AuthOnly: true})
-	return scalingo.New(config)
+	return scalingo.New(ctx, config)
 }
 
 func HomeDir() string {

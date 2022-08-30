@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func LogsArchives(app, addon string, page int) error {
+func LogsArchives(ctx context.Context, app, addon string, page int) error {
 	if page < 0 {
 		return errgo.New("Page must be greather than 0.")
 	}
@@ -18,12 +19,12 @@ func LogsArchives(app, addon string, page int) error {
 		page = 1
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	logsRes, err := c.AddonLogsArchives(app, addon, page)
+	logsRes, err := c.AddonLogsArchives(ctx, app, addon, page)
 	if err != nil {
 		return errgo.Notef(err, "fail to get addon logs archives")
 	}

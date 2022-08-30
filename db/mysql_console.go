@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -15,11 +16,11 @@ type MySQLConsoleOpts struct {
 	VariableName string
 }
 
-func MySQLConsole(opts MySQLConsoleOpts) error {
+func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_MYSQL"
 	}
-	mySQLURL, user, password, err := dbURL(opts.App, opts.VariableName, []string{"mysql", "mysql2"})
+	mySQLURL, user, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"mysql", "mysql2"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -36,7 +37,7 @@ func MySQLConsole(opts MySQLConsoleOpts) error {
 		Size:       opts.Size,
 	}
 
-	err = apps.Run(runOpts)
+	err = apps.Run(ctx, runOpts)
 	if err != nil {
 		return errgo.Newf("fail to run MySQL console: %v", err)
 	}

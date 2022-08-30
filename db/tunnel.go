@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	stdio "io"
 	"net"
@@ -36,19 +37,19 @@ type TunnelOpts struct {
 	Reconnect bool
 }
 
-func Tunnel(opts TunnelOpts) error {
-	c, err := config.ScalingoClient()
+func Tunnel(ctx context.Context, opts TunnelOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	region, err := config.GetRegion(config.C, config.C.ScalingoRegion, config.GetRegionOpts{})
+	region, err := config.GetRegion(ctx, config.C, config.C.ScalingoRegion, config.GetRegionOpts{})
 	if err != nil {
 		return errgo.Notef(err, "fail to retrieve region information")
 	}
 	sshhost := region.SSH
 
-	environ, err := c.VariablesListWithoutAlias(opts.App)
+	environ, err := c.VariablesListWithoutAlias(ctx, opts.App)
 	if err != nil {
 		return errgo.Mask(err)
 	}

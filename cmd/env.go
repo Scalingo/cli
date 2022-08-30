@@ -26,7 +26,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = env.Display(currentApp)
+				err = env.Display(c.Context, currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "env")
 			}
@@ -59,7 +59,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			variableValue, err := env.Get(currentApp, c.Args().First())
+			variableValue, err := env.Get(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
@@ -86,7 +86,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 {
-				err = env.Add(currentApp, c.Args().Slice())
+				err = env.Add(c.Context, currentApp, c.Args().Slice())
 			} else {
 				cli.ShowCommandHelp(c, "env-set")
 				return nil
@@ -116,7 +116,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 {
-				err = env.Delete(currentApp, c.Args().Slice())
+				err = env.Delete(c.Context, currentApp, c.Args().Slice())
 			} else {
 				cli.ShowCommandHelp(c, "env-unset")
 			}

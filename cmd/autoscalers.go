@@ -22,7 +22,7 @@ var (
 				return nil
 			}
 
-			err := autoscalers.List(detect.CurrentApp(c))
+			err := autoscalers.List(c.Context, detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}
@@ -61,7 +61,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := autoscalers.Add(currentApp, scalingo.AutoscalerAddParams{
+			err := autoscalers.Add(c.Context, currentApp, scalingo.AutoscalerAddParams{
 				ContainerType: c.String("c"),
 				Metric:        c.String("m"),
 				Target:        c.Float64("t"),
@@ -129,7 +129,7 @@ var (
 				d := c.Bool("d")
 				params.Disabled = &d
 			}
-			err := autoscalers.Update(currentApp, c.String("c"), params)
+			err := autoscalers.Update(c.Context, currentApp, c.String("c"), params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -161,7 +161,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			disabled := false
-			err := autoscalers.Update(currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
+			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
@@ -195,7 +195,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			disabled := true
-			err := autoscalers.Update(currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
+			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
 			})
 			if err != nil {
@@ -224,7 +224,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := autoscalers.Remove(currentApp, c.Args().First())
+			err := autoscalers.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}

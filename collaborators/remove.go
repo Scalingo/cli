@@ -1,6 +1,7 @@
 package collaborators
 
 import (
+	"context"
 	"errors"
 
 	"gopkg.in/errgo.v1"
@@ -14,13 +15,13 @@ var (
 	notFound = errors.New("collaborator not found")
 )
 
-func Remove(app, email string) error {
-	c, err := config.ScalingoClient()
+func Remove(ctx context.Context, app, email string) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	collaborator, err := getFromEmail(c, app, email)
+	collaborator, err := getFromEmail(ctx, client, app, email)
 	if err != nil {
 		if err == notFound {
 			io.Error(email + " is not a collaborator of " + app + ".")
@@ -29,7 +30,7 @@ func Remove(app, email string) error {
 			return errgo.Mask(err, errgo.Any)
 		}
 	}
-	err = c.CollaboratorRemove(app, collaborator.ID)
+	err = client.CollaboratorRemove(ctx, app, collaborator.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -38,8 +39,8 @@ func Remove(app, email string) error {
 	return nil
 }
 
-func getFromEmail(c *scalingo.Client, app, email string) (scalingo.Collaborator, error) {
-	collaborators, err := c.CollaboratorsList(app)
+func getFromEmail(ctx context.Context, client *scalingo.Client, app, email string) (scalingo.Collaborator, error) {
+	collaborators, err := client.CollaboratorsList(ctx, app)
 	if err != nil {
 		return scalingo.Collaborator{}, errgo.Mask(err, errgo.Any)
 	}

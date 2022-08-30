@@ -26,7 +26,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = apps.Events(currentApp, scalingo.PaginationOpts{
+				err = apps.Events(c.Context, currentApp, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
 				})

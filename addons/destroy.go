@@ -1,6 +1,7 @@
 package addons
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -11,19 +12,19 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func Destroy(app, addonID string) error {
+func Destroy(ctx context.Context, app, addonID string) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	} else if addonID == "" {
 		return errgo.New("no addon ID defined")
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	addon, err := checkAddonExist(c, app, addonID)
+	addon, err := checkAddonExist(ctx, c, app, addonID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -41,7 +42,7 @@ func Destroy(app, addonID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, addonID)
 	}
 
-	err = c.AddonDestroy(app, addon.ID)
+	err = c.AddonDestroy(ctx, app, addon.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -50,8 +51,8 @@ func Destroy(app, addonID string) error {
 	return nil
 }
 
-func checkAddonExist(c *scalingo.Client, app, addonID string) (*scalingo.Addon, error) {
-	resources, err := c.AddonsList(app)
+func checkAddonExist(ctx context.Context, c *scalingo.Client, app, addonID string) (*scalingo.Addon, error) {
+	resources, err := c.AddonsList(ctx, app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

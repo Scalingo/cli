@@ -1,6 +1,8 @@
 package scalingo
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v4/http"
@@ -28,11 +30,11 @@ func (t SCMType) Str() string {
 }
 
 type SCMIntegrationsService interface {
-	SCMIntegrationsList() ([]SCMIntegration, error)
-	SCMIntegrationsShow(id string) (*SCMIntegration, error)
-	SCMIntegrationsCreate(scmType SCMType, url string, accessToken string) (*SCMIntegration, error)
-	SCMIntegrationsDelete(id string) error
-	SCMIntegrationsImportKeys(id string) ([]Key, error)
+	SCMIntegrationsList(context.Context) ([]SCMIntegration, error)
+	SCMIntegrationsShow(ctx context.Context, id string) (*SCMIntegration, error)
+	SCMIntegrationsCreate(ctx context.Context, scmType SCMType, url string, accessToken string) (*SCMIntegration, error)
+	SCMIntegrationsDelete(ctx context.Context, id string) error
+	SCMIntegrationsImportKeys(ctx context.Context, id string) ([]Key, error)
 }
 
 var _ SCMIntegrationsService = (*Client)(nil)
@@ -67,27 +69,27 @@ type SCMIntegrationParamsReq struct {
 	SCMIntegrationParams SCMIntegrationParams `json:"scm_integration"`
 }
 
-func (c *Client) SCMIntegrationsList() ([]SCMIntegration, error) {
+func (c *Client) SCMIntegrationsList(ctx context.Context) ([]SCMIntegration, error) {
 	var res SCMIntegrationsRes
 
-	err := c.AuthAPI().ResourceList("scm_integrations", nil, &res)
+	err := c.AuthAPI().ResourceList(ctx, "scm_integrations", nil, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to list SCM integration")
 	}
 	return res.SCMIntegrations, nil
 }
 
-func (c *Client) SCMIntegrationsShow(id string) (*SCMIntegration, error) {
+func (c *Client) SCMIntegrationsShow(ctx context.Context, id string) (*SCMIntegration, error) {
 	var res SCMIntegrationRes
 
-	err := c.AuthAPI().ResourceGet("scm_integrations", id, nil, &res)
+	err := c.AuthAPI().ResourceGet(ctx, "scm_integrations", id, nil, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get this SCM integration")
 	}
 	return &res.SCMIntegration, nil
 }
 
-func (c *Client) SCMIntegrationsCreate(scmType SCMType, url string, accessToken string) (*SCMIntegration, error) {
+func (c *Client) SCMIntegrationsCreate(ctx context.Context, scmType SCMType, url string, accessToken string) (*SCMIntegration, error) {
 	payload := SCMIntegrationParamsReq{SCMIntegrationParams{
 		SCMType:     scmType,
 		URL:         url,
@@ -95,7 +97,7 @@ func (c *Client) SCMIntegrationsCreate(scmType SCMType, url string, accessToken 
 	}}
 	var res SCMIntegrationRes
 
-	err := c.AuthAPI().ResourceAdd("scm_integrations", payload, &res)
+	err := c.AuthAPI().ResourceAdd(ctx, "scm_integrations", payload, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to create the SCM integration")
 	}
@@ -103,18 +105,18 @@ func (c *Client) SCMIntegrationsCreate(scmType SCMType, url string, accessToken 
 	return &res.SCMIntegration, nil
 }
 
-func (c *Client) SCMIntegrationsDelete(id string) error {
-	err := c.AuthAPI().ResourceDelete("scm_integrations", id)
+func (c *Client) SCMIntegrationsDelete(ctx context.Context, id string) error {
+	err := c.AuthAPI().ResourceDelete(ctx, "scm_integrations", id)
 	if err != nil {
 		return errgo.Notef(err, "fail to delete this SCM integration")
 	}
 	return nil
 }
 
-func (c *Client) SCMIntegrationsImportKeys(id string) ([]Key, error) {
+func (c *Client) SCMIntegrationsImportKeys(ctx context.Context, id string) ([]Key, error) {
 	var res KeysRes
 
-	var err = c.AuthAPI().DoRequest(&http.APIRequest{
+	var err = c.AuthAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/scm_integrations/" + id + "/import_keys",
 		Params:   nil,

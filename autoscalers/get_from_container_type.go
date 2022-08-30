@@ -1,6 +1,7 @@
 package autoscalers
 
 import (
+	"context"
 	"errors"
 
 	"gopkg.in/errgo.v1"
@@ -12,8 +13,8 @@ var (
 	ErrNotFound = errors.New("autoscaler not found")
 )
 
-func getFromContainerType(c *scalingo.Client, app, containerType string) (scalingo.Autoscaler, error) {
-	autoscalers, err := c.AutoscalersList(app)
+func getFromContainerType(ctx context.Context, c *scalingo.Client, app, containerType string) (scalingo.Autoscaler, error) {
+	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
 		return scalingo.Autoscaler{}, errgo.Mask(err, errgo.Any)
 	}

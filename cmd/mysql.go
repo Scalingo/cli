@@ -37,7 +37,7 @@ var (
 				return nil
 			}
 
-			err := db.MySQLConsole(db.MySQLConsoleOpts{
+			err := db.MySQLConsole(c.Context, db.MySQLConsoleOpts{
 				App:          detect.CurrentApp(c),
 				Size:         c.String("s"),
 				VariableName: c.String("e"),

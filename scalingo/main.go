@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
+	"github.com/Scalingo/go-utils/logger"
 )
 
 var (
@@ -101,6 +103,9 @@ COPYRIGHT:
 }
 
 func main() {
+	log := logger.Default()
+	ctx := logger.ToCtx(context.Background(), log)
+
 	app := cli.NewApp()
 	app.Name = "Scalingo Client"
 	app.Authors = []*cli.Author{{Name: "Scalingo Team", Email: "hello@scalingo.com"}}
@@ -156,7 +161,7 @@ func main() {
 		config.C.DisableInteractive = true
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	if err := app.RunContext(ctx, os.Args); err != nil {
 		fmt.Println("Fail to run command:", err)
 	}
 }

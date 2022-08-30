@@ -1,6 +1,7 @@
 package env
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"regexp"
@@ -19,7 +20,7 @@ var (
 	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
 )
 
-func Add(app string, params []string) error {
+func Add(ctx context.Context, app string, params []string) error {
 	var variables scalingo.Variables
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
@@ -33,11 +34,11 @@ func Add(app string, params []string) error {
 		})
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	_, _, err = c.VariableMultipleSet(app, variables)
+	_, _, err = c.VariableMultipleSet(ctx, app, variables)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -51,12 +52,12 @@ func Add(app string, params []string) error {
 	return nil
 }
 
-func Delete(app string, varNames []string) error {
-	c, err := config.ScalingoClient()
+func Delete(ctx context.Context, app string, varNames []string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	vars, err := c.VariablesList(app)
+	vars, err := c.VariablesList(ctx, app)
 
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
@@ -73,7 +74,7 @@ func Delete(app string, varNames []string) error {
 	}
 
 	for _, v := range varsToUnset {
-		err := c.VariableUnset(app, v.ID)
+		err := c.VariableUnset(ctx, app, v.ID)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}

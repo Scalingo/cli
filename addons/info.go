@@ -1,6 +1,7 @@
 package addons
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -12,18 +13,18 @@ import (
 	"github.com/Scalingo/cli/db"
 )
 
-func Info(app, addon string) error {
-	c, err := config.ScalingoClient()
+func Info(ctx context.Context, app, addon string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	addonInfo, err := c.AddonShow(app, addon)
+	addonInfo, err := c.AddonShow(ctx, app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to get addon information")
 	}
 
-	dbInfo, err := db.Show(app, addon)
+	dbInfo, err := db.Show(ctx, app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to get database information")
 	}

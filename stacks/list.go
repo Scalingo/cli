@@ -21,14 +21,14 @@ func List() error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name", "Description", "Default?"})
+	t.SetHeader([]string{"ID", "Name", "Description", "Default?", "Deprecation date"})
 
 	for _, stack := range stacks {
 		defaultText := "No"
 		if stack.Default {
 			defaultText = "Yes"
 		}
-		t.Append([]string{stack.ID, stack.Name, stack.Description, defaultText})
+		t.Append([]string{stack.ID, stack.Name, stack.Description, defaultText, stack.DeprecatedAt})
 	}
 	t.Render()
 	return nil

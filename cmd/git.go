@@ -35,7 +35,7 @@ var (
 				return nil
 			}
 
-			err := git.Setup(detect.CurrentApp(c), git.SetupParams{
+			err := git.Setup(c.Context, detect.CurrentApp(c), git.SetupParams{
 				RemoteName:     c.String("remote"),
 				ForcePutRemote: c.Bool("force"),
 			})
@@ -64,7 +64,7 @@ var (
 				return nil
 			}
 
-			err := git.Show(detect.CurrentApp(c))
+			err := git.Show(c.Context, detect.CurrentApp(c))
 			if err != nil {
 				errorQuit(err)
 			}

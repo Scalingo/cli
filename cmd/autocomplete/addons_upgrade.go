@@ -17,11 +17,11 @@ func AddonsUpgradeAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.AddonsList(appName)
+	resources, err := client.AddonsList(c.Context, appName)
 	if len(os.Args) > 1 && err == nil {
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonIDSet := false
@@ -34,7 +34,7 @@ func AddonsUpgradeAutoComplete(c *cli.Context) error {
 		}
 
 		if isAddonIDSet && addonName != "" {
-			plans, err := client.AddonProviderPlansList(addonName)
+			plans, err := client.AddonProviderPlansList(c.Context, addonName)
 			if err == nil {
 				for _, plan := range plans {
 					fmt.Println(plan.Name)

@@ -27,14 +27,14 @@ var (
 			currentApp := detect.CurrentApp(c)
 
 			if c.Args().Len() == 0 {
-				err := apps.ContainerTypes(currentApp)
+				err := apps.ContainerTypes(c.Context, currentApp)
 				if err != nil {
 					errorQuit(err)
 				}
 				return nil
 			}
 
-			err := apps.Scale(currentApp, c.Bool("s"), c.Args().Slice())
+			err := apps.Scale(c.Context, currentApp, c.Bool("s"), c.Args().Slice())
 			if err != nil {
 				errorQuit(err)
 			}

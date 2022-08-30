@@ -15,11 +15,11 @@ func LogDrainsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	drains, err := client.LogDrainsList(appName)
+	drains, err := client.LogDrainsList(c.Context, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to get log drains list")
 	}

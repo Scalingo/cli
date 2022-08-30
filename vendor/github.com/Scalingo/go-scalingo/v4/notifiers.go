@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 
@@ -10,11 +11,11 @@ import (
 )
 
 type NotifiersService interface {
-	NotifiersList(app string) (Notifiers, error)
-	NotifierProvision(app string, params NotifierParams) (*Notifier, error)
-	NotifierByID(app, ID string) (*Notifier, error)
-	NotifierUpdate(app, ID string, params NotifierParams) (*Notifier, error)
-	NotifierDestroy(app, ID string) error
+	NotifiersList(ctx context.Context, app string) (Notifiers, error)
+	NotifierProvision(ctx context.Context, app string, params NotifierParams) (*Notifier, error)
+	NotifierByID(ctx context.Context, app, ID string) (*Notifier, error)
+	NotifierUpdate(ctx context.Context, app, ID string, params NotifierParams) (*Notifier, error)
+	NotifierDestroy(ctx context.Context, app, ID string) error
 }
 
 var _ NotifiersService = (*Client)(nil)
@@ -66,9 +67,9 @@ type notifiersRequestRes struct {
 	Notifiers []*Notifier `json:"notifiers"`
 }
 
-func (c *Client) NotifiersList(app string) (Notifiers, error) {
+func (c *Client) NotifiersList(ctx context.Context, app string) (Notifiers, error) {
 	var notifiersRes notifiersRequestRes
-	err := c.ScalingoAPI().SubresourceList("apps", app, "notifiers", nil, &notifiersRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "notifiers", nil, &notifiersRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -79,12 +80,12 @@ func (c *Client) NotifiersList(app string) (Notifiers, error) {
 	return notifiers, nil
 }
 
-func (c *Client) NotifierProvision(app string, params NotifierParams) (*Notifier, error) {
+func (c *Client) NotifierProvision(ctx context.Context, app string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := newOutputNotifier(params)
 	notifierRequestParams := &notifierRequestParams{notifier}
 
-	err := c.ScalingoAPI().SubresourceAdd("apps", app, "notifiers", notifierRequestParams, &notifierRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "notifiers", notifierRequestParams, &notifierRes)
 
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -92,9 +93,9 @@ func (c *Client) NotifierProvision(app string, params NotifierParams) (*Notifier
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
+func (c *Client) NotifierByID(ctx context.Context, app, ID string) (*Notifier, error) {
 	var notifierRes notifierRequestRes
-	err := c.ScalingoAPI().SubresourceGet("apps", app, "notifiers", ID, nil, &notifierRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "notifiers", ID, nil, &notifierRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -102,20 +103,20 @@ func (c *Client) NotifierByID(app, ID string) (*Notifier, error) {
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierUpdate(app, ID string, params NotifierParams) (*Notifier, error) {
+func (c *Client) NotifierUpdate(ctx context.Context, app, ID string, params NotifierParams) (*Notifier, error) {
 	var notifierRes notifierRequestRes
 	notifier := newOutputNotifier(params)
 	notifierRequestParams := &notifierRequestParams{notifier}
 
 	debug.Printf("[Notifier params]\n%+v", notifier)
 
-	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "notifiers", ID, notifierRequestParams, &notifierRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "notifiers", ID, notifierRequestParams, &notifierRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return &notifierRes.Notifier, nil
 }
 
-func (c *Client) NotifierDestroy(app, ID string) error {
-	return c.ScalingoAPI().SubresourceDelete("apps", app, "notifiers", ID)
+func (c *Client) NotifierDestroy(ctx context.Context, app, ID string) error {
+	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "notifiers", ID)
 }
