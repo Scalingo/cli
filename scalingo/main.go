@@ -103,8 +103,7 @@ COPYRIGHT:
 func main() {
 	app := cli.NewApp()
 	app.Name = "Scalingo Client"
-	// app.Author = "Scalingo Team"
-	// app.Email = "hello@scalingo.com"
+	app.Authors = []*cli.Author{{Name: "Scalingo Team", Email: "hello@scalingo.com"}}
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
 	app.Flags = []cli.Flag{
