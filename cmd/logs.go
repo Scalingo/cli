@@ -27,7 +27,7 @@ var (
 		Flags: []cli.Flag{&appFlag, &addonFlag,
 			&cli.IntFlag{Name: "lines", Aliases: []string{"n"}, Value: 20, Usage: "Number of log lines to dump"},
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},
-			&cli.StringFlag{Name: "filter, F", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
+			&cli.StringFlag{Name: "filter", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
