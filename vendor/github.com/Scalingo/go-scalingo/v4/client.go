@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"crypto/tls"
 	"time"
 
@@ -26,6 +25,7 @@ type API interface {
 	VariablesService
 	EventsService
 	KeysService
+	LoginService
 	LogDrainsService
 	LogsArchivesService
 	LogsService
@@ -69,11 +69,12 @@ type ClientConfig struct {
 	Region              string
 	UserAgent           string
 
-	// StaticTokenGenerator is present for Scalingo internal use only
+	// StaticTokenGenerator is present for retrocompatibility with legacy tokens
+	// DEPRECATED, Use standard APIToken field for normal operations
 	StaticTokenGenerator *StaticTokenGenerator
 }
 
-func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
+func New(cfg ClientConfig) (*Client, error) {
 	// Apply defaults
 	if cfg.AuthEndpoint == "" {
 		cfg.AuthEndpoint = "https://auth.scalingo.com"
@@ -95,7 +96,7 @@ func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
 		config: cfg,
 	}
 
-	region, err := tmpClient.getRegion(ctx, cfg.Region)
+	region, err := tmpClient.getRegion(cfg.Region)
 	if err == ErrRegionNotFound {
 		return nil, err
 	} else if err != nil {

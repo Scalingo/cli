@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -33,10 +32,10 @@ const (
 )
 
 type RegionMigrationsService interface {
-	CreateRegionMigration(ctx context.Context, appID string, params RegionMigrationParams) (RegionMigration, error)
-	RunRegionMigrationStep(ctx context.Context, appID, migrationID string, step RegionMigrationStep) error
-	ShowRegionMigration(ctx context.Context, appID, migrationID string) (RegionMigration, error)
-	ListRegionMigrations(ctx context.Context, appID string) ([]RegionMigration, error)
+	CreateRegionMigration(appID string, params RegionMigrationParams) (RegionMigration, error)
+	RunRegionMigrationStep(appID, migrationID string, step RegionMigrationStep) error
+	ShowRegionMigration(appID, migrationID string) (RegionMigration, error)
+	ListRegionMigrations(appID string) ([]RegionMigration, error)
 }
 
 type RegionMigrationParams struct {
@@ -70,10 +69,10 @@ type Step struct {
 	Logs   string     `json:"logs"`
 }
 
-func (c *Client) CreateRegionMigration(ctx context.Context, appID string, params RegionMigrationParams) (RegionMigration, error) {
+func (c *Client) CreateRegionMigration(appID string, params RegionMigrationParams) (RegionMigration, error) {
 	var migration RegionMigration
 
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", appID, "region_migrations", map[string]RegionMigrationParams{
+	err := c.ScalingoAPI().SubresourceAdd("apps", appID, "region_migrations", map[string]RegionMigrationParams{
 		"migration": params,
 	}, &migration)
 	if err != nil {
@@ -83,8 +82,8 @@ func (c *Client) CreateRegionMigration(ctx context.Context, appID string, params
 	return migration, nil
 }
 
-func (c *Client) RunRegionMigrationStep(ctx context.Context, appID, migrationID string, step RegionMigrationStep) error {
-	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+func (c *Client) RunRegionMigrationStep(appID, migrationID string, step RegionMigrationStep) error {
+	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + appID + "/region_migrations/" + migrationID + "/run",
 		Params:   map[string]RegionMigrationStep{"step": step},
@@ -96,10 +95,10 @@ func (c *Client) RunRegionMigrationStep(ctx context.Context, appID, migrationID 
 	return nil
 }
 
-func (c *Client) ShowRegionMigration(ctx context.Context, appID, migrationID string) (RegionMigration, error) {
+func (c *Client) ShowRegionMigration(appID, migrationID string) (RegionMigration, error) {
 	var migration RegionMigration
 
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", appID, "region_migrations", migrationID, nil, &migration)
+	err := c.ScalingoAPI().SubresourceGet("apps", appID, "region_migrations", migrationID, nil, &migration)
 	if err != nil {
 		return migration, errgo.Notef(err, "fail to get migration")
 	}
@@ -107,10 +106,10 @@ func (c *Client) ShowRegionMigration(ctx context.Context, appID, migrationID str
 	return migration, nil
 }
 
-func (c *Client) ListRegionMigrations(ctx context.Context, appID string) ([]RegionMigration, error) {
+func (c *Client) ListRegionMigrations(appID string) ([]RegionMigration, error) {
 	var migrations []RegionMigration
 
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", appID, "region_migrations", nil, &migrations)
+	err := c.ScalingoAPI().SubresourceList("apps", appID, "region_migrations", nil, &migrations)
 	if err != nil {
 		return migrations, errgo.Notef(err, "fail to list migrations")
 	}

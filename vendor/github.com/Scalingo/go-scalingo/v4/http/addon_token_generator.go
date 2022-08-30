@@ -1,8 +1,6 @@
 package http
 
 import (
-	"context"
-
 	"gopkg.in/errgo.v1"
 )
 
@@ -13,7 +11,7 @@ type AddonTokenGenerator struct {
 }
 
 type AdddonTokenExchanger interface {
-	AddonToken(ctx context.Context, app, addonID string) (string, error)
+	AddonToken(app, addonID string) (string, error)
 }
 
 func NewAddonTokenGenerator(app, addon string, exchanger AdddonTokenExchanger) TokenGenerator {
@@ -24,8 +22,8 @@ func NewAddonTokenGenerator(app, addon string, exchanger AdddonTokenExchanger) T
 	}
 }
 
-func (c *AddonTokenGenerator) GetAccessToken(ctx context.Context) (string, error) {
-	token, err := c.exchanger.AddonToken(ctx, c.appID, c.addonID)
+func (c *AddonTokenGenerator) GetAccessToken() (string, error) {
+	token, err := c.exchanger.AddonToken(c.appID, c.addonID)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get addon token")
 	}

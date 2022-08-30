@@ -1,16 +1,14 @@
 package scalingo
 
 import (
-	"context"
-
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type AddonProvidersService interface {
-	AddonProvidersList(context.Context) ([]*AddonProvider, error)
-	AddonProviderPlansList(ctx context.Context, addon string) ([]*Plan, error)
+	AddonProvidersList() ([]*AddonProvider, error)
+	AddonProviderPlansList(addon string) ([]*Plan, error)
 }
 
 var _ AddonProvidersService = (*Client)(nil)
@@ -39,13 +37,13 @@ type ListParams struct {
 	AddonProviders []*AddonProvider `json:"addon_providers"`
 }
 
-func (c *Client) AddonProvidersList(ctx context.Context) ([]*AddonProvider, error) {
+func (c *Client) AddonProvidersList() ([]*AddonProvider, error) {
 	req := &http.APIRequest{
 		NoAuth:   true,
 		Endpoint: "/addon_providers",
 	}
 	var params ListParams
-	err := c.ScalingoAPI().DoRequest(ctx, req, &params)
+	err := c.ScalingoAPI().DoRequest(req, &params)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -62,7 +60,7 @@ var addonProviderTypo = map[string]string{
 	"scalingo-psql":     "scalingo-postgresql",
 }
 
-func (c *Client) AddonProviderPlansList(ctx context.Context, addon string) ([]*Plan, error) {
+func (c *Client) AddonProviderPlansList(addon string) ([]*Plan, error) {
 	correctAddon, ok := addonProviderTypo[addon]
 	if ok {
 		addon = correctAddon
@@ -73,7 +71,7 @@ func (c *Client) AddonProviderPlansList(ctx context.Context, addon string) ([]*P
 		NoAuth:   true,
 		Endpoint: "/addon_providers/" + addon + "/plans",
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &params)
+	err := c.ScalingoAPI().DoRequest(req, &params)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get plans")
 	}

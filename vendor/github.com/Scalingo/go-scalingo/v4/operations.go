@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -10,7 +9,7 @@ import (
 )
 
 type OperationsService interface {
-	OperationsShow(ctx context.Context, app, opID string) (*Operation, error)
+	OperationsShow(app string, opID string) (*Operation, error)
 }
 
 var _ OperationsService = (*Client)(nil)
@@ -49,9 +48,9 @@ func (op *Operation) ElapsedDuration() float64 {
 	return op.FinishedAt.Sub(op.CreatedAt).Seconds()
 }
 
-func (c *Client) OperationsShowFromURL(ctx context.Context, url string) (*Operation, error) {
+func (c *Client) OperationsShowFromURL(url string) (*Operation, error) {
 	var opRes OperationResponse
-	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(&httpclient.APIRequest{
 		Method: "GET", URL: url,
 	}, &opRes)
 	if err != nil {
@@ -60,9 +59,9 @@ func (c *Client) OperationsShowFromURL(ctx context.Context, url string) (*Operat
 	return &opRes.Op, nil
 }
 
-func (c *Client) OperationsShow(ctx context.Context, app, opID string) (*Operation, error) {
+func (c *Client) OperationsShow(app string, opID string) (*Operation, error) {
 	var opRes OperationResponse
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "operations", opID, nil, &opRes)
+	err := c.ScalingoAPI().SubresourceGet("apps", app, "operations", opID, nil, &opRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

@@ -89,6 +89,11 @@
     {
       "src_package": ".",
       "dst_package": "scalingomock",
+      "interface": "LoginService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
       "interface": "LogDrainsService"
     },
     {

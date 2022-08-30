@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -13,29 +12,31 @@ import (
 type AppStatus string
 
 const (
-	AppStatusNew        AppStatus = "new"
-	AppStatusRunning    AppStatus = "running"
-	AppStatusStopped    AppStatus = "stopped"
-	AppStatusScaling    AppStatus = "scaling"
-	AppStatusRestarting AppStatus = "restarting"
+	AppStatusNew        = AppStatus("new")
+	AppStatusRunning    = AppStatus("running")
+	AppStatusStopped    = AppStatus("stopped")
+	AppStatusScaling    = AppStatus("scaling")
+	AppStatusRestarting = AppStatus("restarting")
 )
 
 type AppsService interface {
-	AppsList(ctx context.Context) ([]*App, error)
-	AppsShow(ctx context.Context, appName string) (*App, error)
-	AppsDestroy(ctx context.Context, name string, currentName string) error
-	AppsRename(ctx context.Context, name string, newName string) (*App, error)
-	AppsTransfer(ctx context.Context, name string, email string) (*App, error)
-	AppsSetStack(ctx context.Context, name string, stackID string) (*App, error)
-	AppsRestart(ctx context.Context, app string, scope *AppsRestartParams) (*http.Response, error)
-	AppsCreate(ctx context.Context, opts AppsCreateOpts) (*App, error)
-	AppsStats(ctx context.Context, app string) (*AppStatsRes, error)
-	AppsContainerTypes(ctx context.Context, app string) ([]ContainerType, error)
-	AppsContainersPs(ctx context.Context, app string) ([]Container, error)
-	AppsScale(ctx context.Context, app string, params *AppsScaleParams) (*http.Response, error)
-	AppsForceHTTPS(ctx context.Context, name string, enable bool) (*App, error)
-	AppsStickySession(ctx context.Context, name string, enable bool) (*App, error)
-	AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error)
+	AppsList() ([]*App, error)
+	AppsShow(appName string) (*App, error)
+	AppsDestroy(name string, currentName string) error
+	AppsRename(name string, newName string) (*App, error)
+	AppsTransfer(name string, email string) (*App, error)
+	AppsSetStack(name string, stackID string) (*App, error)
+	AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error)
+	AppsCreate(opts AppsCreateOpts) (*App, error)
+	AppsStats(app string) (*AppStatsRes, error)
+	AppsContainerTypes(app string) ([]ContainerType, error)
+	// Deprecated: Use AppsContainerTypes instead
+	AppsPs(app string) ([]ContainerType, error)
+	AppsContainersPs(app string) ([]Container, error)
+	AppsScale(app string, params *AppsScaleParams) (*http.Response, error)
+	AppsForceHTTPS(name string, enable bool) (*App, error)
+	AppsStickySession(name string, enable bool) (*App, error)
+	AppsRouterLogs(name string, enable bool) (*App, error)
 }
 
 var _ AppsService = (*Client)(nil)
@@ -123,26 +124,26 @@ func (app App) String() string {
 	return app.Name
 }
 
-func (c *Client) AppsList(ctx context.Context) ([]*App, error) {
+func (c *Client) AppsList() ([]*App, error) {
 	appsMap := map[string][]*App{}
 
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps",
 	}
 
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appsMap)
+	err := c.ScalingoAPI().DoRequest(req, &appsMap)
 	if err != nil {
 		return []*App{}, errgo.Mask(err, errgo.Any)
 	}
 	return appsMap["apps"], nil
 }
 
-func (c *Client) AppsShow(ctx context.Context, appName string) (*App, error) {
+func (c *Client) AppsShow(appName string) (*App, error) {
 	var appMap map[string]*App
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + appName,
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appMap)
+	err := c.ScalingoAPI().DoRequest(req, &appMap)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -150,7 +151,7 @@ func (c *Client) AppsShow(ctx context.Context, appName string) (*App, error) {
 	return appMap["app"], nil
 }
 
-func (c *Client) AppsDestroy(ctx context.Context, name string, currentName string) error {
+func (c *Client) AppsDestroy(name string, currentName string) error {
 	req := &httpclient.APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/apps/" + name,
@@ -159,7 +160,7 @@ func (c *Client) AppsDestroy(ctx context.Context, name string, currentName strin
 			"current_name": currentName,
 		},
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
+	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
 		return err
 	}
@@ -167,7 +168,7 @@ func (c *Client) AppsDestroy(ctx context.Context, name string, currentName strin
 	return nil
 }
 
-func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*App, error) {
+func (c *Client) AppsRename(name string, newName string) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
 		Method:   "POST",
@@ -178,7 +179,7 @@ func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*
 			"new_name":     newName,
 		},
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
+	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*
 	return appRes.App, nil
 }
 
-func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*App, error) {
+func (c *Client) AppsTransfer(name string, email string) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
 		Method:   "PATCH",
@@ -198,7 +199,7 @@ func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*
 			},
 		},
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
+	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +207,7 @@ func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*
 	return appRes.App, nil
 }
 
-func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (*App, error) {
+func (c *Client) AppsSetStack(app string, stackID string) (*App, error) {
 	req := &httpclient.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app,
@@ -219,7 +220,7 @@ func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (
 	}
 
 	var appRes AppResponse
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
+	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}
@@ -227,7 +228,7 @@ func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (
 	return appRes.App, nil
 }
 
-func (c *Client) AppsRestart(ctx context.Context, app string, scope *AppsRestartParams) (*http.Response, error) {
+func (c *Client) AppsRestart(app string, scope *AppsRestartParams) (*http.Response, error) {
 	req := &httpclient.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/restart",
@@ -235,10 +236,10 @@ func (c *Client) AppsRestart(ctx context.Context, app string, scope *AppsRestart
 		Params:   scope,
 	}
 
-	return c.ScalingoAPI().Do(ctx, req)
+	return c.ScalingoAPI().Do(req)
 }
 
-func (c *Client) AppsCreate(ctx context.Context, opts AppsCreateOpts) (*App, error) {
+func (c *Client) AppsCreate(opts AppsCreateOpts) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
 		Method:   "POST",
@@ -246,31 +247,36 @@ func (c *Client) AppsCreate(ctx context.Context, opts AppsCreateOpts) (*App, err
 		Expected: httpclient.Statuses{201},
 		Params:   map[string]interface{}{"app": opts},
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
+	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return appRes.App, nil
 }
 
-func (c *Client) AppsStats(ctx context.Context, app string) (*AppStatsRes, error) {
+func (c *Client) AppsStats(app string) (*AppStatsRes, error) {
 	var stats AppStatsRes
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/stats",
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &stats)
+	err := c.ScalingoAPI().DoRequest(req, &stats)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
 	return &stats, nil
 }
 
-func (c *Client) AppsContainersPs(ctx context.Context, app string) ([]Container, error) {
+// Deprecated: Use AppsContainerTypes instead
+func (c *Client) AppsPs(app string) ([]ContainerType, error) {
+	return c.AppsContainerTypes(app)
+}
+
+func (c *Client) AppsContainersPs(app string) ([]Container, error) {
 	var containersRes AppsPsRes
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/ps",
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &containersRes)
+	err := c.ScalingoAPI().DoRequest(req, &containersRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to execute the GET request to list containers")
 	}
@@ -278,12 +284,12 @@ func (c *Client) AppsContainersPs(ctx context.Context, app string) ([]Container,
 	return containersRes.Containers, nil
 }
 
-func (c *Client) AppsContainerTypes(ctx context.Context, app string) ([]ContainerType, error) {
+func (c *Client) AppsContainerTypes(app string) ([]ContainerType, error) {
 	var containerTypesRes AppsContainerTypesRes
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/containers",
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &containerTypesRes)
+	err := c.ScalingoAPI().DoRequest(req, &containerTypesRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to execute the GET request to list container types")
 	}
@@ -291,7 +297,7 @@ func (c *Client) AppsContainerTypes(ctx context.Context, app string) ([]Containe
 	return containerTypesRes.Containers, nil
 }
 
-func (c *Client) AppsScale(ctx context.Context, app string, params *AppsScaleParams) (*http.Response, error) {
+func (c *Client) AppsScale(app string, params *AppsScaleParams) (*http.Response, error) {
 	req := &httpclient.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scale",
@@ -300,28 +306,28 @@ func (c *Client) AppsScale(ctx context.Context, app string, params *AppsScalePar
 		// Otherwise async job is triggered, it's 202
 		Expected: httpclient.Statuses{200, 202},
 	}
-	return c.ScalingoAPI().Do(ctx, req)
+	return c.ScalingoAPI().Do(req)
 }
 
-func (c *Client) AppsForceHTTPS(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+func (c *Client) AppsForceHTTPS(name string, enable bool) (*App, error) {
+	return c.appsUpdate(name, map[string]interface{}{
 		"force_https": enable,
 	})
 }
 
-func (c *Client) AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+func (c *Client) AppsRouterLogs(name string, enable bool) (*App, error) {
+	return c.appsUpdate(name, map[string]interface{}{
 		"router_logs": enable,
 	})
 }
 
-func (c *Client) AppsStickySession(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+func (c *Client) AppsStickySession(name string, enable bool) (*App, error) {
+	return c.appsUpdate(name, map[string]interface{}{
 		"sticky_session": enable,
 	})
 }
 
-func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]interface{}) (*App, error) {
+func (c *Client) appsUpdate(name string, params map[string]interface{}) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
 		Method:   "PUT",
@@ -329,7 +335,7 @@ func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]
 		Expected: httpclient.Statuses{200},
 		Params:   params,
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
+	err := c.ScalingoAPI().DoRequest(req, &appRes)
 	if err != nil {
 		return nil, err
 	}

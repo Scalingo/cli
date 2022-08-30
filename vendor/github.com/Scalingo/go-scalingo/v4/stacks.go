@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -10,28 +9,27 @@ import (
 )
 
 type Stack struct {
-	ID           string    `json:"id"`
-	CreatedAt    time.Time `json:"created_at"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	BaseImage    string    `json:"base_image"`
-	Default      bool      `json:"default"`
-	DeprecatedAt time.Time `json:"deprecated_at"`
+	ID          string    `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	BaseImage   string    `json:"base_image"`
+	Default     bool      `json:"default"`
 }
 
 type StacksService interface {
-	StacksList(ctx context.Context) ([]Stack, error)
+	StacksList() ([]Stack, error)
 }
 
 var _ StacksService = (*Client)(nil)
 
-func (c *Client) StacksList(ctx context.Context) ([]Stack, error) {
+func (c *Client) StacksList() ([]Stack, error) {
 	req := &httpclient.APIRequest{
 		Endpoint: "/features/stacks",
 	}
 
 	resmap := map[string][]Stack{}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &resmap)
+	err := c.ScalingoAPI().DoRequest(req, &resmap)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}

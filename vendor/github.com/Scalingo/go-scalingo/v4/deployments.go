@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -14,12 +13,12 @@ import (
 )
 
 type DeploymentsService interface {
-	DeploymentList(ctx context.Context, app string) ([]*Deployment, error)
-	DeploymentListWithPagination(ctx context.Context, app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error)
-	Deployment(ctx context.Context, app string, deploy string) (*Deployment, error)
-	DeploymentLogs(ctx context.Context, deployURL string) (*http.Response, error)
-	DeploymentStream(ctx context.Context, deployURL string) (*websocket.Conn, error)
-	DeploymentsCreate(ctx context.Context, app string, params *DeploymentsCreateParams) (*Deployment, error)
+	DeploymentList(app string) ([]*Deployment, error)
+	DeploymentListWithPagination(app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error)
+	Deployment(app string, deploy string) (*Deployment, error)
+	DeploymentLogs(deployURL string) (*http.Response, error)
+	DeploymentStream(deployURL string) (*websocket.Conn, error)
+	DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error)
 }
 
 var _ DeploymentsService = (*Client)(nil)
@@ -134,12 +133,12 @@ type AuthStruct struct {
 	Data AuthenticationData `json:"data"`
 }
 
-func (c *Client) DeploymentList(ctx context.Context, app string) ([]*Deployment, error) {
+func (c *Client) DeploymentList(app string) ([]*Deployment, error) {
 	var deployments DeploymentList
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/deployments",
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, &deployments)
+	err := c.ScalingoAPI().DoRequest(req, &deployments)
 	if err != nil {
 		return []*Deployment{}, errgo.Notef(err, "fail to list the deployments")
 	}
@@ -147,9 +146,9 @@ func (c *Client) DeploymentList(ctx context.Context, app string) ([]*Deployment,
 	return deployments.Deployments, nil
 }
 
-func (c *Client) DeploymentListWithPagination(ctx context.Context, app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error) {
+func (c *Client) DeploymentListWithPagination(app string, opts PaginationOpts) ([]*Deployment, PaginationMeta, error) {
 	var deployments DeploymentList
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "deployments", opts.ToMap(), &deployments)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "deployments", opts.ToMap(), &deployments)
 	if err != nil {
 		return []*Deployment{}, PaginationMeta{}, errgo.Notef(err, "fail to list the deployments with pagination")
 	}
@@ -157,20 +156,20 @@ func (c *Client) DeploymentListWithPagination(ctx context.Context, app string, o
 	return deployments.Deployments, deployments.Meta.PaginationMeta, nil
 }
 
-func (c *Client) Deployment(ctx context.Context, app string, deploy string) (*Deployment, error) {
+func (c *Client) Deployment(app string, deploy string) (*Deployment, error) {
 	var deploymentMap map[string]*Deployment
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/deployments/" + deploy,
 	}
 
-	err := c.ScalingoAPI().DoRequest(ctx, req, &deploymentMap)
+	err := c.ScalingoAPI().DoRequest(req, &deploymentMap)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
 	return deploymentMap["deployment"], nil
 }
 
-func (c *Client) DeploymentLogs(ctx context.Context, deployURL string) (*http.Response, error) {
+func (c *Client) DeploymentLogs(deployURL string) (*http.Response, error) {
 	u, err := url.Parse(deployURL)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
@@ -181,12 +180,12 @@ func (c *Client) DeploymentLogs(ctx context.Context, deployURL string) (*http.Re
 		URL:      u.Scheme + "://" + u.Host,
 	}
 
-	return c.ScalingoAPI().Do(ctx, req)
+	return c.ScalingoAPI().Do(req)
 }
 
 // DeploymentStream returns a websocket connection to follow the various deployment events happening on an application. The type of the data sent on this connection is DeployEvent.
-func (c *Client) DeploymentStream(ctx context.Context, deployURL string) (*websocket.Conn, error) {
-	token, err := c.ScalingoAPI().TokenGenerator().GetAccessToken(ctx)
+func (c *Client) DeploymentStream(deployURL string) (*websocket.Conn, error) {
+	token, err := c.ScalingoAPI().TokenGenerator().GetAccessToken()
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to generate token")
 	}
@@ -213,7 +212,7 @@ func (c *Client) DeploymentStream(ctx context.Context, deployURL string) (*webso
 	return conn, nil
 }
 
-func (c *Client) DeploymentsCreate(ctx context.Context, app string, params *DeploymentsCreateParams) (*Deployment, error) {
+func (c *Client) DeploymentsCreate(app string, params *DeploymentsCreateParams) (*Deployment, error) {
 	var response *DeploymentsCreateRes
 	req := &httpclient.APIRequest{
 		Method:   "POST",
@@ -224,7 +223,7 @@ func (c *Client) DeploymentsCreate(ctx context.Context, app string, params *Depl
 		},
 	}
 
-	err := c.ScalingoAPI().DoRequest(ctx, req, &response)
+	err := c.ScalingoAPI().DoRequest(req, &response)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}
@@ -232,13 +231,13 @@ func (c *Client) DeploymentsCreate(ctx context.Context, app string, params *Depl
 	return response.Deployment, nil
 }
 
-func (c *Client) DeploymentCacheReset(ctx context.Context, app string) error {
+func (c *Client) DeploymentCacheReset(app string) error {
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/caches/deployment",
 		Method:   "DELETE",
 		Expected: httpclient.Statuses{204},
 	}
-	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
+	err := c.ScalingoAPI().DoRequest(req, nil)
 	if err != nil {
 		return errgo.Mask(err)
 	}

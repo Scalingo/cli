@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"encoding/json"
 
 	"gopkg.in/errgo.v1"
@@ -11,8 +10,8 @@ import (
 )
 
 type NotificationPlatformsService interface {
-	NotificationPlatformsList(context.Context) ([]*NotificationPlatform, error)
-	NotificationPlatformByName(ctx context.Context, name string) ([]*NotificationPlatform, error)
+	NotificationPlatformsList() ([]*NotificationPlatform, error)
+	NotificationPlatformByName(name string) ([]*NotificationPlatform, error)
 }
 
 var _ NotificationPlatformsService = (*Client)(nil)
@@ -34,12 +33,12 @@ type PlatformsRes struct {
 	NotificationPlatforms []*NotificationPlatform `json:"notification_platforms"`
 }
 
-func (c *Client) NotificationPlatformsList(ctx context.Context) ([]*NotificationPlatform, error) {
+func (c *Client) NotificationPlatformsList() ([]*NotificationPlatform, error) {
 	req := &http.APIRequest{
 		NoAuth:   true,
 		Endpoint: "/notification_platforms",
 	}
-	res, err := c.ScalingoAPI().Do(ctx, req)
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
@@ -54,14 +53,14 @@ func (c *Client) NotificationPlatformsList(ctx context.Context) ([]*Notification
 	return response.NotificationPlatforms, nil
 }
 
-func (c *Client) NotificationPlatformByName(ctx context.Context, name string) ([]*NotificationPlatform, error) {
+func (c *Client) NotificationPlatformByName(name string) ([]*NotificationPlatform, error) {
 	debug.Printf("[NotificationPlatformByName] name: %s", name)
 	req := &http.APIRequest{
 		NoAuth:   true,
 		Endpoint: "/notification_platforms/search",
 		Params:   map[string]string{"name": name},
 	}
-	res, err := c.ScalingoAPI().Do(ctx, req)
+	res, err := c.ScalingoAPI().Do(req)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

@@ -1,14 +1,13 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
 )
 
 type CronTasksService interface {
-	CronTasksGet(ctx context.Context, app string) (CronTasks, error)
+	CronTasksGet(app string) (CronTasks, error)
 }
 
 var _ CronTasksService = (*Client)(nil)
@@ -24,9 +23,9 @@ type CronTasks struct {
 	Jobs []Job `json:"jobs"`
 }
 
-func (c *Client) CronTasksGet(ctx context.Context, app string) (CronTasks, error) {
+func (c *Client) CronTasksGet(app string) (CronTasks, error) {
 	resp := CronTasks{}
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "cron_tasks", nil, &resp)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "cron_tasks", nil, &resp)
 	if err != nil {
 		return CronTasks{}, errgo.Notef(err, "fail to get cron tasks")
 	}

@@ -1,8 +1,6 @@
 package scalingo
 
 import (
-	"context"
-
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v4/http"
@@ -23,13 +21,13 @@ type EventType struct {
 	Template    string `json:"template"`
 }
 
-func (c *Client) EventTypesList(ctx context.Context) ([]EventType, error) {
+func (c *Client) EventTypesList() ([]EventType, error) {
 	req := &http.APIRequest{
 		Endpoint: "/event_types",
 	}
 
 	var res map[string][]EventType
-	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
+	err := c.ScalingoAPI().DoRequest(req, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to make request to Scalingo API")
 	}
@@ -37,13 +35,13 @@ func (c *Client) EventTypesList(ctx context.Context) ([]EventType, error) {
 	return res["event_types"], nil
 }
 
-func (c *Client) EventCategoriesList(ctx context.Context) ([]EventCategory, error) {
+func (c *Client) EventCategoriesList() ([]EventCategory, error) {
 	req := &http.APIRequest{
 		Endpoint: "/event_categories",
 	}
 
 	var res map[string][]EventCategory
-	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
+	err := c.ScalingoAPI().DoRequest(req, &res)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to make request to Scalingo API")
 	}

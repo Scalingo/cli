@@ -1,7 +1,6 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -81,9 +80,9 @@ type DatabaseRes struct {
 	Database Database `json:"database"`
 }
 
-func (c *Client) DatabaseShow(ctx context.Context, app, addonID string) (Database, error) {
+func (c *Client) DatabaseShow(app, addonID string) (Database, error) {
 	var res DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceGet(ctx, "databases", addonID, nil, &res)
+	err := c.DBAPI(app, addonID).ResourceGet("databases", addonID, nil, &res)
 	if err != nil {
 		return Database{}, errgo.Notef(err, "fail to get the database")
 	}
@@ -95,9 +94,9 @@ type PeriodicBackupsConfigParams struct {
 	Enabled     *bool `json:"periodic_backups_enabled,omitempty"`
 }
 
-func (c *Client) PeriodicBackupsConfig(ctx context.Context, app, addonID string, params PeriodicBackupsConfigParams) (Database, error) {
+func (c *Client) PeriodicBackupsConfig(app, addonID string, params PeriodicBackupsConfigParams) (Database, error) {
 	var dbRes DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]PeriodicBackupsConfigParams{
+	err := c.DBAPI(app, addonID).ResourceUpdate("databases", addonID, map[string]PeriodicBackupsConfigParams{
 		"database": params,
 	}, &dbRes)
 	if err != nil {

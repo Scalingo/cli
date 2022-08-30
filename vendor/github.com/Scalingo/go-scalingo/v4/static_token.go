@@ -1,7 +1,5 @@
 package scalingo
 
-import "context"
-
 // StaticTokenGenerator is an implementation of TokenGenerator which always return the same token.
 // This token is provided to the constructor. The TokenGenerator is used by the Client to
 // authenticate to the Scalingo API.
@@ -27,7 +25,7 @@ func NewStaticTokenGenerator(token string) *StaticTokenGenerator {
 }
 
 // GetAccessToken always returns the configured token.
-func (t *StaticTokenGenerator) GetAccessToken(context.Context) (string, error) {
+func (t *StaticTokenGenerator) GetAccessToken() (string, error) {
 	return t.token, nil
 }
 

@@ -1,18 +1,17 @@
 package scalingo
 
 import (
-	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
 )
 
 type AlertsService interface {
-	AlertsList(ctx context.Context, app string) ([]*Alert, error)
-	AlertAdd(ctx context.Context, app string, params AlertAddParams) (*Alert, error)
-	AlertShow(ctx context.Context, app, id string) (*Alert, error)
-	AlertUpdate(ctx context.Context, app, id string, params AlertUpdateParams) (*Alert, error)
-	AlertRemove(ctx context.Context, app, id string) error
+	AlertsList(app string) ([]*Alert, error)
+	AlertAdd(app string, params AlertAddParams) (*Alert, error)
+	AlertShow(app, id string) (*Alert, error)
+	AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, error)
+	AlertRemove(app, id string) error
 }
 
 var _ AlertsService = (*Client)(nil)
@@ -37,9 +36,9 @@ type AlertRes struct {
 	Alert *Alert `json:"alert"`
 }
 
-func (c *Client) AlertsList(ctx context.Context, app string) ([]*Alert, error) {
+func (c *Client) AlertsList(app string) ([]*Alert, error) {
 	var alertsRes AlertsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "alerts", nil, &alertsRes)
+	err := c.ScalingoAPI().SubresourceList("apps", app, "alerts", nil, &alertsRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to query the API to list an alert")
 	}
@@ -56,7 +55,7 @@ type AlertAddParams struct {
 	Notifiers             []string
 }
 
-func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams) (*Alert, error) {
+func (c *Client) AlertAdd(app string, params AlertAddParams) (*Alert, error) {
 	var alertRes AlertRes
 	a := &Alert{
 		ContainerType: params.ContainerType,
@@ -70,7 +69,7 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 	if params.DurationBeforeTrigger != nil {
 		a.DurationBeforeTrigger = *params.DurationBeforeTrigger
 	}
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "alerts", AlertRes{
+	err := c.ScalingoAPI().SubresourceAdd("apps", app, "alerts", AlertRes{
 		Alert: a,
 	}, &alertRes)
 	if err != nil {
@@ -79,9 +78,9 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 	return alertRes.Alert, nil
 }
 
-func (c *Client) AlertShow(ctx context.Context, app, id string) (*Alert, error) {
+func (c *Client) AlertShow(app, id string) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "alerts", id, nil, &alertRes)
+	err := c.ScalingoAPI().SubresourceGet("apps", app, "alerts", id, nil, &alertRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to query the API to show an alert")
 	}
@@ -99,17 +98,17 @@ type AlertUpdateParams struct {
 	Notifiers             *[]string      `json:"notifiers,omitempty"`
 }
 
-func (c *Client) AlertUpdate(ctx context.Context, app, id string, params AlertUpdateParams) (*Alert, error) {
+func (c *Client) AlertUpdate(app, id string, params AlertUpdateParams) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "alerts", id, params, &alertRes)
+	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "alerts", id, params, &alertRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to query the API to update an alert")
 	}
 	return alertRes.Alert, nil
 }
 
-func (c *Client) AlertRemove(ctx context.Context, app, id string) error {
-	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "alerts", id)
+func (c *Client) AlertRemove(app, id string) error {
+	err := c.ScalingoAPI().SubresourceDelete("apps", app, "alerts", id)
 	if err != nil {
 		return errgo.Notef(err, "fail to query the API to remove an alert")
 	}

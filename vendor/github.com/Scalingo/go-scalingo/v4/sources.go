@@ -1,13 +1,9 @@
 package scalingo
 
-import (
-	"context"
-
-	"gopkg.in/errgo.v1"
-)
+import "gopkg.in/errgo.v1"
 
 type SourcesService interface {
-	SourcesCreate(context.Context) (*Source, error)
+	SourcesCreate() (*Source, error)
 }
 
 var _ SourcesService = (*Client)(nil)
@@ -21,9 +17,9 @@ type Source struct {
 	UploadURL   string `json:"upload_url"`
 }
 
-func (c *Client) SourcesCreate(ctx context.Context) (*Source, error) {
+func (c *Client) SourcesCreate() (*Source, error) {
 	var sourceRes SourcesCreateResponse
-	err := c.ScalingoAPI().ResourceAdd(ctx, "sources", nil, &sourceRes)
+	err := c.ScalingoAPI().ResourceAdd("sources", nil, &sourceRes)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

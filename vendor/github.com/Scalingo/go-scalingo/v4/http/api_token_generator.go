@@ -1,7 +1,6 @@
 package http
 
 import (
-	"context"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -9,7 +8,7 @@ import (
 )
 
 type TokensService interface {
-	TokenExchange(ctx context.Context, token string) (string, error)
+	TokenExchange(token string) (string, error)
 }
 
 type APITokenGenerator struct {
@@ -32,10 +31,10 @@ func NewAPITokenGenerator(tokensService TokensService, apiToken string) *APIToke
 	}
 }
 
-func (t *APITokenGenerator) GetAccessToken(ctx context.Context) (string, error) {
+func (t *APITokenGenerator) GetAccessToken() (string, error) {
 	// Ask for a new JWT if there wasn't any or if the current token will expire in less than 5 minutes
 	if t.currentJWTexp.IsZero() || t.currentJWTexp.Sub(time.Now()) < 5*time.Minute {
-		jwtToken, err := t.TokensService.TokenExchange(ctx, t.APIToken)
+		jwtToken, err := t.TokensService.TokenExchange(t.APIToken)
 		if err != nil {
 			return "", errgo.Notef(err, "fail to get access token")
 		}
