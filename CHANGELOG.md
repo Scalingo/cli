@@ -2,7 +2,8 @@
 
 ### To be Released
 
-* chore(deps): Upgrade urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
+* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
+* chore(deps): Upgrade github.com/urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
   Caution: scalingo commands must come before any flag or argument. For example
   `scalingo --app hello-world restart` must be rewritten `scalingo restart --app hello-world`
 
