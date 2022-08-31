@@ -48,7 +48,7 @@ func List(ctx context.Context, withDeprecated bool) error {
 			}
 
 			t.Append([]string{stack.ID, stack.Name, stack.Description, defaultText, deprecatedText, deprecationDate})
-		} else {
+		} else if !stack.IsDeprecated() {
 			t.Append([]string{stack.ID, stack.Name, stack.Description, defaultText})
 		}
 	}
