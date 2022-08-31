@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"crypto/tls"
 	"time"
 
@@ -74,7 +75,7 @@ type ClientConfig struct {
 	StaticTokenGenerator *StaticTokenGenerator
 }
 
-func New(cfg ClientConfig) (*Client, error) {
+func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
 	// Apply defaults
 	if cfg.AuthEndpoint == "" {
 		cfg.AuthEndpoint = "https://auth.scalingo.com"
@@ -96,7 +97,7 @@ func New(cfg ClientConfig) (*Client, error) {
 		config: cfg,
 	}
 
-	region, err := tmpClient.getRegion(cfg.Region)
+	region, err := tmpClient.getRegion(ctx, cfg.Region)
 	if err == ErrRegionNotFound {
 		return nil, err
 	} else if err != nil {

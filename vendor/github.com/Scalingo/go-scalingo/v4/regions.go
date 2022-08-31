@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"sync"
 
 	"gopkg.in/errgo.v1"
@@ -16,7 +17,7 @@ var (
 )
 
 type RegionsService interface {
-	RegionsList() ([]Region, error)
+	RegionsList(context.Context) ([]Region, error)
 }
 
 type Region struct {
@@ -33,9 +34,9 @@ type regionsRes struct {
 	Regions []Region `json:"regions"`
 }
 
-func (c *Client) RegionsList() ([]Region, error) {
+func (c *Client) RegionsList(ctx context.Context) ([]Region, error) {
 	var res regionsRes
-	err := c.AuthAPI().DoRequest(&http.APIRequest{
+	err := c.AuthAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/regions",
 	}, &res)
@@ -45,12 +46,12 @@ func (c *Client) RegionsList() ([]Region, error) {
 	return res.Regions, nil
 }
 
-func (c *Client) getRegion(regionName string) (Region, error) {
+func (c *Client) getRegion(ctx context.Context, regionName string) (Region, error) {
 	regionCacheMutex.Lock()
 	defer regionCacheMutex.Unlock()
 
 	if _, ok := regionCache[regionName]; !ok {
-		regions, err := c.RegionsList()
+		regions, err := c.RegionsList(ctx)
 		if err != nil {
 			return Region{}, errgo.Notef(err, "fail to list regions")
 		}

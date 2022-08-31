@@ -1,5 +1,7 @@
 package http
 
+import "context"
+
 type TokenGenerator interface {
-	GetAccessToken() (string, error)
+	GetAccessToken(context.Context) (string, error)
 }

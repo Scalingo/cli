@@ -64,62 +64,70 @@ type EventUser struct {
 type EventTypeName string
 
 const (
-	EventNewUser              EventTypeName = "new_user"
-	EventNewApp               EventTypeName = "new_app"
-	EventEditApp              EventTypeName = "edit_app"
-	EventDeleteApp            EventTypeName = "delete_app"
-	EventRenameApp            EventTypeName = "rename_app"
-	EventTransferApp          EventTypeName = "transfer_app"
-	EventRestart              EventTypeName = "restart"
-	EventScale                EventTypeName = "scale"
-	EventStopApp              EventTypeName = "stop_app"
-	EventCrash                EventTypeName = "crash"
-	EventRepeatedCrash        EventTypeName = "repeated_crash"
-	EventDeployment           EventTypeName = "deployment"
-	EventLinkSCM              EventTypeName = "link_scm"
-	EventUnlinkSCM            EventTypeName = "unlink_scm"
-	EventNewIntegration       EventTypeName = "new_integration"
-	EventDeleteIntegration    EventTypeName = "delete_integration"
-	EventAuthorizeGithub      EventTypeName = "authorize_github"
-	EventRevokeGithub         EventTypeName = "revoke_github"
-	EventRun                  EventTypeName = "run"
-	EventNewDomain            EventTypeName = "new_domain"
-	EventEditDomain           EventTypeName = "edit_domain"
-	EventDeleteDomain         EventTypeName = "delete_domain"
-	EventNewAddon             EventTypeName = "new_addon"
-	EventUpgradeAddon         EventTypeName = "upgrade_addon"
-	EventUpgradeDatabase      EventTypeName = "upgrade_database"
-	EventDeleteAddon          EventTypeName = "delete_addon"
-	EventResumeAddon          EventTypeName = "resume_addon"
-	EventSuspendAddon         EventTypeName = "suspend_addon"
-	EventNewCollaborator      EventTypeName = "new_collaborator"
-	EventAcceptCollaborator   EventTypeName = "accept_collaborator"
-	EventDeleteCollaborator   EventTypeName = "delete_collaborator"
-	EventNewVariable          EventTypeName = "new_variable"
-	EventEditVariable         EventTypeName = "edit_variable"
-	EventEditVariables        EventTypeName = "edit_variables"
-	EventDeleteVariable       EventTypeName = "delete_variable"
-	EventAddCredit            EventTypeName = "add_credit"
-	EventAddPaymentMethod     EventTypeName = "add_payment_method"
-	EventAddVoucher           EventTypeName = "add_voucher"
-	EventNewKey               EventTypeName = "new_key"
-	EventDeleteKey            EventTypeName = "delete_key"
-	EventPaymentAttempt       EventTypeName = "payment_attempt"
-	EventNewAlert             EventTypeName = "new_alert"
-	EventAlert                EventTypeName = "alert"
-	EventDeleteAlert          EventTypeName = "delete_alert"
-	EventNewAutoscaler        EventTypeName = "new_autoscaler"
-	EventEditAutoscaler       EventTypeName = "edit_autoscaler"
-	EventDeleteAutoscaler     EventTypeName = "delete_autoscaler"
-	EventAddonUpdated         EventTypeName = "addon_updated"
-	EventStartRegionMigration EventTypeName = "start_region_migration"
-	EventNewLogDrain          EventTypeName = "new_log_drain"
-	EventDeleteLogDrain       EventTypeName = "delete_log_drain"
-	EventNewAddonLogDrain     EventTypeName = "new_addon_log_drain"
-	EventDeleteAddonLogDrain  EventTypeName = "delete_addon_log_drain"
-	EventNewNotifier          EventTypeName = "new_notifier"
-	EventEditNotifier         EventTypeName = "edit_notifier"
-	EventDeleteNotifier       EventTypeName = "delete_notifier"
+	EventNewUser                 EventTypeName = "new_user"
+	EventNewApp                  EventTypeName = "new_app"
+	EventEditApp                 EventTypeName = "edit_app"
+	EventDeleteApp               EventTypeName = "delete_app"
+	EventRenameApp               EventTypeName = "rename_app"
+	EventTransferApp             EventTypeName = "transfer_app"
+	EventRestart                 EventTypeName = "restart"
+	EventScale                   EventTypeName = "scale"
+	EventStopApp                 EventTypeName = "stop_app"
+	EventCrash                   EventTypeName = "crash"
+	EventRepeatedCrash           EventTypeName = "repeated_crash"
+	EventDeployment              EventTypeName = "deployment"
+	EventLinkSCM                 EventTypeName = "link_scm"
+	EventUnlinkSCM               EventTypeName = "unlink_scm"
+	EventNewIntegration          EventTypeName = "new_integration"
+	EventDeleteIntegration       EventTypeName = "delete_integration"
+	EventAuthorizeGithub         EventTypeName = "authorize_github"
+	EventRevokeGithub            EventTypeName = "revoke_github"
+	EventRun                     EventTypeName = "run"
+	EventNewDomain               EventTypeName = "new_domain"
+	EventEditDomain              EventTypeName = "edit_domain"
+	EventDeleteDomain            EventTypeName = "delete_domain"
+	EventUpgradeDatabase         EventTypeName = "upgrade_database"
+	EventNewAddon                EventTypeName = "new_addon"
+	EventUpgradeAddon            EventTypeName = "upgrade_addon"
+	EventDeleteAddon             EventTypeName = "delete_addon"
+	EventResumeAddon             EventTypeName = "resume_addon"
+	EventSuspendAddon            EventTypeName = "suspend_addon"
+	EventNewCollaborator         EventTypeName = "new_collaborator"
+	EventAcceptCollaborator      EventTypeName = "accept_collaborator"
+	EventDeleteCollaborator      EventTypeName = "delete_collaborator"
+	EventNewVariable             EventTypeName = "new_variable"
+	EventEditVariable            EventTypeName = "edit_variable"
+	EventEditVariables           EventTypeName = "edit_variables"
+	EventDeleteVariable          EventTypeName = "delete_variable"
+	EventAddCredit               EventTypeName = "add_credit"
+	EventAddPaymentMethod        EventTypeName = "add_payment_method"
+	EventAddVoucher              EventTypeName = "add_voucher"
+	EventNewKey                  EventTypeName = "new_key"
+	EventEditKey                 EventTypeName = "edit_key"
+	EventDeleteKey               EventTypeName = "delete_key"
+	EventPaymentAttempt          EventTypeName = "payment_attempt"
+	EventNewAlert                EventTypeName = "new_alert"
+	EventAlert                   EventTypeName = "alert"
+	EventDeleteAlert             EventTypeName = "delete_alert"
+	EventNewAutoscaler           EventTypeName = "new_autoscaler"
+	EventEditAutoscaler          EventTypeName = "edit_autoscaler"
+	EventDeleteAutoscaler        EventTypeName = "delete_autoscaler"
+	EventAddonUpdated            EventTypeName = "addon_updated"
+	EventStartRegionMigration    EventTypeName = "start_region_migration"
+	EventNewLogDrain             EventTypeName = "new_log_drain"
+	EventDeleteLogDrain          EventTypeName = "delete_log_drain"
+	EventNewAddonLogDrain        EventTypeName = "new_addon_log_drain"
+	EventDeleteAddonLogDrain     EventTypeName = "delete_addon_log_drain"
+	EventNewNotifier             EventTypeName = "new_notifier"
+	EventEditNotifier            EventTypeName = "edit_notifier"
+	EventDeleteNotifier          EventTypeName = "delete_notifier"
+	EventEditHDSContact          EventTypeName = "edit_hds_contact"
+	EventCreateDataAccessConsent EventTypeName = "create_data_access_consent"
+	EventNewToken                EventTypeName = "new_token"
+	EventRegenerateToken         EventTypeName = "regenerate_token"
+	EventDeleteToken             EventTypeName = "delete_token"
+	EventTfaEnabled              EventTypeName = "tfa_enabled"
+	EventTfaDisabled             EventTypeName = "tfa_disabled"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -137,206 +145,6 @@ func (ev *EventNewUserType) String() string {
 }
 
 type EventNewUserTypeData struct {
-}
-
-type EventNewAppType struct {
-	Event
-	TypeData EventNewAppTypeData `json:"type_data"`
-}
-
-func (ev *EventNewAppType) String() string {
-	return fmt.Sprintf("the application has been created")
-}
-
-type EventNewAppTypeData struct {
-	GitSource string `json:"git_source"`
-}
-
-type EventEditAppType struct {
-	Event
-	TypeData EventEditAppTypeData `json:"type_data"`
-}
-
-type EventEditAppTypeData struct {
-	ForceHTTPS *bool `json:"force_https"`
-}
-
-func (ev *EventEditAppType) String() string {
-	base := "application settings have been updated"
-	if ev.TypeData.ForceHTTPS != nil {
-		if *ev.TypeData.ForceHTTPS {
-			base += ", Force HTTPS has been enabled"
-		} else {
-			base += ", Force HTTPS has been disabled"
-		}
-	}
-	return base
-}
-
-type EventDeleteAppType struct {
-	Event
-}
-
-func (ev *EventDeleteAppType) String() string {
-	return fmt.Sprintf("the application has been deleted")
-}
-
-type EventRenameAppType struct {
-	Event
-	TypeData EventRenameAppTypeData `json:"type_data"`
-}
-
-func (ev *EventRenameAppType) String() string {
-	return fmt.Sprintf(
-		"the application has been renamed from '%s' to '%s'",
-		ev.TypeData.OldName, ev.TypeData.NewName,
-	)
-}
-
-type EventRenameAppTypeData struct {
-	OldName string `json:"old_name"`
-	NewName string `json:"new_name"`
-}
-
-type EventTransferAppType struct {
-	Event
-	TypeData EventTransferAppTypeData `json:"type_data"`
-}
-
-func (ev *EventTransferAppType) String() string {
-	return fmt.Sprintf(
-		"the application has been transferred to %s (%s)",
-		ev.TypeData.NewOwner.Username, ev.TypeData.NewOwner.Email,
-	)
-}
-
-type EventTransferAppTypeData struct {
-	OldOwner EventUser `json:"old_owner"`
-	NewOwner EventUser `json:"new_owner"`
-}
-
-type EventRestartType struct {
-	Event
-	TypeData EventRestartTypeData `json:"type_data"`
-}
-
-func (ev *EventRestartType) String() string {
-	if len(ev.TypeData.Scope) != 0 {
-		return fmt.Sprintf("containers %v have been restarted", ev.TypeData.Scope)
-	}
-	return fmt.Sprintf("containers have been restarted")
-}
-
-func (ev *EventRestartType) Who() string {
-	if ev.TypeData.AddonName != "" {
-		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
-	} else {
-		return ev.Event.Who()
-	}
-}
-
-type EventRestartTypeData struct {
-	Scope     []string `json:"scope"`
-	AddonName string   `json:"addon_name"`
-}
-
-type EventStopAppType struct {
-	Event
-	TypeData EventStopAppTypeData `json:"type_data"`
-}
-
-func (ev *EventStopAppType) String() string {
-	return fmt.Sprintf("app has been stopped (reason: %s)", ev.TypeData.Reason)
-}
-
-type EventStopAppTypeData struct {
-	Reason string `json:"reason"`
-}
-
-func (ev *EventScaleType) String() string {
-	return fmt.Sprintf(
-		"containers have been scaled from %s, to %s",
-		ev.TypeData.containersString(ev.TypeData.PreviousContainers),
-		ev.TypeData.containersString(ev.TypeData.Containers),
-	)
-}
-
-type EventScaleType struct {
-	Event
-	TypeData EventScaleTypeData `json:"type_data"`
-}
-
-type EventScaleTypeData struct {
-	PreviousContainers map[string]string `json:"previous_containers"`
-	Containers         map[string]string `json:"containers"`
-}
-
-func (e *EventScaleTypeData) containersString(containers map[string]string) string {
-	types := []string{}
-	for name, amountAndSize := range containers {
-		types = append(types, fmt.Sprintf("%s:%s", name, amountAndSize))
-	}
-	return "[" + strings.Join(types, ", ") + "]"
-}
-
-type EventCrashType struct {
-	Event
-	TypeData EventCrashTypeData `json:"type_data"`
-}
-
-func (ev *EventCrashType) String() string {
-	msg := fmt.Sprintf("container '%v' has crashed", ev.TypeData.ContainerType)
-
-	if ev.TypeData.CrashLogs != "" {
-		msg += fmt.Sprintf(" (logs on %s)", ev.TypeData.LogsUrl)
-	}
-
-	return msg
-}
-
-type EventCrashTypeData struct {
-	ContainerType string `json:"container_type"`
-	CrashLogs     string `json:"crash_logs"`
-	LogsUrl       string `json:"logs_url"`
-}
-
-type EventRepeatedCrashType struct {
-	Event
-	TypeData EventRepeatedCrashTypeData `json:"type_data"`
-}
-
-func (ev *EventRepeatedCrashType) String() string {
-	msg := fmt.Sprintf("container '%v' has crashed repeatedly", ev.TypeData.ContainerType)
-
-	if ev.TypeData.CrashLogs != "" {
-		msg += fmt.Sprintf(" (logs on %s)", ev.TypeData.LogsUrl)
-	}
-
-	return msg
-}
-
-type EventRepeatedCrashTypeData struct {
-	ContainerType string `json:"container_type"`
-	CrashLogs     string `json:"crash_logs"`
-	LogsUrl       string `json:"logs_url"`
-}
-
-type EventDeploymentType struct {
-	Event
-	TypeData EventDeploymentTypeData `json:"type_data"`
-}
-
-func (ev *EventDeploymentType) String() string {
-	return fmt.Sprintf("deployment of %s (%s)", ev.TypeData.GitRef, ev.TypeData.Status)
-}
-
-type EventDeploymentTypeData struct {
-	DeploymentID   string `json:"deployment_id"`
-	Pusher         string `json:"pusher"`
-	GitRef         string `json:"git_ref"`
-	Status         string `json:"status"`
-	Duration       int    `json:"duration"`
-	DeploymentUUID string `json:"deployment_uuid"`
 }
 
 type EventLinkGithubType struct {
@@ -462,95 +270,6 @@ func (ev *EventDeleteDomainType) String() string {
 
 type EventDeleteDomainTypeData struct {
 	Hostname string `json:"hostname"`
-}
-
-type EventAddon struct {
-	AddonProviderName string `json:"addon_provider_name"`
-	PlanName          string `json:"plan_name"`
-	ResourceID        string `json:"resource_id"`
-}
-
-type EventNewAddonType struct {
-	Event
-	TypeData EventNewAddonTypeData `json:"type_data"`
-}
-
-func (ev *EventNewAddonType) String() string {
-	return fmt.Sprintf(
-		"'%s' (%s) has been added (plan '%s')",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.PlanName,
-	)
-}
-
-type EventNewAddonTypeData struct {
-	EventAddon
-}
-
-type EventUpgradeAddonType struct {
-	Event
-	TypeData EventUpgradeAddonTypeData `json:"type_data"`
-}
-
-func (ev *EventUpgradeAddonType) String() string {
-	return fmt.Sprintf(
-		"'%s' (%s) plan has been changed from '%s' to '%s'",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.OldPlanName, ev.TypeData.NewPlanName,
-	)
-}
-
-type EventUpgradeAddonTypeData struct {
-	EventAddon
-	OldPlanName string `json:"old_plan_name"`
-	NewPlanName string `json:"new_plan_name"`
-}
-
-type EventDeleteAddonType struct {
-	Event
-	TypeData EventDeleteAddonTypeData `json:"type_data"`
-}
-
-func (ev *EventDeleteAddonType) String() string {
-	return fmt.Sprintf(
-		"'%s' (%s) plan has been deleted",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName,
-	)
-}
-
-type EventResumeAddonType struct {
-	Event
-	TypeData EventResumeAddonTypeData `json:"type_data"`
-}
-
-func (ev *EventResumeAddonType) String() string {
-	return fmt.Sprintf(
-		"'%s' (%s) has been resumed",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName,
-	)
-}
-
-type EventResumeAddonTypeData struct {
-	EventAddon
-}
-
-type EventSuspendAddonType struct {
-	Event
-	TypeData EventSuspendAddonTypeData `json:"type_data"`
-}
-
-func (ev *EventSuspendAddonType) String() string {
-	return fmt.Sprintf(
-		"'%s' (%s) has been suspended (reason: %s)",
-		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.Reason,
-	)
-}
-
-type EventSuspendAddonTypeData struct {
-	EventAddon
-	Reason string `json:"reason"`
-}
-
-type EventDeleteAddonTypeData struct {
-	EventAddon
 }
 
 type EventCollaborator struct {
@@ -886,32 +605,6 @@ func (ev *EventDeleteAutoscalerType) String() string {
 	return fmt.Sprintf("Alert deleted about %s on container %s", d.Metric, d.ContainerType)
 }
 
-type EventAddonUpdatedTypeData struct {
-	AddonID           string `json:"addon_id"`
-	AddonPlanName     string `json:"addon_plan_name"`
-	AddonResourceID   string `json:"addon_resource_id"`
-	AddonProviderID   string `json:"addon_provider_id"`
-	AddonProviderName string `json:"addon_provider_name"`
-
-	// Status has only two items when is updated, the old value and the new value, in this order
-	Status []AddonStatus `json:"status"`
-	// AttributesChanged contain names of changed attributes
-	AttributesChanged []string `json:"attributes_changed"`
-}
-
-type EventAddonUpdatedType struct {
-	Event
-	TypeData EventAddonUpdatedTypeData `json:"type_data"`
-}
-
-func (ev *EventAddonUpdatedType) String() string {
-	d := ev.TypeData
-	return fmt.Sprintf(
-		"Addon %s %s updated, status %v -> %v",
-		d.AddonProviderName, d.AddonResourceID, d.Status[0], d.Status[1],
-	)
-}
-
 type EventStartRegionMigrationTypeData struct {
 	MigrationID string `json:"migration_id"`
 	Destination string `json:"destination"`
@@ -1062,6 +755,82 @@ func (ev *EventDeleteNotifierType) String() string {
 	return fmt.Sprintf("Notifier '%s' deleted on %s app", d.NotifierName, ev.AppName)
 }
 
+// Edit hds_contact
+type EventEditHDSContactTypeData struct {
+	Name           string `json:"name"`
+	Email          string `json:"email"`
+	PhoneNumber    string `json:"phone_number"`
+	Company        string `json:"company"`
+	AddressLine1   string `json:"address_line1"`
+	AddressLine2   string `json:"address_line2"`
+	AddressCity    string `json:"address_city"`
+	AddressZip     string `json:"address_zip"`
+	AddressCountry string `json:"address_country"`
+	Notes          string `json:"notes"`
+}
+
+type EventEditHDSContactType struct {
+	Event
+	TypeData EventEditHDSContactTypeData `json:"type_data"`
+}
+
+func (ev *EventEditHDSContactType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Contact health Professional '%s' edited on %s app", d.Name, ev.AppName)
+}
+
+// Create data_access_consent
+type EventCreateDataAccessConsentTypeData struct {
+	EndAt      time.Time `json:"end_at"`
+	Databases  bool      `json:"databases"`
+	Containers bool      `json:"containers"`
+}
+
+type EventCreateDataAccessConsentType struct {
+	Event
+	TypeData EventCreateDataAccessConsentTypeData `json:"type_data"`
+}
+
+func (ev *EventCreateDataAccessConsentType) String() string {
+	d := ev.TypeData
+	res := "Additional access "
+	if d.Containers {
+		res += "to application runtime environment, "
+	}
+	if d.Databases {
+		res += "to databases metadata and monitoring data, "
+	}
+	res += fmt.Sprintf("created on %s app", ev.AppName)
+	return res
+}
+
+// Enable Tfa
+type EventTfaEnabledTypeData struct {
+	Provider string `json:"provider"`
+}
+
+type EventTfaEnabledType struct {
+	Event
+	TypeData EventTfaEnabledTypeData `json:"type_data"`
+}
+
+func (ev *EventTfaEnabledType) String() string {
+	return fmt.Sprintf("Two factor authentication enabled by %s", ev.TypeData.Provider)
+}
+
+// Disable Tfa
+type EventTfaDisabledTypeData struct {
+}
+
+type EventTfaDisabledType struct {
+	Event
+	TypeData EventTfaDisabledTypeData `json:"type_data"`
+}
+
+func (ev *EventTfaDisabledType) String() string {
+	return "Two factor authentication disabled"
+}
+
 func (pev *Event) Specialize() DetailedEvent {
 	var e DetailedEvent
 	ev := *pev
@@ -1108,12 +877,12 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventEditDomainType{Event: ev}
 	case EventDeleteDomain:
 		e = &EventDeleteDomainType{Event: ev}
+	case EventUpgradeDatabase:
+		e = &EventUpgradeDatabaseType{Event: ev}
 	case EventNewAddon:
 		e = &EventNewAddonType{Event: ev}
 	case EventUpgradeAddon:
 		e = &EventUpgradeAddonType{Event: ev}
-	case EventUpgradeDatabase:
-		e = &EventUpgradeDatabaseType{Event: ev}
 	case EventDeleteAddon:
 		e = &EventDeleteAddonType{Event: ev}
 	case EventResumeAddon:
@@ -1142,6 +911,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventAddVoucherType{Event: ev}
 	case EventNewKey:
 		e = &EventNewKeyType{Event: ev}
+	case EventEditKey:
+		e = &EventEditKeyType{Event: ev}
 	case EventDeleteKey:
 		e = &EventDeleteKeyType{Event: ev}
 	case EventPaymentAttempt:
@@ -1176,6 +947,20 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventEditNotifierType{Event: ev}
 	case EventDeleteNotifier:
 		e = &EventDeleteNotifierType{Event: ev}
+	case EventEditHDSContact:
+		e = &EventEditHDSContactType{Event: ev}
+	case EventCreateDataAccessConsent:
+		e = &EventCreateDataAccessConsentType{Event: ev}
+	case EventNewToken:
+		e = &EventNewTokenType{Event: ev}
+	case EventRegenerateToken:
+		e = &EventRegenerateTokenType{Event: ev}
+	case EventDeleteToken:
+		e = &EventDeleteTokenType{Event: ev}
+	case EventTfaEnabled:
+		e = &EventTfaEnabledType{Event: ev}
+	case EventTfaDisabled:
+		e = &EventTfaDisabledType{Event: ev}
 	// Deprecated events. Replaced by equivalent with SCM in the name instead of
 	// Github
 	case EventLinkGithub:

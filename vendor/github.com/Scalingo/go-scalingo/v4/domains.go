@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -8,14 +9,14 @@ import (
 )
 
 type DomainsService interface {
-	DomainsList(app string) ([]Domain, error)
-	DomainsAdd(app string, d Domain) (Domain, error)
-	DomainsRemove(app string, id string) error
-	DomainsUpdate(app, id, cert, key string) (Domain, error)
-	DomainSetCanonical(app, id string) (Domain, error)
-	DomainUnsetCanonical(app string) (Domain, error)
-	DomainSetCertificate(app, id, tlsCert, tlsKey string) (Domain, error)
-	DomainUnsetCertificate(app, id string) (Domain, error)
+	DomainsList(ctx context.Context, app string) ([]Domain, error)
+	DomainsAdd(ctx context.Context, app string, d Domain) (Domain, error)
+	DomainsRemove(ctx context.Context, app string, id string) error
+	DomainsUpdate(ctx context.Context, app, id, cert, key string) (Domain, error)
+	DomainSetCanonical(ctx context.Context, app, id string) (Domain, error)
+	DomainUnsetCanonical(ctx context.Context, app string) (Domain, error)
+	DomainSetCertificate(ctx context.Context, app, id, tlsCert, tlsKey string) (Domain, error)
+	DomainUnsetCertificate(ctx context.Context, app, id string) (Domain, error)
 }
 
 var _ DomainsService = (*Client)(nil)
@@ -75,37 +76,37 @@ type DomainRes struct {
 	Domain Domain `json:"domain"`
 }
 
-func (c *Client) DomainsList(app string) ([]Domain, error) {
+func (c *Client) DomainsList(ctx context.Context, app string) ([]Domain, error) {
 	var domainRes DomainsRes
-	err := c.ScalingoAPI().SubresourceList("apps", app, "domains", nil, &domainRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "domains", nil, &domainRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to list the domains")
 	}
 	return domainRes.Domains, nil
 }
 
-func (c *Client) DomainsAdd(app string, d Domain) (Domain, error) {
+func (c *Client) DomainsAdd(ctx context.Context, app string, d Domain) (Domain, error) {
 	var domainRes DomainRes
-	err := c.ScalingoAPI().SubresourceAdd("apps", app, "domains", DomainRes{d}, &domainRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "domains", DomainRes{d}, &domainRes)
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to add a domain")
 	}
 	return domainRes.Domain, nil
 }
 
-func (c *Client) DomainsRemove(app, id string) error {
-	return c.ScalingoAPI().SubresourceDelete("apps", app, "domains", id)
+func (c *Client) DomainsRemove(ctx context.Context, app, id string) error {
+	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "domains", id)
 }
 
 // Deprecated: use DomainsSetCanonical, DomainUnsetCanonical, DomainSetCertificate or DomainUnsetCertificate
-func (c *Client) DomainsUpdate(app, id, tlsCert, tlsKey string) (Domain, error) {
-	return c.domainsUpdate(app, id, Domain{TLSCert: tlsCert, TLSKey: tlsKey})
+func (c *Client) DomainsUpdate(ctx context.Context, app, id, tlsCert, tlsKey string) (Domain, error) {
+	return c.domainsUpdate(ctx, app, id, Domain{TLSCert: tlsCert, TLSKey: tlsKey})
 }
 
-func (c *Client) DomainsShow(app, id string) (Domain, error) {
+func (c *Client) DomainsShow(ctx context.Context, app, id string) (Domain, error) {
 	var domainRes DomainRes
 
-	err := c.ScalingoAPI().SubresourceGet("apps", app, "domains", id, nil, &domainRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "domains", id, nil, &domainRes)
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to show the domain")
 	}
@@ -113,27 +114,27 @@ func (c *Client) DomainsShow(app, id string) (Domain, error) {
 	return domainRes.Domain, nil
 }
 
-func (c *Client) domainsUpdate(app, id string, domain Domain) (Domain, error) {
+func (c *Client) domainsUpdate(ctx context.Context, app, id string, domain Domain) (Domain, error) {
 	var domainRes DomainRes
-	err := c.ScalingoAPI().SubresourceUpdate("apps", app, "domains", id, DomainRes{Domain: domain}, &domainRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "domains", id, DomainRes{Domain: domain}, &domainRes)
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to update the domain")
 	}
 	return domainRes.Domain, nil
 }
 
-func (c *Client) DomainSetCertificate(app, id, tlsCert, tlsKey string) (Domain, error) {
-	domain, err := c.domainsUpdate(app, id, Domain{TLSCert: tlsCert, TLSKey: tlsKey})
+func (c *Client) DomainSetCertificate(ctx context.Context, app, id, tlsCert, tlsKey string) (Domain, error) {
+	domain, err := c.domainsUpdate(ctx, app, id, Domain{TLSCert: tlsCert, TLSKey: tlsKey})
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to set the domain certificate")
 	}
 	return domain, nil
 }
 
-func (c *Client) DomainUnsetCertificate(app, id string) (Domain, error) {
+func (c *Client) DomainUnsetCertificate(ctx context.Context, app, id string) (Domain, error) {
 	var domainRes DomainRes
 	err := c.ScalingoAPI().SubresourceUpdate(
-		"apps", app, "domains", id, map[string]domainUnsetCertificateParams{
+		ctx, "apps", app, "domains", id, map[string]domainUnsetCertificateParams{
 			"domain": {TLSCert: "", TLSKey: ""},
 		}, &domainRes,
 	)
@@ -143,23 +144,23 @@ func (c *Client) DomainUnsetCertificate(app, id string) (Domain, error) {
 	return domainRes.Domain, nil
 }
 
-func (c *Client) DomainSetCanonical(app, id string) (Domain, error) {
-	domain, err := c.domainsUpdate(app, id, Domain{Canonical: true})
+func (c *Client) DomainSetCanonical(ctx context.Context, app, id string) (Domain, error) {
+	domain, err := c.domainsUpdate(ctx, app, id, Domain{Canonical: true})
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to set the domain as canonical")
 	}
 	return domain, nil
 }
 
-func (c *Client) DomainUnsetCanonical(app string) (Domain, error) {
-	domains, err := c.DomainsList(app)
+func (c *Client) DomainUnsetCanonical(ctx context.Context, app string) (Domain, error) {
+	domains, err := c.DomainsList(ctx, app)
 	if err != nil {
 		return Domain{}, errgo.Notef(err, "fail to list the domains to unset the canonical one")
 	}
 
 	for _, domain := range domains {
 		if domain.Canonical {
-			domain, err := c.domainsUpdate(app, domain.ID, Domain{Canonical: false})
+			domain, err := c.domainsUpdate(ctx, app, domain.ID, Domain{Canonical: false})
 			if err != nil {
 				return Domain{}, errgo.Notef(err, "fail to unset the domain as canonical")
 			}

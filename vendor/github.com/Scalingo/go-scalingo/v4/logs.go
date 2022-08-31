@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 
@@ -10,20 +11,20 @@ import (
 )
 
 type LogsService interface {
-	LogsURL(app string) (*http.Response, error)
-	Logs(logsURL string, n int, filter string) (*http.Response, error)
+	LogsURL(ctx context.Context, app string) (*http.Response, error)
+	Logs(ctx context.Context, logsURL string, n int, filter string) (*http.Response, error)
 }
 
 var _ LogsService = (*Client)(nil)
 
-func (c *Client) LogsURL(app string) (*http.Response, error) {
+func (c *Client) LogsURL(ctx context.Context, app string) (*http.Response, error) {
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps/" + app + "/logs",
 	}
-	return c.ScalingoAPI().Do(req)
+	return c.ScalingoAPI().Do(ctx, req)
 }
 
-func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, error) {
+func (c *Client) Logs(ctx context.Context, logsURL string, n int, filter string) (*http.Response, error) {
 	u, err := url.Parse(logsURL)
 	if err != nil {
 		return nil, errgo.Mask(err)
@@ -39,5 +40,5 @@ func (c *Client) Logs(logsURL string, n int, filter string) (*http.Response, err
 			"filter": filter,
 		},
 	}
-	return c.ScalingoAPI().Do(req)
+	return c.ScalingoAPI().Do(ctx, req)
 }

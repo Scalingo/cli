@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 )
 
 type ContainersService interface {
-	ContainersStop(appName, containerID string) error
+	ContainersStop(ctx context.Context, appName, containerID string) error
 }
 
 var _ ContainersService = (*Client)(nil)
@@ -31,13 +32,13 @@ type Container struct {
 	ContainerSize ContainerSize `json:"container_size"`
 }
 
-func (c *Client) ContainersStop(appName, containerID string) error {
+func (c *Client) ContainersStop(ctx context.Context, appName, containerID string) error {
 	req := &httpclient.APIRequest{
 		Method:   "POST",
 		Endpoint: fmt.Sprintf("/apps/%s/containers/%s/stop", appName, containerID),
 		Expected: httpclient.Statuses{202},
 	}
-	err := c.ScalingoAPI().DoRequest(req, nil)
+	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
 	if err != nil {
 		return errgo.Notef(err, "fail to execute the POST request to stop a container")
 	}

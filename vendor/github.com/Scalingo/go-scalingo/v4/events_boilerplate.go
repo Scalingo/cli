@@ -114,6 +114,11 @@ func (e *EventAddVoucherType) TypeDataPtr() interface{} {
 func (e *EventNewKeyType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+
+func (e *EventEditKeyType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
 func (e *EventDeleteKeyType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -177,5 +182,33 @@ func (e *EventLinkGithubType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 func (e *EventUnlinkGithubType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventEditHDSContactType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventCreateDataAccessConsentType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventNewTokenType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventRegenerateTokenType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDeleteTokenType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventTfaEnabledType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventTfaDisabledType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }

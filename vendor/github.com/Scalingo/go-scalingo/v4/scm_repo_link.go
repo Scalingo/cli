@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"time"
 
 	"gopkg.in/errgo.v1"
@@ -9,16 +10,16 @@ import (
 )
 
 type SCMRepoLinkService interface {
-	SCMRepoLinkList(opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error)
-	SCMRepoLinkShow(app string) (*SCMRepoLink, error)
-	SCMRepoLinkCreate(app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error)
-	SCMRepoLinkUpdate(app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
-	SCMRepoLinkDelete(app string) error
+	SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error)
+	SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error)
+	SCMRepoLinkCreate(ctx context.Context, app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error)
+	SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
+	SCMRepoLinkDelete(ctx context.Context, app string) error
 
-	SCMRepoLinkManualDeploy(app, branch string) error
-	SCMRepoLinkManualReviewApp(app, pullRequestId string) error
-	SCMRepoLinkDeployments(app string) ([]*Deployment, error)
-	SCMRepoLinkReviewApps(app string) ([]*ReviewApp, error)
+	SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) error
+	SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error
+	SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Deployment, error)
+	SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*ReviewApp, error)
 }
 
 type SCMRepoLinkCreateParams struct {
@@ -90,18 +91,18 @@ type SCMRepoLinkReviewAppsResponse struct {
 
 var _ SCMRepoLinkService = (*Client)(nil)
 
-func (c *Client) SCMRepoLinkList(opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error) {
+func (c *Client) SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error) {
 	var res SCMRepoLinksResponse
-	err := c.ScalingoAPI().ResourceList("scm_repo_links", opts.ToMap(), &res)
+	err := c.ScalingoAPI().ResourceList(ctx, "scm_repo_links", opts.ToMap(), &res)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Notef(err, "fail to list SCM repo links")
 	}
 	return res.SCMRepoLinks, res.Meta.PaginationMeta, nil
 }
 
-func (c *Client) SCMRepoLinkShow(app string) (*SCMRepoLink, error) {
+func (c *Client) SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
-	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{200},
@@ -112,9 +113,9 @@ func (c *Client) SCMRepoLinkShow(app string) (*SCMRepoLink, error) {
 	return res.SCMRepoLink, nil
 }
 
-func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error) {
+func (c *Client) SCMRepoLinkCreate(ctx context.Context, app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
-	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{201},
@@ -127,9 +128,9 @@ func (c *Client) SCMRepoLinkCreate(app string, params SCMRepoLinkCreateParams) (
 	return res.SCMRepoLink, nil
 }
 
-func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error) {
+func (c *Client) SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error) {
 	var res ScmRepoLinkResponse
-	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{200},
@@ -142,8 +143,8 @@ func (c *Client) SCMRepoLinkUpdate(app string, params SCMRepoLinkUpdateParams) (
 	return res.SCMRepoLink, nil
 }
 
-func (c *Client) SCMRepoLinkDelete(app string) error {
-	_, err := c.ScalingoAPI().Do(&http.APIRequest{
+func (c *Client) SCMRepoLinkDelete(ctx context.Context, app string) error {
+	_, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
 		Method:   "DELETE",
 		Endpoint: "/apps/" + app + "/scm_repo_link",
 		Expected: http.Statuses{204},
@@ -154,8 +155,8 @@ func (c *Client) SCMRepoLinkDelete(app string) error {
 	return nil
 }
 
-func (c *Client) SCMRepoLinkManualDeploy(app, branch string) error {
-	_, err := c.ScalingoAPI().Do(&http.APIRequest{
+func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) error {
+	_, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_deploy",
 		Expected: http.Statuses{200},
@@ -167,12 +168,12 @@ func (c *Client) SCMRepoLinkManualDeploy(app, branch string) error {
 	return nil
 }
 
-func (c *Client) SCMRepoLinkManualReviewApp(app, pullRequestId string) error {
-	_, err := c.ScalingoAPI().Do(&http.APIRequest{
+func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error {
+	_, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_review_app",
 		Expected: http.Statuses{200},
-		Params:   map[string]string{"pull_request_id": pullRequestId},
+		Params:   map[string]string{"pull_request_id": pullRequestID},
 	})
 	if err != nil {
 		return errgo.Notef(err, "fail to trigger manual review app deployment")
@@ -180,10 +181,10 @@ func (c *Client) SCMRepoLinkManualReviewApp(app, pullRequestId string) error {
 	return nil
 }
 
-func (c *Client) SCMRepoLinkDeployments(app string) ([]*Deployment, error) {
+func (c *Client) SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Deployment, error) {
 	var res SCMRepoLinkDeploymentsResponse
 
-	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/scm_repo_link/deployments",
 		Expected: http.Statuses{200},
@@ -194,10 +195,10 @@ func (c *Client) SCMRepoLinkDeployments(app string) ([]*Deployment, error) {
 	return res.Deployments, nil
 }
 
-func (c *Client) SCMRepoLinkReviewApps(app string) ([]*ReviewApp, error) {
+func (c *Client) SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*ReviewApp, error) {
 	var res SCMRepoLinkReviewAppsResponse
 
-	err := c.ScalingoAPI().DoRequest(&http.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "GET",
 		Endpoint: "/apps/" + app + "/scm_repo_link/review_apps",
 		Expected: http.Statuses{200},

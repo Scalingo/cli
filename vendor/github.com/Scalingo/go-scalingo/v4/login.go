@@ -1,16 +1,17 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/Scalingo/go-scalingo/v4/http"
-
 	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v4/http"
 )
 
 type LoginService interface {
-	Login(email, password string) (*LoginResponse, error)
+	Login(ctx context.Context, email, password string) (*LoginResponse, error)
 }
 
 var _ LoginService = (*Client)(nil)
@@ -28,7 +29,7 @@ func (err *LoginError) Error() string {
 	return err.Message
 }
 
-func (c *Client) Login(email, password string) (*LoginResponse, error) {
+func (c *Client) Login(ctx context.Context, email, password string) (*LoginResponse, error) {
 	fmt.Println("[GO-SCALINGO] You are using the Login method. This method is deprecated, please use the OAuth flow")
 	req := &http.APIRequest{
 		NoAuth:   true,
@@ -42,7 +43,7 @@ func (c *Client) Login(email, password string) (*LoginResponse, error) {
 			},
 		},
 	}
-	res, err := c.ScalingoAPI().Do(req)
+	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
 		return nil, errgo.NoteMask(err, "fail to login", errgo.Any)
 	}

@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,7 +33,7 @@ type APIRequest struct {
 
 type Statuses []int
 
-func (c *client) FillDefaultValues(req *APIRequest) error {
+func (c *client) FillDefaultValues(ctx context.Context, req *APIRequest) error {
 	if req.Method == "" {
 		req.Method = "GET"
 	}
@@ -45,7 +46,7 @@ func (c *client) FillDefaultValues(req *APIRequest) error {
 
 	if !req.NoAuth && c.IsAuthenticatedClient() {
 		var err error
-		req.Token, err = c.TokenGenerator().GetAccessToken()
+		req.Token, err = c.TokenGenerator().GetAccessToken(ctx)
 		if err != nil {
 			return errgo.Notef(err, "fail to get the access token for this request")
 		}
@@ -67,8 +68,8 @@ func (statuses Statuses) Contains(status int) bool {
 }
 
 // Execute an API request and return its response/error
-func (c *client) Do(req *APIRequest) (*http.Response, error) {
-	err := c.FillDefaultValues(req)
+func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error) {
+	err := c.FillDefaultValues(ctx, req)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to fill client with default values")
 	}
@@ -103,6 +104,10 @@ func (c *client) Do(req *APIRequest) (*http.Response, error) {
 		return nil, errgo.Notef(err, "fail to initialize the '%s' query", req.Method)
 	}
 	req.HTTPRequest.Header.Add("User-Agent", c.userAgent)
+	requestID, ok := ctx.Value("request_id").(string)
+	if ok {
+		req.HTTPRequest.Header.Add("X-Request-ID", requestID)
+	}
 
 	debug.Printf("[API] %v %v\n", req.HTTPRequest.Method, req.HTTPRequest.URL)
 	debug.Printf(pkgio.Indent(fmt.Sprintf("User Agent: %v", req.HTTPRequest.UserAgent()), 6))

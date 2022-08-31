@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -12,10 +13,10 @@ import (
 )
 
 type TokensService interface {
-	TokensList() (Tokens, error)
-	TokenCreate(TokenCreateParams) (Token, error)
-	TokenExchange(token string) (string, error)
-	TokenShow(id int) (Token, error)
+	TokensList(context.Context) (Tokens, error)
+	TokenCreate(context.Context, TokenCreateParams) (Token, error)
+	TokenExchange(ctx context.Context, token string) (string, error)
+	TokenShow(ctx context.Context, id int) (Token, error)
 }
 
 var _ TokensService = (*Client)(nil)
@@ -67,10 +68,10 @@ type TokenRes struct {
 	Token Token `json:"token"`
 }
 
-func (c *Client) TokensList() (Tokens, error) {
+func (c *Client) TokensList(ctx context.Context) (Tokens, error) {
 	var tokensRes TokensRes
 
-	err := c.AuthAPI().ResourceList("tokens", nil, &tokensRes)
+	err := c.AuthAPI().ResourceList(ctx, "tokens", nil, &tokensRes)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get tokens")
 	}
@@ -78,7 +79,7 @@ func (c *Client) TokensList() (Tokens, error) {
 	return tokensRes.Tokens, nil
 }
 
-func (c *Client) TokenExchange(token string) (string, error) {
+func (c *Client) TokenExchange(ctx context.Context, token string) (string, error) {
 	req := &http.APIRequest{
 		NoAuth:   true,
 		Method:   "POST",
@@ -86,7 +87,7 @@ func (c *Client) TokenExchange(token string) (string, error) {
 		Password: token,
 	}
 
-	res, err := c.AuthAPI().Do(req)
+	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to make request POST /v1/tokens/exchange")
 	}
@@ -101,7 +102,7 @@ func (c *Client) TokenExchange(token string) (string, error) {
 	return btRes.Token, nil
 }
 
-func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParams) (Token, error) {
+func (c *Client) TokenCreateWithLogin(ctx context.Context, params TokenCreateParams, login LoginParams) (Token, error) {
 	req := &http.APIRequest{
 		NoAuth:   true,
 		Method:   "POST",
@@ -114,7 +115,7 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 		Params:   map[string]interface{}{"token": params},
 	}
 
-	resp, err := c.AuthAPI().Do(req)
+	resp, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
 		if IsOTPRequired(err) {
 			return Token{}, ErrOTPRequired
@@ -132,12 +133,12 @@ func (c *Client) TokenCreateWithLogin(params TokenCreateParams, login LoginParam
 	return tokenRes.Token, nil
 }
 
-func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
+func (c *Client) TokenCreate(ctx context.Context, params TokenCreateParams) (Token, error) {
 	var tokenRes TokenRes
 	payload := map[string]TokenCreateParams{
 		"token": params,
 	}
-	err := c.AuthAPI().ResourceAdd("tokens", payload, &tokenRes)
+	err := c.AuthAPI().ResourceAdd(ctx, "tokens", payload, &tokenRes)
 	if err != nil {
 		return Token{}, errgo.Notef(err, "fail to create token")
 	}
@@ -145,9 +146,9 @@ func (c *Client) TokenCreate(params TokenCreateParams) (Token, error) {
 	return tokenRes.Token, nil
 }
 
-func (c *Client) TokenShow(id int) (Token, error) {
+func (c *Client) TokenShow(ctx context.Context, id int) (Token, error) {
 	var tokenRes TokenRes
-	err := c.AuthAPI().ResourceGet("tokens", strconv.Itoa(id), nil, &tokenRes)
+	err := c.AuthAPI().ResourceGet(ctx, "tokens", strconv.Itoa(id), nil, &tokenRes)
 	if err != nil {
 		return Token{}, errgo.Notef(err, "fail to get token")
 	}
@@ -155,6 +156,6 @@ func (c *Client) TokenShow(id int) (Token, error) {
 	return tokenRes.Token, nil
 }
 
-func (c *Client) GetAccessToken() (string, error) {
-	return c.ScalingoAPI().TokenGenerator().GetAccessToken()
+func (c *Client) GetAccessToken(ctx context.Context) (string, error) {
+	return c.ScalingoAPI().TokenGenerator().GetAccessToken(ctx)
 }

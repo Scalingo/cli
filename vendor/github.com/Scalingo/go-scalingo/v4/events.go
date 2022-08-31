@@ -1,6 +1,7 @@
 package scalingo
 
 import (
+	"context"
 	"encoding/json"
 
 	"gopkg.in/errgo.v1"
@@ -9,10 +10,10 @@ import (
 )
 
 type EventsService interface {
-	EventTypesList() ([]EventType, error)
-	EventCategoriesList() ([]EventCategory, error)
-	EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error)
-	UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error)
+	EventTypesList(context.Context) ([]EventType, error)
+	EventCategoriesList(context.Context) ([]EventCategory, error)
+	EventsList(ctx context.Context, app string, opts PaginationOpts) (Events, PaginationMeta, error)
+	UserEventsList(context.Context, PaginationOpts) (Events, PaginationMeta, error)
 }
 
 var _ EventsService = (*Client)(nil)
@@ -24,9 +25,9 @@ type EventsRes struct {
 	}
 }
 
-func (c *Client) EventsList(app string, opts PaginationOpts) (Events, PaginationMeta, error) {
+func (c *Client) EventsList(ctx context.Context, app string, opts PaginationOpts) (Events, PaginationMeta, error) {
 	var eventsRes EventsRes
-	err := c.ScalingoAPI().SubresourceList("apps", app, "events", opts.ToMap(), &eventsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "events", opts.ToMap(), &eventsRes)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Mask(err)
 	}
@@ -37,14 +38,14 @@ func (c *Client) EventsList(app string, opts PaginationOpts) (Events, Pagination
 	return events, eventsRes.Meta.PaginationMeta, nil
 }
 
-func (c *Client) UserEventsList(opts PaginationOpts) (Events, PaginationMeta, error) {
+func (c *Client) UserEventsList(ctx context.Context, opts PaginationOpts) (Events, PaginationMeta, error) {
 	req := &http.APIRequest{
 		Endpoint: "/events",
 		Params:   opts.ToMap(),
 	}
 
 	var eventsRes EventsRes
-	res, err := c.ScalingoAPI().Do(req)
+	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
 		return nil, PaginationMeta{}, errgo.Mask(err, errgo.Any)
 	}
