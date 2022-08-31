@@ -13,6 +13,9 @@ var (
 		Name:     "stacks",
 		Category: "Runtime Stacks",
 		Usage:    "List the available runtime stacks",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{Name: "with-deprecated", Usage: "Show also deprecated stacks"},
+		},
 		Description: `List all the available runtime stacks for your apps:
 
 		Example:
@@ -21,7 +24,7 @@ var (
 		# See also 'stacks-set'
 `,
 		Action: func(c *cli.Context) error {
-			err := stacks.List(c.Context)
+			err := stacks.List(c.Context, c.Bool("with-deprecated"))
 			if err != nil {
 				errorQuit(err)
 			}
