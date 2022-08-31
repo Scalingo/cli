@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -8,12 +10,12 @@ import (
 	"github.com/Scalingo/go-scalingo/v4"
 )
 
-func Events(paginationOpts scalingo.PaginationOpts) error {
-	c, err := config.ScalingoClient()
+func Events(ctx context.Context, paginationOpts scalingo.PaginationOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	appEvents, pagination, err := c.UserEventsList(paginationOpts)
+	appEvents, pagination, err := c.UserEventsList(ctx, paginationOpts)
 	if err != nil {
 		return errgo.Mask(err)
 	}

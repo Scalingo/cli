@@ -1,6 +1,7 @@
 package region_migrations
 
 import (
+	"context"
 	"os"
 	"sort"
 	"time"
@@ -13,13 +14,13 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func List(appId string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, appId string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migrations, err := c.ListRegionMigrations(appId)
+	migrations, err := c.ListRegionMigrations(ctx, appId)
 	if err != nil {
 		return errgo.Notef(err, "fail to list migrations")
 	}

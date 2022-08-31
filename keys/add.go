@@ -1,6 +1,7 @@
 package keys
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Add(name string, path string) error {
+func Add(ctx context.Context, name string, path string) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		return errgo.Notef(err, "fail to stat path to the key")
@@ -26,11 +27,11 @@ func Add(name string, path string) error {
 		return errgo.Notef(err, "fail to read the key file")
 	}
 
-	c, err := config.ScalingoAuthClient()
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	_, err = c.KeysAdd(name, string(keyContent))
+	_, err = c.KeysAdd(ctx, name, string(keyContent))
 	if err != nil {
 		return errgo.Notef(err, "fail to add the key to Scalingo account")
 	}

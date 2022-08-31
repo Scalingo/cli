@@ -1,6 +1,7 @@
 package notifiers
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,12 +13,12 @@ import (
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
-func List(app string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	notifiers, err := c.NotifiersList(app)
+	notifiers, err := c.NotifiersList(ctx, app)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -25,7 +26,7 @@ func List(app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events"})
 
-	eventTypes, err := c.EventTypesList()
+	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list event types")
 	}

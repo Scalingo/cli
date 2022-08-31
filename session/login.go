@@ -1,6 +1,7 @@
 package session
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -21,18 +22,18 @@ type LoginOpts struct {
 	SSHIdentity  string
 }
 
-func Login(opts LoginOpts) error {
+func Login(ctx context.Context, opts LoginOpts) error {
 	if opts.SSHIdentity == "" {
 		opts.SSHIdentity = "ssh-agent"
 	}
 
 	if opts.APIToken != "" {
-		return loginWithToken(opts.APIToken)
+		return loginWithToken(ctx, opts.APIToken)
 	}
 
 	if !opts.PasswordOnly {
 		io.Info("Trying login with SSH…")
-		err := loginWithSSH(opts.SSHIdentity)
+		err := loginWithSSH(ctx, opts.SSHIdentity)
 		if err != nil {
 			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
 			io.Error("SSH connection failed.")
@@ -48,29 +49,29 @@ func Login(opts LoginOpts) error {
 	}
 
 	io.Info("Trying login with user/password:\n")
-	return loginWithUserAndPassword()
+	return loginWithUserAndPassword(ctx)
 }
 
-func loginWithUserAndPassword() error {
-	_, _, err := config.Auth()
+func loginWithUserAndPassword(ctx context.Context) error {
+	_, _, err := config.Auth(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	return nil
 }
 
-func loginWithToken(token string) error {
-	err := finalizeLogin(token)
+func loginWithToken(ctx context.Context, token string) error {
+	err := finalizeLogin(ctx, token)
 	if err != nil {
 		return errgo.Notef(err, "token invalid")
 	}
 	return nil
 }
 
-func loginWithSSH(identity string) error {
+func loginWithSSH(ctx context.Context, identity string) error {
 	host := config.C.ScalingoSshHost
 	if host == "" {
-		regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+		regions, err := config.EnsureRegionsCache(ctx, config.C, config.GetRegionOpts{
 			SkipAuth: true,
 		})
 		if err != nil {
@@ -122,11 +123,11 @@ func loginWithSSH(identity string) error {
 		return errgo.Notef(err, "fail to get current hostname")
 	}
 
-	c, err := config.ScalingoUnauthenticatedAuthClient()
+	c, err := config.ScalingoUnauthenticatedAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
 	}
-	token, err := c.TokenCreateWithLogin(scalingo.TokenCreateParams{
+	token, err := c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
 		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 	}, scalingo.LoginParams{
 		JWT: string(payload),
@@ -135,19 +136,19 @@ func loginWithSSH(identity string) error {
 		return errgo.NoteMask(err, "fail to create API token", errgo.Any)
 	}
 
-	err = finalizeLogin(token.Token)
+	err = finalizeLogin(ctx, token.Token)
 	if err != nil {
 		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
 	}
 	return nil
 }
 
-func finalizeLogin(token string) error {
-	c, err := config.ScalingoAuthClientFromToken(token)
+func finalizeLogin(ctx context.Context, token string) error {
+	c, err := config.ScalingoAuthClientFromToken(ctx, token)
 	if err != nil {
 		return errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
 	}
-	user, err := c.Self()
+	user, err := c.Self(ctx)
 	if err != nil {
 		return errgo.Mask(err)
 	}

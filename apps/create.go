@@ -26,7 +26,7 @@ func Create(ctx context.Context, appName string, remote string, buildpack string
 			return errgo.Notef(err, "fail to create the application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
-		return utils.AskAndStopFreeTrial(c, func() error {
+		return utils.AskAndStopFreeTrial(ctx, c, func() error {
 			return Create(ctx, appName, remote, buildpack)
 		})
 	}

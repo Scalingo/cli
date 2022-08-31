@@ -44,7 +44,7 @@ var (
 				addonID = c.String("addon")
 			}
 
-			err := log_drains.List(currentApp, log_drains.ListAddonOpts{
+			err := log_drains.List(c.Context, currentApp, log_drains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
 				AddonID:    addonID,
 			})
@@ -114,7 +114,7 @@ var (
 				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
-			err := log_drains.Add(currentApp,
+			err := log_drains.Add(c.Context, currentApp,
 				log_drains.AddDrainOpts{
 					WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
 					AddonID:    addonID,
@@ -197,7 +197,7 @@ var (
 				return nil
 			}
 
-			err := log_drains.Remove(currentApp, log_drains.RemoveAddonOpts{
+			err := log_drains.Remove(c.Context, currentApp, log_drains.RemoveAddonOpts{
 				AddonID: addonID,
 				OnlyApp: c.Bool("only-app"),
 				URL:     drain,

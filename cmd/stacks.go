@@ -21,7 +21,7 @@ var (
 		# See also 'stacks-set'
 `,
 		Action: func(c *cli.Context) error {
-			err := stacks.List()
+			err := stacks.List(c.Context)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -48,7 +48,7 @@ var (
 				return nil
 			}
 
-			err := stacks.Set(currentApp, c.Args().First())
+			err := stacks.Set(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}

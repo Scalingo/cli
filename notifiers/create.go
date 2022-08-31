@@ -1,6 +1,8 @@
 package notifiers
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -15,8 +17,8 @@ type ProvisionParams struct {
 	scalingo.NotifierParams
 }
 
-func Provision(app, platformName string, params ProvisionParams) error {
-	c, err := config.ScalingoClient()
+func Provision(ctx context.Context, app, platformName string, params ProvisionParams) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
@@ -29,7 +31,7 @@ func Provision(app, platformName string, params ProvisionParams) error {
 		return errgo.New("no platform defined")
 	}
 
-	eventTypes, err := c.EventTypesList()
+	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list event types")
 	}
@@ -43,13 +45,13 @@ func Provision(app, platformName string, params ProvisionParams) error {
 	}
 
 	if len(params.CollaboratorUsernames) > 0 {
-		params.UserIDs, err = collaboratorUserIDs(c, app, params.CollaboratorUsernames)
+		params.UserIDs, err = collaboratorUserIDs(ctx, c, app, params.CollaboratorUsernames)
 		if err != nil {
 			return errgo.Notef(err, "invalid collaborator usernames")
 		}
 	}
 
-	platforms, err := c.NotificationPlatformByName(platformName)
+	platforms, err := c.NotificationPlatformByName(ctx, platformName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -58,7 +60,7 @@ func Provision(app, platformName string, params ProvisionParams) error {
 	}
 	params.PlatformID = platforms[0].ID
 
-	baseNotifier, err := c.NotifierProvision(app, params.NotifierParams)
+	baseNotifier, err := c.NotifierProvision(ctx, app, params.NotifierParams)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -71,15 +73,15 @@ func Provision(app, platformName string, params ProvisionParams) error {
 	return nil
 }
 
-func collaboratorUserIDs(c *scalingo.Client, app string, usernames []string) ([]string, error) {
+func collaboratorUserIDs(ctx context.Context, c *scalingo.Client, app string, usernames []string) ([]string, error) {
 	ids := make([]string, 0, len(usernames))
 
-	collaborators, err := c.CollaboratorsList(app)
+	collaborators, err := c.CollaboratorsList(ctx, app)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to list collaborators")
 	}
 
-	scapp, err := c.AppsShow(app)
+	scapp, err := c.AppsShow(ctx, app)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get application information")
 	}

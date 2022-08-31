@@ -40,7 +40,7 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 			return errgo.Notef(err, "Fail to provision addon %v", addon)
 		}
 		// If error is Payment Required and user tries to exceed its free trial
-		return utils.AskAndStopFreeTrial(c, func() error {
+		return utils.AskAndStopFreeTrial(ctx, c, func() error {
 			return Provision(ctx, app, addon, plan)
 		})
 	}

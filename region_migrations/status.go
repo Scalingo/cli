@@ -1,6 +1,7 @@
 package region_migrations
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/url"
@@ -13,20 +14,20 @@ import (
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
-func showMigrationStatusSuccess(appId string, migration scalingo.RegionMigration) {
-	newRegionClient, err := config.ScalingoClientForRegion(migration.Destination)
+func showMigrationStatusSuccess(ctx context.Context, appId string, migration scalingo.RegionMigration) {
+	newRegionClient, err := config.ScalingoClientForRegion(ctx, migration.Destination)
 	if err != nil {
 		showGenericMigrationSuccessMessage()
 		return
 	}
 
-	app, err := newRegionClient.AppsShow(appId)
+	app, err := newRegionClient.AppsShow(ctx, appId)
 	if err != nil {
 		showGenericMigrationSuccessMessage()
 		return
 	}
 
-	domains, err := newRegionClient.DomainsList(appId)
+	domains, err := newRegionClient.DomainsList(ctx, appId)
 	if err != nil {
 		showGenericMigrationSuccessMessage()
 		return

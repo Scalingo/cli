@@ -1,6 +1,7 @@
 package region_migrations
 
 import (
+	"context"
 	"fmt"
 
 	errgo "gopkg.in/errgo.v1"
@@ -9,13 +10,13 @@ import (
 	scalingo "github.com/Scalingo/go-scalingo/v4"
 )
 
-func Create(app string, destination string, dstAppName string) error {
-	c, err := config.ScalingoClient()
+func Create(ctx context.Context, app string, destination string, dstAppName string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migration, err := c.CreateRegionMigration(app, scalingo.RegionMigrationParams{
+	migration, err := c.CreateRegionMigration(ctx, app, scalingo.RegionMigrationParams{
 		Destination: destination,
 		DstAppName:  dstAppName,
 	})
@@ -23,12 +24,12 @@ func Create(app string, destination string, dstAppName string) error {
 		return errgo.Notef(err, "fail to create migration")
 	}
 
-	err = c.RunRegionMigrationStep(app, migration.ID, scalingo.RegionMigrationStepPreflight)
+	err = c.RunRegionMigrationStep(ctx, app, migration.ID, scalingo.RegionMigrationStepPreflight)
 	if err != nil {
 		return errgo.Notef(err, "fail to run preflight step")
 	}
 
-	err = WatchMigration(c, app, migration.ID, RefreshOpts{
+	err = WatchMigration(ctx, c, app, migration.ID, RefreshOpts{
 		ExpectedStatuses: []scalingo.RegionMigrationStatus{
 			scalingo.RegionMigrationStatusPreflightError,
 			scalingo.RegionMigrationStatusPreflightSuccess,
@@ -41,13 +42,13 @@ func Create(app string, destination string, dstAppName string) error {
 	return nil
 }
 
-func Run(app, migrationID string, step scalingo.RegionMigrationStep) error {
-	c, err := config.ScalingoClient()
+func Run(ctx context.Context, app, migrationID string, step scalingo.RegionMigrationStep) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migration, err := c.ShowRegionMigration(app, migrationID)
+	migration, err := c.ShowRegionMigration(ctx, app, migrationID)
 	if err != nil {
 		return errgo.Notef(err, "fail to show region migration")
 	}
@@ -74,12 +75,12 @@ func Run(app, migrationID string, step scalingo.RegionMigrationStep) error {
 		previousStepIDs = append(previousStepIDs, step.ID)
 	}
 
-	err = c.RunRegionMigrationStep(app, migrationID, step)
+	err = c.RunRegionMigrationStep(ctx, app, migrationID, step)
 	if err != nil {
 		return errgo.Notef(err, "fail to run %s step", step)
 	}
 
-	err = WatchMigration(c, app, migrationID, RefreshOpts{
+	err = WatchMigration(ctx, c, app, migrationID, RefreshOpts{
 		ExpectedStatuses: expectedStatuses,
 		HiddenSteps:      previousStepIDs,
 		CurrentStep:      step,
@@ -91,13 +92,13 @@ func Run(app, migrationID string, step scalingo.RegionMigrationStep) error {
 	return nil
 }
 
-func Abort(app, migrationID string) error {
-	c, err := config.ScalingoClient()
+func Abort(ctx context.Context, app, migrationID string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migration, err := c.ShowRegionMigration(app, migrationID)
+	migration, err := c.ShowRegionMigration(ctx, app, migrationID)
 	if err != nil {
 		return errgo.Notef(err, "fail to show region migration")
 	}
@@ -108,12 +109,12 @@ func Abort(app, migrationID string) error {
 		previousStepIDs = append(previousStepIDs, step.ID)
 	}
 
-	err = c.RunRegionMigrationStep(app, migrationID, scalingo.RegionMigrationStepAbort)
+	err = c.RunRegionMigrationStep(ctx, app, migrationID, scalingo.RegionMigrationStepAbort)
 	if err != nil {
 		return errgo.Notef(err, "fail to run abort step")
 	}
 
-	err = WatchMigration(c, app, migrationID, RefreshOpts{
+	err = WatchMigration(ctx, c, app, migrationID, RefreshOpts{
 		ExpectedStatuses: []scalingo.RegionMigrationStatus{
 			scalingo.RegionMigrationStatusAborted,
 		},

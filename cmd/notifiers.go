@@ -24,7 +24,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = notifiers.List(currentApp)
+				err = notifiers.List(c.Context, currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "notifiers")
 			}
@@ -53,7 +53,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Details(currentApp, c.Args().First())
+				err = notifiers.Details(c.Context, currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-details")
 			}
@@ -134,7 +134,7 @@ Examples
 				},
 			}
 
-			err := notifiers.Provision(currentApp, c.String("platform"), params)
+			err := notifiers.Provision(c.Context, currentApp, c.String("platform"), params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -210,7 +210,7 @@ Examples
 				},
 			}
 			if c.Args().Len() >= 1 {
-				err = notifiers.Update(currentApp, c.Args().First(), params)
+				err = notifiers.Update(c.Context, currentApp, c.Args().First(), params)
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-update")
 			}
@@ -239,7 +239,7 @@ Examples
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Destroy(currentApp, c.Args().First())
+				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-remove")
 			}

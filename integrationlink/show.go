@@ -1,6 +1,7 @@
 package integrationlink
 
 import (
+	"context"
 	"fmt"
 
 	"gopkg.in/errgo.v1"
@@ -15,13 +16,13 @@ import (
 	"github.com/Scalingo/go-utils/errors"
 )
 
-func Show(app string) error {
-	c, err := config.ScalingoClient()
+func Show(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	repoLink, err := c.SCMRepoLinkShow(app)
+	repoLink, err := c.SCMRepoLinkShow(ctx, app)
 	if scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError); ok && scerr.Code == 404 {
 		io.Statusf("Your app '%s' has no integration link.\n", app)
 		return nil

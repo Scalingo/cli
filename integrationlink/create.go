@@ -54,7 +54,7 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 	_, err = c.SCMRepoLinkCreate(ctx, app, params)
 	if err != nil {
 		if utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			return utils.AskAndStopFreeTrial(c, func() error {
+			return utils.AskAndStopFreeTrial(ctx, c, func() error {
 				return Create(ctx, app, integrationType, integrationURL, params)
 			})
 		}

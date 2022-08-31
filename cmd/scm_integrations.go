@@ -24,7 +24,7 @@ var (
 	# See also commands 'integrations-add', 'integrations-delete', 'integrations-import-keys'`,
 
 		Action: func(c *cli.Context) error {
-			err := scmintegrations.List()
+			err := scmintegrations.List(c.Context)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -93,7 +93,7 @@ var (
 				Token:   token,
 			}
 
-			err := scmintegrations.Create(args)
+			err := scmintegrations.Create(c.Context, args)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -126,7 +126,7 @@ var (
 				return nil
 			}
 
-			err := scmintegrations.Delete(c.Args().First())
+			err := scmintegrations.Delete(c.Context, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
@@ -159,7 +159,7 @@ var (
 				return nil
 			}
 
-			err := scmintegrations.ImportKeys(c.Args().First())
+			err := scmintegrations.ImportKeys(c.Context, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}

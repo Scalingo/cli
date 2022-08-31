@@ -124,7 +124,7 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 			return errgo.Notef(err, "fail to scale the Scalingo application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
-		return utils.AskAndStopFreeTrial(c, func() error {
+		return utils.AskAndStopFreeTrial(ctx, c, func() error {
 			return Scale(ctx, app, sync, types)
 		})
 	}

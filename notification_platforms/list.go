@@ -1,6 +1,7 @@
 package notification_platforms
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -9,13 +10,13 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List() error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	resources, err := c.NotificationPlatformsList()
+	resources, err := c.NotificationPlatformsList(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

@@ -120,7 +120,7 @@ func (r *Refresher) migrationRefresher() error {
 
 	for {
 		err := retrier.Do(context.Background(), func(ctx context.Context) error {
-			migration, err := client.ShowRegionMigration(r.appID, r.migrationID)
+			migration, err := client.ShowRegionMigration(ctx, r.appID, r.migrationID)
 			if err != nil {
 				return err
 			}

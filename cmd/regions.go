@@ -16,7 +16,7 @@ var (
    Example
      'scalingo regions'`,
 		Action: func(c *cli.Context) error {
-			err := regions.List()
+			err := regions.List(c.Context)
 			if err != nil {
 				errorQuit(err)
 			}

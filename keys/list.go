@@ -1,6 +1,7 @@
 package keys
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -9,12 +10,12 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List() error {
-	c, err := config.ScalingoAuthClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	keys, err := c.KeysList()
+	keys, err := c.KeysList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list SSH keys")
 	}

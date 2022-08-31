@@ -39,7 +39,7 @@ func Logs(ctx context.Context, app, addon string, opts LogsOpts) error {
 		return errgo.Notef(err, "fail to get log URL")
 	}
 
-	err = logs.Dump(url, opts.Count, "")
+	err = logs.Dump(ctx, url, opts.Count, "")
 	if err != nil {
 		return errgo.Notef(err, "fail to dump logs")
 	}

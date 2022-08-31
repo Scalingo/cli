@@ -59,7 +59,7 @@ func Logs(ctx context.Context, appName string, stream bool, n int, filter string
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	if err = logs.Dump(logsRes.LogsURL, n, filter); err != nil {
+	if err = logs.Dump(ctx, logsRes.LogsURL, n, filter); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 

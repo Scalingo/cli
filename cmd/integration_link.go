@@ -38,7 +38,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Show(currentApp)
+			err := integrationlink.Show(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -100,7 +100,7 @@ var (
 				integrationURL = fmt.Sprintf("https://%s", integrationURL)
 			}
 
-			integrationType, err := scmintegrations.GetTypeFromURL(integrationURL)
+			integrationType, err := scmintegrations.GetTypeFromURL(c.Context, integrationURL)
 			if err != nil {
 				if scalingoerrors.ErrgoRoot(err) == scmintegrations.ErrNotFound {
 					// If no integration matches the given URL, display a helpful status
@@ -256,7 +256,7 @@ var (
 				errorQuit(err)
 			}
 
-			err = integrationlink.Update(currentApp, *params)
+			err = integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
