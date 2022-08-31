@@ -6,7 +6,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
 func BackupsConfiguration(ctx context.Context, app, addon string, params scalingo.PeriodicBackupsConfigParams) (scalingo.Database, error) {

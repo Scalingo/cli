@@ -13,7 +13,7 @@ import (
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 var (

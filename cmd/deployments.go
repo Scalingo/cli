@@ -9,7 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/go-scalingo/v4/io"
+	"github.com/Scalingo/go-scalingo/v5/io"
 )
 
 var (

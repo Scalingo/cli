@@ -16,8 +16,8 @@ import (
 	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/http"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
 )
 

@@ -11,8 +11,8 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 type WSEvent struct {

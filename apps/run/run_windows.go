@@ -4,7 +4,7 @@ import (
 	"net"
 	"os"
 
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
 func NotifiedSignals() chan os.Signal {

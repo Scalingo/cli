@@ -18,8 +18,8 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/httpclient"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 type UpdateTtyParams struct {

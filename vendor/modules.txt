@@ -23,14 +23,14 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit; go 1.13
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v4 v4.16.1-0.20220805083913-7e744f4735d5
+# github.com/Scalingo/go-scalingo/v5 v5.0.0
 ## explicit; go 1.17
-github.com/Scalingo/go-scalingo/v4
-github.com/Scalingo/go-scalingo/v4/billing
-github.com/Scalingo/go-scalingo/v4/debug
-github.com/Scalingo/go-scalingo/v4/http
-github.com/Scalingo/go-scalingo/v4/http/httpmock
-github.com/Scalingo/go-scalingo/v4/io
+github.com/Scalingo/go-scalingo/v5
+github.com/Scalingo/go-scalingo/v5/billing
+github.com/Scalingo/go-scalingo/v5/debug
+github.com/Scalingo/go-scalingo/v5/http
+github.com/Scalingo/go-scalingo/v5/http/httpmock
+github.com/Scalingo/go-scalingo/v5/io
 # github.com/Scalingo/go-utils/errors v1.1.1
 ## explicit; go 1.17
 github.com/Scalingo/go-utils/errors

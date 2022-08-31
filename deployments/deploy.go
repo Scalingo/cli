@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
-	scalingoio "github.com/Scalingo/go-scalingo/v4/io"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
+	scalingoio "github.com/Scalingo/go-scalingo/v5/io"
 
 	"gopkg.in/errgo.v1"
 )

@@ -3,7 +3,7 @@ package region_migrations
 import (
 	"github.com/fatih/color"
 
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
 func formatMigrationStatus(status scalingo.RegionMigrationStatus) string {
