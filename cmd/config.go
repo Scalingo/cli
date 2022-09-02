@@ -22,15 +22,16 @@ var (
 	 Can also be configured using the environment variable
 	   SCALINGO_REGION=agora-fr1`,
 		Action: func(c *cli.Context) error {
-			if c.String("region") != "" {
-				err := config.SetRegion(c.String("region"))
+			regionName := regionNameFromFlags(c)
+			if regionName != "" {
+				err := config.SetRegion(regionName)
 				if err != nil {
 					errorQuit(err)
 				}
 			}
 
 			// If no flag are given, display the current config
-			if c.String("region") == "" {
+			if regionName == "" {
 				config.Display()
 			}
 			return nil

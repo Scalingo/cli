@@ -3,8 +3,6 @@
 ### To be Released
 
 * chore(deps): Upgrade urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
-  Caution: scalingo commands must come before any flag or argument. For example
-  `scalingo --app hello-world restart` must be rewritten `scalingo restart --app hello-world`
 
 # 1.24.2
 

@@ -36,7 +36,7 @@ var (
 			}
 
 			err := git.Setup(detect.CurrentApp(c), git.SetupParams{
-				RemoteName:     c.String("remote"),
+				RemoteName:     detect.RemoteNameFromFlags(c),
 				ForcePutRemote: c.Bool("force"),
 			})
 			if err != nil {

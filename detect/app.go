@@ -17,19 +17,22 @@ import (
 // app flag, environment variable "SCALINGO_APP", current Git remote
 // returns an empty string if not found
 func CurrentApp(c *cli.Context) string {
-	var appName string
 	var err error
 
-	if c.String("app") != "<name>" {
-		appName = c.String("app")
-	} else if os.Getenv("SCALINGO_APP") != "" {
-		appName = os.Getenv("SCALINGO_APP")
-	} else if dir, ok := utils.DetectGit(); ok {
-		appName, err = GetAppNameFromGitRemote(dir, c.String("remote"))
-		if err != nil {
-			debug.Println(err)
+	appName := extractAppNameFromCommandLine(c)
+	if appName == "<name>" {
+		appName = ""
+
+		if os.Getenv("SCALINGO_APP") != "" {
+			appName = os.Getenv("SCALINGO_APP")
+		} else if dir, ok := utils.DetectGit(); ok {
+			appName, err = GetAppNameFromGitRemote(dir, RemoteNameFromFlags(c))
+			if err != nil {
+				debug.Println(err)
+			}
 		}
 	}
+
 	if appName == "" {
 		fmt.Println("Unable to find the application name, please use --app flag.")
 		os.Exit(1)
@@ -58,6 +61,27 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 	}
 
 	return "", errgo.Newf("[detect] Scalingo Git remote hasn't been found")
+}
+
+// RemoteNameFromFlags returns the remote name specified in command flags
+func RemoteNameFromFlags(c *cli.Context) string {
+	for _, cliContext := range c.Lineage() {
+		if cliContext.String("remote") != "" {
+			return cliContext.String("remote")
+		}
+	}
+	return ""
+}
+
+func extractAppNameFromCommandLine(c *cli.Context) string {
+	for _, cliContext := range c.Lineage() {
+		appName := cliContext.String("app")
+		if appName != "" && appName != "<name>" {
+			return appName
+		}
+	}
+
+	return "<name>"
 }
 
 // extractAppNameFromGitRemote parses a Git remote and return the app name extracted

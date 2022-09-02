@@ -27,7 +27,7 @@ func CurrentAppCompletion(c *cli.Context) string {
 		appName = os.Getenv("SCALINGO_APP")
 	}
 	if dir, ok := utils.DetectGit(); appName == "" && ok {
-		appName, err = detect.GetAppNameFromGitRemote(dir, c.String("remote"))
+		appName, err = detect.GetAppNameFromGitRemote(dir, detect.RemoteNameFromFlags(c))
 		if err != nil {
 			debug.Println(err)
 		}
