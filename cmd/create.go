@@ -5,6 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/detect"
 )
 
 var (
@@ -23,7 +24,7 @@ var (
 				_ = cli.ShowCommandHelp(c, "create")
 				return nil
 			}
-			err := apps.Create(c.Args().First(), c.String("remote"), c.String("buildpack"))
+			err := apps.Create(c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"))
 			if err != nil {
 				errorQuit(err)
 			}
