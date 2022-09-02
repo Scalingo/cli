@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
@@ -21,10 +21,10 @@ var (
 		Name:     "backups-config",
 		Category: "Addons",
 		Usage:    "Configure the periodic backups of a database",
-		Flags: []cli.Flag{appFlag, addonFlag, cli.StringFlag{
+		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.StringFlag{
 			Name:  "schedule-at",
 			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone). It is also possible to specify the timezone to use.",
-		}, cli.BoolFlag{
+		}, &cli.BoolFlag{
 			Name:  "unschedule",
 			Usage: "Disable the periodic backups",
 		}},
@@ -37,7 +37,7 @@ Examples
 
 		# See also 'addons' and 'backup-download'
 		`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c)
 			if addonName == "" {
@@ -89,6 +89,7 @@ Examples
 			} else {
 				io.Status("Periodic backups are disabled")
 			}
+			return nil
 		},
 	}
 )

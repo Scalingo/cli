@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func getFlagByName(lastArg string, flags []cli.Flag) (bool, cli.Flag) {
@@ -43,7 +43,7 @@ func CountFlags(flags []string) int {
 }
 
 func GetFlagNames(flag cli.Flag) []string {
-	names := strings.Split(flag.GetName(), ",")
+	names := strings.Split(flag.Names()[0], ",")
 
 	for i := range names {
 		if i == 0 {
@@ -61,8 +61,7 @@ func DisplayFlags(flags []cli.Flag) {
 	found, lastFlag := getFlagByName(lastArg, flags)
 
 	isBoolFlag := false
-	switch lastFlag.(type) {
-	case cli.BoolFlag, cli.BoolTFlag:
+	if _, ok := lastFlag.(*cli.BoolFlag); ok {
 		isBoolFlag = true && found
 	}
 
@@ -72,7 +71,7 @@ func DisplayFlags(flags []cli.Flag) {
 
 			isSliceFlag := false
 			switch flag.(type) {
-			case cli.IntSliceFlag, cli.StringSliceFlag:
+			case *cli.IntSliceFlag, *cli.StringSliceFlag:
 				isSliceFlag = true
 			}
 			if CountFlags(names) == 0 || isSliceFlag {

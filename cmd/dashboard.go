@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -13,15 +13,15 @@ var (
 	dashboardCommand = cli.Command{
 		Name:     "dashboard",
 		Category: "App Management",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Open app dashboard on default web browser",
 		Description: `Open app dashboard on default web browser:
 
 	$ scalingo --app my-app dashboard`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "dashboard")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -30,6 +30,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "dashboard")

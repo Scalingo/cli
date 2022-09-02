@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -14,18 +14,18 @@ var (
 		Name:     "timeline",
 		Category: "Events",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.IntFlag{Name: "page", Usage: "Page to display", Value: 1},
-			cli.IntFlag{Name: "per-page", Usage: "Number of events to display", Value: 30},
+			&appFlag,
+			&cli.IntFlag{Name: "page", Usage: "Page to display", Value: 1},
+			&cli.IntFlag{Name: "per-page", Usage: "Number of events to display", Value: 30},
 		},
 		Usage: "List the actions related to a given app",
 		Description: `List the actions done by the owner and collaborators of an app:
 
     $ scalingo -a myapp timeline`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 0 {
+			if c.Args().Len() == 0 {
 				err = apps.Events(currentApp, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
@@ -37,6 +37,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "timeline")

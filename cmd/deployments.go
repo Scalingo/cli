@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
@@ -18,12 +18,12 @@ var (
 		Aliases:  []string{"deployment-cache-delete"},
 		Category: "Deployment",
 		Usage:    "Reset deployment cache",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` Delete the deployment cache (in case of corruption mostly)
     $ scalingo -a myapp deployment-delete-cache
 `,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
@@ -33,6 +33,7 @@ var (
 				}
 				io.Status("Deployment cache successfully deleted")
 			}
+			return nil
 		},
 	}
 
@@ -40,41 +41,43 @@ var (
 		Name:     "deployments",
 		Category: "Deployment",
 		Usage:    "List app deployments",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			err := deployments.List(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 	}
 	deploymentLogCommand = cli.Command{
 		Name:     "deployment-logs",
 		Category: "Deployment",
 		Usage:    "View deployment logs",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` Get the logs of an app deployment
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) > 1 {
+			if c.Args().Len() > 1 {
 				cli.ShowCommandHelp(c, "deployment-logs")
 			}
 
 			deploymentID := ""
-			if len(c.Args()) == 1 {
-				deploymentID = c.Args()[0]
+			if c.Args().Len() == 1 {
+				deploymentID = c.Args().First()
 			}
 
 			err := deployments.Logs(currentApp, deploymentID)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.DeploymentsAutoComplete(c)
@@ -84,11 +87,11 @@ var (
 		Name:     "deployment-follow",
 		Category: "Deployment",
 		Usage:    "Follow deployment event stream",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			err := deployments.Stream(&deployments.StreamOpts{
 				AppName: currentApp,
@@ -96,15 +99,16 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 	}
 	deploymentDeployCommand = cli.Command{
 		Name:     "deploy",
 		Category: "Deployment",
 		Usage:    "Trigger a deployment by archive",
-		Flags: []cli.Flag{appFlag,
-			cli.BoolFlag{Name: "war, w", Usage: "Specify that you want to deploy a WAR file"},
-			cli.BoolFlag{Name: "no-follow", Usage: "Return immediately after the deployment is triggered"},
+		Flags: []cli.Flag{&appFlag,
+			&cli.BoolFlag{Name: "war", Aliases: []string{"w"}, Usage: "Specify that you want to deploy a WAR file"},
+			&cli.BoolFlag{Name: "no-follow", Usage: "Return immediately after the deployment is triggered"},
 		},
 		Description: ` Trigger the deployment of a custom archive for your application
 
@@ -123,16 +127,16 @@ var (
 
     # See also commands 'deployments, deployment-follow'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			args := c.Args()
-			if len(args) != 1 && len(args) != 2 {
+			if args.Len() != 1 && args.Len() != 2 {
 				cli.ShowCommandHelp(c, "deploy")
-				return
+				return nil
 			}
-			archivePath := args[0]
+			archivePath := args.First()
 			gitRef := ""
-			if len(args) == 2 {
-				gitRef = args[1]
+			if args.Len() == 2 {
+				gitRef = args.Slice()[1]
 			}
 			currentApp := detect.CurrentApp(c)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
@@ -149,6 +153,7 @@ var (
 					errorQuit(err)
 				}
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "deploy")

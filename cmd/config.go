@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
@@ -13,7 +13,7 @@ var (
 		Category: "Global",
 		Usage:    "Configure the CLI",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "region", Value: "", Usage: "Configure the default region used by the CLI"},
+			&cli.StringFlag{Name: "region", Value: "", Usage: "Configure the default region used by the CLI"},
 		},
 		Description: `
    Example
@@ -21,7 +21,7 @@ var (
 
 	 Can also be configured using the environment variable
 	   SCALINGO_REGION=agora-fr1`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.String("region") != "" {
 				err := config.SetRegion(c.String("region"))
 				if err != nil {
@@ -33,6 +33,7 @@ var (
 			if c.String("region") == "" {
 				config.Display()
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "config")

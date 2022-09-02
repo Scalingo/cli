@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -14,16 +14,16 @@ var (
 		Name:     "notifiers",
 		Category: "Notifiers",
 		Usage:    "List your notifiers",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` List all notifiers of your app:
     $ scalingo -a myapp notifiers
 
 		# See also 'notifiers-add' and 'notifiers-remove'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 0 {
+			if c.Args().Len() == 0 {
 				err = notifiers.List(currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "notifiers")
@@ -32,6 +32,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
@@ -42,17 +43,17 @@ var (
 		Name:     "notifiers-details",
 		Category: "Notifiers",
 		Usage:    "Show details of your notifiers",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: ` Show details of your notifiers:
     $ scalingo -a myapp notifiers-details <ID>
 
 		# See also 'notifiers'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 1 {
-				err = notifiers.Details(currentApp, c.Args()[0])
+			if c.Args().Len() == 1 {
+				err = notifiers.Details(currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-details")
 			}
@@ -60,6 +61,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
@@ -71,17 +73,17 @@ var (
 		Name:     "notifiers-add",
 		Category: "Notifiers",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.BoolFlag{Name: "enable, e", Usage: "Enable the notifier (default)"},
-			cli.BoolFlag{Name: "disable, d", Usage: "Disable the notifier"},
-			cli.StringFlag{Name: "platform, p", Value: "", Usage: "The notifier platform"},
-			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
-			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
-			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
-			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
-			cli.StringSliceFlag{Name: "event, ev", Value: &cli.StringSlice{}, Usage: "List of selected events. Default: []"},
-			cli.StringSliceFlag{Name: "email", Value: &cli.StringSlice{}, Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
-			cli.StringSliceFlag{Name: "collaborator", Value: &cli.StringSlice{}, Usage: "The usernames of the collaborators who will receive notifications"},
+			&appFlag,
+			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable the notifier (default)"},
+			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable the notifier"},
+			&cli.StringFlag{Name: "platform", Aliases: []string{"p"}, Value: "", Usage: "The notifier platform"},
+			&cli.StringFlag{Name: "name", Aliases: []string{"n"}, Value: "", Usage: "Name of the notifier"},
+			&cli.BoolFlag{Name: "send-all-events", Aliases: []string{"sa"}, Usage: "If true the notifier will send all events. Default: false"},
+			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
+			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(""), Usage: "List of selected events. Default: []"},
+			&cli.StringSliceFlag{Name: "email", Value: cli.NewStringSlice(""), Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
+			&cli.StringSliceFlag{Name: "collaborator", Value: cli.NewStringSlice(""), Usage: "The usernames of the collaborators who will receive notifications"},
 		},
 		Usage: "Add a notifier for your application",
 		Description: `Add a notifier for your application:
@@ -102,7 +104,7 @@ Examples
  # Use 'platforms-list' to see all available platforms
  # See also 'notifiers' and 'notifiers-remove'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
 			if c.String("platform") == "" {
@@ -136,6 +138,7 @@ Examples
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
@@ -146,15 +149,15 @@ Examples
 		Name:     "notifiers-update",
 		Category: "Notifiers",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.BoolFlag{Name: "enable, e", Usage: "Enable the notifier"},
-			cli.BoolFlag{Name: "disable, d", Usage: "Disable the notifier"},
-			cli.StringFlag{Name: "name, n", Value: "", Usage: "Name of the notifier"},
-			cli.BoolFlag{Name: "send-all-events, sa", Usage: "If true the notifier will send all events. Default: false"},
-			cli.StringFlag{Name: "webhook-url, u", Value: "", Usage: "The webhook url to send notification (if applicable)"},
-			cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
-			cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
-			cli.StringSliceFlag{Name: "event, ev", Value: &cli.StringSlice{}, Usage: "List of selected events. Default: []"},
+			&appFlag,
+			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable the notifier"},
+			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable the notifier"},
+			&cli.StringFlag{Name: "name", Aliases: []string{"n"}, Value: "", Usage: "Name of the notifier"},
+			&cli.BoolFlag{Name: "send-all-events", Aliases: []string{"sa"}, Usage: "If true the notifier will send all events. Default: false"},
+			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
+			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
+			&cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(""), Usage: "List of selected events. Default: []"},
 		},
 		Usage: "Update a notifier",
 		Description: `Update a notifier:
@@ -169,7 +172,7 @@ Examples
 
  # See also 'notifiers' and 'notifiers-remove'
 	`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 
@@ -206,14 +209,15 @@ Examples
 					WebhookURL:  c.String("webhook-url"),
 				},
 			}
-			if len(c.Args()) >= 1 {
-				err = notifiers.Update(currentApp, c.Args()[0], params)
+			if c.Args().Len() >= 1 {
+				err = notifiers.Update(currentApp, c.Args().First(), params)
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-update")
 			}
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
@@ -224,24 +228,25 @@ Examples
 	NotifiersRemoveCommand = cli.Command{
 		Name:     "notifiers-remove",
 		Category: "Notifiers",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Remove an existing notifier from your app",
 		Description: `Remove an existing notifier from your app:
     $ scalingo -a myapp notifier-remove <ID>
 
 		# See also 'notifiers' and 'notifiers-add'
 `,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 1 {
-				err = notifiers.Destroy(currentApp, c.Args()[0])
+			if c.Args().Len() == 1 {
+				err = notifiers.Destroy(currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "notifiers-remove")
 			}
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")

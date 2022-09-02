@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
@@ -27,7 +27,7 @@ func CurrentAppCompletion(c *cli.Context) string {
 		appName = os.Getenv("SCALINGO_APP")
 	}
 	if dir, ok := utils.DetectGit(); appName == "" && ok {
-		appName, err = detect.GetAppNameFromGitRemote(dir, c.GlobalString("remote"))
+		appName, err = detect.GetAppNameFromGitRemote(dir, c.String("remote"))
 		if err != nil {
 			debug.Println(err)
 		}

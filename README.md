@@ -300,7 +300,7 @@ Pushing the tag triggers a GitHub Action which builds the cross-platform binarie
 When the GitHub Action finished, restart the Scalingo application `cli-download-service`:
 
 ```shell
-scalingo --region osc-fr1 --app cli-download-service restart
+scalingo restart --region osc-fr1 --app cli-download-service
 ```
 
 It serves as cache between GitHub and our customers for a more efficient check of what is the new CLI version.

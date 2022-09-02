@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -15,16 +15,12 @@ var (
 		Name:     "rename",
 		Category: "App Management",
 		Flags: []cli.Flag{
-			appFlag,
-			cli.StringFlag{
-				Name:  "new-name",
-				Value: "<new name>",
-				Usage: "New name to give to the app",
-			},
+			&appFlag,
+			&cli.StringFlag{Name: "new-name", Value: "<new name>", Usage: "New name to give to the app"},
 		},
 		Usage:       "Rename an application",
 		Description: "Rename an app\n  Example:\n    'scalingo rename --app my-app --new-name my-app-production'",
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			newName := c.String("new-name")
 			if newName == "<new name>" {
@@ -34,6 +30,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "rename")

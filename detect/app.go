@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/utils"
@@ -20,14 +20,12 @@ func CurrentApp(c *cli.Context) string {
 	var appName string
 	var err error
 
-	if c.GlobalString("app") != "<name>" {
-		appName = c.GlobalString("app")
-	} else if c.String("app") != "<name>" {
+	if c.String("app") != "<name>" {
 		appName = c.String("app")
 	} else if os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
 	} else if dir, ok := utils.DetectGit(); ok {
-		appName, err = GetAppNameFromGitRemote(dir, c.GlobalString("remote"))
+		appName, err = GetAppNameFromGitRemote(dir, c.String("remote"))
 		if err != nil {
 			debug.Println(err)
 		}

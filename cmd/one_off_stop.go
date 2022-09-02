@@ -3,7 +3,7 @@ package cmd
 import (
 	"regexp"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -15,18 +15,18 @@ var (
 		Name:     "one-off-stop",
 		Category: "App Management",
 		Usage:    "Stop a running one-off container",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Description: `Stop a running one-off container
 	Example
 	  'scalingo --app my-app one-off-stop one-off-1234'
 	  'scalingo --app my-app one-off-stop 1234'`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "one-off-stop")
-				return
+				return nil
 			}
-			oneOffLabel := c.Args()[0]
+			oneOffLabel := c.Args().First()
 
 			// If oneOffLabel only contains digits, the client typed something like:
 			//   scalingo one-off-stop 1234
@@ -43,6 +43,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "one-off-stop")

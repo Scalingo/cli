@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"

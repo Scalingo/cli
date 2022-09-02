@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/session"
@@ -14,16 +14,16 @@ var (
 		Name:     "login",
 		Category: "Global",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "api-token", Usage: "Authenticate with a token instead of login/password or SSH"},
-			cli.BoolFlag{Name: "ssh", Usage: "Login with you SSH identity instead of login/password"},
-			cli.StringFlag{Name: "ssh-identity", Value: "ssh-agent", Usage: "Use a custom SSH key, only compatible if --ssh is set"},
-			cli.BoolFlag{Name: "password-only", Usage: "Login with login/password without testing SSH connection"},
+			&cli.StringFlag{Name: "api-token", Usage: "Authenticate with a token instead of login/password or SSH"},
+			&cli.BoolFlag{Name: "ssh", Usage: "Login with you SSH identity instead of login/password"},
+			&cli.StringFlag{Name: "ssh-identity", Value: "ssh-agent", Usage: "Use a custom SSH key, only compatible if --ssh is set"},
+			&cli.BoolFlag{Name: "password-only", Usage: "Login with login/password without testing SSH connection"},
 		},
 		Usage: "Login to Scalingo platform",
 		Description: `
    Example
      'scalingo login'`,
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			if c.Bool("ssh") && c.Bool("password-only") {
 				errorQuit(errors.New("You cannot use both --ssh and --password-only at the same time"))
 			}
@@ -37,6 +37,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "login")

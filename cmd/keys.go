@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
@@ -18,11 +18,12 @@ var (
 
     # See also commands 'keys-add' and 'keys-remove'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			err := keys.List()
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "keys")
@@ -39,15 +40,16 @@ var (
 
     # See also commands 'keys' and 'keys-remove'`,
 
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 2 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 2 {
 				cli.ShowCommandHelp(c, "keys-add")
-				return
+				return nil
 			}
-			err := keys.Add(c.Args()[0], c.Args()[1])
+			err := keys.Add(c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "keys-add")
@@ -64,15 +66,16 @@ var (
 
     # See also commands 'keys' and 'keys-add'`,
 
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 1 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "keys-remove")
-				return
+				return nil
 			}
-			err := keys.Remove(c.Args()[0])
+			err := keys.Remove(c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "keys-remove")

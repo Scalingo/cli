@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -12,7 +12,7 @@ var (
 	DomainsListCommand = cli.Command{
 		Name:     "domains",
 		Category: "Custom Domains",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List the domains of an application",
 		Description: `List all the custom domains of an application:
 
@@ -20,10 +20,10 @@ var (
 
     # See also commands 'domains-add' and 'domains-remove'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 0 {
+			if c.Args().Len() == 0 {
 				err = domains.List(currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "domains")
@@ -32,6 +32,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "domains")
@@ -42,9 +43,9 @@ var (
 		Name:     "domains-add",
 		Category: "Custom Domains",
 		Usage:    "Add a custom domain to an application",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
-			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt"},
+			&cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key"},
 		},
 		Description: `Add a custom domain to an application:
 
@@ -52,10 +53,10 @@ var (
 
     # See also commands 'domains' and 'domains-remove'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 1 {
+			if c.Args().Len() == 1 {
 				cert := c.String("cert")
 				if cert == "domain.crt" {
 					cert = ""
@@ -64,7 +65,7 @@ var (
 				if key == "domain.key" {
 					key = ""
 				}
-				err = domains.Add(currentApp, c.Args()[0], cert, key)
+				err = domains.Add(currentApp, c.Args().First(), cert, key)
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
 			}
@@ -72,6 +73,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "domains-add")
@@ -81,7 +83,7 @@ var (
 	DomainsRemoveCommand = cli.Command{
 		Name:     "domains-remove",
 		Category: "Custom Domains",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Remove a custom domain from an application",
 		Description: `Remove a custom domain from an application:
 
@@ -89,11 +91,11 @@ var (
 
     # See also commands 'domains' and 'domains-add'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 1 {
-				err = domains.Remove(currentApp, c.Args()[0])
+			if c.Args().Len() == 1 {
+				err = domains.Remove(currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "domains-remove")
 			}
@@ -101,6 +103,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "domains-remove")
@@ -112,9 +115,9 @@ var (
 		Name:     "domains-ssl",
 		Category: "Custom Domains",
 		Usage:    "Enable or disable SSL for your custom domains",
-		Flags: []cli.Flag{appFlag,
-			cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt", EnvVar: ""},
-			cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key", EnvVar: ""},
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt"},
+			&cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key"},
 		},
 		Description: `Enable or disable SSL for your custom domains:
 
@@ -124,19 +127,20 @@ var (
 
 		# See also commands 'domains' and 'domains-add'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if len(c.Args()) == 2 && c.Args()[1] == "disable" {
-				err = domains.DisableSSL(currentApp, c.Args()[0])
-			} else if len(c.Args()) == 1 {
-				err = domains.EnableSSL(currentApp, c.Args()[0], c.String("cert"), c.String("key"))
+			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
+				err = domains.DisableSSL(currentApp, c.Args().First())
+			} else if c.Args().Len() == 1 {
+				err = domains.EnableSSL(currentApp, c.Args().First(), c.String("cert"), c.String("key"))
 			} else {
 				cli.ShowCommandHelp(c, "domains-ssl")
 			}
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "domains-ssl")
@@ -146,7 +150,7 @@ var (
 	setCanonicalDomainCommand = cli.Command{
 		Name:     "set-canonical-domain",
 		Category: "App Management",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Set a canonical domain.",
 		Description: `After defining multiple domains on an application, one can need to redirect all requests towards its application to a specific domain. This domain is called the canonical domain. This command sets the canonical domain:
 
@@ -154,17 +158,18 @@ var (
 
     # See also commands 'domains', 'domains-add' and 'unset-canonical-domain'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 1 {
+			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "set-canonical-domain")
-				return
+				return nil
 			}
 
-			err := domains.SetCanonical(currentApp, c.Args()[0])
+			err := domains.SetCanonical(currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "set-canonical-domain")
@@ -174,7 +179,7 @@ var (
 	unsetCanonicalDomainCommand = cli.Command{
 		Name:     "unset-canonical-domain",
 		Category: "App Management",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Unset a canonical domain.",
 		Description: `Unset the canonical domain of this app:
 
@@ -182,17 +187,18 @@ var (
 
     # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
 
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			if len(c.Args()) != 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "unset-canonical-domain")
-				return
+				return nil
 			}
 
 			err := domains.UnsetCanonical(currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "unset-canonical-domain")

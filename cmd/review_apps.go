@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/review_apps"
 
@@ -13,15 +13,15 @@ var (
 	reviewAppsShowCommand = cli.Command{
 		Name:     "review-apps",
 		Category: "Review Apps",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Show review apps of the parent application",
 		Description: `Show review apps of the parent application:
 
 	$ scalingo --app my-app review-apps`,
-		Action: func(c *cli.Context) {
-			if len(c.Args()) != 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "review-apps")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -29,6 +29,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "review-apps")

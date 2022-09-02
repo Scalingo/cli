@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crontasks"
@@ -12,16 +12,16 @@ var (
 	cronTasksListCommand = cli.Command{
 		Name:     "cron-tasks",
 		Category: "Cron Tasks",
-		Flags:    []cli.Flag{appFlag},
+		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List the cron tasks of an application",
 		Description: `List all the cron tasks of an application:
 
     $ scalingo --app my-app cron-jobs`,
 
-		Action: func(c *cli.Context) {
-			if len(c.Args()) > 0 {
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() > 0 {
 				cli.ShowCommandHelp(c, "cron-tasks")
-				return
+				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -29,6 +29,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "cron-tasks")
