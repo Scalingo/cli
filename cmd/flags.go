@@ -45,3 +45,12 @@ func addonNameFromFlags(c *cli.Context, exitIfMissing ...bool) string {
 	debug.Println("[ADDON] Addon name is", addonName)
 	return addonName
 }
+
+func regionNameFromFlags(c *cli.Context) string {
+	for _, cliContext := range c.Lineage() {
+		if cliContext.String("region") != "" {
+			return cliContext.String("region")
+		}
+	}
+	return ""
+}
