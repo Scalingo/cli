@@ -63,7 +63,7 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 	return "", errgo.Newf("[detect] Scalingo Git remote hasn't been found")
 }
 
-// Returns the remote name specified in command flags
+// RemoteNameFromFlags returns the remote name specified in command flags
 func RemoteNameFromFlags(c *cli.Context) string {
 	for _, cliContext := range c.Lineage() {
 		if cliContext.String("remote") != "" {
