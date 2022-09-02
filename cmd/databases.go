@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -39,11 +38,7 @@ Examples
 		`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c)
-			if addonName == "" {
-				fmt.Println("Unable to find the addon name, please use --addon flag.")
-				os.Exit(1)
-			}
+			addonName := addonNameFromFlags(c, true)
 
 			params := scalingo.PeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")

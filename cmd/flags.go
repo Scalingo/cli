@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/Scalingo/go-scalingo/v4/debug"
@@ -21,7 +22,8 @@ var (
 	}
 )
 
-func addonNameFromFlags(c *cli.Context) string {
+// exitIfMissing is optional. Set to true to show a message requesting for the --addon flag.
+func addonNameFromFlags(c *cli.Context, exitIfMissing ...bool) string {
 	var addonName string
 
 	for _, cliContext := range c.Lineage() {
@@ -33,6 +35,11 @@ func addonNameFromFlags(c *cli.Context) string {
 
 	if addonName == "" && os.Getenv("SCALINGO_ADDON") != "" {
 		addonName = os.Getenv("SCALINGO_ADDON")
+	}
+
+	if addonName == "" && len(exitIfMissing) > 0 && exitIfMissing[0] {
+		fmt.Println("Unable to find the addon name, please use --addon flag.")
+		os.Exit(1)
 	}
 
 	debug.Println("[ADDON] Addon name is", addonName)
