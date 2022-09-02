@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/db"
@@ -24,11 +21,8 @@ var (
 		`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c)
-			if addonName == "" {
-				fmt.Println("Unable to find the addon name, please use --addon flag.")
-				os.Exit(1)
-			}
+			addonName := addonNameFromFlags(c, true)
+
 			err := db.ListBackups(c.Context, currentApp, addonName)
 			if err != nil {
 				errorQuit(err)
@@ -48,11 +42,7 @@ var (
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c)
-			if addonName == "" {
-				fmt.Println("Unable to find the addon name, please use --addon flag.")
-				os.Exit(1)
-			}
+			addonName := addonNameFromFlags(c, true)
 
 			err := db.CreateBackup(c.Context, currentApp, addonName)
 			if err != nil {
@@ -85,11 +75,8 @@ var (
 		# See also 'backups' and 'addons'`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c)
-			if addonName == "" {
-				fmt.Println("Unable to find the addon name, please use --addon flag.")
-				os.Exit(1)
-			}
+			addonName := addonNameFromFlags(c, true)
+
 			backup := c.String("backup")
 			opts := db.DownloadBackupOpts{
 				Output: c.String("output"),

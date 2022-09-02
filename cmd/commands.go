@@ -45,7 +45,7 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 			if err != nil {
 				errorQuit(err)
 			}
-			currentRegion := c.String("region")
+			currentRegion := regionNameFromFlags(c)
 
 			// Detecting Region from git remote
 			if currentRegion == "" {
