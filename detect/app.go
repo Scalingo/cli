@@ -64,7 +64,7 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 }
 
 func extractAppNameFromCommandLine(c *cli.Context) string {
-	for _, context := range c.Lineage() {
+	for _, cliContext := range c.Lineage() {
 		if context.String("app") != "<name>" {
 			return context.String("app")
 		}
