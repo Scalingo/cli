@@ -39,10 +39,7 @@ var (
 				return nil
 			}
 
-			var addonID string
-			if c.String("addon") != "<addon_id>" {
-				addonID = c.String("addon")
-			}
+			addonID := addonNameFromFlags(c)
 
 			err := log_drains.List(c.Context, currentApp, log_drains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
@@ -100,10 +97,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
-			var addonID string
-			if c.String("addon") != "<addon_id>" {
-				addonID = c.String("addon")
-			}
+			addonID := addonNameFromFlags(c)
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				cli.ShowCommandHelp(c, "log-drains-add")
@@ -170,10 +164,7 @@ var (
 			}
 			drain := c.Args().First()
 
-			var addonID string
-			if c.String("addon") != "<addon_id>" {
-				addonID = c.String("addon")
-			}
+			addonID := addonNameFromFlags(c)
 
 			if addonID != "" && c.Bool("only-app") {
 				cli.ShowCommandHelp(c, "log-drains-remove")

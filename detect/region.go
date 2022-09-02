@@ -16,7 +16,7 @@ import (
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository
 // If not found it returns an empty string
 func GetRegionFromGitRemote(c *cli.Context, rc *config.RegionsCache) string {
-	remoteName := c.String("remote")
+	remoteName := RemoteNameFromFlags(c)
 
 	if dir, ok := utils.DetectGit(); ok {
 		remotes, err := utils.ScalingoGitRemotes(dir)
