@@ -37,7 +37,7 @@ var (
 				return nil
 			}
 
-			err := db.RedisConsole(db.RedisConsoleOpts{
+			err := db.RedisConsole(c.Context, db.RedisConsoleOpts{
 				App:          detect.CurrentApp(c),
 				Size:         c.String("s"),
 				VariableName: c.String("e"),

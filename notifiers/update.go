@@ -1,27 +1,29 @@
 package notifiers
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 )
 
-func Update(app, ID string, params ProvisionParams) error {
+func Update(ctx context.Context, app, ID string, params ProvisionParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	notifier, err := c.NotifierByID(app, ID)
+	notifier, err := c.NotifierByID(ctx, app, ID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get notifier from server")
 	}
 
-	eventTypes, err := c.EventTypesList()
+	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list event types")
 	}
@@ -43,13 +45,13 @@ func Update(app, ID string, params ProvisionParams) error {
 	}
 
 	if len(params.CollaboratorUsernames) > 0 {
-		params.UserIDs, err = collaboratorUserIDs(c, app, params.CollaboratorUsernames)
+		params.UserIDs, err = collaboratorUserIDs(ctx, c, app, params.CollaboratorUsernames)
 		if err != nil {
 			return errgo.Notef(err, "invalid collaborator usernames")
 		}
 	}
 
-	baseNotifier, err := c.NotifierUpdate(app, ID, params.NotifierParams)
+	baseNotifier, err := c.NotifierUpdate(ctx, app, ID, params.NotifierParams)
 	if err != nil {
 		return errgo.Notef(err, "fail to update notifier")
 	}

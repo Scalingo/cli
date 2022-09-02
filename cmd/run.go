@@ -95,7 +95,7 @@ var (
 				return nil
 			}
 
-			err := apps.Run(opts)
+			err := apps.Run(c.Context, opts)
 			if err != nil {
 				errorQuit(err)
 			}

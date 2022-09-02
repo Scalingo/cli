@@ -1,6 +1,7 @@
 package deployments
 
 import (
+	"context"
 	stdio "io"
 	"os"
 
@@ -10,13 +11,13 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func Logs(app, deploymentID string) error {
-	client, err := config.ScalingoClient()
+func Logs(ctx context.Context, app, deploymentID string) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	if deploymentID == "" {
-		deployments, err := client.DeploymentList(app)
+		deployments, err := client.DeploymentList(ctx, app)
 		if err != nil {
 			return errgo.Notef(err, "fail to get the most recent deployment")
 		}
@@ -26,13 +27,13 @@ func Logs(app, deploymentID string) error {
 		deploymentID = deployments[0].ID
 		io.Infof("-----> Selected the most recent deployment (%s)\n", deploymentID)
 	}
-	deploy, err := client.Deployment(app, deploymentID)
+	deploy, err := client.Deployment(ctx, app, deploymentID)
 
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := client.DeploymentLogs(deploy.Links.Output)
+	res, err := client.DeploymentLogs(ctx, deploy.Links.Output)
 
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)

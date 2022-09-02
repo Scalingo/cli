@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -12,9 +13,9 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
-	httpclient "github.com/Scalingo/go-scalingo/v4/http"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
+	httpclient "github.com/Scalingo/go-scalingo/v5/http"
 )
 
 type DownloadBackupOpts struct {
@@ -22,7 +23,7 @@ type DownloadBackupOpts struct {
 	Silent bool
 }
 
-func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error {
+func DownloadBackup(ctx context.Context, app, addon, backupID string, opts DownloadBackupOpts) error {
 	// Output management (manage -s and -o - flags)
 	var fileWriter io.Writer
 	var logWriter io.Writer
@@ -40,12 +41,12 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 		logWriter = io.Discard
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to download a backup")
 	}
 	if backupID == "" {
-		backups, err := client.BackupList(app, addon)
+		backups, err := client.BackupList(ctx, app, addon)
 		if err != nil {
 			return errgo.Notef(err, "fail to get the most recent backup")
 		}
@@ -66,7 +67,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	spinner.Start()
 
 	// Get backup metadatas
-	backup, err := client.BackupShow(app, addon, backupID)
+	backup, err := client.BackupShow(ctx, app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup")
 	}
@@ -91,7 +92,7 @@ func DownloadBackup(app, addon, backupID string, opts DownloadBackupOpts) error 
 	}
 
 	// Get the pre-signed download URL
-	downloadURL, err := client.BackupDownloadURL(app, addon, backupID)
+	downloadURL, err := client.BackupDownloadURL(ctx, app, addon, backupID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get backup download URL")
 	}

@@ -1,6 +1,7 @@
 package deployments
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"os"
@@ -8,9 +9,9 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
-	scalingoio "github.com/Scalingo/go-scalingo/v4/io"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
+	scalingoio "github.com/Scalingo/go-scalingo/v5/io"
 
 	"gopkg.in/errgo.v1"
 )
@@ -23,8 +24,8 @@ type DeployOpts struct {
 	NoFollow bool
 }
 
-func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
-	c, err := config.ScalingoClient()
+func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpts) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
@@ -34,7 +35,7 @@ func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
 	if strings.HasPrefix(archivePath, "http://") || strings.HasPrefix(archivePath, "https://") {
 		archiveURL = archivePath
 	} else { // if archivePath is a file
-		archiveURL, err = uploadArchivePath(c, archivePath)
+		archiveURL, err = uploadArchivePath(ctx, client, archivePath)
 		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
@@ -49,7 +50,7 @@ func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
 	if strings.TrimSpace(gitRef) != "" {
 		params.GitRef = &gitRef
 	}
-	deployment, err := c.DeploymentsCreate(app, params)
+	deployment, err := client.DeploymentsCreate(ctx, app, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -61,9 +62,9 @@ func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
 		return nil
 	}
 
-	go showQueuedWarnings(c, app, deployment.ID)
+	go showQueuedWarnings(ctx, client, app, deployment.ID)
 	debug.Println("Streaming deployment logs of", app, ":", deployment.ID)
-	err = Stream(&StreamOpts{
+	err = Stream(ctx, &StreamOpts{
 		AppName:      app,
 		DeploymentID: deployment.ID,
 	})
@@ -74,7 +75,7 @@ func Deploy(app, archivePath, gitRef string, opts DeployOpts) error {
 	return nil
 }
 
-func uploadArchivePath(c *scalingo.Client, archivePath string) (string, error) {
+func uploadArchivePath(ctx context.Context, client *scalingo.Client, archivePath string) (string, error) {
 	archiveFd, err := os.OpenFile(archivePath, os.O_RDONLY, 0640)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to open archive: %v", archivePath)
@@ -86,7 +87,7 @@ func uploadArchivePath(c *scalingo.Client, archivePath string) (string, error) {
 		return "", errgo.Notef(err, "fail to stat archive: %v", archivePath)
 	}
 
-	sources, err := c.SourcesCreate()
+	sources, err := client.SourcesCreate(ctx)
 	if err != nil {
 		return "", errgo.Mask(err, errgo.Any)
 	}
@@ -119,10 +120,10 @@ func uploadArchive(uploadURL string, archiveReader io.Reader, archiveSize int64)
 	return http.DefaultClient.Do(req)
 }
 
-func showQueuedWarnings(c *scalingo.Client, appID, deploymentID string) {
+func showQueuedWarnings(ctx context.Context, client *scalingo.Client, appID, deploymentID string) {
 	for {
 		time.Sleep(time.Minute)
-		deployment, err := c.Deployment(appID, deploymentID)
+		deployment, err := client.Deployment(ctx, appID, deploymentID)
 		if err != nil {
 			debug.Printf("Queued deployment watcher error: %s\n", err.Error())
 		}

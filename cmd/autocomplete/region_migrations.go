@@ -15,12 +15,12 @@ func RegionMigrationsAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	migrations, err := client.ListRegionMigrations(appName)
+	migrations, err := client.ListRegionMigrations(c.Context, appName)
 	if err != nil {
 		return nil
 	}

@@ -16,8 +16,8 @@ import (
 	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/http"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
 )
 
@@ -38,7 +38,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Show(currentApp)
+			err := integrationlink.Show(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -100,7 +100,7 @@ var (
 				integrationURL = fmt.Sprintf("https://%s", integrationURL)
 			}
 
-			integrationType, err := scmintegrations.GetTypeFromURL(integrationURL)
+			integrationType, err := scmintegrations.GetTypeFromURL(c.Context, integrationURL)
 			if err != nil {
 				if scalingoerrors.ErrgoRoot(err) == scmintegrations.ErrNotFound {
 					// If no integration matches the given URL, display a helpful status
@@ -167,7 +167,7 @@ var (
 				}
 			}
 
-			err = integrationlink.Create(currentApp, integrationType, integrationURL, params)
+			err = integrationlink.Create(c.Context, currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				scerr, ok := scalingoerrors.ErrgoRoot(err).(*http.RequestFailedError)
 				if ok {
@@ -256,7 +256,7 @@ var (
 				errorQuit(err)
 			}
 
-			err = integrationlink.Update(currentApp, *params)
+			err = integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -284,7 +284,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Delete(currentApp)
+			err := integrationlink.Delete(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -313,7 +313,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			branchName := c.Args().First()
-			err := integrationlink.ManualDeploy(currentApp, branchName)
+			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -346,7 +346,7 @@ var (
 
 			currentApp := detect.CurrentApp(c)
 			pullRequestID := c.Args().First()
-			err := integrationlink.ManualReviewApp(currentApp, pullRequestID)
+			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}

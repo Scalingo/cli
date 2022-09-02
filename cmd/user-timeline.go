@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/user"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 		Action: func(c *cli.Context) error {
 			var err error
 			if c.Args().Len() == 0 {
-				err = user.Events(scalingo.PaginationOpts{
+				err = user.Events(c.Context, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
 				})

@@ -11,11 +11,11 @@ import (
 )
 
 func AddonsAddAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.AddonProvidersList()
+	resources, err := client.AddonProvidersList(c.Context)
 	if len(os.Args) > 1 && err == nil {
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonNameSet := false
@@ -28,7 +28,7 @@ func AddonsAddAutoComplete(c *cli.Context) error {
 		}
 
 		if isAddonNameSet {
-			plans, err := client.AddonProviderPlansList(lastArg)
+			plans, err := client.AddonProviderPlansList(c.Context, lastArg)
 
 			if err == nil {
 				for _, plan := range plans {

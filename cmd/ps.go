@@ -24,7 +24,7 @@ var (
 				return nil
 			}
 
-			err := apps.Ps(currentApp)
+			err := apps.Ps(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}

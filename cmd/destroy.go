@@ -29,7 +29,7 @@ var (
 					currentApp = detect.CurrentApp(c)
 				}
 
-				err := apps.Destroy(currentApp, c.Bool("force"))
+				err := apps.Destroy(c.Context, currentApp, c.Bool("force"))
 				if err != nil {
 					errorQuit(err)
 				}

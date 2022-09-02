@@ -38,7 +38,7 @@ var (
 				return nil
 			}
 
-			err := db.PgSQLConsole(db.PgSQLConsoleOpts{
+			err := db.PgSQLConsole(c.Context, db.PgSQLConsoleOpts{
 				App:          detect.CurrentApp(c),
 				Size:         c.String("s"),
 				VariableName: c.String("e"),

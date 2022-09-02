@@ -15,11 +15,11 @@ func AddonsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.AddonsList(appName)
+	resources, err := client.AddonsList(c.Context, appName)
 	if err == nil {
 		for _, resource := range resources {
 			fmt.Println(resource.ResourceID)

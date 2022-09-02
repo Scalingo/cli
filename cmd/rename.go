@@ -26,7 +26,7 @@ var (
 			if newName == "<new name>" {
 				errorQuit(errors.New("--new-name flag should be defined"))
 			}
-			err := apps.Rename(currentApp, newName)
+			err := apps.Rename(c.Context, currentApp, newName)
 			if err != nil {
 				errorQuit(err)
 			}

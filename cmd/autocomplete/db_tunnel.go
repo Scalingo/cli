@@ -24,11 +24,11 @@ func DbTunnelAutoComplete(c *cli.Context) error {
 	}
 
 	if !strings.HasPrefix(lastArg, "-") {
-		client, err := config.ScalingoClient()
+		client, err := config.ScalingoClient(c.Context)
 		if err != nil {
 			return errgo.Notef(err, "fail to get Scalingo client")
 		}
-		variables, err := client.VariablesList(appName)
+		variables, err := client.VariablesList(c.Context, appName)
 		if err == nil {
 			for _, v := range variables {
 				if matched, err := regexp.Match("SCALINGO_.*_URL", []byte(v.Name)); matched && err == nil {

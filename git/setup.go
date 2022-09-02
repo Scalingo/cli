@@ -1,13 +1,15 @@
 package git
 
 import (
+	"context"
+
 	git "github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 type SetupParams struct {
@@ -15,13 +17,13 @@ type SetupParams struct {
 	ForcePutRemote bool
 }
 
-func Setup(appName string, params SetupParams) error {
+func Setup(ctx context.Context, appName string, params SetupParams) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
 		return errgo.Notef(err, "fail to initialize the Git repository")
 	}
 
-	url, err := getGitEndpoint(appName)
+	url, err := getGitEndpoint(ctx, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to get the Git endpoint of this app")
 	}

@@ -1,11 +1,13 @@
 package log_drains
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 type AddDrainOpts struct {
@@ -14,14 +16,14 @@ type AddDrainOpts struct {
 	Params     scalingo.LogDrainAddParams
 }
 
-func Add(app string, opts AddDrainOpts) error {
-	c, err := config.ScalingoClient()
+func Add(ctx context.Context, app string, opts AddDrainOpts) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to add a log drain")
 	}
 
 	if opts.AddonID == "" || opts.WithAddons {
-		d, err := c.LogDrainAdd(app, opts.Params)
+		d, err := c.LogDrainAdd(ctx, app, opts.Params)
 		if err != nil {
 			io.Status("fail to add drain to", "'"+app+"'", "application:\n\t", err)
 		} else {
@@ -33,7 +35,7 @@ func Add(app string, opts AddDrainOpts) error {
 	}
 
 	isAddonIDPresent := false
-	addons, err := c.AddonsList(app)
+	addons, err := c.AddonsList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list addons")
 	}
@@ -44,7 +46,7 @@ func Add(app string, opts AddDrainOpts) error {
 		}
 
 		if opts.AddonID == addon.ID || opts.WithAddons {
-			d, err := c.LogDrainAddonAdd(app, addon.ID, opts.Params)
+			d, err := c.LogDrainAddonAdd(ctx, app, addon.ID, opts.Params)
 			if err != nil {
 				io.Status("fail to add drain to", "'"+addon.AddonProvider.Name+"'", "addon:\n\t", err)
 			} else {

@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"strings"
@@ -10,8 +11,8 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 type WSEvent struct {
@@ -25,18 +26,18 @@ type LogsRes struct {
 	App     *scalingo.App `json:"app"`
 }
 
-func Logs(appName string, stream bool, n int, filter string) error {
-	c, err := config.ScalingoClient()
+func Logs(ctx context.Context, appName string, stream bool, n int, filter string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	err = checkFilter(c, appName, filter)
+	err = checkFilter(ctx, c, appName, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := c.LogsURL(appName)
+	res, err := c.LogsURL(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -58,7 +59,7 @@ func Logs(appName string, stream bool, n int, filter string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	if err = logs.Dump(logsRes.LogsURL, n, filter); err != nil {
+	if err = logs.Dump(ctx, logsRes.LogsURL, n, filter); err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
@@ -70,7 +71,7 @@ func Logs(appName string, stream bool, n int, filter string) error {
 	return nil
 }
 
-func checkFilter(c *scalingo.Client, appName string, filter string) error {
+func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter string) error {
 	if filter == "" {
 		return nil
 	}
@@ -83,7 +84,7 @@ func checkFilter(c *scalingo.Client, appName string, filter string) error {
 		return nil
 	}
 
-	processes, err := c.AppsContainerTypes(appName)
+	processes, err := c.AppsContainerTypes(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}

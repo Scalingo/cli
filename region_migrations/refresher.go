@@ -12,7 +12,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/utils"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 	"github.com/Scalingo/go-utils/retry"
 )
 
@@ -120,7 +120,7 @@ func (r *Refresher) migrationRefresher() error {
 
 	for {
 		err := retrier.Do(context.Background(), func(ctx context.Context) error {
-			migration, err := client.ShowRegionMigration(r.appID, r.migrationID)
+			migration, err := client.ShowRegionMigration(ctx, r.appID, r.migrationID)
 			if err != nil {
 				return err
 			}

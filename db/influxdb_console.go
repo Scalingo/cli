@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"net"
 	"strings"
 
@@ -15,11 +16,11 @@ type InfluxDBConsoleOpts struct {
 	VariableName string
 }
 
-func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
+func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_INFLUX"
 	}
-	influxdbURL, username, password, err := dbURL(opts.App, opts.VariableName, []string{"http", "https"})
+	influxdbURL, username, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"http", "https"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -44,7 +45,7 @@ func InfluxDBConsole(opts InfluxDBConsoleOpts) error {
 		Size:       opts.Size,
 	}
 
-	err = apps.Run(runOpts)
+	err = apps.Run(ctx, runOpts)
 	if err != nil {
 		return errgo.Newf("fail to run InfluxDB console: %v", err)
 	}

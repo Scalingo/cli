@@ -1,6 +1,7 @@
 package scmintegrations
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -8,16 +9,16 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
-func List() error {
-	c, err := config.ScalingoAuthClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrations, err := c.SCMIntegrationsList()
+	integrations, err := c.SCMIntegrationsList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list SCM integrations")
 	}

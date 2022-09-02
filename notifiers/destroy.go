@@ -1,6 +1,7 @@
 package notifiers
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -8,22 +9,22 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Destroy(app string, ID string) error {
+func Destroy(ctx context.Context, app string, ID string) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
 	if ID == "" {
 		return errgo.New("no ID defined")
 	}
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	notifier, err := getNotifier(c, app, ID)
+	notifier, err := getNotifier(ctx, c, app, ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -41,7 +42,7 @@ func Destroy(app string, ID string) error {
 		return errgo.Newf("'%s' is not '%s', aborting…\n", validationID, ID)
 	}
 
-	err = c.NotifierDestroy(app, notifier.GetID())
+	err = c.NotifierDestroy(ctx, app, notifier.GetID())
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -50,8 +51,8 @@ func Destroy(app string, ID string) error {
 	return nil
 }
 
-func getNotifier(c *scalingo.Client, app string, ID string) (scalingo.DetailedNotifier, error) {
-	resources, err := c.NotifiersList(app)
+func getNotifier(ctx context.Context, c *scalingo.Client, app string, ID string) (scalingo.DetailedNotifier, error) {
+	resources, err := c.NotifiersList(ctx, app)
 	if err != nil {
 		return nil, errgo.Mask(err, errgo.Any)
 	}

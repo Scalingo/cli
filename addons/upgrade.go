@@ -1,14 +1,16 @@
 package addons
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Upgrade(app, addonID, plan string) error {
+func Upgrade(ctx context.Context, app, addonID, plan string) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	} else if addonID == "" {
@@ -17,22 +19,22 @@ func Upgrade(app, addonID, plan string) error {
 		return errgo.New("no plan defined")
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	addon, err := checkAddonExist(c, app, addonID)
+	addon, err := checkAddonExist(ctx, c, app, addonID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	planID, err := checkPlanExist(c, addon.AddonProvider.ID, plan)
+	planID, err := checkPlanExist(ctx, c, addon.AddonProvider.ID, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	params, err := c.AddonUpgrade(app, addon.ID, scalingo.AddonUpgradeParams{
+	params, err := c.AddonUpgrade(ctx, app, addon.ID, scalingo.AddonUpgradeParams{
 		PlanID: planID,
 	})
 	if err != nil {

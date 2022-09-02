@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,13 +11,13 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func ContainerTypes(app string) error {
-	c, err := config.ScalingoClient()
+func ContainerTypes(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to list container types")
 	}
 
-	containerTypes, err := c.AppsContainerTypes(app)
+	containerTypes, err := c.AppsContainerTypes(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application container types")
 	}
@@ -25,7 +26,7 @@ func ContainerTypes(app string) error {
 	t.SetHeader([]string{"Name", "Amount", "Size", "Command"})
 
 	hasAutoscaler := false
-	autoscalers, err := c.AutoscalersList(app)
+	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the autoscalers")
 	}

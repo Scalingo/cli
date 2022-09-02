@@ -1,6 +1,7 @@
 package notifiers
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -10,21 +11,21 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Details(app, ID string) error {
-	c, err := config.ScalingoClient()
+func Details(ctx context.Context, app, ID string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	baseNotifier, err := c.NotifierByID(app, ID)
+	baseNotifier, err := c.NotifierByID(ctx, app, ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 	notifier := baseNotifier.Specialize()
 
-	eventTypes, err := c.EventTypesList()
+	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list event types")
 	}

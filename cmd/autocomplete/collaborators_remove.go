@@ -15,11 +15,11 @@ func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	collaborators, err := client.CollaboratorsList(appName)
+	collaborators, err := client.CollaboratorsList(c.Context, appName)
 	if err == nil {
 		for _, col := range collaborators {
 			fmt.Println(col.Email)

@@ -24,7 +24,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = domains.List(currentApp)
+				err = domains.List(c.Context, currentApp)
 			} else {
 				cli.ShowCommandHelp(c, "domains")
 			}
@@ -65,7 +65,7 @@ var (
 				if key == "domain.key" {
 					key = ""
 				}
-				err = domains.Add(currentApp, c.Args().First(), cert, key)
+				err = domains.Add(c.Context, currentApp, c.Args().First(), cert, key)
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
 			}
@@ -95,7 +95,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = domains.Remove(currentApp, c.Args().First())
+				err = domains.Remove(c.Context, currentApp, c.Args().First())
 			} else {
 				cli.ShowCommandHelp(c, "domains-remove")
 			}
@@ -131,9 +131,9 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
-				err = domains.DisableSSL(currentApp, c.Args().First())
+				err = domains.DisableSSL(c.Context, currentApp, c.Args().First())
 			} else if c.Args().Len() == 1 {
-				err = domains.EnableSSL(currentApp, c.Args().First(), c.String("cert"), c.String("key"))
+				err = domains.EnableSSL(c.Context, currentApp, c.Args().First(), c.String("cert"), c.String("key"))
 			} else {
 				cli.ShowCommandHelp(c, "domains-ssl")
 			}
@@ -165,7 +165,7 @@ var (
 				return nil
 			}
 
-			err := domains.SetCanonical(currentApp, c.Args().First())
+			err := domains.SetCanonical(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
@@ -194,7 +194,7 @@ var (
 				return nil
 			}
 
-			err := domains.UnsetCanonical(currentApp)
+			err := domains.UnsetCanonical(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}

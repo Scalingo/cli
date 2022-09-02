@@ -2,6 +2,7 @@ package db
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -16,11 +17,11 @@ type RedisConsoleOpts struct {
 	VariableName string
 }
 
-func RedisConsole(opts RedisConsoleOpts) error {
+func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_REDIS"
 	}
-	redisURL, _, password, err := dbURL(opts.App, opts.VariableName, []string{"redis", "rediss"})
+	redisURL, _, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"redis", "rediss"})
 	if err != nil {
 		return err
 	}
@@ -42,7 +43,7 @@ func RedisConsole(opts RedisConsoleOpts) error {
 		StdinCopyFunc: redisStdinCopy,
 	}
 
-	err = apps.Run(runOpts)
+	err = apps.Run(ctx, runOpts)
 	if err != nil {
 		return fmt.Errorf("fail to run Redis console: %v", err)
 	}

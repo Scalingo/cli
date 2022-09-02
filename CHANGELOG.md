@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
 * chore(deps): Upgrade urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
 
 # 1.24.2

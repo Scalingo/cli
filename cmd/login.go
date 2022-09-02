@@ -28,7 +28,7 @@ var (
 				errorQuit(errors.New("You cannot use both --ssh and --password-only at the same time"))
 			}
 
-			err := session.Login(session.LoginOpts{
+			err := session.Login(c.Context, session.LoginOpts{
 				APIToken:     c.String("api-token"),
 				PasswordOnly: c.Bool("password-only"),
 				SSH:          c.Bool("ssh"),

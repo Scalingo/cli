@@ -3,14 +3,14 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 type AppCommands struct {
@@ -33,13 +33,13 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 
 			currentUser, err := config.C.CurrentUser()
 			if err != nil || currentUser == nil {
-				err := session.Login(session.LoginOpts{APIToken: token})
+				err := session.Login(c.Context, session.LoginOpts{APIToken: token})
 				if err != nil {
 					errorQuit(err)
 				}
 			}
 
-			regions, err := config.EnsureRegionsCache(config.C, config.GetRegionOpts{
+			regions, err := config.EnsureRegionsCache(c.Context, config.C, config.GetRegionOpts{
 				Token: token,
 			})
 			if err != nil {

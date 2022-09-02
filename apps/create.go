@@ -1,38 +1,39 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Create(appName string, remote string, buildpack string) error {
-	c, err := config.ScalingoClient()
+func Create(ctx context.Context, appName string, remote string, buildpack string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	app, err := c.AppsCreate(scalingo.AppsCreateOpts{Name: appName})
+	app, err := c.AppsCreate(ctx, scalingo.AppsCreateOpts{Name: appName})
 	if err != nil {
 		if utils.IsRegionDisabledError(err) {
-			return handleRegionDisabledError(appName, c)
+			return handleRegionDisabledError(ctx, appName, c)
 		}
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			return errgo.Notef(err, "fail to create the application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
-		return utils.AskAndStopFreeTrial(c, func() error {
-			return Create(appName, remote, buildpack)
+		return utils.AskAndStopFreeTrial(ctx, c, func() error {
+			return Create(ctx, appName, remote, buildpack)
 		})
 	}
 
 	if buildpack != "" {
 		fmt.Println("Installing custom buildpack...")
-		_, _, err := c.VariableSet(app.Name, "BUILDPACK_URL", buildpack)
+		_, _, err := c.VariableSet(ctx, app.Name, "BUILDPACK_URL", buildpack)
 		if err != nil {
 			fmt.Println("Failed to set custom buildpack. Please add BUILDPACK_URL=" + buildpack + " to your application environment")
 		}
@@ -47,8 +48,8 @@ func Create(appName string, remote string, buildpack string) error {
 	return nil
 }
 
-func handleRegionDisabledError(appName string, c *scalingo.Client) error {
-	regions, rerr := c.RegionsList()
+func handleRegionDisabledError(ctx context.Context, appName string, c *scalingo.Client) error {
+	regions, rerr := c.RegionsList(ctx)
 	if rerr != nil {
 		return errgo.Notef(rerr, "region is disabled, failed to list available regions")
 	}

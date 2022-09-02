@@ -23,7 +23,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
 
-			err := db.ListBackups(currentApp, addonName)
+			err := db.ListBackups(c.Context, currentApp, addonName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -44,7 +44,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
 
-			err := db.CreateBackup(currentApp, addonName)
+			err := db.CreateBackup(c.Context, currentApp, addonName)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -83,7 +83,7 @@ var (
 				Silent: c.Bool("silent"),
 			}
 
-			err := db.DownloadBackup(currentApp, addonName, backup, opts)
+			err := db.DownloadBackup(c.Context, currentApp, addonName, backup, opts)
 			if err != nil {
 				errorQuit(err)
 			}

@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -11,13 +12,13 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func List() error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	apps, err := c.AppsList()
+	apps, err := c.AppsList(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

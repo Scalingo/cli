@@ -24,7 +24,7 @@ var (
 		Action: func(c *cli.Context) error {
 			regionName := regionNameFromFlags(c)
 			if regionName != "" {
-				err := config.SetRegion(regionName)
+				err := config.SetRegion(c.Context, regionName)
 				if err != nil {
 					errorQuit(err)
 				}

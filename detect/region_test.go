@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 func TestGetRegionFromGitRemote(t *testing.T) {

@@ -1,6 +1,7 @@
 package scmintegrations
 
 import (
+	"context"
 	"os"
 	"strings"
 
@@ -9,30 +10,30 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func ImportKeys(id string) error {
+func ImportKeys(ctx context.Context, id string) error {
 	var keys []scalingo.Key
 
-	c, err := config.ScalingoAuthClient()
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integration, err := c.SCMIntegrationsShow(id)
+	integration, err := c.SCMIntegrationsShow(ctx, id)
 	if err != nil {
 		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
 	}
 
-	importedKeys, err := c.SCMIntegrationsImportKeys(id)
+	importedKeys, err := c.SCMIntegrationsImportKeys(ctx, id)
 	if err != nil {
 		return errgo.Notef(err, "fail to import keys")
 	}
 
 	nbrKeys := len(importedKeys)
 	if nbrKeys == 0 {
-		alreadyImportedKeys, err := keysContainsName(c, integration.SCMType.Str())
+		alreadyImportedKeys, err := keysContainsName(ctx, c, integration.SCMType.Str())
 		if err != nil {
 			return errgo.Notef(err, "fail to list already imported keys")
 		}
@@ -77,8 +78,8 @@ func ImportKeys(id string) error {
 	return nil
 }
 
-func keysContainsName(c *scalingo.Client, name string) ([]scalingo.Key, error) {
-	keys, err := c.KeysList()
+func keysContainsName(ctx context.Context, c *scalingo.Client, name string) ([]scalingo.Key, error) {
+	keys, err := c.KeysList(ctx)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to get keys")
 	}

@@ -1,6 +1,8 @@
 package db
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
@@ -12,11 +14,11 @@ type PgSQLConsoleOpts struct {
 	VariableName string
 }
 
-func PgSQLConsole(opts PgSQLConsoleOpts) error {
+func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 	if opts.VariableName == "" {
 		opts.VariableName = "SCALINGO_POSTGRESQL"
 	}
-	postgreSQLURL, user, _, err := dbURL(opts.App, opts.VariableName, []string{"postgres", "postgis"})
+	postgreSQLURL, user, _, err := dbURL(ctx, opts.App, opts.VariableName, []string{"postgres", "postgis"})
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -28,7 +30,7 @@ func PgSQLConsole(opts PgSQLConsoleOpts) error {
 		Size:       opts.Size,
 	}
 
-	err = apps.Run(runOpts)
+	err = apps.Run(ctx, runOpts)
 	if err != nil {
 		return errgo.Newf("fail to run PostgreSQL console: %v", err)
 	}

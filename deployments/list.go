@@ -1,6 +1,7 @@
 package deployments
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -12,12 +13,12 @@ import (
 	"github.com/Scalingo/cli/utils"
 )
 
-func List(app string) error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context, app string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	deployments, err := c.DeploymentList(app)
+	deployments, err := c.DeploymentList(ctx, app)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application deployments")
 	}

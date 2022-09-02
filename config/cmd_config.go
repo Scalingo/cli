@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 
@@ -8,8 +9,8 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-func SetRegion(regionName string) error {
-	region, err := GetRegion(C, regionName, GetRegionOpts{})
+func SetRegion(ctx context.Context, regionName string) error {
+	region, err := GetRegion(ctx, C, regionName, GetRegionOpts{})
 	if err != nil {
 		return errgo.Notef(err, "fail to select region")
 	}

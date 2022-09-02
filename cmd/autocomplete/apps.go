@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"encoding/gob"
 	"os"
 	"path/filepath"
@@ -9,8 +10,8 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 type appsCache struct {
@@ -24,7 +25,7 @@ var (
 	errExpiredCache   = errgo.New("apps has expired")
 )
 
-func appsList() ([]*scalingo.App, error) {
+func appsList(ctx context.Context) ([]*scalingo.App, error) {
 	var (
 		err  error
 		apps []*scalingo.App
@@ -33,11 +34,11 @@ func appsList() ([]*scalingo.App, error) {
 	apps, err = appsAutoCompleteCache()
 	if err != nil {
 		debug.Println("fail to get applications autocomplete cache make GET request", err)
-		c, err := config.ScalingoClient()
+		c, err := config.ScalingoClient(ctx)
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to get Scalingo client")
 		}
-		apps, err = c.AppsList()
+		apps, err = c.AppsList(ctx)
 		if err != nil || len(apps) == 0 {
 			return nil, errgo.Mask(err)
 		}

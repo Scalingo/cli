@@ -69,7 +69,7 @@ var (
 				return nil
 			}
 
-			err := db.Tunnel(db.TunnelOpts{
+			err := db.Tunnel(c.Context, db.TunnelOpts{
 				App:       currentApp,
 				DBEnvVar:  c.Args().First(),
 				Identity:  sshIdentity,

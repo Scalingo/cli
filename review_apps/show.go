@@ -1,6 +1,7 @@
 package review_apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -12,13 +13,13 @@ import (
 	"github.com/Scalingo/cli/utils"
 )
 
-func Show(appID string) error {
-	c, err := config.ScalingoClient()
+func Show(ctx context.Context, appID string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	reviewApps, err := c.SCMRepoLinkReviewApps(appID)
+	reviewApps, err := c.SCMRepoLinkReviewApps(ctx, appID)
 	if err != nil {
 		return errgo.Notef(err, "fail to get review apps for this app")
 	}
@@ -32,7 +33,7 @@ func Show(appID string) error {
 	for _, ra := range reviewApps {
 		date := ra.CreatedAt.Local().Format(utils.TimeFormat)
 
-		app, err := c.AppsShow(ra.AppID)
+		app, err := c.AppsShow(ctx, ra.AppID)
 		if err != nil {
 			return errgo.Notef(err, "fail to get app from review app")
 		}

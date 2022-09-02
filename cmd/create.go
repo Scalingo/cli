@@ -24,7 +24,8 @@ var (
 				_ = cli.ShowCommandHelp(c, "create")
 				return nil
 			}
-			err := apps.Create(c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"))
+      
+			err := apps.Create(c.Context, c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"))
 			if err != nil {
 				errorQuit(err)
 			}

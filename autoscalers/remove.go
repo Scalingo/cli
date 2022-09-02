@@ -1,6 +1,8 @@
 package autoscalers
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -8,13 +10,13 @@ import (
 	"github.com/Scalingo/go-utils/errors"
 )
 
-func Remove(app, containerType string) error {
-	c, err := config.ScalingoClient()
+func Remove(ctx context.Context, app, containerType string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	autoscaler, err := getFromContainerType(c, app, containerType)
+	autoscaler, err := getFromContainerType(ctx, c, app, containerType)
 	if err != nil {
 		if errors.ErrgoRoot(err) == ErrNotFound {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
@@ -23,7 +25,7 @@ func Remove(app, containerType string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	err = c.AutoscalerRemove(app, autoscaler.ID)
+	err = c.AutoscalerRemove(ctx, app, autoscaler.ID)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

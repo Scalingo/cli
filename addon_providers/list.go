@@ -1,6 +1,7 @@
 package addon_providers
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -9,13 +10,13 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List() error {
-	c, err := config.ScalingoClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	addonProviders, err := c.AddonProvidersList()
+	addonProviders, err := c.AddonProvidersList(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

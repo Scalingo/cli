@@ -1,14 +1,15 @@
 package region_migrations
 
 import (
+	"context"
 	"fmt"
 
 	errgo "gopkg.in/errgo.v1"
 
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
-func WatchMigration(client *scalingo.Client, appId, migrationId string, opts RefreshOpts) error {
+func WatchMigration(ctx context.Context, client *scalingo.Client, appId, migrationId string, opts RefreshOpts) error {
 	refresher := NewRefresher(client, appId, migrationId, opts)
 	migration, err := refresher.Start()
 	if err != nil {
@@ -19,16 +20,16 @@ func WatchMigration(client *scalingo.Client, appId, migrationId string, opts Ref
 		return nil
 	}
 
-	migrationFinished(appId, *migration, opts)
+	migrationFinished(ctx, appId, *migration, opts)
 
 	return nil
 }
 
-func migrationFinished(appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
+func migrationFinished(ctx context.Context, appId string, migration scalingo.RegionMigration, opts RefreshOpts) {
 	fmt.Printf("\n\n")
 	switch migration.Status {
 	case scalingo.RegionMigrationStatusDone:
-		showMigrationStatusSuccess(appId, migration)
+		showMigrationStatusSuccess(ctx, appId, migration)
 	case scalingo.RegionMigrationStatusError:
 		fallthrough
 	case scalingo.RegionMigrationStatusPreflightError:

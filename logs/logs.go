@@ -2,6 +2,7 @@ package logs
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net/url"
 	"os"
@@ -21,7 +22,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 const (
@@ -34,13 +35,13 @@ type WSEvent struct {
 	Timestamp time.Time `json:"timestamp"`
 }
 
-func Dump(logsURL string, n int, filter string) error {
-	c, err := config.ScalingoClient()
+func Dump(ctx context.Context, logsURL string, n int, filter string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	res, err := c.Logs(logsURL, n, filter)
+	res, err := c.Logs(ctx, logsURL, n, filter)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

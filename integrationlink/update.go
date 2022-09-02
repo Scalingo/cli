@@ -1,32 +1,34 @@
 package integrationlink
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Update(app string, params scalingo.SCMRepoLinkUpdateParams) error {
+func Update(ctx context.Context, app string, params scalingo.SCMRepoLinkUpdateParams) error {
 	if app == "" {
 		return errgo.New("no app defined")
 	}
 
-	c, err := config.ScalingoClient()
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	_, err = c.SCMRepoLinkUpdate(app, params)
+	_, err = c.SCMRepoLinkUpdate(ctx, app, params)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			return errgo.Notef(err, "fail to update integration link")
 		}
 
-		return utils.AskAndStopFreeTrial(c, func() error {
-			return Update(app, params)
+		return utils.AskAndStopFreeTrial(ctx, c, func() error {
+			return Update(ctx, app, params)
 		})
 	}
 

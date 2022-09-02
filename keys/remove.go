@@ -1,25 +1,26 @@
 package keys
 
 import (
+	"context"
 	"fmt"
 
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func Remove(name string) error {
-	c, err := config.ScalingoAuthClient()
+func Remove(ctx context.Context, name string) error {
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	k, err := keyByName(c, name)
+	k, err := keyByName(ctx, c, name)
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	err = c.KeysDelete(k.ID)
+	err = c.KeysDelete(ctx, k.ID)
 	if err != nil {
 		return errgo.Mask(err)
 	}
@@ -28,8 +29,8 @@ func Remove(name string) error {
 	return nil
 }
 
-func keyByName(c *scalingo.Client, name string) (*scalingo.Key, error) {
-	keys, err := c.KeysList()
+func keyByName(ctx context.Context, c *scalingo.Client, name string) (*scalingo.Key, error) {
+	keys, err := c.KeysList(ctx)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}

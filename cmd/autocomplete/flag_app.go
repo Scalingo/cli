@@ -5,11 +5,11 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 func FlagAppAutoComplete(c *cli.Context) bool {
-	apps, err := appsList()
+	apps, err := appsList(c.Context)
 	if err != nil {
 		debug.Println("fail to get apps list:", err)
 		return false

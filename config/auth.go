@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -15,7 +16,7 @@ import (
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
 )
 
@@ -29,7 +30,7 @@ var (
 	ErrUnauthenticated = errgo.New("user unauthenticated")
 )
 
-func Auth() (*scalingo.User, string, error) {
+func Auth(ctx context.Context) (*scalingo.User, string, error) {
 	var user *scalingo.User
 	var tokens string
 	var err error
@@ -38,7 +39,7 @@ func Auth() (*scalingo.User, string, error) {
 		err = errors.New("Fail to login (interactive mode disabled)")
 	} else {
 		for i := 0; i < 3; i++ {
-			user, tokens, err = tryAuth()
+			user, tokens, err = tryAuth(ctx)
 			if err == nil {
 				break
 			} else if scalingoerrors.ErrgoRoot(err) == io.EOF {
@@ -205,7 +206,7 @@ func (a *CliAuthenticator) authHost() (string, error) {
 	return strings.Split(u.Host, ":")[0], nil
 }
 
-func tryAuth() (*scalingo.User, string, error) {
+func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 	var login string
 	var err error
 
@@ -230,7 +231,7 @@ func tryAuth() (*scalingo.User, string, error) {
 	otpRequired := false
 	retryAuth := true
 
-	c, err := ScalingoUnauthenticatedAuthClient()
+	c, err := ScalingoUnauthenticatedAuthClient(ctx)
 	if err != nil {
 		return nil, "", errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
 	}
@@ -253,7 +254,7 @@ func tryAuth() (*scalingo.User, string, error) {
 			return nil, "", errgo.Notef(err, "fail to get current hostname")
 		}
 
-		apiToken, err = c.TokenCreateWithLogin(scalingo.TokenCreateParams{
+		apiToken, err = c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
 			Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 		}, loginParams)
 		if err != nil {
@@ -267,11 +268,11 @@ func tryAuth() (*scalingo.User, string, error) {
 		}
 	}
 
-	client, err := ScalingoAuthClientFromToken(apiToken.Token)
+	client, err := ScalingoAuthClientFromToken(ctx, apiToken.Token)
 	if err != nil {
 		return nil, "", errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
 	}
-	userInformation, err := client.Self()
+	userInformation, err := client.Self(ctx)
 	if err != nil {
 		return nil, "", errgo.Notef(err, "fail to get account data")
 	}

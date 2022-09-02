@@ -1,6 +1,7 @@
 package scmintegrations
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/url"
@@ -8,23 +9,23 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 var ErrNotFound = errors.New("SCM integration not found")
 
-func checkIfIntegrationAlreadyExist(c *scalingo.Client, id string) bool {
-	integrations, _ := c.SCMIntegrationsShow(id)
+func checkIfIntegrationAlreadyExist(ctx context.Context, c *scalingo.Client, id string) bool {
+	integrations, _ := c.SCMIntegrationsShow(ctx, id)
 	return integrations != nil
 }
 
-func GetTypeFromURL(integrationURL string) (scalingo.SCMType, error) {
-	c, err := config.ScalingoClient()
+func GetTypeFromURL(ctx context.Context, integrationURL string) (scalingo.SCMType, error) {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrations, err := c.SCMIntegrationsList()
+	integrations, err := c.SCMIntegrationsList(ctx)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to list SCM integrations")
 	}

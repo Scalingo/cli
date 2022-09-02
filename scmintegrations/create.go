@@ -1,11 +1,13 @@
 package scmintegrations
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 type CreateArgs struct {
@@ -14,13 +16,13 @@ type CreateArgs struct {
 	Token   string
 }
 
-func Create(args CreateArgs) error {
-	c, err := config.ScalingoAuthClient()
+func Create(ctx context.Context, args CreateArgs) error {
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	integrationExist := checkIfIntegrationAlreadyExist(c, args.SCMType.Str())
+	integrationExist := checkIfIntegrationAlreadyExist(ctx, c, args.SCMType.Str())
 	if integrationExist {
 		io.Statusf("SCM Integration '%s' is already linked with your Scalingo account.\n", scalingo.SCMTypeDisplay[args.SCMType])
 		return nil
@@ -32,7 +34,7 @@ func Create(args CreateArgs) error {
 		return nil
 	}
 
-	_, err = c.SCMIntegrationsCreate(args.SCMType, args.URL, args.Token)
+	_, err = c.SCMIntegrationsCreate(ctx, args.SCMType, args.URL, args.Token)
 	if err != nil {
 		return errgo.Notef(err, "fail to create the SCM integration")
 	}

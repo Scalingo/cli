@@ -15,11 +15,11 @@ func EnvUnsetAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	variables, err := client.VariablesList(appName)
+	variables, err := client.VariablesList(c.Context, appName)
 	if err == nil {
 		for _, v := range variables {
 			fmt.Println(v.Name)

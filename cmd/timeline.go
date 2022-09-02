@@ -6,7 +6,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/go-scalingo/v4"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = apps.Events(currentApp, scalingo.PaginationOpts{
+				err = apps.Events(c.Context, currentApp, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
 				})

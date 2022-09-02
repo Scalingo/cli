@@ -23,7 +23,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "stats")
-			} else if err := apps.Stats(currentApp, c.Bool("stream")); err != nil {
+			} else if err := apps.Stats(c.Context, currentApp, c.Bool("stream")); err != nil {
 				errorQuit(err)
 			}
 			return nil

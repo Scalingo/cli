@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -9,22 +10,22 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
-func Info(appName string) error {
-	c, err := config.ScalingoClient()
+func Info(ctx context.Context, appName string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	app, err := c.AppsShow(appName)
+	app, err := c.AppsShow(ctx, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to get the application information")
 	}
 
-	stackName, err := getStackName(c, app.StackID)
+	stackName, err := getStackName(ctx, c, app.StackID)
 	if err != nil {
 		debug.Println("Failed to get the stack name from its ID:", err)
 		stackName = app.StackID
@@ -41,8 +42,8 @@ func Info(appName string) error {
 	return nil
 }
 
-func getStackName(c *scalingo.Client, stackID string) (string, error) {
-	stacks, err := c.StacksList()
+func getStackName(ctx context.Context, c *scalingo.Client, stackID string) (string, error) {
+	stacks, err := c.StacksList(ctx)
 	if err != nil {
 		return "", err
 	}

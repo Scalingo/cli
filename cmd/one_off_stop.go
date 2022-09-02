@@ -39,7 +39,7 @@ var (
 				oneOffLabel = "one-off-" + oneOffLabel
 			}
 
-			err = apps.OneOffStop(currentApp, oneOffLabel)
+			err = apps.OneOffStop(c.Context, currentApp, oneOffLabel)
 			if err != nil {
 				errorQuit(err)
 			}

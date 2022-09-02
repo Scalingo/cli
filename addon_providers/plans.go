@@ -1,6 +1,7 @@
 package addon_providers
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,13 +11,13 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Plans(addon string) error {
-	c, err := config.ScalingoClient()
+func Plans(ctx context.Context, addon string) error {
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	plans, err := c.AddonProviderPlansList(addon)
+	plans, err := c.AddonProviderPlansList(ctx, addon)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

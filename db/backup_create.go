@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -9,20 +10,20 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v4"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 )
 
-func CreateBackup(app, addon string) error {
+func CreateBackup(ctx context.Context, app, addon string) error {
 	spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spinner.Suffix = " Schedule a new backup"
 	spinner.Start()
 	defer spinner.Stop()
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	backup, err := client.BackupCreate(app, addon)
+	backup, err := client.BackupCreate(ctx, app, addon)
 	if err != nil {
 		return err
 	}
@@ -39,7 +40,7 @@ func CreateBackup(app, addon string) error {
 
 		time.Sleep(1 * time.Second)
 
-		backup, err = client.BackupShow(app, addon, backup.ID)
+		backup, err = client.BackupShow(ctx, app, addon, backup.ID)
 		if err != nil {
 			return errgo.Notef(err, "fail to refresh backup state")
 		}

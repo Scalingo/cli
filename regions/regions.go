@@ -1,6 +1,7 @@
 package regions
 
 import (
+	"context"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -9,12 +10,12 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List() error {
-	c, err := config.ScalingoAuthClient()
+func List(ctx context.Context) error {
+	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo API client")
 	}
-	regions, err := c.RegionsList()
+	regions, err := c.RegionsList(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to list available regions")
 	}

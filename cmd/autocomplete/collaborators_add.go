@@ -8,8 +8,8 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v4"
-	"github.com/Scalingo/go-scalingo/v4/debug"
+	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v5/debug"
 )
 
 func CollaboratorsAddAutoComplete(c *cli.Context) error {
@@ -19,17 +19,17 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	apps, err := appsList()
+	apps, err := appsList(c.Context)
 	if err != nil {
 		debug.Println("fail to get apps list:", err)
 		return nil
 	}
 
-	client, err := config.ScalingoClient()
+	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	currentAppCollaborators, err := client.CollaboratorsList(appName)
+	currentAppCollaborators, err := client.CollaboratorsList(c.Context, appName)
 	if err != nil {
 		return nil
 	}
@@ -41,7 +41,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 	for _, app := range apps {
 		go func(app *scalingo.App) {
 			defer wg.Done()
-			appCollaborators, erro := client.CollaboratorsList(app.Name)
+			appCollaborators, erro := client.CollaboratorsList(c.Context, app.Name)
 			if erro != nil {
 				config.C.Logger.Println(erro.Error())
 				apiError = erro

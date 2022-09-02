@@ -9,7 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/go-scalingo/v4/io"
+	"github.com/Scalingo/go-scalingo/v5/io"
 )
 
 var (
@@ -27,7 +27,7 @@ var (
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
-				err := deployments.ResetCache(currentApp)
+				err := deployments.ResetCache(c.Context, currentApp)
 				if err != nil {
 					errorQuit(err)
 				}
@@ -47,7 +47,7 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.List(currentApp)
+			err := deployments.List(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -73,7 +73,7 @@ var (
 				deploymentID = c.Args().First()
 			}
 
-			err := deployments.Logs(currentApp, deploymentID)
+			err := deployments.Logs(c.Context, currentApp, deploymentID)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -93,7 +93,7 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.Stream(&deployments.StreamOpts{
+			err := deployments.Stream(c.Context, &deployments.StreamOpts{
 				AppName: currentApp,
 			})
 			if err != nil {
@@ -142,13 +142,13 @@ var (
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
-				err := deployments.DeployWar(currentApp, archivePath, gitRef, opts)
+				err := deployments.DeployWar(c.Context, currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(err)
 				}
 			} else {
 				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
-				err := deployments.Deploy(currentApp, archivePath, gitRef, opts)
+				err := deployments.Deploy(c.Context, currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(err)
 				}

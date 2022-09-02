@@ -37,7 +37,7 @@ var (
 				return nil
 			}
 
-			err := db.InfluxDBConsole(db.InfluxDBConsoleOpts{
+			err := db.InfluxDBConsole(c.Context, db.InfluxDBConsoleOpts{
 				App:          detect.CurrentApp(c),
 				Size:         c.String("s"),
 				VariableName: c.String("e"),
