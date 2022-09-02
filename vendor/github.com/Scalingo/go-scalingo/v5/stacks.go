@@ -9,28 +9,18 @@ import (
 	httpclient "github.com/Scalingo/go-scalingo/v5/http"
 )
 
-type Stack struct {
-	ID           string
-	CreatedAt    time.Time
-	Name         string
-	Description  string
-	BaseImage    string
-	Default      bool
-	DeprecatedAt time.Time
+type DeprecationDate struct {
+	time.Time
 }
 
-// This is to properly manage the deprecation date. It is retrieved from the API
-// as only the date part (YYYY-MM-DD). Go-lang cannot unmarshal it directly into
-// a time.Time, so it is considered a string and converted into a time.Time later
-// (cf. func jsonStackToStack)
-type jsonStack struct {
-	ID           string    `json:"id"`
-	CreatedAt    time.Time `json:"created_at"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	BaseImage    string    `json:"base_image"`
-	Default      bool      `json:"default"`
-	DeprecatedAt string    `json:"deprecated_at"`
+type Stack struct {
+	ID           string          `json:"id"`
+	CreatedAt    time.Time       `json:"created_at"`
+	Name         string          `json:"name"`
+	Description  string          `json:"description"`
+	BaseImage    string          `json:"base_image"`
+	Default      bool            `json:"default"`
+	DeprecatedAt DeprecationDate `json:"deprecated_at,omitempty"`
 }
 
 type StacksService interface {
@@ -44,33 +34,32 @@ func (c *Client) StacksList(ctx context.Context) ([]Stack, error) {
 		Endpoint: "/features/stacks",
 	}
 
-	resmap := map[string][]jsonStack{}
+	resmap := map[string][]Stack{}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &resmap)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}
 
-	return jsonStackToStack(resmap["stacks"]), nil
+	return resmap["stacks"], nil
 }
 
-func jsonStackToStack(s []jsonStack) []Stack {
-	var stacks []Stack
+// The regional API returns a date formatted as "2006-01-02"
+// Go standard library does not unmarshal that format
+func (deprecationDate *DeprecationDate) UnmarshalJSON(b []byte) error {
+	s := string(b)
 
-	for _, stack := range s {
-		deprecationDate, _ := time.Parse("2006-01-02", stack.DeprecatedAt)
-
-		stacks = append(stacks, Stack{
-			stack.ID,
-			stack.CreatedAt,
-			stack.Name,
-			stack.Description,
-			stack.BaseImage,
-			stack.Default,
-			deprecationDate,
-		})
+	if s == "null" {
+		// When there is no deprecation date for a stack, the json will look like: {"deprecated_at": null}
+		return nil
 	}
 
-	return stacks
+	t, err := time.Parse(`"2006-01-02"`, s)
+	if err != nil {
+		return err
+	}
+
+	deprecationDate.Time = t
+	return nil
 }
 
 func (s *Stack) IsDeprecated() bool {
@@ -78,5 +67,5 @@ func (s *Stack) IsDeprecated() bool {
 		return false
 	}
 
-	return time.Now().After(s.DeprecatedAt)
+	return time.Now().After(s.DeprecatedAt.Time)
 }
