@@ -9,13 +9,18 @@ import (
 	httpclient "github.com/Scalingo/go-scalingo/v5/http"
 )
 
+type DeprecationDate struct {
+	time.Time
+}
+
 type Stack struct {
-	ID          string    `json:"id"`
-	CreatedAt   time.Time `json:"created_at"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	BaseImage   string    `json:"base_image"`
-	Default     bool      `json:"default"`
+	ID           string          `json:"id"`
+	CreatedAt    time.Time       `json:"created_at"`
+	Name         string          `json:"name"`
+	Description  string          `json:"description"`
+	BaseImage    string          `json:"base_image"`
+	Default      bool            `json:"default"`
+	DeprecatedAt DeprecationDate `json:"deprecated_at,omitempty"`
 }
 
 type StacksService interface {
@@ -34,5 +39,33 @@ func (c *Client) StacksList(ctx context.Context) ([]Stack, error) {
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to request Scalingo API")
 	}
+
 	return resmap["stacks"], nil
+}
+
+// The regional API returns a date formatted as "2006-01-02"
+// Go standard library does not unmarshal that format
+func (deprecationDate *DeprecationDate) UnmarshalJSON(b []byte) error {
+	s := string(b)
+
+	if s == "null" {
+		// When there is no deprecation date for a stack, the json will look like: {"deprecated_at": null}
+		return nil
+	}
+
+	t, err := time.Parse(`"2006-01-02"`, s)
+	if err != nil {
+		return err
+	}
+
+	deprecationDate.Time = t
+	return nil
+}
+
+func (s *Stack) IsDeprecated() bool {
+	if s.DeprecatedAt.IsZero() {
+		return false
+	}
+
+	return time.Now().After(s.DeprecatedAt.Time)
 }

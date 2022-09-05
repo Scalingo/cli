@@ -116,3 +116,43 @@ func (ev *EventSuspendAddonType) String() string {
 		ev.TypeData.ResourceID, ev.TypeData.AddonProviderName, ev.TypeData.Reason,
 	)
 }
+
+type EventDatabaseAddFeatureType struct {
+	Event
+	TypeData EventDatabaseAddFeatureTypeData `json:"type_data"`
+}
+
+type EventDatabaseAddFeatureTypeData struct {
+	Feature           string `json:"feature"`
+	AddonProviderID   string `json:"addon_provider_id"`
+	AddonProviderName string `json:"addon_provider_name"`
+	AddonUUID         string `json:"addon_uuid"`
+	EventSecurityTypeData
+}
+
+func (ev *EventDatabaseAddFeatureType) String() string {
+	return fmt.Sprintf(
+		"Feature %s enabled for addon '%s' (%s) ",
+		ev.TypeData.Feature, ev.TypeData.AddonUUID, ev.TypeData.AddonProviderName,
+	)
+}
+
+type EventDatabaseRemoveFeatureType struct {
+	Event
+	TypeData EventDatabaseRemoveFeatureTypeData `json:"type_data"`
+}
+
+type EventDatabaseRemoveFeatureTypeData struct {
+	Feature           string `json:"feature"`
+	AddonProviderID   string `json:"addon_provider_id"`
+	AddonProviderName string `json:"addon_provider_name"`
+	AddonUUID         string `json:"addon_uuid"`
+	EventSecurityTypeData
+}
+
+func (ev *EventDatabaseRemoveFeatureType) String() string {
+	return fmt.Sprintf(
+		"Feature %s disabled for addon '%s' (%s) ",
+		ev.TypeData.Feature, ev.TypeData.AddonUUID, ev.TypeData.AddonProviderName,
+	)
+}

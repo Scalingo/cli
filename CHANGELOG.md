@@ -2,6 +2,9 @@
 
 ### To be Released
 
+* feat(stacks): hide deprecated stacks when listing them with `scalingo stacks`.
+  It is still possible to list deprecated stacks and to show deprecation dates
+  with `scalingo stacks --with-deprecated` [#776](https://github.com/Scalingo/cli/pull/776)
 * chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
 * chore(deps): Upgrade urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
 
