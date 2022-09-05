@@ -2,9 +2,16 @@
 
 ## To Be Released
 
+## 5.1.0
+
 * feat(stacks): Add deprecation date to stacks in `DeprecatedAt` attribute, and
   a `IsDeprecated` method to tell if a stack is deprecated or not based on its
   deprecation date [#265](https://github.com/Scalingo/go-scalingo/pull/265)
+* feat(new-events): Add compatibility with new events related to Account
+  management and Database feature management
+  [#252](https://github.com/Scalingo/go-scalingo/pull/252)
+* dev(generators): Use Go generators to generate Events boilerplate
+  [#252](https://github.com/Scalingo/go-scalingo/pull/252)
 
 ## 5.0.0
 

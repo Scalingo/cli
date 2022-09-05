@@ -1,5 +1,8 @@
 package scalingo
 
+//go:generate go run cmd/gen_events_boilerplate/main.go
+//go:generate go run cmd/gen_events_specialize/main.go
+
 import (
 	"context"
 	"encoding/json"
