@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List(ctx context.Context, withDeprecated bool) error {
+func List(ctx context.Context, isWithDeprecatedFlag bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
@@ -23,7 +23,7 @@ func List(ctx context.Context, withDeprecated bool) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 
-	if withDeprecated {
+	if isWithDeprecatedFlag {
 		t.SetHeader([]string{"ID", "Name", "Description", "Default?", "Deprecated?", "Deprecation date"})
 	} else {
 		t.SetHeader([]string{"ID", "Name", "Description", "Default?"})
@@ -35,7 +35,7 @@ func List(ctx context.Context, withDeprecated bool) error {
 			defaultText = "Yes"
 		}
 
-		if withDeprecated {
+		if isWithDeprecatedFlag {
 			deprecatedText := "No"
 			deprecationDate := ""
 
