@@ -45,7 +45,7 @@ var (
 		Flags: []cli.Flag{
 			&appFlag,
 			&cli.IntFlag{Name: "page", Usage: "Page to display", Value: 1},
-			&cli.IntFlag{Name: "per-page", Usage: "Number of deployements to display", Value: 30},
+			&cli.IntFlag{Name: "per-page", Usage: "Number of deployments to display", Value: 20},
 		},
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
