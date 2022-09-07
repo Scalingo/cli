@@ -47,10 +47,11 @@ func List(ctx context.Context, app string) error {
 	return nil
 }
 
-func eventTypesToString(eventTypes []scalingo.EventType, ids []string) (res string) {
+func eventTypesToString(eventTypes []scalingo.EventType, ids []string) string {
+	res := ""
 	if len(ids) == 0 {
 		res = ""
-		return
+		return res
 	}
 	switch len(eventTypes) {
 	case 0:
@@ -70,5 +71,5 @@ func eventTypesToString(eventTypes []scalingo.EventType, ids []string) (res stri
 			}
 		}
 	}
-	return
+	return res
 }
