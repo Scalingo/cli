@@ -81,9 +81,9 @@ var (
 			&cli.BoolFlag{Name: "send-all-events", Aliases: []string{"sa"}, Usage: "If true the notifier will send all events. Default: false"},
 			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(""), Usage: "List of selected events. Default: []"},
-			&cli.StringSliceFlag{Name: "email", Value: cli.NewStringSlice(""), Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "collaborator", Value: cli.NewStringSlice(""), Usage: "The usernames of the collaborators who will receive notifications"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(), Usage: "List of selected events. Default: []"},
+			&cli.StringSliceFlag{Name: "email", Value: cli.NewStringSlice(), Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
+			&cli.StringSliceFlag{Name: "collaborator", Value: cli.NewStringSlice(), Usage: "The usernames of the collaborators who will receive notifications"},
 		},
 		Usage: "Add a notifier for your application",
 		Description: `Add a notifier for your application:
@@ -157,7 +157,7 @@ Examples
 			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
 			&cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(""), Usage: "List of selected events. Default: []"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(), Usage: "List of selected events. Default: []"},
 		},
 		Usage: "Update a notifier",
 		Description: `Update a notifier:
