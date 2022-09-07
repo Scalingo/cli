@@ -10,15 +10,18 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-scalingo/v5"
 )
 
-func List(ctx context.Context, app string) error {
+func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	deployments, err := c.DeploymentList(ctx, app)
+
+	deployments, pagination, err := c.DeploymentListWithPagination(ctx, app, paginationOpts)
 	if err != nil {
 		return errgo.Notef(err, "fail to list the application deployments")
 	}
@@ -43,6 +46,6 @@ func List(ctx context.Context, app string) error {
 		})
 	}
 	t.Render()
-
+	fmt.Fprintln(os.Stderr, io.Gray(fmt.Sprintf("Page: %d, Last Page: %d", pagination.CurrentPage, pagination.TotalPages)))
 	return nil
 }
