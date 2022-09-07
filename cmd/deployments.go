@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
+	scalingo "github.com/Scalingo/go-scalingo/v5"
 	"github.com/Scalingo/go-scalingo/v5/io"
 )
 
@@ -41,13 +42,20 @@ var (
 		Name:     "deployments",
 		Category: "Deployment",
 		Usage:    "List app deployments",
-		Flags:    []cli.Flag{&appFlag},
+		Flags: []cli.Flag{
+			&appFlag,
+			&cli.IntFlag{Name: "page", Usage: "Page to display", Value: 1},
+			&cli.IntFlag{Name: "per-page", Usage: "Number of deployments to display", Value: 20},
+		},
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.List(c.Context, currentApp)
+			err := deployments.List(c.Context, currentApp, scalingo.PaginationOpts{
+				Page:    c.Int("page"),
+				PerPage: c.Int("per-page"),
+			})
 			if err != nil {
 				errorQuit(err)
 			}
