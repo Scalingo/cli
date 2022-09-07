@@ -48,6 +48,10 @@ func List(ctx context.Context, app string) error {
 }
 
 func eventTypesToString(eventTypes []scalingo.EventType, ids []string) (res string) {
+	if len(ids) == 0 {
+		res = ""
+		return
+	}
 	switch len(eventTypes) {
 	case 0:
 		res = ""

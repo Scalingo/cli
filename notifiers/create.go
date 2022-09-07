@@ -69,7 +69,7 @@ func Provision(ctx context.Context, app, platformName string, params ProvisionPa
 	displayDetails(notifier, eventTypes)
 
 	io.Info()
-	io.Status("Notifier have been created.")
+	io.Status("Notifier has been created.")
 	return nil
 }
 
