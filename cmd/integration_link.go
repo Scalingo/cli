@@ -68,9 +68,9 @@ var (
 		},
 		Usage: "Link your Scalingo application to an integration",
 		Description: ` Link your Scalingo application to an integration:
-	$ scalingo --app my-app integration-link-create <repository URL> [options]
+	$ scalingo --app my-app integration-link-create [options] <repository URL>
 									   OR
-	$ scalingo --app my-app integration-link-create <repository URL> [options]
+	$ scalingo --app my-app integration-link-create [options] <repository URL>
 
 	List of available integrations:
 	- github => GitHub.com
@@ -80,7 +80,7 @@ var (
 
 	Examples:
 	$ scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce
-	$ scalingo --app my-app integration-link-create https://ghe.example.org/test/frontend-app --branch master --auto-deploy
+	$ scalingo --app my-app integration-link-create --branch master --auto-deploy https://ghe.example.org/test/frontend-app
 
 		# See also 'integration-link', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
 		Action: func(c *cli.Context) error {

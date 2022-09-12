@@ -2,11 +2,20 @@
 
 ### To be Released
 
+#### Changed
+
+* [BREAKING] chore(deps): Upgrade urfave/cli to v2. Command arguments must now come after the command flags.
+  For example, `scalingo --app my-app integration-link-create https://ghe.example.org/test/test-app --auto-deploy`
+  must be rewritten `scalingo --app my-app integration-link-create --auto-deploy https://ghe.example.org/test/test-app`
+  [#774](https://github.com/Scalingo/cli/pull/774)
+
+* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
+
+#### Added
+
 * feat(stacks): hide deprecated stacks when listing them with `scalingo stacks`.
   It is still possible to list deprecated stacks and to show deprecation dates
   with `scalingo stacks --with-deprecated` [#776](https://github.com/Scalingo/cli/pull/776)
-* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
-* chore(deps): Upgrade urfave/cli to v2 [#774](https://github.com/Scalingo/cli/pull/774)
 
 # 1.24.2
 
