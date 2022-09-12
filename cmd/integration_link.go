@@ -184,10 +184,12 @@ var (
 						io.Error("Did you revoked the Scalingo token from your profile? In such situation, you may want to remove and re-create the SCM integration.")
 						io.Error("")
 						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
+					} else {
+						errorQuit(err)
 					}
-					os.Exit(1)
+				} else {
+					errorQuit(err)
 				}
-				errorQuit(err)
 			}
 			return nil
 		},
