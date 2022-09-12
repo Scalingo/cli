@@ -52,10 +52,10 @@ var (
 	$ scalingo integrations-add gitlab
 
 	For GitHub Enterprise:
-	$ scalingo integrations-add github-enterprise --url https://ghe.example.com --token personal-access-token
+	$ scalingo integrations-add --url https://ghe.example.com --token personal-access-token github-enterprise
 
 	For GitLab Self-hosted:
-	$ scalingo integrations-add gitlab-self-hosted --url https://gitlab.example.com --token personal-access-token
+	$ scalingo integrations-add --url https://gitlab.example.com --token personal-access-token gitlab-self-hosted
 
 	# See also commands 'integrations', 'integrations-delete', 'integrations-import-keys'`,
 

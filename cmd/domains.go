@@ -121,7 +121,7 @@ var (
 		},
 		Description: `Enable or disable SSL for your custom domains:
 
-		$ scalingo -a myapp domains-ssl example.com --cert <certificate.crt> --key <keyfile.key>
+		$ scalingo -a myapp domains-ssl --cert <certificate.crt> --key <keyfile.key> example.com
 
 		$ scalingo -a myapp domains-ssl example.com disable
 
