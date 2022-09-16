@@ -2,14 +2,16 @@
 
 ### To be Released
 
+### 1.25.0
+
 #### Changed
 
-* [BREAKING] chore(deps): Upgrade urfave/cli to v2. Command arguments must now come after the command flags.
+* [BREAKING] chore(deps): Upgrade urfave/cli to v2.16 Command arguments must now come after the command flags.
   For example, `scalingo --app my-app integration-link-create https://ghe.example.org/test/test-app --auto-deploy`
   must be rewritten `scalingo --app my-app integration-link-create --auto-deploy https://ghe.example.org/test/test-app`
   [#774](https://github.com/Scalingo/cli/pull/774)
 
-* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.0 [#775](https://github.com/Scalingo/cli/pull/775)
+* chore(deps): bump github.com/Scalingo/go-scalingo from v4.16 to v5.2 [#775](https://github.com/Scalingo/cli/pull/775)
 
 #### Added
 
@@ -17,16 +19,16 @@
   It is still possible to list deprecated stacks and to show deprecation dates
   with `scalingo stacks --with-deprecated` [#776](https://github.com/Scalingo/cli/pull/776)
 
-# 1.24.2
+### 1.24.2
 
 * fix(releases): Correctly auto generate changelog [#772](https://github.com/Scalingo/cli/pull/772)
 * feat(changelog): add changelog command and show the changelog after an update [#767](https://github.com/Scalingo/cli/pull/767)
 
-# 1.24.1
+### 1.24.1
 
 * fix(releases): Windows archives should be in the zip format [#769](https://github.com/Scalingo/cli/pull/769)
 
-# 1.24.0
+### 1.24.0
 
 * feat(db): environment variable name is customizable [#759](https://github.com/Scalingo/cli/issues/759)
 * feat(goreleaser): use goreleaser to make releases using github action [#752](https://github.com/Scalingo/cli/issues/752)

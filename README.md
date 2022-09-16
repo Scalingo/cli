@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.24.2
+# Scalingo-CLI v1.25.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -53,10 +53,10 @@ NAME:
    Scalingo Client - Manage your apps and containers
 
 USAGE:
-   scalingo-cli [global options] command [command options] [arguments...]
+   scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.24.2
+   1.25.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -92,21 +92,21 @@ COMMANDS:
      destroy                 Destroy an app /!\
      rename                  Rename an application
      apps-info               Display the application information
+     open                    Open app on default web browser
+     dashboard               Open app dashboard on default web browser
      logs, l                 Get the logs of your applications
-     logs-archives, la       Get the logs archives of your applications
-     run, r                  Run any command for your app
+     logs-archives, la       Get the logs archives of your applications and databases
+     run                     Run any command for your app
      one-off-stop            Stop a running one-off container
      ps                      Display your application containers
-     scale, s                Scale your application instantly
+     scale                   Scale your application instantly
      restart                 Restart processes of your app
      force-https             Enable/Disable automatic redirection of traffic to HTTPS for your application
      sticky-session          Enable/Disable sticky sessions for your application
-     router-logs             Enable/Disable router logs for your application
+     router-logs             Enable/disable router logs for your application
      set-canonical-domain    Set a canonical domain.
      unset-canonical-domain  Unset a canonical domain.
      db-tunnel               Create an encrypted connection to access your database
-     open                    Open app on default web browser
-     dashboard               Open app dashboard on default web browser
 
    Autoscalers:
      autoscalers          List the autoscalers of an application
@@ -117,12 +117,16 @@ COMMANDS:
      autoscalers-enable   Enable an autoscaler
 
    CLI Internals:
-     update  Update 'scalingo' client
+     update     Update 'scalingo' SDK client
+     changelog  Show the Scalingo CLI changelog from last version
 
    Collaborators:
      collaborators         List the collaborators of an application
      collaborators-add     Invite someone to work on an application
      collaborators-remove  Revoke permission to collaborate on an application
+
+   Cron Tasks:
+     cron-tasks  List the cron tasks of an application
 
    Custom Domains:
      domains         List the domains of an application
@@ -130,22 +134,19 @@ COMMANDS:
      domains-remove  Remove a custom domain from an application
      domains-ssl     Enable or disable SSL for your custom domains
 
-   Cron Tasks:
-     cron-tasks  List the cron tasks of an application
-
    Databases:
-     redis-console                                       Run an interactive console with your Redis addon
-     mongo-console                                       Run an interactive console with your MongoDB addon
-     mysql-console                                       Run an interactive console with your MySQL addon
-     pgsql-console, psql-console, postgresql-console     Run an interactive console with your PostgreSQL addon
-     influxdb-console                                    Run an interactive console with your InfluxDB addon
+     redis-console                                    Run an interactive console with your Redis addon
+     mongo-console                                    Run an interactive console with your MongoDB addon
+     mysql-console                                    Run an interactive console with your MySQL addon
+     pgsql-console, psql-console, postgresql-console  Run an interactive console with your PostgreSQL addon
+     influxdb-console                                 Run an interactive console with your InfluxDB addon
 
    Deployment:
-     deployments                                          List app deployments
-     deployment-logs                                      View deployment logs
-     deployment-follow                                    Follow deployment event stream
-     deploy                                               Trigger a deployment by archive
-     deployment-delete-cache, deployment-cache-delete     Reset deployment cache
+     deployments                                       List app deployments
+     deployment-logs                                   View deployment logs
+     deployment-follow                                 Follow deployment event stream
+     deploy                                            Trigger a deployment by archive
+     deployment-delete-cache, deployment-cache-delete  Reset deployment cache
 
    Display metrics of the running containers:
      stats  Display metrics of the currently running containers
@@ -165,13 +166,13 @@ COMMANDS:
      git-show   Display the Git remote URL for this application
 
    Global:
-     apps               List your apps
-     create, c          Create a new app
-     login              Login to Scalingo platform
-     logout             Logout from Scalingo
-     regions            List available regions
-     config             Configure the CLI
-     self, whoami       Get the logged in profile
+     apps          List your apps
+     create, c     Create a new app
+     login         Login to Scalingo platform
+     logout        Logout from Scalingo
+     regions       List available regions
+     config        Configure the CLI
+     self, whoami  Get the logged in profile
 
    Integration Link:
      integration-link                    Show integration link of your app
@@ -226,7 +227,7 @@ GLOBAL OPTIONS:
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --region value            Name of the region to use
-   --version, -v             print the version
+   --version, -v             print the version (default: false)
 ```
 
 ## Development Setup
@@ -259,12 +260,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.24.2
+git checkout -b v1.25.0
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.24.2
+git push --set-upstream origin v1.25.0
 ```
 
 ### New Version Bump
@@ -279,10 +280,10 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-git switch --create release/1.24.2
+git switch --create release/1.25.0
 git add .
-git commit -m "Bump version 1.24.2"
-git push --set-upstream origin release/1.24.2
+git commit -m "Bump version 1.25.0"
+git push --set-upstream origin release/1.25.0
 gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
@@ -291,8 +292,8 @@ Once the pull request merged, you can tag the new release.
 #### Tag the New Release
 
 ```bash
-git tag 1.24.2
-git push origin master 1.24.2
+git tag 1.25.0
+git push origin master 1.25.0
 ```
 
 Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
@@ -307,6 +308,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.24.2 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.25.0 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
