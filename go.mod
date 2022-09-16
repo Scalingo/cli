@@ -1,6 +1,6 @@
 module github.com/Scalingo/cli
 
-go 1.17
+go 1.19
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
