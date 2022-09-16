@@ -1,6 +1,7 @@
 package run
 
 import (
+	"context"
 	"net"
 	"os"
 
@@ -16,6 +17,6 @@ func NotifyTermSizeUpdate(signals chan os.Signal) {
 	return
 }
 
-func HandleSignal(c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
+func HandleSignal(ctx context.Context, c *scalingo.Client, s os.Signal, socket net.Conn, runURL string) {
 	return
 }
