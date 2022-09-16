@@ -108,6 +108,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "Scalingo Client"
+	app.HelpName = "scalingo"
 	app.Authors = []*cli.Author{{Name: "Scalingo Team", Email: "hello@scalingo.com"}}
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
