@@ -2,7 +2,6 @@ package addon_providers
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -23,9 +22,9 @@ func Plans(ctx context.Context, addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name", "Price/month"})
+	t.SetHeader([]string{"ID", "Name"})
 	for _, plan := range plans {
-		t.Append([]string{plan.Name, plan.DisplayName, fmt.Sprintf("%.2f€", plan.Price)})
+		t.Append([]string{plan.Name, plan.DisplayName})
 	}
 	t.Render()
 	return nil
