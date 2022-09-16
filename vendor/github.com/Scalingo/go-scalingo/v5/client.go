@@ -23,8 +23,8 @@ type API interface {
 	CronTasksService
 	DeploymentsService
 	DomainsService
-	VariablesService
 	EventsService
+	InvoicesService
 	KeysService
 	LogDrainsService
 	LogsArchivesService
@@ -40,6 +40,7 @@ type API interface {
 	StacksService
 	TokensService
 	UsersService
+	VariablesService
 	http.TokenGenerator
 
 	ScalingoAPI() http.Client

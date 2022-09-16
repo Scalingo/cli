@@ -18,15 +18,19 @@ type AlertsService interface {
 var _ AlertsService = (*Client)(nil)
 
 type Alert struct {
-	ID                    string        `json:"id"`
-	AppID                 string        `json:"app_id"`
-	ContainerType         string        `json:"container_type"`
-	Metric                string        `json:"metric"`
-	Limit                 float64       `json:"limit"`
-	Disabled              bool          `json:"disabled"`
-	SendWhenBelow         bool          `json:"send_when_below"`
-	DurationBeforeTrigger time.Duration `json:"duration_before_trigger"`
-	RemindEvery           string        `json:"remind_every"`
+	ID                    string                 `json:"id"`
+	AppID                 string                 `json:"app_id"`
+	ContainerType         string                 `json:"container_type"`
+	Metric                string                 `json:"metric"`
+	Limit                 float64                `json:"limit"`
+	Disabled              bool                   `json:"disabled"`
+	SendWhenBelow         bool                   `json:"send_when_below"`
+	DurationBeforeTrigger time.Duration          `json:"duration_before_trigger"`
+	RemindEvery           string                 `json:"remind_every"`
+	CreatedAt             time.Time              `json:"created_at"`
+	UpdatedAt             time.Time              `json:"updated_at"`
+	Metadata              map[string]interface{} `json:"metadata"`
+	Notifiers             []string               `json:"notifiers"`
 }
 
 type AlertsRes struct {

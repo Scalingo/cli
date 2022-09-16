@@ -2,6 +2,7 @@ package scalingo
 
 import (
 	"context"
+	"time"
 
 	"gopkg.in/errgo.v1"
 
@@ -40,15 +41,17 @@ type SCMIntegrationsService interface {
 var _ SCMIntegrationsService = (*Client)(nil)
 
 type SCMIntegration struct {
-	ID          string  `json:"id"`
-	SCMType     SCMType `json:"scm_type"`
-	URL         string  `json:"url,omitempty"`
-	AccessToken string  `json:"access_token"`
-	Uid         string  `json:"uid"`
-	Username    string  `json:"username"`
-	Email       string  `json:"email"`
-	AvatarURL   string  `json:"avatar_url"`
-	ProfileURL  string  `json:"profile_url"`
+	ID          string    `json:"id"`
+	SCMType     SCMType   `json:"scm_type"`
+	URL         string    `json:"url,omitempty"`
+	AccessToken string    `json:"access_token"`
+	UID         string    `json:"uid"`
+	Username    string    `json:"username"`
+	Email       string    `json:"email"`
+	AvatarURL   string    `json:"avatar_url"`
+	ProfileURL  string    `json:"profile_url"`
+	CreatedAt   time.Time `json:"created_at"`
+	Owner       Owner     `json:"owner"`
 }
 
 type SCMIntegrationParams struct {

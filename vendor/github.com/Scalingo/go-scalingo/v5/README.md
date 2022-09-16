@@ -1,6 +1,6 @@
 [ ![Codeship Status for Scalingo/go-scalingo](https://app.codeship.com/projects/cf518dc0-0034-0136-d6b3-5a0245e77f67/status?branch=master)](https://app.codeship.com/projects/279805)
 
-# Go client for Scalingo API v5.0.0
+# Go client for Scalingo API v5.2.0
 
 This repository is the Go client for the [Scalingo APIs](https://developers.scalingo.com/).
 
@@ -81,10 +81,10 @@ Commit, tag and create a new release:
 
 ```sh
 git add CHANGELOG.md README.md version.go
-git commit -m "Bump v5.0.0"
-git tag v5.0.0
-git push origin master v5.0.0
-gh release create v5.0.0
+git commit -m "Bump v5.2.0"
+git tag v5.2.0
+git push origin master v5.2.0
+gh release create v5.2.0
 ```
 
 The title of the release should be the version number and the text of the

@@ -94,16 +94,12 @@ type AppLinks struct {
 }
 
 type App struct {
-	Id     string `json:"id"`
-	Name   string `json:"name"`
-	Region string `json:"region"`
-	Owner  struct {
-		ID       string `json:"id"`
-		Username string `json:"username"`
-		Email    string `json:"email"`
-	} `json:"owner"`
+	ID             string                 `json:"id"`
+	Name           string                 `json:"name"`
+	Region         string                 `json:"region"`
+	Owner          Owner                  `json:"owner"`
 	GitUrl         string                 `json:"git_url"`
-	Url            string                 `json:"url"`
+	URL            string                 `json:"url"`
 	BaseURL        string                 `json:"base_url"`
 	Status         AppStatus              `json:"status"`
 	LastDeployedAt *time.Time             `json:"last_deployed_at"`
