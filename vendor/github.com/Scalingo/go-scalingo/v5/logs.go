@@ -35,9 +35,10 @@ func (c *Client) Logs(ctx context.Context, logsURL string, n int, filter string)
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]interface{}{
-			"token":  u.Query().Get("token"),
-			"n":      n,
-			"filter": filter,
+			"token":     u.Query().Get("token"),
+			"timestamp": u.Query().Get("timestamp"),
+			"n":         n,
+			"filter":    filter,
 		},
 	}
 	return c.ScalingoAPI().Do(ctx, req)
