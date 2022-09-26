@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.25.1
+
 This release is mandatory to keep the `logs` command working in the coming weeks.
 
 feat(logs): add support for the new authentication mechanism
