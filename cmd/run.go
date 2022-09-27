@@ -12,6 +12,7 @@ import (
 var (
 	runCommand = cli.Command{
 		Name:     "run",
+		Aliases:  []string{"r"},
 		Category: "App Management",
 		Usage:    "Run any command for your app",
 		Flags: []cli.Flag{&appFlag,
