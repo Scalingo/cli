@@ -23,7 +23,10 @@ var (
      Get lines with filter:
        'scalingo --app my-app logs -F web'
        'scalingo --app my-app logs -F web-1'
-       'scalingo --app my-app logs --follow -F "worker|clock"'`,
+       'scalingo --app my-app logs -F router'
+       'scalingo --app my-app logs -F one-off'
+       'scalingo --app my-app logs -F one-off-1'
+       'scalingo --app my-app logs --follow -F "web|worker"'`,
 		Flags: []cli.Flag{&appFlag, &addonFlag,
 			&cli.IntFlag{Name: "lines", Aliases: []string{"n"}, Value: 20, Usage: "Number of log lines to dump"},
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},

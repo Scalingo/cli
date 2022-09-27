@@ -80,7 +80,7 @@ func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter
 		return nil
 	}
 
-	if filter == "router" {
+	if filter == "router" || filter == "one-off" {
 		return nil
 	}
 
@@ -106,6 +106,8 @@ func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter
 					"\"scalingo logs -F web\": logs of every web containers\n"+
 					"\"scalingo logs -F web-1\": logs of web container 1\n"+
 					"\"scalingo logs -F router\": only router logs\n"+
+					"\"scalingo logs -F one-off\": logs of every one-off containers\n"+
+					"\"scalingo logs -F one-off-1\": logs of one-off container 1\n"+
 					"\"scalingo logs -F web|worker\": logs of every web and worker containers\n",
 				f)
 		}
