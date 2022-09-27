@@ -11,6 +11,7 @@ import (
 var (
 	scaleCommand = cli.Command{
 		Name:     "scale",
+		Aliases:  []string{"s"},
 		Category: "App Management",
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "synchronous", Aliases: []string{"s"}, Usage: "Do the scaling synchronously"},
