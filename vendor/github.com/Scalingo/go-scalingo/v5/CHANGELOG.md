@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(scm_repo_link): add missing field `URL` in the structure `SCMRepoLink` [#281](https://github.com/Scalingo/go-scalingo/pull/282)
+
 ## 5.2.0
 
 * feat(alerts): add missing fields for alerts endpoint [#276](https://github.com/Scalingo/go-scalingo/pull/276)

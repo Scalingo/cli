@@ -2,6 +2,8 @@ module github.com/Scalingo/cli
 
 go 1.19
 
+replace github.com/Scalingo/go-scalingo/v5 => /home/leo/go/src/github.com/Scalingo/go-scalingo
+
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 	github.com/Scalingo/go-scalingo/v5 v5.2.0

@@ -2,10 +2,19 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"gopkg.in/errgo.v1"
+
+	httpclient "github.com/Scalingo/go-scalingo/v5/http"
 )
+
+type DatabasesService interface {
+	DatabaseShow(ctx context.Context, app, addonID string) (Database, error)
+	DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error)
+	DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error)
+}
 
 type DatabaseStatus string
 
@@ -18,27 +27,32 @@ const (
 	DatabaseStatusStopped   DatabaseStatus = "stopped"
 )
 
+type DatabaseFeature struct {
+	Name   string                `json:"name"`
+	Status DatabaseFeatureStatus `json:"status"`
+}
+
 type Database struct {
-	ID                         string              `json:"id"`
-	CreatedAt                  time.Time           `json:"created_at"`
-	ResourceID                 string              `json:"resource_id"`
-	AppName                    string              `json:"app_name"`
-	EncryptionAtRest           bool                `json:"encryption_at_rest"`
-	Features                   []map[string]string `json:"features"`
-	Plan                       string              `json:"plan"`
-	Status                     DatabaseStatus      `json:"status"`
-	TypeID                     string              `json:"type_id"`
-	TypeName                   string              `json:"type_name"`
-	VersionID                  string              `json:"version_id"`
-	MongoReplSetName           string              `json:"mongo_repl_set_name"`
-	Instances                  []Instance          `json:"instances"`
-	NextVersionID              string              `json:"next_version_id"`
-	ReadableVersion            string              `json:"readable_version"`
-	Hostname                   string              `json:"hostname"`
-	CurrentOperationID         string              `json:"current_operation_id"`
-	Cluster                    bool                `json:"cluster"`
-	PeriodicBackupsEnabled     bool                `json:"periodic_backups_enabled"`
-	PeriodicBackupsScheduledAt []int               `json:"periodic_backups_scheduled_at"` // Hours of the day of the periodic backups (UTC)
+	ID                         string            `json:"id"`
+	CreatedAt                  time.Time         `json:"created_at"`
+	ResourceID                 string            `json:"resource_id"`
+	AppName                    string            `json:"app_name"`
+	EncryptionAtRest           bool              `json:"encryption_at_rest"`
+	Features                   []DatabaseFeature `json:"features"`
+	Plan                       string            `json:"plan"`
+	Status                     DatabaseStatus    `json:"status"`
+	TypeID                     string            `json:"type_id"`
+	TypeName                   string            `json:"type_name"`
+	VersionID                  string            `json:"version_id"`
+	MongoReplSetName           string            `json:"mongo_repl_set_name"`
+	Instances                  []Instance        `json:"instances"`
+	NextVersionID              string            `json:"next_version_id"`
+	ReadableVersion            string            `json:"readable_version"`
+	Hostname                   string            `json:"hostname"`
+	CurrentOperationID         string            `json:"current_operation_id"`
+	Cluster                    bool              `json:"cluster"`
+	PeriodicBackupsEnabled     bool              `json:"periodic_backups_enabled"`
+	PeriodicBackupsScheduledAt []int             `json:"periodic_backups_scheduled_at"` // Hours of the day of the periodic backups (UTC)
 }
 
 type InstanceStatus string
@@ -104,4 +118,64 @@ func (c *Client) PeriodicBackupsConfig(ctx context.Context, app, addonID string,
 		return Database{}, errgo.Notef(err, "fail to update periodic backups settings")
 	}
 	return dbRes.Database, nil
+}
+
+type DatabaseEnableFeatureParams struct {
+	Feature DatabaseFeature `json:"feature"`
+}
+
+type DatabaseFeatureStatus string
+
+const (
+	DatabaseFeatureStatusActivated DatabaseFeatureStatus = "ACTIVATED"
+	DatabaseFeatureStatusPending   DatabaseFeatureStatus = "PENDING"
+	DatabaseFeatureStatusFailed    DatabaseFeatureStatus = "FAILED"
+)
+
+type DatabaseEnableFeatureResponse struct {
+	Name    string                `json:"name"`
+	Status  DatabaseFeatureStatus `json:"status"`
+	Message string                `json:"message"`
+}
+
+func (c *Client) DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error) {
+	payload := DatabaseEnableFeatureParams{
+		Feature: DatabaseFeature{
+			Name: feature,
+		},
+	}
+
+	res := DatabaseEnableFeatureResponse{}
+	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+		Method:   "POST",
+		Endpoint: "/databases/" + addonID + "/features",
+		Expected: httpclient.Statuses{http.StatusOK},
+		Params:   payload,
+	}, &res)
+
+	if err != nil {
+		return res, errgo.Notef(err, "fail to enable database feature %v", feature)
+	}
+
+	return res, nil
+}
+
+type DatabaseDisableFeatureResponse struct {
+	Message string `json:"message"`
+}
+
+func (c *Client) DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error) {
+	res := DatabaseDisableFeatureResponse{}
+	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/databases/" + addonID + "/features",
+		Expected: httpclient.Statuses{http.StatusOK},
+		Params:   map[string]string{"feature": feature},
+	}, &res)
+
+	if err != nil {
+		return res, errgo.Notef(err, "fail to disable database feature %v", feature)
+	}
+
+	return res, nil
 }

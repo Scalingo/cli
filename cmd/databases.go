@@ -11,11 +11,66 @@ import (
 
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v5"
 )
 
 var (
+	databaseEnableFeatureConfig = cli.Command{
+		Name:     "database-enable-feature",
+		Category: "Addons",
+		Usage:    "Enable a togglable feature from a database",
+		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.BoolFlag{
+			Name:  "synchronous",
+			Usage: "Wait for the feature to be enabled with success synchronously",
+		}},
+		Description: `  Enable a togglable feature from a database:
+
+Examples
+ $ scalingo --app myapp --addon addon_uuid database-enable-feature force-ssl
+ $ scalingo --app myapp --addon addon_uuid database-enable-feature --synchronous force-ssl
+ $ scalingo --app myapp --addon addon_uuid database-enable-feature publicly-available
+`,
+		Action: func(c *cli.Context) error {
+			currentApp := detect.CurrentApp(c)
+			addonName := addonNameFromFlags(c, true)
+			if c.NArg() != 1 {
+				errorQuit(errors.New("feature argument should be specified"))
+			}
+			feature := c.Args().First()
+			err := db.EnableFeature(c, currentApp, addonName, feature)
+			if err != nil {
+				errorQuit(err)
+			}
+			return nil
+		},
+	}
+
+	databaseDisableFeatureConfig = cli.Command{
+		Name:     "database-disable-feature",
+		Category: "Addons",
+		Usage:    "Enable a togglable feature from a database",
+		Flags:    []cli.Flag{&appFlag, &addonFlag},
+		Description: `  Disable a togglable feature from a database:
+
+Examples
+ $ scalingo --app myapp --addon addon_uuid database-disable-feature force-ssl
+ $ scalingo --app myapp --addon addon_uuid database-disable-feature publicly-available
+`,
+		Action: func(c *cli.Context) error {
+			currentApp := detect.CurrentApp(c)
+			addonName := addonNameFromFlags(c, true)
+			if c.NArg() != 1 {
+				errorQuit(errors.New("feature argument should be specified"))
+			}
+			feature := c.Args().First()
+			err := db.DisableFeature(c.Context, currentApp, addonName, feature)
+			if err != nil {
+				errorQuit(err)
+			}
+			return nil
+		},
+	}
+
 	databaseBackupsConfig = cli.Command{
 		Name:     "backups-config",
 		Category: "Addons",
@@ -44,17 +99,7 @@ Examples
 			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
 			if scheduleAtFlag != "" && disable {
-				errorQuit(errors.New("You cannot use both --schedule-at and --unschedule at the same time"))
-			}
-			database, err := db.Show(c.Context, currentApp, addonName)
-			if err != nil {
-				errorQuit(err)
-			}
-			if scheduleAtFlag != "" && len(database.PeriodicBackupsScheduledAt) > 1 {
-				msg := "Your database is backed up multiple times a day at " +
-					formatScheduledAt(database.PeriodicBackupsScheduledAt) +
-					". Please ask the support to update the frequency of these backups."
-				errorQuit(errors.New(msg))
+				errorQuit(errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
 			if disable {
@@ -74,15 +119,10 @@ Examples
 			}
 
 			if disable || scheduleAtFlag != "" {
-				database, err = db.BackupsConfiguration(c.Context, currentApp, addonName, params)
+				err := db.BackupsConfiguration(c.Context, currentApp, addonName, params)
 				if err != nil {
 					errorQuit(err)
 				}
-			}
-			if database.PeriodicBackupsEnabled {
-				io.Statusf("Periodic backups will be done daily at %s\n", formatScheduledAt(database.PeriodicBackupsScheduledAt))
-			} else {
-				io.Status("Periodic backups are disabled")
 			}
 			return nil
 		},
@@ -112,16 +152,4 @@ func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
 	}
 
 	return scheduleAt, loc, nil
-}
-
-func formatScheduledAt(hours []int) string {
-	hoursStr := make([]string, len(hours))
-	for i, h := range hours {
-		hUTC := time.Date(1986, 7, 22, h, 0, 0, 0, time.UTC)
-		hLocal := hUTC.In(time.Local)
-		hoursStr[i] = strconv.Itoa(hLocal.Hour())
-	}
-
-	tz, _ := time.Now().In(time.Local).Zone()
-	return fmt.Sprintf("%s:00 %s", strings.Join(hoursStr, ":00, "), tz)
 }

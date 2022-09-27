@@ -54,6 +54,7 @@ type AlertAddParams struct {
 	ContainerType         string
 	Metric                string
 	Limit                 float64
+	Disabled              bool
 	RemindEvery           *time.Duration
 	DurationBeforeTrigger *time.Duration
 	SendWhenBelow         bool
@@ -67,6 +68,8 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 		Metric:        params.Metric,
 		Limit:         params.Limit,
 		SendWhenBelow: params.SendWhenBelow,
+		Disabled:      params.Disabled,
+		Notifiers:     params.Notifiers,
 	}
 	if params.RemindEvery != nil {
 		a.RemindEvery = (*params.RemindEvery).String()

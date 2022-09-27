@@ -127,7 +127,7 @@ var (
 		Usage:    "Display information about an add-on attached to your app",
 		Flags:    []cli.Flag{&appFlag},
 		Description: ` Display information about an add-on attached to your app:
-    $ scalingo --app my-app addons-info --addon <addon-id>
+    $ scalingo --app my-app addons-info <addon-id>
 
 		# See also 'addons' and 'addons-upgrade'
 `,

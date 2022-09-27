@@ -1,3 +1,5 @@
+// Package cmd gathers the configuration of all commands (names, flags, default
+// values etc.) of the Scalingo CLI
 package cmd
 
 import (
@@ -196,6 +198,8 @@ var (
 
 		// Databases
 		&databaseBackupsConfig,
+		&databaseEnableFeatureConfig,
+		&databaseDisableFeatureConfig,
 
 		// Backups
 		&backupsListCommand,

@@ -48,6 +48,7 @@ type SCMRepoLink struct {
 	ID                       string            `json:"id"`
 	AppID                    string            `json:"app_id"`
 	Linker                   SCMRepoLinkLinker `json:"linker"`
+	URL                      string            `json:"url"`
 	Owner                    string            `json:"owner"`
 	Repo                     string            `json:"repo"`
 	Branch                   string            `json:"branch"`
