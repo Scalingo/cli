@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(databases): Add ability to add/remove features [#285](https://github.com/Scalingo/go-scalingo/pull/285)
+
 ## 5.2.2
 
 *  feat(logs): add timestamp to the logs URL [#283](https://github.com/Scalingo/go-scalingo/pull/283)

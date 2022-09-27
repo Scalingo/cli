@@ -21,6 +21,7 @@ type API interface {
 	ContainersService
 	ContainerSizesService
 	CronTasksService
+	DatabasesService
 	DeploymentsService
 	DomainsService
 	EventsService

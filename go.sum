@@ -12,6 +12,8 @@ github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5 h1:VauE2GcJNZFun2O
 github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5/go.mod h1:gxOHeajFfvGQh/fxlC8oOKBe23xnnJTif00IFFbiT+o=
 github.com/Scalingo/go-scalingo/v5 v5.2.2 h1:aMHCbY2oDHLJamwDG70EIb8dlo5eR94RKYW0rSGHnps=
 github.com/Scalingo/go-scalingo/v5 v5.2.2/go.mod h1:b/SeZwa10u6/CpB6WmxeToZ5FES8N/o83YpHBGLDvQ8=
+github.com/Scalingo/go-scalingo/v5 v5.2.3-0.20220927191939-ae7ec319326c h1:aNmqQrp4CLUe19UtoZvu2thdr+mQ2rH1S/UeAkYn4Uc=
+github.com/Scalingo/go-scalingo/v5 v5.2.3-0.20220927191939-ae7ec319326c/go.mod h1:b/SeZwa10u6/CpB6WmxeToZ5FES8N/o83YpHBGLDvQ8=
 github.com/Scalingo/go-utils/errors v1.1.1 h1:G7zypaDBj0O6QFvX0xL5dMDXbiBgq+3KKuodldtOpg0=
 github.com/Scalingo/go-utils/errors v1.1.1/go.mod h1:gsnGOMma5x3CSgPb8i5eMuHcKi3RvTJ9dWPNRev161c=
 github.com/Scalingo/go-utils/logger v1.2.0 h1:E3jtaoRxpIsFcZu/jsvWew8ttUAwKUYQufdPqGYp7EU=
