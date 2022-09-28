@@ -6,7 +6,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo/v5"
+	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
 func Show(ctx context.Context, app, addon string) (scalingo.Database, error) {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-	httpclient "github.com/Scalingo/go-scalingo/v5/http"
+	httpclient "github.com/Scalingo/go-scalingo/v6/http"
 	"github.com/Scalingo/go-utils/errors"
 )
 

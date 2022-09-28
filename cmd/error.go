@@ -15,9 +15,9 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v5"
-	"github.com/Scalingo/go-scalingo/v5/debug"
-	httpclient "github.com/Scalingo/go-scalingo/v5/http"
+	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v6/debug"
+	httpclient "github.com/Scalingo/go-scalingo/v6/http"
 	"github.com/Scalingo/go-utils/errors"
 )
 

@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* deps(go-scalingo) Bump from 5.2.2 to 6.0.0 [#804](https://github.com/Scalingo/pull/804)
 * regression(cmd-alias) 'scale' command can again be invoked by 's' [#802](https://github.com/Scalingo/cli/pull/802)
 * regression(cmd-alias) 'run' command can again be invoked by 'r' [#802](https://github.com/Scalingo/cli/pull/802)
 
