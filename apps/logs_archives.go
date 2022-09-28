@@ -38,7 +38,7 @@ func LogsArchives(ctx context.Context, appName string, page int) error {
 		fmt.Println(color.New(color.FgYellow).Sprint("To:   ") + archive.To)
 		fmt.Println(color.New(color.FgYellow).Sprint("From: ") + archive.From)
 		fmt.Println(color.New(color.FgYellow).Sprint("Size: ") + strconv.FormatInt(archive.Size, 10))
-		fmt.Println(color.New(color.FgYellow).Sprint("Url:  ") + archive.Url)
+		fmt.Println(color.New(color.FgYellow).Sprint("Url:  ") + archive.URL)
 		fmt.Println("-------")
 	}
 

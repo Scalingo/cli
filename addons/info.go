@@ -30,11 +30,11 @@ func Info(ctx context.Context, app, addon string) error {
 	}
 
 	forceSsl, internetAccess := "disabled", "disabled"
-	for i := range dbInfo.Features {
-		if dbInfo.Features[i]["name"] == "force-ssl" {
-			forceSsl = strings.ToLower(dbInfo.Features[i]["status"])
-		} else if dbInfo.Features[i]["name"] == "publicly-available" {
-			internetAccess = strings.ToLower(dbInfo.Features[i]["status"])
+	for _, feature := range dbInfo.Features {
+		if feature.Name == "force-ssl" {
+			forceSsl = strings.ToLower(string(feature.Status))
+		} else if feature.Name == "publicly-available" {
+			internetAccess = strings.ToLower(string(feature.Status))
 		}
 	}
 

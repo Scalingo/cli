@@ -11,7 +11,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 const (
@@ -68,7 +68,7 @@ func displayStatsTable(stats []*scalingo.ContainerStat) error {
 	for i, s := range stats {
 		t.Append([]string{
 			s.ID,
-			fmt.Sprintf("%d%%", s.CpuUsage),
+			fmt.Sprintf("%d%%", s.CPUUsage),
 			fmt.Sprintf(
 				"%2d%% %v/%v",
 				int(float64(s.MemoryUsage)/float64(s.MemoryLimit)*100),
