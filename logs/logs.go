@@ -22,7 +22,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
-	"github.com/Scalingo/go-scalingo/v5/debug"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 )
 
 const (
@@ -48,7 +48,7 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	defer res.Body.Close()
 
 	if res.StatusCode == 404 || res.StatusCode == 204 {
-		io.Error("There is not log for this application")
+		io.Error("There is no log for this application")
 		io.Info("Ensure your application is writing to the standard output")
 		return nil
 	}

@@ -10,7 +10,7 @@ import (
 
 	"github.com/Scalingo/cli/utils"
 
-	"github.com/Scalingo/go-scalingo/v5/debug"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 )
 
 // CurrentApp returns the app name if it has been found in one of the following:

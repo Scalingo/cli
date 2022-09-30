@@ -5,14 +5,14 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/go-scalingo/v5/debug"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 type AppCommands struct {

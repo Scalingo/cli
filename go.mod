@@ -6,7 +6,7 @@ replace github.com/Scalingo/go-scalingo/v5 => /home/leo/go/src/github.com/Scalin
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
-	github.com/Scalingo/go-scalingo/v5 v5.2.0
+	github.com/Scalingo/go-scalingo/v6 v6.0.0
 	github.com/Scalingo/go-utils/errors v1.1.1
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
@@ -16,7 +16,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
 	github.com/go-git/go-git/v5 v5.4.2
-	github.com/google/go-github/v47 v47.0.0
+	github.com/google/go-github/v47 v47.1.0
 	github.com/gosuri/uilive v0.0.4
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
@@ -26,7 +26,7 @@ require (
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.16.3
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
+	golang.org/x/net v0.0.0-20220927171203-f486391704dc
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1

@@ -2,6 +2,16 @@
 
 ### To be Released
 
+* deps(go-scalingo) Bump from 5.2.2 to 6.0.0 [#804](https://github.com/Scalingo/pull/804)
+* regression(cmd-alias) 'scale' command can again be invoked by 's' [#802](https://github.com/Scalingo/cli/pull/802)
+* regression(cmd-alias) 'run' command can again be invoked by 'r' [#802](https://github.com/Scalingo/cli/pull/802)
+
+### 1.25.1
+
+This release is mandatory to keep the `logs` command working in the coming weeks.
+
+* feat(logs): add support for the new authentication mechanism
+
 ### 1.25.0
 
 #### Changed

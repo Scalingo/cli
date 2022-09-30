@@ -7,7 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 func Add(ctx context.Context, app string, domain string, cert string, key string) error {

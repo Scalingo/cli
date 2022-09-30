@@ -8,7 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 func Create(ctx context.Context, appName string, remote string, buildpack string) error {
@@ -40,10 +40,10 @@ func Create(ctx context.Context, appName string, remote string, buildpack string
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)
-	if _, ok := utils.DetectGit(); ok && utils.AddGitRemote(app.GitUrl, remote) == nil {
+	if _, ok := utils.DetectGit(); ok && utils.AddGitRemote(app.GitURL, remote) == nil {
 		fmt.Printf("Git repository detected: remote %s added\n→ 'git push %s master' to deploy your app\n", remote, remote)
 	} else {
-		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add %s %s\n→ git push %s master\n", remote, app.GitUrl, remote)
+		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add %s %s\n→ git push %s master\n", remote, app.GitURL, remote)
 	}
 	return nil
 }

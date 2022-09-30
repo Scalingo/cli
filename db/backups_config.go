@@ -11,30 +11,15 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v5"
+	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
-// BackupsConfiguration is the handler which handles the update of backup
-// configuration for a database addon
-func BackupsConfiguration(ctx context.Context, app, addon string, params scalingo.PeriodicBackupsConfigParams) error {
+func BackupsConfiguration(ctx context.Context, app, addon string, params scalingo.DatabaseUpdatePeriodicBackupsConfigParams) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-
-	db, err := client.DatabaseShow(ctx, app, addon)
-	if err != nil {
-		return errgo.Notef(err, "fail to get database info")
-	}
-
-	if params.ScheduledAt != nil && len(db.PeriodicBackupsScheduledAt) > 1 {
-		io.Warning("Your database is backed up multiple times a day at " +
-			formatScheduledAt(db.PeriodicBackupsScheduledAt) +
-			". Please ask the support to update the frequency of these backups.")
-		return nil
-	}
-
-	db, err = client.PeriodicBackupsConfig(ctx, app, addon, params)
+	db, err := client.DatabaseUpdatePeriodicBackupsConfig(ctx, app, addon, params)
 	if err != nil {
 		return errgo.Notef(err, "fail to configure the periodic backups")
 	}

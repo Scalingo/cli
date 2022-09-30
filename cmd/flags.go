@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/go-scalingo/v5/debug"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 	"github.com/urfave/cli/v2"
 )
 

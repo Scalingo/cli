@@ -29,5 +29,5 @@ func getGitEndpoint(ctx context.Context, appName string) (string, error) {
 		return "", errgo.Notef(err, "fail to get application information")
 	}
 
-	return app.GitUrl, nil
+	return app.GitURL, nil
 }

@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo/v5"
-	"github.com/Scalingo/go-scalingo/v5/http"
+	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v6/http"
 	"github.com/Scalingo/go-utils/errors"
 
 	"gopkg.in/errgo.v1"

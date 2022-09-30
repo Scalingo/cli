@@ -11,7 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 var (
@@ -95,7 +95,7 @@ Examples
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
 
-			params := scalingo.PeriodicBackupsConfigParams{}
+			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
 			if scheduleAtFlag != "" && disable {
