@@ -1,0 +1,34 @@
+# We need a specific GoRelease file for Windows because we don't want to use Go cross compile feature. We prefer compiling on an actual Windows.
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: scalingo
+    binary: scalingo
+    main: ./scalingo
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - 386
+
+    # Custom ldflags templates.
+    # https://goreleaser.com/customization/templates/
+    ldflags: -X main.buildstamp={{.Date}}
+      -X main.githash={{.FullCommit}}
+
+archives:
+  - name_template: 'scalingo_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    wrap_in_directory: true
+    format_overrides:
+      - goos: windows
+        format: zip
+checksum:
+  name_template: "checksums_windows.txt"
+changelog:
+  use: github-native
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"

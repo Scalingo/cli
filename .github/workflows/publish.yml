@@ -1,7 +1,6 @@
 name: Test and Release Go CLI
 
-on:
-  push:
+on: [push]
 
 jobs:
   tests:
@@ -13,13 +12,13 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
-      - run: go version
+          cache: true
       - name: Execute the tests
         run: go test -race ./...
 
-  release:
+  releases:
     needs: tests
-    name: GoReleaser Build
+    name: GoReleaser Build on All OS but Windows
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -30,7 +29,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
-      - run: go version
+          cache: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
         with:
@@ -38,3 +37,28 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  releases-windows:
+    needs: tests
+    name: GoReleaser Build on Windows
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # See: https://goreleaser.com/ci/actions/
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
+          check-latest: true
+          cache: true
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          version: latest
+          args: release --config .goreleaser-windows.yaml --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/dist
