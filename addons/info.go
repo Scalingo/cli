@@ -1,3 +1,6 @@
+// Package addons gather all the command handlers related to addons in general
+// Some specific treatment are done for database addons (like displaying
+// database feature status)
 package addons
 
 import (
@@ -10,9 +13,9 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/db"
 )
 
+// Info is the command handler displaying static information about one given addon
 func Info(ctx context.Context, app, addon string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
@@ -24,7 +27,7 @@ func Info(ctx context.Context, app, addon string) error {
 		return errgo.Notef(err, "fail to get addon information")
 	}
 
-	dbInfo, err := db.Show(ctx, app, addon)
+	dbInfo, err := c.DatabaseShow(ctx, app, addon)
 	if err != nil {
 		return errgo.Notef(err, "fail to get database information")
 	}
