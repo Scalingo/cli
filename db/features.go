@@ -28,7 +28,7 @@ func EnableFeature(appctx *cli.Context, app, addon, feature string) error {
 
 	res, err := client.DatabaseEnableFeature(appctx.Context, app, addon, feature)
 	if err != nil {
-		return errgo.Notef(err, "fail to enable feature")
+		return errgo.Notef(err, "fail to enable feature '%v'", feature)
 	}
 	spinner.Stop()
 
@@ -45,7 +45,7 @@ func EnableFeature(appctx *cli.Context, app, addon, feature string) error {
 		io.Infof("Waiting for operation completion...")
 		err = waitFeatureUntilActivated(appctx.Context, client, app, addon, feature)
 		if err != nil {
-			return errgo.Notef(err, "fail to wait for feature to be enabled")
+			return errgo.Notef(err, "fail to wait for feature '%v' to be enabled", feature)
 		}
 	}
 
@@ -91,7 +91,7 @@ func DisableFeature(ctx context.Context, app, addon, feature string) error {
 
 	_, err = client.DatabaseDisableFeature(ctx, app, addon, feature)
 	if err != nil {
-		return errgo.Notef(err, "fail to disable feature")
+		return errgo.Notef(err, "fail to disable feature '%v'", feature)
 	}
 	spinner.Stop()
 

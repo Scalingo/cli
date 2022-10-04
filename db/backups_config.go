@@ -19,7 +19,20 @@ func BackupsConfiguration(ctx context.Context, app, addon string, params scaling
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	db, err := client.DatabaseUpdatePeriodicBackupsConfig(ctx, app, addon, params)
+
+	db, err := client.DatabaseShow(ctx, app, addon)
+	if err != nil {
+		return errgo.Notef(err, "fail to get database current configuration")
+	}
+
+	if params.ScheduledAt != nil && len(db.PeriodicBackupsScheduledAt) > 1 {
+		msg := "Your database is backed up multiple times a day at " +
+			formatScheduledAt(db.PeriodicBackupsScheduledAt) +
+			". Please ask the support to update the frequency of these backups."
+		return errgo.New(msg)
+	}
+
+	db, err = client.DatabaseUpdatePeriodicBackupsConfig(ctx, app, addon, params)
 	if err != nil {
 		return errgo.Notef(err, "fail to configure the periodic backups")
 	}

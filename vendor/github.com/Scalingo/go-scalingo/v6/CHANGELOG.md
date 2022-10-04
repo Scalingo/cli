@@ -2,8 +2,6 @@
 
 ## To Be Released
 
-<<<<<<< HEAD:vendor/github.com/Scalingo/go-scalingo/v5/CHANGELOG.md
-=======
 ## 6.0.0
 
 BREAKING CHANGES:
@@ -33,7 +31,6 @@ Changelog:
 ## 5.2.1
 
 * fix(notifiers): add missing fields in `Notifier` [#278](https://github.com/Scalingo/go-scalingo/pull/278)
->>>>>>> origin/master:vendor/github.com/Scalingo/go-scalingo/v6/CHANGELOG.md
 * fix(scm_repo_link): add missing field `URL` in the structure `SCMRepoLink` [#281](https://github.com/Scalingo/go-scalingo/pull/282)
 
 ## 5.2.0

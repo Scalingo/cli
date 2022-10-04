@@ -198,8 +198,8 @@ var (
 
 		// Databases
 		&databaseBackupsConfig,
-		&databaseEnableFeatureConfig,
-		&databaseDisableFeatureConfig,
+		&databaseEnableFeature,
+		&databaseDisableFeature,
 
 		// Backups
 		&backupsListCommand,

@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	databaseEnableFeatureConfig = cli.Command{
+	databaseEnableFeature = cli.Command{
 		Name:     "database-enable-feature",
 		Category: "Addons",
 		Usage:    "Enable a togglable feature from a database",
@@ -45,7 +45,7 @@ Examples
 		},
 	}
 
-	databaseDisableFeatureConfig = cli.Command{
+	databaseDisableFeature = cli.Command{
 		Name:     "database-disable-feature",
 		Category: "Addons",
 		Usage:    "Enable a togglable feature from a database",
