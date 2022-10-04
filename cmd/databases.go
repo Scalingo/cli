@@ -21,7 +21,7 @@ var (
 		Usage:    "Enable a togglable feature from a database",
 		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.BoolFlag{
 			Name:  "synchronous",
-			Usage: "Wait for the feature to be enabled with success synchronously",
+			Usage: "Wait for the feature to be enabled synchronously",
 		}},
 		Description: `  Enable a togglable feature from a database:
 
