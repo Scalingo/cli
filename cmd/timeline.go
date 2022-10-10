@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -24,19 +25,20 @@ var (
     $ scalingo -a myapp timeline`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 0 {
-				err = apps.Events(c.Context, currentApp, scalingo.PaginationOpts{
-					Page:    c.Int("page"),
-					PerPage: c.Int("per-page"),
-				})
-			} else {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "timeline")
+				return nil
 			}
 
+			utils.CheckForConsent(c.Context, currentApp)
+			err := apps.Events(c.Context, currentApp, scalingo.PaginationOpts{
+				Page:    c.Int("page"),
+				PerPage: c.Int("per-page"),
+			})
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {

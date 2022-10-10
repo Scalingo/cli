@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -68,6 +69,8 @@ var (
 				cli.ShowCommandHelp(c, "db-tunnel")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 
 			err := db.Tunnel(c.Context, db.TunnelOpts{
 				App:       currentApp,

@@ -7,6 +7,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -95,6 +96,8 @@ var (
 				io.Error("It is currently impossible to use detached one-off with an uploaded file. Please either remove the --detached or --file flags.")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			err := apps.Run(c.Context, opts)
 			if err != nil {

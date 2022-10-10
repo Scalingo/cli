@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -36,9 +37,12 @@ var (
 				cli.ShowCommandHelp(c, "redis-console")
 				return nil
 			}
+			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 
 			err := db.RedisConsole(c.Context, db.RedisConsoleOpts{
-				App:          detect.CurrentApp(c),
+				App:          currentApp,
 				Size:         c.String("s"),
 				VariableName: c.String("e"),
 			})

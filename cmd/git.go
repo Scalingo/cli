@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/git"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -35,7 +36,10 @@ var (
 				return nil
 			}
 
-			err := git.Setup(c.Context, detect.CurrentApp(c), git.SetupParams{
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
+			err := git.Setup(c.Context, currentApp, git.SetupParams{
 				RemoteName:     detect.RemoteNameFromFlags(c),
 				ForcePutRemote: c.Bool("force"),
 			})
@@ -63,8 +67,10 @@ var (
 				cli.ShowCommandHelp(c, "git-show")
 				return nil
 			}
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			err := git.Show(c.Context, detect.CurrentApp(c))
+			err := git.Show(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
