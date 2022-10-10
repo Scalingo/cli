@@ -39,8 +39,6 @@ func CurrentApp(c *cli.Context) string {
 	}
 	debug.Println("[detect] App name is", appName)
 
-	utils.CheckForConsent(c.Context, appName)
-
 	return appName
 }
 

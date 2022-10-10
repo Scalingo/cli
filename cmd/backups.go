@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -76,6 +77,8 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 
 			backup := c.String("backup")
 			opts := db.DownloadBackupOpts{

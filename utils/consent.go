@@ -10,15 +10,39 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
+type ConsentType string
+
+const (
+	ConsentTypeContainers ConsentType = "containers"
+	ConsentTypeDBs        ConsentType = "dbs"
+)
+
 // CheckForConsent will check if an operator does have consent before executing a command. If they doesn't or if the CLI can't determine if the user has consent, it will ask for the operator confirmation
 // All display takes place on Stderr to minimize the chance that it will collide in situation where stdout is piped to another process (typically `scalingo logs | grep SOMETHING`)
-func CheckForConsent(ctx context.Context, appName string) {
+func CheckForConsent(ctx context.Context, appName string, consentTypes ...ConsentType) {
+	needConsentForContainers := false
+	needConsentForDBs := false
+
+	if len(consentTypes) == 0 {
+		needConsentForContainers = true
+		needConsentForDBs = true
+	}
+
+	for _, consentType := range consentTypes {
+		switch consentType {
+		case ConsentTypeContainers:
+			needConsentForContainers = true
+		case ConsentTypeDBs:
+			needConsentForDBs = true
+		}
+	}
+
 	currentUser, err := config.C.CurrentUser()
 	if err != nil {
 		return
 	}
 
-	// If the user is not admin, exit immediatly, this will make this function
+	// If the user is not admin, exit immediately, this will make this function
 	// almost a NOOP for non operators.
 	if !currentUser.Flags["admin"] {
 		return
@@ -31,7 +55,7 @@ func CheckForConsent(ctx context.Context, appName string) {
 		return
 	}
 
-	// Check if the operator is a collaborator on the targetted app
+	// Check if the operator is a collaborator on the targeted app
 	apps, err := c.AppsList(ctx)
 	if err != nil {
 		askForConsent(false)
@@ -62,22 +86,15 @@ func CheckForConsent(ctx context.Context, appName string) {
 	containers := checkAccessContent(app.DataAccessConsent.ContainersUntil)
 	databases := checkAccessContent(app.DataAccessConsent.DatabasesUntil)
 
-	if containers && databases {
-		// There is a consent for both app and containers, no need for operator validation, it can safely continue
-		return
-	}
-
-	printAccessContent("Containers Access Content", containers)
-	printAccessContent("Database Access Content", databases)
-
-	if !databases && !containers {
-		// The operator does not have access to apps nor containers, asking for an override
+	if needConsentForContainers && !containers {
 		askForConsent(true)
 		return
 	}
 
-	// Here the operator only have access to one of the two consent. We cannot safely assume what the operator will do, asking for manual validation.
-	askForConsent(false)
+	if needConsentForDBs && !databases {
+		askForConsent(true)
+		return
+	}
 }
 
 func askForConsent(override bool) {
@@ -104,12 +121,4 @@ func checkAccessContent(t *time.Time) bool {
 	}
 
 	return value
-}
-
-func printAccessContent(message string, value bool) {
-	if value {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", message, io.Green("true"))
-	} else {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", message, io.BoldRed("false"))
-	}
 }

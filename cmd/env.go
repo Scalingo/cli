@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/env"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -26,14 +27,17 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = env.Display(c.Context, currentApp)
-			} else {
 				cli.ShowCommandHelp(c, "env")
+				return nil
 			}
 
+			utils.CheckForConsent(c.Context, currentApp)
+
+			err = env.Display(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -59,6 +63,8 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp)
+
 			variableValue, err := env.Get(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)

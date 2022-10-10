@@ -7,6 +7,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -34,8 +35,12 @@ var (
 
 			var err error
 			if addonName == "" {
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 				err = apps.LogsArchives(c.Context, currentApp, c.Int("p"))
 			} else {
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+
 				err = db.LogsArchives(c.Context, currentApp, addonName, c.Int("p"))
 			}
 
