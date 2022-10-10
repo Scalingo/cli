@@ -26,7 +26,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if c.Args().Len() == 0 {
+			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "env")
 				return nil
 			}
