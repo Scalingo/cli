@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* deps(urfave/cli) Bumpd from 2.17.1 to 2.20.2: fix options display regression in --help [#814](https://github.com/Scalingo/cli/pull/814)
+
 ### 1.26.0
 
 * feat(db-commands) Add `database-enable-feature` and `database-disable-feature` for database addons [#807](https://github.com/Scalingo/cli/pull/807)
