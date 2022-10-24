@@ -22,7 +22,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
 	github.com/stvp/rollbar v0.5.1
-	github.com/urfave/cli/v2 v2.17.1
+	github.com/urfave/cli/v2 v2.20.2
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/net v0.0.0-20220927171203-f486391704dc
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
