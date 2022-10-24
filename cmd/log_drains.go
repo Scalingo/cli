@@ -73,11 +73,13 @@ var (
 		Description: `Add a log drain to an application:
 
 	Examples:
+		$ scalingo --app my-app log-drains-add --type appsignal --token 123456789abcdef
 		$ scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
 		$ scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com
 		$ scalingo --app my-app log-drains-add --type logentries --token 123456789abcdef
 		$ scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345
 		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
+		$ scalingo --app my-app log-drains-add --type syslog --token 123456789abcdef --host custom.logstash.com --port 12345
 		$ scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io
 
 	Add a log drain to an addon:
