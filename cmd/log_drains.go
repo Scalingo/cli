@@ -8,7 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/cli/log_drains"
+	"github.com/Scalingo/cli/logdrains"
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -41,7 +41,7 @@ var (
 
 			addonID := addonNameFromFlags(c)
 
-			err := log_drains.List(c.Context, currentApp, log_drains.ListAddonOpts{
+			err := logdrains.List(c.Context, currentApp, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
 				AddonID:    addonID,
 			})
@@ -76,7 +76,6 @@ var (
 		$ scalingo --app my-app log-drains-add --type appsignal --token 123456789abcdef
 		$ scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
 		$ scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com
-		$ scalingo --app my-app log-drains-add --type logentries --token 123456789abcdef
 		$ scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345
 		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
 		$ scalingo --app my-app log-drains-add --type syslog --token 123456789abcdef --host custom.logstash.com --port 12345
@@ -110,19 +109,18 @@ var (
 				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
-			err := log_drains.Add(c.Context, currentApp,
-				log_drains.AddDrainOpts{
-					WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
-					AddonID:    addonID,
-					Params: scalingo.LogDrainAddParams{
-						Type:        c.String("type"),
-						URL:         c.String("url"),
-						Host:        c.String("host"),
-						Port:        c.String("port"),
-						Token:       c.String("token"),
-						DrainRegion: c.String("drain-region"),
-					},
-				})
+			err := logdrains.Add(c.Context, currentApp, logdrains.AddDrainOpts{
+				WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
+				AddonID:    addonID,
+				Params: scalingo.LogDrainAddParams{
+					Type:        c.String("type"),
+					URL:         c.String("url"),
+					Host:        c.String("host"),
+					Port:        c.String("port"),
+					Token:       c.String("token"),
+					DrainRegion: c.String("drain-region"),
+				},
+			})
 			if err != nil {
 				errorQuit(err)
 			}
@@ -190,7 +188,7 @@ var (
 				return nil
 			}
 
-			err := log_drains.Remove(c.Context, currentApp, log_drains.RemoveAddonOpts{
+			err := logdrains.Remove(c.Context, currentApp, logdrains.RemoveAddonOpts{
 				AddonID: addonID,
 				OnlyApp: c.Bool("only-app"),
 				URL:     drain,

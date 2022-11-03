@@ -1,4 +1,4 @@
-package log_drains
+package logdrains
 
 import (
 	"context"
