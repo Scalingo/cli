@@ -3,6 +3,7 @@ module github.com/Scalingo/cli
 go 1.19
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 	github.com/Scalingo/go-scalingo/v6 v6.0.1
 	github.com/Scalingo/go-utils/errors v1.1.1
@@ -25,8 +26,7 @@ require (
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.23.0
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
-	gopkg.in/AlecAivazis/survey.v1 v1.8.8
+	golang.org/x/term v0.2.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
@@ -61,8 +61,9 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
-	golang.org/x/net v0.0.0-20220927171203-f486391704dc // indirect
-	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41 // indirect
+	golang.org/x/net v0.2.0 // indirect
+	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

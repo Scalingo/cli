@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v2"
-	"gopkg.in/AlecAivazis/survey.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
