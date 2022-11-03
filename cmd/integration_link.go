@@ -452,7 +452,7 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	if !ok {
 		return errors.New("must be a string")
 	}
-	i, err := strconv.ParseUint(str, 10, 32)
+	i, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {
 		return err
 	}
