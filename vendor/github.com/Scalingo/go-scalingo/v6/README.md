@@ -10,7 +10,7 @@ This repository is the Go client for the [Scalingo APIs](https://developers.scal
 package main
 
 import (
-	"github.com/Scalingo/go-scalingo/v5"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 func getClient() (*scalingo.Client, error) {

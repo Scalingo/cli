@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* chore(deps): bump github.com/stretchr/testify from 1.8.0 to 1.8.1
+
 ## 6.0.0
 
 BREAKING CHANGES:
