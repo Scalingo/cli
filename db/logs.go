@@ -45,7 +45,7 @@ func Logs(ctx context.Context, app, addon string, opts LogsOpts) error {
 	}
 
 	if opts.Follow {
-		err := logs.Stream(url, "")
+		err := logs.Stream(ctx, url, "")
 		if err != nil {
 			return errgo.Notef(err, "fail to stream logs")
 		}

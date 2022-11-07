@@ -64,7 +64,7 @@ func Logs(ctx context.Context, appName string, stream bool, n int, filter string
 	}
 
 	if stream {
-		if err = logs.Stream(logsRes.LogsURL, filter); err != nil {
+		if err = logs.Stream(ctx, logsRes.LogsURL, filter); err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
 	}
