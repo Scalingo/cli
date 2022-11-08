@@ -161,12 +161,9 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	for {
 		err := conn.ReadJSON(&event)
 		if err != nil {
-			conn.Close()
 			if err == stdio.EOF {
 				debug.Println("Remote server broke the connection, reconnecting")
 				for err != nil {
-					header := http.Header{}
-					header.Add("Origin", fmt.Sprintf("http://scalingo-cli.local/%s", config.Version))
 					conn, resp, err = websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
 					defer resp.Body.Close()
 					time.Sleep(time.Second * 1)

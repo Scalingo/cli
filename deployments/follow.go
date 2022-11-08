@@ -76,7 +76,6 @@ func Stream(ctx context.Context, opts *StreamOpts) error {
 		var event deployEvent
 		err := conn.ReadJSON(&event)
 		if err != nil {
-			conn.Close()
 			if err == stdio.EOF {
 				debug.Println("Remote server broke the connection, reconnecting")
 				for err != nil {
