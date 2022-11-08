@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
-	github.com/Scalingo/go-scalingo/v6 v6.0.0
+	github.com/Scalingo/go-scalingo/v6 v6.0.1
 	github.com/Scalingo/go-utils/errors v1.1.1
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
@@ -15,6 +15,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-github/v47 v47.1.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/gosuri/uilive v0.0.4
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
@@ -24,7 +25,6 @@ require (
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.23.0
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	golang.org/x/net v0.0.0-20220927171203-f486391704dc
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/errgo.v1 v1.0.1
@@ -61,6 +61,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	golang.org/x/net v0.0.0-20220927171203-f486391704dc // indirect
 	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

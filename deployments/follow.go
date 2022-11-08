@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/net/websocket"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -75,7 +74,7 @@ func Stream(ctx context.Context, opts *StreamOpts) error {
 
 	for {
 		var event deployEvent
-		err := websocket.JSON.Receive(conn, &event)
+		err := conn.ReadJSON(&event)
 		if err != nil {
 			conn.Close()
 			if err == stdio.EOF {

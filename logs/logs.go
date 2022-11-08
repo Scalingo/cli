@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
@@ -16,7 +17,7 @@ import (
 	stdio "io"
 
 	"github.com/fatih/color"
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -115,7 +116,7 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	}
 }
 
-func Stream(logsRawURL string, filter string) error {
+func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	var (
 		err   error
 		event WSEvent
@@ -136,10 +137,13 @@ func Stream(logsRawURL string, filter string) error {
 		logsURLString = fmt.Sprintf("%s&filter=%s", logsURLString, filter)
 	}
 
-	conn, err := websocket.Dial(logsURLString, "", "http://scalingo-cli.local/"+config.Version)
+	header := http.Header{}
+	header.Add("Origin", fmt.Sprintf("http://scalingo-cli.local/%s", config.Version))
+	conn, resp, err := websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	defer resp.Body.Close()
 
 	signals.CatchQuitSignals = false
 	signals := make(chan os.Signal)
@@ -155,13 +159,14 @@ func Stream(logsRawURL string, filter string) error {
 	}()
 
 	for {
-		err := websocket.JSON.Receive(conn, &event)
+		err := conn.ReadJSON(&event)
 		if err != nil {
 			conn.Close()
 			if err == stdio.EOF {
 				debug.Println("Remote server broke the connection, reconnecting")
 				for err != nil {
-					conn, err = websocket.Dial(logsURLString, "", "http://scalingo-cli.local/"+config.Version)
+					conn, resp, err = websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
+					defer resp.Body.Close()
 					time.Sleep(time.Second * 1)
 				}
 				continue

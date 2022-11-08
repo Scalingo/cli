@@ -2,6 +2,11 @@
 
 ## To Be Released
 
+## 6.0.1
+
+* chore(deps): bump github.com/stretchr/testify from 1.8.0 to 1.8.1
+* chore(deps): replace golang.org/x/net/websocket -> github.com/gorilla/websocket
+
 ## 6.0.0
 
 BREAKING CHANGES:
