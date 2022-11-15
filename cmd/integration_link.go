@@ -7,8 +7,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v2"
-	"gopkg.in/AlecAivazis/survey.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
@@ -413,7 +413,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		err = survey.AskOne(&survey.Input{
 			Message: "Hours before automatically destroying the review apps:",
 			Default: "0",
-		}, &answerHoursBeforeDestroyOnClose, validateHoursBeforeDelete)
+		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
 			return params, err
 		}
@@ -436,7 +436,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		err = survey.AskOne(&survey.Input{
 			Message: "Hours before automatically destroying the review apps:",
 			Default: "0",
-		}, &answerHoursBeforeDestroyOnStale, validateHoursBeforeDelete)
+		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
 			return params, err
 		}
@@ -452,7 +452,7 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	if !ok {
 		return errors.New("must be a string")
 	}
-	i, err := strconv.ParseUint(str, 10, 32)
+	i, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {
 		return err
 	}

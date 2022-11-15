@@ -1,3 +1,8 @@
+# github.com/AlecAivazis/survey/v2 v2.3.6
+## explicit; go 1.13
+github.com/AlecAivazis/survey/v2
+github.com/AlecAivazis/survey/v2/core
+github.com/AlecAivazis/survey/v2/terminal
 # github.com/Microsoft/go-winio v0.5.2
 ## explicit; go 1.13
 github.com/Microsoft/go-winio
@@ -261,12 +266,12 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.0.0-20220927171203-f486391704dc
+# golang.org/x/net v0.2.0
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41
+# golang.org/x/sys v0.2.0
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -274,14 +279,13 @@ golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
+# golang.org/x/term v0.2.0
 ## explicit; go 1.17
 golang.org/x/term
-# gopkg.in/AlecAivazis/survey.v1 v1.8.8
-## explicit; go 1.13
-gopkg.in/AlecAivazis/survey.v1
-gopkg.in/AlecAivazis/survey.v1/core
-gopkg.in/AlecAivazis/survey.v1/terminal
+# golang.org/x/text v0.4.0
+## explicit; go 1.17
+golang.org/x/text/transform
+golang.org/x/text/width
 # gopkg.in/errgo.v1 v1.0.1
 ## explicit
 gopkg.in/errgo.v1

@@ -3,9 +3,9 @@ package region_migrations
 import (
 	"fmt"
 
-	"gopkg.in/AlecAivazis/survey.v1"
+	"github.com/AlecAivazis/survey/v2"
 
-	scalingo "github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v6"
 )
 
 func ConfirmPrepare(migration scalingo.RegionMigration) bool {
