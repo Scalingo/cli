@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* deps(urfave/cli): Bumpd from 2.17.1 to 2.20.2: fix options display regression in --help [#814](https://github.com/Scalingo/cli/pull/814)
+* deps(urfave/cli): Bumpd from 2.17.1 to 2.23.5: fix options display regression in --help [#814](https://github.com/Scalingo/cli/pull/814)
 * deps(websocket): Replace golang.org/x/net/websocket with github.com/gorilla/websocket [#822](https://github.com/Scalingo/cli/pull/822)
 * deps(survey): upgrade gopkg.in/AlecAivazis/survey.v1 to github.com/AlecAivazis/survey/v2 [#821](https://github.com/Scalingo/cli/pull/821)
 
