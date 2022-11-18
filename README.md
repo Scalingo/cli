@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.26.0
+# Scalingo-CLI v1.26.1
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.26.0
+   1.26.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -260,12 +260,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.26.0
+git checkout -b v1.26.1
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.26.0
+git push --set-upstream origin v1.26.1
 ```
 
 ### New Version Bump
@@ -280,10 +280,10 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-git switch --create release/1.26.0
+git switch --create release/1.26.1
 git add .
-git commit -m "Bump version 1.26.0"
-git push --set-upstream origin release/1.26.0
+git commit -m "Bump version 1.26.1"
+git push --set-upstream origin release/1.26.1
 gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
@@ -292,8 +292,8 @@ Once the pull request merged, you can tag the new release.
 #### Tag the New Release
 
 ```bash
-git tag 1.26.0
-git push origin master 1.26.0
+git tag 1.26.1
+git push origin master 1.26.1
 ```
 
 Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
@@ -308,6 +308,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.26.0 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.26.1 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
