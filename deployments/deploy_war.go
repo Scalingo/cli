@@ -14,11 +14,10 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/cli/config"
-
 	"github.com/Scalingo/go-scalingo/v6"
-
-	errgo "gopkg.in/errgo.v1"
 )
 
 type DeployWarRes struct {
@@ -88,6 +87,9 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 	gzWriter.Close()
 
 	res, err := uploadArchive(sources.UploadURL, archiveBuffer, int64(archiveBuffer.Len()))
+	if err != nil {
+		return errgo.Notef(err, "fail to upload the WAR archive")
+	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
