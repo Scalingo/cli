@@ -109,7 +109,7 @@ func uploadArchive(uploadURL string, archiveReader io.Reader, archiveSize int64)
 	scalingoio.Status("Uploading archive…")
 	req, err := http.NewRequest("PUT", uploadURL, archiveReader)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errgo.Notef(err, "fail to create the PUT request to upload the WAR archive")
 	}
 
 	req.Header.Set("Content-Type", "application/x-gzip")

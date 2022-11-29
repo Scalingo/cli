@@ -91,6 +91,7 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 		return errgo.Notef(err, "fail to upload the WAR archive")
 	}
 	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("wrong status code after upload %s", res.Status)
 	}
@@ -98,13 +99,14 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 	return Deploy(ctx, appName, sources.DownloadURL, gitRef, opts)
 }
 
-func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err error) {
+func getURLInfo(warPath string) (io.ReadCloser, int64, error) {
 	res, err := http.Get(warPath)
 	if err != nil {
-		err = errgo.Mask(err, errgo.Any)
-		return
+		return nil, 0, errgo.Mask(err, errgo.Any)
 	}
-	warReadStream = res.Body
+
+	warSize := int64(0)
+	warReadStream := res.Body
 	if res.Header.Get("Content-Length") != "" {
 		i, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
 		if err == nil {
@@ -112,20 +114,23 @@ func getURLInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, err
 			warSize = i
 		}
 	}
-	return
+
+	return warReadStream, warSize, nil
 }
 
-func getFileInfo(warPath string) (warReadStream io.ReadCloser, warSize int64, warFileName string, err error) {
-	warFileName = filepath.Base(warPath)
+func getFileInfo(warPath string) (io.ReadCloser, int64, string, error) {
+	warSize := int64(0)
+	warFileName := filepath.Base(warPath)
 	fi, err := os.Stat(warPath)
 	if err == nil {
 		// If there is an error, we just skip this header
 		warSize = fi.Size()
 	}
-	warReadStream, err = os.Open(warPath)
+
+	warReadStream, err := os.Open(warPath)
 	if err != nil {
-		err = errgo.Mask(err, errgo.Any)
-		return
+		return nil, 0, "", errgo.Mask(err, errgo.Any)
 	}
-	return
+
+	return warReadStream, warSize, warFileName, nil
 }
