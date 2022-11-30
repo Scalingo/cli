@@ -3,6 +3,7 @@
 ### To be Released
 
 * feat(logs): allow DB type aliases [#829](https://github.com/Scalingo/cli/pull/829)
+* feat(db-console): add `influx-console` and `mongodb-console` aliases [#830](https://github.com/Scalingo/cli/pull/830)
 
 ### 1.26.1
 

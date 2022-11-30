@@ -12,6 +12,7 @@ import (
 var (
 	MongoConsoleCommand = cli.Command{
 		Name:     "mongo-console",
+		Aliases:  []string{"mongodb-console"},
 		Category: "Databases",
 		Usage:    "Run an interactive console with your MongoDB addon",
 		Flags: []cli.Flag{&appFlag,
