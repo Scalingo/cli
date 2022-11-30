@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(logs): allow DB type aliases [#829](https://github.com/Scalingo/cli/pull/829)
+
 ### 1.26.1
 
 * deps(urfave/cli): Bumpd from 2.17.1 to 2.23.5: fix options display regression in --help [#814](https://github.com/Scalingo/cli/pull/814)

@@ -54,6 +54,23 @@ func Logs(ctx context.Context, app, addon string, opts LogsOpts) error {
 }
 
 func getAddonUUIDFromType(ctx context.Context, addonsClient scalingo.AddonsService, app, addonType string) (string, error) {
+	aliases := map[string]string{
+		"psql":     "postgresql",
+		"pgsql":    "postgresql",
+		"postgres": "postgresql",
+
+		"mgo":   "mongodb",
+		"mongo": "mongodb",
+
+		"influx": "influxdb",
+
+		"es": "elasticsearch",
+	}
+	addonTypeAlias, isAlias := aliases[addonType]
+	if isAlias {
+		addonType = addonTypeAlias
+	}
+
 	addons, err := addonsClient.AddonsList(ctx, app)
 	if err != nil {
 		return "", errgo.Notef(err, "fail to list the addons to get the type UUID")
