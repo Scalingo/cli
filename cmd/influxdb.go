@@ -12,6 +12,7 @@ import (
 var (
 	InfluxDBConsoleCommand = cli.Command{
 		Name:     "influxdb-console",
+		Aliases:  []string{"influx-console"},
 		Category: "Databases",
 		Usage:    "Run an interactive console with your InfluxDB addon",
 		Flags: []cli.Flag{&appFlag,

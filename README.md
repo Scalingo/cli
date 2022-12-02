@@ -136,10 +136,10 @@ COMMANDS:
 
    Databases:
      redis-console                                    Run an interactive console with your Redis addon
-     mongo-console                                    Run an interactive console with your MongoDB addon
+     mongo-console, mongodb-console                   Run an interactive console with your MongoDB addon
      mysql-console                                    Run an interactive console with your MySQL addon
      pgsql-console, psql-console, postgresql-console  Run an interactive console with your PostgreSQL addon
-     influxdb-console                                 Run an interactive console with your InfluxDB addon
+     influxdb-console, influx-console                 Run an interactive console with your InfluxDB addon
 
    Deployment:
      deployments                                       List app deployments
