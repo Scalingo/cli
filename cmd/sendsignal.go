@@ -19,7 +19,8 @@ var (
 		},
 		Description: `Send SIGUSR1/2 to your application containers
 	Example
-	  'scalingo --app my-app send-signal --signal SIGUSR1 web-1'`,
+	  'scalingo --app my-app send-signal --signal SIGUSR1 web-1'
+	  'scalingo --app my-app send-signal --signal SIGUSR2 web-1 web-2'`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {

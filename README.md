@@ -49,6 +49,8 @@ DISABLE_UPDATE_CHECKER=true
 ## Command Help
 
 ```
+Incorrect Usage: flag: help requested
+
 NAME:
    Scalingo Client - Manage your apps and containers
 
@@ -65,16 +67,18 @@ COMMANDS:
      help  Shows a list of commands or help for one command
 
    Addons:
-     addons            List used add-ons
-     addons-add        Provision an add-on for your application
-     addons-remove     Remove an existing addon from your app
-     addons-upgrade    Upgrade or downgrade an add-on attached to your app
-     addons-info       Display information about an add-on attached to your app
-     backups-config    Configure the periodic backups of a database
-     backups           List backups for an addon
-     backups-create    Ask for a new backup
-     backups-download  Download a backup
-     backup-download   Download a backup
+     addons                    List used add-ons
+     addons-add                Provision an add-on for your application
+     addons-remove             Remove an existing addon from your app
+     addons-upgrade            Upgrade or downgrade an add-on attached to your app
+     addons-info               Display information about an add-on attached to your app
+     backups-config            Configure the periodic backups of a database
+     database-enable-feature   Enable a togglable feature from a database
+     database-disable-feature  Enable a togglable feature from a database
+     backups                   List backups for an addon
+     backups-create            Ask for a new backup
+     backups-download          Download a backup
+     backup-download           Download a backup
 
    Addons - Global:
      addons-list   List all addons
@@ -96,11 +100,12 @@ COMMANDS:
      dashboard               Open app dashboard on default web browser
      logs, l                 Get the logs of your applications
      logs-archives, la       Get the logs archives of your applications and databases
-     run                     Run any command for your app
+     run, r                  Run any command for your app
      one-off-stop            Stop a running one-off container
      ps                      Display your application containers
-     scale                   Scale your application instantly
+     scale, s                Scale your application instantly
      restart                 Restart processes of your app
+     send-signal             Send SIGUSR1/2 to your application containers
      force-https             Enable/Disable automatic redirection of traffic to HTTPS for your application
      sticky-session          Enable/Disable sticky sessions for your application
      router-logs             Enable/disable router logs for your application
