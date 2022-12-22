@@ -128,6 +128,7 @@ var (
 		&psCommand,
 		&scaleCommand,
 		&RestartCommand,
+		&sendSignalCommand,
 
 		// Routing Settings
 		&forceHTTPSCommand,

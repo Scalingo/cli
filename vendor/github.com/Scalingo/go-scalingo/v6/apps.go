@@ -275,6 +275,21 @@ func (c *Client) AppsContainersPs(ctx context.Context, app string) ([]Container,
 	return containersRes.Containers, nil
 }
 
+func (c *Client) AppsContainersSendSignal(ctx context.Context, app string, signal string, container string) error {
+	req := &httpclient.APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/containers/" + container + "/kill",
+		Params:   map[string]interface{}{"signal": signal},
+		Expected: httpclient.Statuses{204},
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
+	if err != nil {
+		return errgo.Notef(err, "fail to execute the POST request to send signal to container")
+	}
+
+	return nil
+}
+
 func (c *Client) AppsContainerTypes(ctx context.Context, app string) ([]ContainerType, error) {
 	var containerTypesRes AppsContainerTypesRes
 	req := &httpclient.APIRequest{
