@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/urfave/cli/v2"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -24,7 +25,10 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
-				cli.ShowCommandHelp(c, "send-signal")
+				err := cli.ShowCommandHelp(c, "send-signal")
+				if err != nil {
+					return errgo.Notef(err, "fail to show command helper")
+				}
 				return nil
 			}
 
@@ -36,7 +40,7 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "send-signal")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "send-signal")
 		},
 	}
 )
