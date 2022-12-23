@@ -28,6 +28,9 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 	if !cmd.Global {
 		regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
+		// I don't really understand the official documentation about this field.
+		// But setting it to true enables the display of the help usage message when `cli.ShowCommandHelp` is called. Without this setting, the call to `cli.ShowCommandHelp` displays a "No help topic for command" error message.
+		cmd.Command.HideHelp = true
 		action := cmd.Command.Action
 		cmd.Command.Action = func(c *cli.Context) error {
 			token := os.Getenv("SCALINGO_API_TOKEN")
