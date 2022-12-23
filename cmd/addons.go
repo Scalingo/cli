@@ -21,16 +21,15 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 0 {
-				err = addons.List(c.Context, currentApp)
-			} else {
-				cli.ShowCommandHelp(c, "addons")
+			if c.Args().Len() > 0 {
+				return cli.ShowCommandHelp(c, "addons")
 			}
 
+			err := addons.List(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -49,15 +48,15 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 2 {
-				err = addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
-			} else {
-				cli.ShowCommandHelp(c, "addons-add")
+			if c.Args().Len() != 2 {
+				return cli.ShowCommandHelp(c, "addons-add")
 			}
+
+			err := addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -77,15 +76,15 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 1 {
-				err = addons.Destroy(c.Context, currentApp, c.Args().First())
-			} else {
-				cli.ShowCommandHelp(c, "addons-remove")
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "addons-remove")
 			}
+
+			err := addons.Destroy(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -105,12 +104,11 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 2 {
-				err = addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
-			} else {
-				cli.ShowCommandHelp(c, "addons-upgrade")
+			if c.Args().Len() != 2 {
+				return cli.ShowCommandHelp(c, "addons-upgrade")
 			}
+
+			err := addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
@@ -133,8 +131,7 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "addons-info")
-				return nil
+				return cli.ShowCommandHelp(c, "addons-info")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -144,6 +141,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
