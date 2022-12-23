@@ -161,11 +161,11 @@ var (
 		// Addons
 		&AddonProvidersListCommand,
 		&AddonProvidersPlansCommand,
-		&AddonsListCommand,
-		&AddonsAddCommand,
-		&AddonsRemoveCommand,
-		&AddonsUpgradeCommand,
-		&AddonsInfoCommand,
+		&addonsListCommand,
+		&addonsAddCommand,
+		&addonsRemoveCommand,
+		&addonsUpgradeCommand,
+		&addonsInfoCommand,
 
 		// Integration Link
 		&integrationLinkShowCommand,

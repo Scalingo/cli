@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	AddonsListCommand = cli.Command{
+	addonsListCommand = cli.Command{
 		Name:     "addons",
 		Category: "Addons",
 		Usage:    "List used add-ons",
@@ -37,7 +37,7 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "addons")
 		},
 	}
-	AddonsAddCommand = cli.Command{
+	addonsAddCommand = cli.Command{
 		Name:     "addons-add",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -65,7 +65,7 @@ var (
 			autocomplete.AddonsAddAutoComplete(c)
 		},
 	}
-	AddonsRemoveCommand = cli.Command{
+	addonsRemoveCommand = cli.Command{
 		Name:     "addons-remove",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -93,7 +93,7 @@ var (
 			autocomplete.AddonsRemoveAutoComplete(c)
 		},
 	}
-	AddonsUpgradeCommand = cli.Command{
+	addonsUpgradeCommand = cli.Command{
 		Name:     "addons-upgrade",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -121,7 +121,7 @@ var (
 			autocomplete.AddonsUpgradeAutoComplete(c)
 		},
 	}
-	AddonsInfoCommand = cli.Command{
+	addonsInfoCommand = cli.Command{
 		Name:     "addons-info",
 		Category: "Addons",
 		Usage:    "Display information about an add-on attached to your app",
