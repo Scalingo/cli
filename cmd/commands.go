@@ -5,14 +5,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/go-scalingo/v6/debug"
-
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 )
 
 type AppCommands struct {
@@ -63,9 +62,8 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 			if currentRegion != "" {
 				config.C.ScalingoRegion = currentRegion
 			}
-			action(c)
 
-			return nil
+			return action(c)
 		}
 	}
 	cmds.commands = append(cmds.commands, cmd.Command)
