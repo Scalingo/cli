@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* fix(commands): display help usage message if needed [#835](https://github.com/Scalingo/cli/pull/835)
 * feat(logs): allow DB type aliases [#829](https://github.com/Scalingo/cli/pull/829)
 * feat(db-console): add `influx-console` and `mongodb-console` aliases [#830](https://github.com/Scalingo/cli/pull/830)
 
