@@ -5,14 +5,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/Scalingo/go-scalingo/v6/debug"
-
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 )
 
 type AppCommands struct {
@@ -26,49 +25,60 @@ type Command struct {
 }
 
 func (cmds *AppCommands) addCommand(cmd Command) {
-	if !cmd.Global {
-		regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
-		cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
-		action := cmd.Command.Action
-		cmd.Command.Action = func(c *cli.Context) error {
-			token := os.Getenv("SCALINGO_API_TOKEN")
+	cmds.commands = append(cmds.commands, cmd.Command)
+	// I don't really understand the official documentation about this field.
+	// But setting it to true enables the display of the help usage message when `cli.ShowCommandHelp` is called. Without this setting, the call to `cli.ShowCommandHelp` displays a "No help topic for command" error message.
+	cmd.Command.HideHelp = true
 
-			currentUser, err := config.C.CurrentUser()
-			if err != nil || currentUser == nil {
-				err := session.Login(c.Context, session.LoginOpts{APIToken: token})
-				if err != nil {
-					errorQuit(err)
-				}
-			}
+	// Global commands are simply added to the list of commands
+	if cmd.Global {
+		return
+	}
 
-			regions, err := config.EnsureRegionsCache(c.Context, config.C, config.GetRegionOpts{
-				Token: token,
-			})
+	// Regional commands are modified before being added to the list of commands.
+	regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
+	cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
+	action := cmd.Command.Action
+	cmd.Command.Action = regionalCommandAction(action)
+}
+
+func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
+	return func(c *cli.Context) error {
+		token := os.Getenv("SCALINGO_API_TOKEN")
+
+		currentUser, err := config.C.CurrentUser()
+		if err != nil || currentUser == nil {
+			err := session.Login(c.Context, session.LoginOpts{APIToken: token})
 			if err != nil {
 				errorQuit(err)
 			}
-			currentRegion := regionNameFromFlags(c)
-
-			// Detecting Region from git remote
-			if currentRegion == "" {
-				currentRegion = detect.GetRegionFromGitRemote(c, &regions)
-			}
-
-			if config.C.ScalingoRegion == "" && currentRegion == "" {
-				region := getDefaultRegion(regions)
-				debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
-				currentRegion = region.Name
-			}
-
-			if currentRegion != "" {
-				config.C.ScalingoRegion = currentRegion
-			}
-			action(c)
-
-			return nil
 		}
+
+		regions, err := config.EnsureRegionsCache(c.Context, config.C, config.GetRegionOpts{
+			Token: token,
+		})
+		if err != nil {
+			errorQuit(err)
+		}
+		currentRegion := regionNameFromFlags(c)
+
+		// Detecting Region from git remote
+		if currentRegion == "" {
+			currentRegion = detect.GetRegionFromGitRemote(c, &regions)
+		}
+
+		if config.C.ScalingoRegion == "" && currentRegion == "" {
+			region := getDefaultRegion(regions)
+			debug.Printf("[Regions] Use the default region '%s'\n", region.Name)
+			currentRegion = region.Name
+		}
+
+		if currentRegion != "" {
+			config.C.ScalingoRegion = currentRegion
+		}
+
+		return action(c)
 	}
-	cmds.commands = append(cmds.commands, cmd.Command)
 }
 
 func getDefaultRegion(regionsCache config.RegionsCache) scalingo.Region {
@@ -161,11 +171,11 @@ var (
 		// Addons
 		&AddonProvidersListCommand,
 		&AddonProvidersPlansCommand,
-		&AddonsListCommand,
-		&AddonsAddCommand,
-		&AddonsRemoveCommand,
-		&AddonsUpgradeCommand,
-		&AddonsInfoCommand,
+		&addonsListCommand,
+		&addonsAddCommand,
+		&addonsRemoveCommand,
+		&addonsUpgradeCommand,
+		&addonsInfoCommand,
 
 		// Integration Link
 		&integrationLinkShowCommand,

@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	AddonsListCommand = cli.Command{
+	addonsListCommand = cli.Command{
 		Name:     "addons",
 		Category: "Addons",
 		Usage:    "List used add-ons",
@@ -21,23 +21,22 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 0 {
-				err = addons.List(c.Context, currentApp)
-			} else {
-				cli.ShowCommandHelp(c, "addons")
+			if c.Args().Len() > 0 {
+				return cli.ShowCommandHelp(c, "addons")
 			}
 
+			err := addons.List(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "addons")
 		},
 	}
-	AddonsAddCommand = cli.Command{
+	addonsAddCommand = cli.Command{
 		Name:     "addons-add",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -49,15 +48,15 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 2 {
-				err = addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
-			} else {
-				cli.ShowCommandHelp(c, "addons-add")
+			if c.Args().Len() != 2 {
+				return cli.ShowCommandHelp(c, "addons-add")
 			}
+
+			err := addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -65,7 +64,7 @@ var (
 			autocomplete.AddonsAddAutoComplete(c)
 		},
 	}
-	AddonsRemoveCommand = cli.Command{
+	addonsRemoveCommand = cli.Command{
 		Name:     "addons-remove",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -77,15 +76,15 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 1 {
-				err = addons.Destroy(c.Context, currentApp, c.Args().First())
-			} else {
-				cli.ShowCommandHelp(c, "addons-remove")
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "addons-remove")
 			}
+
+			err := addons.Destroy(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
@@ -93,7 +92,7 @@ var (
 			autocomplete.AddonsRemoveAutoComplete(c)
 		},
 	}
-	AddonsUpgradeCommand = cli.Command{
+	addonsUpgradeCommand = cli.Command{
 		Name:     "addons-upgrade",
 		Category: "Addons",
 		Flags:    []cli.Flag{&appFlag},
@@ -105,12 +104,11 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 2 {
-				err = addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
-			} else {
-				cli.ShowCommandHelp(c, "addons-upgrade")
+			if c.Args().Len() != 2 {
+				return cli.ShowCommandHelp(c, "addons-upgrade")
 			}
+
+			err := addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
@@ -121,7 +119,7 @@ var (
 			autocomplete.AddonsUpgradeAutoComplete(c)
 		},
 	}
-	AddonsInfoCommand = cli.Command{
+	addonsInfoCommand = cli.Command{
 		Name:     "addons-info",
 		Category: "Addons",
 		Usage:    "Display information about an add-on attached to your app",
@@ -133,8 +131,7 @@ var (
 `,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "addons-info")
-				return nil
+				return cli.ShowCommandHelp(c, "addons-info")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -144,6 +141,7 @@ var (
 			if err != nil {
 				errorQuit(err)
 			}
+
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
