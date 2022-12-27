@@ -49,8 +49,6 @@ DISABLE_UPDATE_CHECKER=true
 ## Command Help
 
 ```
-Incorrect Usage: flag: help requested
-
 NAME:
    Scalingo Client - Manage your apps and containers
 

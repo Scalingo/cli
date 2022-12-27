@@ -14,11 +14,11 @@ var (
 	sendSignalCommand = cli.Command{
 		Name:     "send-signal",
 		Category: "App Management",
-		Usage:    "Send SIGUSR1/2 to your application containers",
+		Usage:    "Send SIGUSR1 or SIGUSR2 to your application containers",
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{Name: "signal", Aliases: []string{"s"}, Usage: "signal to send to the container"},
 		},
-		Description: `Send SIGUSR1/2 to your application containers
+		Description: `Send SIGUSR1 or SIGUSR2 to your application containers
 	Example
 	  'scalingo --app my-app send-signal --signal SIGUSR1 web-1'
 	  'scalingo --app my-app send-signal --signal SIGUSR2 web-1 web-2'`,
