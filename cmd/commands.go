@@ -25,21 +25,21 @@ type Command struct {
 }
 
 func (cmds *AppCommands) addCommand(cmd Command) {
+	cmds.commands = append(cmds.commands, cmd.Command)
+	// I don't really understand the official documentation about this field.
+	// But setting it to true enables the display of the help usage message when `cli.ShowCommandHelp` is called. Without this setting, the call to `cli.ShowCommandHelp` displays a "No help topic for command" error message.
+	cmd.Command.HideHelp = true
+
 	// Global commands are simply added to the list of commands
 	if cmd.Global {
-		cmds.commands = append(cmds.commands, cmd.Command)
 		return
 	}
 
 	// Regional commands are modified before being added to the list of commands.
 	regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
 	cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
-	// I don't really understand the official documentation about this field.
-	// But setting it to true enables the display of the help usage message when `cli.ShowCommandHelp` is called. Without this setting, the call to `cli.ShowCommandHelp` displays a "No help topic for command" error message.
-	cmd.Command.HideHelp = true
 	action := cmd.Command.Action
 	cmd.Command.Action = regionalCommandAction(action)
-	cmds.commands = append(cmds.commands, cmd.Command)
 }
 
 func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
