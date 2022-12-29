@@ -2,6 +2,12 @@
 
 ## To Be Released
 
+## 6.1.0
+
+* feat(events): Add Detached field for EventRun [#292](https://github.com/Scalingo/go-scalingo/pull/292)
+* chore(deps): bump github.com/golang-jwt/jwt/v4 from 4.4.2 to 4.4.3
+* feat(send-signal): new function `ContainersKill` to request the send-signal api's endpoint [#295](https://github.com/Scalingo/go-scalingo/pull/295)
+
 ## 6.0.1
 
 * chore(deps): bump github.com/stretchr/testify from 1.8.0 to 1.8.1

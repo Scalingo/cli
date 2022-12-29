@@ -13,10 +13,12 @@ import (
 var (
 	sendSignalCommand = cli.Command{
 		Name:     "send-signal",
+		Aliases:  []string{"kill"},
 		Category: "App Management",
 		Usage:    "Send SIGUSR1 or SIGUSR2 to your application containers",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "signal", Aliases: []string{"s"}, Usage: "signal to send to the container"},
+			&cli.StringFlag{Name: "signal", Aliases: []string{"s"}, Usage: "signal to send to the container", Required: true},
+			&cli.BoolFlag{Name: "prefix", Aliases: []string{"p"}, Usage: "indicates if the list of arguments represents a list of prefixes"},
 		},
 		Description: `Send SIGUSR1 or SIGUSR2 to your application containers
 	Example
@@ -32,7 +34,7 @@ var (
 				return nil
 			}
 
-			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Args().Slice())
+			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Bool("prefix"), c.Args().Slice())
 			if err != nil {
 				rootError := errors.RootCause(err)
 				errorQuit(rootError)

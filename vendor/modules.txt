@@ -30,7 +30,7 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 ## explicit; go 1.13
 github.com/ScaleFT/sshkeys
-# github.com/Scalingo/go-scalingo/v6 v6.0.1
+# github.com/Scalingo/go-scalingo/v6 v6.1.0
 ## explicit; go 1.17
 github.com/Scalingo/go-scalingo/v6
 github.com/Scalingo/go-scalingo/v6/billing

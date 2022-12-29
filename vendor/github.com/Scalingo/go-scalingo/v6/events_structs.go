@@ -223,12 +223,17 @@ type EventRunType struct {
 }
 
 func (ev *EventRunType) String() string {
-	return fmt.Sprintf("one-off container with command '%s'", ev.TypeData.Command)
+	detached := ""
+	if ev.TypeData.Detached {
+		detached = "detached "
+	}
+	return fmt.Sprintf("%sone-off container with command '%s'", ev.TypeData.Command, detached)
 }
 
 type EventRunTypeData struct {
 	Command    string `json:"command"`
 	AuditLogID string `json:"audit_log_id"`
+	Detached   bool   `json:"detached"`
 }
 
 type EventNewDomainType struct {
