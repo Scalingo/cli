@@ -103,7 +103,7 @@ COMMANDS:
      ps                      Display your application containers
      scale, s                Scale your application instantly
      restart                 Restart processes of your app
-     send-signal             Send SIGUSR1/2 to your application containers
+     send-signal, kill       Send SIGUSR1 or SIGUSR2 to your application containers
      force-https             Enable/Disable automatic redirection of traffic to HTTPS for your application
      sticky-session          Enable/Disable sticky sessions for your application
      router-logs             Enable/disable router logs for your application
