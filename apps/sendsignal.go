@@ -2,6 +2,8 @@ package apps
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"gopkg.in/errgo.v1"
 
@@ -21,7 +23,15 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 			}
 		}
 		if _, ok := containersToKill[name]; !ok {
-			io.Errorf("The name '%v' did not match any container.\n", name)
+			prefix := fmt.Sprintf("%s-", name)
+			for _, container := range containers {
+				if strings.HasPrefix(container.Label, prefix) {
+					containersToKill[container.ID] = container
+				}
+			}
+			if _, ok := containersToKill[name]; !ok {
+				io.Errorf("'%v' did not match any container\n", name)
+			}
 		}
 	}
 
