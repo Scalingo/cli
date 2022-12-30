@@ -18,12 +18,13 @@ var (
 		Usage:    "Send SIGUSR1 or SIGUSR2 to your application containers",
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{Name: "signal", Aliases: []string{"s"}, Usage: "signal to send to the container", Required: true},
-			&cli.BoolFlag{Name: "prefix", Aliases: []string{"p"}, Usage: "indicates if the list of arguments represents a list of prefixes"},
+			&cli.BoolFlag{Name: "is-prefix-list", Aliases: []string{"p"}, Usage: "indicates if the list of arguments represents a list of prefixes"},
 		},
 		Description: `Send SIGUSR1 or SIGUSR2 to your application containers
 	Example
 	  'scalingo --app my-app send-signal --signal SIGUSR1 web-1'
-	  'scalingo --app my-app send-signal --signal SIGUSR2 web-1 web-2'`,
+	  'scalingo --app my-app send-signal --signal SIGUSR2 web-1 web-2'
+	  'scalingo --app my-app send-signal --signal SIGUSR1 -p web worker'`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
