@@ -15,15 +15,13 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 	containersToKill := map[string]scalingo.Container{}
 
 	for _, name := range names {
-		hasMatched := false
 		for _, container := range containers {
 			if container.Label == name {
-				containersToKill[container.ID] = container
-				hasMatched = true
+				containersToKill[name] = container
 			}
 		}
-		if !hasMatched {
-			io.Statusf("The name '%v' did not match any container\n", name)
+		if _, ok := containersToKill[name]; !ok {
+			io.Statusf("The name '%v' did not match any container.\n", name)
 		}
 	}
 
@@ -54,7 +52,7 @@ func SendSignal(ctx context.Context, appName string, signal string, containerNam
 		err := c.ContainersKill(ctx, appName, signal, container.ID)
 		if err != nil {
 			rootError := errors.RootCause(err)
-			io.Statusf("Fail to send signal to container '%v' because of: %v\n", container.Label, rootError)
+			io.Errorf("Fail to send signal to container '%v' because of: %v\n", container.Label, rootError)
 			continue
 		}
 		io.Statusf("Sent signal '%v' to '%v' container.\n", signal, container.Label)
