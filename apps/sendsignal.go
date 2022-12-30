@@ -21,7 +21,7 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 			}
 		}
 		if _, ok := containersToKill[name]; !ok {
-			io.Statusf("The name '%v' did not match any container.\n", name)
+			io.Errorf("The name '%v' did not match any container.\n", name)
 		}
 	}
 
