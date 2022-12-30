@@ -23,13 +23,15 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 			}
 		}
 		if _, ok := containersToKill[name]; !ok {
+			hasMatched := false
 			prefix := fmt.Sprintf("%s-", name)
 			for _, container := range containers {
 				if strings.HasPrefix(container.Label, prefix) {
-					containersToKill[container.ID] = container
+					containersToKill[container.Label] = container
+					hasMatched = true
 				}
 			}
-			if _, ok := containersToKill[name]; !ok {
+			if !hasMatched {
 				io.Errorf("'%v' did not match any container\n", name)
 			}
 		}
