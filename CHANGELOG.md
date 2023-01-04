@@ -7,6 +7,7 @@
 * feat(db-console): add `influx-console` and `mongodb-console` aliases [#830](https://github.com/Scalingo/cli/pull/830)
 * feat(send-signal): `send-signal` command added [#833](https://github.com/Scalingo/cli/pull/833)
 * feat(send-signal): Allow to send signals to multiple containers via its type [#841](https://github.com/Scalingo/cli/pull/841)
+
 ### 1.26.1
 
 * deps(urfave/cli): Bumpd from 2.17.1 to 2.23.5: fix options display regression in --help [#814](https://github.com/Scalingo/cli/pull/814)
