@@ -25,7 +25,7 @@ func keepUniqueContainersWithType(containers []scalingo.Container, typeName stri
 		}
 	}
 	if !hasMatched {
-		return containersToKill, errgo.Newf("'%v' did not match any container\n", typeName)
+		return containersToKill, errgo.Newf("'%v' did not match any container", typeName)
 	}
 
 	return containersToKill, nil
