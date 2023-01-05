@@ -28,7 +28,7 @@ github.com/ProtonMail/go-crypto/openpgp/internal/ecc
 github.com/ProtonMail/go-crypto/openpgp/internal/encoding
 github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
-# github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
+# github.com/ScaleFT/sshkeys v1.2.0
 ## explicit; go 1.13
 github.com/ScaleFT/sshkeys
 # github.com/Scalingo/go-scalingo/v6 v6.1.0
