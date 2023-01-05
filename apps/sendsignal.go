@@ -2,6 +2,8 @@ package apps
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"gopkg.in/errgo.v1"
 
@@ -10,6 +12,24 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-utils/errors"
 )
+
+func keepUniqueContainersWithType(containers []scalingo.Container, typeName string) (map[string]scalingo.Container, error) {
+	containersToKill := map[string]scalingo.Container{}
+
+	hasMatched := false
+	prefix := fmt.Sprintf("%s-", typeName)
+	for _, container := range containers {
+		if strings.HasPrefix(container.Label, prefix) {
+			containersToKill[container.Label] = container
+			hasMatched = true
+		}
+	}
+	if !hasMatched {
+		return containersToKill, errgo.Newf("'%v' did not match any container\n", typeName)
+	}
+
+	return containersToKill, nil
+}
 
 func keepUniqueContainersWithNames(containers []scalingo.Container, names []string) map[string]scalingo.Container {
 	containersToKill := map[string]scalingo.Container{}
@@ -21,7 +41,15 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 			}
 		}
 		if _, ok := containersToKill[name]; !ok {
-			io.Errorf("The name '%v' did not match any container.\n", name)
+			containersToKillWithType, err := keepUniqueContainersWithType(containers, name)
+			if err != nil {
+				io.Error(err.Error())
+				continue
+			}
+
+			for k, v := range containersToKillWithType {
+				containersToKill[k] = v
+			}
 		}
 	}
 

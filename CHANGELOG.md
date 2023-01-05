@@ -6,6 +6,7 @@
 * feat(logs): allow DB type aliases [#829](https://github.com/Scalingo/cli/pull/829)
 * feat(db-console): add `influx-console` and `mongodb-console` aliases [#830](https://github.com/Scalingo/cli/pull/830)
 * feat(send-signal): `send-signal` command added [#833](https://github.com/Scalingo/cli/pull/833)
+* feat(send-signal): Allow to send signals to multiple containers via its type [#841](https://github.com/Scalingo/cli/pull/841)
 
 ### 1.26.1
 
