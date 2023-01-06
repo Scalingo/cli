@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(cli-build) Compile the CLI statically to prevent GLIBC incompatibility [#863](https://github.com/Scalingo/cli/pull/863)
+
 ### 1.27.0
 
 * fix(commands): display help usage message if needed [#835](https://github.com/Scalingo/cli/pull/835)
