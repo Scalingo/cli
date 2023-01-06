@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.27.1
+
 * fix(cli-build) Compile the CLI statically to prevent GLIBC incompatibility [#863](https://github.com/Scalingo/cli/pull/863)
 
 ### 1.27.0
