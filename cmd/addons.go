@@ -37,15 +37,18 @@ var (
 		},
 	}
 	addonsAddCommand = cli.Command{
-		Name:     "addons-add",
-		Category: "Addons",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Provision an add-on for your application",
-		Description: ` Provision an add-on for your application:
-    $ scalingo -a myapp addons-add <addon-name> <plan>
+		Name:      "addons-add",
+		Category:  "Addons",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Provision an add-on for your application",
+		ArgsUsage: "addon-name plan",
+		Description: `Provision an add-on for your application:
 
-		# See also 'addons-list' and 'addons-plans'
-`,
+Usage:
+  $ scalingo -a myapp addons-add <addon-name> <plan>
+
+# See also 'addons-list' and 'addons-plans'`,
+
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 2 {
@@ -124,10 +127,11 @@ var (
 		Category: "Addons",
 		Usage:    "Display information about an add-on attached to your app",
 		Flags:    []cli.Flag{&appFlag},
-		Description: ` Display information about an add-on attached to your app:
-    $ scalingo --app my-app addons-info <addon-id>
+		Description: `Display information about an add-on attached to your app:
 
-		# See also 'addons' and 'addons-upgrade'
+$ scalingo --app my-app addons-info <addon-id>
+
+# See also 'addons' and 'addons-upgrade'
 `,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {

@@ -9,10 +9,13 @@ import (
 
 var (
 	AddonProvidersPlansCommand = cli.Command{
-		Name:        "addons-plans",
-		Category:    "Addons - Global",
-		Description: "List the plans for an addon.\n    Example:\n    scalingo addon-plans scalingo-mongodb",
-		Usage:       "List plans",
+		Name:     "addons-plans",
+		Category: "Addons - Global",
+		Description: `List the plans for an addon
+
+Example
+  $ scalingo addon-plans scalingo-mongodb`,
+		Usage: "List plans",
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "addons-plans")
