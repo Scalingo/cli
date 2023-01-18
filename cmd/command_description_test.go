@@ -37,13 +37,36 @@ func TestDescriptionRendering(t *testing.T) {
 		assert.Equal(t, expectedOutput, description)
 	})
 
-	t.Run("Should render the references", func(t *testing.T) {
+	t.Run("Should render a single reference", func(t *testing.T) {
 		description := CommandDescription{
 			Description: "A really cool command",
 			SeeAlso:     []string{"related-command"},
 		}.Render()
 
 		expectedOutput := "A really cool command\n\n# See also 'related-command'"
+
+		assert.Equal(t, expectedOutput, description)
+	})
+
+	t.Run("Should render multiple references", func(t *testing.T) {
+		description := CommandDescription{
+			Description: "A really cool command",
+			SeeAlso:     []string{"related-command", "another-related-command"},
+		}.Render()
+
+		expectedOutput := "A really cool command\n\n# See also 'related-command' 'another-related-command'"
+
+		assert.Equal(t, expectedOutput, description)
+	})
+
+	t.Run("Should render with multiple examples and references", func(t *testing.T) {
+		description := CommandDescription{
+			Description: "A really cool command",
+			Examples:    []string{"scalingo create yay", "scalingo create pouet"},
+			SeeAlso:     []string{"related-command", "another-related-command"},
+		}.Render()
+
+		expectedOutput := "A really cool command\n\nExamples\n  $ scalingo create yay\n  $ scalingo create pouet\n\n# See also 'related-command' 'another-related-command'"
 
 		assert.Equal(t, expectedOutput, description)
 	})
