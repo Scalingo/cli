@@ -42,9 +42,15 @@ func (command CommandDescription) Render() string {
 	commandDescriptionTemplate := `{{.Description}}{{ if .Examples }}
 
 Example{{with $length := len .Examples}}{{if ne 1 $length}}s{{end}}{{end}}{{ range .Examples }}
-  $ {{ . }}{{ end }}{{ end }}`
+  $ {{ . }}{{ end }}{{ end }}{{ if .SeeAlso }}
 
-	template := template.Must(template.New("documentation").Parse(commandDescriptionTemplate))
+# See also{{ range .SeeAlso }} '{{ . }}'{{ end }}{{ end }}`
+
+	template, err := template.New("documentation").Parse(commandDescriptionTemplate)
+
+	if err != nil {
+		return ""
+	}
 
 	if err := template.Execute(buf, command); err != nil {
 		return ""

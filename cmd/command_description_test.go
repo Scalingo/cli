@@ -36,4 +36,15 @@ func TestDescriptionRendering(t *testing.T) {
 
 		assert.Equal(t, expectedOutput, description)
 	})
+
+	t.Run("Should render the references", func(t *testing.T) {
+		description := CommandDescription{
+			Description: "A really cool command",
+			SeeAlso:     []string{"related-command"},
+		}.Render()
+
+		expectedOutput := "A really cool command\n\n# See also 'related-command'"
+
+		assert.Equal(t, expectedOutput, description)
+	})
 }
