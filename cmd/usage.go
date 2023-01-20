@@ -1,7 +1,7 @@
 package cmd
 
 var (
-	ScalingoUsageTextTemplate = `{{if .UsageText}}   {{ .UsageText }}{{else}}{{.HelpName}}{{ range .VisibleFlags }} --{{ .Name }}{{end}}{{if .ArgsUsage}}{{.ArgsUsage}}{{end}}{{end}}`
+	ScalingoUsageTextTemplate = `{{if .UsageText}}{{wrap .UsageText 3}}{{else}}{{.HelpName}}{{if .VisibleFlags}} [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{end}}{{end}}`
 
 	ScalingoCommandHelpTemplate = `NAME:
    {{template "helpNameTemplate" .}}
