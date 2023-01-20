@@ -44,13 +44,11 @@ var (
 			&cli.IntFlag{Name: "min-containers", Usage: "lower limit the autoscaler will never scale below"},
 			&cli.IntFlag{Name: "max-containers", Usage: "upper limit the autoscaler will never scale above"},
 		},
-		Description: `Add an autoscaler to an application. It will automatically scale the application up or down depending on the target defined for the given metric.
+		Description: CommandDescription{
+			Description: "Add an autoscaler to an application. It will automatically scale the application up or down depending on the target defined for the given metric.\n\nAll options are mandatory.",
+			Examples:    []string{"scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 2 --max-containers 4"},
+		}.Render(),
 
-   All options are mandatory.
-
-   Example
-     scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 2 --max-containers 4
-		`,
 		Action: func(c *cli.Context) error {
 			if !isValidAutoscalerAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "autoscalers-add")
@@ -90,14 +88,14 @@ var (
 			&cli.IntFlag{Name: "max-containers", Usage: "upper limit the autoscaler will never scale above"},
 			&cli.BoolFlag{Name: "disabled", Aliases: []string{"d"}, Usage: "disable/enable the given autoscaler"},
 		},
-		Description: `Update an autoscaler.
+		Description: CommandDescription{
+			Description: "Update an autoscaler.\n\nThe 'container-type' option is mandatory.",
+			Examples: []string{
+				"scalingo --app my-app autoscalers-update --container-type web --max-containers 5",
+				"scalingo --app my-app autoscalers-update --container-type web --metric p95_response_time --target 67",
+			},
+		}.Render(),
 
-   The "container-type" option is mandatory.
-
-   Example
-     scalingo --app my-app autoscalers-update --container-type web --max-containers 5
-     scalingo --app my-app autoscalers-update --container-type web --metric p95_response_time --target 67
-		`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 || !c.IsSet("c") {
 				err := cli.ShowCommandHelp(c, "autoscalers-update")
@@ -141,15 +139,15 @@ var (
 	}
 
 	autoscalersEnableCommand = cli.Command{
-		Name:     "autoscalers-enable",
-		Category: "Autoscalers",
-		Usage:    "Enable an autoscaler",
-		Flags:    []cli.Flag{&appFlag},
-		Description: `Enable an autoscaler.
-
-   Example
-     scalingo --app my-app autoscalers-enable web
-		`,
+		Name:      "autoscalers-enable",
+		Category:  "Autoscalers",
+		Usage:     "Enable an autoscaler",
+		ArgsUsage: "container-type",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Enable an autoscaler",
+			Examples:    []string{"scalingo --app my-app autoscalers-enable web"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-enable")
@@ -175,15 +173,16 @@ var (
 	}
 
 	autoscalersDisableCommand = cli.Command{
-		Name:     "autoscalers-disable",
-		Category: "Autoscalers",
-		Usage:    "Disable an autoscaler",
-		Flags:    []cli.Flag{&appFlag},
-		Description: `Disable an autoscaler.
+		Name:      "autoscalers-disable",
+		Category:  "Autoscalers",
+		Usage:     "Disable an autoscaler",
+		ArgsUsage: "container-type",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Disable an autoscaler",
+			Examples:    []string{"scalingo --app my-app autoscalers-disable web"},
+		}.Render(),
 
-   Example
-     scalingo --app my-app autoscalers-disable web
-		`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-disable")
@@ -209,14 +208,16 @@ var (
 	}
 
 	autoscalersRemoveCommand = cli.Command{
-		Name:     "autoscalers-remove",
-		Category: "Autoscalers",
-		Usage:    "Remove an autoscaler from an application",
-		Flags:    []cli.Flag{&appFlag},
-		Description: `Remove an autoscaler for a container type of an application
+		Name:      "autoscalers-remove",
+		Category:  "Autoscalers",
+		Usage:     "Remove an autoscaler from an application",
+		ArgsUsage: "container-type",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Remove an autoscaler for a container type of an application",
+			Examples:    []string{"scalingo --app my-app autoscalers-remove web"},
+		}.Render(),
 
-   Example
-     scalingo --app my-app autoscalers-remove web`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "autoscalers-remove")

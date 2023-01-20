@@ -12,10 +12,11 @@ import (
 
 var (
 	runCommand = cli.Command{
-		Name:     "run",
-		Aliases:  []string{"r"},
-		Category: "App Management",
-		Usage:    "Run any command for your app",
+		Name:      "run",
+		Aliases:   []string{"r"},
+		Category:  "App Management",
+		Usage:     "Run any command for your app",
+		ArgsUsage: "command-to-execute",
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "detached", Aliases: []string{"d"}, Usage: "Run a detached container"},
 			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},

@@ -13,6 +13,7 @@ var (
 		Category:    "Notifiers - Global",
 		Description: "List all notification platforms you can use with a notifier.",
 		Usage:       "List all notification platforms",
+
 		Action: func(c *cli.Context) error {
 			err := notification_platforms.List(c.Context)
 			if err != nil {

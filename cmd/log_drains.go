@@ -21,17 +21,18 @@ var (
 			&cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
 		},
 		Usage: "List the log drains of an application",
-		Description: `List all the log drains of an application:
+		Description: CommandDescription{
+			Description: `List all the log drains of an application
 
-	Use the parameter "--addon <addon_uuid>" to list log drains of a specific addon
-	Use the parameter "--with-addons" to list log drains of all addons connected to the application
-
-	Examples:
-		$ scalingo --app my-app log-drains
-		$ scalingo --app my-app log-drains --addon ad-9be0fc04-bee6-4981-a403-a9ddbee7bd1f
-		$ scalingo --app my-app log-drains --with-addons
-
-	# See also commands 'log-drains-add', 'log-drains-remove'`,
+Use the parameter "--addon <addon_uuid>" to list log drains of a specific addon
+Use the parameter "--with-addons" to list log drains of all addons connected to the application`,
+			Examples: []string{
+				"scalingo --app my-app log-drains",
+				"scalingo --app my-app log-drains --addon ad-9be0fc04-bee6-4981-a403-a9ddbee7bd1f",
+				"scalingo --app my-app log-drains --with-addons",
+			},
+			SeeAlso: []string{"log-drains-add", "log-drains-remove"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
@@ -70,30 +71,32 @@ var (
 			&cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
 			&cli.StringFlag{Name: "drain-region", Usage: "Used by certain logs management service to identify the region of their servers"},
 		},
-		Description: `Add a log drain to an application:
+		Description: CommandDescription{
+			Description: `Add a log drain to an application and/or its addons.
 
-	Examples:
-		$ scalingo --app my-app log-drains-add --type appsignal --token 123456789abcdef
-		$ scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
-		$ scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com
-		$ scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345
-		$ scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345
-		$ scalingo --app my-app log-drains-add --type syslog --token 123456789abcdef --host custom.logstash.com --port 12345
-		$ scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io
+Use the --app parameter to add a log drain to your application.
 
-	Add a log drain to an addon:
+To add a log drain to an addon:
 
-		Use the parameter "--addon <addon_uuid>" to your add command to add a log drain to a specific addon
-		Use the parameter "--with-addons" to add log drains of all addons connected to the application.
-		Use the parameter "--with-databases" to add log drains of all databases connected to the application.
+   Use the parameter "--addon <addon_uuid>" to your add command to add a log drain to a specific addon
+   Use the parameter "--with-addons" to add log drains of all addons connected to the application.
+   Use the parameter "--with-databases" to add log drains of all databases connected to the application.
 
-		Warning: At the moment, only databases addons are able to forward logs to a drain.
-
-	Examples:
-		$ scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
-		$ scalingo --app my-app --with-addons log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2
-
-	# See also commands 'log-drains', 'log-drains-remove'`,
+Warning: At the moment, only databases addons are able to forward logs to a drain.
+`,
+			Examples: []string{
+				"scalingo --app my-app log-drains-add --type appsignal --token 123456789abcdef",
+				"scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
+				"scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com",
+				"scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345",
+				"scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345",
+				"scalingo --app my-app log-drains-add --type syslog --token 123456789abcdef --host custom.logstash.com --port 12345",
+				"scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io",
+				"scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
+				"scalingo --app my-app --with-addons log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
+			},
+			SeeAlso: []string{"log-drains", "log-drains-remove"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -139,7 +142,8 @@ var (
 			&addonFlag,
 			&cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
 		},
-		Usage: "Remove a log drain from an application and its associated addons",
+		Usage:     "Remove a log drain from an application and its associated addons",
+		ArgsUsage: "endpoint-url",
 		Description: `Remove a log drain from an application and all its addons:
 
 		$ scalingo --app my-app log-drains-remove syslog://custom.logstash.com:12345

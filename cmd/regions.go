@@ -9,12 +9,10 @@ import (
 
 var (
 	RegionsListCommand = cli.Command{
-		Name:     "regions",
-		Category: "Global",
-		Usage:    "List available regions",
-		Description: `
-   Example
-     'scalingo regions'`,
+		Name:        "regions",
+		Category:    "Global",
+		Usage:       "List available regions",
+		Description: "List available regions",
 		Action: func(c *cli.Context) error {
 			err := regions.List(c.Context)
 			if err != nil {

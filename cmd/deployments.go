@@ -111,30 +111,28 @@ var (
 		},
 	}
 	deploymentDeployCommand = cli.Command{
-		Name:     "deploy",
-		Category: "Deployment",
-		Usage:    "Trigger a deployment by archive",
+		Name:      "deploy",
+		Category:  "Deployment",
+		Usage:     "Trigger a deployment by archive",
+		ArgsUsage: "<archive path | archive URL> [version reference]",
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "war", Aliases: []string{"w"}, Usage: "Specify that you want to deploy a WAR file"},
 			&cli.BoolFlag{Name: "no-follow", Usage: "Return immediately after the deployment is triggered"},
 		},
-		Description: ` Trigger the deployment of a custom archive for your application
+		Description: CommandDescription{
+			Description: `Trigger the deployment of a custom archive for your application.
+			
+The version reference is optional (generated from timestamp if none). 
+It is a reference to the code you are deploying, version, commit SHA, etc.`,
+			Examples: []string{
+				"scalingo --app my-app deploy archive.tar.gz v1.0.0",
+				"scalingo --app my-app deploy http://example.com/archive.tar.gz v1.0.0",
+				"scalingo --app my-app deploy --no-follow archive.tar.gz v1.0.0",
+				"scalingo --app my-app deployment-follow",
+			},
+			SeeAlso: []string{"deployments", "deployment-follow"},
+		}.Render(),
 
-		scalingo deploy <archive path | archive URL> [version reference]
-
-		The version reference is optional (generated from timestamp if none). It is a reference
-		to the code you are deploying, version, commit SHA, etc.
-
-		Examples:
-		$ scalingo -a myapp deploy archive.tar.gz v1.0.0
-		or
-		$ scalingo -a myapp deploy http://example.com/archive.tar.gz v1.0.0
-		or
-		$ scalingo --app my-app deploy --no-follow archive.tar.gz v1.0.0
-		$ scalingo --app my-app deployment-follow
-
-    # See also commands 'deployments, deployment-follow'
-`,
 		Action: func(c *cli.Context) error {
 			args := c.Args()
 			if args.Len() != 1 && args.Len() != 2 {

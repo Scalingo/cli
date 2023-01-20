@@ -14,9 +14,11 @@ var (
 		Category: "App Management",
 		Usage:    "Display your application containers",
 		Flags:    []cli.Flag{&appFlag},
-		Description: `Display your application containers
-	Example
-	  'scalingo --app my-app ps'`,
+		Description: CommandDescription{
+			Description: "Display your application containers",
+			Examples:    []string{"scalingo --app my-app ps"},
+		}.Render(),
+
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {

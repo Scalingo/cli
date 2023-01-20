@@ -15,9 +15,11 @@ var (
 		Category: "App Management",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Open app dashboard on default web browser",
-		Description: `Open app dashboard on default web browser:
+		Description: CommandDescription{
+			Description: "Open app dashboard on default web browser",
+			Examples:    []string{"scalingo --app my-app dashboard"},
+		}.Render(),
 
-	$ scalingo --app my-app dashboard`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "dashboard")

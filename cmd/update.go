@@ -9,12 +9,10 @@ import (
 
 var (
 	UpdateCommand = cli.Command{
-		Name:     "update",
-		Category: "CLI Internals",
-		Usage:    "Update 'scalingo' SDK client",
-		Description: `Update 'scalingo' SDK client
-   Example
-     'scalingo update'`,
+		Name:        "update",
+		Category:    "CLI Internals",
+		Usage:       "Update 'scalingo' SDK client",
+		Description: "Update 'scalingo' SDK client",
 		Action: func(c *cli.Context) error {
 			err := update.Check()
 			if err != nil {

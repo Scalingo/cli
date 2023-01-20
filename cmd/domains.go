@@ -14,11 +14,11 @@ var (
 		Category: "Custom Domains",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List the domains of an application",
-		Description: `List all the custom domains of an application:
-
-    $ scalingo --app my-app domains
-
-    # See also commands 'domains-add' and 'domains-remove'`,
+		Description: CommandDescription{
+			Description: "List all the custom domains of an application",
+			Examples:    []string{"scalingo --app my-app domains"},
+			SeeAlso:     []string{"domains-add", "domains-remove"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -40,18 +40,19 @@ var (
 	}
 
 	DomainsAddCommand = cli.Command{
-		Name:     "domains-add",
-		Category: "Custom Domains",
-		Usage:    "Add a custom domain to an application",
+		Name:      "domains-add",
+		Category:  "Custom Domains",
+		Usage:     "Add a custom domain to an application",
+		ArgsUsage: "domain",
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt"},
 			&cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key"},
 		},
-		Description: `Add a custom domain to an application:
-
-    $ scalingo -a myapp domains-add example.com
-
-    # See also commands 'domains' and 'domains-remove'`,
+		Description: CommandDescription{
+			Description: "Add a custom domain to an application",
+			Examples:    []string{"scalingo --app my-app domains-add example.com"},
+			SeeAlso:     []string{"domains", "domains-remove"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -81,15 +82,16 @@ var (
 	}
 
 	DomainsRemoveCommand = cli.Command{
-		Name:     "domains-remove",
-		Category: "Custom Domains",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Remove a custom domain from an application",
-		Description: `Remove a custom domain from an application:
-
-    $ scalingo -a myapp domains-remove example.com
-
-    # See also commands 'domains' and 'domains-add'`,
+		Name:      "domains-remove",
+		Category:  "Custom Domains",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Remove a custom domain from an application",
+		ArgsUsage: "domain",
+		Description: CommandDescription{
+			Description: "Remove a custom domain from an application",
+			Examples:    []string{"scalingo --app my-app domains-remove example.com"},
+			SeeAlso:     []string{"domains", "domains-add"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -111,21 +113,24 @@ var (
 		},
 	}
 
+	// TODO: Split the two operations (enable/disable) into two subcommands
 	DomainsSSLCommand = cli.Command{
-		Name:     "domains-ssl",
-		Category: "Custom Domains",
-		Usage:    "Enable or disable SSL for your custom domains",
+		Name:      "domains-ssl",
+		Category:  "Custom Domains",
+		Usage:     "Enable or disable SSL for your custom domains",
+		ArgsUsage: "domain [disable]",
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt"},
 			&cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key"},
 		},
-		Description: `Enable or disable SSL for your custom domains:
-
-		$ scalingo -a myapp domains-ssl --cert <certificate.crt> --key <keyfile.key> example.com
-
-		$ scalingo -a myapp domains-ssl example.com disable
-
-		# See also commands 'domains' and 'domains-add'`,
+		Description: CommandDescription{
+			Description: "Enable or disable SSL for your custom domains",
+			Examples: []string{
+				"scalingo --app my-app domains-ssl --cert certificate.crt --key keyfile.key example.com",
+				"scalingo --app my-app domains-ssl example.com disable",
+			},
+			SeeAlso: []string{"domains", "domains-add"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -148,15 +153,17 @@ var (
 	}
 
 	setCanonicalDomainCommand = cli.Command{
-		Name:     "set-canonical-domain",
-		Category: "App Management",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Set a canonical domain.",
-		Description: `After defining multiple domains on an application, one can need to redirect all requests towards its application to a specific domain. This domain is called the canonical domain. This command sets the canonical domain:
-
-    $ scalingo -a myapp set-canonical-domain example.com
-
-    # See also commands 'domains', 'domains-add' and 'unset-canonical-domain'`,
+		Name:      "set-canonical-domain",
+		Category:  "App Management",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Set a canonical domain.",
+		ArgsUsage: "domain",
+		Description: CommandDescription{
+			Description: `After defining multiple domains on an application, one can need to redirect all requests towards its application to a specific domain.
+This domain is called the canonical domain. This command sets the canonical domain`,
+			Examples: []string{"scalingo -a myapp set-canonical-domain example.com"},
+			SeeAlso:  []string{"domains", "domains-add", "unset-canonical-domain"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -181,11 +188,11 @@ var (
 		Category: "App Management",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Unset a canonical domain.",
-		Description: `Unset the canonical domain of this app:
-
-    $ scalingo -a myapp unset-canonical-domain
-
-    # See also commands 'domains', 'domains-add' and 'set-canonical-domain'`,
+		Description: CommandDescription{
+			Description: "Unset the canonical domain of this app",
+			Examples:    []string{"scalingo --app my-app unset-canonical-domain"},
+			SeeAlso:     []string{"domains", "domains-add", "set-canonical-domain"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)

@@ -25,11 +25,11 @@ var (
 				Aliases: []string{"f"},
 				Usage:   "Replace remote url even if remote already exist"},
 		},
-		Description: `Add a Git remote to the current folder.
+		Description: CommandDescription{
+			Description: "Add a Git remote to the current folder",
+			Examples:    []string{"scalingo --app my-app git-setup --remote scalingo-staging"},
+		}.Render(),
 
-		Example
-		  scalingo --app my-app git-setup --remote scalingo-staging
-		`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "git-setup")
@@ -57,11 +57,11 @@ var (
 		Category: "Git",
 		Usage:    "Display the Git remote URL for this application",
 		Flags:    []cli.Flag{&appFlag},
-		Description: `Display the Git remote URL for this application.
+		Description: CommandDescription{
+			Description: "Display the Git remote URL for this application",
+			Examples:    []string{"scalingo --app my-app git-show"},
+		}.Render(),
 
-		Example
-		  scalingo --app my-app git-show
-		`,
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "git-show")

@@ -12,11 +12,10 @@ var (
 		Name:     "keys",
 		Category: "Public SSH Keys",
 		Usage:    "List your SSH public keys",
-		Description: `List all the public SSH keys associated with your account:
-
-    $ scalingo keys
-
-    # See also commands 'keys-add' and 'keys-remove'`,
+		Description: CommandDescription{
+			Description: "List all the public SSH keys associated with your account",
+			SeeAlso:     []string{"keys-add", "keys-remove"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			err := keys.List(c.Context)
@@ -31,14 +30,15 @@ var (
 	}
 
 	addSSHKeyCommand = cli.Command{
-		Name:     "keys-add",
-		Category: "Public SSH Keys",
-		Usage:    "Add a public SSH key to deploy your apps",
-		Description: `Add a public SSH key:
-
-    $ scalingo keys-add keyname /path/to/key
-
-    # See also commands 'keys' and 'keys-remove'`,
+		Name:      "keys-add",
+		Category:  "Public SSH Keys",
+		Usage:     "Add a public SSH key to deploy your apps",
+		ArgsUsage: "key-name path-to-key",
+		Description: CommandDescription{
+			Description: "Add a public SSH key",
+			Examples:    []string{"scalingo keys-add keyname /path/to/key"},
+			SeeAlso:     []string{"keys", "keys-remove"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 2 {
@@ -57,14 +57,15 @@ var (
 	}
 
 	removeSSHKeyCommand = cli.Command{
-		Name:     "keys-remove",
-		Category: "Public SSH Keys",
-		Usage:    "Remove a public SSH key",
-		Description: `Remove a public SSH key:
-
-    $ scalingo keys-remove keyname
-
-    # See also commands 'keys' and 'keys-add'`,
+		Name:      "keys-remove",
+		Category:  "Public SSH Keys",
+		Usage:     "Remove a public SSH key",
+		ArgsUsage: "key-name",
+		Description: CommandDescription{
+			Description: "Remove a public SSH key",
+			Examples:    []string{"scalingo keys-remove keyname"},
+			SeeAlso:     []string{"keys", "keys-add"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {

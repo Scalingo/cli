@@ -108,7 +108,7 @@ var (
 			&cli.StringSliceFlag{Name: "notifiers", Aliases: []string{"n"}, Usage: "notifiers' id notified when an alert is activated. Can be specified multiple times."},
 		},
 		Description: CommandDescription{
-			Description: "Update an existing alert. All flags are optional.",
+			Description: "Update an existing alert.\n\nAll flags are optional.",
 			Examples: []string{
 				"scalingo --app my-app alerts-update --metric rpm-per-container --limit 150 alert-id",
 				"scalingo --app my-app alerts-update --disabled alert-id",

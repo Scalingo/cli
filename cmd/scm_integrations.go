@@ -17,11 +17,10 @@ var (
 		Name:     "integrations",
 		Category: "Integrations",
 		Usage:    "List your integrations",
-		Description: `List all the integrations associated with your account:
-
-	$ scalingo integrations
-
-	# See also commands 'integrations-add', 'integrations-delete', 'integrations-import-keys'`,
+		Description: CommandDescription{
+			Description: "List all the integrations associated with your account",
+			SeeAlso:     []string{"integrations-add", "integrations-delete", "integrations-import-keys"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			err := scmintegrations.List(c.Context)
@@ -105,20 +104,18 @@ var (
 	}
 
 	integrationsDeleteCommand = cli.Command{
-		Name:     "integrations-delete",
-		Category: "Integrations",
-		Usage:    "Unlink your Scalingo account and your account on a tool such as github.com",
-		Description: `Unlink your Scalingo account and your account on a tool:
-
-	$ scalingo integrations-delete integration-type
-	OR
-	$ scalingo integrations-delete integration-uuid
-
-	Examples:
-	$ scalingo integrations-delete github-enterprise
-	$ scalingo integrations-delete gitlab
-
-	# See also commands 'integrations', 'integrations-add', 'integrations-import-keys'`,
+		Name:      "integrations-delete",
+		Category:  "Integrations",
+		Usage:     "Unlink your Scalingo account and your account on a tool such as github.com",
+		ArgsUsage: "<integration-type | integration-uuid>",
+		Description: CommandDescription{
+			Description: "Unlink your Scalingo account and your account on a tool",
+			Examples: []string{
+				"scalingo integrations-delete github-enterprise",
+				"scalingo integrations-delete gitlab",
+			},
+			SeeAlso: []string{"integrations", "integrations-add", "integrations-import-keys"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {
@@ -138,20 +135,18 @@ var (
 	}
 
 	integrationsImportKeysCommand = cli.Command{
-		Name:     "integrations-import-keys",
-		Category: "Integrations",
-		Usage:    "Import public SSH keys from integration account",
-		Description: `Import public SSH keys from integration account:
-
-	$ scalingo integrations-import-keys integration-type
-	OR
-	$ scalingo integrations-import-keys integration-uuid
-
-	Examples:
-	$ scalingo integrations-import-keys github
-	$ scalingo integrations-import-keys gitlab-self-hosted
-
-	# See also commands 'integrations', 'integrations-add', 'integrations-delete'`,
+		Name:      "integrations-import-keys",
+		Category:  "Integrations",
+		Usage:     "Import public SSH keys from integration account",
+		ArgsUsage: "<integration-type | integration-uuid>",
+		Description: CommandDescription{
+			Description: "Import public SSH keys from integration account",
+			Examples: []string{
+				"scalingo integrations-import-keys github",
+				"scalingo integrations-import-keys gitlab-self-hosted",
+			},
+			SeeAlso: []string{"integrations", "integrations-add", "integrations-delete"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {

@@ -30,11 +30,11 @@ var (
 		Category: "App Management",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Display the application information",
-		Description: `Display various application information such as the force HTTPS status, the stack configured, sticky sessions, etc.
+		Description: CommandDescription{
+			Description: "Display various application information such as the force HTTPS status, the stack configured, sticky sessions, etc.",
+			Examples:    []string{"scalingo apps-info --app my-app"},
+		}.Render(),
 
-		Example:
-			scalingo apps-info --app my-app
-`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if err := apps.Info(c.Context, currentApp); err != nil {
