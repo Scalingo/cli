@@ -15,13 +15,15 @@ var (
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "force", Usage: "Force destroy without asking for a confirmation /!\\"},
 		},
-		Usage: "Destroy an app /!\\",
-		Description: `Destroy an app /!\\ It is not reversible	
-
-Example:
- $ scalingo destroy my-app
- $ scalingo -a my-app destroy --force'
-`,
+		Usage:     "Destroy an app /!\\",
+		ArgsUsage: "<--app app-id | app-id>",
+		Description: CommandDescription{
+			Description: "Destroy an app /!\\ It is not reversible",
+			Examples: []string{
+				"scalingo destroy my-app",
+				"scalingo --app my-app destroy --force",
+			},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			var currentApp string
 

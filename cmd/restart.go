@@ -16,14 +16,14 @@ var (
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "synchronous", Aliases: []string{"s"}, Usage: "Do the restart synchronously"},
 		},
-		Description: `Restart one or several process or your application:
-	Example
-	  ## Restart all the processes
-	  scalingo --app my-app restart
-		## Restart all the web processes
-	  scalingo --app my-app restart web
-		## Restart a specific container
-	  scalingo --app my-app restart web-1`,
+		Description: CommandDescription{
+			Description: "Restart one or several process or your application",
+			Examples: []string{
+				"scalingo --app my-app restart        # Restart all the processes",
+				"scalingo --app my-app restart web    # Restart all the web processes",
+				"scalingo --app my-app restart web-1  # Restart a specific container",
+			},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)

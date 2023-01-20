@@ -16,9 +16,11 @@ var (
 			&appFlag,
 			&cli.BoolFlag{Name: "stream", Usage: "Stream metrics data"},
 		},
-		Description: `Display metrics of you application running containers
-	Example
-	  'scalingo --app my-app stats'`,
+		Description: CommandDescription{
+			Description: "Display metrics of your application running containers",
+			Examples:    []string{"scalingo --app my-app stats"},
+		}.Render(),
+
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {

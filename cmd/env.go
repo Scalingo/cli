@@ -16,12 +16,12 @@ var (
 		Name:     "env",
 		Category: "Environment",
 		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Display the environment of your apps",
-		Description: `List all the environment variables:
-
-    $ scalingo --app my-app env
-
-    # See also commands 'env-get', 'env-set' and 'env-unset'`,
+		Usage:    "Display the environment variables of your apps",
+		Description: CommandDescription{
+			Description: "List all the environment variables of your app",
+			Examples:    []string{"scalingo --app my-app env"},
+			SeeAlso:     []string{"env-get", "env-set", "env-unset"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -46,15 +46,16 @@ var (
 	}
 
 	envGetCommand = cli.Command{
-		Name:     "env-get",
-		Category: "Environment",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Get the requested environment variable from your app",
-		Description: `Get the value of a specific environment variable:
-
-    $ scalingo --app my-app env-get VAR1
-
-    # See also commands 'env', 'env-set' and 'env-unset'`,
+		Name:      "env-get",
+		Category:  "Environment",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Get the requested environment variable from your app",
+		ArgsUsage: "variable-name",
+		Description: CommandDescription{
+			Description: "Get the value of a specific environment variable",
+			Examples:    []string{"scalingo --app my-app env-get VAR1"},
+			SeeAlso:     []string{"env", "env-set", "env-unset"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
@@ -78,15 +79,16 @@ var (
 	}
 
 	envSetCommand = cli.Command{
-		Name:     "env-set",
-		Category: "Environment",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Set the environment variables of your apps",
-		Description: `Set variables:
-
-    $ scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2
-
-    # See also commands 'env', 'env-get' and 'env-unset'`,
+		Name:      "env-set",
+		Category:  "Environment",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Set the environment variables of your apps",
+		ArgsUsage: "variable-assignment...",
+		Description: CommandDescription{
+			Description: "Set environment variables for the app",
+			Examples:    []string{"scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2"},
+			SeeAlso:     []string{"env", "env-get", "env-unset"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
@@ -108,15 +110,16 @@ var (
 	}
 
 	envUnsetCommand = cli.Command{
-		Name:     "env-unset",
-		Category: "Environment",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Unset environment variables of your apps",
-		Description: `Unset variables:
-
-    $ scalingo --app my-app env-unset VAR1 VAR2
-
-    # See also commands 'env', 'env-get' and 'env-set'`,
+		Name:      "env-unset",
+		Category:  "Environment",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Unset environment variables of your apps",
+		ArgsUsage: "variable-name...",
+		Description: CommandDescription{
+			Description: "Unset variables",
+			Examples:    []string{"scalingo --app my-app env-unset VAR1 VAR2"},
+			SeeAlso:     []string{"env", "env-get", "env-set"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)

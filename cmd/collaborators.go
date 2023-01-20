@@ -14,7 +14,7 @@ var (
 		Category:    "Collaborators",
 		Usage:       "List the collaborators of an application",
 		Flags:       []cli.Flag{&appFlag},
-		Description: "List all the collaborators of an application and display information about them.",
+		Description: "List all the collaborators of an application and display information about them",
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
@@ -33,11 +33,15 @@ var (
 	}
 
 	CollaboratorsAddCommand = cli.Command{
-		Name:        "collaborators-add",
-		Category:    "Collaborators",
-		Usage:       "Invite someone to work on an application",
-		Flags:       []cli.Flag{&appFlag},
-		Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email\n scalingo -a myapp collaborators-add user@example.com",
+		Name:      "collaborators-add",
+		Category:  "Collaborators",
+		Usage:     "Invite someone to work on an application",
+		ArgsUsage: "email",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email",
+			Examples:    []string{"scalingo --app my-app collaborators-add user@example.com"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
@@ -57,11 +61,15 @@ var (
 	}
 
 	CollaboratorsRemoveCommand = cli.Command{
-		Name:        "collaborators-remove",
-		Category:    "Collaborators",
-		Usage:       "Revoke permission to collaborate on an application",
-		Flags:       []cli.Flag{&appFlag},
-		Description: "Revoke the invitation of collaboration to the given email\n    scalingo -a myapp collaborators-remove user@example.com",
+		Name:      "collaborators-remove",
+		Category:  "Collaborators",
+		Usage:     "Revoke permission to collaborate on an application",
+		ArgsUsage: "email",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Revoke the invitation of collaboration to the given email",
+			Examples:    []string{"scalingo -a myapp collaborators-remove user@example.com"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {

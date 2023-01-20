@@ -15,12 +15,10 @@ var (
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "region", Value: "", Usage: "Configure the default region used by the CLI"},
 		},
-		Description: `
-   Example
-     'scalingo config --region agora-fr1'
-
-	 Can also be configured using the environment variable
-	   SCALINGO_REGION=agora-fr1`,
+		Description: CommandDescription{
+			Description: "Configure the CLI.\n\nCan also be configured using the environment variable SCALINGO_REGION",
+			Examples:    []string{"scalingo config --region agora-fr1"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			regionName := regionNameFromFlags(c)
 			if regionName != "" {

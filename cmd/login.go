@@ -19,13 +19,11 @@ var (
 			&cli.StringFlag{Name: "ssh-identity", Value: "ssh-agent", Usage: "Use a custom SSH key, only compatible if --ssh is set"},
 			&cli.BoolFlag{Name: "password-only", Usage: "Login with login/password without testing SSH connection"},
 		},
-		Usage: "Login to Scalingo platform",
-		Description: `
-   Example
-     'scalingo login'`,
+		Usage:       "Login to Scalingo platform",
+		Description: "Login to Scalingo platform",
 		Action: func(c *cli.Context) error {
 			if c.Bool("ssh") && c.Bool("password-only") {
-				errorQuit(errors.New("You cannot use both --ssh and --password-only at the same time"))
+				errorQuit(errors.New("you cannot use both --ssh and --password-only at the same time"))
 			}
 
 			err := session.Login(c.Context, session.LoginOpts{

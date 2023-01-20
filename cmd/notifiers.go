@@ -15,11 +15,11 @@ var (
 		Category: "Notifiers",
 		Usage:    "List your notifiers",
 		Flags:    []cli.Flag{&appFlag},
-		Description: ` List all notifiers of your app:
-    $ scalingo -a myapp notifiers
-
-		# See also 'notifiers-add' and 'notifiers-remove'
-`,
+		Description: CommandDescription{
+			Description: "List all notifiers of your app",
+			Examples:    []string{"scalingo --app my-app notifiers"},
+			SeeAlso:     []string{"notifiers-add", "notifiers-remove"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
@@ -40,15 +40,16 @@ var (
 	}
 
 	NotifiersDetailsCommand = cli.Command{
-		Name:     "notifiers-details",
-		Category: "Notifiers",
-		Usage:    "Show details of your notifiers",
-		Flags:    []cli.Flag{&appFlag},
-		Description: ` Show details of your notifiers:
-    $ scalingo -a myapp notifiers-details <ID>
-
-		# See also 'notifiers'
-`,
+		Name:      "notifiers-details",
+		Category:  "Notifiers",
+		Usage:     "Show details of a notifier",
+		ArgsUsage: "notifier-id",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Show details of a notifier",
+			Examples:    []string{"scalingo --app my-app notifiers-details my-notifier"},
+			SeeAlso:     []string{"notifiers"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
@@ -86,24 +87,14 @@ var (
 			&cli.StringSliceFlag{Name: "collaborator", Value: cli.NewStringSlice(), Usage: "The usernames of the collaborators who will receive notifications"},
 		},
 		Usage: "Add a notifier for your application",
-		Description: `Add a notifier for your application:
-
-Examples
- $ scalingo -a myapp notifiers-add \
-   --platform slack \
-   --name "My notifier" \
-   --webhook-url "https://hooks.slack.com/services/1234" \
-   --event deployment --event stop_app
-
- $ scalingo -a myapp notifiers-add \
-   --platform webhook \
-   --name "My notifier" \
-   --webhook-url "https://custom-webhook.com" \
-   --send-all-events true
-
- # Use 'platforms-list' to see all available platforms
- # See also 'notifiers' and 'notifiers-remove'
-`,
+		Description: CommandDescription{
+			Description: "Add a notifier for your application",
+			Examples: []string{
+				"scalingo --app my-app notifiers-add --platform slack --name \"My notifier\" --webhook-url https://hooks.slack.com/services/1234 --event deployment --event stop_app",
+				"scalingo --app my-app notifiers-add --platform webhook -name \"My notifier\" --webhook-url https://custom-webhook.com --send-all-events",
+			},
+			SeeAlso: []string{"notifiers", "notifiers-remove"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
@@ -159,19 +150,17 @@ Examples
 			&cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
 			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(), Usage: "List of selected events. Default: []"},
 		},
-		Usage: "Update a notifier",
-		Description: `Update a notifier:
-Examples
- $ scalingo -a myapp notifiers-update --disable <ID>
+		Usage:     "Update a notifier",
+		ArgsUsage: "notifier-id",
+		Description: CommandDescription{
+			Description: "Update a notifier",
+			Examples: []string{
+				"scalingo -a myapp notifiers-update --disable my-notifier",
+				"scalingo -a myapp notifiers-update --name \"My notifier\" --webhook-url https://custom-webhook.com --send-all-events my-notifier",
+			},
+			SeeAlso: []string{"notifiers", "notifiers-remove"},
+		}.Render(),
 
- $ scalingo -a myapp notifiers-update \
-	 --name "My notifier" \
-	 --webhook-url https://custom-webhook.com \
-	 --send-all-events true \
-	 <ID>
-
- # See also 'notifiers' and 'notifiers-remove'
-	`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
@@ -226,15 +215,16 @@ Examples
 	}
 
 	NotifiersRemoveCommand = cli.Command{
-		Name:     "notifiers-remove",
-		Category: "Notifiers",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Remove an existing notifier from your app",
-		Description: `Remove an existing notifier from your app:
-    $ scalingo -a myapp notifier-remove <ID>
-
-		# See also 'notifiers' and 'notifiers-add'
-`,
+		Name:      "notifiers-remove",
+		Category:  "Notifiers",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Remove an existing notifier from your app",
+		ArgsUsage: "notifier-id",
+		Description: CommandDescription{
+			Description: "Remove an existing notifier from your app",
+			Examples:    []string{"scalingo --app my-app notifier-remove my-notifier"},
+			SeeAlso:     []string{"notifiers", "notifiers-add"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error

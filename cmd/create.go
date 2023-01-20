@@ -10,20 +10,23 @@ import (
 
 var (
 	CreateCommand = cli.Command{
-		Name:     "create",
-		Aliases:  []string{"c"},
-		Category: "Global",
-		Description: `  Create a new app:
-
-Examples
- $ scalingo create mynewapp'
- $ scalingo --remote "staging" create mynewapp
-`,
+		Name:      "create",
+		Aliases:   []string{"c"},
+		Category:  "Global",
+		Usage:     "Create a new app",
+		ArgsUsage: "app-id",
+		Description: CommandDescription{
+			Description: "Create a new app",
+			Examples: []string{
+				"scalingo create mynewapp",
+				"scalingo --remote \"staging\" create mynewapp",
+			},
+		}.Render(),
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "remote", Value: "scalingo", Usage: "Remote to add to your current git repository"},
 			&cli.StringFlag{Name: "buildpack", Value: "", Usage: "URL to a custom buildpack that Scalingo should use to build your application"},
 		},
-		Usage: "Create a new app",
+
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				_ = cli.ShowCommandHelp(c, "create")

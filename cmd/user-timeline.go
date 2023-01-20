@@ -17,9 +17,11 @@ var (
 			&cli.IntFlag{Name: "per-page", Usage: "Number of events to display", Value: 30},
 		},
 		Usage: "List the events you have done on the platform",
-		Description: `List the events you have done on the platform:
+		Description: CommandDescription{
+			Description: "List the events you have done on the platform",
+			Examples:    []string{"scalingo user-timeline --page 3 --per-page 20"},
+		}.Render(),
 
-    $ scalingo user-timeline`,
 		Action: func(c *cli.Context) error {
 			var err error
 			if c.Args().Len() == 0 {

@@ -15,8 +15,10 @@ var (
 		Category: "App Management",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Open app on default web browser",
-		Description: `Open app on default web browser:
-	$ scalingo --app my-app open`,
+		Description: CommandDescription{
+			Description: "Open app on default web browser",
+			Examples:    []string{"scalingo --app my-app open"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "open")

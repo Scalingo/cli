@@ -19,10 +19,10 @@ var (
 			&cli.StringFlag{Name: "new-name", Usage: "Name of the app in the destination region (same as origin by default)"},
 		},
 		Usage: "Start migrating an app to another region",
-		Description: `Migrate an app to another region.
-	 Example
-	   'scalingo --app my-app migration-create --to osc-fr1'
-		`,
+		Description: CommandDescription{
+			Description: "Migrate an app to another region",
+			Examples:    []string{"scalingo --app my-app migration-create --to osc-fr1"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
@@ -52,10 +52,11 @@ var (
 			&cli.BoolFlag{Name: "finalize", Usage: "Stop the old app and start the new one"},
 		},
 		Usage: "Run a specific migration step",
-		Description: `Run a migration step:
-	 Example
-	   'scalingo --app my-app migration-run --prepare migration-id'
-		`,
+		Description: CommandDescription{
+			Description: "Run a migration step",
+			Examples:    []string{"scalingo --app my-app migration-run --prepare migration-id"},
+		}.Render(),
+
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "migration-run")
@@ -91,13 +92,15 @@ var (
 	}
 
 	migrationAbortCommand = cli.Command{
-		Name:     "migration-abort",
-		Category: "Region migrations",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Abort a migration",
-		Description: `Abort a running migration
-   Example
-	   'scalingo --app my-app migration-abort migration-id'`,
+		Name:      "migration-abort",
+		Category:  "Region migrations",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Abort a migration",
+		ArgsUsage: "migration-id",
+		Description: CommandDescription{
+			Description: "Abort a running migration",
+			Examples:    []string{"scalingo --app my-app migration-abort migration-id"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "migration-run")
@@ -120,10 +123,10 @@ var (
 		Category: "Region migrations",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List all migrations linked to an app",
-		Description: `List all migrations linked to an app
-   Example
-	   'scalingo --app my-app migrations'
-		`,
+		Description: CommandDescription{
+			Description: "List all migrations linked to an app",
+			Examples:    []string{"scalingo --app my-app migrations"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
@@ -136,14 +139,15 @@ var (
 	}
 
 	migrationFollowCommand = cli.Command{
-		Name:     "migration-follow",
-		Category: "Region migrations",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Follow a running migration",
-		Description: `Listen for new events on a migration
-   Example
-	   'scalingo --app my-app migration-follow migration-id'
-		`,
+		Name:      "migration-follow",
+		Category:  "Region migrations",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Follow a running migration",
+		ArgsUsage: "migration-id",
+		Description: CommandDescription{
+			Description: "Listen for new events on a migration",
+			Examples:    []string{"scalingo --app my-app migration-follow migration-id"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 

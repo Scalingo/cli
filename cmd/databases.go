@@ -16,20 +16,23 @@ import (
 
 var (
 	databaseEnableFeature = cli.Command{
-		Name:     "database-enable-feature",
-		Category: "Addons",
-		Usage:    "Enable a togglable feature from a database",
+		Name:      "database-enable-feature",
+		Category:  "Addons",
+		Usage:     "Enable a togglable feature from a database",
+		ArgsUsage: "feature-id",
 		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.BoolFlag{
 			Name:  "synchronous",
 			Usage: "Wait for the feature to be enabled synchronously",
 		}},
-		Description: `  Enable a togglable feature from a database:
+		Description: CommandDescription{
+			Description: "Enable a togglable feature from a database",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-enable-feature force-ssl",
+				"scalingo --app myapp --addon addon-uuid database-enable-feature --synchronous force-ssl",
+				"scalingo --app myapp --addon addon-uuid database-enable-feature publicly-available",
+			},
+		}.Render(),
 
-Examples
- $ scalingo --app myapp --addon addon_uuid database-enable-feature force-ssl
- $ scalingo --app myapp --addon addon_uuid database-enable-feature --synchronous force-ssl
- $ scalingo --app myapp --addon addon_uuid database-enable-feature publicly-available
-`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
@@ -46,16 +49,19 @@ Examples
 	}
 
 	databaseDisableFeature = cli.Command{
-		Name:     "database-disable-feature",
-		Category: "Addons",
-		Usage:    "Enable a togglable feature from a database",
-		Flags:    []cli.Flag{&appFlag, &addonFlag},
-		Description: `  Disable a togglable feature from a database:
+		Name:      "database-disable-feature",
+		Category:  "Addons",
+		Usage:     "Enable a togglable feature from a database",
+		ArgsUsage: "feature-id",
+		Flags:     []cli.Flag{&appFlag, &addonFlag},
+		Description: CommandDescription{
+			Description: "Disable a togglable feature from a database",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-disable-feature force-ssl",
+				"scalingo --app myapp --addon addon-uuid database-disable-feature publicly-available",
+			},
+		}.Render(),
 
-Examples
- $ scalingo --app myapp --addon addon_uuid database-disable-feature force-ssl
- $ scalingo --app myapp --addon addon_uuid database-disable-feature publicly-available
-`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
@@ -82,15 +88,16 @@ Examples
 			Name:  "unschedule",
 			Usage: "Disable the periodic backups",
 		}},
-		Description: `  Configure the periodic backups of a database:
+		Description: CommandDescription{
+			Description: "Configure the periodic backups of a database",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid backups-config --schedule-at 3",
+				"scalingo --app myapp --addon addon-uuid backups-config --schedule-at \"3 Europe/Paris\"",
+				"scalingo --app myapp --addon addon-uuid backups-config --unschedule",
+			},
+			SeeAlso: []string{"addons", "backup-download"},
+		}.Render(),
 
-Examples
- $ scalingo --app myapp --addon addon_uuid backups-config --schedule-at 3
- $ scalingo --app myapp --addon addon_uuid backups-config --schedule-at "3 Europe/Paris"
- $ scalingo --app myapp --addon addon_uuid backups-config --unschedule
-
-		# See also 'addons' and 'backup-download'
-		`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)

@@ -15,11 +15,12 @@ var (
 		Category: "Addons",
 		Usage:    "List backups for an addon",
 		Flags:    []cli.Flag{&appFlag, &addonFlag},
-		Description: `  List all available backups for an addon:
-		$ scalingo --app my-app --addon addon_uuid backups
+		Description: CommandDescription{
+			Description: "List all available backups for an addon",
+			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups"},
+			SeeAlso:     []string{"addons", "backups-download"},
+		}.Render(),
 
-		# See also 'addons' and 'backups-download'
-		`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
@@ -37,10 +38,11 @@ var (
 		Category: "Addons",
 		Usage:    "Ask for a new backup",
 		Flags:    []cli.Flag{&appFlag, &addonFlag},
-		Description: `  Ask for a new backup of your addon:
-		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
-
-		# See also 'backups' and 'addons'`,
+		Description: CommandDescription{
+			Description: "Ask for a new backup of your addon",
+			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-create"},
+			SeeAlso:     []string{"backups", "addons"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
@@ -58,9 +60,10 @@ var (
 		Category: "Addons",
 		Usage:    "Download a backup",
 		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.StringFlag{
-			Name:    "backup",
-			Aliases: []string{"b"},
-			Usage:   "ID of the backup to download",
+			Name:     "backup",
+			Aliases:  []string{"b"},
+			Usage:    "ID of the backup to download",
+			Required: true,
 		}, &cli.StringFlag{
 			Name:    "output",
 			Aliases: []string{"o"},
@@ -70,10 +73,11 @@ var (
 			Aliases: []string{"s"},
 			Usage:   "Do not show progress bar and loading messages",
 		}},
-		Description: `  Download a specific backup:
-		$ scalingo --app my-app --addon addon_uuid backups-download --backup my_backup
-
-		# See also 'backups' and 'addons'`,
+		Description: CommandDescription{
+			Description: "Download a specific backup",
+			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-download --backup my_backup"},
+			SeeAlso:     []string{"backups", "addons"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)

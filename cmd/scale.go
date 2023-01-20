@@ -16,14 +16,17 @@ var (
 		Flags: []cli.Flag{&appFlag,
 			&cli.BoolFlag{Name: "synchronous", Aliases: []string{"s"}, Usage: "Do the scaling synchronously"},
 		},
-		Usage: "Scale your application instantly",
-		Description: `Scale your application processes. Without argument, this command lists the container types declared in your application.
-   Example
-     'scalingo --app my-app scale web:2 worker:1'
-     'scalingo --app my-app scale web:1 worker:0'
-     'scalingo --app my-app scale web:1:XL'
-     'scalingo --app my-app scale web:+1 worker:-1'
-     `,
+		Usage:     "Scale your application instantly",
+		ArgsUsage: "[scaling-instruction...]",
+		Description: CommandDescription{
+			Description: "Scale your application processes. Without argument, this command lists the container types declared in your application",
+			Examples: []string{
+				"scalingo --app my-app scale web:2 worker:1",
+				"scalingo --app my-app scale web:1 worker:0",
+				"scalingo --app my-app scale web:1:XL",
+				"scalingo --app my-app scale web:+1 worker:-1",
+			},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
