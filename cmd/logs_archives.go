@@ -16,11 +16,14 @@ var (
 		Aliases:  []string{"la"},
 		Category: "App Management",
 		Usage:    "Get the logs archives of your applications and databases",
-		Description: `Get the logs archives of your applications and databases
-   Examples:
-     Get most recents archives: 'scalingo --app my-app logs-archives'
-     Get a specific page:       'scalingo --app my-app logs-archives -p 5'
-	   Addon logs archives:       'scalingo --app my-app logs-archives --addon addon-id'`,
+		Description: CommandDescription{
+			Description: "Get the logs archives of your applications and databases",
+			Examples: []string{
+				"scalingo --app my-app logs-archives                   # Get the most recent archives",
+				"scalingo --app my-app logs-archives -p 5              # Get a specific page",
+				"scalingo --app my-app logs-archives --addon addon-id  # Addon logs archives",
+			},
+		}.Render(),
 		Flags: []cli.Flag{&appFlag, &addonFlag,
 			&cli.IntFlag{Name: "page", Aliases: []string{"p"}, Usage: "Page number"},
 		},

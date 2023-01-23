@@ -16,15 +16,18 @@ var (
 		Aliases:  []string{"l"},
 		Category: "App Management",
 		Usage:    "Get the logs of your applications",
-		Description: `Get the logs of your applications
-   Example:
-     Get 100 lines:          'scalingo --app my-app logs -n 100'
-     Real-Time logs:         'scalingo --app my-app logs -f'
-     Addon logs:             'scalingo --app my-app --addon addon_uuid logs'
-     Get lines with filter:
-       'scalingo --app my-app logs -F web'
-       'scalingo --app my-app logs -F web-1'
-       'scalingo --app my-app logs --follow -F "worker|clock"'`,
+		Description: CommandDescription{
+			Description: "Get the logs of your applications",
+			Examples: []string{
+				"scalingo --app my-app logs -n 100                      # Get 100 lines",
+				"scalingo --app my-app logs -f                          # Real-time logs",
+				"scalingo --app my-app --addon addon_uuid logs          # Addon logs",
+				"# Get lines with filter",
+				"scalingo --app my-app logs -F web",
+				"scalingo --app my-app logs -F web-1",
+				"scalingo --app my-app logs --follow -F \"worker|clock\"",
+			},
+		}.Render(),
 		Flags: []cli.Flag{&appFlag, &addonFlag,
 			&cli.IntFlag{Name: "lines", Aliases: []string{"n"}, Value: 20, Usage: "Number of log lines to dump"},
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},

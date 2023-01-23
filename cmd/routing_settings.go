@@ -18,11 +18,10 @@ var (
 			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable force HTTPS (default)"},
 			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable force HTTPS"},
 		},
-		Description: `When enabled, this feature will automatically redirect HTTP traffic to HTTPS for all domains associated with this application.
-
-   Example
-     scalingo --app my-app force-https --enable
-	 `,
+		Description: CommandDescription{
+			Description: "When enabled, this feature will automatically redirect HTTP traffic to HTTPS for all domains associated with this application.",
+			Examples:    []string{"scalingo --app my-app force-https --enable"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
@@ -55,11 +54,11 @@ var (
 			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable sticky session (default)"},
 			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable sticky session"},
 		},
-		Description: `When enabled, application user sessions will be sticky: they will always return to the same container.
+		Description: CommandDescription{
+			Description: "When enabled, application user sessions will be sticky: they will always return to the same container",
+			Examples:    []string{"scalingo --app my-app sticky-session --enable"},
+		}.Render(),
 
-   Example
-     scalingo --app my-app sticky-session --enable
-	 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
@@ -92,11 +91,11 @@ var (
 			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable router logs"},
 			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable router logs (default)"},
 		},
-		Description: `Enable/disable router logs for your application.
+		Description: CommandDescription{
+			Description: "Enable/disable router logs for your application",
+			Examples:    []string{"scalingo --app my-app router-logs --enable"},
+		}.Render(),
 
-   Example
-     scalingo --app my-app router-logs --enable
-	 `,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {

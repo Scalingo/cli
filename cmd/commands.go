@@ -3,7 +3,9 @@
 package cmd
 
 import (
+	"bytes"
 	"os"
+	"text/template"
 
 	"github.com/urfave/cli/v2"
 
@@ -22,6 +24,39 @@ type Command struct {
 	*cli.Command
 	// Regional flag not available if Global is true
 	Global bool
+}
+
+type CommandDescription struct {
+	// Mandatory description of the command
+	Description string
+
+	// Examples on how to use the command
+	Examples []string
+
+	//
+	SeeAlso []string
+}
+
+func (command CommandDescription) Render() string {
+	buf := &bytes.Buffer{}
+	commandDescriptionTemplate := `{{.Description}}{{ if .Examples }}
+
+Example{{with $length := len .Examples}}{{if ne 1 $length}}s{{end}}{{end}}{{ range .Examples }}
+  $ {{ . }}{{ end }}{{ end }}{{ if .SeeAlso }}
+
+# See also{{ range .SeeAlso }} '{{ . }}'{{ end }}{{ end }}`
+
+	template, err := template.New("documentation").Parse(commandDescriptionTemplate)
+
+	if err != nil {
+		return ""
+	}
+
+	if err := template.Execute(buf, command); err != nil {
+		return ""
+	}
+
+	return buf.String()
 }
 
 func (cmds *AppCommands) addCommand(cmd Command) {

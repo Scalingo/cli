@@ -20,9 +20,11 @@ var (
 			&cli.IntFlag{Name: "per-page", Usage: "Number of events to display", Value: 30},
 		},
 		Usage: "List the actions related to a given app",
-		Description: `List the actions done by the owner and collaborators of an app:
+		Description: CommandDescription{
+			Description: "List the actions done by the owner and collaborators of an app",
+			Examples:    []string{"scalingo --app my-app timeline"},
+		}.Render(),
 
-    $ scalingo -a myapp timeline`,
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {

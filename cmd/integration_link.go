@@ -27,10 +27,11 @@ var (
 		Category: "Integration Link",
 		Usage:    "Show integration link of your app",
 		Flags:    []cli.Flag{&appFlag},
-		Description: ` Show integration link of your app:
-	$ scalingo --app my-app integration-link
-
-		# See also 'integration-link-create', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy', 'integration-link-manual-review-app'`,
+		Description: CommandDescription{
+			Description: "Show integration link of your app",
+			Examples:    []string{"scalingo --app my-app integration-link"},
+			SeeAlso:     []string{"integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link")
@@ -66,23 +67,23 @@ var (
 			&cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
-		Usage: "Link your Scalingo application to an integration",
-		Description: ` Link your Scalingo application to an integration:
-	$ scalingo --app my-app integration-link-create [options] <repository URL>
-									   OR
-	$ scalingo --app my-app integration-link-create [options] <repository URL>
+		Usage:     "Link your Scalingo application to an integration",
+		ArgsUsage: "repository-url",
+		Description: CommandDescription{
+			Description: `Link your Scalingo application to an integration
 
-	List of available integrations:
-	- github => GitHub.com
-	- github-enterprise => GitHub Enterprise (private instance)
-	- gitlab => GitLab.com
-	- gitlab-self-hosted => GitLab Self-hosted (private instance)
-
-	Examples:
-	$ scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce
-	$ scalingo --app my-app integration-link-create --branch master --auto-deploy https://ghe.example.org/test/frontend-app
-
-		# See also 'integration-link', 'integration-link-update', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
+List of available integrations:
+- github => GitHub.com
+- github-enterprise => GitHub Enterprise (private instance)
+- gitlab => GitLab.com
+- gitlab-self-hosted => GitLab Self-hosted (private instance)			
+`,
+			Examples: []string{
+				"scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce",
+				"scalingo --app my-app integration-link-create --branch master --auto-deploy https://ghe.example.org/test/frontend-app",
+			},
+			SeeAlso: []string{"integration-link", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-create")
@@ -216,16 +217,16 @@ var (
 			&cli.StringFlag{Name: "hours-before-destroy-on-stale", Usage: "Time delay before auto destroying a review app when no deploy/commits has happened"},
 		},
 		Usage: "Update the integration link parameters",
-		Description: ` Update the integration link parameters:
-	$ scalingo --app my-app integration-link-update [options]
-
-	Examples:
-	$ scalingo --app my-app integration-link-update --branch master
-	$ scalingo --app my-app integration-link-update --auto-deploy --branch test --deploy-review-apps
-	$ scalingo --app my-app integration-link-update --destroy-on-close --hours-before-destroy-on-close 1
-	$ scalingo --app my-app integration-link-update --destroy-on-stale --hours-before-destroy-on-stale 2
-
-		# See also 'integration-link', 'integration-link-create', 'integration-link-delete', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
+		Description: CommandDescription{
+			Description: "Update the integration link parameters",
+			Examples: []string{
+				"scalingo --app my-app integration-link-update --branch master",
+				"scalingo --app my-app integration-link-update --auto-deploy --branch test --deploy-review-apps",
+				"scalingo --app my-app integration-link-update --destroy-on-close --hours-before-destroy-on-close 1",
+				"scalingo --app my-app integration-link-update --destroy-on-stale --hours-before-destroy-on-stale 2",
+			},
+			SeeAlso: []string{"integration-link", "integration-link-create", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.NumFlags() == 0 || c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-update")
@@ -274,11 +275,11 @@ var (
 		Category: "Integration Link",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Delete the link between your Scalingo application and the integration",
-		Description: `Delete the link between your Scalingo application and the integration:
-
-	$ scalingo --app my-app integration-link-delete
-
-		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-manual-deploy' and 'integration-link-manual-review-app'`,
+		Description: CommandDescription{
+			Description: "Delete the link between your Scalingo application and the integration",
+			Examples:    []string{"scalingo --app my-app integration-link-delete"},
+			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-manual-deploy", "integration-link-manual-review-app"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-delete")
@@ -298,15 +299,16 @@ var (
 	}
 
 	integrationLinkManualDeployCommand = cli.Command{
-		Name:     "integration-link-manual-deploy",
-		Category: "Integration Link",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Trigger a manual deployment of the specified branch",
-		Description: `Trigger a manual deployment of the specified branch:
-
-	$ scalingo --app my-app integration-link-manual-deploy mybranch
-
-		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-review-app'`,
+		Name:      "integration-link-manual-deploy",
+		Category:  "Integration Link",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Trigger a manual deployment of the specified branch",
+		ArgsUsage: "branch",
+		Description: CommandDescription{
+			Description: "Trigger a manual deployment of the specified branch",
+			Examples:    []string{"scalingo --app my-app integration-link-manual-deploy mybranch"},
+			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-review-app"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-deploy")
@@ -327,19 +329,20 @@ var (
 	}
 
 	integrationLinkManualReviewAppCommand = cli.Command{
-		Name:     "integration-link-manual-review-app",
-		Category: "Integration Link",
-		Flags:    []cli.Flag{&appFlag},
-		Usage:    "Trigger a review app creation of the pull/merge request ID specified",
-		Description: `Trigger a review app creation of the pull/merge request ID specified:
+		Name:      "integration-link-manual-review-app",
+		Category:  "Integration Link",
+		Flags:     []cli.Flag{&appFlag},
+		Usage:     "Trigger a review app creation of the pull/merge request ID specified",
+		ArgsUsage: "request-id",
+		Description: CommandDescription{
+			Description: `Trigger a review app creation of the pull/merge request ID specified:
 
-	$ scalingo --app my-app integration-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
-	$ scalingo --app my-app integration-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
-
-	Example:
-	$ scalingo --app my-app integration-link-manual-review-app 42
-
-		# See also 'integration-link', 'integration-link-create', 'integration-link-update', 'integration-link-delete' and 'integration-link-manual-deploy'`,
+   $ scalingo --app my-app integration-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
+   $ scalingo --app my-app integration-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
+`,
+			Examples: []string{"scalingo --app my-app integration-link-manual-review-app 42"},
+			SeeAlso:  []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-review-app")

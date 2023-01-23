@@ -12,9 +12,11 @@ var (
 		Name:     "changelog",
 		Category: "CLI Internals",
 		Usage:    "Show the Scalingo CLI changelog from last version",
-		Description: `Show the Scalingo CLI changelog from last version
-	Example
-	  'scalingo changelog'`,
+		Description: CommandDescription{
+			Description: "Show the Scalingo CLI changelog from last version",
+			Examples:    []string{"scalingo changelog"},
+		}.Render(),
+
 		Action: func(c *cli.Context) error {
 			err := update.ShowLastChangelog()
 			if err != nil {

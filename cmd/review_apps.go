@@ -15,9 +15,10 @@ var (
 		Category: "Review Apps",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "Show review apps of the parent application",
-		Description: `Show review apps of the parent application:
-
-	$ scalingo --app my-app review-apps`,
+		Description: CommandDescription{
+			Description: "Show review apps of the parent application",
+			Examples:    []string{"scalingo --app my-app review-apps"},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "review-apps")

@@ -14,9 +14,10 @@ var (
 		Category: "Cron Tasks",
 		Flags:    []cli.Flag{&appFlag},
 		Usage:    "List the cron tasks of an application",
-		Description: `List all the cron tasks of an application:
-
-    $ scalingo --app my-app cron-jobs`,
+		Description: CommandDescription{
+			Description: "List all the cron tasks of an application",
+			Examples:    []string{"scalingo --app my-app cron-tasks"},
+		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() > 0 {

@@ -14,9 +14,10 @@ import (
 
 var (
 	DbTunnelCommand = cli.Command{
-		Name:     "db-tunnel",
-		Category: "App Management",
-		Usage:    "Create an encrypted connection to access your database",
+		Name:      "db-tunnel",
+		Category:  "App Management",
+		Usage:     "Create an encrypted connection to access your database",
+		ArgsUsage: "connection-url",
 		Flags: []cli.Flag{&appFlag,
 			&cli.IntFlag{Name: "port", Aliases: []string{"p"}, Usage: "Local port to bind (default 10000)"},
 			&cli.StringFlag{Name: "identity", Aliases: []string{"i"}, Usage: "SSH Private Key"},

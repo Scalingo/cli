@@ -12,14 +12,18 @@ import (
 
 var (
 	oneOffStopCommand = cli.Command{
-		Name:     "one-off-stop",
-		Category: "App Management",
-		Usage:    "Stop a running one-off container",
-		Flags:    []cli.Flag{&appFlag},
-		Description: `Stop a running one-off container
-	Example
-	  'scalingo --app my-app one-off-stop one-off-1234'
-	  'scalingo --app my-app one-off-stop 1234'`,
+		Name:      "one-off-stop",
+		Category:  "App Management",
+		Usage:     "Stop a running one-off container",
+		Flags:     []cli.Flag{&appFlag},
+		ArgsUsage: "container-id",
+		Description: CommandDescription{
+			Description: "Stop a running one-off container",
+			Examples: []string{
+				"scalingo --app my-app one-off-stop one-off-1234",
+				"scalingo --app my-app one-off-stop 1234",
+			},
+		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
