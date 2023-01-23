@@ -61,9 +61,9 @@ Example{{with $length := len .Examples}}{{if ne 1 $length}}s{{end}}{{end}}{{ ran
 
 func (cmds *AppCommands) addCommand(cmd Command) {
 	cmds.commands = append(cmds.commands, cmd.Command)
-	// I don't really understand the official documentation about this field.
-	// But setting it to true enables the display of the help usage message when `cli.ShowCommandHelp` is called. Without this setting, the call to `cli.ShowCommandHelp` displays a "No help topic for command" error message.
-	cmd.Command.HideHelp = true
+
+	// This argument disables the global help command, but doesn't disable the flag.
+	cmd.Command.HideHelpCommand = true
 
 	// Global commands are simply added to the list of commands
 	if cmd.Global {
