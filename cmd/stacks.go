@@ -38,7 +38,7 @@ var (
 		Flags:     []cli.Flag{&appFlag},
 		Description: CommandDescription{
 			Description: "Set the runtime stack of an app (deployment cache will be reset)",
-			Examples:    []string{"scalingo --app my-app stacks-set scalingo-18"},
+			Examples:    []string{"scalingo --app my-app stacks-set scalingo-20"},
 			SeeAlso:     []string{"stacks"},
 		}.Render(),
 
