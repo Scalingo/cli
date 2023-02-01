@@ -12,7 +12,7 @@ require (
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
 	github.com/briandowns/spinner v1.20.0
 	github.com/cheggaaa/pb/v3 v3.1.0
-	github.com/dustin/go-humanize v1.0.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.14.1
 	github.com/go-git/go-git/v5 v5.5.1
 	github.com/google/go-github/v47 v47.1.0
