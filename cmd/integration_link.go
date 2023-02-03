@@ -57,11 +57,13 @@ var (
 			&appFlag,
 			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
 			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review apps when new pull request is opened"},
 			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Disable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.BoolFlag{Name: "review-apps-on-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "no-review-apps-on-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
 			&cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			&cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
@@ -80,7 +82,7 @@ List of available integrations:
 `,
 			Examples: []string{
 				"scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce",
-				"scalingo --app my-app integration-link-create --branch master --auto-deploy https://ghe.example.org/test/frontend-app",
+				"scalingo --app my-app integration-link-create --branch master --auto-deploy --deploy-review-apps --no-review-apps-on-forks https://ghe.example.org/test/frontend-app",
 			},
 			SeeAlso: []string{"integration-link", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
@@ -157,6 +159,13 @@ List of available integrations:
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
+				reviewAppsOnForks := c.Bool("review-apps-on-forks")
+				noReviewAppsOnForks := c.Bool("no-review-apps-on-forks")
+
+				if reviewAppsOnForks && noReviewAppsOnForks {
+					errorQuit(errors.New("cannot define both review-apps-on-forks and no-review-apps-on-forks"))
+				}
+
 				params = scalingo.SCMRepoLinkCreateParams{
 					Branch:                   &branch,
 					AutoDeployEnabled:        &autoDeploy,
@@ -165,6 +174,7 @@ List of available integrations:
 					HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
 					DestroyStaleEnabled:      &destroyOnStale,
 					HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
+					ForksAllowed:             &reviewAppsOnForks,
 				}
 			}
 
@@ -206,9 +216,11 @@ List of available integrations:
 			&appFlag,
 			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
 			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Disable auto deploy of application after each branch change"},
 			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "review-apps-on-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "no-review-apps-on-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
@@ -251,6 +263,13 @@ List of available integrations:
 			noDestroyOnStale := c.Bool("no-destroy-on-stale")
 			if destroyOnStale && noDestroyOnStale {
 				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
+			}
+
+			reviewAppsOnForks := c.Bool("review-apps-on-forks")
+			noReviewAppsOnForks := c.Bool("no-review-apps-on-forks")
+
+			if reviewAppsOnForks && noReviewAppsOnForks {
+				errorQuit(errors.New("cannot define both review-apps-on-forks and no-review-apps-on-forks"))
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -447,6 +466,17 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
+
+	forksAllowed := false
+	err = survey.AskOne(&survey.Confirm{
+		Message: "Allow review apps to be created from forks:",
+		Default: forksAllowed,
+	}, &forksAllowed, nil)
+	if err != nil {
+		return params, err
+	}
+	params.ForksAllowed = &forksAllowed
+
 	return params, nil
 }
 
