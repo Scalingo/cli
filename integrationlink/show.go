@@ -102,13 +102,13 @@ func Show(ctx context.Context, app string) error {
 		)
 
 		var forksAllowed string
-		if repoLink.ForksAllowed {
+		if repoLink.AutomaticCreationFromForksAllowed {
 			forksAllowed = color.GreenString(utils.Success)
 		} else {
 			forksAllowed = color.RedString(utils.Error)
 		}
 		fmt.Printf("\t%s: %s\n",
-			color.New(color.FgYellow).Sprint("Creation from forks"),
+			color.New(color.FgYellow).Sprint("Automatic creation from forks"),
 			forksAllowed,
 		)
 	}

@@ -167,14 +167,14 @@ List of available integrations:
 				}
 
 				params = scalingo.SCMRepoLinkCreateParams{
-					Branch:                   &branch,
-					AutoDeployEnabled:        &autoDeploy,
-					DeployReviewAppsEnabled:  &deployReviewApps,
-					DestroyOnCloseEnabled:    &destroyOnClose,
-					HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
-					DestroyStaleEnabled:      &destroyOnStale,
-					HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
-					ForksAllowed:             &reviewAppsOnForks,
+					Branch:                            &branch,
+					AutoDeployEnabled:                 &autoDeploy,
+					DeployReviewAppsEnabled:           &deployReviewApps,
+					DestroyOnCloseEnabled:             &destroyOnClose,
+					HoursBeforeDeleteOnClose:          &hoursBeforeDestroyOnClose,
+					DestroyStaleEnabled:               &destroyOnStale,
+					HoursBeforeDeleteStale:            &hoursBeforeDestroyOnStale,
+					AutomaticCreationFromForksAllowed: &reviewAppsOnForks,
 				}
 			}
 
@@ -475,7 +475,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	if err != nil {
 		return params, err
 	}
-	params.ForksAllowed = &forksAllowed
+	params.AutomaticCreationFromForksAllowed = &forksAllowed
 
 	return params, nil
 }

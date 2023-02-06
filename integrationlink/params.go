@@ -9,14 +9,14 @@ import (
 func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdateParams, error) {
 	paramsChecker := newParamsChecker(c)
 	params := &scalingo.SCMRepoLinkUpdateParams{
-		Branch:                   paramsChecker.lookupBranch(),
-		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
-		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),
-		DestroyOnCloseEnabled:    paramsChecker.lookupDestroyOnClose(),
-		HoursBeforeDeleteOnClose: paramsChecker.lookupHoursBeforeDestroyOnClose(),
-		DestroyStaleEnabled:      paramsChecker.lookupDestroyOnStale(),
-		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDestroyOnStale(),
-		ForksAllowed:             paramsChecker.lookupReviewAppsOnForks(),
+		Branch:                            paramsChecker.lookupBranch(),
+		AutoDeployEnabled:                 paramsChecker.lookupAutoDeploy(),
+		DeployReviewAppsEnabled:           paramsChecker.lookupDeployReviewApps(),
+		DestroyOnCloseEnabled:             paramsChecker.lookupDestroyOnClose(),
+		HoursBeforeDeleteOnClose:          paramsChecker.lookupHoursBeforeDestroyOnClose(),
+		DestroyStaleEnabled:               paramsChecker.lookupDestroyOnStale(),
+		HoursBeforeDeleteStale:            paramsChecker.lookupHoursBeforeDestroyOnStale(),
+		AutomaticCreationFromForksAllowed: paramsChecker.lookupReviewAppsOnForks(),
 	}
 
 	return params, nil
