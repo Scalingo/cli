@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* bump: go-scalingo v6.2.0
 ### 1.27.1
 
 * fix(cli-build) Compile the CLI statically to prevent GLIBC incompatibility [#863](https://github.com/Scalingo/cli/pull/863)
