@@ -37,6 +37,11 @@ type (
 		Errors map[string][]string `json:"errors"`
 	}
 
+	TooManyRequestsError struct {
+		ErrMessage string `json:"error"`
+		Code       string `json:"code"`
+	}
+
 	APIError struct {
 		Error string `json:"error"`
 	}
@@ -94,6 +99,10 @@ func (err UnprocessableEntity) Error() string {
 	return strings.Join(errArray, "\n")
 }
 
+func (err TooManyRequestsError) Error() string {
+	return fmt.Sprintf("429 Too Many Requests → %v", err.ErrMessage)
+}
+
 func (err ForbiddenError) Error() string {
 	return fmt.Sprintf("Request forbidden (403): %v", err.Err)
 }
@@ -141,6 +150,13 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: unprocessableError, Req: req}
+	case 429:
+		var tooManyRequestsError TooManyRequestsError
+		err := parseJSON(res, &tooManyRequestsError)
+		if err != nil {
+			return err
+		}
+		return &RequestFailedError{Code: res.StatusCode, APIError: tooManyRequestsError, Req: req}
 	case 500:
 		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("server internal error - our team has been notified"), Req: req}
 	case 503:
