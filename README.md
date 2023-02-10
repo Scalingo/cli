@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.27.1
+# Scalingo-CLI v1.27.2
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
