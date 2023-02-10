@@ -16,7 +16,7 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdate
 		HoursBeforeDeleteOnClose:          paramsChecker.lookupHoursBeforeDestroyOnClose(),
 		DestroyStaleEnabled:               paramsChecker.lookupDestroyOnStale(),
 		HoursBeforeDeleteStale:            paramsChecker.lookupHoursBeforeDestroyOnStale(),
-		AutomaticCreationFromForksAllowed: paramsChecker.lookupReviewAppsOnForks(),
+		AutomaticCreationFromForksAllowed: paramsChecker.lookupAllowReviewAppsFromForks(),
 	}
 
 	return params, nil
@@ -96,12 +96,12 @@ func (p *paramsChecker) lookupDestroyOnStale() *bool {
 	return nil
 }
 
-func (p *paramsChecker) lookupReviewAppsOnForks() *bool {
-	if p.ctx.IsSet("review-apps-on-forks") {
+func (p *paramsChecker) lookupAllowReviewAppsFromForks() *bool {
+	if p.ctx.IsSet("allow-review-apps-from-forks") {
 		t := true
 		return &t
 	}
-	if p.ctx.IsSet("no-review-apps-on-forks") {
+	if p.ctx.IsSet("no-allow-review-apps-from-forks") {
 		f := false
 		return &f
 	}
