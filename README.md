@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.27.1
+   1.27.2
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -295,8 +295,8 @@ Once the pull request merged, you can tag the new release.
 #### Tag the New Release
 
 ```bash
-git tag 1.27.1
-git push origin master 1.27.1
+git tag 1.27.2
+git push origin master 1.27.2
 ```
 
 Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
@@ -311,6 +311,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.27.1 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.27.2 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
