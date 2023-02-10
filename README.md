@@ -263,12 +263,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.27.1
+git checkout -b v1.27.2
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.27.1
+git push --set-upstream origin v1.27.2
 ```
 
 ### New Version Bump
@@ -283,10 +283,10 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-git switch --create release/1.27.1
+git switch --create release/1.27.2
 git add .
-git commit -m "Bump version 1.27.1"
-git push --set-upstream origin release/1.27.1
+git commit -m "Bump version 1.27.2"
+git push --set-upstream origin release/1.27.2
 gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
 ```
 
