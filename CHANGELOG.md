@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.27.2
+
 * bump: go-scalingo v6.2.0
 
 ### 1.27.1
