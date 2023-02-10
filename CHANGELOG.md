@@ -5,6 +5,9 @@
 ### 1.27.2
 
 * bump: go-scalingo v6.2.0
+* fix(commands): cli help refactoring
+* fix(commands): brought back --help command
+* fix: use a current stacks in help
 
 ### 1.27.1
 
