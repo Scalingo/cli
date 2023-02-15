@@ -60,10 +60,9 @@ var (
 		Category: "Addons",
 		Usage:    "Download a backup",
 		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.StringFlag{
-			Name:     "backup",
-			Aliases:  []string{"b"},
-			Usage:    "ID of the backup to download",
-			Required: true,
+			Name:    "backup",
+			Aliases: []string{"b"},
+			Usage:   "ID of the backup to download",
 		}, &cli.StringFlag{
 			Name:    "output",
 			Aliases: []string{"o"},

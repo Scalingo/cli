@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(backups): backup flag is not required
+
 ### 1.27.2
 
 * bump: go-scalingo v6.2.0
