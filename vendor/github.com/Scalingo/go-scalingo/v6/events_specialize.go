@@ -156,6 +156,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventPasswordResetQueryType{Event: ev}
 	case EventPasswordResetSuccess:
 		e = &EventPasswordResetSuccessType{Event: ev}
+	case EventStackChanged:
+		e = &EventStackChangedType{Event: ev}
 	case EventLinkGithub:
 		e = &EventLinkGithubType{Event: ev}
 	case EventUnlinkGithub:

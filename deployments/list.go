@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 
@@ -27,7 +28,7 @@ func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpt
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status"})
+	t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status", "Image Size"})
 
 	for _, deployment := range deployments {
 		var duration string
@@ -43,6 +44,7 @@ func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpt
 			deployment.User.Username,
 			deployment.GitRef,
 			string(deployment.Status),
+			humanize.IBytes(deployment.ImageSize),
 		})
 	}
 	t.Render()

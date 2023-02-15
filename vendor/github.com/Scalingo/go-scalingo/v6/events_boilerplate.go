@@ -2,7 +2,6 @@ package scalingo
 
 // Do not edit, generated with 'go generate'
 
-
 func (e *EventNewUserType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -288,6 +287,10 @@ func (e *EventPasswordResetQueryType) TypeDataPtr() interface{} {
 }
 
 func (e *EventPasswordResetSuccessType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventStackChangedType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
