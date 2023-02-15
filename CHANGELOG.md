@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* build(publish): replace `rm-dist` with `clean`
+
 ### 1.27.2
 
 * bump: go-scalingo v6.2.0
