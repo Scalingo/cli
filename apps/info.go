@@ -37,6 +37,7 @@ func Info(ctx context.Context, appName string) error {
 	t.Append([]string{"Sticky Session", fmt.Sprintf("%v", app.StickySession)})
 	t.Append([]string{"Stack", stackName})
 	t.Append([]string{"Status", fmt.Sprintf("%v", app.Status)})
+	t.Append([]string{"HDS", fmt.Sprintf("%v", app.HDSResource)})
 	t.Render()
 
 	return nil

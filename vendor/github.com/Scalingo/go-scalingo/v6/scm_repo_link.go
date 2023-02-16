@@ -23,46 +23,49 @@ type SCMRepoLinkService interface {
 }
 
 type SCMRepoLinkCreateParams struct {
-	Source                   *string `json:"source,omitempty"`
-	Branch                   *string `json:"branch,omitempty"`
-	AuthIntegrationUUID      *string `json:"auth_integration_uuid,omitempty"`
-	AutoDeployEnabled        *bool   `json:"auto_deploy_enabled,omitempty"`
-	DeployReviewAppsEnabled  *bool   `json:"deploy_review_apps_enabled,omitempty"`
-	DestroyOnCloseEnabled    *bool   `json:"delete_on_close_enabled,omitempty"`
-	HoursBeforeDeleteOnClose *uint   `json:"hours_before_delete_on_close,omitempty"`
-	DestroyStaleEnabled      *bool   `json:"delete_stale_enabled,omitempty"`
-	HoursBeforeDeleteStale   *uint   `json:"hours_before_delete_stale,omitempty"`
+	Source                            *string `json:"source,omitempty"`
+	Branch                            *string `json:"branch,omitempty"`
+	AuthIntegrationUUID               *string `json:"auth_integration_uuid,omitempty"`
+	AutoDeployEnabled                 *bool   `json:"auto_deploy_enabled,omitempty"`
+	DeployReviewAppsEnabled           *bool   `json:"deploy_review_apps_enabled,omitempty"`
+	DestroyOnCloseEnabled             *bool   `json:"delete_on_close_enabled,omitempty"`
+	HoursBeforeDeleteOnClose          *uint   `json:"hours_before_delete_on_close,omitempty"`
+	DestroyStaleEnabled               *bool   `json:"delete_stale_enabled,omitempty"`
+	HoursBeforeDeleteStale            *uint   `json:"hours_before_delete_stale,omitempty"`
+	AutomaticCreationFromForksAllowed *bool   `json:"automatic_creation_from_forks_allowed,omitempty"`
 }
 
 type SCMRepoLinkUpdateParams struct {
-	Branch                   *string `json:"branch,omitempty"`
-	AutoDeployEnabled        *bool   `json:"auto_deploy_enabled,omitempty"`
-	DeployReviewAppsEnabled  *bool   `json:"deploy_review_apps_enabled,omitempty"`
-	DestroyOnCloseEnabled    *bool   `json:"delete_on_close_enabled,omitempty"`
-	HoursBeforeDeleteOnClose *uint   `json:"hours_before_delete_on_close,omitempty"`
-	DestroyStaleEnabled      *bool   `json:"delete_stale_enabled,omitempty"`
-	HoursBeforeDeleteStale   *uint   `json:"hours_before_delete_stale,omitempty"`
+	Branch                            *string `json:"branch,omitempty"`
+	AutoDeployEnabled                 *bool   `json:"auto_deploy_enabled,omitempty"`
+	DeployReviewAppsEnabled           *bool   `json:"deploy_review_apps_enabled,omitempty"`
+	DestroyOnCloseEnabled             *bool   `json:"delete_on_close_enabled,omitempty"`
+	HoursBeforeDeleteOnClose          *uint   `json:"hours_before_delete_on_close,omitempty"`
+	DestroyStaleEnabled               *bool   `json:"delete_stale_enabled,omitempty"`
+	HoursBeforeDeleteStale            *uint   `json:"hours_before_delete_stale,omitempty"`
+	AutomaticCreationFromForksAllowed *bool   `json:"automatic_creation_from_forks_allowed,omitempty"`
 }
 
 type SCMRepoLink struct {
-	ID                       string            `json:"id"`
-	AppID                    string            `json:"app_id"`
-	Linker                   SCMRepoLinkLinker `json:"linker"`
-	URL                      string            `json:"url"`
-	Owner                    string            `json:"owner"`
-	Repo                     string            `json:"repo"`
-	Branch                   string            `json:"branch"`
-	SCMType                  SCMType           `json:"scm_type"`
-	CreatedAt                time.Time         `json:"created_at"`
-	UpdatedAt                time.Time         `json:"updated_at"`
-	AutoDeployEnabled        bool              `json:"auto_deploy_enabled"`
-	AuthIntegrationUUID      string            `json:"auth_integration_uuid"`
-	DeployReviewAppsEnabled  bool              `json:"deploy_review_apps_enabled"`
-	DeleteOnCloseEnabled     bool              `json:"delete_on_close_enabled"`
-	DeleteStaleEnabled       bool              `json:"delete_stale_enabled"`
-	HoursBeforeDeleteOnClose uint              `json:"hours_before_delete_on_close"`
-	HoursBeforeDeleteStale   uint              `json:"hours_before_delete_stale"`
-	LastAutoDeployAt         time.Time         `json:"last_auto_deploy_at"`
+	ID                                string            `json:"id"`
+	AppID                             string            `json:"app_id"`
+	Linker                            SCMRepoLinkLinker `json:"linker"`
+	URL                               string            `json:"url"`
+	Owner                             string            `json:"owner"`
+	Repo                              string            `json:"repo"`
+	Branch                            string            `json:"branch"`
+	SCMType                           SCMType           `json:"scm_type"`
+	CreatedAt                         time.Time         `json:"created_at"`
+	UpdatedAt                         time.Time         `json:"updated_at"`
+	AutoDeployEnabled                 bool              `json:"auto_deploy_enabled"`
+	AuthIntegrationUUID               string            `json:"auth_integration_uuid"`
+	DeployReviewAppsEnabled           bool              `json:"deploy_review_apps_enabled"`
+	DeleteOnCloseEnabled              bool              `json:"delete_on_close_enabled"`
+	DeleteStaleEnabled                bool              `json:"delete_stale_enabled"`
+	HoursBeforeDeleteOnClose          uint              `json:"hours_before_delete_on_close"`
+	HoursBeforeDeleteStale            uint              `json:"hours_before_delete_stale"`
+	LastAutoDeployAt                  time.Time         `json:"last_auto_deploy_at"`
+	AutomaticCreationFromForksAllowed bool              `json:"automatic_creation_from_forks_allowed"`
 }
 
 type SCMRepoLinkLinker struct {

@@ -138,6 +138,7 @@ const (
 	EventLoginUnlockSuccess      EventTypeName = "login_unlock_success"
 	EventPasswordResetQuery      EventTypeName = "password_reset_query"
 	EventPasswordResetSuccess    EventTypeName = "password_reset_success"
+	EventStackChanged            EventTypeName = "stack_changed"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -774,4 +775,22 @@ type EventTfaDisabledType struct {
 
 func (ev *EventTfaDisabledType) String() string {
 	return "Two factor authentication disabled"
+}
+
+// Stack changed
+type EventStackChangedTypeData struct {
+	PreviousStackID   string `json:"previous_stack_id"`
+	CurrentStackID    string `json:"current_stack_id"`
+	PreviousStackName string `json:"previous_stack_name"`
+	CurrentStackName  string `json:"current_stack_name"`
+}
+
+type EventStackChangedType struct {
+	Event
+	TypeData EventStackChangedTypeData `json:"type_data"`
+}
+
+func (ev *EventStackChangedType) String() string {
+	d := ev.TypeData
+	return fmt.Sprintf("Stack changed from '%s' to %s", d.PreviousStackName, d.CurrentStackName)
 }
