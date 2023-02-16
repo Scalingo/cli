@@ -3,6 +3,7 @@
 ### To be Released
 
 * fix(backups): backup flag is not required
+* build(publish): replace `rm-dist` with `clean`
 
 ### 1.27.2
 
