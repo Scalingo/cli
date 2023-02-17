@@ -114,6 +114,7 @@ type App struct {
 	DataAccessConsent *DataAccessConsent     `json:"data_access_consent,omitempty"`
 	Flags             map[string]bool        `json:"flags"`
 	Limits            map[string]interface{} `json:"limits"`
+	HDSResource       bool                   `json:"hds_resource"`
 }
 
 func (app App) String() string {
