@@ -2,6 +2,20 @@
 
 ## To Be Released
 
+## 6.3.0
+
+* feat(apps): add support for `hds_resource`
+* feat(deployments): add support for Deployment `image_size`
+* feat(events): Stack changed event
+
+BREAKING CHANGE:
+
+* Remove the GithubLinkService in favor of SCMRepoLinkService
+
+## 6.2.0
+
+* feat(status code): handle too many requests exception
+
 ## 6.1.0
 
 * feat(events): Add Detached field for EventRun [#292](https://github.com/Scalingo/go-scalingo/pull/292)

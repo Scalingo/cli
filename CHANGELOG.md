@@ -3,6 +3,16 @@
 ### To be Released
 
 * chore: change default stack in help command 
+* feat(deployments): add Image Size to the list of deployments
+* fix(backups): backup flag is not required
+* build(publish): replace `rm-dist` with `clean`
+
+### 1.27.2
+
+* bump: go-scalingo v6.2.0
+* fix(commands): cli help refactoring
+* fix(commands): brought back --help command
+* fix: use a current stacks in help
 
 ### 1.27.1
 
