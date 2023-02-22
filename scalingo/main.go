@@ -25,7 +25,7 @@ func DefaultAction(c *cli.Context) error {
 	for i := range os.Args {
 		if os.Args[i] == completionFlag {
 			if len(os.Args)-2 > 0 {
-				autocomplete.FlagsAutoComplete(c, os.Args[i])
+				autocomplete.FlagsAutoComplete(c, os.Args[len(os.Args)-2])
 				return nil
 			}
 
