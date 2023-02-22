@@ -22,6 +22,11 @@ import (
 )
 
 var (
+	warningSecurityMessageForAutomaticReviewAppsFromForks = `You are about to allow automatic review apps creation from forks.
+Allowing this on a public repository can expose your application to security concerns,
+as exposing the review app environment variables to whoever forks your repository, and opens a pull request.
+Being aware of the risks, do you want to allow automatic review apps creation from forks?`
+
 	integrationLinkShowCommand = cli.Command{
 		Name:     "integration-link",
 		Category: "Integration Link",
@@ -494,4 +499,21 @@ func validateHoursBeforeDelete(ans interface{}) error {
 		return errors.New("must be positive")
 	}
 	return nil
+}
+
+func isUserAwareOfSecurityRisksInteractive() (bool, error) {
+	io.Warning(warningSecurityMessageForAutomaticReviewAppsFromForks)
+	forksAllowed := false
+	err := survey.AskOne(&survey.Confirm{
+		Message: "Automatic review apps creation from forks:",
+		Default: forksAllowed,
+	}, &forksAllowed, nil)
+	if err != nil {
+		return false, err
+	}
+	if forksAllowed {
+		io.Info("To bypass this security warning next time, you can provide the flag --aware-of-security-risks ")
+	}
+
+	return forksAllowed, nil
 }
