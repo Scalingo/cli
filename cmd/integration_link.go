@@ -295,7 +295,9 @@ List of available integrations:
 				if err != nil {
 					errorQuit(err)
 				}
-				c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
+				if err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed)); err != nil {
+					errorQuit(err)
+				}
 			}
 
 			currentApp := detect.CurrentApp(c)
