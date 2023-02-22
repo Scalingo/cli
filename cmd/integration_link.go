@@ -68,6 +68,7 @@ Being aware of the risks, do you want to allow automatic review apps creation fr
 			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.BoolFlag{Name: "allow-review-apps-from-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "aware-of-security-risks", Usage: "Bypass the security warning about allowing automatic review app creation from forks"},
 			&cli.BoolFlag{Name: "no-allow-review-apps-from-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
 			&cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
@@ -171,6 +172,15 @@ List of available integrations:
 					errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
 				}
 
+				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+				if allowReviewAppsFromForks && !awareOfSecurityRisks {
+					allowReviewAppsFromForks, err = isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns()
+					if err != nil {
+						errorQuit(err)
+					}
+				}
+
 				params = scalingo.SCMRepoLinkCreateParams{
 					Branch:                            &branch,
 					AutoDeployEnabled:                 &autoDeploy,
@@ -225,6 +235,7 @@ List of available integrations:
 			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
 			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
 			&cli.BoolFlag{Name: "allow-review-apps-from-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "aware-of-security-risks", Usage: "Bypass the security warning about allowing automatic review app creation from forks"},
 			&cli.BoolFlag{Name: "no-allow-review-apps-from-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
@@ -275,6 +286,16 @@ List of available integrations:
 
 			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
 				errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
+			}
+
+			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+			if allowReviewAppsFromForks && !awareOfSecurityRisks {
+				stillAllowed, err := isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns()
+				if err != nil {
+					errorQuit(err)
+				}
+				c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -501,7 +522,7 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	return nil
 }
 
-func isUserAwareOfSecurityRisksInteractive() (bool, error) {
+func isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns() (bool, error) {
 	io.Warning(warningSecurityMessageForAutomaticReviewAppsFromForks)
 	forksAllowed := false
 	err := survey.AskOne(&survey.Confirm{
@@ -512,7 +533,7 @@ func isUserAwareOfSecurityRisksInteractive() (bool, error) {
 		return false, err
 	}
 	if forksAllowed {
-		io.Info("To bypass this security warning next time, you can provide the flag --aware-of-security-risks ")
+		io.Info("To bypass this security warning next time, you can provide the flag --aware-of-security-risks")
 	}
 
 	return forksAllowed, nil
