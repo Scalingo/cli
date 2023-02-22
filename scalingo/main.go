@@ -22,25 +22,19 @@ var (
 )
 
 func DefaultAction(c *cli.Context) error {
-	completeMode := false
-
 	for i := range os.Args {
 		if os.Args[i] == completionFlag {
-			completeMode = true
-			break
+			if len(os.Args)-2 > 0 {
+				autocomplete.FlagsAutoComplete(c, os.Args[i])
+				return nil
+			}
+
+			return nil
 		}
 	}
 
-	if !completeMode {
-		cmd.HelpCommand.Action(c)
-		cmd.ShowSuggestions(c)
-	} else {
-		i := len(os.Args) - 2
-		if i > 0 {
-			autocomplete.FlagsAutoComplete(c, os.Args[i])
-		}
-	}
-
+	cmd.HelpCommand.Action(c)
+	cmd.ShowSuggestions(c)
 	return nil
 }
 
