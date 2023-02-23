@@ -44,7 +44,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			err := integrationlink.Show(c.Context, currentApp)
 			if err != nil {
-				errorQuit(errgo.Notef(err, "error while showing integration link details"))
+				errorQuit(err)
 			}
 			return nil
 		},
@@ -133,7 +133,7 @@ List of available integrations:
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
-					errorQuit(errgo.Notef(err, "error with the interactive creation of the integration link"))
+					errorQuit(err)
 				}
 			} else {
 				branch := c.String("branch")
@@ -291,11 +291,11 @@ List of available integrations:
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmation(reviewAppsFromForksSecurityWarning)
 				if err != nil {
-					errorQuit(errgo.Notef(err, "error while asking for security concerns awareness"))
+					errorQuit(err)
 				}
 				err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
 				if err != nil {
-					errorQuit(err)
+					errorQuit(errgo.Notef(err, "error updating if review apps creation from forks are allowed"))
 				}
 			}
 
@@ -431,7 +431,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	}{}
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about branch and automatic review apps deployment")
 	}
 
 	t := true
@@ -451,7 +451,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnClose,
 	}, &destroyOnClose, nil)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about destroy on close")
 	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
@@ -461,7 +461,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, err
+			return params, errgo.Notef(err, "error enquiring about review apps destroy delay")
 		}
 		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
 		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
@@ -474,7 +474,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnStale,
 	}, &destroyOnStale, nil)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
@@ -484,7 +484,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, err
+			return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
 		}
 		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
 		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
@@ -500,7 +500,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	}, &forksAllowed, nil)
 
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about automatic review apps creation from forks")
 	}
 	params.AutomaticCreationFromForksAllowed = &forksAllowed
 
@@ -514,7 +514,7 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	}
 	i, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {
-		return err
+		return errgo.Notef(err, "error parsing hours")
 	}
 	if i < 0 {
 		return errors.New("must be positive")
