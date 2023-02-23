@@ -23,7 +23,7 @@ import (
 )
 
 var (
-	reviewAppsFromForksSecurityWarning = "Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues"
+	reviewAppsFromForksSecurityWarning = "Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues. More info here: https://doc.scalingo.com/platform/app/review-apps#addons-collaborators-and-environment-variables"
 
 	integrationLinkShowCommand = cli.Command{
 		Name:     "integration-link",
