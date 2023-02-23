@@ -491,7 +491,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
 
-	io.Warning("Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues")
+	io.Warning(reviewAppsFromForksSecurityWarning)
 	var forksAllowed bool
 
 	err = survey.AskOne(&survey.Confirm{
