@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v2"
 
@@ -19,7 +21,6 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
-	"gopkg.in/errgo.v1"
 )
 
 var (
