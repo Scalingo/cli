@@ -22,10 +22,7 @@ import (
 )
 
 var (
-	warningSecurityMessageForAutomaticReviewAppsFromForks = `You are about to allow automatic review apps creation from forks.
-Allowing this on a public repository can expose your application to security concerns,
-as exposing the review app environment variables to whoever forks your repository, and opens a pull request.
-Being aware of the risks, do you want to allow automatic review apps creation from forks?`
+	reviewAppsFromForksSecurityWarning = "Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues"
 
 	integrationLinkShowCommand = cli.Command{
 		Name:     "integration-link",
@@ -295,7 +292,8 @@ List of available integrations:
 				if err != nil {
 					errorQuit(err)
 				}
-				if err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed)); err != nil {
+				err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
+				if err != nil {
 					errorQuit(err)
 				}
 			}
@@ -524,11 +522,11 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	return nil
 }
 
-func isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns() (bool, error) {
-	io.Warning(warningSecurityMessageForAutomaticReviewAppsFromForks)
-	forksAllowed := false
+func  askForConfirmation(message string) (bool, error) {
+	io.Warning(message)
+	confirmed := false
 	err := survey.AskOne(&survey.Confirm{
-		Message: "Automatic review apps creation from forks:",
+		Message: "Are your sure?",
 		Default: forksAllowed,
 	}, &forksAllowed, nil)
 	if err != nil {
