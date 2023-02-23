@@ -6,7 +6,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
-func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdateParams, error) {
+func CheckAndFillParams(c *cli.Context) *scalingo.SCMRepoLinkUpdateParams {
 	paramsChecker := newParamsChecker(c)
 	params := &scalingo.SCMRepoLinkUpdateParams{
 		Branch:                            paramsChecker.lookupBranch(),
@@ -19,7 +19,7 @@ func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdate
 		AutomaticCreationFromForksAllowed: paramsChecker.lookupAllowReviewAppsFromForks(),
 	}
 
-	return params, nil
+	return params
 }
 
 type paramsChecker struct {

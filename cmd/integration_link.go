@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"gopkg.in/errgo.v1"
 	"net/url"
 	"os"
 	"strconv"
@@ -43,7 +44,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			err := integrationlink.Show(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(errgo.Notef(err, "error while showing integration link details"))
 			}
 			return nil
 		},
@@ -99,7 +100,7 @@ List of available integrations:
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(errgo.Notef(err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
@@ -132,7 +133,7 @@ List of available integrations:
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
-					errorQuit(err)
+					errorQuit(errgo.Notef(err, "error with the interactive creation of the integration link"))
 				}
 			} else {
 				branch := c.String("branch")
@@ -290,7 +291,7 @@ List of available integrations:
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmation(reviewAppsFromForksSecurityWarning)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(errgo.Notef(err, "error while asking for security concerns awareness"))
 				}
 				err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
 				if err != nil {
@@ -299,12 +300,9 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
-			params, err := integrationlink.CheckAndFillParams(c, currentApp)
-			if err != nil {
-				errorQuit(err)
-			}
+			params := integrationlink.CheckAndFillParams(c)
 
-			err = integrationlink.Update(c.Context, currentApp, *params)
+			err := integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -500,6 +498,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Message: "Allow review apps to be created from forks:",
 		Default: false,
 	}, &forksAllowed, nil)
+
 	if err != nil {
 		return params, err
 	}
