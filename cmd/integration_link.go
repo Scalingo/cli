@@ -172,7 +172,7 @@ List of available integrations:
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if allowReviewAppsFromForks && !awareOfSecurityRisks {
-					allowReviewAppsFromForks, err = isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns()
+					allowReviewAppsFromForks, err = askForConfirmation(reviewAppsFromForksSecurityWarning)
 					if err != nil {
 						errorQuit(err)
 					}
@@ -288,7 +288,7 @@ List of available integrations:
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
-				stillAllowed, err := isAutomaticReviewAppFromForksStillAllowedAwaringUserOfSecurityConcerns()
+				stillAllowed, err := askForConfirmation(reviewAppsFromForksSecurityWarning)
 				if err != nil {
 					errorQuit(err)
 				}
@@ -522,19 +522,18 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	return nil
 }
 
-func  askForConfirmation(message string) (bool, error) {
+func askForConfirmation(message string) (bool, error) {
 	io.Warning(message)
-	confirmed := false
+	var confirmed bool
+
 	err := survey.AskOne(&survey.Confirm{
 		Message: "Are your sure?",
-		Default: forksAllowed,
-	}, &forksAllowed, nil)
+		Default: false,
+	}, &confirmed, nil)
+
 	if err != nil {
 		return false, err
 	}
-	if forksAllowed {
-		io.Info("To bypass this security warning next time, you can provide the flag --aware-of-security-risks")
-	}
 
-	return forksAllowed, nil
+	return confirmed, nil
 }
