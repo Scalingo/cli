@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/errgo.v1"
 	"net/url"
 	"os"
 	"strconv"
@@ -20,6 +19,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors"
+	"gopkg.in/errgo.v1"
 )
 
 var (
