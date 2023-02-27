@@ -174,7 +174,7 @@ List of available integrations:
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
-					allowReviewAppsFromForks, err = askForConfirmation(reviewAppsFromForksSecurityWarning)
+					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks()
 					if err != nil {
 						errorQuit(err)
 					}
@@ -293,7 +293,7 @@ List of available integrations:
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
-				stillAllowed, err := askForConfirmation(reviewAppsFromForksSecurityWarning)
+				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
 				if err != nil {
 					errorQuit(err)
 				}
@@ -522,12 +522,12 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	return nil
 }
 
-func askForConfirmation(message string) (bool, error) {
-	io.Warning(message)
+func askForConfirmationToAllowReviewAppsFromForks() (bool, error) {
+	io.Warning(reviewAppsFromForksSecurityWarning)
 	var confirmed bool
 
 	err := survey.AskOne(&survey.Confirm{
-		Message: "Are your sure?",
+		Message: "Allow review apps from forks?",
 		Default: false,
 	}, &confirmed, nil)
 
