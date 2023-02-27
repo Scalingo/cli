@@ -173,7 +173,7 @@ List of available integrations:
 
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
-				if allowReviewAppsFromForks && !awareOfSecurityRisks {
+				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
 					allowReviewAppsFromForks, err = askForConfirmation(reviewAppsFromForksSecurityWarning)
 					if err != nil {
 						errorQuit(err)
@@ -295,6 +295,7 @@ List of available integrations:
 					errorQuit(err)
 				}
 				err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
+				c.Value("allow-review-apps-from-forks")
 				if err != nil {
 					errorQuit(errgo.Notef(err, "error updating if review apps creation from forks are allowed"))
 				}
@@ -395,6 +396,7 @@ List of available integrations:
 
 			currentApp := detect.CurrentApp(c)
 			pullRequestID := c.Args().First()
+
 			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
