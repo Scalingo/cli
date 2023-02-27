@@ -289,20 +289,17 @@ List of available integrations:
 
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
+			currentApp := detect.CurrentApp(c)
+			params := integrationlink.CheckAndFillParams(c)
+
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmation(reviewAppsFromForksSecurityWarning)
 				if err != nil {
 					errorQuit(err)
 				}
-				err = c.Set("allow-review-apps-from-forks", strconv.FormatBool(stillAllowed))
-				c.Value("allow-review-apps-from-forks")
-				if err != nil {
-					errorQuit(errgo.Notef(err, "error updating if review apps creation from forks are allowed"))
-				}
-			}
 
-			currentApp := detect.CurrentApp(c)
-			params := integrationlink.CheckAndFillParams(c)
+				params.AutomaticCreationFromForksAllowed = &stillAllowed
+			}
 
 			err := integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
