@@ -5,6 +5,7 @@
 * feat(deployments): add Image Size to the list of deployments
 * fix(backups): backup flag is not required
 * build(publish): replace `rm-dist` with `clean`
+* feat(review-apps): permit automatic review app deployment from forks
 
 ### 1.27.2
 
