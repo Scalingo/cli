@@ -83,7 +83,7 @@ List of available integrations:
 - github => GitHub.com
 - github-enterprise => GitHub Enterprise (private instance)
 - gitlab => GitLab.com
-- gitlab-self-hosted => GitLab Self-hosted (private instance)			
+- gitlab-self-hosted => GitLab Self-hosted (private instance)
 `,
 			Examples: []string{
 				"scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce",
@@ -491,14 +491,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
 
-	io.Warning(reviewAppsFromForksSecurityWarning)
-	var forksAllowed bool
-
-	err = survey.AskOne(&survey.Confirm{
-		Message: "Allow review apps to be created from forks:",
-		Default: false,
-	}, &forksAllowed, nil)
-
+	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
 	if err != nil {
 		return params, errgo.Notef(err, "error enquiring about automatic review apps creation from forks")
 	}
@@ -523,11 +516,13 @@ func validateHoursBeforeDelete(ans interface{}) error {
 }
 
 func askForConfirmationToAllowReviewAppsFromForks() (bool, error) {
+	fmt.Println()
 	io.Warning(reviewAppsFromForksSecurityWarning)
-	var confirmed bool
+	fmt.Println()
 
+	var confirmed bool
 	err := survey.AskOne(&survey.Confirm{
-		Message: "Allow review apps from forks?",
+		Message: "Allow automatic creation of review apps from forks?",
 		Default: false,
 	}, &confirmed, nil)
 
