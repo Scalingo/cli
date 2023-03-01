@@ -209,10 +209,11 @@ github.com/mgutz/ansi
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit; go 1.12
 github.com/olekukonko/tablewriter
-# github.com/pjbgf/sha1cd v0.2.3
-## explicit; go 1.15
+# github.com/pjbgf/sha1cd v0.3.0
+## explicit; go 1.19
 github.com/pjbgf/sha1cd
 github.com/pjbgf/sha1cd/cgo
+github.com/pjbgf/sha1cd/internal
 github.com/pjbgf/sha1cd/ubc
 # github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 ## explicit; go 1.14
