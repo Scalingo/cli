@@ -11,7 +11,6 @@ package cgo
 // }
 import "C"
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -19,10 +18,6 @@ import (
 // bitconditions for all listed DVs. It returns a dvmask where each bit belonging to a DV
 // is set if all unavoidable bitconditions for that DV have been met.
 // Thus, one needs to do the recompression check for each DV that has its bit set.
-func CalculateDvMask(W []uint32) (uint32, error) {
-	if len(W) < 80 {
-		return 0, fmt.Errorf("invalid input: len(W) must be 80, was %d", len(W))
-	}
-
-	return uint32(C.check((*C.uint32_t)(unsafe.Pointer(&W[0])))), nil
+func CalculateDvMask(W [80]uint32) uint32 {
+	return uint32(C.check((*C.uint32_t)(unsafe.Pointer(&W[0]))))
 }

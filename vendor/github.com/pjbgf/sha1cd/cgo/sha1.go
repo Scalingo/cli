@@ -27,28 +27,28 @@ func New() hash.Hash {
 
 type digest struct {
 	ctx C.SHA1_CTX
+	h   [Size]byte
 }
 
-func (d *digest) sum() ([]byte, bool) {
-	b := make([]byte, Size)
-	c := C.SHA1DCFinal((*C.uchar)(unsafe.Pointer(&b[0])), &d.ctx)
+func (d *digest) sum() ([Size]byte, bool) {
+	c := C.SHA1DCFinal((*C.uchar)(unsafe.Pointer(&d.h[0])), &d.ctx)
 	if c != 0 {
-		return b, true
+		return d.h, true
 	}
 
-	return b, false
+	return d.h, false
 }
 
 func (d *digest) Sum(in []byte) []byte {
 	d0 := *d // use a copy of d to avoid race conditions.
-	h, _ := d0.sum()
-	return append(in, h...)
+	h, _ := d0.CollisionResistantSum(in)
+	return h
 }
 
 func (d *digest) CollisionResistantSum(in []byte) ([]byte, bool) {
 	d0 := *d // use a copy of d to avoid race conditions.
 	h, c := d0.sum()
-	return append(in, h...), c
+	return append(in, h[:]...), c
 }
 
 func (d *digest) Reset() {
@@ -63,7 +63,8 @@ func Sum(data []byte) ([]byte, bool) {
 	d := New().(*digest)
 	d.Write(data)
 
-	return d.sum()
+	h, c := d.sum()
+	return h[:], c
 }
 
 func (d *digest) Write(p []byte) (nn int, err error) {
