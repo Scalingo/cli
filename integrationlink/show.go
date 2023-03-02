@@ -100,6 +100,17 @@ func Show(ctx context.Context, app string) error {
 			color.New(color.FgYellow).Sprint("Destroy on Stale"),
 			deleteOnStale,
 		)
+
+		var forksAllowed string
+		if repoLink.AutomaticCreationFromForksAllowed {
+			forksAllowed = color.GreenString(utils.Success)
+		} else {
+			forksAllowed = color.RedString(utils.Error)
+		}
+		fmt.Printf("\t%s: %s\n",
+			color.New(color.FgYellow).Sprint("Automatic creation from forks"),
+			forksAllowed,
+		)
 	}
 
 	return nil

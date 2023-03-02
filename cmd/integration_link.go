@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v2"
 
@@ -22,6 +24,8 @@ import (
 )
 
 var (
+	reviewAppsFromForksSecurityWarning = "Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues. More info here: https://doc.scalingo.com/platform/app/review-apps#addons-collaborators-and-environment-variables"
+
 	integrationLinkShowCommand = cli.Command{
 		Name:     "integration-link",
 		Category: "Integration Link",
@@ -57,11 +61,14 @@ var (
 			&appFlag,
 			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
 			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review apps when new pull request is opened"},
 			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
-			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Disable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
+			&cli.BoolFlag{Name: "allow-review-apps-from-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "aware-of-security-risks", Usage: "Bypass the security warning about allowing automatic review app creation from forks"},
+			&cli.BoolFlag{Name: "no-allow-review-apps-from-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
 			&cli.BoolFlag{Name: "destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
 			&cli.BoolFlag{Name: "no-destroy-on-stale", Usage: "Auto destroy review apps when no deploy/commits has happened"},
@@ -76,11 +83,11 @@ List of available integrations:
 - github => GitHub.com
 - github-enterprise => GitHub Enterprise (private instance)
 - gitlab => GitLab.com
-- gitlab-self-hosted => GitLab Self-hosted (private instance)			
+- gitlab-self-hosted => GitLab Self-hosted (private instance)
 `,
 			Examples: []string{
 				"scalingo --app my-app integration-link-create https://gitlab.com/gitlab-org/gitlab-ce",
-				"scalingo --app my-app integration-link-create --branch master --auto-deploy https://ghe.example.org/test/frontend-app",
+				"scalingo --app my-app integration-link-create --branch master --auto-deploy --deploy-review-apps --no-allow-review-apps-from-forks https://ghe.example.org/test/frontend-app",
 			},
 			SeeAlso: []string{"integration-link", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
@@ -94,7 +101,7 @@ List of available integrations:
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(errgo.Notef(err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
@@ -157,14 +164,31 @@ List of available integrations:
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
+				allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
+				noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
+
+				if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
+					errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
+				}
+
+				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
+					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks()
+					if err != nil {
+						errorQuit(err)
+					}
+				}
+
 				params = scalingo.SCMRepoLinkCreateParams{
-					Branch:                   &branch,
-					AutoDeployEnabled:        &autoDeploy,
-					DeployReviewAppsEnabled:  &deployReviewApps,
-					DestroyOnCloseEnabled:    &destroyOnClose,
-					HoursBeforeDeleteOnClose: &hoursBeforeDestroyOnClose,
-					DestroyStaleEnabled:      &destroyOnStale,
-					HoursBeforeDeleteStale:   &hoursBeforeDestroyOnStale,
+					Branch:                            &branch,
+					AutoDeployEnabled:                 &autoDeploy,
+					DeployReviewAppsEnabled:           &deployReviewApps,
+					DestroyOnCloseEnabled:             &destroyOnClose,
+					HoursBeforeDeleteOnClose:          &hoursBeforeDestroyOnClose,
+					DestroyStaleEnabled:               &destroyOnStale,
+					HoursBeforeDeleteStale:            &hoursBeforeDestroyOnStale,
+					AutomaticCreationFromForksAllowed: &allowReviewAppsFromForks,
 				}
 			}
 
@@ -206,9 +230,12 @@ List of available integrations:
 			&appFlag,
 			&cli.StringFlag{Name: "branch", Usage: "Branch used in auto deploy"},
 			&cli.BoolFlag{Name: "auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
-			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Enable auto deploy of application after each branch change"},
+			&cli.BoolFlag{Name: "no-auto-deploy", Usage: "Disable auto deploy of application after each branch change"},
 			&cli.BoolFlag{Name: "deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
-			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Enable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "no-deploy-review-apps", Usage: "Disable auto deploy of review app when new pull request is opened"},
+			&cli.BoolFlag{Name: "allow-review-apps-from-forks", Usage: "Enable auto deploy of review apps when new pull request is opened from a fork"},
+			&cli.BoolFlag{Name: "aware-of-security-risks", Usage: "Bypass the security warning about allowing automatic review app creation from forks"},
+			&cli.BoolFlag{Name: "no-allow-review-apps-from-forks", Usage: "Disable auto deploy of review apps when new pull request is opened from a fork"},
 			&cli.BoolFlag{Name: "destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.BoolFlag{Name: "no-destroy-on-close", Usage: "Auto destroy review apps when pull request is closed"},
 			&cli.UintFlag{Name: "hours-before-destroy-on-close", Usage: "Time delay before auto destroying a review app when pull request is closed"},
@@ -253,13 +280,28 @@ List of available integrations:
 				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
 			}
 
-			currentApp := detect.CurrentApp(c)
-			params, err := integrationlink.CheckAndFillParams(c, currentApp)
-			if err != nil {
-				errorQuit(err)
+			allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
+			noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
+
+			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
+				errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
 			}
 
-			err = integrationlink.Update(c.Context, currentApp, *params)
+			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+			currentApp := detect.CurrentApp(c)
+			params := integrationlink.CheckAndFillParams(c)
+
+			if allowReviewAppsFromForks && !awareOfSecurityRisks {
+				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
+				if err != nil {
+					errorQuit(err)
+				}
+
+				params.AutomaticCreationFromForksAllowed = &stillAllowed
+			}
+
+			err := integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -351,6 +393,7 @@ List of available integrations:
 
 			currentApp := detect.CurrentApp(c)
 			pullRequestID := c.Args().First()
+
 			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
@@ -388,7 +431,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	}{}
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about branch and automatic review apps deployment")
 	}
 
 	t := true
@@ -408,7 +451,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnClose,
 	}, &destroyOnClose, nil)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about destroy on close")
 	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
@@ -418,7 +461,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, err
+			return params, errgo.Notef(err, "error enquiring about review apps destroy delay")
 		}
 		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
 		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
@@ -431,7 +474,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnStale,
 	}, &destroyOnStale, nil)
 	if err != nil {
-		return params, err
+		return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
@@ -441,12 +484,19 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, err
+			return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
 		}
 		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
 		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
+
+	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
+	if err != nil {
+		return params, errgo.Notef(err, "error enquiring about automatic review apps creation from forks")
+	}
+	params.AutomaticCreationFromForksAllowed = &forksAllowed
+
 	return params, nil
 }
 
@@ -457,10 +507,28 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	}
 	i, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {
-		return err
+		return errgo.Notef(err, "error parsing hours")
 	}
 	if i < 0 {
 		return errors.New("must be positive")
 	}
 	return nil
+}
+
+func askForConfirmationToAllowReviewAppsFromForks() (bool, error) {
+	fmt.Println()
+	io.Warning(reviewAppsFromForksSecurityWarning)
+	fmt.Println()
+
+	var confirmed bool
+	err := survey.AskOne(&survey.Confirm{
+		Message: "Allow automatic creation of review apps from forks?",
+		Default: false,
+	}, &confirmed, nil)
+
+	if err != nil {
+		return false, err
+	}
+
+	return confirmed, nil
 }

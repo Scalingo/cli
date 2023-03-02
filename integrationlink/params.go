@@ -6,19 +6,20 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
-func CheckAndFillParams(c *cli.Context, app string) (*scalingo.SCMRepoLinkUpdateParams, error) {
+func CheckAndFillParams(c *cli.Context) *scalingo.SCMRepoLinkUpdateParams {
 	paramsChecker := newParamsChecker(c)
 	params := &scalingo.SCMRepoLinkUpdateParams{
-		Branch:                   paramsChecker.lookupBranch(),
-		AutoDeployEnabled:        paramsChecker.lookupAutoDeploy(),
-		DeployReviewAppsEnabled:  paramsChecker.lookupDeployReviewApps(),
-		DestroyOnCloseEnabled:    paramsChecker.lookupDestroyOnClose(),
-		HoursBeforeDeleteOnClose: paramsChecker.lookupHoursBeforeDestroyOnClose(),
-		DestroyStaleEnabled:      paramsChecker.lookupDestroyOnStale(),
-		HoursBeforeDeleteStale:   paramsChecker.lookupHoursBeforeDestroyOnStale(),
+		Branch:                            paramsChecker.lookupBranch(),
+		AutoDeployEnabled:                 paramsChecker.lookupAutoDeploy(),
+		DeployReviewAppsEnabled:           paramsChecker.lookupDeployReviewApps(),
+		DestroyOnCloseEnabled:             paramsChecker.lookupDestroyOnClose(),
+		HoursBeforeDeleteOnClose:          paramsChecker.lookupHoursBeforeDestroyOnClose(),
+		DestroyStaleEnabled:               paramsChecker.lookupDestroyOnStale(),
+		HoursBeforeDeleteStale:            paramsChecker.lookupHoursBeforeDestroyOnStale(),
+		AutomaticCreationFromForksAllowed: paramsChecker.lookupAllowReviewAppsFromForks(),
 	}
 
-	return params, nil
+	return params
 }
 
 type paramsChecker struct {
@@ -89,6 +90,18 @@ func (p *paramsChecker) lookupDestroyOnStale() *bool {
 		return &t
 	}
 	if p.ctx.IsSet("no-destroy-on-stale") {
+		f := false
+		return &f
+	}
+	return nil
+}
+
+func (p *paramsChecker) lookupAllowReviewAppsFromForks() *bool {
+	if p.ctx.IsSet("allow-review-apps-from-forks") {
+		t := true
+		return &t
+	}
+	if p.ctx.IsSet("no-allow-review-apps-from-forks") {
 		f := false
 		return &f
 	}
