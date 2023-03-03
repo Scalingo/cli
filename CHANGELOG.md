@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.28.0
+
 * chore: change default stack in help command 
 * feat(deployments): add Image Size to the list of deployments
 * fix(backups): backup flag is not required
