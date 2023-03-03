@@ -4,11 +4,18 @@
 
 ### 1.28.0
 
-* chore: change default stack in help command 
-* feat(deployments): add Image Size to the list of deployments
-* fix(backups): backup flag is not required
-* build(publish): replace `rm-dist` with `clean`
-* feat(review-apps): permit automatic review app deployment from forks
+* doc: update default stack in help command ([PR#884](https://github.com/Scalingo/cli/pull/884)) 
+* feat(deployments): add Image Size to the list of deployments ([PR#894](https://github.com/Scalingo/cli/pull/894))
+* fix(backups): backup flag is not required ([PR#892](https://github.com/Scalingo/cli/pull/892))
+* build(publish): replace `rm-dist` with `clean` ([PR#893](https://github.com/Scalingo/cli/pull/893))
+* feat(review-apps): add an option to manage review app creation from forks ([PR#882](https://github.com/Scalingo/cli/pull/882))
+* chore(deps): update dependencies
+  - golang.org/x/net from 0.5.0 to 0.7.0
+  - github.com/stretchr/testify from 1.8.1 to 1.8.2
+  - golang.org/x/mod from 0.7.0 to 0.8.0
+  - github.com/pjbgf/sha1cd from 0.2.3 to 0.3.0
+  - github.com/golang-jwt/jwt/v4 from 4.4.3 to 4.5.0
+  - github.com/go-git/go-billy/v5 from 5.4.0 to 5.4.1
 
 ### 1.27.2
 
