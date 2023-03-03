@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.27.2
+# Scalingo-CLI v1.28.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.27.2
+   1.28.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -84,7 +84,7 @@ COMMANDS:
 
    Alerts:
      alerts          List the alerts of an application
-     alerts-add      Add an alert to an application
+     alerts-add      Add an alert to an application metric
      alerts-update   Update an alert
      alerts-enable   Enable an alert
      alerts-disable  Disable an alert
@@ -155,7 +155,7 @@ COMMANDS:
      stats  Display metrics of the currently running containers
 
    Environment:
-     env        Display the environment of your apps
+     env        Display the environment variables of your apps
      env-get    Get the requested environment variable from your app
      env-set    Set the environment variables of your apps
      env-unset  Unset environment variables of your apps
@@ -198,7 +198,7 @@ COMMANDS:
 
    Notifiers:
      notifiers          List your notifiers
-     notifiers-details  Show details of your notifiers
+     notifiers-details  Show details of a notifier
      notifiers-add      Add a notifier for your application
      notifiers-update   Update a notifier
      notifiers-remove   Remove an existing notifier from your app
@@ -230,7 +230,7 @@ GLOBAL OPTIONS:
    --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
    --remote value, -r value  Name of the remote (default: "scalingo")
    --region value            Name of the region to use
-   --version, -v             print the version (default: false)
+   --version, -v             print the version
 ```
 
 ## Development Setup
