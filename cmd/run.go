@@ -87,6 +87,7 @@ var (
 				Files:    c.StringSlice("f"),
 				Silent:   c.Bool("silent"),
 				Detached: c.Bool("detached"),
+				Async:    true,
 			}
 			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
 				cli.ShowCommandHelp(c, "run")
