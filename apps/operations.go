@@ -104,5 +104,5 @@ func GetAttachURLFromOperationWithURL(ctx context.Context, app string, operation
 		return "", errgo.Notef(err, "get operation")
 	}
 
-	return operation.OneOffData.AttachURL, nil
+	return operation.StartOneOffData.AttachURL, nil
 }
