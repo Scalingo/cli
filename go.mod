@@ -7,6 +7,7 @@ require (
 	github.com/ScaleFT/sshkeys v1.2.0
 	github.com/Scalingo/go-scalingo/v6 v6.4.0
 	github.com/Scalingo/go-utils/errors v1.1.1
+	github.com/Scalingo/go-utils/errors/v2 v2.2.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2
@@ -33,7 +34,6 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20221026131551-cf6655e29de4 // indirect
-	github.com/Scalingo/go-utils/errors/v2 v2.2.0 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/cloudflare/circl v1.3.2 // indirect
