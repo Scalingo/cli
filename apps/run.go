@@ -20,7 +20,7 @@ import (
 	"runtime"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
