@@ -26,14 +26,22 @@ const (
 	BackupStatusError     BackupStatus = "error"
 )
 
+type BackupMethod string
+
+const (
+	BackupMethodPeriodic BackupMethod = "periodic"
+	BackupMethodManual   BackupMethod = "manual"
+)
+
 type Backup struct {
 	ID         string       `json:"id"`
 	CreatedAt  time.Time    `json:"created_at"`
+	StartedAt  time.Time    `json:"started_at"`
 	Name       string       `json:"name"`
 	Size       uint64       `json:"size"`
 	Status     BackupStatus `json:"status"`
 	DatabaseID string       `json:"database_id"`
-	Direct     bool         `json:"direct"`
+	Method     BackupMethod `json:"method"`
 }
 
 type BackupsRes struct {
