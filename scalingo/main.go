@@ -21,12 +21,11 @@ var (
 	completionFlag = "--" + cli.BashCompletionFlag.Names()[0]
 )
 
-func DefaultAction(c *cli.Context) error {
+func defaultAction(c *cli.Context) error {
 	for i := range os.Args {
 		if os.Args[i] == completionFlag {
-			if len(os.Args)-2 > 0 {
+			if len(os.Args) > 2 {
 				autocomplete.FlagsAutoComplete(c, os.Args[len(os.Args)-2])
-				return nil
 			}
 
 			return nil
@@ -90,7 +89,7 @@ func main() {
 	app.BashComplete = func(c *cli.Context) {
 		ScalingoAppComplete(c)
 	}
-	app.Action = DefaultAction
+	app.Action = defaultAction
 	setHelpTemplate()
 
 	cmds := cmd.NewAppCommands()
