@@ -29,7 +29,8 @@ func Restart(ctx context.Context, app string, sync bool, args []string) error {
 		return nil
 	}
 
-	err = handleOperation(ctx, app, res)
+	waiter := NewOperationWaiterFromHTTPResponse(app, res)
+	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
 		return errgo.Mask(err)
 	}

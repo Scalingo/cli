@@ -145,7 +145,8 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 		return nil
 	}
 
-	err = handleOperation(ctx, app, res)
+	waiter := NewOperationWaiterFromHTTPResponse(app, res)
+	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to handle the scale operation")
 	}
