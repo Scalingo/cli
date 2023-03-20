@@ -30,6 +30,7 @@ import (
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
+	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 type RunOpts struct {
@@ -145,17 +146,13 @@ func Run(ctx context.Context, opts RunOpts) error {
 		return nil
 	}
 
-	err = handleOperationWithURL(ctx, opts.App, runRes.OperationURL, runRes.Container.Label)
+	waiter := NewOperationWaiter(runCtx.waitingTextOutputWriter, opts.App, runRes.OperationURL)
+	waiter.SetPrompt(fmt.Sprintf("-----> Starting container %v   ", runRes.Container.Label))
+	operation, err := waiter.WaitOperation(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Notef(ctx, err, "wait operation")
 	}
-
-	attachURL, err := GetAttachURLFromOperationWithURL(ctx, opts.App, runRes.OperationURL)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	runCtx.attachURL = attachURL
+	runCtx.attachURL = operation.StartOneOffData.AttachURL
 	debug.Println("Run Service URL is", runCtx.attachURL)
 
 	if len(opts.Files) > 0 {
