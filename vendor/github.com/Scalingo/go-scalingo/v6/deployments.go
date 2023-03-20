@@ -50,6 +50,7 @@ type Deployment struct {
 	Duration       int              `json:"duration"`
 	PostdeployHook string           `json:"postdeploy_hook"`
 	ImageSize      uint64           `json:"image_size"`
+	StackBaseImage string           `json:"stack_base_image"`
 	User           *User            `json:"pusher"`
 	Links          *DeploymentLinks `json:"links"`
 }

@@ -5,8 +5,9 @@ go 1.20
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/ScaleFT/sshkeys v1.2.0
-	github.com/Scalingo/go-scalingo/v6 v6.3.0
+	github.com/Scalingo/go-scalingo/v6 v6.4.0
 	github.com/Scalingo/go-utils/errors v1.1.1
+	github.com/Scalingo/go-utils/errors/v2 v2.2.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
 	github.com/andrew-d/go-termutil v0.0.0-20150726205930-009166a695a2

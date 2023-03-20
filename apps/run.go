@@ -20,7 +20,7 @@ import (
 	"runtime"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
@@ -37,6 +37,7 @@ type RunOpts struct {
 	DisplayCmd     string
 	Silent         bool
 	Detached       bool
+	Async          bool
 	Size           string
 	Type           string
 	Cmd            []string
@@ -58,7 +59,7 @@ type runContext struct {
 func Run(ctx context.Context, opts RunOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "get Scalingo client")
 	}
 
 	firstReadDone := make(chan struct{})
@@ -103,6 +104,9 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if opts.StdoutCopyFunc != nil {
 		runCtx.stdoutCopyFunc = opts.StdoutCopyFunc
 	}
+	if opts.Detached {
+		opts.Async = false
+	}
 
 	env, err := runCtx.buildEnv(opts.CmdEnv)
 	if err != nil {
@@ -122,10 +126,13 @@ func Run(ctx context.Context, opts RunOpts) error {
 			Env:      env,
 			Size:     opts.Size,
 			Detached: opts.Detached,
-		})
+			Async:    opts.Async,
+		},
+	)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+
 	debug.Printf("%+v\n", runRes)
 
 	if opts.Detached {
@@ -138,7 +145,17 @@ func Run(ctx context.Context, opts RunOpts) error {
 		return nil
 	}
 
-	runCtx.attachURL = runRes.AttachURL
+	err = handleOperationWithURL(ctx, opts.App, runRes.OperationURL, runRes.Container.Label)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
+	attachURL, err := GetAttachURLFromOperationWithURL(ctx, opts.App, runRes.OperationURL)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
+
+	runCtx.attachURL = attachURL
 	debug.Println("Run Service URL is", runCtx.attachURL)
 
 	if len(opts.Files) > 0 {
@@ -221,6 +238,9 @@ func Run(ctx context.Context, opts RunOpts) error {
 	}()
 
 	_, err = runCtx.stdoutCopyFunc(os.Stdout, socket)
+	if err != nil {
+		return errgo.Mask(err, errgo.Any)
+	}
 
 	stopSignalsMonitoring <- true
 
@@ -235,11 +255,11 @@ func Run(ctx context.Context, opts RunOpts) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	os.Exit(exitCode)
+	defer os.Exit(exitCode)
 	return nil
 }
 
-func (ctx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
+func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	env := map[string]string{
 		"TERM":      os.Getenv("TERM"),
 		"CLIENT_OS": runtime.GOOS,

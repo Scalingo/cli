@@ -27,22 +27,29 @@ const (
 type OperationType string
 
 const (
-	OperationTypeScale OperationType = "scale"
-	OperationTypeStart OperationType = "start"
+	OperationTypeScale       OperationType = "scale"
+	OperationTypeStart       OperationType = "start"
+	OperationTypeStartOneOff OperationType = "start-one-off"
 )
 
 type OperationResponse struct {
 	Op Operation `json:"operation"`
 }
 
+type OperationStartOneOffData struct {
+	AttachURL   string `json:"attach_url"`
+	ContainerID string `json:"container_id"`
+}
+
 type Operation struct {
-	ID         string          `json:"id"`
-	AppID      string          `json:"app_id"`
-	CreatedAt  time.Time       `json:"created_at"`
-	FinishedAt time.Time       `json:"finished_at"`
-	Status     OperationStatus `json:"status"`
-	Type       OperationType   `json:"type"`
-	Error      string          `json:"error"`
+	ID              string                   `json:"id"`
+	AppID           string                   `json:"app_id"`
+	CreatedAt       time.Time                `json:"created_at"`
+	FinishedAt      time.Time                `json:"finished_at"`
+	Status          OperationStatus          `json:"status"`
+	Type            OperationType            `json:"type"`
+	Error           string                   `json:"error"`
+	StartOneOffData OperationStartOneOffData `json:"start_one_off_data"`
 }
 
 func (op *Operation) ElapsedDuration() float64 {

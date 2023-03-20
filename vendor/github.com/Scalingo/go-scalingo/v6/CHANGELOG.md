@@ -2,6 +2,12 @@
 
 ## To Be Released
 
+## 6.4.0
+
+* feat(one-off): allow attached one-off to be run asynchronously
+* feat(stacks): add support for Deployment `stack_base_image`
+* feat(backup): add `StartedAt` and `Method` fields
+
 ## 6.3.0
 
 * feat(apps): add support for `hds_resource`
