@@ -2,6 +2,10 @@
 
 ### To be Released
 
+### 1.28.1
+
+* feat(one-off): start attached one-off asynchronously
+
 ### 1.28.0
 
 * doc: update default stack in help command ([PR#884](https://github.com/Scalingo/cli/pull/884)) 
