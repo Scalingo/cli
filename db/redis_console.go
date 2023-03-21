@@ -40,6 +40,7 @@ func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 		App:           opts.App,
 		Cmd:           []string{"dbclient-fetcher", "redis", "&&", "redis-cli", "-h", host, "-p", port, "-a", password},
 		Size:          opts.Size,
+		Async:         true,
 		StdinCopyFunc: redisStdinCopy,
 	}
 
