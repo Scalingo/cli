@@ -1,9 +1,10 @@
 # Changelog
 
 ### To be Released
-* feat(log-drains): add Logtail
 
+* feat(log-drains): add Logtail
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
+* fix(completion): fix zsh shebang reference
 
 ### 1.28.2
 
