@@ -2,6 +2,11 @@
 
 ### To be Released
 
+### 1.28.2
+
+* regression(pgsql-console|mongo-console|influx-console|redis-console): Fix regression introduced in 1.28.1, use same async mecanism #913
+* refacto(run): Improve code clarity for one-off starting operation and remove annoying extra space #912
+
 ### 1.28.1
 
 * feat(one-off): start attached one-off asynchronously
