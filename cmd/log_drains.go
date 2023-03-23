@@ -86,6 +86,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 `,
 			Examples: []string{
 				"scalingo --app my-app log-drains-add --type appsignal --token 123456789abcdef",
+				"scalingo --app my-app log-drains-add --type logtail --token 123456789abcdef",
 				"scalingo --app my-app log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
 				"scalingo --app my-app log-drains-add --type ovh-graylog --token 123456789abcdef --host tag3.logs.ovh.com",
 				"scalingo --app my-app log-drains-add --type papertrail --host logs2.papertrailapp.com --port 12345",
