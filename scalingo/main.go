@@ -14,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
+	"github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/go-utils/logger"
 )
 
@@ -32,7 +33,11 @@ func defaultAction(c *cli.Context) error {
 		}
 	}
 
-	cmd.HelpCommand.Action(c)
+	err := cmd.HelpCommand.Action(c)
+	if err != nil {
+		return errors.Notef(c.Context, err, "help command execution")
+	}
+
 	cmd.ShowSuggestions(c)
 	return nil
 }
