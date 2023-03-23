@@ -14,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
+	"github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/go-utils/logger"
 )
 
@@ -21,26 +22,23 @@ var (
 	completionFlag = "--" + cli.BashCompletionFlag.Names()[0]
 )
 
-func DefaultAction(c *cli.Context) error {
-	completeMode := false
-
+func defaultAction(c *cli.Context) error {
 	for i := range os.Args {
 		if os.Args[i] == completionFlag {
-			completeMode = true
-			break
+			if len(os.Args) > 2 {
+				autocomplete.FlagsAutoComplete(c, os.Args[len(os.Args)-2])
+			}
+
+			return nil
 		}
 	}
 
-	if !completeMode {
-		cmd.HelpCommand.Action(c)
-		cmd.ShowSuggestions(c)
-	} else {
-		i := len(os.Args) - 2
-		if i > 0 {
-			autocomplete.FlagsAutoComplete(c, os.Args[i])
-		}
+	err := cmd.HelpCommand.Action(c)
+	if err != nil {
+		return errors.Notef(c.Context, err, "help command execution")
 	}
 
+	cmd.ShowSuggestions(c)
 	return nil
 }
 
@@ -96,7 +94,7 @@ func main() {
 	app.BashComplete = func(c *cli.Context) {
 		ScalingoAppComplete(c)
 	}
-	app.Action = DefaultAction
+	app.Action = defaultAction
 	setHelpTemplate()
 
 	cmds := cmd.NewAppCommands()

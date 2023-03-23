@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Create(ctx context.Context, app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkCreateParams) error {
@@ -33,7 +33,7 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
 	if err != nil {
-		scerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
+		scerr, ok := errors.RootCause(err).(*http.RequestFailedError)
 		if !ok || scerr.Code != 404 {
 			return errgo.Notef(err, "fail to get the integration link for this app")
 		}

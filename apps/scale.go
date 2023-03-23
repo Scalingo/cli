@@ -16,7 +16,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
 	"github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type ScaleRes struct {
@@ -111,7 +111,7 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 	res, err := c.AppsScale(ctx, app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			reqestFailedError, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
+			reqestFailedError, ok := errors.RootCause(err).(*http.RequestFailedError)
 			if !ok {
 				return errgo.Notef(err, "request to scale the application failed")
 			}

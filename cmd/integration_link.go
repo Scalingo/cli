@@ -20,7 +20,7 @@ import (
 	"github.com/Scalingo/cli/scmintegrations"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
-	scalingoerrors "github.com/Scalingo/go-utils/errors"
+	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -110,7 +110,7 @@ List of available integrations:
 
 			integrationType, err := scmintegrations.GetTypeFromURL(c.Context, integrationURL)
 			if err != nil {
-				if scalingoerrors.ErrgoRoot(err) == scmintegrations.ErrNotFound {
+				if scalingoerrors.RootCause(err) == scmintegrations.ErrNotFound {
 					// If no integration matches the given URL, display a helpful status
 					// message
 					switch integrationURLParsed.Host {
@@ -194,7 +194,7 @@ List of available integrations:
 
 			err = integrationlink.Create(c.Context, currentApp, integrationType, integrationURL, params)
 			if err != nil {
-				scerr, ok := scalingoerrors.ErrgoRoot(err).(*http.RequestFailedError)
+				scerr, ok := scalingoerrors.RootCause(err).(*http.RequestFailedError)
 				if ok {
 					if scerr.Code == 404 {
 						io.Error("Fail to create SCM repository integration: the repository has not been found")
