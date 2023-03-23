@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v6"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Update(ctx context.Context, app, containerType string, params scalingo.AutoscalerUpdateParams) error {
@@ -19,7 +19,7 @@ func Update(ctx context.Context, app, containerType string, params scalingo.Auto
 
 	autoscaler, err := getFromContainerType(ctx, c, app, containerType)
 	if err != nil {
-		if errors.ErrgoRoot(err) == ErrNotFound {
+		if errors.RootCause(err) == ErrNotFound {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
 		}

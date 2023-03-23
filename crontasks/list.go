@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
 	httpclient "github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func List(ctx context.Context, app string) error {
@@ -21,7 +21,7 @@ func List(ctx context.Context, app string) error {
 
 	cronTasks, err := client.CronTasksGet(ctx, app)
 	if err != nil {
-		rootError := errors.ErrgoRoot(err)
+		rootError := errors.RootCause(err)
 		if !httpclient.IsRequestFailedError(rootError) || rootError.(*httpclient.RequestFailedError).Code != 404 {
 			return errgo.Notef(err, "fail to get cron tasks")
 		}

@@ -4,11 +4,11 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func IsRegionDisabledError(err error) bool {
-	reqerr, ok := errors.ErrgoRoot(err).(*http.RequestFailedError)
+	reqerr, ok := errors.RootCause(err).(*http.RequestFailedError)
 	if !ok || reqerr.Code != 403 {
 		return false
 	}

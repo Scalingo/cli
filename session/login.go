@@ -12,7 +12,7 @@ import (
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
-	"github.com/Scalingo/go-utils/errors"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type LoginOpts struct {
@@ -38,7 +38,7 @@ func Login(ctx context.Context, opts LoginOpts) error {
 			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
 			io.Error("SSH connection failed.")
 			if opts.SSH {
-				if errors.ErrgoRoot(err) == netssh.ErrNoAuthSucceed {
+				if errors.RootCause(err) == netssh.ErrNoAuthSucceed {
 					return errgo.Notef(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
 				}
 				return errgo.Notef(err, "fail to login with SSH")

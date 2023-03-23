@@ -39,9 +39,6 @@ github.com/Scalingo/go-scalingo/v6/debug
 github.com/Scalingo/go-scalingo/v6/http
 github.com/Scalingo/go-scalingo/v6/http/httpmock
 github.com/Scalingo/go-scalingo/v6/io
-# github.com/Scalingo/go-utils/errors v1.1.1
-## explicit; go 1.17
-github.com/Scalingo/go-utils/errors
 # github.com/Scalingo/go-utils/errors/v2 v2.2.0
 ## explicit; go 1.17
 github.com/Scalingo/go-utils/errors/v2

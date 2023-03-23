@@ -17,7 +17,7 @@ import (
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v6"
-	scalingoerrors "github.com/Scalingo/go-utils/errors"
+	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -42,7 +42,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 			user, tokens, err = tryAuth(ctx)
 			if err == nil {
 				break
-			} else if scalingoerrors.ErrgoRoot(err) == io.EOF {
+			} else if scalingoerrors.RootCause(err) == io.EOF {
 				return nil, "", errors.New("canceled by user")
 			} else {
 				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
@@ -258,7 +258,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 		}, loginParams)
 		if err != nil {
-			if !otpRequired && scalingoerrors.ErrgoRoot(err) == scalingo.ErrOTPRequired {
+			if !otpRequired && scalingoerrors.RootCause(err) == scalingo.ErrOTPRequired {
 				otpRequired = true
 			} else {
 				return nil, "", errgo.NoteMask(err, "fail to create API token", errgo.Any)
