@@ -7,7 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-utils/errors/v2"
+	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Remove(ctx context.Context, app, containerType string) error {

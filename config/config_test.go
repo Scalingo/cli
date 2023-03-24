@@ -7,7 +7,7 @@ import (
 
 var (
 	testConfig = Config{
-		ScalingoApiUrl: "api.scalingo.dev",
+		ScalingoAPIURL: "api.scalingo.dev",
 		AuthFile:       filepath.Join(os.TempDir(), "test-scalingo-auth"),
 	}
 )

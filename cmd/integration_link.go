@@ -116,10 +116,10 @@ List of available integrations:
 					switch integrationURLParsed.Host {
 					case "github.com":
 						io.Error("No GitHub integration found, please follow this URL to add it:")
-						io.Errorf("%s/users/github/link\n", config.C.ScalingoAuthUrl)
+						io.Errorf("%s/users/github/link\n", config.C.ScalingoAuthURL)
 					case "gitlab.com":
 						io.Error("No GitLab integration found, please follow this URL to add it:")
-						io.Errorf("%s/users/gitlab/link\n", config.C.ScalingoAuthUrl)
+						io.Errorf("%s/users/gitlab/link\n", config.C.ScalingoAuthURL)
 					default:
 						io.Errorf("No integration found for URL %s.\n", integrationURL)
 						io.Errorf("Please run the command:\n")

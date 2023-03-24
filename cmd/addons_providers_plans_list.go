@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/cli/addon_providers"
+	"github.com/Scalingo/cli/addonproviders"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
@@ -22,7 +22,7 @@ var (
 				cli.ShowCommandHelp(c, "addons-plans")
 				return nil
 			}
-			if err := addon_providers.Plans(c.Context, c.Args().First()); err != nil {
+			if err := addonproviders.Plans(c.Context, c.Args().First()); err != nil {
 				errorQuit(err)
 			}
 			return nil

@@ -4,7 +4,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/notification_platforms"
+	"github.com/Scalingo/cli/notificationplatforms"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 		Usage:       "List all notification platforms",
 
 		Action: func(c *cli.Context) error {
-			err := notification_platforms.List(c.Context)
+			err := notificationplatforms.List(c.Context)
 			if err != nil {
 				errorQuit(err)
 			}

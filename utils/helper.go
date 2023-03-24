@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"gopkg.in/errgo.v1"
+
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors/v2"
-
-	"gopkg.in/errgo.v1"
+	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 const (
@@ -57,7 +57,7 @@ func askUserValidation() (bool, error) {
 	if err != nil {
 		return false, errgo.Mask(err, errgo.Any)
 	}
-	if in != "" && strings.ToUpper(in) != "Y" {
+	if in != "" && !strings.EqualFold(in, "Y") {
 		return false, nil
 	}
 	return true, nil
@@ -72,7 +72,7 @@ func readCharFromStdin() (string, error) {
 		return "", err
 	}
 	input = strings.TrimSpace(input)
-	if len(input) == 0 {
+	if input == "" {
 		return "", nil
 	}
 	return string(input[0]), nil

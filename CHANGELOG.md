@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
+
 ### 1.28.2
 
 * regression(pgsql-console|mongo-console|influx-console|redis-console): Fix regression introduced in 1.28.1, use same async mecanism #913
@@ -13,7 +15,7 @@
 
 ### 1.28.0
 
-* doc: update default stack in help command ([PR#884](https://github.com/Scalingo/cli/pull/884)) 
+* doc: update default stack in help command ([PR#884](https://github.com/Scalingo/cli/pull/884))
 * feat(deployments): add Image Size to the list of deployments ([PR#894](https://github.com/Scalingo/cli/pull/894))
 * fix(backups): backup flag is not required ([PR#892](https://github.com/Scalingo/cli/pull/892))
 * build(publish): replace `rm-dist` with `clean` ([PR#893](https://github.com/Scalingo/cli/pull/893))

@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
-	"github.com/Scalingo/cli/region_migrations"
+	"github.com/Scalingo/cli/regionmigrations"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -35,7 +35,7 @@ var (
 				return nil
 			}
 
-			err := region_migrations.Create(c.Context, currentApp, c.String("to"), c.String("new-name"))
+			err := regionmigrations.Create(c.Context, currentApp, c.String("to"), c.String("new-name"))
 			if err != nil {
 				errorQuit(err)
 			}
@@ -83,7 +83,7 @@ var (
 				return nil
 			}
 
-			err := region_migrations.Run(c.Context, currentApp, migrationID, step)
+			err := regionmigrations.Run(c.Context, currentApp, migrationID, step)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -110,7 +110,7 @@ var (
 			migrationID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
 
-			err := region_migrations.Abort(c.Context, currentApp, migrationID)
+			err := regionmigrations.Abort(c.Context, currentApp, migrationID)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -130,7 +130,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
-			err := region_migrations.List(c.Context, currentApp)
+			err := regionmigrations.List(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -158,7 +158,7 @@ var (
 
 			migrationID := c.Args().First()
 
-			err := region_migrations.Follow(c.Context, currentApp, migrationID)
+			err := regionmigrations.Follow(c.Context, currentApp, migrationID)
 			if err != nil {
 				errorQuit(err)
 			}

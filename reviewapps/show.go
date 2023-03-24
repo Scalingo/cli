@@ -1,4 +1,4 @@
-package review_apps
+package reviewapps
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package region_migrations
+package regionmigrations
 
 import (
 	"fmt"

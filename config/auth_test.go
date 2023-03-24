@@ -33,7 +33,7 @@ func TestStoreAuth(t *testing.T) {
 	// Add an additional auth url
 	err = authenticator.StoreAuth(u, "0123456789")
 	require.NoError(t, err)
-	C.ScalingoAuthUrl = "api.scalingo2.dev"
+	C.ScalingoAuthURL = "api.scalingo2.dev"
 	err = authenticator.StoreAuth(u, "0123456789")
 	require.NoError(t, err)
 	clean()

@@ -1,6 +1,7 @@
 package ssh
 
 import (
+	"context"
 	stdio "io"
 
 	"golang.org/x/crypto/ssh"
@@ -20,7 +21,7 @@ type ConnectOpts struct {
 	Identity string
 }
 
-func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
+func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		err         error
 		privateKeys []ssh.Signer
@@ -38,7 +39,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 		if opts.Identity == "ssh-agent" {
 			opts.Identity = sshkeys.DefaultKeyPath
 		}
-		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
+		privateKey, err := sshkeys.ReadPrivateKey(ctx, opts.Identity)
 		if err != nil {
 			return nil, nil, errgo.Mask(err)
 		}
@@ -47,7 +48,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 
 	debug.Println("Identity used:", opts.Identity, "Private keys:", len(privateKeys))
 
-	client, key, err := ConnectToSSHServer(ConnectSSHOpts{
+	client, key, err := connectToSSHServer(connectSSHOpts{
 		Host: opts.Host,
 		Keys: privateKeys,
 	})
@@ -58,12 +59,12 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 	return client, key, nil
 }
 
-type ConnectSSHOpts struct {
+type connectSSHOpts struct {
 	Host string
 	Keys []ssh.Signer
 }
 
-func ConnectToSSHServer(opts ConnectSSHOpts) (*ssh.Client, ssh.Signer, error) {
+func connectToSSHServer(opts connectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		client     *ssh.Client
 		privateKey ssh.Signer
@@ -71,7 +72,7 @@ func ConnectToSSHServer(opts ConnectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	)
 
 	for _, privateKey = range opts.Keys {
-		client, err = ConnectToSSHServerWithKey(opts.Host, privateKey)
+		client, err = connectToSSHServerWithKey(opts.Host, privateKey)
 		if err == nil {
 			break
 		} else {
@@ -84,7 +85,7 @@ func ConnectToSSHServer(opts ConnectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	return client, privateKey, nil
 }
 
-func ConnectToSSHServerWithKey(host string, key ssh.Signer) (*ssh.Client, error) {
+func connectToSSHServerWithKey(host string, key ssh.Signer) (*ssh.Client, error) {
 	sshConfig := &ssh.ClientConfig{
 		User:            "git",
 		Auth:            []ssh.AuthMethod{ssh.PublicKeys(key)},

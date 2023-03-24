@@ -219,23 +219,23 @@ func colorizeLogs(logs string) {
 		containerWithSurround := headerSplit[4]
 		container := containerWithSurround[1 : len(containerWithSurround)-1]
 
-		colorId := 0
+		colorID := 0
 		for _, letter := range []byte(container) {
-			colorId += int(letter)
+			colorID += int(letter)
 		}
 
 		if container == "router" {
-			colorId += 6
+			colorID += 6
 			content = colorizeRouterLogs(content)
 		} else {
 			content = errorHighlight(content)
 		}
-		colorId = colorId % len(containerColors)
+		colorID = colorID % len(containerColors)
 
 		fmt.Printf(
 			"%s [%s] %s\n",
 			color.New(color.FgYellow).Sprint(date),
-			containerColors[colorId](container),
+			containerColors[colorID](container),
 			content,
 		)
 	}

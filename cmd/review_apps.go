@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/cli/review_apps"
+	"github.com/Scalingo/cli/reviewapps"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -26,7 +26,7 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := review_apps.Show(c.Context, currentApp)
+			err := reviewapps.Show(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
 			}

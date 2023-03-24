@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"gopkg.in/errgo.v1"
+	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo/v6"
+	scalingo "github.com/Scalingo/go-scalingo/v6"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -199,9 +199,9 @@ func (a *CliAuthenticator) RemoveAuth() error {
 }
 
 func (a *CliAuthenticator) authHost() (string, error) {
-	u, err := url.Parse(C.ScalingoAuthUrl)
+	u, err := url.Parse(C.ScalingoAuthURL)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthUrl)
+		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthURL)
 	}
 	return strings.Split(u.Host, ":")[0], nil
 }

@@ -1,4 +1,4 @@
-package region_migrations
+package regionmigrations
 
 import (
 	"context"
@@ -14,13 +14,13 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
-func List(ctx context.Context, appId string) error {
+func List(ctx context.Context, appID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get scalingo client")
 	}
 
-	migrations, err := c.ListRegionMigrations(ctx, appId)
+	migrations, err := c.ListRegionMigrations(ctx, appID)
 	if err != nil {
 		return errgo.Notef(err, "fail to list migrations")
 	}

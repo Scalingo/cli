@@ -1,4 +1,4 @@
-package addon_providers
+package addonproviders
 
 import (
 	"context"
@@ -10,22 +10,23 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func Plans(ctx context.Context, addon string) error {
+func List(ctx context.Context) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	plans, err := c.AddonProviderPlansList(ctx, addon)
+	addonProviders, err := c.AddonProvidersList(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"ID", "Name"})
-	for _, plan := range plans {
-		t.Append([]string{plan.Name, plan.DisplayName})
+
+	for _, addon := range addonProviders {
+		t.Append([]string{addon.ID, addon.Name})
 	}
+
 	t.Render()
 	return nil
 }

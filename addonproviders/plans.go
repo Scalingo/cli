@@ -1,4 +1,4 @@
-package notification_platforms
+package addonproviders
 
 import (
 	"context"
@@ -10,24 +10,22 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func List(ctx context.Context) error {
+func Plans(ctx context.Context, addon string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	resources, err := c.NotificationPlatformsList(ctx)
+	plans, err := c.AddonProviderPlansList(ctx, addon)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name"})
-
-	for _, r := range resources {
-		t.Append([]string{r.Name})
+	t.SetHeader([]string{"ID", "Name"})
+	for _, plan := range plans {
+		t.Append([]string{plan.Name, plan.DisplayName})
 	}
 	t.Render()
-
 	return nil
 }
