@@ -82,7 +82,7 @@ func TestPrivateKey_IsEncrypted(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			boolean := c.PrivateKey.IsEncrypted()
+			boolean := c.PrivateKey.isEncrypted()
 
 			require.Equal(t, c.ExpectBoolean, boolean)
 		})

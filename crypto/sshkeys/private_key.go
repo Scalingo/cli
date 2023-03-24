@@ -20,7 +20,7 @@ type PrivateKey struct {
 type PasswordMethod func(prompt string) (string, error)
 
 func (p *PrivateKey) signer() (ssh.Signer, error) {
-	if p.IsEncrypted() {
+	if p.isEncrypted() {
 		if p.PasswordMethod == nil {
 			p.PasswordMethod = term.Password
 		}
@@ -36,7 +36,7 @@ func (p *PrivateKey) signer() (ssh.Signer, error) {
 	return ssh.ParsePrivateKey(pem.EncodeToMemory(p.Block))
 }
 
-func (p *PrivateKey) IsEncrypted() bool {
+func (p *PrivateKey) isEncrypted() bool {
 	return p.Block.Headers["Proc-Type"] == "4,ENCRYPTED" || p.isOpenSSHFormatEncrypted()
 }
 
