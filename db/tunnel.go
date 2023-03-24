@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
+	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"

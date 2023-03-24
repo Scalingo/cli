@@ -11,7 +11,7 @@ import (
 
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 const (

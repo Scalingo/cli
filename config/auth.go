@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"gopkg.in/errgo.v1"
+	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo/v6"
+	scalingo "github.com/Scalingo/go-scalingo/v6"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
