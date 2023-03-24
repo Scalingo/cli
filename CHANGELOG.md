@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+* feat(log-drains): add Logtail
 
 ### 1.28.2
 
