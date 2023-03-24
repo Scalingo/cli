@@ -24,6 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer res.Body.Close()
 
 	var repos Repos
 	err = json.NewDecoder(res.Body).Decode(&repos)
