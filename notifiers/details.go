@@ -39,11 +39,11 @@ func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventTy
 	t := tablewriter.NewWriter(os.Stdout)
 	// Basic data
 	data := [][]string{
-		[]string{"ID", notifier.GetID()},
-		[]string{"Type", string(notifier.GetType())},
-		[]string{"Name", notifier.GetName()},
-		[]string{"Enabled", strconv.FormatBool(notifier.IsActive())},
-		[]string{"Send all events", strconv.FormatBool(notifier.GetSendAllEvents())},
+		{"ID", notifier.GetID()},
+		{"Type", string(notifier.GetType())},
+		{"Name", notifier.GetName()},
+		{"Enabled", strconv.FormatBool(notifier.IsActive())},
+		{"Send all events", strconv.FormatBool(notifier.GetSendAllEvents())},
 	}
 	for _, v := range data {
 		t.Append(v)
@@ -55,7 +55,7 @@ func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventTy
 		t.Append([]string{caser.String(key), fmt.Sprintf("%v", value)})
 	}
 
-	//Selected events
+	// Selected events
 	if !notifier.GetSendAllEvents() {
 		if len(notifier.GetSelectedEventIDs()) <= 0 {
 			t.Append([]string{"Selected events", ""})
