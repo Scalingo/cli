@@ -69,7 +69,7 @@ func loginWithToken(ctx context.Context, token string) error {
 }
 
 func loginWithSSH(ctx context.Context, identity string) error {
-	host := config.C.ScalingoSshHost
+	host := config.C.ScalingoSSHHost
 	if host == "" {
 		regions, err := config.EnsureRegionsCache(ctx, config.C, config.GetRegionOpts{
 			SkipAuth: true,

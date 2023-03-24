@@ -30,7 +30,7 @@ func Create(ctx context.Context, args CreateArgs) error {
 
 	if args.SCMType == scalingo.SCMGithubType || args.SCMType == scalingo.SCMGitlabType {
 		io.Statusf("Please follow this URL to create the %s SCM integration:\n", scalingo.SCMTypeDisplay[args.SCMType])
-		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthUrl, args.SCMType)
+		io.Statusf("%s/users/%s/link\n", config.C.ScalingoAuthURL, args.SCMType)
 		return nil
 	}
 

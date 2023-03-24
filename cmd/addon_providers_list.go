@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/cli/addon_providers"
+	"github.com/Scalingo/cli/addonproviders"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 )
 
@@ -14,7 +14,7 @@ var (
 		Description: "List all addons you can add to your app",
 		Usage:       "List all addons",
 		Action: func(c *cli.Context) error {
-			if err := addon_providers.List(c.Context); err != nil {
+			if err := addonproviders.List(c.Context); err != nil {
 				errorQuit(err)
 			}
 			return nil

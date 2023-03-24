@@ -27,17 +27,17 @@ var (
 )
 
 type Config struct {
-	ApiVersion           string `envconfig:"API_VERSION"`
+	APIVersion           string `envconfig:"API_VERSION"`
 	DisableInteractive   bool   `envconfig:"DISABLE_INTERACTIVE"`
 	DisableUpdateChecker bool   `envconfig:"DISABLE_UPDATE_CHECKER"`
 	UnsecureSsl          bool   `envconfig:"UNSECURE_SSL"`
 
 	// Override region configuration
-	ScalingoApiUrl  string `envconfig:"SCALINGO_API_URL"`
-	ScalingoAuthUrl string `envconfig:"SCALINGO_AUTH_URL"`
-	ScalingoDbUrl   string `envconfig:"SCALINGO_DB_URL"`
+	ScalingoAPIURL  string `envconfig:"SCALINGO_API_URL"`
+	ScalingoAuthURL string `envconfig:"SCALINGO_AUTH_URL"`
+	ScalingoDbURL   string `envconfig:"SCALINGO_DB_URL"`
 	ScalingoRegion  string `envconfig:"SCALINGO_REGION"`
-	ScalingoSshHost string `envconfig:"SCALINGO_SSH_HOST"`
+	ScalingoSSHHost string `envconfig:"SCALINGO_SSH_HOST"`
 
 	// Configuration files
 	ConfigDir      string `envconfig:"CONFIG_DIR"`
@@ -72,7 +72,7 @@ var (
 		"LOG_FILE":           "local.log",
 	}
 	C         Config
-	TlsConfig *tls.Config
+	TLSConfig *tls.Config
 )
 
 func init() {
@@ -124,10 +124,10 @@ func init() {
 	rollbar.Environment = "production"
 	rollbar.ErrorWriter = C.logFile
 
-	TlsConfig = &tls.Config{}
+	TLSConfig = &tls.Config{}
 	if C.UnsecureSsl {
-		TlsConfig.InsecureSkipVerify = true
-		TlsConfig.MinVersion = tls.VersionTLS10
+		TLSConfig.InsecureSkipVerify = true
+		TLSConfig.MinVersion = tls.VersionTLS10
 	}
 
 	// Read region from the configuration file
@@ -154,9 +154,9 @@ type ClientConfigOpts struct {
 
 func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.ClientConfig {
 	return scalingo.ClientConfig{
-		TLSConfig:    TlsConfig,
+		TLSConfig:    TLSConfig,
 		Region:       opts.Region,
-		AuthEndpoint: config.ScalingoAuthUrl,
+		AuthEndpoint: config.ScalingoAuthURL,
 		APIToken:     opts.APIToken,
 		UserAgent:    "Scalingo CLI v" + Version,
 	}
@@ -165,9 +165,9 @@ func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.Cl
 func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfigOpts) (scalingo.ClientConfig, error) {
 	c := config.scalingoClientBaseConfig(opts)
 	if !opts.AuthOnly {
-		if config.ScalingoApiUrl != "" && config.ScalingoDbUrl != "" {
-			c.APIEndpoint = config.ScalingoApiUrl
-			c.DatabaseAPIEndpoint = config.ScalingoDbUrl
+		if config.ScalingoAPIURL != "" && config.ScalingoDbURL != "" {
+			c.APIEndpoint = config.ScalingoAPIURL
+			c.DatabaseAPIEndpoint = config.ScalingoDbURL
 		} else {
 			region, err := GetRegion(ctx, config, config.ScalingoRegion, GetRegionOpts{
 				Token: opts.APIToken,

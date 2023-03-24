@@ -54,16 +54,16 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 		return errgo.Mask(err)
 	}
 
-	dbUrlStr := dbEnvVarValue(opts.DBEnvVar, environ)
-	if dbUrlStr == "" {
+	dbURLStr := dbEnvVarValue(opts.DBEnvVar, environ)
+	if dbURLStr == "" {
 		return errgo.Newf("no such environment variable: %s", opts.DBEnvVar)
 	}
 
-	dbUrl, err := url.Parse(dbUrlStr)
+	dbURL, err := url.Parse(dbURLStr)
 	if err != nil {
-		return errgo.Notef(err, "invalid database 'URL': %s", dbUrlStr)
+		return errgo.Notef(err, "invalid database 'URL': %s", dbURLStr)
 	}
-	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbUrl.Host)
+	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbURL.Host)
 
 	// Just test the connection
 	client, _, err := netssh.Connect(ctx, netssh.ConnectOpts{
@@ -142,7 +142,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 					}
 				}
 
-				err = handleConnToTunnel(client, dbUrl, connToTunnel, errs)
+				err = handleConnToTunnel(client, dbURL, connToTunnel, errs)
 				if err != nil {
 					debug.Println("Error happened in tunnel", err)
 					if !opts.Reconnect {
@@ -171,17 +171,17 @@ func dbEnvVarValue(dbEnvVar string, environ scalingo.Variables) string {
 	return ""
 }
 
-func handleConnToTunnel(sshClient *ssh.Client, dbUrl *url.URL, sock net.Conn, errs chan error) error {
+func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, errs chan error) error {
 	connID := <-connIDGenerator
-	fmt.Printf("Connect to %s [%v]\n", dbUrl.Host, connID)
-	conn, err := sshClient.Dial("tcp", dbUrl.Host)
+	fmt.Printf("Connect to %s [%v]\n", dbURL.Host, connID)
+	conn, err := sshClient.Dial("tcp", dbURL.Host)
 	if err != nil {
 		if err != stdio.EOF {
 			errs <- err
 		}
 		return nil
 	}
-	debug.Println("Connected to", dbUrl.Host, connID)
+	debug.Println("Connected to", dbURL.Host, connID)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(2)

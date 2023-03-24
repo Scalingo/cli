@@ -350,7 +350,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
 		host := strings.Split(url.Host, ":")[0]
-		tlsConfig := config.TlsConfig.Clone()
+		tlsConfig := config.TLSConfig.Clone()
 		tlsConfig.ServerName = host
 		tlsConn := tls.Client(dial, tlsConfig)
 		conn = httputil.NewClientConn(tlsConn, nil)

@@ -199,9 +199,9 @@ func (a *CliAuthenticator) RemoveAuth() error {
 }
 
 func (a *CliAuthenticator) authHost() (string, error) {
-	u, err := url.Parse(C.ScalingoAuthUrl)
+	u, err := url.Parse(C.ScalingoAuthURL)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthUrl)
+		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthURL)
 	}
 	return strings.Split(u.Host, ":")[0], nil
 }

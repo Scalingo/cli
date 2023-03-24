@@ -1,4 +1,4 @@
-package addon_providers
+package notificationplatforms
 
 import (
 	"context"
@@ -16,17 +16,18 @@ func List(ctx context.Context) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	addonProviders, err := c.AddonProvidersList(ctx)
+	resources, err := c.NotificationPlatformsList(ctx)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name"})
+	t.SetHeader([]string{"Name"})
 
-	for _, addon := range addonProviders {
-		t.Append([]string{addon.ID, addon.Name})
+	for _, r := range resources {
+		t.Append([]string{r.Name})
 	}
-
 	t.Render()
+
 	return nil
 }
