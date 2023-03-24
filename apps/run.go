@@ -265,7 +265,7 @@ func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 
 	for _, cmdVar := range cmdEnv {
 		v := strings.SplitN(cmdVar, "=", 2)
-		if len(v) != 2 || len(v[0]) == 0 || len(v[1]) == 0 {
+		if len(v) != 2 || v[0] == "" || v[1] == "" {
 			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
 		}
 		env[v[0]] = v[1]
