@@ -361,7 +361,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	}
 
 	res, err := conn.Do(req)
-	if err != httputil.ErrPersistEOF && err != nil {
+	if err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
 				return nil, nil, errgo.Newf(
