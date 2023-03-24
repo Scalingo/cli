@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
-	github.com/ScaleFT/sshkeys v1.2.0
 	github.com/Scalingo/go-scalingo/v6 v6.4.0
 	github.com/Scalingo/go-utils/errors/v2 v2.2.0
 	github.com/Scalingo/go-utils/logger v1.2.0
@@ -38,7 +37,6 @@ require (
 	github.com/cloudflare/circl v1.3.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.4.1 // indirect

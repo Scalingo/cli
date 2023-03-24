@@ -1,14 +1,15 @@
 package sshkeys
 
 import (
+	"context"
 	"encoding/pem"
 	"strings"
 
-	"github.com/ScaleFT/sshkeys"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/term"
+	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 type PrivateKey struct {
@@ -20,6 +21,8 @@ type PrivateKey struct {
 type PasswordMethod func(prompt string) (string, error)
 
 func (p *PrivateKey) signer() (ssh.Signer, error) {
+	ctx := context.TODO()
+
 	if !p.isEncrypted() {
 		return ssh.ParsePrivateKey(pem.EncodeToMemory(p.Block))
 	}
@@ -33,7 +36,21 @@ func (p *PrivateKey) signer() (ssh.Signer, error) {
 		return nil, errgo.Notef(err, "fail to get the SSH key password")
 	}
 
-	return sshkeys.ParseEncryptedPrivateKey(pem.EncodeToMemory(p.Block), []byte(password))
+	parsedPrivateKey, err := ssh.ParseRawPrivateKeyWithPassphrase(pem.EncodeToMemory(p.Block), []byte(password))
+	if err != nil {
+		return nil, errors.Notef(ctx, err, "parse encrypted private key")
+	}
+
+	signer, ok := parsedPrivateKey.(ssh.Signer)
+	if !ok {
+		// ssh.ParseRawPrivateKeyWithPassphrase returns an empty interface for
+		// retro-compatibility reasons, all private key types in the standard library implement
+		// [...] interfaces such as Signer.
+		// Hence this error should never happen.
+		// https://pkg.go.dev/crypto@go1.20.2#PrivateKey
+		return nil, errors.New(ctx, "not a valid signer")
+	}
+	return signer, nil
 }
 
 func (p *PrivateKey) isEncrypted() bool {
