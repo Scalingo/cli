@@ -26,9 +26,9 @@ func Remove(ctx context.Context, app, email string) error {
 		if err == notFound {
 			io.Error(email + " is not a collaborator of " + app + ".")
 			return nil
-		} else {
-			return errgo.Mask(err, errgo.Any)
 		}
+
+		return errgo.Mask(err, errgo.Any)
 	}
 	err = client.CollaboratorRemove(ctx, app, collaborator.ID)
 	if err != nil {
