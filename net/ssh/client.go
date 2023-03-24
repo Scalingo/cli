@@ -71,7 +71,7 @@ func connectToSSHServer(opts connectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	)
 
 	for _, privateKey = range opts.Keys {
-		client, err = ConnectToSSHServerWithKey(opts.Host, privateKey)
+		client, err = connectToSSHServerWithKey(opts.Host, privateKey)
 		if err == nil {
 			break
 		} else {
@@ -84,7 +84,7 @@ func connectToSSHServer(opts connectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	return client, privateKey, nil
 }
 
-func ConnectToSSHServerWithKey(host string, key ssh.Signer) (*ssh.Client, error) {
+func connectToSSHServerWithKey(host string, key ssh.Signer) (*ssh.Client, error) {
 	sshConfig := &ssh.ClientConfig{
 		User:            "git",
 		Auth:            []ssh.AuthMethod{ssh.PublicKeys(key)},
