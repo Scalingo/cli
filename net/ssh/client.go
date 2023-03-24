@@ -47,7 +47,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 
 	debug.Println("Identity used:", opts.Identity, "Private keys:", len(privateKeys))
 
-	client, key, err := ConnectToSSHServer(ConnectSSHOpts{
+	client, key, err := connectToSSHServer(connectSSHOpts{
 		Host: opts.Host,
 		Keys: privateKeys,
 	})
@@ -58,12 +58,12 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 	return client, key, nil
 }
 
-type ConnectSSHOpts struct {
+type connectSSHOpts struct {
 	Host string
 	Keys []ssh.Signer
 }
 
-func ConnectToSSHServer(opts ConnectSSHOpts) (*ssh.Client, ssh.Signer, error) {
+func connectToSSHServer(opts connectSSHOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		client     *ssh.Client
 		privateKey ssh.Signer
