@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/term"
 	errors "github.com/Scalingo/go-utils/errors/v2"
@@ -20,9 +19,7 @@ type PrivateKey struct {
 
 type PasswordMethod func(prompt string) (string, error)
 
-func (p *PrivateKey) signer() (ssh.Signer, error) {
-	ctx := context.TODO()
-
+func (p *PrivateKey) signer(ctx context.Context) (ssh.Signer, error) {
 	if !p.isEncrypted() {
 		return ssh.ParsePrivateKey(pem.EncodeToMemory(p.Block))
 	}
@@ -33,7 +30,7 @@ func (p *PrivateKey) signer() (ssh.Signer, error) {
 
 	password, err := p.PasswordMethod("Encrypted SSH Key, password: ")
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get the SSH key password")
+		return nil, errors.Notef(ctx, err, "fail to get the SSH key password")
 	}
 
 	parsedPrivateKey, err := ssh.ParseRawPrivateKeyWithPassphrase(pem.EncodeToMemory(p.Block), []byte(password))

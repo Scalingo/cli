@@ -1,6 +1,7 @@
 package sshkeys
 
 import (
+	"context"
 	"encoding/asn1"
 	"encoding/pem"
 	"fmt"
@@ -18,15 +19,15 @@ var (
 	DefaultKeyPath = filepath.Join(config.HomeDir(), ".ssh", "id_rsa")
 )
 
-func ReadPrivateKey(path string) (ssh.Signer, error) {
+func ReadPrivateKey(ctx context.Context, path string) (ssh.Signer, error) {
 	privateKeyContent, err := os.ReadFile(path)
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	return readPrivateKeyWithContent(path, privateKeyContent)
+	return readPrivateKeyWithContent(ctx, path, privateKeyContent)
 }
 
-func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signer, error) {
+func readPrivateKeyWithContent(ctx context.Context, path string, privateKeyContent []byte) (ssh.Signer, error) {
 	// We parse the private key on our own first so that we can
 	// show a nicer error if the private key has a password.
 	block, _ := pem.Decode(privateKeyContent)
@@ -36,7 +37,7 @@ func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 
 	privateKey := &PrivateKey{Block: block, Path: path}
 
-	signer, err := privateKey.signer()
+	signer, err := privateKey.signer(ctx)
 	if err != nil {
 		if err, ok := err.(asn1.StructuralError); ok && strings.HasPrefix(err.Msg, "tags don't match") || err.Msg == "length too large" {
 			return nil, errgo.Newf("Fail to decrypt SSH key, invalid password.")

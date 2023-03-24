@@ -1,6 +1,7 @@
 package ssh
 
 import (
+	"context"
 	stdio "io"
 
 	"golang.org/x/crypto/ssh"
@@ -20,7 +21,7 @@ type ConnectOpts struct {
 	Identity string
 }
 
-func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
+func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 	var (
 		err         error
 		privateKeys []ssh.Signer
@@ -38,7 +39,7 @@ func Connect(opts ConnectOpts) (*ssh.Client, ssh.Signer, error) {
 		if opts.Identity == "ssh-agent" {
 			opts.Identity = sshkeys.DefaultKeyPath
 		}
-		privateKey, err := sshkeys.ReadPrivateKey(opts.Identity)
+		privateKey, err := sshkeys.ReadPrivateKey(ctx, opts.Identity)
 		if err != nil {
 			return nil, nil, errgo.Mask(err)
 		}

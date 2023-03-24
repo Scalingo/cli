@@ -66,7 +66,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbUrl.Host)
 
 	// Just test the connection
-	client, _, err := netssh.Connect(netssh.ConnectOpts{
+	client, _, err := netssh.Connect(ctx, netssh.ConnectOpts{
 		Host:     sshhost,
 		Identity: opts.Identity,
 	})
@@ -130,7 +130,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 				retryConnect := true
 				for retryConnect {
 					// Do not reuse key since the connection to the SSH agent might be broken
-					client, _, err = netssh.Connect(netssh.ConnectOpts{
+					client, _, err = netssh.Connect(ctx, netssh.ConnectOpts{
 						Host:     sshhost,
 						Identity: opts.Identity,
 					})
