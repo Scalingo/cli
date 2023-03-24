@@ -23,10 +23,10 @@ func ReadPrivateKey(path string) (ssh.Signer, error) {
 	if err != nil {
 		return nil, errgo.Mask(err)
 	}
-	return ReadPrivateKeyWithContent(path, privateKeyContent)
+	return readPrivateKeyWithContent(path, privateKeyContent)
 }
 
-func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signer, error) {
+func readPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signer, error) {
 	// We parse the private key on our own first so that we can
 	// show a nicer error if the private key has a password.
 	block, _ := pem.Decode(privateKeyContent)

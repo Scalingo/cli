@@ -74,7 +74,7 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			signer, err := ReadPrivateKeyWithContent("n/a", c.PrivateKeyContent)
+			signer, err := readPrivateKeyWithContent("n/a", c.PrivateKeyContent)
 
 			c.Expect(t, signer, err)
 		})
