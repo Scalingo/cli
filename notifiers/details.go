@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/olekukonko/tablewriter"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -49,8 +50,9 @@ func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventTy
 	}
 
 	// Type data
+	caser := cases.Title(language.English)
 	for key, value := range notifier.TypeDataMap() {
-		t.Append([]string{strings.Title(key), fmt.Sprintf("%v", value)})
+		t.Append([]string{caser.String(key), fmt.Sprintf("%v", value)})
 	}
 
 	//Selected events
