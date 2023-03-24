@@ -184,6 +184,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
+	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("Fail to attach: %s", res.Status)
 	}
