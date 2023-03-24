@@ -36,7 +36,7 @@ func ReadPrivateKeyWithContent(path string, privateKeyContent []byte) (ssh.Signe
 
 	privateKey := &PrivateKey{Block: block, Path: path}
 
-	signer, err := privateKey.Signer()
+	signer, err := privateKey.signer()
 	if err != nil {
 		if err, ok := err.(asn1.StructuralError); ok && strings.HasPrefix(err.Msg, "tags don't match") || err.Msg == "length too large" {
 			return nil, errgo.Newf("Fail to decrypt SSH key, invalid password.")

@@ -19,7 +19,7 @@ type PrivateKey struct {
 
 type PasswordMethod func(prompt string) (string, error)
 
-func (p *PrivateKey) Signer() (ssh.Signer, error) {
+func (p *PrivateKey) signer() (ssh.Signer, error) {
 	if p.IsEncrypted() {
 		if p.PasswordMethod == nil {
 			p.PasswordMethod = term.Password
