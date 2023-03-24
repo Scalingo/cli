@@ -20,20 +20,20 @@ type PrivateKey struct {
 type PasswordMethod func(prompt string) (string, error)
 
 func (p *PrivateKey) signer() (ssh.Signer, error) {
-	if p.isEncrypted() {
-		if p.PasswordMethod == nil {
-			p.PasswordMethod = term.Password
-		}
-
-		password, err := p.PasswordMethod("Encrypted SSH Key, password: ")
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to get the SSH key password")
-		}
-
-		return sshkeys.ParseEncryptedPrivateKey(pem.EncodeToMemory(p.Block), []byte(password))
+	if !p.isEncrypted() {
+		return ssh.ParsePrivateKey(pem.EncodeToMemory(p.Block))
 	}
 
-	return ssh.ParsePrivateKey(pem.EncodeToMemory(p.Block))
+	if p.PasswordMethod == nil {
+		p.PasswordMethod = term.Password
+	}
+
+	password, err := p.PasswordMethod("Encrypted SSH Key, password: ")
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get the SSH key password")
+	}
+
+	return sshkeys.ParseEncryptedPrivateKey(pem.EncodeToMemory(p.Block), []byte(password))
 }
 
 func (p *PrivateKey) isEncrypted() bool {
