@@ -347,6 +347,12 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			Proxy:           http.ProxyFromEnvironment,
+			TLSClientConfig: config.TLSConfig,
+		},
+	}
 
 	var conn *httputil.ClientConn
 	if url.Scheme == "https" {
@@ -361,7 +367,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 		return nil, nil, errgo.Newf("Invalid scheme format %s", url.Scheme)
 	}
 
-	res, err := conn.Do(req)
+	res, err := httpClient.Do(req)
 	if err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
