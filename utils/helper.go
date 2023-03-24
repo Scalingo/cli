@@ -72,7 +72,7 @@ func readCharFromStdin() (string, error) {
 		return "", err
 	}
 	input = strings.TrimSpace(input)
-	if len(input) == 0 {
+	if input == "" {
 		return "", nil
 	}
 	return string(input[0]), nil
