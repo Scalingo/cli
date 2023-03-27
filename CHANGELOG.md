@@ -1,6 +1,7 @@
 # Changelog
 
 ### To be Released
+* feat(log-drains): add Logtail
 
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
 
