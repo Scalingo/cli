@@ -2,9 +2,8 @@ package integrationlink
 
 import (
 	"context"
-	"fmt"
-
-	"gopkg.in/errgo.v1"
+	"os"
+	"text/template"
 
 	"github.com/fatih/color"
 
@@ -16,10 +15,43 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
+const integrationSettingsTemplateText = `
+{{- title "Application:"}} {{ .AppName }} ({{ .AppID }})
+{{title "Integration:"}} {{ .SCMType }} ({{ .IntegrationID }})
+{{title "Linker:"}} {{.LinkerUsername}}
+
+{{title "Repository:"}} {{ .RepositoryOwner }}/{{ .RepositoryName }}
+{{title "Automatic deployment:"}} {{ enabledIcon .AutoDeploy }}{{ if .AutoDeploy }}, {{ .Branch }}{{ end }}
+{{title "Automatic deployment of review apps:"}} {{ enabledIcon .AutoDeployReviewApps }}
+{{- if .AutoDeployReviewApps }}
+	{{title "Allow creation from forks:"}} {{ enabledIcon .ReviewAppsFromForks }}
+	{{title "Automatic destroy on close:"}} {{ enabledIcon .DestroyOnClose }}{{ if .DestroyOnClose }}, {{ if eq .HoursBeforeDestroyOnClose 0 -}} instantly {{- else -}} {{ .HoursBeforeDestroyOnClose }}h{{ end }}{{ end }}
+	{{title "Automatic destroy on stale:"}} {{ enabledIcon .DestroyOnStale }}{{ if .DestroyOnStale }}, {{ if eq .HoursBeforeDestroyOnStale 0 -}} instantly {{- else -}} {{ .HoursBeforeDestroyOnStale }}h{{ end }}{{ end }}
+{{- end}}
+`
+
+type IntegrationSettings struct {
+	AppName, AppID, SCMType, IntegrationID, LinkerUsername, RepositoryOwner, RepositoryName, Branch string
+	AutoDeploy, AutoDeployReviewApps, ReviewAppsFromForks, DestroyOnClose, DestroyOnStale           bool
+	HoursBeforeDestroyOnClose, HoursBeforeDestroyOnStale                                            uint
+}
+
+func title(textToFormat string) string {
+	return color.New(color.FgYellow).Sprint(textToFormat)
+}
+
+func enabledIcon(enabled bool) string {
+	if enabled {
+		return color.GreenString(utils.Success)
+	}
+
+	return color.RedString(utils.Error)
+}
+
 func Show(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Notef(ctx, err, "fail to get Scalingo client")
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
@@ -28,89 +60,42 @@ func Show(ctx context.Context, app string) error {
 		return nil
 	}
 	if err != nil {
-		return errgo.Notef(err, "fail to get integration link for this app")
+		return errors.Notef(ctx, err, "fail to get integration link for this app")
 	}
 
-	fmt.Printf("%s: %s (%s)\n",
-		color.New(color.FgYellow).Sprint("Application"),
-		app, repoLink.AppID,
-	)
-	fmt.Printf("%s: %s (%s)\n",
-		color.New(color.FgYellow).Sprint("Integration"),
-		scalingo.SCMTypeDisplay[repoLink.SCMType], repoLink.AuthIntegrationUUID,
-	)
-	fmt.Printf("%s: %s\n",
-		color.New(color.FgYellow).Sprint("Linker"),
-		repoLink.Linker.Username,
-	)
-	fmt.Println()
+	templater, err := template.New("integrationSettings").
+		Funcs(template.FuncMap{
+			"enabledIcon": enabledIcon,
+			"title":       title,
+		}).
+		Parse(integrationSettingsTemplateText)
 
-	fmt.Printf("%s: %s/%s\n",
-		color.New(color.FgYellow).Sprint("Repository"),
-		repoLink.Owner, repoLink.Repo,
-	)
-	var autoDeploy string
-	if repoLink.AutoDeployEnabled {
-		autoDeploy = fmt.Sprintf("%s %s", color.GreenString(utils.Success), repoLink.Branch)
-	} else {
-		autoDeploy = color.RedString(utils.Error)
+	if err != nil {
+		return errors.Notef(ctx, err, "invalid integration settings template")
 	}
-	fmt.Printf("%s: %s\n",
-		color.New(color.FgYellow).Sprint("Auto Deploy"),
-		autoDeploy,
-	)
 
-	var reviewAppsDeploy string
-	if repoLink.DeployReviewAppsEnabled {
-		reviewAppsDeploy = color.GreenString(utils.Success)
-	} else {
-		reviewAppsDeploy = color.RedString(utils.Error)
+	settings := IntegrationSettings{
+		AppName:                   app,
+		AppID:                     repoLink.AppID,
+		SCMType:                   scalingo.SCMTypeDisplay[repoLink.SCMType],
+		IntegrationID:             repoLink.AuthIntegrationUUID,
+		LinkerUsername:            repoLink.Linker.Username,
+		RepositoryOwner:           repoLink.Owner,
+		RepositoryName:            repoLink.Repo,
+		Branch:                    repoLink.Branch,
+		AutoDeploy:                repoLink.AutoDeployEnabled,
+		AutoDeployReviewApps:      repoLink.DeployReviewAppsEnabled,
+		ReviewAppsFromForks:       repoLink.AutomaticCreationFromForksAllowed,
+		DestroyOnClose:            repoLink.DeleteOnCloseEnabled,
+		HoursBeforeDestroyOnClose: repoLink.HoursBeforeDeleteOnClose,
+		DestroyOnStale:            repoLink.DeleteStaleEnabled,
+		HoursBeforeDestroyOnStale: repoLink.HoursBeforeDeleteStale,
 	}
-	fmt.Printf("%s: %v\n",
-		color.New(color.FgYellow).Sprint("Review Apps Deploy"),
-		reviewAppsDeploy,
-	)
-	if repoLink.DeployReviewAppsEnabled {
-		var deleteOnClose string
-		if repoLink.DeleteOnCloseEnabled {
-			if repoLink.HoursBeforeDeleteOnClose == 0 {
-				deleteOnClose = "instantly"
-			} else {
-				deleteOnClose = fmt.Sprintf("after %dh", repoLink.HoursBeforeDeleteOnClose)
-			}
-		} else {
-			deleteOnClose = color.RedString(utils.Error)
-		}
-		fmt.Printf("\t%s: %s\n",
-			color.New(color.FgYellow).Sprint("Destroy on Close"),
-			deleteOnClose,
-		)
 
-		var deleteOnStale string
-		if repoLink.DeleteStaleEnabled {
-			if repoLink.HoursBeforeDeleteStale == 0 {
-				deleteOnStale = "instantly"
-			} else {
-				deleteOnStale = fmt.Sprintf("after %dh", repoLink.HoursBeforeDeleteStale)
-			}
-		} else {
-			deleteOnStale = color.RedString(utils.Error)
-		}
-		fmt.Printf("\t%s: %s\n",
-			color.New(color.FgYellow).Sprint("Destroy on Stale"),
-			deleteOnStale,
-		)
+	err = templater.Execute(os.Stdout, settings)
 
-		var forksAllowed string
-		if repoLink.AutomaticCreationFromForksAllowed {
-			forksAllowed = color.GreenString(utils.Success)
-		} else {
-			forksAllowed = color.RedString(utils.Error)
-		}
-		fmt.Printf("\t%s: %s\n",
-			color.New(color.FgYellow).Sprint("Automatic creation from forks"),
-			forksAllowed,
-		)
+	if err != nil {
+		return errors.Notef(ctx, err, "failed rendering integration settings")
 	}
 
 	return nil
