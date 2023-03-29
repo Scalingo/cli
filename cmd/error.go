@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
+
 	"net/http"
 	"net/url"
 	"os"
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/stvp/rollbar"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
