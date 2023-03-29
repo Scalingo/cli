@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/urfave/cli/v2"
 	"net/http"
 	"net/url"
 	"os"
@@ -56,7 +57,21 @@ func (r *ReportError) Report() {
 	//rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
 }
 
+func errorQuitWithHelpMessage(err error, ctxCli *cli.Context, command string) {
+	displayError(err)
+	fmt.Print("\n")
+	_ = cli.ShowCommandHelp(ctxCli, command)
+
+	os.Exit(1)
+}
+
 func errorQuit(err error) {
+	displayError(err)
+
+	os.Exit(1)
+}
+
+func displayError(err error) {
 	currentUser, autherr := config.C.CurrentUser()
 	if autherr != nil {
 		debug.Println("Fail to get current user")
@@ -70,15 +85,13 @@ func errorQuit(err error) {
 	if httpclient.IsRequestFailedError(rootError) {
 		displayRequestFailedError(rootError, currentUser, autherr, err)
 	} else if _, ok := rootError.(config.UnknownRegionError); ok {
-		displayError(rootError)
+		displayScalingoError(rootError)
 	} else {
-		displayError(err)
+		displayScalingoError(err)
 	}
-
-	os.Exit(1)
 }
 
-func displayError(err error) {
+func displayScalingoError(err error) {
 	io.Error("An error occurred:")
 	debug.Println(errgo.Details(err))
 	message := err.Error()
@@ -122,7 +135,7 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 		}
 		return
 	}
-	displayError(err)
+	displayScalingoError(err)
 }
 
 func newReportError(currentUser *scalingo.User, err error) *ReportError {
