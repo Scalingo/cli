@@ -174,7 +174,7 @@ List of available integrations:
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-					errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks is useless without allowing review apps from forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --aware-of-security-risks"), c, "integration-link-create")
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
@@ -295,7 +295,7 @@ List of available integrations:
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 			if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-				errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks is useless without allowing review apps from forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --aware-of-security-risks"), c, "integration-link-update")
 			}
 
 			currentApp := detect.CurrentApp(c)
