@@ -141,26 +141,26 @@ List of available integrations:
 				autoDeploy := c.Bool("auto-deploy")
 				noAutoDeploy := c.Bool("no-auto-deploy")
 				if autoDeploy && noAutoDeploy {
-					errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
+					errorQuitWithHelpMessage(errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
 				}
 
 				deployReviewApps := c.Bool("deploy-review-apps")
 				noDeployReviewApps := c.Bool("no-deploy-review-apps")
 				if deployReviewApps && noDeployReviewApps {
-					errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
+					errorQuitWithHelpMessage(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
 				}
 
 				destroyOnClose := c.Bool("destroy-on-close")
 				noDestroyOnClose := c.Bool("no-destroy-on-close")
 				if destroyOnClose && noDestroyOnClose {
-					errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
+					errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
 
 				destroyOnStale := c.Bool("destroy-on-stale")
 				noDestroyOnStale := c.Bool("no-destroy-on-stale")
 				if destroyOnStale && noDestroyOnStale {
-					errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
+					errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
@@ -168,10 +168,14 @@ List of available integrations:
 				noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 				if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-					errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
+					errorQuitWithHelpMessage(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+				if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
+					errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
+				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
 					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks()
@@ -251,6 +255,7 @@ List of available integrations:
 				"scalingo --app my-app integration-link-update --auto-deploy --branch test --deploy-review-apps",
 				"scalingo --app my-app integration-link-update --destroy-on-close --hours-before-destroy-on-close 1",
 				"scalingo --app my-app integration-link-update --destroy-on-stale --hours-before-destroy-on-stale 2",
+				"scalingo --app my-app integration-link-update --allow-review-apps-from-forks --aware-of-security-risks",
 			},
 			SeeAlso: []string{"integration-link", "integration-link-create", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
@@ -262,32 +267,36 @@ List of available integrations:
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
 			if autoDeploy && noAutoDeploy {
-				errorQuit(errors.New("cannot define both auto-deploy and no-auto-deploy"))
+				errorQuitWithHelpMessage(errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
 			}
 			deployReviewApps := c.Bool("deploy-review-apps")
 			noDeployReviewApps := c.Bool("no-deploy-review-apps")
 			if deployReviewApps && noDeployReviewApps {
-				errorQuit(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"))
+				errorQuitWithHelpMessage(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
 			}
 			destroyOnClose := c.Bool("destroy-on-close")
 			noDestroyOnClose := c.Bool("no-destroy-on-close")
 			if destroyOnClose && noDestroyOnClose {
-				errorQuit(errors.New("cannot define both destroy-on-close and no-destroy-on-close"))
+				errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
 			}
 			destroyOnStale := c.Bool("destroy-on-stale")
 			noDestroyOnStale := c.Bool("no-destroy-on-stale")
 			if destroyOnStale && noDestroyOnStale {
-				errorQuit(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"))
+				errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
 			}
 
 			allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
 			noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-				errorQuit(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"))
+				errorQuitWithHelpMessage(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+
+			if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
+				errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
+			}
 
 			currentApp := detect.CurrentApp(c)
 			params := integrationlink.CheckAndFillParams(c)
