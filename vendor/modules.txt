@@ -173,7 +173,7 @@ github.com/gorilla/websocket
 # github.com/gosuri/uilive v0.0.4
 ## explicit; go 1.10
 github.com/gosuri/uilive
-# github.com/imdario/mergo v0.3.13
+# github.com/imdario/mergo v0.3.15
 ## explicit; go 1.13
 github.com/imdario/mergo
 # github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
