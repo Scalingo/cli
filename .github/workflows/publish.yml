@@ -12,7 +12,6 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Execute the tests
         run: go test -race ./...
 
@@ -29,7 +28,6 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
@@ -52,7 +50,6 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
