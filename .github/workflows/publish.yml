@@ -8,11 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Execute the tests
         run: go test -race ./...
 
@@ -25,11 +24,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # See: https://goreleaser.com/ci/actions/
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
@@ -48,11 +46,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # See: https://goreleaser.com/ci/actions/
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
           check-latest: true
-          cache: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
