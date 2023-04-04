@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/regionmigrations"
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -34,6 +35,8 @@ var (
 				cli.ShowCommandHelp(c, "migration-create")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			err := regionmigrations.Create(c.Context, currentApp, c.String("to"), c.String("new-name"))
 			if err != nil {
@@ -65,6 +68,9 @@ var (
 			var step scalingo.RegionMigrationStep
 			migrationID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp)
+
 			stepsFound := 0
 			if c.Bool("prepare") {
 				stepsFound++
@@ -109,6 +115,7 @@ var (
 
 			migrationID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp)
 
 			err := regionmigrations.Abort(c.Context, currentApp, migrationID)
 			if err != nil {

@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -42,6 +43,8 @@ var (
 			if labelHasOnlyDigit {
 				oneOffLabel = "one-off-" + oneOffLabel
 			}
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err = apps.OneOffStop(c.Context, currentApp, oneOffLabel)
 			if err != nil {

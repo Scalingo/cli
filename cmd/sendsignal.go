@@ -7,6 +7,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -37,6 +38,7 @@ var (
 				}
 				return nil
 			}
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Args().Slice())
 			if err != nil {

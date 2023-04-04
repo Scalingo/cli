@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -36,6 +37,7 @@ var (
 					currentApp = detect.CurrentApp(c)
 				}
 
+				utils.CheckForConsent(c.Context, currentApp)
 				err := apps.Destroy(c.Context, currentApp, c.Bool("force"))
 				if err != nil {
 					errorQuit(err)

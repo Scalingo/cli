@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -21,6 +22,9 @@ var (
 				cli.ShowCommandHelp(c, "autoscalers")
 				return nil
 			}
+			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := autoscalers.List(c.Context, detect.CurrentApp(c))
 			if err != nil {
@@ -59,6 +63,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			err := autoscalers.Add(c.Context, currentApp, scalingo.AutoscalerAddParams{
 				ContainerType: c.String("c"),
 				Metric:        c.String("m"),
@@ -106,6 +113,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			params := scalingo.AutoscalerUpdateParams{}
 			if c.IsSet("m") {
 				m := c.String("m")
@@ -158,6 +168,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			disabled := false
 			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
@@ -193,6 +206,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			disabled := true
 			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: &disabled,
@@ -225,6 +241,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			err := autoscalers.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)

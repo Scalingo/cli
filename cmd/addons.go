@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -54,6 +55,8 @@ var (
 				return cli.ShowCommandHelp(c, "addons-add")
 			}
 
+			utils.CheckForConsent(c.Context, currentApp)
+
 			err := addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
@@ -83,6 +86,8 @@ var (
 			if c.Args().Len() != 1 {
 				return cli.ShowCommandHelp(c, "addons-remove")
 			}
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			err := addons.Destroy(c.Context, currentApp, c.Args().First())
 			if err != nil {
