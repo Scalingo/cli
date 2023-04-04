@@ -1,7 +1,7 @@
 autoload -U compinit && compinit
 autoload -U bashcompinit && bashcompinit
 
-#! /bin/bash
+#!/usr/bin/env zsh
 
 _cli_bash_autocomplete() {
      local cur prev opts base
