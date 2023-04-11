@@ -60,6 +60,9 @@ main() {
     i686)
       arch=386
       ;;
+    aarch64)
+      arch=arm64
+      ;;
   esac
 
   while [ "$#" -gt "0" ]
