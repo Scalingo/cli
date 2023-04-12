@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/collaborators"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -47,6 +48,7 @@ var (
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-add")
 			} else {
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := collaborators.Add(c.Context, currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)
@@ -75,6 +77,7 @@ var (
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "collaborators-remove")
 			} else {
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := collaborators.Remove(c.Context, currentApp, c.Args().First())
 				if err != nil {
 					errorQuit(err)

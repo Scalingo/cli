@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/io"
 )
@@ -28,6 +29,7 @@ var (
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := deployments.ResetCache(c.Context, currentApp)
 				if err != nil {
 					errorQuit(err)
@@ -121,8 +123,8 @@ var (
 		},
 		Description: CommandDescription{
 			Description: `Trigger the deployment of a custom archive for your application.
-			
-The version reference is optional (generated from timestamp if none). 
+
+The version reference is optional (generated from timestamp if none).
 It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			Examples: []string{
 				"scalingo --app my-app deploy archive.tar.gz v1.0.0",
@@ -145,6 +147,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 				gitRef = args.Slice()[1]
 			}
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))

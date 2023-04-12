@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -28,6 +29,8 @@ var (
 				cli.ShowCommandHelp(c, "force-https")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			enable := true
 			if c.IsSet("disable") {
@@ -66,6 +69,8 @@ var (
 				return nil
 			}
 
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			enable := true
 			if c.IsSet("disable") {
 				enable = false
@@ -102,6 +107,8 @@ var (
 				cli.ShowCommandHelp(c, "router-logs")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			enable := false
 			if c.IsSet("enable") {

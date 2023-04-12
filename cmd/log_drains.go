@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/logdrains"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -39,6 +40,8 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 				cli.ShowCommandHelp(c, "log-drains")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			addonID := addonNameFromFlags(c)
 
@@ -103,6 +106,8 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			currentApp := detect.CurrentApp(c)
 
 			addonID := addonNameFromFlags(c)
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				cli.ShowCommandHelp(c, "log-drains-add")
@@ -175,6 +180,8 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				cli.ShowCommandHelp(c, "log-drains-remove")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp)
 
 			message := "This operation will delete the log drain " + drain
 			if addonID == "" && !c.Bool("only-app") {

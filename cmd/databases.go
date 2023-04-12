@@ -11,6 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -35,6 +36,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonNameFromFlags(c, true)
 			if c.NArg() != 1 {
 				errorQuit(errors.New("feature argument should be specified"))
@@ -64,6 +66,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonNameFromFlags(c, true)
 			if c.NArg() != 1 {
 				errorQuit(errors.New("feature argument should be specified"))
@@ -100,6 +103,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonNameFromFlags(c, true)
 
 			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}

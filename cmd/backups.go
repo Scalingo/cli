@@ -47,6 +47,8 @@ var (
 			currentApp := detect.CurrentApp(c)
 			addonName := addonNameFromFlags(c, true)
 
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+
 			err := db.CreateBackup(c.Context, currentApp, addonName)
 			if err != nil {
 				errorQuit(err)

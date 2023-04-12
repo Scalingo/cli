@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/notifiers"
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -98,6 +99,8 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			if c.String("platform") == "" {
 				cli.ShowCommandHelp(c, "notifiers-add")
 			}
@@ -163,6 +166,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
 
 			var active *bool
@@ -227,6 +231,7 @@ var (
 		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
 				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())

@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/alerts"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
 )
 
@@ -71,6 +72,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			remindEvery := c.Duration("r")
 			durationBeforeTrigger := c.Duration("duration-before-trigger")
 			err := alerts.Add(c.Context, currentApp, scalingo.AlertAddParams{
@@ -128,6 +132,9 @@ var (
 
 			alertID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			params := scalingo.AlertUpdateParams{}
 			if c.IsSet("c") {
 				ct := c.String("c")
@@ -195,6 +202,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			disabled := false
 			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
@@ -231,6 +241,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			disabled := true
 			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: &disabled,
@@ -263,6 +276,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			err := alerts.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
 				errorQuit(err)

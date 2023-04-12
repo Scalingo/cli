@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/stacks"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -48,6 +49,7 @@ var (
 				cli.ShowCommandHelp(c, "stacks-set")
 				return nil
 			}
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := stacks.Set(c.Context, currentApp, c.Args().First())
 			if err != nil {

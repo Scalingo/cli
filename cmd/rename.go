@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -24,6 +25,8 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			newName := c.String("new-name")
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := apps.Rename(c.Context, currentApp, newName)
 			if err != nil {

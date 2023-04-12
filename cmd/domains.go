@@ -6,6 +6,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/domains"
+	"github.com/Scalingo/cli/utils"
 )
 
 var (
@@ -56,6 +57,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
 				cert := c.String("cert")
@@ -95,6 +97,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
 				err = domains.Remove(c.Context, currentApp, c.Args().First())
@@ -134,6 +137,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
 				err = domains.DisableSSL(c.Context, currentApp, c.Args().First())
@@ -171,6 +175,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 				cli.ShowCommandHelp(c, "set-canonical-domain")
 				return nil
 			}
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := domains.SetCanonical(c.Context, currentApp, c.Args().First())
 			if err != nil {
@@ -200,6 +205,8 @@ This domain is called the canonical domain. This command sets the canonical doma
 				cli.ShowCommandHelp(c, "unset-canonical-domain")
 				return nil
 			}
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			err := domains.UnsetCanonical(c.Context, currentApp)
 			if err != nil {

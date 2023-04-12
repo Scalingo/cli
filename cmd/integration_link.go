@@ -18,6 +18,7 @@ import (
 	"github.com/Scalingo/cli/integrationlink"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
@@ -98,6 +99,7 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
@@ -299,6 +301,7 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
@@ -338,6 +341,9 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			err := integrationlink.Delete(c.Context, currentApp)
 			if err != nil {
 				errorQuit(err)
@@ -401,6 +407,9 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
+
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+
 			pullRequestID := c.Args().First()
 
 			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
