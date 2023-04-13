@@ -133,7 +133,7 @@ var (
 		ArgsUsage: "addon-id",
 		Description: CommandDescription{
 			Description: "Display information about an add-on attached to your app",
-			Examples:    []string{"scalingo --app my-app addons-info mongodb"},
+			Examples:    []string{"scalingo --app my-app addons-info addon_uuid"},
 			SeeAlso:     []string{"addons", "addons-upgrade"},
 		}.Render(),
 		Action: func(c *cli.Context) error {
