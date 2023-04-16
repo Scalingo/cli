@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 6.5.0
+
+* feat(scm-repo-link): add ManualDeployResponse
+
 ## 6.4.0
 
 * feat(one-off): allow attached one-off to be run asynchronously

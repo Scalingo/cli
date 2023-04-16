@@ -6,6 +6,7 @@
 * feat(install.sh): add arm64 to the list of installable architectures ([PR#930](https://github.com/Scalingo/cli/pull/930))
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
 * fix(completion): fix zsh shebang reference
+* feat(integration-link): add --follow arg to manual-deploy command
 
 ### 1.28.2
 

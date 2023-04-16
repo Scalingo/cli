@@ -356,9 +356,12 @@ List of available integrations:
 	}
 
 	integrationLinkManualDeployCommand = cli.Command{
-		Name:      "integration-link-manual-deploy",
-		Category:  "Integration Link",
-		Flags:     []cli.Flag{&appFlag},
+		Name:     "integration-link-manual-deploy",
+		Category: "Integration Link",
+		Flags: []cli.Flag{
+			&appFlag,
+			&cli.BoolFlag{Name: "follow", Usage: "Follow deployment"},
+		},
 		Usage:     "Trigger a manual deployment of the specified branch",
 		ArgsUsage: "branch",
 		Description: CommandDescription{
@@ -374,7 +377,8 @@ List of available integrations:
 
 			currentApp := detect.CurrentApp(c)
 			branchName := c.Args().First()
-			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName)
+			follow := c.Bool("follow")
+			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName, follow)
 			if err != nil {
 				errorQuit(err)
 			}

@@ -57,33 +57,31 @@ type UpdateUserResponse struct {
 }
 
 func (c *Client) UpdateUser(ctx context.Context, params UpdateUserParams) (*User, error) {
-	var user *User
-
-	if params.Password != "" || params.Email != "" {
-		req := &http.APIRequest{
-			Method:   "PATCH",
-			Endpoint: "/account/profile",
-			Params: map[string]interface{}{
-				"user": params,
-			},
-			Expected: http.Statuses{200},
-		}
-		res, err := c.AuthAPI().Do(ctx, req)
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to execute the query to update the user")
-		}
-		defer res.Body.Close()
-
-		var u UpdateUserResponse
-		err = json.NewDecoder(res.Body).Decode(&u)
-		if err != nil {
-			return nil, errgo.Notef(err, "fail to decode response of the query to update the user")
-		}
-
-		user = u.User
+	if params.Password == "" && params.Email == "" {
+		return nil, nil
 	}
 
-	return user, nil
+	req := &http.APIRequest{
+		Method:   "PATCH",
+		Endpoint: "/account/profile",
+		Params: map[string]interface{}{
+			"user": params,
+		},
+		Expected: http.Statuses{200},
+	}
+	res, err := c.AuthAPI().Do(ctx, req)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to execute the query to update the user")
+	}
+	defer res.Body.Close()
+
+	var u UpdateUserResponse
+	err = json.NewDecoder(res.Body).Decode(&u)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to decode response of the query to update the user")
+	}
+
+	return u.User, nil
 }
 
 func (c *Client) UserStopFreeTrial(ctx context.Context) error {
