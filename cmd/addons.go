@@ -41,7 +41,7 @@ var (
 		Category:  "Addons",
 		Flags:     []cli.Flag{&appFlag},
 		Usage:     "Provision an add-on for your application",
-		ArgsUsage: "addon-id plan",
+		ArgsUsage: "addon-name plan",
 		Description: CommandDescription{
 			Description: "Provision an add-on for your application",
 			Examples:    []string{"scalingo --app my-app addons-add mongodb mongo-starter-512"},
@@ -74,7 +74,7 @@ var (
 		ArgsUsage: "addon-id",
 		Description: CommandDescription{
 			Description: "Remove an existing addon from your app",
-			Examples:    []string{"scalingo --app my-app addons-remove mongodb"},
+			Examples:    []string{"scalingo --app my-app addons-remove addon_uuid"},
 			SeeAlso:     []string{"addons", "addons-add"},
 		}.Render(),
 
@@ -104,7 +104,7 @@ var (
 		ArgsUsage: "addon-id plan",
 		Description: CommandDescription{
 			Description: "Upgrade an addon attached to your app",
-			Examples:    []string{"scalingo --app my-app addons-upgrade mongodb mongo-starter-256"},
+			Examples:    []string{"scalingo --app my-app addons-upgrade addon_uuid mongo-starter-256"},
 			SeeAlso:     []string{"addons-plans", "addons-remove"},
 		}.Render(),
 
