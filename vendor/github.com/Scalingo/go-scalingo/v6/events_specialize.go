@@ -38,6 +38,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDeploymentType{Event: ev}
 	case EventLinkSCM:
 		e = &EventLinkSCMType{Event: ev}
+	case EventUpdateSCM:
+		e = &EventUpdateSCMType{Event: ev}
 	case EventUnlinkSCM:
 		e = &EventUnlinkSCMType{Event: ev}
 	case EventNewIntegration:

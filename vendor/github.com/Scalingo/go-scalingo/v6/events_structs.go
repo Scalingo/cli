@@ -79,6 +79,7 @@ const (
 	EventRepeatedCrash           EventTypeName = "repeated_crash"
 	EventDeployment              EventTypeName = "deployment"
 	EventLinkSCM                 EventTypeName = "link_scm"
+	EventUpdateSCM               EventTypeName = "update_scm"
 	EventUnlinkSCM               EventTypeName = "unlink_scm"
 	EventNewIntegration          EventTypeName = "new_integration"
 	EventDeleteIntegration       EventTypeName = "delete_integration"
@@ -198,9 +199,26 @@ func (ev *EventLinkSCMType) String() string {
 }
 
 type EventLinkSCMTypeData struct {
-	RepoName       string `json:"repo_name"`
-	LinkerUsername string `json:"linker_username"`
-	Source         string `json:"source"`
+	RepoName                 string `json:"repo_name"`
+	LinkerUsername           string `json:"linker_username"`
+	Source                   string `json:"source"`
+	Branch                   string `json:"branch"`
+	AutoDeploy               string `json:"auto_deploy"`
+	AutoDeployReviewApps     string `json:"auto_deploy_review_apps"`
+	DeleteOnClose            string `json:"delete_on_close"`
+	DeleteStale              string `json:"delete_stale"`
+	HoursBeforeDeleteOnClose string `json:"hours_before_delete_on_close"`
+	HoursBeforeDeleteStale   string `json:"hours_before_delete_stale"`
+	CreationFromForksAllowed string `json:"creation_from_forks_allowed"`
+}
+
+type EventUpdateSCMType struct {
+	Event
+	TypeData EventLinkSCMTypeData `json:"type_data"`
+}
+
+func (ev *EventUpdateSCMType) String() string {
+	return fmt.Sprintf("the link between the app and the repository '%s' has been updated", ev.TypeData.RepoName)
 }
 
 type EventUnlinkSCMType struct {

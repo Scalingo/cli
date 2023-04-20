@@ -59,17 +59,18 @@ type Client struct {
 }
 
 type ClientConfig struct {
-	Timeout             time.Duration
-	TLSConfig           *tls.Config
-	APIEndpoint         string
-	APIPrefix           string
-	AuthEndpoint        string
-	AuthPrefix          string
-	DatabaseAPIEndpoint string
-	DatabaseAPIPrefix   string
-	APIToken            string
-	Region              string
-	UserAgent           string
+	Timeout                time.Duration
+	TLSConfig              *tls.Config
+	APIEndpoint            string
+	APIPrefix              string
+	AuthEndpoint           string
+	AuthPrefix             string
+	DatabaseAPIEndpoint    string
+	DatabaseAPIPrefix      string
+	APIToken               string
+	Region                 string
+	UserAgent              string
+	DisableHTTPClientCache bool
 
 	// StaticTokenGenerator is present for Scalingo internal use only
 	StaticTokenGenerator *StaticTokenGenerator
@@ -128,7 +129,7 @@ func (c *Client) ScalingoAPI() http.Client {
 		prefix = c.config.APIPrefix
 	}
 
-	return http.NewClient(http.ScalingoAPI, http.ClientConfig{
+	client := http.NewClient(http.ScalingoAPI, http.ClientConfig{
 		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
@@ -136,6 +137,12 @@ func (c *Client) ScalingoAPI() http.Client {
 		TokenGenerator: tokenGenerator,
 		Endpoint:       c.config.APIEndpoint,
 	})
+
+	if !c.config.DisableHTTPClientCache {
+		c.apiClient = client
+	}
+
+	return client
 }
 
 func (c *Client) DBAPI(app, addon string) http.Client {
@@ -174,7 +181,7 @@ func (c *Client) AuthAPI() http.Client {
 	if c.config.AuthPrefix != "" {
 		prefix = c.config.AuthPrefix
 	}
-	return http.NewClient(http.AuthAPI, http.ClientConfig{
+	client := http.NewClient(http.AuthAPI, http.ClientConfig{
 		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
@@ -182,4 +189,10 @@ func (c *Client) AuthAPI() http.Client {
 		TokenGenerator: tokenGenerator,
 		Endpoint:       c.config.AuthEndpoint,
 	})
+
+	if !c.config.DisableHTTPClientCache {
+		c.authClient = client
+	}
+
+	return client
 }

@@ -16,7 +16,7 @@ type SCMRepoLinkService interface {
 	SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
 	SCMRepoLinkDelete(ctx context.Context, app string) error
 
-	SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) error
+	SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) (*Deployment, error)
 	SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error
 	SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Deployment, error)
 	SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*ReviewApp, error)
@@ -87,6 +87,10 @@ type ScmRepoLinkResponse struct {
 
 type SCMRepoLinkDeploymentsResponse struct {
 	Deployments []*Deployment `json:"deployments"`
+}
+
+type SCMRepoLinkManualDeployResponse struct {
+	Deployment *Deployment `json:"deployment"`
 }
 
 type SCMRepoLinkReviewAppsResponse struct {
@@ -161,19 +165,19 @@ func (c *Client) SCMRepoLinkDelete(ctx context.Context, app string) error {
 	return nil
 }
 
-func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) error {
-	res, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
+func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) (*Deployment, error) {
+	var res SCMRepoLinkManualDeployResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_deploy",
 		Expected: http.Statuses{200},
 		Params:   map[string]string{"branch": branch},
-	})
+	}, &res)
 	if err != nil {
-		return errgo.Notef(err, "fail to trigger manual app deployment")
+		return nil, errgo.Notef(err, "fail to trigger manual app deployment")
 	}
-	defer res.Body.Close()
 
-	return nil
+	return res.Deployment, nil
 }
 
 func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error {

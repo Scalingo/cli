@@ -54,6 +54,10 @@ func (e *EventLinkSCMType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
+func (e *EventUpdateSCMType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
 func (e *EventUnlinkSCMType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
