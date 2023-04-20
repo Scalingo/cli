@@ -360,7 +360,7 @@ List of available integrations:
 		Category: "Integration Link",
 		Flags: []cli.Flag{
 			&appFlag,
-			&cli.BoolFlag{Name: "follow", Usage: "Follow deployment"},
+			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Follow deployment event stream"},
 		},
 		Usage:     "Trigger a manual deployment of the specified branch",
 		ArgsUsage: "branch",

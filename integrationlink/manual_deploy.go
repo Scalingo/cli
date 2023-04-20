@@ -36,7 +36,7 @@ func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {
 		DeploymentID: deploy.ID,
 	})
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errgo.Notef(err, "stream deployment logs")
 	}
 
 	return nil
