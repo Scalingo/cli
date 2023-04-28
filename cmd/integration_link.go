@@ -180,7 +180,7 @@ List of available integrations:
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
-					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks()
+					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 					if err != nil {
 						errorQuit(err)
 					}
@@ -305,7 +305,7 @@ List of available integrations:
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
-				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
+				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 				if err != nil {
 					errorQuit(err)
 				}
@@ -390,9 +390,11 @@ List of available integrations:
 	}
 
 	integrationLinkManualReviewAppCommand = cli.Command{
-		Name:      "integration-link-manual-review-app",
-		Category:  "Integration Link",
-		Flags:     []cli.Flag{&appFlag},
+		Name:     "integration-link-manual-review-app",
+		Category: "Integration Link",
+		Flags: []cli.Flag{&appFlag,
+			&cli.BoolFlag{Name: "aware-of-security-risks", Usage: "Bypass the security warning about deploying a review app from a fork repository"},
+		},
 		Usage:     "Trigger a review app creation of the pull/merge request ID specified",
 		ArgsUsage: "request-id",
 		Description: CommandDescription{
@@ -401,7 +403,7 @@ List of available integrations:
    $ scalingo --app my-app integration-link-manual-review-app pull-request-id (for GitHub and GitHub Enterprise)
    $ scalingo --app my-app integration-link-manual-review-app merge-request-id (for GitLab and GitLab self-hosted)
 `,
-			Examples: []string{"scalingo --app my-app integration-link-manual-review-app 42"},
+			Examples: []string{"scalingo --app my-app integration-link-manual-review-app --aware-of-security-risks 42"},
 			SeeAlso:  []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy"},
 		}.Render(),
 		Action: func(c *cli.Context) error {
@@ -414,9 +416,33 @@ List of available integrations:
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			pullRequestID := c.Args().First()
+			pullRequestID, err := strconv.Atoi(c.Args().First())
+			if err != nil {
+				errorQuit(errgo.Notef(err, "invalid pull request id"))
+			}
 
-			err := integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
+			pullRequest, err := integrationlink.PullRequest(c.Context, currentApp, pullRequestID)
+			if err != nil {
+				errorQuit(err)
+			}
+
+			if pullRequest.OpenedFromAForkedRepo {
+				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
+				if !awareOfSecurityRisks {
+					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
+					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository ?")
+					if err != nil {
+						errorQuit(err)
+					}
+
+					if !allowReviewAppsFromForks {
+						io.Info("Manual Review App deploy aborted. Exiting.")
+						return nil
+					}
+				}
+			}
+
+			err = integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -513,7 +539,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
 
-	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks()
+	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 	if err != nil {
 		return params, errgo.Notef(err, "error enquiring about automatic review apps creation from forks")
 	}
@@ -537,14 +563,15 @@ func validateHoursBeforeDelete(ans interface{}) error {
 	return nil
 }
 
-func askForConfirmationToAllowReviewAppsFromForks() (bool, error) {
+func askForConfirmationToAllowReviewAppsFromForks(prompt string) (bool, error) {
 	fmt.Println()
 	io.Warning(reviewAppsFromForksSecurityWarning)
 	fmt.Println()
 
 	var confirmed bool
+
 	err := survey.AskOne(&survey.Confirm{
-		Message: "Allow automatic creation of review apps from forks?",
+		Message: prompt,
 		Default: false,
 	}, &confirmed, nil)
 
