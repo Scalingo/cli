@@ -27,6 +27,18 @@ main() {
     fi
   }
 
+  ask() {
+    info "$* [Y/n] "
+    while true; do
+        read answer
+        case $(echo "$answer" | tr "[A-Z]" "[a-z]") in
+        y|yes|"" ) return 0;;
+        n|no     ) return 1;;
+        esac
+        info "Invalid input, please enter 'y' or 'n': "
+    done
+  }
+
   usage() {
     echo "Installs Scalingo client."
     echo
@@ -136,18 +148,10 @@ main() {
     new_version=$($exe_path --version | cut -d' ' -f4)
     old_version=$("$target" --version | cut -d' ' -f4)
     warn "Scalingo client is already installed (version ${old_version})\n"
-    info "Do you want to replace it with version ${new_version}? [Y/n] "
 
-    read input
-    [ -z $input ] && input='Y'
-    while echo $input | grep -qvE '[YyNn]' ; do
-      info "Invalid input, please enter 'y' or 'n': "
-      read input
-    done
-
-    if [ "x$input" = "xn" ] ; then
-      status "Aborting...\n"
-      exit -1
+    if ! ask "Do you want to replace it with version ${new_version}?"  ; then
+        status "Aborting...\n"
+        exit -1
     fi
   fi
 
