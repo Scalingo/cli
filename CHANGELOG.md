@@ -8,6 +8,7 @@
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
 * fix(completion): fix zsh shebang reference
 * feat(integration-link): add --follow arg to manual-deploy command
+* feat(install.sh): handle answers with multiple letters
 
 ### 1.28.2
 
