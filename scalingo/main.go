@@ -142,7 +142,7 @@ func main() {
 	// We want to display to the user if a new version is available
 	// Whatever the success of the execution of their command is.
 	updateCheckErr := update.Check()
-	if err != nil {
+	if updateCheckErr != nil {
 		debug.Println("Failed to check if executable should be updated", updateCheckErr)
 	}
 
