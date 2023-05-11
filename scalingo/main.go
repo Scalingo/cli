@@ -14,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
+	"github.com/Scalingo/go-scalingo/v6/debug"
 	errors "github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/go-utils/logger"
 )
@@ -39,6 +40,7 @@ func defaultAction(c *cli.Context) error {
 	}
 
 	cmd.ShowSuggestions(c)
+
 	return nil
 }
 
@@ -127,14 +129,24 @@ func main() {
 			}
 			return
 		}
-
-		defer update.Check()
 	} else {
 		// If we are completing stuff, disable logging
 		config.C.DisableInteractive = true
 	}
 
-	if err := app.RunContext(ctx, os.Args); err != nil {
+	err := app.RunContext(ctx, os.Args)
+	if err != nil {
 		fmt.Println("Fail to run command:", err)
+	}
+
+	// We want to display to the user if a new version is available
+	// Whatever the success of the execution of their command is.
+	updateCheckErr := update.Check()
+	if err != nil {
+		debug.Println("Failed to check if executable should be updated", updateCheckErr)
+	}
+
+	if err != nil {
+		os.Exit(1)
 	}
 }
