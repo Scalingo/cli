@@ -61,8 +61,8 @@ github.com/briandowns/spinner
 ## explicit; go 1.12
 github.com/cheggaaa/pb/v3
 github.com/cheggaaa/pb/v3/termutil
-# github.com/cloudflare/circl v1.3.2
-## explicit; go 1.17
+# github.com/cloudflare/circl v1.3.3
+## explicit; go 1.19
 github.com/cloudflare/circl/dh/x25519
 github.com/cloudflare/circl/dh/x448
 github.com/cloudflare/circl/ecc/goldilocks
