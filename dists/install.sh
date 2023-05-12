@@ -150,8 +150,8 @@ main() {
     warn "Scalingo client is already installed (version ${old_version})\n"
 
     if ! ask "Do you want to replace it with version ${new_version}?"  ; then
-        status "Aborting...\n"
-        exit -1
+      status "Aborting...\n"
+      exit -1
     fi
   fi
 
