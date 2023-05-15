@@ -418,7 +418,7 @@ List of available integrations:
 
 			pullRequestID, err := strconv.Atoi(c.Args().First())
 			if err != nil {
-				errorQuit(errgo.Notef(err, "invalid pull request id"))
+				errorQuit(errgo.Notef(err, "invalid pull / merge request id"))
 			}
 
 			pullRequest, err := integrationlink.PullRequest(c.Context, currentApp, pullRequestID)
@@ -430,7 +430,7 @@ List of available integrations:
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 				if !awareOfSecurityRisks {
 					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
-					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository ?")
+					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository?")
 					if err != nil {
 						errorQuit(err)
 					}
