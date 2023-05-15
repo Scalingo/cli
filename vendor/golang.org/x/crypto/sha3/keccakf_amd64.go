@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build amd64 && !appengine && !gccgo
-// +build amd64,!appengine,!gccgo
+//go:build amd64 && !purego && gc
+// +build amd64,!purego,gc
 
 package sha3
 
@@ -11,4 +11,4 @@ package sha3
 
 //go:noescape
 
-func KeccakF1600(state *[25]uint64)
+func keccakF1600(a *[25]uint64)

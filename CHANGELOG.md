@@ -2,11 +2,14 @@
 
 ### To be Released
 
+* fix(postgresql): accept database url starting with `postgresql://`
 * feat(log-drains): add Logtail
 * feat(install.sh): add arm64 to the list of installable architectures ([PR#930](https://github.com/Scalingo/cli/pull/930))
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
 * fix(completion): fix zsh shebang reference
 * feat(integration-link): add --follow arg to manual-deploy command
+* fix(cli): return an exit code equal to 1 when a command or flag is malformed
+* feat(install.sh): handling word answers as user inputs for install script
 
 ### 1.28.2
 
@@ -25,12 +28,12 @@
 * build(publish): replace `rm-dist` with `clean` ([PR#893](https://github.com/Scalingo/cli/pull/893))
 * feat(review-apps): add an option to manage review app creation from forks ([PR#882](https://github.com/Scalingo/cli/pull/882))
 * chore(deps): update dependencies
-  - golang.org/x/net from 0.5.0 to 0.7.0
-  - github.com/stretchr/testify from 1.8.1 to 1.8.2
-  - golang.org/x/mod from 0.7.0 to 0.8.0
-  - github.com/pjbgf/sha1cd from 0.2.3 to 0.3.0
-  - github.com/golang-jwt/jwt/v4 from 4.4.3 to 4.5.0
-  - github.com/go-git/go-billy/v5 from 5.4.0 to 5.4.1
+  * golang.org/x/net from 0.5.0 to 0.7.0
+  * github.com/stretchr/testify from 1.8.1 to 1.8.2
+  * golang.org/x/mod from 0.7.0 to 0.8.0
+  * github.com/pjbgf/sha1cd from 0.2.3 to 0.3.0
+  * github.com/golang-jwt/jwt/v4 from 4.4.3 to 4.5.0
+  * github.com/go-git/go-billy/v5 from 5.4.0 to 5.4.1
 
 ### 1.27.2
 
@@ -195,21 +198,21 @@ This release is mandatory to keep the `logs` command working in the coming weeks
 * Add informative error in case of container type error when scaling an application
   [602](https://github.com/Scalingo/cli/pull/602)
 * Update various dependencies:
-  - github.com/fatih/color
-  - github.com/briandowns/spinner
-  - github.com/gosuri/uilive
-  - github.com/stretchr/testify
-  - github.com/urfave/cli
-  - gopkg.in/AlecAivazis/survey.v1
-  - github.com/cheggaaa/pb
-  - gopkg.in/src-d/go-git.v4
-  - github.com/Scalingo/go-scalingo/v4
-  - github.com/ScaleFT/sshkeys
-  - github.com/heroku/hk
-  - github.com/howeyc/gopass
-  - github.com/olekukonko/tablewriter
-  - golang.org/x/crypto
-  - golang.org/x/net
+  * github.com/fatih/color
+  * github.com/briandowns/spinner
+  * github.com/gosuri/uilive
+  * github.com/stretchr/testify
+  * github.com/urfave/cli
+  * gopkg.in/AlecAivazis/survey.v1
+  * github.com/cheggaaa/pb
+  * gopkg.in/src-d/go-git.v4
+  * github.com/Scalingo/go-scalingo/v4
+  * github.com/ScaleFT/sshkeys
+  * github.com/heroku/hk
+  * github.com/howeyc/gopass
+  * github.com/olekukonko/tablewriter
+  * golang.org/x/crypto
+  * golang.org/x/net
 * Update Scalingo internal dependencies to the Go Modules version [#613](https://github.com/Scalingo/cli/pull/613)
 
 ### 1.19.3
@@ -461,7 +464,6 @@ $ scalingo -a my-app deployment-delete-cache
 * [Bugfix] Bad autocompletion on -a, --app, -r, --remote flags when they are the first argument of a command
 * [Bugfix] TTY size was not sent when launching a `run` command
 
-
 ### v1.6.0
 
 * [Mongo Console] Add replicaset support to correctly connect to them #306
@@ -540,8 +542,8 @@ scalingo deploy https://github.com/Scalingo/sample-go-martini/archive/master.tar
 * [Bugfix] Fix install script on Mac OS X El Capitan 10.11
 
 Contributors
-- leo@scalingo.com <Leo Unbekandt>
-- mail2tevin@gmail.com <Tevin Zhang>
+* <leo@scalingo.com> <Leo Unbekandt>
+* <mail2tevin@gmail.com> <Tevin Zhang>
 
 ### v1.2.0 - 20/11/2015
 
