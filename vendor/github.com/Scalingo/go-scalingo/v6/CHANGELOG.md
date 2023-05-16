@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 6.6.0
+
+* feat(scm-repo-link): fetch a Pull Request data
+
 ## 6.5.0
 
 * feat(scm-repo-link): add ManualDeployResponse
