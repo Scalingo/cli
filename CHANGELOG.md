@@ -11,6 +11,7 @@
 * fix(cli): return an exit code equal to 1 when a command or flag is malformed
 * feat(install.sh): handling word answers as user inputs for install script
 * fix(region_migrations): help message for `migration-abort` ([PR#951](https://github.com/Scalingo/cli/pull/951))
+* feat(env): set variables from an env file ([PR#950](https://github.com/Scalingo/cli/pull/950))
 
 ### 1.28.2
 
