@@ -11,6 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -20,18 +21,17 @@ var (
 	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
 )
 
-func Add(ctx context.Context, app string, params []string) error {
+func Add(ctx context.Context, app string, params []string, filePath string) error {
 	var variables scalingo.Variables
-	for _, param := range params {
-		if err := isEnvEditValid(param); err != nil {
-			return errgo.Newf("'%s' is invalid: %s", param, err)
-		}
 
-		name, value := parseVariable(param)
-		variables = append(variables, &scalingo.Variable{
-			Name:  name,
-			Value: value,
-		})
+	err := readFromCmdLine(&variables, params)
+	if err != nil {
+		return err
+	}
+
+	err = readFromFile(&variables, filePath)
+	if err != nil {
+		return err
 	}
 
 	c, err := config.ScalingoClient(ctx)
@@ -105,4 +105,36 @@ func isEnvEditValid(edit string) error {
 func parseVariable(param string) (string, string) {
 	editSplit := strings.SplitN(param, "=", 2)
 	return editSplit[0], editSplit[1]
+}
+
+func readFromCmdLine(variables *scalingo.Variables, params []string) error {
+	for _, param := range params {
+		if err := isEnvEditValid(param); err != nil {
+			return errgo.Newf("'%s' is invalid: %s", param, err)
+		}
+
+		name, value := parseVariable(param)
+		*variables = append(*variables, &scalingo.Variable{
+			Name:  name,
+			Value: value,
+		})
+	}
+	return nil
+}
+
+func readFromFile(variables *scalingo.Variables, filePath string) error {
+	if len(filePath) > 0 {
+		var env map[string]string
+		env, err := godotenv.Read(filePath)
+		if err != nil {
+			return errgo.Newf("File is invalid: %s", err)
+		}
+		for name, value := range env {
+			*variables = append(*variables, &scalingo.Variable{
+				Name:  name,
+				Value: value,
+			})
+		}
+	}
+	return nil
 }

@@ -79,22 +79,27 @@ var (
 	}
 
 	envSetCommand = cli.Command{
-		Name:      "env-set",
-		Category:  "Environment",
-		Flags:     []cli.Flag{&appFlag},
+		Name:     "env-set",
+		Category: "Environment",
+		Flags: []cli.Flag{&appFlag, &addonFlag,
+			&cli.StringFlag{Name: "file", Aliases: []string{"f"}, Usage: "Read env file and set them"},
+		},
 		Usage:     "Set the environment variables of your apps",
 		ArgsUsage: "variable-assignment...",
 		Description: CommandDescription{
 			Description: "Set environment variables for the app",
-			Examples:    []string{"scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2"},
-			SeeAlso:     []string{"env", "env-get", "env-unset"},
+			Examples: []string{
+				"scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2",
+				"scalingo --app my-app env-set --file .env",
+				"scalingo --app my-app env-set --file .env VAR2=VAL2",
+			},
+			SeeAlso: []string{"env", "env-get", "env-unset"},
 		}.Render(),
-
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
-			if c.Args().Len() > 0 {
-				err = env.Add(c.Context, currentApp, c.Args().Slice())
+			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
+				err = env.Add(c.Context, currentApp, c.Args().Slice(), c.String("f"))
 			} else {
 				cli.ShowCommandHelp(c, "env-set")
 				return nil
