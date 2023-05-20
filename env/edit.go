@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"os"
 
 	"gopkg.in/errgo.v1"
 
@@ -125,9 +126,17 @@ func readFromCmdLine(variables *scalingo.Variables, params []string) error {
 func readFromFile(variables *scalingo.Variables, filePath string) error {
 	if len(filePath) > 0 {
 		var env map[string]string
-		env, err := godotenv.Read(filePath)
-		if err != nil {
-			return errgo.Newf("File is invalid: %s", err)
+		var err error
+		if filePath == "-" {
+			env, err = godotenv.Parse(os.Stdin)
+			if err != nil {
+				return errgo.Newf("Error while reading from stdin: %s", err)
+			}
+		} else {
+			env, err = godotenv.Read(filePath)
+			if err != nil {
+				return errgo.Newf("File is invalid: %s", err)
+			}
 		}
 		for name, value := range env {
 			*variables = append(*variables, &scalingo.Variable{

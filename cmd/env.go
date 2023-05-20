@@ -91,6 +91,7 @@ var (
 			Examples: []string{
 				"scalingo --app my-app env-set VAR1=VAL1 VAR2=VAL2",
 				"scalingo --app my-app env-set --file .env",
+				"scalingo --app my-app env-set --file - < .env",
 				"scalingo --app my-app env-set --file .env VAR2=VAL2",
 			},
 			SeeAlso: []string{"env", "env-get", "env-unset"},
