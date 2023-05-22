@@ -25,12 +25,12 @@ var (
 func Add(ctx context.Context, app string, params []string, filePath string) error {
 	var variables scalingo.Variables
 
-	err := readFromCmdLine(&variables, params)
+	err := readFromFile(&variables, filePath)
 	if err != nil {
 		return err
 	}
 
-	err = readFromFile(&variables, filePath)
+	err = readFromCmdLine(&variables, params)
 	if err != nil {
 		return err
 	}
