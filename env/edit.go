@@ -25,7 +25,7 @@ var (
 )
 
 func Add(ctx context.Context, app string, params []string, filePath string) error {
-	variablesFromFile, err := readFromFile(filePath)
+	variablesFromFile, err := readFromFile(ctx, filePath)
 	if err != nil {
 		return scalingoerrors.Notef(ctx, err, "read .env file")
 	}
@@ -126,7 +126,7 @@ func readFromCmdLine(params []string) (scalingo.Variables, error) {
 	return variables, nil
 }
 
-func readFromFile(filePath string) (scalingo.Variables, error) {
+func readFromFile(ctx context.Context, filePath string) (scalingo.Variables, error) {
 	var variables scalingo.Variables
 	if len(filePath) == 0 {
 		return variables, nil
@@ -136,12 +136,12 @@ func readFromFile(filePath string) (scalingo.Variables, error) {
 	if filePath == "-" {
 		env, err = godotenv.Parse(os.Stdin)
 		if err != nil {
-			return nil, errgo.Newf("Error while reading from stdin: %s", err)
+			return nil, scalingoerrors.Notef(ctx, err, "parse .env from stdin")
 		}
 	} else {
 		env, err = godotenv.Read(filePath)
 		if err != nil {
-			return nil, errgo.Newf("File is invalid: %s", err)
+			return nil, scalingoerrors.Notef(ctx, err, "invalid .env file")
 		}
 	}
 	for name, value := range env {
