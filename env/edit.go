@@ -4,31 +4,38 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/joho/godotenv"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
+	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
-	setInvalidSyntaxError = errors.New("format is invalid, accepted: VAR=VAL")
+	errSetInvalidSyntax = errors.New("format is invalid, accepted: VAR=VAL")
 
 	nameFormat           = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
 	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
 )
 
-func Add(ctx context.Context, app string, params []string) error {
-	var variables scalingo.Variables
-	for _, param := range params {
-		if err := isEnvEditValid(param); err != nil {
-			return errgo.Newf("'%s' is invalid: %s", param, err)
-		}
+func Add(ctx context.Context, app string, params []string, filePath string) error {
+	variablesFromFile, err := readFromFile(ctx, filePath)
+	if err != nil {
+		return scalingoerrors.Notef(ctx, err, "read .env file")
+	}
 
-		name, value := parseVariable(param)
-		variables = append(variables, &scalingo.Variable{
+	variables, err := readFromCmdLine(ctx, variablesFromFile, params)
+	if err != nil {
+		return scalingoerrors.Notef(ctx, err, "read variables from command line")
+	}
+
+	scalingoVariables := scalingo.Variables{}
+	for name, value := range variables {
+		scalingoVariables = append(scalingoVariables, &scalingo.Variable{
 			Name:  name,
 			Value: value,
 		})
@@ -36,14 +43,14 @@ func Add(ctx context.Context, app string, params []string) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return scalingoerrors.Notef(ctx, err, "get Scalingo client")
 	}
-	_, _, err = c.VariableMultipleSet(ctx, app, variables)
+	_, _, err = c.VariableMultipleSet(ctx, app, scalingoVariables)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "set multiple variables")
 	}
 
-	for _, variable := range variables {
+	for _, variable := range scalingoVariables {
 		fmt.Printf("%s has been set to '%s'.\n", variable.Name, variable.Value)
 	}
 	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
@@ -55,12 +62,11 @@ func Add(ctx context.Context, app string, params []string) error {
 func Delete(ctx context.Context, app string, varNames []string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return scalingoerrors.Notef(ctx, err, "get Scalingo client")
 	}
 	vars, err := c.VariablesList(ctx, app)
-
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "list variables before deletion")
 	}
 
 	var varsToUnset scalingo.Variables
@@ -68,7 +74,7 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 	for _, varName := range varNames {
 		v, ok := vars.Contains(varName)
 		if !ok {
-			return errgo.Newf("%s variable does not exist", varName)
+			return scalingoerrors.Newf(ctx, "%s variable does not exist", varName)
 		}
 		varsToUnset = append(varsToUnset, v)
 	}
@@ -76,7 +82,7 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 	for _, v := range varsToUnset {
 		err := c.VariableUnset(ctx, app, v.ID)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return scalingoerrors.Notef(ctx, err, "unset variable %s", v.Name)
 		}
 		fmt.Printf("%s has been unset.\n", v.Name)
 	}
@@ -87,12 +93,12 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 
 func isEnvEditValid(edit string) error {
 	if !strings.Contains(edit, "=") {
-		return setInvalidSyntaxError
+		return errSetInvalidSyntax
 	}
 	name, value := parseVariable(edit)
 
 	if name == "" || value == "" {
-		return setInvalidSyntaxError
+		return errSetInvalidSyntax
 	}
 
 	if !nameFormat.MatchString(name) {
@@ -105,4 +111,38 @@ func isEnvEditValid(edit string) error {
 func parseVariable(param string) (string, string) {
 	editSplit := strings.SplitN(param, "=", 2)
 	return editSplit[0], editSplit[1]
+}
+
+func readFromCmdLine(ctx context.Context, variables map[string]string, params []string) (map[string]string, error) {
+	for _, param := range params {
+		err := isEnvEditValid(param)
+		if err != nil {
+			return nil, scalingoerrors.Newf(ctx, "'%s' is invalid: %s", param, err)
+		}
+
+		name, value := parseVariable(param)
+		variables[name] = value
+	}
+
+	return variables, nil
+}
+
+func readFromFile(ctx context.Context, filePath string) (map[string]string, error) {
+	if filePath == "" {
+		return map[string]string{}, nil
+	}
+
+	if filePath == "-" {
+		variables, err := godotenv.Parse(os.Stdin)
+		if err != nil {
+			return nil, scalingoerrors.Notef(ctx, err, "parse .env from stdin")
+		}
+		return variables, nil
+	}
+
+	variables, err := godotenv.Read(filePath)
+	if err != nil {
+		return nil, scalingoerrors.Notef(ctx, err, "invalid .env file")
+	}
+	return variables, nil
 }

@@ -1,6 +1,8 @@
 package env
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAdd(t *testing.T) {
 }
@@ -18,8 +20,8 @@ func TestIsEnvEditValid(t *testing.T) {
 	for _, v = range vs {
 		if err := isEnvEditValid(v); err == nil {
 			t.Fatal(v, "should not be valid")
-		} else if err != setInvalidSyntaxError {
-			t.Fatal("expected", setInvalidSyntaxError, "error, got", err)
+		} else if err != errSetInvalidSyntax {
+			t.Fatal("expected", errSetInvalidSyntax, "error, got", err)
 		}
 	}
 
