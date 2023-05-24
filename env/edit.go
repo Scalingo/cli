@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	setInvalidSyntaxError = errors.New("format is invalid, accepted: VAR=VAL")
+	errSetInvalidSyntax = errors.New("format is invalid, accepted: VAR=VAL")
 
 	nameFormat           = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
 	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
@@ -90,12 +90,12 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 
 func isEnvEditValid(edit string) error {
 	if !strings.Contains(edit, "=") {
-		return setInvalidSyntaxError
+		return errSetInvalidSyntax
 	}
 	name, value := parseVariable(edit)
 
 	if name == "" || value == "" {
-		return setInvalidSyntaxError
+		return errSetInvalidSyntax
 	}
 
 	if !nameFormat.MatchString(name) {
