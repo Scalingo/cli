@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
-	"os"
 
 	"gopkg.in/errgo.v1"
 
@@ -23,17 +23,17 @@ var (
 )
 
 func Add(ctx context.Context, app string, params []string, filePath string) error {
-	var variables scalingo.Variables
-
-	err := readFromFile(&variables, filePath)
+	variablesFromFile, err := readFromFile(filePath)
 	if err != nil {
 		return err
 	}
 
-	err = readFromCmdLine(&variables, params)
+	variablesFromCmdLine, err := readFromCmdLine(params)
 	if err != nil {
 		return err
 	}
+
+	variables := mergeVariables(variablesFromFile, variablesFromCmdLine)
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
@@ -108,42 +108,67 @@ func parseVariable(param string) (string, string) {
 	return editSplit[0], editSplit[1]
 }
 
-func readFromCmdLine(variables *scalingo.Variables, params []string) error {
+func readFromCmdLine(params []string) (scalingo.Variables, error) {
+	var variables scalingo.Variables
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
-			return errgo.Newf("'%s' is invalid: %s", param, err)
+			return nil, errgo.Newf("'%s' is invalid: %s", param, err)
 		}
 
 		name, value := parseVariable(param)
-		*variables = append(*variables, &scalingo.Variable{
+		variables = append(variables, &scalingo.Variable{
 			Name:  name,
 			Value: value,
 		})
 	}
-	return nil
+	return variables, nil
 }
 
-func readFromFile(variables *scalingo.Variables, filePath string) error {
-	if len(filePath) > 0 {
-		var env map[string]string
-		var err error
-		if filePath == "-" {
-			env, err = godotenv.Parse(os.Stdin)
-			if err != nil {
-				return errgo.Newf("Error while reading from stdin: %s", err)
-			}
-		} else {
-			env, err = godotenv.Read(filePath)
-			if err != nil {
-				return errgo.Newf("File is invalid: %s", err)
-			}
+func readFromFile(filePath string) (scalingo.Variables, error) {
+	var variables scalingo.Variables
+	if len(filePath) == 0 {
+		return variables, nil
+	}
+	var env map[string]string
+	var err error
+	if filePath == "-" {
+		env, err = godotenv.Parse(os.Stdin)
+		if err != nil {
+			return nil, errgo.Newf("Error while reading from stdin: %s", err)
 		}
-		for name, value := range env {
-			*variables = append(*variables, &scalingo.Variable{
-				Name:  name,
-				Value: value,
-			})
+	} else {
+		env, err = godotenv.Read(filePath)
+		if err != nil {
+			return nil, errgo.Newf("File is invalid: %s", err)
 		}
 	}
-	return nil
+	for name, value := range env {
+		variables = append(variables, &scalingo.Variable{
+			Name:  name,
+			Value: value,
+		})
+	}
+	return variables, nil
+}
+
+func mergeVariables(variables1 scalingo.Variables, variables2 scalingo.Variables) scalingo.Variables {
+	var variables scalingo.Variables
+	for _, variable := range variables2 {
+		variables = append(variables, variable)
+	}
+	for _, variable := range variables1 {
+		if !isVariableAlreadyDefined(variables, variable.Name) {
+			variables = append(variables, variable)
+		}
+	}
+	return variables
+}
+
+func isVariableAlreadyDefined(variables scalingo.Variables, name string) bool {
+	for _, variable := range variables {
+		if variable.Name == name {
+			return true
+		}
+	}
+	return false
 }
