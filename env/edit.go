@@ -10,6 +10,7 @@ import (
 
 	"gopkg.in/errgo.v1"
 
+	 errors2 "github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/joho/godotenv"
@@ -25,12 +26,12 @@ var (
 func Add(ctx context.Context, app string, params []string, filePath string) error {
 	variablesFromFile, err := readFromFile(filePath)
 	if err != nil {
-		return err
+		return errors2.Notef(ctx, err, "Could not read from file")
 	}
 
 	variablesFromCmdLine, err := readFromCmdLine(params)
 	if err != nil {
-		return err
+		return errors2.Notef(ctx, err, "Could not variables from command line")
 	}
 
 	variables := mergeVariables(variablesFromFile, variablesFromCmdLine)
