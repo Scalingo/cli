@@ -109,8 +109,7 @@ var (
 		}.Render(),
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "migration-run")
-				return nil
+				return cli.ShowCommandHelp(c, "migration-abort")
 			}
 
 			migrationID := c.Args().First()

@@ -7,9 +7,10 @@
 * feat(install.sh): add arm64 to the list of installable architectures ([PR#930](https://github.com/Scalingo/cli/pull/930))
 * chore(deps): replace `github.com/ScaleFT/sshkeys` with `golang.org/x/crypto/ssh`
 * fix(completion): fix zsh shebang reference
-* feat(integration-link): add --follow arg to manual-deploy command
+* feat(integration-link): add `--follow` arg to `manual-deploy` command
 * fix(cli): return an exit code equal to 1 when a command or flag is malformed
 * feat(install.sh): handling word answers as user inputs for install script
+* fix(region_migrations): help message for `migration-abort` ([PR#951](https://github.com/Scalingo/cli/pull/951))
 
 ### 1.28.2
 
