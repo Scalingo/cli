@@ -27,19 +27,19 @@ var (
 func Add(ctx context.Context, app string, params []string, filePath string) error {
 	variablesFromFile, err := readFromFile(filePath)
 	if err != nil {
-		return scalingoerrors.Notef(ctx, err, "Could not read from file")
+		return scalingoerrors.Notef(ctx, err, "read .env file")
 	}
 
 	variablesFromCmdLine, err := readFromCmdLine(params)
 	if err != nil {
-		return scalingoerrors.Notef(ctx, err, "Could not variables from command line")
+		return scalingoerrors.Notef(ctx, err, "read variables from command line")
 	}
 
 	variables := mergeVariables(variablesFromFile, variablesFromCmdLine)
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "get Scalingo client")
 	}
 	_, _, err = c.VariableMultipleSet(ctx, app, variables)
 	if err != nil {
@@ -58,7 +58,7 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 func Delete(ctx context.Context, app string, varNames []string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "get Scalingo client")
 	}
 	vars, err := c.VariablesList(ctx, app)
 
