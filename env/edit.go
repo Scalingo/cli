@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/joho/godotenv"
 
 	"github.com/Scalingo/cli/config"
@@ -30,7 +28,7 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 		return scalingoerrors.Notef(ctx, err, "read .env file")
 	}
 
-	variablesFromCmdLine, err := readFromCmdLine(params)
+	variablesFromCmdLine, err := readFromCmdLine(ctx, params)
 	if err != nil {
 		return scalingoerrors.Notef(ctx, err, "read variables from command line")
 	}
@@ -39,11 +37,11 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "get Scalingo client")
+		return scalingoerrors.Notef(ctx, err, "get Scalingo client")
 	}
 	_, _, err = c.VariableMultipleSet(ctx, app, variables)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "set multiple variables")
 	}
 
 	for _, variable := range variables {
@@ -58,12 +56,11 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 func Delete(ctx context.Context, app string, varNames []string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "get Scalingo client")
+		return scalingoerrors.Notef(ctx, err, "get Scalingo client")
 	}
 	vars, err := c.VariablesList(ctx, app)
-
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "list variables before deletion")
 	}
 
 	var varsToUnset scalingo.Variables
@@ -71,7 +68,7 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 	for _, varName := range varNames {
 		v, ok := vars.Contains(varName)
 		if !ok {
-			return errgo.Newf("%s variable does not exist", varName)
+			return scalingoerrors.Newf(ctx, "%s variable does not exist", varName)
 		}
 		varsToUnset = append(varsToUnset, v)
 	}
@@ -79,7 +76,7 @@ func Delete(ctx context.Context, app string, varNames []string) error {
 	for _, v := range varsToUnset {
 		err := c.VariableUnset(ctx, app, v.ID)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return scalingoerrors.Notef(ctx, err, "unset variable %s", v.Name)
 		}
 		fmt.Printf("%s has been unset.\n", v.Name)
 	}
@@ -110,11 +107,11 @@ func parseVariable(param string) (string, string) {
 	return editSplit[0], editSplit[1]
 }
 
-func readFromCmdLine(params []string) (scalingo.Variables, error) {
+func readFromCmdLine(ctx context.Context, params []string) (scalingo.Variables, error) {
 	var variables scalingo.Variables
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
-			return nil, errgo.Newf("'%s' is invalid: %s", param, err)
+			return nil, scalingoerrors.Newf(ctx, "'%s' is invalid: %s", param, err)
 		}
 
 		name, value := parseVariable(param)
