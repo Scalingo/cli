@@ -115,7 +115,8 @@ func parseVariable(param string) (string, string) {
 
 func readFromCmdLine(ctx context.Context, variables map[string]string, params []string) (map[string]string, error) {
 	for _, param := range params {
-		if err := isEnvEditValid(param); err != nil {
+		err := isEnvEditValid(param)
+		if err != nil {
 			return nil, scalingoerrors.Newf(ctx, "'%s' is invalid: %s", param, err)
 		}
 
@@ -127,7 +128,7 @@ func readFromCmdLine(ctx context.Context, variables map[string]string, params []
 }
 
 func readFromFile(ctx context.Context, filePath string) (map[string]string, error) {
-	if len(filePath) == 0 {
+	if filePath == "" {
 		return map[string]string{}, nil
 	}
 
