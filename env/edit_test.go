@@ -1,7 +1,6 @@
 package env
 
 import (
-	"github.com/Scalingo/go-scalingo/v6"
 	"testing"
 )
 
@@ -44,40 +43,5 @@ func TestParseVariable(t *testing.T) {
 	}
 	if value != "VAL1" {
 		t.Fatal("expected VAL1, got", value)
-	}
-}
-
-func TestMergeVariables(t *testing.T) {
-	variables1 := scalingo.Variables{
-		&scalingo.Variable{
-			Name:  "NODE_ENV",
-			Value: "production",
-		},
-	}
-	variables2 := scalingo.Variables{
-		&scalingo.Variable{
-			Name:  "NODE_ENV",
-			Value: "test",
-		},
-		&scalingo.Variable{
-			Name:  "VAR1",
-			Value: "VAL1",
-		},
-	}
-	variables := mergeVariables(variables1, variables2)
-	if len(variables) != 2 {
-		t.Fatal("expected 2 variable, got", len(variables))
-	}
-	if variables[0].Name != "NODE_ENV" {
-		t.Fatal("expected NODE_ENV, got", variables[0].Name)
-	}
-	if variables[0].Value != "test" {
-		t.Fatal("expected test, got", variables[0].Value)
-	}
-	if variables[1].Name != "VAR1" {
-		t.Fatal("expected VAR1, got", variables[1].Name)
-	}
-	if variables[1].Value != "VAL1" {
-		t.Fatal("expected VAL1, got", variables[1].Value)
 	}
 }

@@ -28,23 +28,29 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 		return scalingoerrors.Notef(ctx, err, "read .env file")
 	}
 
-	variablesFromCmdLine, err := readFromCmdLine(ctx, params)
+	variables, err := readFromCmdLine(ctx, variablesFromFile, params)
 	if err != nil {
 		return scalingoerrors.Notef(ctx, err, "read variables from command line")
 	}
 
-	variables := mergeVariables(variablesFromFile, variablesFromCmdLine)
+	scalingoVariables := scalingo.Variables{}
+	for name, value := range variables {
+		scalingoVariables = append(scalingoVariables, &scalingo.Variable{
+			Name:  name,
+			Value: value,
+		})
+	}
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return scalingoerrors.Notef(ctx, err, "get Scalingo client")
 	}
-	_, _, err = c.VariableMultipleSet(ctx, app, variables)
+	_, _, err = c.VariableMultipleSet(ctx, app, scalingoVariables)
 	if err != nil {
 		return scalingoerrors.Notef(ctx, err, "set multiple variables")
 	}
 
-	for _, variable := range variables {
+	for _, variable := range scalingoVariables {
 		fmt.Printf("%s has been set to '%s'.\n", variable.Name, variable.Value)
 	}
 	fmt.Println("\nRestart your containers to apply these environment changes on your application:")
@@ -107,67 +113,35 @@ func parseVariable(param string) (string, string) {
 	return editSplit[0], editSplit[1]
 }
 
-func readFromCmdLine(ctx context.Context, params []string) (scalingo.Variables, error) {
-	var variables scalingo.Variables
+func readFromCmdLine(ctx context.Context, variables map[string]string, params []string) (map[string]string, error) {
 	for _, param := range params {
 		if err := isEnvEditValid(param); err != nil {
 			return nil, scalingoerrors.Newf(ctx, "'%s' is invalid: %s", param, err)
 		}
 
 		name, value := parseVariable(param)
-		variables = append(variables, &scalingo.Variable{
-			Name:  name,
-			Value: value,
-		})
+		variables[name] = value
 	}
+
 	return variables, nil
 }
 
-func readFromFile(ctx context.Context, filePath string) (scalingo.Variables, error) {
-	var variables scalingo.Variables
+func readFromFile(ctx context.Context, filePath string) (map[string]string, error) {
 	if len(filePath) == 0 {
-		return variables, nil
+		return map[string]string{}, nil
 	}
-	var env map[string]string
-	var err error
+
 	if filePath == "-" {
-		env, err = godotenv.Parse(os.Stdin)
+		variables, err := godotenv.Parse(os.Stdin)
 		if err != nil {
 			return nil, scalingoerrors.Notef(ctx, err, "parse .env from stdin")
 		}
-	} else {
-		env, err = godotenv.Read(filePath)
-		if err != nil {
-			return nil, scalingoerrors.Notef(ctx, err, "invalid .env file")
-		}
+		return variables, nil
 	}
-	for name, value := range env {
-		variables = append(variables, &scalingo.Variable{
-			Name:  name,
-			Value: value,
-		})
+
+	variables, err := godotenv.Read(filePath)
+	if err != nil {
+		return nil, scalingoerrors.Notef(ctx, err, "invalid .env file")
 	}
 	return variables, nil
-}
-
-func mergeVariables(variables1 scalingo.Variables, variables2 scalingo.Variables) scalingo.Variables {
-	var variables scalingo.Variables
-	for _, variable := range variables2 {
-		variables = append(variables, variable)
-	}
-	for _, variable := range variables1 {
-		if !isVariableAlreadyDefined(variables, variable.Name) {
-			variables = append(variables, variable)
-		}
-	}
-	return variables
-}
-
-func isVariableAlreadyDefined(variables scalingo.Variables, name string) bool {
-	for _, variable := range variables {
-		if variable.Name == name {
-			return true
-		}
-	}
-	return false
 }
