@@ -25,7 +25,7 @@ import (
 )
 
 var (
-	reviewAppsFromForksSecurityWarning = "Only allow automatic review apps deployments from forks if you trust the owners of those forks, as this could lead to security issues. More info here: https://doc.scalingo.com/platform/app/review-apps#addons-collaborators-and-environment-variables"
+	reviewAppsFromForksSecurityWarning = "Only deploy Review Apps from trusted sources. As this Pull Request comes from a fork, Scalingo invites you to consult the best practices for using Review Apps using this link: https://doc.scalingo.com/platform/app/review-apps"
 
 	integrationLinkShowCommand = cli.Command{
 		Name:     "integration-link",
