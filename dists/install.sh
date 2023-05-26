@@ -45,7 +45,7 @@ main() {
     echo "Options:"
     echo "  -h, --help             displays help and exits"
     echo "  -i, --install-dir DIR  Scalingo client installation directory, creating it if"
-    echo "                         necessary (defaults to /usr/local/bin)"
+    echo "                         necessary (defaults to /usr/local/bin or /opt/homebrew/bin for Apple Silicon)"
     echo "  -y, --yes              overwrites previously installed Scalingo client"
     echo
   }
@@ -140,7 +140,11 @@ main() {
   fi
   echo "DONE"
 
-  target_dir="${target_dir:-/usr/local/bin}"
+  default_target_dir="/usr/local/bin"
+  if [ "$os" == "darwin" ] && [ "$arch" == "arm64" ]; then
+    default_target_dir="/opt/homebrew/bin"
+  fi
+  target_dir="${target_dir:-$default_target_dir}"
   target="$target_dir/scalingo"
 
   if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
