@@ -12,6 +12,7 @@
 * feat(install.sh): handling word answers as user inputs for install script
 * fix(region_migrations): help message for `migration-abort` ([PR#951](https://github.com/Scalingo/cli/pull/951))
 * feat(env): set variables from an env file ([PR#950](https://github.com/Scalingo/cli/pull/950))
+* feat(install.sh): change default target directory to /opt/homebrew/bin for Apple Silicon
 
 ### 1.28.2
 
