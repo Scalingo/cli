@@ -175,4 +175,46 @@ var (
 			autocomplete.CmdFlagsAutoComplete(c, "addons-info")
 		},
 	}
+	addonsConfigCommand = cli.Command{
+		Name:     "addons-config",
+		Category: "Addons",
+		Usage:    "Configure an add-on attached to your app",
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "maintenance-window-hour", Usage: "Configure add-on maintenance window starting hour"},
+			&cli.StringFlag{Name: "maintenance-window-day", Usage: "Configure add-on maintenance window day"},
+		},
+		ArgsUsage: "addon-id",
+		Description: CommandDescription{
+			Description: "Configure an add-on attached to your app",
+			Examples:    []string{"scalingo --app manifest addons-config --maintenance-window-day tuesday --maintenance-window-hour 2 addon_uuid"},
+			SeeAlso:     []string{"addons", "addons-info"},
+		}.Render(),
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "addons-config")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			currentAddon := c.Args().First()
+			config := addons.ConfigOpts{}
+
+			if c.IsSet("maintenance-window-day") {
+				config.MaintenanceWindowDay = utils.StringPtr(c.String("maintenance-window-day"))
+			}
+
+			if c.IsSet("maintenance-window-hour") {
+				config.MaintenanceWindowHour = utils.IntPtr(c.Int("maintenance-window-hour"))
+			}
+
+			err := addons.Config(c.Context, currentApp, currentAddon, config)
+			if err != nil {
+				errorQuit(err)
+			}
+
+			return nil
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "addons-config")
+		},
+	}
 )
