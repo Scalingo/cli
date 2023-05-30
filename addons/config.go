@@ -34,7 +34,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	// fetching the current database maintenance window to be able
+	// fetching the current database maintenance window allows
 	// to only overload the specified options
 	db, err := c.DatabaseShow(ctx, app, addon)
 	if err != nil {
