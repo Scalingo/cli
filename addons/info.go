@@ -50,7 +50,7 @@ func Info(ctx context.Context, app, addon string) error {
 	t.Append([]string{"Plan", fmt.Sprintf("%v", addonInfo.Plan.Name)})
 	t.Append([]string{"Force TLS", forceSsl})
 	t.Append([]string{"Internet Accessibility", internetAccess})
-	t.Append([]string{"Maintenance windows", utils.FormatMaintenanceWindowWithTimezone(dbInfo.MaintenanceWindow, time.Local)})
+	t.Append([]string{"Maintenance window", utils.FormatMaintenanceWindowWithTimezone(dbInfo.MaintenanceWindow, time.Local)})
 
 	t.Render()
 
