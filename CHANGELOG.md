@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.29.1
+
 * revert: refactor: various linter offenses
 
 ### 1.29.0
