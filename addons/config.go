@@ -70,7 +70,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 		StartingHourUTC: utils.IntPtr(startingHourUTC),
 	})
 	if err != nil {
-		return errgo.Notef(err, "fail to update the application information")
+		return errgo.Notef(err, "update the database maintenance window")
 	}
 
 	fmt.Println("Addon config updated.")
