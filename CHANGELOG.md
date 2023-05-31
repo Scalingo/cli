@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* revert: refactor: various linter offenses
+
 ### 1.29.0
 
 * fix(postgresql): accept database url starting with `postgresql://`

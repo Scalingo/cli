@@ -24,7 +24,7 @@ func ScaleAutoComplete(c *cli.Context) error {
 		return errgo.Mask(err)
 	}
 	for _, ct := range processes {
-		fmt.Printf("%s:%d:%s\n", ct.Name, ct.Amount, ct.Size)
+		fmt.Println(fmt.Sprintf("%s:%d:%s", ct.Name, ct.Amount, ct.Size))
 	}
 
 	return nil

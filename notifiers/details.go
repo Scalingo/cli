@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -39,23 +38,22 @@ func displayDetails(notifier scalingo.DetailedNotifier, types []scalingo.EventTy
 	t := tablewriter.NewWriter(os.Stdout)
 	// Basic data
 	data := [][]string{
-		{"ID", notifier.GetID()},
-		{"Type", string(notifier.GetType())},
-		{"Name", notifier.GetName()},
-		{"Enabled", strconv.FormatBool(notifier.IsActive())},
-		{"Send all events", strconv.FormatBool(notifier.GetSendAllEvents())},
+		[]string{"ID", notifier.GetID()},
+		[]string{"Type", string(notifier.GetType())},
+		[]string{"Name", notifier.GetName()},
+		[]string{"Enabled", strconv.FormatBool(notifier.IsActive())},
+		[]string{"Send all events", strconv.FormatBool(notifier.GetSendAllEvents())},
 	}
 	for _, v := range data {
 		t.Append(v)
 	}
 
 	// Type data
-	caser := cases.Title(language.English)
 	for key, value := range notifier.TypeDataMap() {
-		t.Append([]string{caser.String(key), fmt.Sprintf("%v", value)})
+		t.Append([]string{strings.Title(key), fmt.Sprintf("%v", value)})
 	}
 
-	// Selected events
+	//Selected events
 	if !notifier.GetSendAllEvents() {
 		if len(notifier.GetSelectedEventIDs()) <= 0 {
 			t.Append([]string{"Selected events", ""})

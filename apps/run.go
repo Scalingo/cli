@@ -184,7 +184,6 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
-	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return errgo.Newf("Fail to attach: %s", res.Status)
 	}
@@ -265,7 +264,7 @@ func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 
 	for _, cmdVar := range cmdEnv {
 		v := strings.SplitN(cmdVar, "=", 2)
-		if len(v) != 2 || v[0] == "" || v[1] == "" {
+		if len(v) != 2 || len(v[0]) == 0 || len(v[1]) == 0 {
 			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
 		}
 		env[v[0]] = v[1]
@@ -362,7 +361,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	}
 
 	res, err := conn.Do(req)
-	if err != nil {
+	if err != httputil.ErrPersistEOF && err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
 				return nil, nil, errgo.Newf(

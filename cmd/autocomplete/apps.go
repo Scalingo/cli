@@ -64,7 +64,7 @@ func appsAutoCompleteCache() ([]*scalingo.App, error) {
 		return nil, errgo.Mask(err)
 	}
 
-	if time.Since(cache.CreatedAt).Seconds() > appsCacheDuration {
+	if time.Now().Sub(cache.CreatedAt).Seconds() > appsCacheDuration {
 		return nil, errExpiredCache
 	}
 
