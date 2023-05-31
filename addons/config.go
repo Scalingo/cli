@@ -58,7 +58,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 
 	if options.MaintenanceWindowHour != nil {
 		if *options.MaintenanceWindowHour < 0 || *options.MaintenanceWindowHour > 23 {
-			return errgo.Notef(err, "invalid starting hour '%d': it should be between 0 and 23", *options.MaintenanceWindowHour)
+			return errgo.Notef(err, "invalid starting hour '%d': it must be between 0 and 23", *options.MaintenanceWindowHour)
 		}
 		startingHourLocal = *options.MaintenanceWindowHour
 	}
