@@ -103,9 +103,9 @@ func collaboratorUserIDs(ctx context.Context, c *scalingo.Client, app string, us
 		}
 		if id == "" {
 			return nil, errgo.Newf("no such collaborator: %v", u)
+		} else {
+			ids = append(ids, id)
 		}
-
-		ids = append(ids, id)
 	}
 
 	return ids, nil

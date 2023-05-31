@@ -3,9 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-
-	"github.com/Scalingo/go-utils/logger"
 )
 
 type Asset struct {
@@ -21,20 +20,15 @@ type Repo struct {
 type Repos []Repo
 
 func main() {
-	log := logger.Default()
-
 	res, err := http.Get("https://api.github.com/repos/Scalingo/cli/releases")
 	if err != nil {
-		log.WithError(err).Error("Fail to query the CLI releases from GitHub")
-		return
+		log.Fatalln(err)
 	}
-	defer res.Body.Close()
 
 	var repos Repos
 	err = json.NewDecoder(res.Body).Decode(&repos)
 	if err != nil {
-		log.WithError(err).Error("")
-		return
+		log.Fatalln(err)
 	}
 
 	for _, repo := range repos {
