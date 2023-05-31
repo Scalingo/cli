@@ -31,7 +31,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "get Scalingo client to update addon config")
 	}
 
 	// fetching the current database maintenance window allows
