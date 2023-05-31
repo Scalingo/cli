@@ -38,7 +38,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 	// to only overload the specified options
 	db, err := c.DatabaseShow(ctx, app, addon)
 	if err != nil {
-		return errgo.Notef(err, "fail to get database information")
+		return errgo.Notef(err, "get database information")
 	}
 
 	weekdayLocal, startingHourLocal := utils.ConvertDayAndHourToTimezone(
