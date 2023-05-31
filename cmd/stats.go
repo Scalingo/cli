@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/detect"
@@ -25,13 +25,15 @@ var (
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "stats")
-			} else if err := apps.Stats(c.Context, currentApp, c.Bool("stream")); err != nil {
+				return nil
+			}
+
+			err := apps.Stats(c.Context, currentApp, c.Bool("stream"))
+			if err != nil {
 				errorQuit(err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			return
-		},
+		BashComplete: func(c *cli.Context) {},
 	}
 )

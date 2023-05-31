@@ -30,9 +30,7 @@ func Update(ctx context.Context, app, ID string, params ProvisionParams) error {
 
 	// If there is no selected events, keep the existing ones
 	if len(params.SelectedEventNames) == 0 {
-		for _, id := range notifier.SelectedEventIDs {
-			params.SelectedEventIDs = append(params.SelectedEventIDs, id)
-		}
+		params.SelectedEventIDs = append([]string{}, notifier.SelectedEventIDs...)
 	} else {
 		for _, name := range params.SelectedEventNames {
 			for _, t := range eventTypes {

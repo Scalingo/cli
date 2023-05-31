@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	stdio "io"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,8 +14,6 @@ import (
 	"sync"
 	"time"
 	"unicode"
-
-	stdio "io"
 
 	"github.com/fatih/color"
 	"github.com/gorilla/websocket"
@@ -76,7 +75,7 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	go func() {
 		defer wg.Done()
 		for bline := range buff {
-			colorizeLogs(string(bline))
+			colorizeLogs(bline)
 		}
 	}()
 
