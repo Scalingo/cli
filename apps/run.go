@@ -358,7 +358,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	} else if url.Scheme == "http" {
 		conn = httputil.NewClientConn(dial, nil)
 	} else {
-		return nil, nil, errgo.Newf("Invalid scheme format %s", url.Scheme)
+		return nil, nil, errgo.Newf("invalid scheme format %s", url.Scheme)
 	}
 
 	res, err := conn.Do(req)
