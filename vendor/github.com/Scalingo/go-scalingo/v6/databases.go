@@ -17,6 +17,7 @@ type DatabasesService interface {
 	DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error)
 	DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error)
 	DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error)
+	DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error)
 }
 
 // DatabaseStatus is a string representing the status of a database deployment
@@ -70,6 +71,7 @@ type Database struct {
 	Cluster                    bool              `json:"cluster"`
 	PeriodicBackupsEnabled     bool              `json:"periodic_backups_enabled"`
 	PeriodicBackupsScheduledAt []int             `json:"periodic_backups_scheduled_at"` // Hours of the day of the periodic backups (UTC)
+	MaintenanceWindow          MaintenanceWindow `json:"maintenance_window"`
 }
 
 // InstanceStatus is a type of string representing the status of an Instance
@@ -228,4 +230,23 @@ func (c *Client) DatabaseDisableFeature(ctx context.Context, app, addonID, featu
 	}
 
 	return res, nil
+}
+
+type MaintenanceWindowParams struct {
+	WeekdayUTC      *int `json:"weekday_utc,omitempty"`
+	StartingHourUTC *int `json:"starting_hour_utc,omitempty"`
+}
+
+func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error) {
+	var dbRes DatabaseRes
+	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]interface{}{
+		"database": map[string]interface{}{
+			"maintenance_window": params,
+		},
+	}, &dbRes)
+
+	if err != nil {
+		return Database{}, errgo.Notef(err, "fail to update maintenance window")
+	}
+	return dbRes.Database, nil
 }
