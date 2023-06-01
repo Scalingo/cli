@@ -220,7 +220,10 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-config")
+			err := autocomplete.CmdFlagsAutoComplete(c, "addons-config")
+			if err != nil {
+				errorQuit(err)
+			}
 		},
 	}
 )
