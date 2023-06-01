@@ -1,7 +1,5 @@
 # Changelog
 
-* feat(maintenance): add maintenance windows
-
 ## To Be Released
 
 ## 6.6.0

@@ -298,14 +298,6 @@ func (e *EventStackChangedType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
-func (e *EventCreateReviewAppType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-
-func (e *EventDestroyReviewAppType) TypeDataPtr() interface{} {
-	return &e.TypeData
-}
-
 func (e *EventLinkGithubType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
