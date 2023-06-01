@@ -158,7 +158,7 @@ func (r *Refresher) writeMigration(w *uilive.Writer, migration *scalingo.RegionM
 	defer w.Flush()
 
 	if errCount != 0 {
-		fmt.Fprintf(w.Newline(), color.RedString("Connection lost. Retrying (%v/%v)\n", errCount, maxErrors))
+		fmt.Fprint(w.Newline(), color.RedString("Connection lost. Retrying (%v/%v)\n", errCount, maxErrors))
 	}
 
 	if migration == nil {

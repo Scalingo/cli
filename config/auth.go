@@ -185,9 +185,8 @@ func (a *CliAuthenticator) RemoveAuth() error {
 	if err != nil {
 		return errgo.Notef(err, "fail to get authentication service host")
 	}
-	if _, ok := c[authHost]; ok {
-		delete(c, authHost)
-	}
+
+	delete(c, authHost)
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {

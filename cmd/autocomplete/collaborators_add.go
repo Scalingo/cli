@@ -34,7 +34,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 		return nil
 	}
 
-	var apiError error = nil
+	var apiError error
 	ch := make(chan string)
 	var wg sync.WaitGroup
 	wg.Add(len(apps))
