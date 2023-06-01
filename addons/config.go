@@ -6,20 +6,19 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-type ConfigOpts struct {
+type UpdateAddonConfigOpts struct {
 	MaintenanceWindowDay  *string
 	MaintenanceWindowHour *int
 }
 
-func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
-	weekdaysMap := map[string]time.Weekday{
+func UpdateAddonConfig(ctx context.Context, app, addon string, options UpdateAddonConfigOpts) error {
+	weekdayNameToWeekdayOrderMap := map[string]time.Weekday{
 		strings.ToLower(time.Sunday.String()):    time.Sunday,
 		strings.ToLower(time.Monday.String()):    time.Monday,
 		strings.ToLower(time.Tuesday.String()):   time.Tuesday,
@@ -31,14 +30,22 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "get Scalingo client to update addon config")
+		return errors.Notef(ctx, err, "get Scalingo client to update addon config")
+	}
+
+	// If addon does not contain a UUID, we consider it contains an addon type (e.g. MongoDB)
+	if !strings.HasPrefix(addon, "ad-") {
+		addon, err = utils.GetAddonUUIDFromType(ctx, c, app, addon)
+		if err != nil {
+			return errors.Notef(ctx, err, "fail to get the addon UUID based on its type")
+		}
 	}
 
 	// fetching the current database maintenance window allows
 	// to only overload the specified options
 	db, err := c.DatabaseShow(ctx, app, addon)
 	if err != nil {
-		return errgo.Notef(err, "get database information")
+		return errors.Notef(ctx, err, "get database information")
 	}
 
 	weekdayLocal, startingHourLocal := utils.ConvertDayAndHourToTimezone(
@@ -49,16 +56,16 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 	)
 
 	if options.MaintenanceWindowDay != nil {
-		day, ok := weekdaysMap[strings.ToLower(*options.MaintenanceWindowDay)]
+		day, ok := weekdayNameToWeekdayOrderMap[strings.ToLower(*options.MaintenanceWindowDay)]
 		if !ok {
-			return errgo.Notef(err, "invalid weekday '%s'", *options.MaintenanceWindowDay)
+			return errors.Notef(ctx, err, "invalid weekday '%s'", *options.MaintenanceWindowDay)
 		}
 		weekdayLocal = day
 	}
 
 	if options.MaintenanceWindowHour != nil {
 		if *options.MaintenanceWindowHour < 0 || *options.MaintenanceWindowHour > 23 {
-			return errgo.Notef(err, "invalid starting hour '%d': it must be between 0 and 23", *options.MaintenanceWindowHour)
+			return errors.Notef(ctx, err, "invalid starting hour '%d': it must be between 0 and 23", *options.MaintenanceWindowHour)
 		}
 		startingHourLocal = *options.MaintenanceWindowHour
 	}
@@ -70,7 +77,7 @@ func Config(ctx context.Context, app, addon string, options ConfigOpts) error {
 		StartingHourUTC: utils.IntPtr(startingHourUTC),
 	})
 	if err != nil {
-		return errgo.Notef(err, "update the database maintenance window")
+		return errors.Notef(ctx, err, "update the database maintenance window")
 	}
 
 	fmt.Println("Addon config updated.")
