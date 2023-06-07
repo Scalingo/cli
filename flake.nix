@@ -16,8 +16,8 @@
             src = pkgs.fetchFromGitHub {
               owner = "Scalingo";
               repo = "cli";
-              rev = "1.28.2";
-              sha256 = "sha256-dMiOGPQ2wodVdB43Sk3GfEFYIU/W2K9DG/4hhVxb1fs=";
+              rev = "1.29.1";
+              sha256 = "sha256-xBf+LIwlpauJd/0xJIQdfEa0rxph3BJPuMY4+0s+Bb4=";
             };
 
             vendorSha256 = null;
