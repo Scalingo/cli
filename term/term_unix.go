@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/andrew-d/go-termutil"
 	"gopkg.in/errgo.v1"
 )
 
@@ -21,7 +20,12 @@ func IsTerminal(f *os.File) bool {
 }
 
 func IsATTY(f *os.File) bool {
-	return termutil.Isatty(f.Fd())
+	stat, err := f.Stat()
+	if err != nil {
+		return false
+	}
+
+	return (stat.Mode() & os.ModeCharDevice) != 0
 }
 
 func MakeRaw(f *os.File) error {
