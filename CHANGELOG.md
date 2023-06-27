@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead
+
 ### 1.29.1
 
 * revert: refactor: various linter offenses
