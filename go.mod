@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/Scalingo/go-scalingo/v6 v6.6.0
-	github.com/Scalingo/go-utils/errors/v2 v2.2.0
+	github.com/Scalingo/go-utils/errors/v2 v2.3.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
 	github.com/briandowns/spinner v1.23.0
