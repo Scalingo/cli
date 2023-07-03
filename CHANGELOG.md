@@ -4,6 +4,7 @@
 
 * chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead
 * feat(cmd): addon can be retrieve from addon type, not only UUID
+* feat(addons): add maintenance windows manipulation with the new `addon-config` command
 
 ### 1.29.1
 
@@ -20,7 +21,6 @@
 
 ### 1.29.0
 
-* feat(addons): add maintenance windows manipulation with the new `addon-config` command
 * fix(postgresql): accept database url starting with `postgresql://`
 * feat(log-drains): add Logtail
 * feat(install.sh): add arm64 to the list of installable architectures ([PR#930](https://github.com/Scalingo/cli/pull/930))
