@@ -212,7 +212,7 @@ var (
 				errorQuitWithHelpMessage(errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
 			}
 
-			err := addons.UpdateAddonConfig(ctx, currentApp, currentAddon, config)
+			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)
 			if err != nil {
 				errorQuit(err)
 			}

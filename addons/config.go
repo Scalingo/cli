@@ -17,7 +17,7 @@ type UpdateAddonConfigOpts struct {
 	MaintenanceWindowHour *int
 }
 
-func UpdateAddonConfig(ctx context.Context, app, addon string, options UpdateAddonConfigOpts) error {
+func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonConfigOpts) error {
 	weekdayNameToWeekdayOrderMap := map[string]time.Weekday{
 		strings.ToLower(time.Sunday.String()):    time.Sunday,
 		strings.ToLower(time.Monday.String()):    time.Monday,
