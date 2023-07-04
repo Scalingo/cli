@@ -247,6 +247,9 @@ var (
 		&databaseEnableFeature,
 		&databaseDisableFeature,
 
+		// Maintenance
+		&databaseMaintenanceList,
+
 		// Backups
 		&backupsListCommand,
 		&backupsCreateCommand,
