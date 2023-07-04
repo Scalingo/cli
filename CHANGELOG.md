@@ -4,6 +4,7 @@
 
 * chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead
 * feat(cmd): addon can be retrieve from addon type, not only UUID
+* feat: add database maintenance listing with the new `database-maintenance-list` command
 
 ### 1.29.1
 
