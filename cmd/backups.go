@@ -23,7 +23,7 @@ var (
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			err := db.ListBackups(c.Context, currentApp, addonName)
 			if err != nil {
@@ -45,7 +45,7 @@ var (
 		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 
@@ -82,7 +82,7 @@ var (
 		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 

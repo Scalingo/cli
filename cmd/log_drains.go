@@ -43,7 +43,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 
 			utils.CheckForConsent(c.Context, currentApp)
 
-			addonID := addonNameFromFlags(c)
+			addonID := addonUUIDFromFlags(c, currentApp)
 
 			err := logdrains.List(c.Context, currentApp, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
@@ -105,7 +105,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 
-			addonID := addonNameFromFlags(c)
+			addonID := addonUUIDFromFlags(c, currentApp)
 
 			utils.CheckForConsent(c.Context, currentApp)
 
@@ -174,7 +174,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			}
 			drain := c.Args().First()
 
-			addonID := addonNameFromFlags(c)
+			addonID := addonUUIDFromFlags(c, currentApp)
 
 			if addonID != "" && c.Bool("only-app") {
 				cli.ShowCommandHelp(c, "log-drains-remove")
