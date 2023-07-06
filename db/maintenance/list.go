@@ -31,7 +31,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 	for _, maintenance := range response.Maintenance {
 		startedAt := "Not started"
 		if maintenance.StartedAt != nil {
-			startedAt = maintenance.StartedAt.Format(utils.TimeFormat)
+			startedAt = maintenance.StartedAt.Local().Format(utils.TimeFormat)
 		}
 
 		endedAt := ""
