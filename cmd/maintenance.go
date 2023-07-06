@@ -22,8 +22,8 @@ var databaseMaintenanceList = cli.Command{
 	Description: CommandDescription{
 		Description: "List database maintenance",
 		Examples: []string{
-			"scalingo --app my-app --addon addon-id database-maintenance-list",
-			"scalingo --app my-app --addon addon-id database-maintenance-list --per-page 20 --page 5",
+			"scalingo --app my-app --addon addon-uuid database-maintenance-list",
+			"scalingo --app my-app --addon addon-uuid database-maintenance-list --per-page 20 --page 5",
 		},
 	}.Render(),
 
