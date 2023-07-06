@@ -36,7 +36,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 
 		endedAt := ""
 		if maintenance.EndedAt != nil {
-			endedAt = maintenance.EndedAt.Format(utils.TimeFormat)
+			endedAt = maintenance.EndedAt.Local().Format(utils.TimeFormat)
 		}
 
 		t.Append([]string{
