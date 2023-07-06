@@ -20,7 +20,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 	caser := cases.Title(language.English)
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errgo.Notef(err, "get Scalingo client")
 	}
 
 	response, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
