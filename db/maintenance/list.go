@@ -25,7 +25,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 
 	response, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the database maintenance")
+		return errgo.Notef(err, "list the database maintenance")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
