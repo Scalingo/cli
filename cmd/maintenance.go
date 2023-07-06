@@ -30,7 +30,7 @@ var databaseMaintenanceList = cli.Command{
 	Action: func(c *cli.Context) error {
 		currentApp := detect.CurrentApp(c)
 		utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
-		addonName := addonNameFromFlags(c, true)
+		addonName := addonUUIDFromFlags(c, currentApp, true)
 
 		err := maintenance.List(c.Context, currentApp, addonName, scalingo.PaginationOpts{
 			Page:    c.Int("page"),
