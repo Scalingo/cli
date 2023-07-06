@@ -3,6 +3,7 @@
 ### To be Released
 
 * chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead
+* feat(cmd): addon can be retrieve from addon type, not only UUID
 
 ### 1.29.1
 

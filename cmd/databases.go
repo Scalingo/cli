@@ -37,7 +37,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
 				errorQuit(errors.New("feature argument should be specified"))
 			}
@@ -67,7 +67,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
 				errorQuit(errors.New("feature argument should be specified"))
 			}
@@ -104,7 +104,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
-			addonName := addonNameFromFlags(c, true)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")

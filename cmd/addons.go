@@ -89,7 +89,12 @@ var (
 
 			utils.CheckForConsent(c.Context, currentApp)
 
-			err := addons.Destroy(c.Context, currentApp, c.Args().First())
+			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
+			if err != nil {
+				errorQuit(err)
+			}
+
+			err = addons.Destroy(c.Context, currentApp, addonUUID)
 			if err != nil {
 				errorQuit(err)
 			}
@@ -119,7 +124,12 @@ var (
 				return cli.ShowCommandHelp(c, "addons-upgrade")
 			}
 
-			err := addons.Upgrade(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
+			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
+			if err != nil {
+				errorQuit(err)
+			}
+
+			err = addons.Upgrade(c.Context, currentApp, addonUUID, c.Args().Slice()[1])
 			if err != nil {
 				errorQuit(err)
 			}
@@ -147,9 +157,14 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			currentAddon := c.Args().First()
+			addonName := c.Args().First()
 
-			err := addons.Info(c.Context, currentApp, currentAddon)
+			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, addonName)
+			if err != nil {
+				errorQuit(err)
+			}
+
+			err = addons.Info(c.Context, currentApp, addonUUID)
 			if err != nil {
 				errorQuit(err)
 			}

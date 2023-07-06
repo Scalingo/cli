@@ -40,7 +40,7 @@ var (
 				return nil
 			}
 
-			addonName := addonNameFromFlags(c)
+			addonName := addonUUIDFromFlags(c, currentApp)
 
 			var err error
 			if addonName == "" {
