@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -15,6 +17,7 @@ import (
 )
 
 func List(ctx context.Context, app string, addonName string, paginationOpts scalingo.PaginationOpts) error {
+	caser := cases.Title(language.English)
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
@@ -41,10 +44,10 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 
 		t.Append([]string{
 			maintenance.ID,
-			string(maintenance.Type),
+			caser.String(string(maintenance.Type)),
 			startedAt,
 			endedAt,
-			string(maintenance.Status),
+			caser.String(string(maintenance.Status)),
 		})
 	}
 	t.Render()

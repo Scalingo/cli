@@ -11,7 +11,7 @@ import (
 
 var databaseMaintenanceList = cli.Command{
 	Name:     "database-maintenance-list",
-	Category: "Addons",
+	Category: "Addons Maintenance",
 	Usage:    "List database maintenance",
 	Flags: []cli.Flag{
 		&appFlag,
@@ -21,7 +21,10 @@ var databaseMaintenanceList = cli.Command{
 	},
 	Description: CommandDescription{
 		Description: "List database maintenance",
-		Examples:    []string{},
+		Examples: []string{
+			"scalingo --app my-app --addon addon-id database-maintenance-list",
+			"scalingo --app my-app --addon addon-id database-maintenance-list --per-page 20 --page 5",
+		},
 	}.Render(),
 
 	Action: func(c *cli.Context) error {
