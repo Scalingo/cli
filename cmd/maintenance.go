@@ -12,7 +12,7 @@ import (
 var databaseMaintenanceList = cli.Command{
 	Name:     "database-maintenance-list",
 	Category: "Addons Maintenance",
-	Usage:    "List database maintenance",
+	Usage:    "List the past and future maintenance on the given database",
 	Flags: []cli.Flag{
 		&appFlag,
 		&addonFlag,
