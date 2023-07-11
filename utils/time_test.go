@@ -23,7 +23,7 @@ func Test_beginningOfDay(t *testing.T) {
 	})
 }
 
-func Test_beginningOfWeek(t *testing.T) {
+func Test_BeginningOfWeek(t *testing.T) {
 	testDates := []struct {
 		description  string
 		givenDate    time.Time
@@ -52,7 +52,7 @@ func Test_beginningOfWeek(t *testing.T) {
 			date := testCase.givenDate
 
 			// When
-			result := beginningOfWeek(date)
+			result := BeginningOfWeek(date)
 
 			// Then
 			assert.Equal(t, testCase.expectedDate, result)
