@@ -37,7 +37,7 @@ var databaseMaintenanceList = cli.Command{
 			PerPage: c.Int("per-page"),
 		})
 		if err != nil {
-			errorQuitWithHelpMessage(err, c, "database-maintenance-list")
+			errorQuit(err)
 		}
 		return nil
 	},
