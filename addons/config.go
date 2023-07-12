@@ -35,7 +35,7 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 
 	// If addon does not contain a UUID, we consider it contains an addon type (e.g. MongoDB)
 	if !strings.HasPrefix(addon, "ad-") {
-		addon, err = utils.GetAddonUUIDFromType(ctx, c, app, addon)
+		addon, err = utils.GetAddonUUIDFromType(ctx, app, addon)
 		if err != nil {
 			return errors.Notef(ctx, err, "fail to get the addon UUID based on its type")
 		}
