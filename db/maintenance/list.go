@@ -8,24 +8,24 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func List(ctx context.Context, app string, addonName string, paginationOpts scalingo.PaginationOpts) error {
 	caser := cases.Title(language.English)
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "get Scalingo client")
+		return errors.Notef(ctx, err, "get Scalingo client")
 	}
 
 	response, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
 	if err != nil {
-		return errgo.Notef(err, "list the database maintenance")
+		return errors.Notef(ctx, err, "list the database maintenance")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
