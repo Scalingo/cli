@@ -17,6 +17,9 @@ type DatabasesService interface {
 	DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error)
 	DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error)
 	DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error)
+	DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error)
+	DatabaseListMaintenance(ctx context.Context, app, addonID string, opts PaginationOpts) (ListMaintenanceResponse, error)
+	DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error)
 }
 
 // DatabaseStatus is a string representing the status of a database deployment
@@ -70,6 +73,7 @@ type Database struct {
 	Cluster                    bool              `json:"cluster"`
 	PeriodicBackupsEnabled     bool              `json:"periodic_backups_enabled"`
 	PeriodicBackupsScheduledAt []int             `json:"periodic_backups_scheduled_at"` // Hours of the day of the periodic backups (UTC)
+	MaintenanceWindow          MaintenanceWindow `json:"maintenance_window"`
 }
 
 // InstanceStatus is a type of string representing the status of an Instance

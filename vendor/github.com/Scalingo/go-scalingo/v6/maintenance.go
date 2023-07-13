@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type MaintenanceWindow struct {
@@ -55,7 +55,7 @@ func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addon
 	}, &dbRes)
 
 	if err != nil {
-		return Database{}, errgo.Notef(err, "update database '%v' maintenance window", addonID)
+		return Database{}, errors.Notef(ctx, err, "update database '%v' maintenance window", addonID)
 	}
 	return dbRes.Database, nil
 }
@@ -70,7 +70,16 @@ func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID strin
 	var maintenanceRes ListMaintenanceResponse
 	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "maintenance", opts.ToMap(), &maintenanceRes)
 	if err != nil {
-		return ListMaintenanceResponse{}, errgo.Notef(err, "list database '%v' maintenance", addonID)
+		return ListMaintenanceResponse{}, errors.Notef(ctx, err, "list database '%v' maintenance", addonID)
+	}
+	return maintenanceRes, nil
+}
+
+func (c *Client) DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error) {
+	var maintenanceRes Maintenance
+	err := c.DBAPI(app, addonID).SubresourceGet(ctx, "databases", addonID, "maintenance", maintenanceID, nil, &maintenanceRes)
+	if err != nil {
+		return maintenanceRes, errors.Notef(ctx, err, "get database '%v' maintenance", addonID)
 	}
 	return maintenanceRes, nil
 }
