@@ -160,6 +160,10 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventPasswordResetSuccessType{Event: ev}
 	case EventStackChanged:
 		e = &EventStackChangedType{Event: ev}
+	case EventCreateReviewApp:
+		e = &EventCreateReviewAppType{Event: ev}
+	case EventDestroyReviewApp:
+		e = &EventDestroyReviewAppType{Event: ev}
 	case EventLinkGithub:
 		e = &EventLinkGithubType{Event: ev}
 	case EventUnlinkGithub:

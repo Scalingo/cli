@@ -140,6 +140,8 @@ const (
 	EventPasswordResetQuery      EventTypeName = "password_reset_query"
 	EventPasswordResetSuccess    EventTypeName = "password_reset_success"
 	EventStackChanged            EventTypeName = "stack_changed"
+	EventCreateReviewApp         EventTypeName = "create_review_app"
+	EventDestroyReviewApp        EventTypeName = "destroy_review_app"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -154,6 +156,47 @@ type EventNewUserType struct {
 
 func (ev *EventNewUserType) String() string {
 	return "You joined Scalingo. Hooray!"
+}
+
+type EventCreateReviewAppTypeData struct {
+	AppID                    string `json:"app_id"`
+	ReviewAppName            string `json:"review_app_name"`
+	ReviewAppURL             string `json:"review_app_url"`
+	SourceRepoName           string `json:"source_repo_name"`
+	SourceRepoURL            string `json:"source_repo_url"`
+	PullRequestName          string `json:"pr_name"`
+	PullRequestNumber        int    `json:"pr_number"`
+	PullRequestURL           string `json:"pr_url"`
+	PullRequestComesFromFork bool   `json:"pr_comes_from_a_fork"`
+}
+
+type EventCreateReviewAppType struct {
+	Event
+	TypeData EventCreateReviewAppTypeData `json:"type_data"`
+}
+
+func (ev *EventCreateReviewAppType) String() string {
+	return fmt.Sprintf("the review app %s has been created from the pull request %s #%d", ev.TypeData.ReviewAppName, ev.TypeData.PullRequestName, ev.TypeData.PullRequestNumber)
+}
+
+type EventDestroyReviewAppTypeData struct {
+	AppID                    string `json:"app_id"`
+	ReviewAppName            string `json:"review_app_name"`
+	SourceRepoName           string `json:"source_repo_name"`
+	SourceRepoURL            string `json:"source_repo_url"`
+	PullRequestName          string `json:"pr_name"`
+	PullRequestNumber        int    `json:"pr_number"`
+	PullRequestURL           string `json:"pr_url"`
+	PullRequestComesFromFork bool   `json:"pr_comes_from_a_fork"`
+}
+
+type EventDestroyReviewAppType struct {
+	Event
+	TypeData EventCreateReviewAppTypeData `json:"type_data"`
+}
+
+func (ev *EventDestroyReviewAppType) String() string {
+	return fmt.Sprintf("the review app %s has been destroyed", ev.TypeData.ReviewAppName)
 }
 
 type EventNewUserTypeData struct {

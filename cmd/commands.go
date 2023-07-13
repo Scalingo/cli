@@ -212,6 +212,7 @@ var (
 		&addonsRemoveCommand,
 		&addonsUpgradeCommand,
 		&addonsInfoCommand,
+		&addonsConfigCommand,
 
 		// Integration Link
 		&integrationLinkShowCommand,

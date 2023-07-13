@@ -7,6 +7,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -173,6 +174,56 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "addons-info")
+		},
+	}
+	addonsConfigCommand = cli.Command{
+		Name:     "addons-config",
+		Category: "Addons",
+		Usage:    "Configure an add-on attached to your app",
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "maintenance-window-hour", Usage: "Configure add-on maintenance window starting hour (in your local timezone)"},
+			&cli.StringFlag{Name: "maintenance-window-day", Usage: "Configure add-on maintenance window day"},
+		},
+		ArgsUsage: "addon-id",
+		Description: CommandDescription{
+			Description: "Configure an add-on attached to your app",
+			Examples:    []string{"scalingo --app my-app addons-config --maintenance-window-day tuesday --maintenance-window-hour 2 addon_uuid"},
+			SeeAlso:     []string{"addons", "addons-info"},
+		}.Render(),
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "addons-config")
+			}
+
+			ctx := c.Context
+			currentApp := detect.CurrentApp(c)
+			currentAddon := c.Args().First()
+			config := addons.UpdateAddonConfigOpts{}
+
+			if c.IsSet("maintenance-window-day") {
+				config.MaintenanceWindowDay = utils.StringPtr(c.String("maintenance-window-day"))
+			}
+
+			if c.IsSet("maintenance-window-hour") {
+				config.MaintenanceWindowHour = utils.IntPtr(c.Int("maintenance-window-hour"))
+			}
+
+			if config.MaintenanceWindowHour == nil && config.MaintenanceWindowDay == nil {
+				errorQuitWithHelpMessage(errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
+			}
+
+			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)
+			if err != nil {
+				errorQuit(err)
+			}
+
+			return nil
+		},
+		BashComplete: func(c *cli.Context) {
+			err := autocomplete.CmdFlagsAutoComplete(c, "addons-config")
+			if err != nil {
+				errorQuit(err)
+			}
 		},
 	}
 )

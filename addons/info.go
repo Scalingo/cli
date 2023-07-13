@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/utils"
 )
 
 // Info is the command handler displaying static information about one given addon
@@ -48,6 +50,7 @@ func Info(ctx context.Context, app, addon string) error {
 	t.Append([]string{"Plan", fmt.Sprintf("%v", addonInfo.Plan.Name)})
 	t.Append([]string{"Force TLS", forceSsl})
 	t.Append([]string{"Internet Accessibility", internetAccess})
+	t.Append([]string{"Maintenance window", utils.FormatMaintenanceWindowWithTimezone(dbInfo.MaintenanceWindow, time.Local)})
 
 	t.Render()
 
