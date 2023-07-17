@@ -28,7 +28,7 @@ func FormatMaintenanceWindowWithTimezone(maintenanceWindow scalingo.MaintenanceW
 }
 
 func ConvertDayAndHourToTimezone(weekday time.Weekday, hour int, inputLocation *time.Location, outputLocation *time.Location) (time.Weekday, int) {
-	newTimezoneDate := BeginningOfWeek(time.Now().In(inputLocation))
+	newTimezoneDate := beginningOfWeek(time.Now().In(inputLocation))
 
 	newTimezoneDate = newTimezoneDate.AddDate(0, 0, int(weekday)-1)
 	newTimezoneDate = newTimezoneDate.Add(time.Duration(hour) * time.Hour)
@@ -38,7 +38,7 @@ func ConvertDayAndHourToTimezone(weekday time.Weekday, hour int, inputLocation *
 	return newTimezoneDate.Weekday(), newTimezoneDate.Hour()
 }
 
-func BeginningOfWeek(t time.Time) time.Time {
+func beginningOfWeek(t time.Time) time.Time {
 	t = beginningOfDay(t)
 	weekday := int(t.Weekday())
 

@@ -72,6 +72,8 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 //	Yes => then the next maintenance is the day of the maintenance + 1 week
 //			except in the case if we are already in the range of the maintenance window and status different than "Scheduled".
 //	No 	=> then the next maintenance is the maintenance time from the database information.
+//
+// It returns the current maintenance if we are within the maintenance boundaries or returns the next maintenance.
 func getNextLocalMaintenanceWindow(now time.Time, maintenanceWindow scalingo.MaintenanceWindow, status scalingo.MaintenanceStatus) (time.Time, time.Time) {
 	var nextMaintenanceWindowStartingDate time.Time
 	now = now.UTC()
