@@ -43,6 +43,9 @@ func addonUUIDFromFlags(c *cli.Context, app string, exitIfMissing ...bool) strin
 		io.Error("Unable to find the addon name, please use --addon flag.")
 		os.Exit(1)
 	}
+	if addonName == "" {
+		return ""
+	}
 
 	var addonUUID string
 	var err error

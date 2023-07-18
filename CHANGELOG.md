@@ -2,11 +2,11 @@
 
 ### To be Released
 
-* chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead
-* feat(cmd): addon can be retrieve from addon type, not only UUID
-* feat: add database maintenance info with the new `database-maintenance-info` command
-* feat: add database maintenance listing with the new `database-maintenance-list` command
-* feat(addons): add maintenance windows manipulation with the new `addon-config` command
+* chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead ([PR#974](https://github.com/Scalingo/cli/pull/974))
+* feat(cmd): addon can be retrieve from addon type, not only UUID ([PR#983](https://github.com/Scalingo/cli/pull/983))
+* feat: add database maintenance info with the new `database-maintenance-info` command ([PR#984](https://github.com/Scalingo/cli/pull/984))
+* feat: add database maintenance listing with the new `database-maintenance-list` command ([PR#982](https://github.com/Scalingo/cli/pull/982))
+* feat(addons): add maintenance windows manipulation with the new `addon-config` command ([PR#955](https://github.com/Scalingo/cli/pull/955))
 
 ### 1.29.1
 
