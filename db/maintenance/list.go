@@ -20,7 +20,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 		return errors.Notef(ctx, err, "get Scalingo client")
 	}
 
-	response, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
+	maintenance, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
 	if err != nil {
 		return errors.Notef(ctx, err, "list the database maintenance")
 	}
@@ -28,7 +28,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"ID", "Type", "Started At", "Ended At", "Status"})
 
-	for _, maintenance := range response.Maintenance {
+	for _, maintenance := range maintenance {
 		startedAt := "Not started"
 		if maintenance.StartedAt != nil {
 			startedAt = maintenance.StartedAt.Local().Format(utils.TimeFormat)
@@ -48,6 +48,6 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 		})
 	}
 	t.Render()
-	fmt.Fprintln(os.Stderr, io.Gray(fmt.Sprintf("Page: %d, Last Page: %d", response.Meta.CurrentPage, response.Meta.TotalPages)))
+	fmt.Fprintln(os.Stderr, io.Gray(fmt.Sprintf("Page: %d, Last Page: %d", pagination.CurrentPage, pagination.TotalPages)))
 	return nil
 }
