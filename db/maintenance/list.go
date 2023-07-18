@@ -20,7 +20,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 		return errors.Notef(ctx, err, "get Scalingo client")
 	}
 
-	maintenance, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
+	maintenances, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationOpts)
 	if err != nil {
 		return errors.Notef(ctx, err, "list the database maintenance")
 	}
