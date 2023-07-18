@@ -42,3 +42,40 @@ var databaseMaintenanceList = cli.Command{
 		return nil
 	},
 }
+
+var databaseMaintenanceInfo = cli.Command{
+	Name:     "database-maintenance-info",
+	Category: "Addons",
+	Usage:    "Show a database maintenance",
+	Flags: []cli.Flag{
+		&appFlag,
+		&addonFlag,
+		&cli.StringFlag{Name: "maintenance", Usage: "ID of the maintenance"},
+	},
+	Description: CommandDescription{
+		Description: "Show a database maintenance",
+		Examples: []string{
+			"scalingo --app my-app --addon ad-9be0fc04-bee6-4981-a403-a9ddbee7bd1f database-maintenance-info 64a56b51a8acb50065b73ec8",
+		},
+	}.Render(),
+	Action: func(c *cli.Context) error {
+		currentApp := detect.CurrentApp(c)
+		if c.Args().Len() != 1 {
+			err := cli.ShowCommandHelp(c, "database-maintenance-info")
+			if err != nil {
+				errorQuit(err)
+			}
+			return nil
+		}
+
+		utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+		addonName := addonUUIDFromFlags(c, currentApp, true)
+		maintenanceID := c.Args().First()
+
+		err := maintenance.Info(c.Context, currentApp, addonName, maintenanceID)
+		if err != nil {
+			errorQuit(err)
+		}
+		return nil
+	},
+}

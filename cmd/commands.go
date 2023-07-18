@@ -250,6 +250,7 @@ var (
 
 		// Maintenance
 		&databaseMaintenanceList,
+		&databaseMaintenanceInfo,
 
 		// Backups
 		&backupsListCommand,
