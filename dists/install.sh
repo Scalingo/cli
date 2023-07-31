@@ -10,7 +10,7 @@ main() {
   }
 
   error() {
-    echo -en " !     $*"
+    echo -en " !     $*" >&2
   }
 
   warn() {
@@ -112,8 +112,8 @@ main() {
 
   version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
   if [ -z "$version" ]; then
-    echo "-----> Fail to get the version of the CLI" >&2
-    echo "You probably have an old version of curl. Please check your curl version and update accordingly." >&2
+    error "Fail to get the version of the CLI\n"
+    error "You probably have an old version of curl. Please check your curl version and update accordingly.\n"
     exit 1
   fi
 
@@ -124,8 +124,8 @@ main() {
   status "Downloading Scalingo client...  "
   curl --silent --fail --location --output ${tmpdir}/${archive_name} ${url}
   if [ ! -f ${tmpdir}/${archive_name} ]; then
-    echo "" >&2
-    echo "-----> Fail to download the CLI archive" >&2
+    echo ""
+    error "Fail to download the CLI archive\n"
     exit 1
   fi
   echo "DONE"
@@ -147,8 +147,8 @@ main() {
 
   exe_path=${tmpdir}/${dirname}/scalingo
   if [ ! -f "$exe_path" ]; then
-    echo "" >&2
-    echo "-----> Fail to extract the CLI archive" >&2
+    echo ""
+    error "Fail to extract the CLI archive\n"
     exit 1
   fi
   echo "DONE"
