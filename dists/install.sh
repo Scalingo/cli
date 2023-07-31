@@ -119,7 +119,7 @@ main() {
 
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
-  url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
+  url="https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}"
 
   status "Downloading Scalingo client...  "
   curl --silent --fail --location --output ${tmpdir}/${archive_name} ${url}
@@ -129,6 +129,19 @@ main() {
     exit 1
   fi
   echo "DONE"
+
+  status "Verifying the checksum...  "
+  checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
+  checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut -d " " -f1)
+  checksum_expected=$(wget -q --output-document - $checksums_url | grep $archive_name | cut -d " " -f 1)
+  if [[ "$checksum_computed" != "$checksum_expected" ]]; then
+    echo "INVALID"
+    error "Checksums don't match ('$checksum_computed' != '$checksum_expected').\n"
+    error "You may want to retry to install the Scalingo CLI. If the problem persists, please contact our support team.\n"
+    exit 1
+  fi
+  echo "VALID"
+
   status "Extracting...   "
   tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
 

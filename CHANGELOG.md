@@ -7,6 +7,7 @@
 * feat: add database maintenance info with the new `database-maintenance-info` command ([PR#984](https://github.com/Scalingo/cli/pull/984))
 * feat: add database maintenance listing with the new `database-maintenance-list` command ([PR#982](https://github.com/Scalingo/cli/pull/982))
 * feat(addons): add maintenance windows manipulation with the new `addon-config` command ([PR#955](https://github.com/Scalingo/cli/pull/955))
+* feat(install.sh): verify the archive checksum ([PR#988](https://github.com/Scalingo/cli/pull/988))
 
 ### 1.29.1
 
