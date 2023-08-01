@@ -110,7 +110,7 @@ main() {
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
 
-  version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+  version=$(curl --silent https://cli-dl.scalingo.com/version | tr --delete ' \t\n')
   if [ -z "$version" ]; then
     error "Fail to get the version of the CLI\n"
     error "You probably have an old version of curl. Please check your curl version and update accordingly.\n"
@@ -132,8 +132,8 @@ main() {
 
   status "Verifying the checksum...  "
   checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
-  checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut -d " " -f1)
-  checksum_expected=$(wget -q --output-document - $checksums_url | grep $archive_name | cut -d " " -f 1)
+  checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut --delimiter=" " --fields=1)
+  checksum_expected=$(wget --quiet --output-document - $checksums_url | grep $archive_name | cut --delimiter=" " --fields=1)
   if [[ "$checksum_computed" != "$checksum_expected" ]]; then
     echo "INVALID"
     error "Checksums don't match ('$checksum_computed' != '$checksum_expected').\n"
@@ -162,8 +162,8 @@ main() {
 
   if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
     export DISABLE_UPDATE_CHECKER=true
-    new_version=$($exe_path --version | cut -d' ' -f4)
-    old_version=$("$target" --version | cut -d' ' -f4)
+    new_version=$($exe_path --version | cut --delimiter=' ' --fields=4)
+    old_version=$("$target" --version | cut --delimiter=' ' --fields=4)
     warn "Scalingo client is already installed (version ${old_version})\n"
 
     if ! ask "Do you want to replace it with version ${new_version}?"  ; then
