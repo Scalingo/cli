@@ -136,7 +136,7 @@ main() {
   checksum_expected=$(wget --quiet --output-document - $checksums_url | grep $archive_name | cut --delimiter=" " --fields=1)
   if [[ "$checksum_computed" != "$checksum_expected" ]]; then
     echo "INVALID"
-    error "Checksums don't match ('$checksum_computed' != '$checksum_expected').\n"
+    error "Checksums don't match.\n"
     error "You may want to retry to install the Scalingo CLI. If the problem persists, please contact our support team.\n"
     exit 1
   fi
