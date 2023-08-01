@@ -10,7 +10,7 @@ main() {
   }
 
   error() {
-    echo -en " !     $*"
+    echo -en " !     $*" >&2
   }
 
   warn() {
@@ -110,32 +110,45 @@ main() {
   tmpdir=$(mktemp -d /tmp/scalingo_cli_XXX)
   trap "clean_install ${tmpdir}" EXIT
 
-  version=$(curl --silent https://cli-dl.scalingo.com/version | tr -d ' \t\n')
+  version=$(curl --silent https://cli-dl.scalingo.com/version | tr --delete ' \t\n')
   if [ -z "$version" ]; then
-    echo "-----> Fail to get the version of the CLI" >&2
-    echo "You probably have an old version of curl. Please check your curl version and update accordingly." >&2
+    error "Fail to get the version of the CLI\n"
+    error "You probably have an old version of curl. Please check your curl version and update accordingly.\n"
     exit 1
   fi
 
   dirname="scalingo_${version}_${os}_${arch}"
   archive_name="${dirname}.${ext}"
-  url=https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}
+  url="https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}"
 
   status "Downloading Scalingo client...  "
   curl --silent --fail --location --output ${tmpdir}/${archive_name} ${url}
   if [ ! -f ${tmpdir}/${archive_name} ]; then
-    echo "" >&2
-    echo "-----> Fail to download the CLI archive" >&2
+    echo ""
+    error "Fail to download the CLI archive\n"
     exit 1
   fi
   echo "DONE"
+
+  status "Verifying the checksum...  "
+  checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
+  checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut --delimiter=" " --fields=1)
+  checksum_expected=$(wget --quiet --output-document - $checksums_url | grep $archive_name | cut --delimiter=" " --fields=1)
+  if [[ "$checksum_computed" != "$checksum_expected" ]]; then
+    echo "INVALID"
+    error "Checksums don't match.\n"
+    error "You may want to retry to install the Scalingo CLI. If the problem persists, please contact our support team.\n"
+    exit 1
+  fi
+  echo "VALID"
+
   status "Extracting...   "
   tar -C "${tmpdir}" -x -f "${tmpdir}/${archive_name}"
 
   exe_path=${tmpdir}/${dirname}/scalingo
   if [ ! -f "$exe_path" ]; then
-    echo "" >&2
-    echo "-----> Fail to extract the CLI archive" >&2
+    echo ""
+    error "Fail to extract the CLI archive\n"
     exit 1
   fi
   echo "DONE"
@@ -149,8 +162,8 @@ main() {
 
   if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
     export DISABLE_UPDATE_CHECKER=true
-    new_version=$($exe_path --version | cut -d' ' -f4)
-    old_version=$("$target" --version | cut -d' ' -f4)
+    new_version=$($exe_path --version | cut --delimiter=' ' --fields=4)
+    old_version=$("$target" --version | cut --delimiter=' ' --fields=4)
     warn "Scalingo client is already installed (version ${old_version})\n"
 
     if ! ask "Do you want to replace it with version ${new_version}?"  ; then
