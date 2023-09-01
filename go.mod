@@ -24,9 +24,9 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.25.7
-	golang.org/x/crypto v0.11.0
-	golang.org/x/term v0.10.0
-	golang.org/x/text v0.11.0
+	golang.org/x/crypto v0.12.0
+	golang.org/x/term v0.11.0
+	golang.org/x/text v0.12.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
@@ -63,8 +63,8 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/net v0.12.0 // indirect
-	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/tools v0.9.2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
