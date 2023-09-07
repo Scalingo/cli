@@ -17,6 +17,14 @@ main() {
     echo -en " /!\\   $*"
   }
 
+  check_command_exists() {
+    if ! command -v $1 &> /dev/null
+    then
+        errors "$1 command could not be found, please install it first"
+        exit 1
+    fi
+  }
+
   clean_install() {
     tmpdir=$1
 
@@ -130,6 +138,9 @@ main() {
     exit 1
   fi
   echo "DONE"
+
+  check_command_exists sha256sum
+  check_command_exists wget
 
   status "Verifying the checksum...  "
   checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
