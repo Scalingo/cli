@@ -15,7 +15,7 @@ var (
 		Usage:       "List all addons",
 		Action: func(c *cli.Context) error {
 			if err := addonproviders.List(c.Context); err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

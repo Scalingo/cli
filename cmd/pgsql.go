@@ -21,7 +21,7 @@ var (
 		},
 		Description: CommandDescription{
 			Description: `Run an interactive console with your PostgreSQL addon
-			
+
 The --size flag makes it easy to specify the size of the container executing
 the PostgreSQL console. Each container size has different price and performance.
 You can read more about container sizes here:
@@ -49,7 +49,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 				VariableName: c.String("e"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

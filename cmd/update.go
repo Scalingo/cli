@@ -16,7 +16,7 @@ var (
 		Action: func(c *cli.Context) error {
 			err := update.Check()
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

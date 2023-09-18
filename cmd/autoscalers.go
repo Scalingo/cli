@@ -28,7 +28,7 @@ var (
 
 			err := autoscalers.List(c.Context, detect.CurrentApp(c))
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -57,7 +57,7 @@ var (
 			if !isValidAutoscalerAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "autoscalers-add")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -74,7 +74,7 @@ var (
 				MaxContainers: c.Int("max-containers"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -107,7 +107,7 @@ var (
 			if c.Args().Len() != 0 || !c.IsSet("c") {
 				err := cli.ShowCommandHelp(c, "autoscalers-update")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -139,7 +139,7 @@ var (
 			}
 			err := autoscalers.Update(c.Context, currentApp, c.String("c"), params)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -162,7 +162,7 @@ var (
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-enable")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -176,7 +176,7 @@ var (
 				Disabled: &disabled,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -200,7 +200,7 @@ var (
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-disable")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -214,7 +214,7 @@ var (
 				Disabled: &disabled,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -246,7 +246,7 @@ var (
 
 			err := autoscalers.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

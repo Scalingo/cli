@@ -81,11 +81,11 @@ func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
 	return func(c *cli.Context) error {
 		token := os.Getenv("SCALINGO_API_TOKEN")
 
-		currentUser, err := config.C.CurrentUser()
+		currentUser, err := config.C.CurrentUser(c.Context)
 		if err != nil || currentUser == nil {
 			err := session.Login(c.Context, session.LoginOpts{APIToken: token})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 		}
 
@@ -93,7 +93,7 @@ func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
 			Token: token,
 		})
 		if err != nil {
-			errorQuit(err)
+			errorQuit(c.Context, err)
 		}
 		currentRegion := regionNameFromFlags(c)
 

@@ -103,7 +103,7 @@ var (
 
 			err := apps.Run(c.Context, opts)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

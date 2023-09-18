@@ -40,7 +40,7 @@ var (
 
 			err := regionmigrations.Create(c.Context, currentApp, c.String("to"), c.String("new-name"))
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -91,7 +91,7 @@ var (
 
 			err := regionmigrations.Run(c.Context, currentApp, migrationID, step)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -118,7 +118,7 @@ var (
 
 			err := regionmigrations.Abort(c.Context, currentApp, migrationID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -138,7 +138,7 @@ var (
 
 			err := regionmigrations.List(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -166,7 +166,7 @@ var (
 
 			err := regionmigrations.Follow(c.Context, currentApp, migrationID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

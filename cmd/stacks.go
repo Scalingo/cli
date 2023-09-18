@@ -25,7 +25,7 @@ var (
 		Action: func(c *cli.Context) error {
 			err := stacks.List(c.Context, c.Bool("with-deprecated"))
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -53,7 +53,7 @@ var (
 
 			err := stacks.Set(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

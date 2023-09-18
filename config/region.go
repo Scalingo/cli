@@ -71,7 +71,7 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 		token := &auth.UserToken{Token: opts.Token}
 		if token.Token == "" {
 			auth := &CliAuthenticator{}
-			_, token, err = auth.LoadAuth()
+			_, token, err = auth.LoadAuth(ctx)
 			if err != nil {
 				return RegionsCache{}, errgo.Notef(err, "fail to load authentication")
 			}

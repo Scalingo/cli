@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"net/http"
@@ -59,21 +60,21 @@ func (r *ReportError) Report() {
 }
 
 func errorQuitWithHelpMessage(err error, ctxCli *cli.Context, command string) {
-	displayError(err)
+	displayError(ctxCli.Context, err)
 	fmt.Print("\n")
 	_ = cli.ShowCommandHelp(ctxCli, command)
 
 	os.Exit(1)
 }
 
-func errorQuit(err error) {
-	displayError(err)
+func errorQuit(ctx context.Context, err error) {
+	displayError(ctx, err)
 
 	os.Exit(1)
 }
 
-func displayError(err error) {
-	currentUser, autherr := config.C.CurrentUser()
+func displayError(ctx context.Context, err error) {
+	currentUser, autherr := config.C.CurrentUser(ctx)
 	if autherr != nil {
 		debug.Println("Fail to get current user")
 		debug.Println(errgo.Details(err))

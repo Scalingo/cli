@@ -30,7 +30,7 @@ var (
 			currentRegion := config.C.ScalingoRegion
 			err := apps.Dashboard(currentApp, currentRegion)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

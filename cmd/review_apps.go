@@ -28,7 +28,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			err := reviewapps.Show(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

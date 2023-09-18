@@ -39,12 +39,12 @@ var (
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
-				errorQuit(errors.New("feature argument should be specified"))
+				errorQuit(c.Context, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
 			err := db.EnableFeature(c, currentApp, addonName, feature)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -69,12 +69,12 @@ var (
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
-				errorQuit(errors.New("feature argument should be specified"))
+				errorQuit(c.Context, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
 			err := db.DisableFeature(c.Context, currentApp, addonName, feature)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -110,7 +110,7 @@ var (
 			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
 			if scheduleAtFlag != "" && disable {
-				errorQuit(errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
+				errorQuit(c.Context, errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
 			if disable {
@@ -122,7 +122,7 @@ var (
 				params.Enabled = &t
 				scheduleAt, loc, err := parseScheduleAtFlag(scheduleAtFlag)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, loc)
 				hour := localTime.UTC().Hour()
@@ -132,7 +132,7 @@ var (
 			if disable || scheduleAtFlag != "" {
 				err := db.BackupsConfiguration(c.Context, currentApp, addonName, params)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil

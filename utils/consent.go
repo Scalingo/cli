@@ -37,7 +37,7 @@ func CheckForConsent(ctx context.Context, appName string, consentTypes ...Consen
 		}
 	}
 
-	currentUser, err := config.C.CurrentUser()
+	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
 		return
 	}

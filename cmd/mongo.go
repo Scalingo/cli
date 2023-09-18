@@ -47,7 +47,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 				VariableName: c.String("e"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

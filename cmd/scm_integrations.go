@@ -25,7 +25,7 @@ var (
 		Action: func(c *cli.Context) error {
 			err := scmintegrations.List(c.Context)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -73,15 +73,15 @@ var (
 				break
 			case scalingo.SCMGithubEnterpriseType, scalingo.SCMGitlabSelfHostedType:
 				if integrationURL == "" || token == "" {
-					errorQuit(errors.New("both --url and --token must be set"))
+					errorQuit(c.Context, errors.New("both --url and --token must be set"))
 				}
 
 				u, err := url.Parse(integrationURL)
 				if err != nil || u.Scheme == "" || u.Host == "" {
-					errorQuit(fmt.Errorf("'%s' is not a valid URL", integrationURL))
+					errorQuit(c.Context, fmt.Errorf("'%s' is not a valid URL", integrationURL))
 				}
 			default:
-				errorQuit(errors.New(
+				errorQuit(c.Context, errors.New(
 					"unknown integration. Available integrations: github, github-enterprise, gitlab, gitlab-self-hosted",
 				))
 			}
@@ -94,7 +94,7 @@ var (
 
 			err := scmintegrations.Create(c.Context, args)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -125,7 +125,7 @@ var (
 
 			err := scmintegrations.Delete(c.Context, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -156,7 +156,7 @@ var (
 
 			err := scmintegrations.ImportKeys(c.Context, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

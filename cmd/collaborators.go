@@ -23,7 +23,7 @@ var (
 			} else {
 				err := collaborators.List(c.Context, currentApp)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil
@@ -51,7 +51,7 @@ var (
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := collaborators.Add(c.Context, currentApp, c.Args().First())
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil
@@ -80,7 +80,7 @@ var (
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := collaborators.Remove(c.Context, currentApp, c.Args().First())
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil

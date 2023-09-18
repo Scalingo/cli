@@ -23,7 +23,7 @@ var (
 				return nil
 			}
 			if err := addonproviders.Plans(c.Context, c.Args().First()); err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

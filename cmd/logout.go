@@ -16,15 +16,17 @@ var (
 		Usage:       "Logout from Scalingo",
 		Description: "Remove login information stored on your computer",
 		Action: func(c *cli.Context) error {
-			currentUser, err := config.C.CurrentUser()
+			ctx := c.Context
+			currentUser, err := config.C.CurrentUser(ctx)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(ctx, err)
 			}
 			if currentUser == nil {
 				io.Status("You are already logged out.")
 				return nil
 			}
-			if err := session.DestroyToken(); err != nil {
+			err = session.DestroyToken(ctx)
+			if err != nil {
 				panic(err)
 			}
 			io.Status("Scalingo credentials have been deleted.")

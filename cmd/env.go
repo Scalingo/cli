@@ -35,7 +35,7 @@ var (
 
 			err = env.Display(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -68,7 +68,7 @@ var (
 
 			variableValue, err := env.Get(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			fmt.Println(variableValue)
 			return nil
@@ -106,7 +106,7 @@ var (
 				return nil
 			}
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -136,7 +136,7 @@ var (
 				cli.ShowCommandHelp(c, "env-unset")
 			}
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

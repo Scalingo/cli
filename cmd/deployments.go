@@ -32,7 +32,7 @@ var (
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := deployments.ResetCache(c.Context, currentApp)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				io.Status("Deployment cache successfully deleted")
 			}
@@ -59,7 +59,7 @@ var (
 				PerPage: c.Int("per-page"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -85,7 +85,7 @@ var (
 
 			err := deployments.Logs(c.Context, currentApp, deploymentID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -107,7 +107,7 @@ var (
 				AppName: currentApp,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -153,13 +153,13 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
 				err := deployments.DeployWar(c.Context, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			} else {
 				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
 				err := deployments.Deploy(c.Context, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil

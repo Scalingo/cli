@@ -31,7 +31,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -61,7 +61,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -130,7 +130,7 @@ var (
 
 			err := notifiers.Provision(c.Context, currentApp, c.String("platform"), params)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -208,7 +208,7 @@ var (
 				cli.ShowCommandHelp(c, "notifiers-update")
 			}
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -239,7 +239,7 @@ var (
 				cli.ShowCommandHelp(c, "notifiers-remove")
 			}
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

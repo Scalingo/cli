@@ -38,7 +38,7 @@ var (
 			labelHasOnlyDigit, err := regexp.MatchString("^[0-9]+$", oneOffLabel)
 			if err != nil {
 				// This should never occur as we are pretty sure the provided regexp is valid.
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			if labelHasOnlyDigit {
 				oneOffLabel = "one-off-" + oneOffLabel
@@ -48,7 +48,7 @@ var (
 
 			err = apps.OneOffStop(c.Context, currentApp, oneOffLabel)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

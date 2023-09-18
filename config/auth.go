@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
@@ -28,7 +27,7 @@ var (
 type CliAuthenticator struct{}
 
 var (
-	ErrUnauthenticated = errgo.New("user unauthenticated")
+	ErrUnauthenticated = errors.New("user unauthenticated")
 )
 
 func Auth(ctx context.Context) (*scalingo.User, string, error) {
@@ -44,7 +43,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 			if err == nil {
 				break
 			} else if scalingoerrors.RootCause(err) == io.EOF {
-				return nil, "", errors.New("canceled by user")
+				return nil, "", scalingoerrors.New(ctx, "canceled by user")
 			} else {
 				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
 			}
@@ -54,30 +53,30 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 		return nil, "", errors.New("Forgot your password? https://auth.scalingo.com")
 	}
 	if err != nil {
-		return nil, "", errgo.Mask(err, errgo.Any)
+		return nil, "", scalingoerrors.Notef(ctx, err, "")
 	}
 
 	fmt.Print("\n")
 	appio.Statusf("Hello %s, nice to see you!\n\n", user.Username)
-	err = SetCurrentUser(user, tokens)
+	err = SetCurrentUser(ctx, user, tokens)
 	if err != nil {
-		return nil, "", errgo.Mask(err, errgo.Any)
+		return nil, "", scalingoerrors.Notef(ctx, err, "set current user")
 	}
 
 	return user, tokens, nil
 }
 
-func SetCurrentUser(user *scalingo.User, token string) error {
+func SetCurrentUser(ctx context.Context, user *scalingo.User, token string) error {
 	authenticator := &CliAuthenticator{}
-	err := authenticator.StoreAuth(user, token)
+	err := authenticator.StoreAuth(ctx, user, token)
 	if err != nil {
-		return errgo.Notef(err, "fail to store user credentials")
+		return scalingoerrors.Notef(ctx, err, "store credentials")
 	}
 	return nil
 }
 
-func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
-	authConfig, err := existingAuth()
+func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, token string) error {
+	authConfig, err := existingAuth(ctx)
 	if err != nil {
 		return err
 	}
@@ -89,9 +88,9 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 		c = make(auth.ConfigPerHostV2)
 	}
 
-	authHost, err := a.authHost()
+	authHost, err := a.authHost(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get authentication service host")
+		return scalingoerrors.Notef(ctx, err, "fail to get authentication service host")
 	}
 
 	c[authHost] = auth.CredentialsData{
@@ -106,33 +105,33 @@ func (a *CliAuthenticator) StoreAuth(user *scalingo.User, token string) error {
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {
-		return errgo.Notef(err, "fail to marshal the configuration to JSON")
+		return scalingoerrors.Notef(ctx, err, "fail to marshal the configuration to JSON")
 	}
 
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
-	return writeAuthFile(authConfig)
+	return writeAuthFile(ctx, authConfig)
 }
 
-func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
+func (a *CliAuthenticator) LoadAuth(ctx context.Context) (*scalingo.User, *auth.UserToken, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
 		return nil, nil, ErrUnauthenticated
 	}
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, scalingoerrors.Notef(ctx, err, "open authentication file for read")
 	}
 
 	var authConfig auth.ConfigData
 	if err := json.NewDecoder(file).Decode(&authConfig); err != nil {
 		file.Close()
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, scalingoerrors.Notef(ctx, err, "decode authentication file")
 	}
 	file.Close()
 
 	if authConfig.AuthDataVersion != auth.ConfigVersionV2 && authConfig.AuthDataVersion != auth.ConfigVersionV21 {
-		err = writeAuthFile(&authConfig)
+		err = writeAuthFile(ctx, &authConfig)
 		if err != nil {
-			return nil, nil, errgo.NoteMask(err, "fail to update to authv2", errgo.Any)
+			return nil, nil, scalingoerrors.Notef(ctx, err, "fail to update to authv2")
 		}
 		return nil, nil, ErrUnauthenticated
 	}
@@ -140,7 +139,7 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	var configPerHost auth.ConfigPerHostV2
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &configPerHost)
 	if err != nil {
-		return nil, nil, errgo.Mask(err)
+		return nil, nil, scalingoerrors.Notef(ctx, err, "unmarshal authentication config per host")
 	}
 
 	if authConfig.AuthDataVersion == auth.ConfigVersionV2 {
@@ -149,18 +148,18 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 		delete(configPerHost, "api.scalingo.com")
 		buffer, err := json.Marshal(&configPerHost)
 		if err != nil {
-			return nil, nil, errgo.Notef(err, "Fail to migrate auth config v2.0 to v2.1")
+			return nil, nil, scalingoerrors.Notef(ctx, err, "migrate auth config v2.0 to v2.1")
 		}
 		authConfig.AuthConfigPerHost = json.RawMessage(buffer)
-		err = writeAuthFile(&authConfig)
+		err = writeAuthFile(ctx, &authConfig)
 		if err != nil {
-			return nil, nil, errgo.Notef(err, "Fail to migrate auth config v2.0 to v2.1")
+			return nil, nil, scalingoerrors.Notef(ctx, err, "migrate auth config v2.0 to v2.1")
 		}
 	}
 
-	authHost, err := a.authHost()
+	authHost, err := a.authHost(ctx)
 	if err != nil {
-		return nil, nil, errgo.Notef(err, "fail to get authentication service host")
+		return nil, nil, scalingoerrors.Notef(ctx, err, "fail to get authentication service host")
 	}
 
 	creds, ok := configPerHost[authHost]
@@ -170,38 +169,38 @@ func (a *CliAuthenticator) LoadAuth() (*scalingo.User, *auth.UserToken, error) {
 	return creds.User, creds.Tokens, nil
 }
 
-func (a *CliAuthenticator) RemoveAuth() error {
-	authConfig, err := existingAuth()
+func (a *CliAuthenticator) RemoveAuth(ctx context.Context) error {
+	authConfig, err := existingAuth(ctx)
 	if err != nil {
-		return errgo.Mask(err)
+		return scalingoerrors.Notef(ctx, err, "get authentication config for removal")
 	}
 
 	var c auth.ConfigPerHostV2
 	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
 	if err != nil {
-		return errgo.Mask(err)
+		return scalingoerrors.Notef(ctx, err, "unmarshal authentication config per host")
 	}
 
-	authHost, err := a.authHost()
+	authHost, err := a.authHost(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get authentication service host")
+		return scalingoerrors.Notef(ctx, err, "get authentication service host")
 	}
 
 	delete(c, authHost)
 
 	buffer, err := json.Marshal(&c)
 	if err != nil {
-		return errgo.Mask(err)
+		return scalingoerrors.Notef(ctx, err, "marshal cleaned authentication config")
 	}
 
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
-	return writeAuthFile(authConfig)
+	return writeAuthFile(ctx, authConfig)
 }
 
-func (a *CliAuthenticator) authHost() (string, error) {
+func (a *CliAuthenticator) authHost(ctx context.Context) (string, error) {
 	u, err := url.Parse(C.ScalingoAuthURL)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to parse auth URL: %v", C.ScalingoAuthURL)
+		return "", scalingoerrors.Notef(ctx, err, "parse auth URL: %v", C.ScalingoAuthURL)
 	}
 	return strings.Split(u.Host, ":")[0], nil
 }
@@ -217,14 +216,14 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
-			return nil, "", errgo.Mask(err, errgo.Any)
+			return nil, "", scalingoerrors.Notef(ctx, err, "read username")
 		}
 		login = strings.TrimRight(login, "\n")
 	}
 
 	password, err := term.Password("       Password: ")
 	if err != nil {
-		return nil, "", errgo.Mask(err, errgo.Any)
+		return nil, "", scalingoerrors.Notef(ctx, err, "read password")
 	}
 	fmt.Printf("\n")
 
@@ -233,7 +232,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 	c, err := ScalingoUnauthenticatedAuthClient(ctx)
 	if err != nil {
-		return nil, "", errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
+		return nil, "", scalingoerrors.Notef(ctx, err, "fail to create an unauthenticated Scalingo client")
 	}
 
 	loginParams := scalingo.LoginParams{}
@@ -251,7 +250,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 		hostname, err := os.Hostname()
 		if err != nil {
-			return nil, "", errgo.Notef(err, "fail to get current hostname")
+			return nil, "", scalingoerrors.Notef(ctx, err, "fail to get current hostname")
 		}
 
 		apiToken, err = c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
@@ -261,7 +260,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			if !otpRequired && scalingohttp.IsOTPRequired(err) {
 				otpRequired = true
 			} else {
-				return nil, "", errgo.Notef(err, "fail to create API token")
+				return nil, "", scalingoerrors.Notef(ctx, err, "fail to create API token")
 			}
 		} else {
 			retryAuth = false
@@ -270,31 +269,31 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 	client, err := ScalingoAuthClientFromToken(ctx, apiToken.Token)
 	if err != nil {
-		return nil, "", errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+		return nil, "", scalingoerrors.Notef(ctx, err, "fail to create an authenticated Scalingo client using the API token")
 	}
 	userInformation, err := client.Self(ctx)
 	if err != nil {
-		return nil, "", errgo.Notef(err, "fail to get account data")
+		return nil, "", scalingoerrors.Notef(ctx, err, "fail to get account data")
 	}
 
 	return userInformation, apiToken.Token, nil
 }
 
-func writeAuthFile(authConfig *auth.ConfigData) error {
+func writeAuthFile(ctx context.Context, authConfig *auth.ConfigData) error {
 	file, err := os.OpenFile(C.AuthFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0700)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "open authentication file for writing")
 	}
 	defer file.Close()
 
 	enc := json.NewEncoder(file)
 	if err := enc.Encode(authConfig); err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return scalingoerrors.Notef(ctx, err, "encode authentication file")
 	}
 	return nil
 }
 
-func existingAuth() (*auth.ConfigData, error) {
+func existingAuth(ctx context.Context) (*auth.ConfigData, error) {
 	authConfig := auth.NewConfigData()
 	content, err := os.ReadFile(C.AuthFile)
 	if err == nil {
@@ -304,11 +303,11 @@ func existingAuth() (*auth.ConfigData, error) {
 		config := make(auth.ConfigPerHostV2)
 		buffer, err := json.Marshal(&config)
 		if err != nil {
-			return nil, errgo.Mask(err)
+			return nil, scalingoerrors.Notef(ctx, err, "encode non-existing authentication file")
 		}
 		authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	} else {
-		return nil, errgo.Mask(err)
+		return nil, scalingoerrors.Notef(ctx, err, "read existing authentication file")
 	}
 	return authConfig, nil
 }

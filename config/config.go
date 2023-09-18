@@ -140,9 +140,9 @@ func init() {
 	}
 }
 
-func (config Config) CurrentUser() (*scalingo.User, error) {
+func (config Config) CurrentUser(ctx context.Context) (*scalingo.User, error) {
 	authenticator := &CliAuthenticator{}
-	user, _, err := authenticator.LoadAuth()
+	user, _, err := authenticator.LoadAuth(ctx)
 	return user, err
 }
 
@@ -199,7 +199,7 @@ func ScalingoAuthClientFromToken(ctx context.Context, token string) (*scalingo.C
 
 func ScalingoAuthClient(ctx context.Context) (*scalingo.Client, error) {
 	auth := &CliAuthenticator{}
-	_, token, err := auth.LoadAuth()
+	_, token, err := auth.LoadAuth(ctx)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to load authentication")
 	}
@@ -208,7 +208,7 @@ func ScalingoAuthClient(ctx context.Context) (*scalingo.Client, error) {
 
 func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
-	_, token, err := authenticator.LoadAuth()
+	_, token, err := authenticator.LoadAuth(ctx)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to load credentials")
 	}
@@ -221,7 +221,7 @@ func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
 
 func ScalingoClientForRegion(ctx context.Context, region string) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
-	_, token, err := authenticator.LoadAuth()
+	_, token, err := authenticator.LoadAuth(ctx)
 	if err != nil {
 		return nil, errgo.Notef(err, "fail to load credentials")
 	}

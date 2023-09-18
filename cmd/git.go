@@ -44,7 +44,7 @@ var (
 				ForcePutRemote: c.Bool("force"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -72,7 +72,7 @@ var (
 
 			err := git.Show(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
