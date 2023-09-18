@@ -17,6 +17,7 @@ import (
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
+	scalingohttp "github.com/Scalingo/go-scalingo/v6/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -257,7 +258,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
 		}, loginParams)
 		if err != nil {
-			if !otpRequired && scalingoerrors.RootCause(err) == scalingo.ErrOTPRequired {
+			if !otpRequired && scalingoerrors.RootCause(err) == scalingohttp.ErrOTPRequired {
 				otpRequired = true
 			} else {
 				return nil, "", errgo.NoteMask(err, "fail to create API token", errgo.Any)
