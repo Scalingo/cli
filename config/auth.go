@@ -261,7 +261,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			if !otpRequired && scalingohttp.IsOTPRequired(err) {
 				otpRequired = true
 			} else {
-				return nil, "", errgo.NoteMask(err, "fail to create API token", errgo.Any)
+				return nil, "", errgo.Notef(err, "fail to create API token")
 			}
 		} else {
 			retryAuth = false
