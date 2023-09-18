@@ -49,6 +49,7 @@ type GetRegionOpts struct {
 }
 
 func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (RegionsCache, error) {
+	debug.Println("[Regions] Ensure cache is filled")
 	var regionsCache RegionsCache
 	fd, err := os.Open(c.RegionsCachePath)
 	if err == nil {
@@ -63,6 +64,7 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 
 	var client *scalingo.Client
 	if opts.SkipAuth {
+		debug.Println("[Regions] Create an unauthenticated client to the authentication service")
 		client, err = ScalingoUnauthenticatedAuthClient(ctx)
 		if err != nil {
 			return RegionsCache{}, errgo.Notef(err, "fail to create an unauthenticated client")
@@ -77,13 +79,14 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 			}
 		}
 
-		debug.Println("[Regions] Get the list of regions to fill the cache")
+		debug.Println("[Regions] Create an authenticated client to the authentication service using the token")
 		client, err = ScalingoAuthClientFromToken(ctx, token.Token)
 		if err != nil {
 			return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
 		}
 	}
 
+	debug.Println("[Regions] Get the list of regions to fill the cache")
 	regions, err := client.RegionsList(ctx)
 	if err != nil {
 		return RegionsCache{}, errgo.Notef(err, "fail to list available regions")
@@ -93,16 +96,18 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 	regionsCache.ExpireAt = time.Now().Add(10 * time.Minute)
 
 	if opts.SkipAuth {
+		debug.Println("[Regions] Do not save the cache")
 		// If we skipped the authentication the region cache should not be saved since it will not contain regions that are not publicly available (like osc-secnum-fr1)
 		return regionsCache, nil
 	}
 
+	debug.Println("[Regions] Save the cache")
 	fd, err = os.OpenFile(c.RegionsCachePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0750)
 	if err == nil {
 		json.NewEncoder(fd).Encode(regionsCache)
 		fd.Close()
 	} else {
-		debug.Printf("[Regions] Failed to save the regions cache: %v\n", err)
+		debug.Printf("[Regions] Failed to save the cache: %v\n", err)
 	}
 
 	return regionsCache, nil
@@ -119,6 +124,7 @@ func GetRegion(ctx context.Context, c Config, name string, opts GetRegionOpts) (
 
 	for _, region := range regionsCache.Regions {
 		if region.Name == name {
+			debug.Println("[Regions] Found the region in the cache")
 			return region, nil
 		}
 	}
