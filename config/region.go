@@ -55,7 +55,10 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 	if err != nil {
 		debug.Printf("[Regions] Fail to open the cache: %v\n", err)
 	} else {
-		json.NewDecoder(fd).Decode(&regionsCache)
+		err := json.NewDecoder(fd).Decode(&regionsCache)
+		if err != nil {
+			debug.Printf("[Regions] Fail to decode the cache to the file: %v\n", err)
+		}
 		fd.Close()
 	}
 	// If cache is still valid
@@ -110,7 +113,10 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 		return regionsCache, nil
 	}
 
-	json.NewEncoder(fd).Encode(regionsCache)
+	err = json.NewEncoder(fd).Encode(regionsCache)
+	if err != nil {
+		debug.Printf("[Regions] Fail to encode the cache to the file: %v\n", err)
+	}
 	fd.Close()
 	return regionsCache, nil
 }
