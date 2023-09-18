@@ -10,12 +10,6 @@ import (
 	"gopkg.in/errgo.v1"
 )
 
-const (
-	AuthAPI     = "AUTHENTICATION_API"
-	ScalingoAPI = "SCALINGO_API"
-	DBAPI       = "DATABASES_API"
-)
-
 type APIConfig struct {
 	Prefix string
 }
@@ -59,7 +53,7 @@ type client struct {
 	prefix         string
 }
 
-func NewClient(api string, cfg ClientConfig) Client {
+func NewClient(cfg ClientConfig) Client {
 	if cfg.Timeout == 0 {
 		cfg.Timeout = 30 * time.Second
 	}

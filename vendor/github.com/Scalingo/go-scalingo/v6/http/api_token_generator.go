@@ -34,7 +34,7 @@ func NewAPITokenGenerator(tokensService TokensService, apiToken string) *APIToke
 
 func (t *APITokenGenerator) GetAccessToken(ctx context.Context) (string, error) {
 	// Ask for a new JWT if there wasn't any or if the current token will expire in less than 5 minutes
-	if t.currentJWTexp.IsZero() || t.currentJWTexp.Sub(time.Now()) < 5*time.Minute {
+	if t.currentJWTexp.IsZero() || time.Until(t.currentJWTexp) < 5*time.Minute {
 		jwtToken, err := t.TokensService.TokenExchange(ctx, t.APIToken)
 		if err != nil {
 			return "", errgo.Notef(err, "fail to get access token")

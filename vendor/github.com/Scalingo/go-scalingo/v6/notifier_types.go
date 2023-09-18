@@ -48,47 +48,47 @@ type DetailedNotifier interface {
 type Notifiers []DetailedNotifier
 
 // DetailedNotifier implementation
-func (not *Notifier) GetNotifier() *Notifier {
-	return not
+func (n *Notifier) GetNotifier() *Notifier {
+	return n
 }
 
-func (not *Notifier) GetID() string {
-	return not.ID
+func (n *Notifier) GetID() string {
+	return n.ID
 }
 
-func (not *Notifier) GetName() string {
-	return not.Name
+func (n *Notifier) GetName() string {
+	return n.Name
 }
 
-func (not *Notifier) GetType() NotifierType {
-	return not.Type
+func (n *Notifier) GetType() NotifierType {
+	return n.Type
 }
 
-func (not *Notifier) GetSendAllEvents() bool {
-	return *not.SendAllEvents
+func (n *Notifier) GetSendAllEvents() bool {
+	return *n.SendAllEvents
 }
 
-func (not *Notifier) GetSendAllAlerts() bool {
-	return *not.SendAllAlerts
+func (n *Notifier) GetSendAllAlerts() bool {
+	return *n.SendAllAlerts
 }
 
-func (not *Notifier) GetSelectedEventIDs() []string {
-	return not.SelectedEventIDs
+func (n *Notifier) GetSelectedEventIDs() []string {
+	return n.SelectedEventIDs
 }
 
-func (not *Notifier) IsActive() bool {
-	return *not.Active
+func (n *Notifier) IsActive() bool {
+	return *n.Active
 }
 
-func (not *Notifier) When() string {
-	return not.UpdatedAt.Format("Mon Jan 02 2006 15:04:05")
+func (n *Notifier) When() string {
+	return n.UpdatedAt.Format("Mon Jan 02 2006 15:04:05")
 }
 
-func (not *Notifier) TypeDataPtr() interface{} {
-	return &not.TypeData
+func (n *Notifier) TypeDataPtr() interface{} {
+	return &n.TypeData
 }
 
-func (not *Notifier) TypeDataMap() map[string]interface{} {
+func (n *Notifier) TypeDataMap() map[string]interface{} {
 	return map[string]interface{}{}
 }
 
@@ -102,13 +102,13 @@ type NotifierWebhookTypeData struct {
 	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
-func (e *NotifierWebhookType) TypeDataPtr() interface{} {
-	return &e.TypeData
+func (n *NotifierWebhookType) TypeDataPtr() interface{} {
+	return &n.TypeData
 }
 
-func (not *NotifierWebhookType) TypeDataMap() map[string]interface{} {
+func (n *NotifierWebhookType) TypeDataMap() map[string]interface{} {
 	return map[string]interface{}{
-		"webhook url": not.TypeData.WebhookURL,
+		"webhook url": n.TypeData.WebhookURL,
 	}
 }
 
@@ -122,13 +122,13 @@ type NotifierSlackTypeData struct {
 	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
-func (e *NotifierSlackType) TypeDataPtr() interface{} {
-	return &e.TypeData
+func (n *NotifierSlackType) TypeDataPtr() interface{} {
+	return &n.TypeData
 }
 
-func (not *NotifierSlackType) TypeDataMap() map[string]interface{} {
+func (n *NotifierSlackType) TypeDataMap() map[string]interface{} {
 	return map[string]interface{}{
-		"webhook url": not.TypeData.WebhookURL,
+		"webhook url": n.TypeData.WebhookURL,
 	}
 }
 
@@ -143,20 +143,20 @@ type NotifierEmailTypeData struct {
 	UserIDs []string `json:"user_ids,omitempty"`
 }
 
-func (e *NotifierEmailType) TypeDataPtr() interface{} {
-	return &e.TypeData
+func (n *NotifierEmailType) TypeDataPtr() interface{} {
+	return &n.TypeData
 }
 
-func (not *NotifierEmailType) TypeDataMap() map[string]interface{} {
+func (n *NotifierEmailType) TypeDataMap() map[string]interface{} {
 	return map[string]interface{}{
-		"emails":   not.TypeData.Emails,
-		"user_ids": not.TypeData.UserIDs,
+		"emails":   n.TypeData.Emails,
+		"user_ids": n.TypeData.UserIDs,
 	}
 }
 
-func (pnot *Notifier) Specialize() DetailedNotifier {
+func (n *Notifier) Specialize() DetailedNotifier {
 	var detailedNotifier DetailedNotifier
-	notifier := *pnot
+	notifier := *n
 	switch notifier.Type {
 	case NotifierWebhook:
 		detailedNotifier = &NotifierWebhookType{Notifier: notifier}
@@ -165,12 +165,12 @@ func (pnot *Notifier) Specialize() DetailedNotifier {
 	case NotifierEmail:
 		detailedNotifier = &NotifierEmailType{Notifier: notifier}
 	default:
-		return pnot
+		return n
 	}
-	err := json.Unmarshal(pnot.RawTypeData, detailedNotifier.TypeDataPtr())
+	err := json.Unmarshal(n.RawTypeData, detailedNotifier.TypeDataPtr())
 	if err != nil {
 		debug.Printf("error reading the data: %+v\n", err)
-		return pnot
+		return n
 	}
 	return detailedNotifier
 }

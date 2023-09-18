@@ -72,7 +72,7 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 		Notifiers:     params.Notifiers,
 	}
 	if params.RemindEvery != nil {
-		a.RemindEvery = (*params.RemindEvery).String()
+		a.RemindEvery = params.RemindEvery.String()
 	}
 	if params.DurationBeforeTrigger != nil {
 		a.DurationBeforeTrigger = *params.DurationBeforeTrigger

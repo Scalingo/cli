@@ -210,7 +210,7 @@ func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string
 }
 
 func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error {
-	_, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
+	res, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/apps/" + app + "/scm_repo_link/manual_review_app",
 		Expected: http.Statuses{200},
@@ -219,6 +219,8 @@ func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullReques
 	if err != nil {
 		return errgo.Notef(err, "fail to trigger manual review app deployment")
 	}
+	defer res.Body.Close()
+
 	return nil
 }
 

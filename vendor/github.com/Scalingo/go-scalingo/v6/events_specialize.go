@@ -164,6 +164,12 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventCreateReviewAppType{Event: ev}
 	case EventDestroyReviewApp:
 		e = &EventDestroyReviewAppType{Event: ev}
+	case EventPlanDatabaseMaintenance:
+		e = &EventPlanDatabaseMaintenanceType{Event: ev}
+	case EventStartDatabaseMaintenance:
+		e = &EventStartDatabaseMaintenanceType{Event: ev}
+	case EventCompleteDatabaseMaintenance:
+		e = &EventCompleteDatabaseMaintenanceType{Event: ev}
 	case EventLinkGithub:
 		e = &EventLinkGithubType{Event: ev}
 	case EventUnlinkGithub:

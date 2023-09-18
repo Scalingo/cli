@@ -4,7 +4,7 @@ type PaymentMethodType string
 
 const (
 	Stripe PaymentMethodType = "stripe"
-	Paypal                   = "paypal"
+	Paypal PaymentMethodType = "paypal"
 )
 
 type Profile struct {

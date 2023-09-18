@@ -27,10 +27,11 @@ func (c *Client) SignUp(ctx context.Context, email, password string) error {
 			},
 		},
 	}
-	_, err := c.ScalingoAPI().Do(ctx, req)
+	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
 		return errgo.Mask(err)
 	}
+	defer res.Body.Close()
 
 	return nil
 }

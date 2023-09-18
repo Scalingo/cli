@@ -31,9 +31,9 @@ func (ev *EventAddPaymentMethodType) String() string {
 	if ev.TypeData.Profile.PaymentMethodType == billing.Stripe {
 		p := ev.TypeData.Profile.Stripe
 		return fmt.Sprintf("%s card ending with ...%s, expiring in %s", p.Brand, p.Last4, p.Exp)
-	} else {
-		return fmt.Sprintf("'%s' payment method added", ev.TypeData.Profile.PaymentMethodType)
 	}
+
+	return fmt.Sprintf("'%s' payment method added", ev.TypeData.Profile.PaymentMethodType)
 }
 
 type EventAddPaymentMethodTypeData struct {

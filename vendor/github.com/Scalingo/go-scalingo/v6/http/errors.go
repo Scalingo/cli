@@ -79,9 +79,9 @@ func (err PaymentRequiredError) Error() string {
 
 func (err NotFoundError) Error() string {
 	if err.Resource == "app" {
-		return fmt.Sprintf("The application was not found, did you make a typo?")
+		return "The application was not found, did you make a typo?"
 	} else if err.Resource == "container_type" {
-		return fmt.Sprintf("This type of container was not found, please ensure it is present in your Procfile\n→ https://doc.scalingo.com/platform/app/procfile")
+		return "This type of container was not found, please ensure it is present in your Procfile\n→ https://doc.scalingo.com/platform/app/procfile"
 	} else if err.Resource != "" {
 		return fmt.Sprintf("The %s was not found", err.Resource)
 	} else {
@@ -120,7 +120,10 @@ func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
 	case 401:
 		var apiErr APIError
-		parseJSON(res, &apiErr)
+		err := parseJSON(res, &apiErr)
+		if err != nil {
+			return err
+		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
 	case 402:
 		var paymentRequiredErr PaymentRequiredError

@@ -2,6 +2,13 @@
 
 ## To Be Released
 
+## 6.7.3
+
+* feat(events): add maintenance events
+* refactor(tokens): deprecate `ErrOTPRequired` and `IsOTPRequired`
+* fix(events): disambiguate event name when restarting containers
+* fix(events): app run event wording
+
 ## 6.7.2
 
 * fix(maintenance): change listing pagination meta to standard pagination meta

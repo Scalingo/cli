@@ -3,7 +3,6 @@ package scalingo
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"strconv"
 	"time"
 
@@ -20,19 +19,15 @@ type TokensService interface {
 }
 
 var _ TokensService = (*Client)(nil)
-var ErrOTPRequired = errors.New("OTP Required")
+
+// Deprecated: use http.ErrOTPRequired instead of this wrapper.
+var ErrOTPRequired = http.ErrOTPRequired
 
 // IsOTPRequired tests if the authentication backend return an OTP Required error
+//
+// Deprecated: use http.IsOTPRequired instead of this wrapper.
 func IsOTPRequired(err error) bool {
-	rerr, ok := err.(*http.RequestFailedError)
-	if !ok {
-		return false
-	}
-
-	if rerr.Message == "OTP Required" {
-		return true
-	}
-	return false
+	return http.IsOTPRequired(err)
 }
 
 type Token struct {
@@ -117,8 +112,8 @@ func (c *Client) TokenCreateWithLogin(ctx context.Context, params TokenCreatePar
 
 	resp, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
-		if IsOTPRequired(err) {
-			return Token{}, ErrOTPRequired
+		if http.IsOTPRequired(err) {
+			return Token{}, http.ErrOTPRequired
 		}
 		return Token{}, errgo.Notef(err, "request failed")
 	}
