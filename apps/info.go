@@ -6,23 +6,22 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/pkg/errors"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Info(ctx context.Context, appName string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Notef(ctx, err, "get Scalingo client")
 	}
 
 	app, err := c.AppsShow(ctx, appName)
 	if err != nil {
-		return errgo.Notef(err, "fail to get the application information")
+		return errors.Notef(ctx, err, "get the application information from the API")
 	}
 
 	stackName, err := getStackName(ctx, c, app.StackID)
@@ -54,5 +53,5 @@ func getStackName(ctx context.Context, c *scalingo.Client, stackID string) (stri
 			return stack.Name, nil
 		}
 	}
-	return "", errors.New("unknown stack")
+	return "", errors.Newf(ctx, "unknown stack '%v'", stackID)
 }
