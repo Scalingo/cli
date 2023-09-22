@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func TestStoreAuth(t *testing.T) {
+	ctx := context.Background()
 	u := &scalingo.User{
 		Email:    "test@example.com",
 		Username: "test",
@@ -19,27 +21,28 @@ func TestStoreAuth(t *testing.T) {
 	authenticator := &CliAuthenticator{}
 
 	// First creation
-	err := authenticator.StoreAuth(u, "0123456789")
+	err := authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
 	clean()
 
 	// Rewrite over an existing file
-	err = authenticator.StoreAuth(u, "0123456789")
+	err = authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
-	err = authenticator.StoreAuth(u, "0123456789")
+	err = authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
 	clean()
 
 	// Add an additional auth url
-	err = authenticator.StoreAuth(u, "0123456789")
+	err = authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
 	C.ScalingoAuthURL = "api.scalingo2.dev"
-	err = authenticator.StoreAuth(u, "0123456789")
+	err = authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
 	clean()
 }
 
 func TestExistingAuth(t *testing.T) {
+	ctx := context.Background()
 	u := &scalingo.User{
 		Email:    "test@example.com",
 		Username: "test",
@@ -47,7 +50,7 @@ func TestExistingAuth(t *testing.T) {
 	authenticator := &CliAuthenticator{}
 
 	// Before any auth
-	currentAuth, err := existingAuth()
+	currentAuth, err := existingAuth(ctx)
 	require.NoError(t, err)
 
 	var configPerHost auth.ConfigPerHostV2
@@ -56,10 +59,10 @@ func TestExistingAuth(t *testing.T) {
 	assert.True(t, currentAuth.LastUpdate.IsZero())
 
 	// After one auth
-	err = authenticator.StoreAuth(u, "0123456789")
+	err = authenticator.StoreAuth(ctx, u, "0123456789")
 	require.NoError(t, err)
 
-	currentAuth, err = existingAuth()
+	currentAuth, err = existingAuth(ctx)
 	json.Unmarshal(currentAuth.AuthConfigPerHost, &configPerHost)
 	require.NoError(t, err)
 	assert.Len(t, configPerHost, 1)

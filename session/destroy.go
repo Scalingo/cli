@@ -1,14 +1,17 @@
 package session
 
 import (
+	"context"
+
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func DestroyToken() error {
+func DestroyToken(ctx context.Context) error {
 	authenticator := &config.CliAuthenticator{}
-	if err := authenticator.RemoveAuth(); err != nil {
+	err := authenticator.RemoveAuth(ctx)
+	if err != nil {
 		return errgo.Mask(err)
 	}
 	return nil

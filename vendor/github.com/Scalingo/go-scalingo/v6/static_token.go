@@ -1,16 +1,19 @@
 package scalingo
 
-import "context"
+import (
+	"context"
+)
 
 // StaticTokenGenerator is an implementation of TokenGenerator which always return the same token.
 // This token is provided to the constructor. The TokenGenerator is used by the Client to
 // authenticate to the Scalingo API.
 //
 // Usage:
-//		t := GetStaticTokenGenerator("my-token")
-//		client := NewClient(ClientConfig{
-//			TokenGenerator: t,
-//		})
+//
+//	t := GetStaticTokenGenerator("my-token")
+//	client := NewClient(ClientConfig{
+//		TokenGenerator: t,
+//	})
 //
 // Any subsequent calls to the Scalingo API will use this token to authenticate.
 type StaticTokenGenerator struct {

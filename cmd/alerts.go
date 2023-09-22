@@ -31,7 +31,7 @@ var (
 
 			err := alerts.List(c.Context, detect.CurrentApp(c))
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -66,7 +66,7 @@ var (
 			if !isValidAlertAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "alerts-add")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -87,7 +87,7 @@ var (
 				Notifiers:             c.StringSlice("n"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -125,7 +125,7 @@ var (
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-update")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -171,7 +171,7 @@ var (
 
 			err := alerts.Update(c.Context, currentApp, alertID, params)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -196,7 +196,7 @@ var (
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-enable")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -210,7 +210,7 @@ var (
 				Disabled: &disabled,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -235,7 +235,7 @@ var (
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-disable")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
@@ -249,7 +249,7 @@ var (
 				Disabled: &disabled,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -281,7 +281,7 @@ var (
 
 			err := alerts.Remove(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

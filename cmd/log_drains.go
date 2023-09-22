@@ -50,7 +50,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 				AddonID:    addonID,
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -131,7 +131,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				},
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -207,7 +207,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			})
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

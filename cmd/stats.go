@@ -30,7 +30,7 @@ var (
 
 			err := apps.Stats(c.Context, currentApp, c.Bool("stream"))
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

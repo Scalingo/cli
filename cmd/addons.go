@@ -29,7 +29,7 @@ var (
 
 			err := addons.List(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -60,7 +60,7 @@ var (
 
 			err := addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -92,12 +92,12 @@ var (
 
 			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			err = addons.Destroy(c.Context, currentApp, addonUUID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -127,12 +127,12 @@ var (
 
 			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			err = addons.Upgrade(c.Context, currentApp, addonUUID, c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -162,12 +162,12 @@ var (
 
 			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, addonName)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			err = addons.Info(c.Context, currentApp, addonUUID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -214,7 +214,7 @@ var (
 
 			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil
@@ -222,7 +222,7 @@ var (
 		BashComplete: func(c *cli.Context) {
 			err := autocomplete.CmdFlagsAutoComplete(c, "addons-config")
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 		},
 	}

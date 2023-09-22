@@ -31,7 +31,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -74,7 +74,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -106,7 +106,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -147,7 +147,7 @@ var (
 				cli.ShowCommandHelp(c, "domains-ssl")
 			}
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -179,7 +179,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 
 			err := domains.SetCanonical(c.Context, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -210,7 +210,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 
 			err := domains.UnsetCanonical(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

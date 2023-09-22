@@ -43,7 +43,7 @@ var (
 			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Args().Slice())
 			if err != nil {
 				rootError := errors.RootCause(err)
-				errorQuit(rootError)
+				errorQuit(c.Context, rootError)
 			}
 			return nil
 		},

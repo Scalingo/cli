@@ -38,7 +38,7 @@ var (
 				PerPage: c.Int("per-page"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			return nil

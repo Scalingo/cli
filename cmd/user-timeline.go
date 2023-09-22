@@ -34,7 +34,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

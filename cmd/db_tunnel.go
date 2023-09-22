@@ -82,7 +82,7 @@ var (
 				Reconnect: c.Bool("reconnect"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

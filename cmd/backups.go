@@ -27,7 +27,7 @@ var (
 
 			err := db.ListBackups(c.Context, currentApp, addonName)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -51,7 +51,7 @@ var (
 
 			err := db.CreateBackup(c.Context, currentApp, addonName)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -94,7 +94,7 @@ var (
 
 			err := db.DownloadBackup(c.Context, currentApp, addonName, backup, opts)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

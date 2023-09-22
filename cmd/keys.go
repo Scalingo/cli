@@ -20,7 +20,7 @@ var (
 		Action: func(c *cli.Context) error {
 			err := keys.List(c.Context)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -47,7 +47,7 @@ var (
 			}
 			err := keys.Add(c.Context, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -74,7 +74,7 @@ var (
 			}
 			err := keys.Remove(c.Context, c.Args().First())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

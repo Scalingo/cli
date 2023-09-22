@@ -12,8 +12,8 @@ import (
 var (
 	ErrRegionNotFound = errgo.New("Region not found")
 
-	regionCache      map[string]Region = map[string]Region{}
-	regionCacheMutex *sync.Mutex       = &sync.Mutex{}
+	regionCache      = map[string]Region{}
+	regionCacheMutex = &sync.Mutex{}
 )
 
 type RegionsService interface {

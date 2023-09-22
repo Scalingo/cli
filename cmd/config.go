@@ -24,7 +24,7 @@ var (
 			if regionName != "" {
 				err := config.SetRegion(c.Context, regionName)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 

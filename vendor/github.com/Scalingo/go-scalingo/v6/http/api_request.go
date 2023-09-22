@@ -79,19 +79,13 @@ func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error
 	// Execute the HTTP request according to the HTTP method
 	var body io.Reader
 	switch req.Method {
-	case "PATCH":
-		fallthrough
-	case "POST":
-		fallthrough
-	case "PUT":
-		fallthrough
-	case "WITH_BODY":
+	case http.MethodPatch, http.MethodPost, http.MethodPut, "WITH_BODY":
 		buffer, err := json.Marshal(req.Params)
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to marshal params")
 		}
 		body = bytes.NewReader(buffer)
-	case "GET", "DELETE":
+	case http.MethodGet, http.MethodDelete:
 		values, err := req.BuildQueryFromParams()
 		if err != nil {
 			return nil, errgo.Notef(err, "fail to build the query params")

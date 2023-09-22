@@ -93,9 +93,9 @@ type EventRestartType struct {
 
 func (ev *EventRestartType) String() string {
 	if len(ev.TypeData.Scope) != 0 {
-		return fmt.Sprintf("containers %v have been restarted", ev.TypeData.Scope)
+		return fmt.Sprintf("containers %v began to restart", ev.TypeData.Scope)
 	}
-	return "containers have been restarted"
+	return "containers began to restart"
 }
 
 func (ev *EventRestartType) Who() string {

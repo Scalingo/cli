@@ -23,7 +23,7 @@ var (
 		Description: "Login to Scalingo platform",
 		Action: func(c *cli.Context) error {
 			if c.Bool("ssh") && c.Bool("password-only") {
-				errorQuit(errors.New("you cannot use both --ssh and --password-only at the same time"))
+				errorQuit(c.Context, errors.New("you cannot use both --ssh and --password-only at the same time"))
 			}
 
 			err := session.Login(c.Context, session.LoginOpts{
@@ -33,7 +33,7 @@ var (
 				SSHIdentity:  c.String("ssh-identity"),
 			})
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

@@ -40,7 +40,7 @@ var (
 				utils.CheckForConsent(c.Context, currentApp)
 				err := apps.Destroy(c.Context, currentApp, c.Bool("force"))
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil

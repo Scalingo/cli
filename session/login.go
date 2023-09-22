@@ -155,7 +155,7 @@ func finalizeLogin(ctx context.Context, token string) error {
 
 	io.Statusf("Hello %s, nice to see you!\n", user.Username)
 
-	err = config.SetCurrentUser(user, token)
+	err = config.SetCurrentUser(ctx, user, token)
 	if err != nil {
 		return errgo.Mask(err)
 	}

@@ -12,7 +12,7 @@ func (ev *EventNewIntegrationType) String() string {
 	if !ok {
 		integrationType = string(ev.TypeData.IntegrationType)
 	}
-	msg := fmt.Sprintf("%s", integrationType)
+	msg := integrationType
 
 	if ev.TypeData.IntegrationType == SCMGithubEnterpriseType ||
 		ev.TypeData.IntegrationType == SCMGitlabSelfHostedType {
@@ -42,7 +42,7 @@ func (ev *EventDeleteIntegrationType) String() string {
 	if !ok {
 		integrationType = string(ev.TypeData.IntegrationType)
 	}
-	msg := fmt.Sprintf("%s", integrationType)
+	msg := integrationType
 
 	if ev.TypeData.IntegrationType == SCMGithubEnterpriseType ||
 		ev.TypeData.IntegrationType == SCMGitlabSelfHostedType {
@@ -83,7 +83,7 @@ type EventRevokeGithubType struct {
 }
 
 func (ev *EventRevokeGithubType) String() string {
-	return fmt.Sprintf("GitHub authorization has been revoked")
+	return "GitHub authorization has been revoked"
 }
 
 type EventNewKeyTypeData struct {

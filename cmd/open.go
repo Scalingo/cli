@@ -30,7 +30,7 @@ var (
 
 			err := apps.Open(currentApp, currentRegion)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

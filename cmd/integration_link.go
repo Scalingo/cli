@@ -46,7 +46,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			err := integrationlink.Show(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -103,7 +103,7 @@ List of available integrations:
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(errgo.Notef(err, "error parsing the repository url"))
+				errorQuit(c.Context, errgo.Notef(err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
@@ -129,14 +129,14 @@ List of available integrations:
 					}
 					os.Exit(1)
 				}
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			var params scalingo.SCMRepoLinkCreateParams
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			} else {
 				branch := c.String("branch")
@@ -182,7 +182,7 @@ List of available integrations:
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
 					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 					if err != nil {
-						errorQuit(err)
+						errorQuit(c.Context, err)
 					}
 				}
 
@@ -216,10 +216,10 @@ List of available integrations:
 						io.Error("")
 						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
 					} else {
-						errorQuit(err)
+						errorQuit(c.Context, err)
 					}
 				} else {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 			}
 			return nil
@@ -307,7 +307,7 @@ List of available integrations:
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 
 				params.AutomaticCreationFromForksAllowed = &stillAllowed
@@ -315,7 +315,7 @@ List of available integrations:
 
 			err := integrationlink.Update(c.Context, currentApp, *params)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -346,7 +346,7 @@ List of available integrations:
 
 			err := integrationlink.Delete(c.Context, currentApp)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -380,7 +380,7 @@ List of available integrations:
 			follow := c.Bool("follow")
 			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName, follow)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -418,12 +418,12 @@ List of available integrations:
 
 			pullRequestID, err := strconv.Atoi(c.Args().First())
 			if err != nil {
-				errorQuit(errgo.Notef(err, "invalid pull / merge request id"))
+				errorQuit(c.Context, errgo.Notef(err, "invalid pull / merge request id"))
 			}
 
 			pullRequest, err := integrationlink.PullRequest(c.Context, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 
 			if pullRequest.OpenedFromAForkedRepo {
@@ -432,7 +432,7 @@ List of available integrations:
 					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
 					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository?")
 					if err != nil {
-						errorQuit(err)
+						errorQuit(c.Context, err)
 					}
 
 					if !allowReviewAppsFromForks {
@@ -444,7 +444,7 @@ List of available integrations:
 
 			err = integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

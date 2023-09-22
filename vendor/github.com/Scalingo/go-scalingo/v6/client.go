@@ -121,7 +121,7 @@ func (c *Client) ScalingoAPI() http.Client {
 	if c.config.StaticTokenGenerator != nil {
 		tokenGenerator = c.config.StaticTokenGenerator
 	}
-	if len(c.config.APIToken) != 0 {
+	if c.config.APIToken != "" {
 		tokenGenerator = http.NewAPITokenGenerator(c, c.config.APIToken)
 	}
 	prefix := "/v1"
@@ -129,7 +129,7 @@ func (c *Client) ScalingoAPI() http.Client {
 		prefix = c.config.APIPrefix
 	}
 
-	client := http.NewClient(http.ScalingoAPI, http.ClientConfig{
+	client := http.NewClient(http.ClientConfig{
 		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
@@ -154,7 +154,7 @@ func (c *Client) DBAPI(app, addon string) http.Client {
 	if c.config.DatabaseAPIPrefix != "" {
 		prefix = c.config.DatabaseAPIPrefix
 	}
-	return http.NewClient(http.DBAPI, http.ClientConfig{
+	return http.NewClient(http.ClientConfig{
 		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,
@@ -173,7 +173,7 @@ func (c *Client) AuthAPI() http.Client {
 	if c.config.StaticTokenGenerator != nil {
 		tokenGenerator = c.config.StaticTokenGenerator
 	}
-	if len(c.config.APIToken) != 0 {
+	if c.config.APIToken != "" {
 		tokenGenerator = http.NewAPITokenGenerator(c, c.config.APIToken)
 	}
 
@@ -181,7 +181,7 @@ func (c *Client) AuthAPI() http.Client {
 	if c.config.AuthPrefix != "" {
 		prefix = c.config.AuthPrefix
 	}
-	client := http.NewClient(http.AuthAPI, http.ClientConfig{
+	client := http.NewClient(http.ClientConfig{
 		UserAgent:      c.config.UserAgent,
 		Timeout:        c.config.Timeout,
 		TLSConfig:      c.config.TLSConfig,

@@ -37,7 +37,7 @@ var databaseMaintenanceList = cli.Command{
 			PerPage: c.Int("per-page"),
 		})
 		if err != nil {
-			errorQuit(err)
+			errorQuit(c.Context, err)
 		}
 		return nil
 	},
@@ -63,7 +63,7 @@ var databaseMaintenanceInfo = cli.Command{
 		if c.Args().Len() != 1 {
 			err := cli.ShowCommandHelp(c, "database-maintenance-info")
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		}
@@ -74,7 +74,7 @@ var databaseMaintenanceInfo = cli.Command{
 
 		err := maintenance.Info(c.Context, currentApp, addonName, maintenanceID)
 		if err != nil {
-			errorQuit(err)
+			errorQuit(c.Context, err)
 		}
 		return nil
 	},

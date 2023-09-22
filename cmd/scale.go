@@ -35,14 +35,14 @@ var (
 			if c.Args().Len() == 0 {
 				err := apps.ContainerTypes(c.Context, currentApp)
 				if err != nil {
-					errorQuit(err)
+					errorQuit(c.Context, err)
 				}
 				return nil
 			}
 
 			err := apps.Scale(c.Context, currentApp, c.Bool("s"), c.Args().Slice())
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

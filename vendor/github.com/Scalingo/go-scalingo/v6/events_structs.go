@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Event struct {
@@ -43,7 +46,8 @@ func (ev *Event) Who() string {
 }
 
 func (ev *Event) PrintableType() string {
-	return strings.Title(strings.Replace(string(ev.Type), "_", " ", -1))
+	typeName := strings.ReplaceAll(string(ev.Type), "_", " ")
+	return cases.Title(language.English).String(typeName)
 }
 
 type DetailedEvent interface {
@@ -66,82 +70,85 @@ type EventUser struct {
 type EventTypeName string
 
 const (
-	EventNewUser                 EventTypeName = "new_user"
-	EventNewApp                  EventTypeName = "new_app"
-	EventEditApp                 EventTypeName = "edit_app"
-	EventDeleteApp               EventTypeName = "delete_app"
-	EventRenameApp               EventTypeName = "rename_app"
-	EventTransferApp             EventTypeName = "transfer_app"
-	EventRestart                 EventTypeName = "restart"
-	EventScale                   EventTypeName = "scale"
-	EventStopApp                 EventTypeName = "stop_app"
-	EventCrash                   EventTypeName = "crash"
-	EventRepeatedCrash           EventTypeName = "repeated_crash"
-	EventDeployment              EventTypeName = "deployment"
-	EventLinkSCM                 EventTypeName = "link_scm"
-	EventUpdateSCM               EventTypeName = "update_scm"
-	EventUnlinkSCM               EventTypeName = "unlink_scm"
-	EventNewIntegration          EventTypeName = "new_integration"
-	EventDeleteIntegration       EventTypeName = "delete_integration"
-	EventAuthorizeGithub         EventTypeName = "authorize_github"
-	EventRevokeGithub            EventTypeName = "revoke_github"
-	EventRun                     EventTypeName = "run"
-	EventNewDomain               EventTypeName = "new_domain"
-	EventEditDomain              EventTypeName = "edit_domain"
-	EventDeleteDomain            EventTypeName = "delete_domain"
-	EventUpgradeDatabase         EventTypeName = "upgrade_database"
-	EventNewAddon                EventTypeName = "new_addon"
-	EventUpgradeAddon            EventTypeName = "upgrade_addon"
-	EventDeleteAddon             EventTypeName = "delete_addon"
-	EventResumeAddon             EventTypeName = "resume_addon"
-	EventSuspendAddon            EventTypeName = "suspend_addon"
-	EventDatabaseAddFeature      EventTypeName = "database/add_feature"
-	EventDatabaseRemoveFeature   EventTypeName = "database/remove_feature"
-	EventNewCollaborator         EventTypeName = "new_collaborator"
-	EventAcceptCollaborator      EventTypeName = "accept_collaborator"
-	EventDeleteCollaborator      EventTypeName = "delete_collaborator"
-	EventNewVariable             EventTypeName = "new_variable"
-	EventEditVariable            EventTypeName = "edit_variable"
-	EventEditVariables           EventTypeName = "edit_variables"
-	EventDeleteVariable          EventTypeName = "delete_variable"
-	EventAddCredit               EventTypeName = "add_credit"
-	EventAddPaymentMethod        EventTypeName = "add_payment_method"
-	EventAddVoucher              EventTypeName = "add_voucher"
-	EventNewKey                  EventTypeName = "new_key"
-	EventEditKey                 EventTypeName = "edit_key"
-	EventDeleteKey               EventTypeName = "delete_key"
-	EventPaymentAttempt          EventTypeName = "payment_attempt"
-	EventNewAlert                EventTypeName = "new_alert"
-	EventAlert                   EventTypeName = "alert"
-	EventDeleteAlert             EventTypeName = "delete_alert"
-	EventNewAutoscaler           EventTypeName = "new_autoscaler"
-	EventEditAutoscaler          EventTypeName = "edit_autoscaler"
-	EventDeleteAutoscaler        EventTypeName = "delete_autoscaler"
-	EventAddonUpdated            EventTypeName = "addon_updated"
-	EventStartRegionMigration    EventTypeName = "start_region_migration"
-	EventNewLogDrain             EventTypeName = "new_log_drain"
-	EventDeleteLogDrain          EventTypeName = "delete_log_drain"
-	EventNewAddonLogDrain        EventTypeName = "new_addon_log_drain"
-	EventDeleteAddonLogDrain     EventTypeName = "delete_addon_log_drain"
-	EventNewNotifier             EventTypeName = "new_notifier"
-	EventEditNotifier            EventTypeName = "edit_notifier"
-	EventDeleteNotifier          EventTypeName = "delete_notifier"
-	EventEditHDSContact          EventTypeName = "edit_hds_contact"
-	EventCreateDataAccessConsent EventTypeName = "create_data_access_consent"
-	EventNewToken                EventTypeName = "new_token"
-	EventRegenerateToken         EventTypeName = "regenerate_token"
-	EventDeleteToken             EventTypeName = "delete_token"
-	EventTfaEnabled              EventTypeName = "tfa_enabled"
-	EventTfaDisabled             EventTypeName = "tfa_disabled"
-	EventLoginSuccess            EventTypeName = "login_success"
-	EventLoginFailure            EventTypeName = "login_failure"
-	EventLoginLock               EventTypeName = "login_lock"
-	EventLoginUnlockSuccess      EventTypeName = "login_unlock_success"
-	EventPasswordResetQuery      EventTypeName = "password_reset_query"
-	EventPasswordResetSuccess    EventTypeName = "password_reset_success"
-	EventStackChanged            EventTypeName = "stack_changed"
-	EventCreateReviewApp         EventTypeName = "create_review_app"
-	EventDestroyReviewApp        EventTypeName = "destroy_review_app"
+	EventNewUser                     EventTypeName = "new_user"
+	EventNewApp                      EventTypeName = "new_app"
+	EventEditApp                     EventTypeName = "edit_app"
+	EventDeleteApp                   EventTypeName = "delete_app"
+	EventRenameApp                   EventTypeName = "rename_app"
+	EventTransferApp                 EventTypeName = "transfer_app"
+	EventRestart                     EventTypeName = "restart"
+	EventScale                       EventTypeName = "scale"
+	EventStopApp                     EventTypeName = "stop_app"
+	EventCrash                       EventTypeName = "crash"
+	EventRepeatedCrash               EventTypeName = "repeated_crash"
+	EventDeployment                  EventTypeName = "deployment"
+	EventLinkSCM                     EventTypeName = "link_scm"
+	EventUpdateSCM                   EventTypeName = "update_scm"
+	EventUnlinkSCM                   EventTypeName = "unlink_scm"
+	EventNewIntegration              EventTypeName = "new_integration"
+	EventDeleteIntegration           EventTypeName = "delete_integration"
+	EventAuthorizeGithub             EventTypeName = "authorize_github"
+	EventRevokeGithub                EventTypeName = "revoke_github"
+	EventRun                         EventTypeName = "run"
+	EventNewDomain                   EventTypeName = "new_domain"
+	EventEditDomain                  EventTypeName = "edit_domain"
+	EventDeleteDomain                EventTypeName = "delete_domain"
+	EventUpgradeDatabase             EventTypeName = "upgrade_database"
+	EventNewAddon                    EventTypeName = "new_addon"
+	EventUpgradeAddon                EventTypeName = "upgrade_addon"
+	EventDeleteAddon                 EventTypeName = "delete_addon"
+	EventResumeAddon                 EventTypeName = "resume_addon"
+	EventSuspendAddon                EventTypeName = "suspend_addon"
+	EventDatabaseAddFeature          EventTypeName = "database/add_feature"
+	EventDatabaseRemoveFeature       EventTypeName = "database/remove_feature"
+	EventNewCollaborator             EventTypeName = "new_collaborator"
+	EventAcceptCollaborator          EventTypeName = "accept_collaborator"
+	EventDeleteCollaborator          EventTypeName = "delete_collaborator"
+	EventNewVariable                 EventTypeName = "new_variable"
+	EventEditVariable                EventTypeName = "edit_variable"
+	EventEditVariables               EventTypeName = "edit_variables"
+	EventDeleteVariable              EventTypeName = "delete_variable"
+	EventAddCredit                   EventTypeName = "add_credit"
+	EventAddPaymentMethod            EventTypeName = "add_payment_method"
+	EventAddVoucher                  EventTypeName = "add_voucher"
+	EventNewKey                      EventTypeName = "new_key"
+	EventEditKey                     EventTypeName = "edit_key"
+	EventDeleteKey                   EventTypeName = "delete_key"
+	EventPaymentAttempt              EventTypeName = "payment_attempt"
+	EventNewAlert                    EventTypeName = "new_alert"
+	EventAlert                       EventTypeName = "alert"
+	EventDeleteAlert                 EventTypeName = "delete_alert"
+	EventNewAutoscaler               EventTypeName = "new_autoscaler"
+	EventEditAutoscaler              EventTypeName = "edit_autoscaler"
+	EventDeleteAutoscaler            EventTypeName = "delete_autoscaler"
+	EventAddonUpdated                EventTypeName = "addon_updated"
+	EventStartRegionMigration        EventTypeName = "start_region_migration"
+	EventNewLogDrain                 EventTypeName = "new_log_drain"
+	EventDeleteLogDrain              EventTypeName = "delete_log_drain"
+	EventNewAddonLogDrain            EventTypeName = "new_addon_log_drain"
+	EventDeleteAddonLogDrain         EventTypeName = "delete_addon_log_drain"
+	EventNewNotifier                 EventTypeName = "new_notifier"
+	EventEditNotifier                EventTypeName = "edit_notifier"
+	EventDeleteNotifier              EventTypeName = "delete_notifier"
+	EventEditHDSContact              EventTypeName = "edit_hds_contact"
+	EventCreateDataAccessConsent     EventTypeName = "create_data_access_consent"
+	EventNewToken                    EventTypeName = "new_token"
+	EventRegenerateToken             EventTypeName = "regenerate_token"
+	EventDeleteToken                 EventTypeName = "delete_token"
+	EventTfaEnabled                  EventTypeName = "tfa_enabled"
+	EventTfaDisabled                 EventTypeName = "tfa_disabled"
+	EventLoginSuccess                EventTypeName = "login_success"
+	EventLoginFailure                EventTypeName = "login_failure"
+	EventLoginLock                   EventTypeName = "login_lock"
+	EventLoginUnlockSuccess          EventTypeName = "login_unlock_success"
+	EventPasswordResetQuery          EventTypeName = "password_reset_query"
+	EventPasswordResetSuccess        EventTypeName = "password_reset_success"
+	EventStackChanged                EventTypeName = "stack_changed"
+	EventCreateReviewApp             EventTypeName = "create_review_app"
+	EventDestroyReviewApp            EventTypeName = "destroy_review_app"
+	EventPlanDatabaseMaintenance     EventTypeName = "plan_database_maintenance"
+	EventStartDatabaseMaintenance    EventTypeName = "start_database_maintenance"
+	EventCompleteDatabaseMaintenance EventTypeName = "complete_database_maintenance"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -289,7 +296,25 @@ func (ev *EventRunType) String() string {
 	if ev.TypeData.Detached {
 		detached = "detached "
 	}
-	return fmt.Sprintf("%sone-off container with command '%s'", ev.TypeData.Command, detached)
+
+	if ev.isEventRunFromOperator() {
+		// The command executed is not available to end user if it's executed by a Scalingo operator
+		return fmt.Sprintf("%sone-off container for maintenance/support purposes", detached)
+	}
+
+	return fmt.Sprintf("%sone-off container with command '%s'", detached, ev.TypeData.Command)
+}
+
+func (ev *EventRunType) Who() string {
+	if ev.User.Email == "deploy@scalingo.com" {
+		return "Scalingo Operator"
+	}
+
+	return ev.Event.Who()
+}
+
+func (ev *EventRunType) isEventRunFromOperator() bool {
+	return ev.TypeData.Command == ""
 }
 
 type EventRunTypeData struct {
@@ -322,7 +347,7 @@ func (ev *EventEditDomainType) String() string {
 	res := fmt.Sprintf("'%s' modified", t.Hostname)
 	if !t.SSL && t.OldSSL {
 		res += ", TLS certificate has been removed"
-	} else if !t.SSL && t.OldSSL {
+	} else if t.SSL && !t.OldSSL {
 		res += ", TLS certificate has been added"
 	} else if t.SSL && t.OldSSL {
 		res += ", TLS certificate has been changed"
@@ -426,9 +451,9 @@ func (ev *EventUpgradeDatabaseType) String() string {
 func (ev *EventUpgradeDatabaseType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
-	} else {
-		return ev.Event.Who()
 	}
+
+	return ev.Event.Who()
 }
 
 type EventVariable struct {
@@ -448,9 +473,9 @@ func (ev *EventNewVariableType) String() string {
 func (ev *EventNewVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
-	} else {
-		return ev.Event.Who()
 	}
+
+	return ev.Event.Who()
 }
 
 type EventNewVariableTypeData struct {
@@ -505,9 +530,9 @@ func (ev *EventEditVariablesType) String() string {
 func (ev *EventEditVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
 		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
-	} else {
-		return ev.Event.Who()
 	}
+
+	return ev.Event.Who()
 }
 
 type EventEditVariablesTypeData struct {
@@ -854,4 +879,70 @@ type EventStackChangedType struct {
 func (ev *EventStackChangedType) String() string {
 	d := ev.TypeData
 	return fmt.Sprintf("Stack changed from '%s' to %s", d.PreviousStackName, d.CurrentStackName)
+}
+
+// Database maintenance planned
+type EventPlanDatabaseMaintenanceTypeData struct {
+	AddonName                string    `json:"addon_name"`
+	MaintenanceID            string    `json:"maintenance_id"`
+	MaintenanceWindowInHours int       `json:"maintenance_window_in_hours"`
+	MaintenanceType          string    `json:"maintenance_type"`
+	NextMaintenanceWindow    time.Time `json:"next_maintenance_window"`
+}
+
+type EventPlanDatabaseMaintenanceType struct {
+	Event
+	TypeData EventPlanDatabaseMaintenanceTypeData `json:"type_data"`
+}
+
+func (ev *EventPlanDatabaseMaintenanceType) String() string {
+	return fmt.Sprintf("A maintenance (ID: %s) has been scheduled on the %s database.", ev.TypeData.MaintenanceID, ev.TypeData.AddonName)
+}
+
+func (ev *EventPlanDatabaseMaintenanceType) Who() string {
+	return ev.Event.Who()
+}
+
+// Database maintenance started
+type EventStartDatabaseMaintenanceTypeData struct {
+	AddonName                string    `json:"addon_name"`
+	MaintenanceID            string    `json:"maintenance_id"`
+	MaintenanceWindowInHours int       `json:"maintenance_window_in_hours"`
+	MaintenanceType          string    `json:"maintenance_type"`
+	NextMaintenanceWindow    time.Time `json:"next_maintenance_window"`
+}
+
+type EventStartDatabaseMaintenanceType struct {
+	Event
+	TypeData EventStartDatabaseMaintenanceTypeData `json:"type_data"`
+}
+
+func (ev *EventStartDatabaseMaintenanceType) String() string {
+	return fmt.Sprintf("A maintenance (ID: %s) has started on the %s database.", ev.TypeData.MaintenanceID, ev.TypeData.AddonName)
+}
+
+func (ev *EventStartDatabaseMaintenanceType) Who() string {
+	return ev.Event.Who()
+}
+
+// Database maintenance completed
+type EventCompleteDatabaseMaintenanceTypeData struct {
+	AddonName                string    `json:"addon_name"`
+	MaintenanceID            string    `json:"maintenance_id"`
+	MaintenanceWindowInHours int       `json:"maintenance_window_in_hours"`
+	MaintenanceType          string    `json:"maintenance_type"`
+	NextMaintenanceWindow    time.Time `json:"next_maintenance_window"`
+}
+
+type EventCompleteDatabaseMaintenanceType struct {
+	Event
+	TypeData EventCompleteDatabaseMaintenanceTypeData `json:"type_data"`
+}
+
+func (ev *EventCompleteDatabaseMaintenanceType) String() string {
+	return fmt.Sprintf("A maintenance (ID: %s) has been completed on the %s database.", ev.TypeData.MaintenanceID, ev.TypeData.AddonName)
+}
+
+func (ev *EventCompleteDatabaseMaintenanceType) Who() string {
+	return ev.Event.Who()
 }

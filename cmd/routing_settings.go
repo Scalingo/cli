@@ -39,7 +39,7 @@ var (
 
 			err := apps.ForceHTTPS(c.Context, currentApp, enable)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -78,7 +78,7 @@ var (
 
 			err := apps.StickySession(c.Context, currentApp, enable)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -117,7 +117,7 @@ var (
 
 			err := apps.RouterLogs(c.Context, currentApp, enable)
 			if err != nil {
-				errorQuit(err)
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

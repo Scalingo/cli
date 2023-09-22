@@ -31,7 +31,7 @@ func List(ctx context.Context) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.SetHeader([]string{"Name", "Role", "Status"})
 
-	currentUser, err := config.C.CurrentUser()
+	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get current user")
 	}
