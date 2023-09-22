@@ -42,7 +42,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 			user, tokens, err = tryAuth(ctx)
 			if err == nil {
 				break
-			} else if scalingoerrors.RootCause(err) == io.EOF {
+			} else if scalingoerrors.Is(err, io.EOF) {
 				return nil, "", scalingoerrors.New(ctx, "canceled by user")
 			} else {
 				appio.Errorf("Fail to login (%d/3): %v\n\n", i+1, err)
