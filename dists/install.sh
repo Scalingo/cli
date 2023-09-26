@@ -20,7 +20,7 @@ main() {
   check_command_exists() {
     if ! command -v $1 &> /dev/null
     then
-        errors "$1 command could not be found, please install it first"
+        error "$1 command could not be found, please install it first"
         exit 1
     fi
   }
