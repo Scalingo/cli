@@ -24,9 +24,9 @@ main() {
   clean_install() {
     tmpdir=$1
 
-    rm -r $tmpdir
+    rm -r "$tmpdir"
     # If installed through one line install, remove script
-    if [ "x$0" = "xinstall" ] ; then
+    if [ "$0" = "install" ] ; then
       rm "$0"
     fi
   }
@@ -35,7 +35,7 @@ main() {
     info "$* [Y/n] "
     while true; do
         read answer
-        case $(echo "$answer" | tr "[A-Z]" "[a-z]") in
+        case $(echo "$answer" | tr '[:upper:]' '[:lower:]') in
         y|yes|"" ) return 0;;
         n|no     ) return 1;;
         esac
@@ -54,14 +54,14 @@ main() {
     echo
   }
 
-  if [ "x$DEBUG" = "xtrue" ] ; then
+  if [ -n "$DEBUG" ] ; then
     set -x
   fi
 
   uname -a | grep -qi 'Linux' ; is_linux=$?
   uname -a | grep -qi 'Darwin' ; is_darwin=$?
 
-  os=$(uname -s | tr '[A-Z]' '[a-z]')
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
   ext='tar.gz'
   if [ "$os" != "linux" ] && [ "$os" != "darwin" ]; then
     echo "Unsupported OS: $(uname -s)"
@@ -127,8 +127,8 @@ main() {
   url="https://github.com/Scalingo/cli/releases/download/${version}/${archive_name}"
 
   status "Downloading Scalingo client...  "
-  curl --silent --fail --location --output ${tmpdir}/${archive_name} ${url}
-  if [ ! -f ${tmpdir}/${archive_name} ]; then
+  curl --silent --fail --location --output "${tmpdir}/${archive_name}" "$url"
+  if [ ! -f "${tmpdir}/${archive_name}" ]; then
     echo ""
     error "Fail to download the CLI archive\n"
     exit 1
@@ -138,7 +138,7 @@ main() {
   status "Verifying the checksum...  "
   checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
   # Use cut's short parameter to be compatible with MacOS: https://ss64.com/osx/cut.html
-  checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut -d" " -f1)
+  checksum_computed=$(sha256sum "${tmpdir}/${archive_name}" | cut -d" " -f1)
   checksum_expected=$(curl --silent --location "$checksums_url" | grep "$archive_name" | cut -d" " -f1)
   if [[ "$checksum_computed" != "$checksum_expected" ]]; then
     echo "INVALID"
@@ -166,7 +166,7 @@ main() {
   target_dir="${target_dir:-$default_target_dir}"
   target="$target_dir/scalingo"
 
-  if [ -x "$target" -a -z "$yes_to_overwrite" ] ; then
+  if [ -x "$target" ] && [ -z "$yes_to_overwrite" ] ; then
     export DISABLE_UPDATE_CHECKER=true
     # Use cut's short parameter to be compatible with MacOS: https://ss64.com/osx/cut.html
     new_version=$($exe_path --version | cut -d' ' -f4)
@@ -175,7 +175,7 @@ main() {
 
     if ! ask "Do you want to replace it with version ${new_version}?"  ; then
       status "Aborting...\n"
-      exit -1
+      exit 1
     fi
   fi
 
@@ -194,7 +194,7 @@ main() {
     fi
   fi
 
-  $sudo mv $exe_path "$target" ; rc=$?
+  $sudo mv "$exe_path" "$target" ; rc=$?
 
   if [ $rc -ne 0 ] ; then
     error "Fail to install Scalingo client (return $rc)\n"
