@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function sha256sum() {
+  shasum -a 256 "$@"
+}
+
 main() {
   status() {
     echo -en "-----> $*"
@@ -15,14 +19,6 @@ main() {
 
   warn() {
     echo -en " /!\\   $*"
-  }
-
-  check_command_exists() {
-    if ! command -v $1 &> /dev/null
-    then
-        error "$1 command could not be found, please install it first"
-        exit 1
-    fi
   }
 
   clean_install() {
@@ -139,14 +135,11 @@ main() {
   fi
   echo "DONE"
 
-  check_command_exists sha256sum
-  check_command_exists wget
-
   status "Verifying the checksum...  "
   checksums_url="https://github.com/Scalingo/cli/releases/download/${version}/checksums.txt"
   # Use cut's short parameter to be compatible with MacOS: https://ss64.com/osx/cut.html
   checksum_computed=$(sha256sum ${tmpdir}/${archive_name} | cut -d" " -f1)
-  checksum_expected=$(wget --quiet --output-document - $checksums_url | grep $archive_name | cut -d" " -f1)
+  checksum_expected=$(curl --silent --location "$checksums_url" | grep "$archive_name" | cut -d" " -f1)
   if [[ "$checksum_computed" != "$checksum_expected" ]]; then
     echo "INVALID"
     error "Checksums don't match.\n"
