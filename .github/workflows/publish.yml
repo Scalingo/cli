@@ -19,7 +19,10 @@ jobs:
           check-latest: true
       - uses: golangci/golangci-lint-action@v3
         with:
-          only-new-issues: false
+          # This flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new` and `--new-from-rev`
+          # only-new-issues: false
+          args: "--config=${{ github.action_path }}/.golangci.yml --new --new-from-rev=HEAD~1"
 
   tests:
     name: Unit Tests
