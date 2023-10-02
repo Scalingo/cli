@@ -17,6 +17,8 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
+      - name: Get golangci-lint configuration file
+        run: wget --output-document=${{ github.action_path }}/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
       - uses: golangci/golangci-lint-action@v3
         with:
           # This flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
