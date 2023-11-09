@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/db"
+	dbUsers "github.com/Scalingo/cli/db/users"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
@@ -134,6 +135,31 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+			}
+			return nil
+		},
+	}
+
+	databaseListUsers = cli.Command{
+		Name:     "database-list-users",
+		Category: "Addons",
+		Usage:    "Print database's users",
+		Flags:    []cli.Flag{&appFlag, &addonFlag},
+		Description: CommandDescription{
+			Description: "List the users of a database",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-list-users",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			err := dbUsers.List(c.Context, currentApp, addonName)
+			if err != nil {
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},
