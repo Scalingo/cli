@@ -164,6 +164,38 @@ var (
 			return nil
 		},
 	}
+
+	databaseDeleteUser = cli.Command{
+		Name:      "database-delete-user",
+		Category:  "Addons",
+		ArgsUsage: "user",
+		Usage:     "Delete a database's user",
+		Flags:     []cli.Flag{&appFlag, &addonFlag},
+		Description: CommandDescription{
+			Description: "Delete the given user of a database",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-delete-user my_user",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "database-delete-user")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			username := c.Args().First()
+
+			err := dbUsers.DeleteUser(c.Context, currentApp, addonName, username)
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+			return nil
+		},
+	}
 )
 
 func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
