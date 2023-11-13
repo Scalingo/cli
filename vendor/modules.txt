@@ -33,7 +33,7 @@ github.com/ProtonMail/go-crypto/openpgp/internal/ecc
 github.com/ProtonMail/go-crypto/openpgp/internal/encoding
 github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
-# github.com/Scalingo/go-scalingo/v6 v6.7.3
+# github.com/Scalingo/go-scalingo/v6 v6.7.3 => ../go-scalingo
 ## explicit; go 1.20
 github.com/Scalingo/go-scalingo/v6
 github.com/Scalingo/go-scalingo/v6/billing
@@ -50,6 +50,9 @@ github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/retry v1.1.1
 ## explicit; go 1.17
 github.com/Scalingo/go-utils/retry
+# github.com/Scalingo/gopassword v1.0.2
+## explicit; go 1.17
+github.com/Scalingo/gopassword
 # github.com/VividCortex/ewma v1.2.0
 ## explicit; go 1.12
 github.com/VividCortex/ewma
@@ -337,3 +340,4 @@ gopkg.in/warnings.v0
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
+# github.com/Scalingo/go-scalingo/v6 => ../go-scalingo

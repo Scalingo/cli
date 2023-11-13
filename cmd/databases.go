@@ -196,6 +196,43 @@ var (
 			return nil
 		},
 	}
+
+	databaseCreateUser = cli.Command{
+		Name:      "database-create-user",
+		Category:  "Addons",
+		ArgsUsage: "user",
+		Usage:     "Create new database user",
+		Flags: []cli.Flag{
+			&appFlag,
+			&addonFlag,
+			&cli.BoolFlag{Name: "read-only", Usage: "Create a user with read-only rights"},
+		},
+		Description: CommandDescription{
+			Description: "Create new database user",
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-create-user my_user",
+				"scalingo --app myapp --addon addon-uuid database-create-user --read-only my_user",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			if c.NArg() != 1 {
+				return cli.ShowCommandHelp(c, "database-create-user")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			username := c.Args().First()
+
+			err := dbUsers.CreateUser(c.Context, currentApp, addonName, username, c.Bool("read-only"))
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+			return nil
+		},
+	}
 )
 
 func parseScheduleAtFlag(flag string) (int, *time.Location, error) {

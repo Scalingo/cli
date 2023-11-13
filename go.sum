@@ -17,6 +17,8 @@ github.com/Scalingo/go-utils/logger v1.2.0 h1:E3jtaoRxpIsFcZu/jsvWew8ttUAwKUYQuf
 github.com/Scalingo/go-utils/logger v1.2.0/go.mod h1:JArjD1gHdB/vwnlcVG7rYxuIY0tk8/VG4MtirnRwn8k=
 github.com/Scalingo/go-utils/retry v1.1.1 h1:zc5HbXbBzf0fo7zMvhEMvx75qaL2FH7SxDhCoBfS7jE=
 github.com/Scalingo/go-utils/retry v1.1.1/go.mod h1:za1k9sUU7fSQEFTv3c4Y8kG/8ybsq6C77sOo3ANEeN4=
+github.com/Scalingo/gopassword v1.0.2 h1:wcKt8twrnDgYi4W9ep54jUfNNUyTmUb/1uS8F5+iUvQ=
+github.com/Scalingo/gopassword v1.0.2/go.mod h1:qthHL75azoNpGlQlVHIaljbONYubRatIHJW5VYVFOjQ=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
 github.com/acomagu/bufpipe v1.0.4 h1:e3H4WUzM3npvo5uv95QuJM3cQspFNtFBzvJ2oNjKIDQ=

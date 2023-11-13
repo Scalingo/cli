@@ -249,6 +249,7 @@ var (
 		&databaseDisableFeature,
 		&databaseListUsers,
 		&databaseDeleteUser,
+		&databaseCreateUser,
 
 		// Maintenance
 		&databaseMaintenanceList,
