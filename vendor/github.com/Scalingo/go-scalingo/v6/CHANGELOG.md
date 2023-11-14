@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 6.7.4
+
+* feat(database): add user management
+
 ## 6.7.3
 
 * feat(events): add maintenance events
