@@ -146,7 +146,9 @@ var (
 		Usage:    "Print database's users",
 		Flags:    []cli.Flag{&appFlag, &addonFlag},
 		Description: CommandDescription{
-			Description: "List the users of a database",
+			Description: `List the users of a database
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
 				"scalingo --app myapp --addon addon-uuid database-list-users",
 			},
@@ -172,7 +174,9 @@ var (
 		Usage:     "Delete a database's user",
 		Flags:     []cli.Flag{&appFlag, &addonFlag},
 		Description: CommandDescription{
-			Description: "Delete the given user of a database",
+			Description: `Delete the given user of a database
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
 				"scalingo --app myapp --addon addon-uuid database-delete-user my_user",
 			},
@@ -208,7 +212,9 @@ var (
 			&cli.BoolFlag{Name: "read-only", Usage: "Create a user with read-only rights"},
 		},
 		Description: CommandDescription{
-			Description: "Create new database user",
+			Description: `Create new database user
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
 				"scalingo --app myapp --addon addon-uuid database-create-user my_user",
 				"scalingo --app myapp --addon addon-uuid database-create-user --read-only my_user",

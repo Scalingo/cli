@@ -9,10 +9,12 @@ import (
 	scErrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
-var ErrDatabaseNotSupportUserManagement = errors.New("Error: DBMS does not support user management")
+var (
+	SupportedAddons                     = []string{"PostgreSQL", "InfluxDB", "MongoDB", "MySQL"}
+	ErrDatabaseNotSupportUserManagement = errors.New("Error: DBMS does not support user management")
+)
 
 func doesDatabaseHandleUserManagement(ctx context.Context, app, addonUUID string) (bool, error) {
-	supportedAddons := []string{"postgresql", "elasticsearch", "influxdb"}
 	addonsClient, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return false, scErrors.Wrap(ctx, err, "get Scalingo client")
@@ -23,7 +25,7 @@ func doesDatabaseHandleUserManagement(ctx context.Context, app, addonUUID string
 		return false, scErrors.Wrap(ctx, err, "get the addon to check user management support")
 	}
 
-	for _, supportedAddon := range supportedAddons {
+	for _, supportedAddon := range SupportedAddons {
 		if strings.EqualFold(supportedAddon, addon.AddonProvider.Name) {
 			return true, nil
 		}
