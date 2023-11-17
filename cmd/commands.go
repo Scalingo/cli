@@ -247,6 +247,9 @@ var (
 		&databaseBackupsConfig,
 		&databaseEnableFeature,
 		&databaseDisableFeature,
+		&databaseListUsers,
+		&databaseDeleteUser,
+		&databaseCreateUser,
 
 		// Maintenance
 		&databaseMaintenanceList,

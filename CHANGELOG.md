@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* feat(addons): add user management commands ([PR#1019](https://github.com/Scalingo/cli/pull/1019))
 * chore(term): remove `github.com/andrew-d/go-termutil`, use standard library instead ([PR#974](https://github.com/Scalingo/cli/pull/974))
 * feat(cmd): addon can be retrieve from addon type, not only UUID ([PR#983](https://github.com/Scalingo/cli/pull/983))
 * feat: add database maintenance info with the new `database-maintenance-info` command ([PR#984](https://github.com/Scalingo/cli/pull/984))

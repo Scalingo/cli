@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/db"
+	dbUsers "github.com/Scalingo/cli/db/users"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
@@ -134,6 +135,106 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+			}
+			return nil
+		},
+	}
+
+	databaseListUsers = cli.Command{
+		Name:     "database-list-users",
+		Category: "Addons",
+		Usage:    "Print database's users",
+		Flags:    []cli.Flag{&appFlag, &addonFlag},
+		Description: CommandDescription{
+			Description: `List the users of a database
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-list-users",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			err := dbUsers.List(c.Context, currentApp, addonName)
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+			return nil
+		},
+	}
+
+	databaseDeleteUser = cli.Command{
+		Name:      "database-delete-user",
+		Category:  "Addons",
+		ArgsUsage: "user",
+		Usage:     "Delete a database's user",
+		Flags:     []cli.Flag{&appFlag, &addonFlag},
+		Description: CommandDescription{
+			Description: `Delete the given user of a database
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-delete-user my_user",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(c, "database-delete-user")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			username := c.Args().First()
+
+			err := dbUsers.DeleteUser(c.Context, currentApp, addonName, username)
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+			return nil
+		},
+	}
+
+	databaseCreateUser = cli.Command{
+		Name:      "database-create-user",
+		Category:  "Addons",
+		ArgsUsage: "user",
+		Usage:     "Create new database user",
+		Flags: []cli.Flag{
+			&appFlag,
+			&addonFlag,
+			&cli.BoolFlag{Name: "read-only", Usage: "Create a user with read-only rights"},
+		},
+		Description: CommandDescription{
+			Description: `Create new database user
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-create-user my_user",
+				"scalingo --app myapp --addon addon-uuid database-create-user --read-only my_user",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			if c.NArg() != 1 {
+				return cli.ShowCommandHelp(c, "database-create-user")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			username := c.Args().First()
+
+			err := dbUsers.CreateUser(c.Context, currentApp, addonName, username, c.Bool("read-only"))
+			if err != nil {
+				errorQuit(c.Context, err)
 			}
 			return nil
 		},

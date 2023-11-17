@@ -22,7 +22,7 @@ type Maintenance struct {
 	ID         string            `json:"id"`
 	DatabaseID string            `json:"database_id"`
 	Status     MaintenanceStatus `json:"status"`
-	Type       MaintenanceType   `json:"type"`
+	Type       string            `json:"type"`
 	StartedAt  *time.Time        `json:"started_at,omitempty"`
 	EndedAt    *time.Time        `json:"ended_at,omitempty"`
 }
@@ -37,13 +37,6 @@ const (
 	MaintenanceStatusRunning   MaintenanceStatus = "running"
 	MaintenanceStatusFailed    MaintenanceStatus = "failed"
 	MaintenanceStatusDone      MaintenanceStatus = "done"
-)
-
-type MaintenanceType string
-
-const (
-	MaintenanceTypeNoOp    MaintenanceType = "no-op"
-	MaintenanceTypeFailing MaintenanceType = "failing"
 )
 
 func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error) {

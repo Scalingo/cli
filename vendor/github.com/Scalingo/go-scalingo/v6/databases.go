@@ -8,6 +8,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	httpclient "github.com/Scalingo/go-scalingo/v6/http"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 // DatabasesService is the interface gathering all the methods related to
@@ -232,4 +233,66 @@ func (c *Client) DatabaseDisableFeature(ctx context.Context, app, addonID, featu
 	}
 
 	return res, nil
+}
+
+type DbmsAttributes struct {
+	PasswordEncryption string `json:"password_encryption"`
+}
+
+type DatabaseUser struct {
+	Name           string          `json:"name"`
+	ReadOnly       bool            `json:"read_only"`
+	Protected      bool            `json:"protected"`
+	Password       string          `json:"password,omitempty"`
+	DbmsAttributes *DbmsAttributes `json:"dbms_attributes,omitempty"`
+}
+
+type DatabaseCreateUserParam struct {
+	DatabaseID           string `json:"database_id"`
+	Name                 string `json:"name"`
+	ReadOnly             bool   `json:"read_only"`
+	Password             string `json:"password,omitempty"`
+	PasswordConfirmation string `json:"password_confirmation,omitempty"`
+}
+
+type databaseCreateUserPayload struct {
+	DatabaseUser DatabaseCreateUserParam `json:"database_user"`
+}
+
+// DatabaseUserResponse is the response body of database create user
+type DatabaseUserResponse struct {
+	DatabaseUser DatabaseUser `json:"database_user"`
+}
+
+// DatabaseCreateUser creates an user to the given database addon
+func (c *Client) DatabaseCreateUser(ctx context.Context, app, addonID string, user DatabaseCreateUserParam) (DatabaseUser, error) {
+	res := DatabaseUserResponse{}
+	payload := databaseCreateUserPayload{
+		DatabaseUser: user,
+	}
+	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, "databases", addonID, "users", payload, &res)
+	if err != nil {
+		return res.DatabaseUser, errors.Wrapf(ctx, err, "create a user on database %s", addonID)
+	}
+	return res.DatabaseUser, nil
+}
+
+// DatabaseUsersResponse is the response body of database list users
+type DatabaseUsersResponse struct {
+	DatabaseUsers []DatabaseUser `json:"database-users"`
+}
+
+// DatabaseListUsers list the users of the given database addon
+func (c *Client) DatabaseListUsers(ctx context.Context, app, addonID string) ([]DatabaseUser, error) {
+	res := DatabaseUsersResponse{}
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "users", nil, &res)
+	if err != nil {
+		return res.DatabaseUsers, errors.Wrap(ctx, err, "get database list of users")
+	}
+	return res.DatabaseUsers, nil
+}
+
+// DatabaseDeleteUser delete an user from the given database addon
+func (c *Client) DatabaseDeleteUser(ctx context.Context, app, addonID, userName string) error {
+	return c.DBAPI(app, addonID).SubresourceDelete(ctx, "databases", addonID, "users", userName)
 }
