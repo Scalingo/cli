@@ -1,6 +1,6 @@
 [ ![Codeship Status for Scalingo/go-scalingo](https://app.codeship.com/projects/cf518dc0-0034-0136-d6b3-5a0245e77f67/status?branch=master)](https://app.codeship.com/projects/279805)
 
-# Go client for Scalingo API v6.7.4
+# Go client for Scalingo API v6.7.5
 
 This repository is the Go client for the [Scalingo APIs](https://developers.scalingo.com/).
 
@@ -80,7 +80,7 @@ Bump new version number in:
 Commit, tag and create a new release:
 
 ```sh
-version="6.7.4"
+version="6.7.5"
 
 git switch --create release/${version}
 git add CHANGELOG.md README.md version.go
