@@ -253,13 +253,13 @@ type EventLinkSCMTypeData struct {
 	LinkerUsername           string `json:"linker_username"`
 	Source                   string `json:"source"`
 	Branch                   string `json:"branch"`
-	AutoDeploy               string `json:"auto_deploy"`
-	AutoDeployReviewApps     string `json:"auto_deploy_review_apps"`
-	DeleteOnClose            string `json:"delete_on_close"`
-	DeleteStale              string `json:"delete_stale"`
-	HoursBeforeDeleteOnClose string `json:"hours_before_delete_on_close"`
-	HoursBeforeDeleteStale   string `json:"hours_before_delete_stale"`
-	CreationFromForksAllowed string `json:"creation_from_forks_allowed"`
+	AutoDeploy               bool   `json:"auto_deploy"`
+	AutoDeployReviewApps     bool   `json:"auto_deploy_review_apps"`
+	DeleteOnClose            bool   `json:"delete_on_close"`
+	DeleteStale              bool   `json:"delete_stale"`
+	HoursBeforeDeleteOnClose int    `json:"hours_before_delete_on_close"`
+	HoursBeforeDeleteStale   int    `json:"hours_before_delete_stale"`
+	CreationFromForksAllowed bool   `json:"creation_from_forks_allowed"`
 }
 
 type EventUpdateSCMType struct {
