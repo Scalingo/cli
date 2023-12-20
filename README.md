@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.29.1
+# Scalingo-CLI v1.30.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.29.1
+   1.30.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -263,12 +263,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.29.1
+git checkout -b v1.30.0
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.29.1
+git push --set-upstream origin v1.30.0
 ```
 
 ### New Version Bump
@@ -283,11 +283,13 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-git switch --create release/1.29.1
+version="1.30.0"
+
+git switch --create release/${version}
 git add .
-git commit -m "Bump version 1.29.1"
-git push --set-upstream origin release/1.29.1
-gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)"
+git commit -m "Bump version ${version}"
+git push --set-upstream origin release/${version}
+gh pr create --reviewer=EtienneM --title "$(git log -1 --pretty=%B)" --fill-first --base master
 ```
 
 Once the pull request merged, you can tag the new release.
@@ -295,8 +297,8 @@ Once the pull request merged, you can tag the new release.
 #### Tag the New Release
 
 ```bash
-git tag 1.29.1
-git push origin master 1.29.1
+git tag ${version}
+git push origin master ${version}
 ```
 
 Pushing the tag triggers a GitHub Action which builds the cross-platform binaries and create a new release.
@@ -311,6 +313,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.29.1 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.30.0 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
