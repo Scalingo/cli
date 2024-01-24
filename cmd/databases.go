@@ -141,7 +141,8 @@ var (
 	}
 
 	databaseListUsers = cli.Command{
-		Name:     "database-list-users",
+		Name:     "database-users-list",
+		Aliases:  []string{"database-list-users"},
 		Category: "Addons",
 		Usage:    "Print database's users",
 		Flags:    []cli.Flag{&appFlag, &addonFlag},
@@ -150,7 +151,7 @@ var (
 
 Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
-				"scalingo --app myapp --addon addon-uuid database-list-users",
+				"scalingo --app myapp --addon addon-uuid database-users-list",
 			},
 		}.Render(),
 
@@ -168,7 +169,8 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 	}
 
 	databaseDeleteUser = cli.Command{
-		Name:      "database-delete-user",
+		Name:      "database-users-delete",
+		Aliases:   []string{"database-delete-user"},
 		Category:  "Addons",
 		ArgsUsage: "user",
 		Usage:     "Delete a database's user",
@@ -178,13 +180,13 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
-				"scalingo --app myapp --addon addon-uuid database-delete-user my_user",
+				"scalingo --app myapp --addon addon-uuid database-users-delete my_user",
 			},
 		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
-				return cli.ShowCommandHelp(c, "database-delete-user")
+				return cli.ShowCommandHelp(c, "database-users-delete")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -202,7 +204,8 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 	}
 
 	databaseCreateUser = cli.Command{
-		Name:      "database-create-user",
+		Name:      "database-users-create",
+		Aliases:   []string{"database-create-user"},
 		Category:  "Addons",
 		ArgsUsage: "user",
 		Usage:     "Create new database user",
@@ -216,14 +219,14 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			Examples: []string{
-				"scalingo --app myapp --addon addon-uuid database-create-user my_user",
-				"scalingo --app myapp --addon addon-uuid database-create-user --read-only my_user",
+				"scalingo --app myapp --addon addon-uuid database-users-create my_user",
+				"scalingo --app myapp --addon addon-uuid database-users-create --read-only my_user",
 			},
 		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			if c.NArg() != 1 {
-				return cli.ShowCommandHelp(c, "database-create-user")
+				return cli.ShowCommandHelp(c, "database-users-create")
 			}
 
 			currentApp := detect.CurrentApp(c)
