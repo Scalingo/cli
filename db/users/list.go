@@ -9,13 +9,13 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scErrors "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func List(ctx context.Context, app, addonUUID string) error {
 	isSupported, err := doesDatabaseHandleUserManagement(ctx, app, addonUUID)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get user management information")
+		return errors.Wrap(ctx, err, "get user management information")
 	}
 
 	if !isSupported {
@@ -25,12 +25,12 @@ func List(ctx context.Context, app, addonUUID string) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	databaseUsers, err := c.DatabaseListUsers(ctx, app, addonUUID)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "list the database's users")
+		return errors.Wrap(ctx, err, "list the database's users")
 	}
 
 	header := []string{"Username", "Read-Only", "Protected"}

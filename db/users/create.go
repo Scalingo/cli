@@ -10,14 +10,14 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v6"
-	scErrors "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/gopassword"
 )
 
 func CreateUser(ctx context.Context, app, addonUUID, username string, readonly bool) error {
 	isSupported, err := doesDatabaseHandleUserManagement(ctx, app, addonUUID)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get user management information")
+		return errors.Wrap(ctx, err, "get user management information")
 	}
 
 	if !isSupported {
@@ -32,7 +32,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 
 	password, confirmedPassword, err := askForPassword(ctx)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "ask for password")
+		return errors.Wrap(ctx, err, "ask for password")
 	}
 
 	passwordValidation, ok := isPasswordValid(password, confirmedPassword)
@@ -50,7 +50,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	user := scalingo.DatabaseCreateUserParam{
@@ -62,7 +62,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 	}
 	databaseUsers, err := c.DatabaseCreateUser(ctx, app, addonUUID, user)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "create the given database user")
+		return errors.Wrap(ctx, err, "create the given database user")
 	}
 
 	if isPasswordGenerated {
@@ -79,13 +79,13 @@ func askForPassword(ctx context.Context) (string, string, error) {
 
 	password, err := term.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
-		return "", "", scErrors.Wrap(ctx, err, "read password")
+		return "", "", errors.Wrap(ctx, err, "read password")
 	}
 
 	fmt.Printf("\nPassword Confirmation: ")
 	confirmedPassword, err := term.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
-		return "", "", scErrors.Wrap(ctx, err, "read password confirmation")
+		return "", "", errors.Wrap(ctx, err, "read password confirmation")
 	}
 	fmt.Println()
 
