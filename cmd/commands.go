@@ -250,6 +250,7 @@ var (
 		&databaseListUsers,
 		&databaseDeleteUser,
 		&databaseCreateUser,
+		&databaseUpdateUserPassword,
 
 		// Maintenance
 		&databaseMaintenanceList,
