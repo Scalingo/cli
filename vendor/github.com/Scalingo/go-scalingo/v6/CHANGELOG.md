@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 6.7.6
+
+fix(errors): `IsOTPRequired` detects 'OTP Required' API errors
+
 ## 6.7.5
 
 fix(events): `link_scm` data types

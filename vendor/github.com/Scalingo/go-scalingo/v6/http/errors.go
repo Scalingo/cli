@@ -9,6 +9,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v6/debug"
+	errorspkg "github.com/Scalingo/go-utils/errors/v2"
 )
 
 type (
@@ -58,6 +59,10 @@ var ErrOTPRequired = errors.New("OTP Required")
 
 // IsOTPRequired tests if the authentication backend return an OTP Required error
 func IsOTPRequired(err error) bool {
+	if errorspkg.Is(err, ErrOTPRequired) {
+		return true
+	}
+
 	rerr, ok := err.(*RequestFailedError)
 	if !ok {
 		return false
