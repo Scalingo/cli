@@ -18,13 +18,13 @@ jobs:
           go-version-file: "go.mod"
           check-latest: true
       - name: Get golangci-lint configuration file
-        run: wget --output-document=${{ github.action_path }}/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
+        run: wget --output-document=/tmp/golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
       - uses: golangci/golangci-lint-action@v4
         with:
           # This flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
           # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new` and `--new-from-rev`
           # only-new-issues: false
-          args: "--config=${{ github.action_path }}/.golangci.yml --new --new-from-rev=HEAD~1"
+          args: "--config=/tmp/golangci.yml --new --new-from-rev=HEAD~1"
 
   tests:
     name: Unit Tests
