@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.30.1
+
 * feat(addons): add aliases for database user management (i.e. using format: `database-users-<action>`) ([PR#1031](https://github.com/Scalingo/cli/pull/1031))
 * fix(login): regression two-factor token is now correctly asked again ([PR#1037](https://github.com/Scalingo/cli/pull/1037))
 
