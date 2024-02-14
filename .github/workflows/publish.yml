@@ -2,10 +2,61 @@ name: Test and Release Go CLI
 
 on: [push]
 
+permissions:
+  contents: read
+  # allow read access to pull request. Use with `only-new-issues` option.
+  pull-requests: read
+
 jobs:
+  linter-pull-request:
+    name: golangci-lint on a PR
+    runs-on: ubuntu-22.04
+    if: github.ref != 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # We needed to define the fetch-depth to 0 so that we can get the commit ID of the master branch
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          check-latest: true
+      - name: Get golangci-lint configuration file
+        run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
+      - name: Get master branch commit ID
+        id: new-from-rev
+        run: echo "NEW_FROM_REV=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
+      - name: "Execute golangci-lint on a pull request"
+        uses: golangci/golangci-lint-action@v4
+        with:
+          # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
+          # only-new-issues: false
+          args: "--config=$(pwd)/.golangci.yml --new-from-rev=${{ steps.new-from-rev.outputs.NEW_FROM_REV }}"
+
+  linter-master:
+    name: golangci-lint on master branch
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          check-latest: true
+      - name: Get golangci-lint configuration file
+        run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
+      - name: "Execute golangci-lint on the master branch"
+        uses: golangci/golangci-lint-action@v4
+        with:
+          # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
+          # only-new-issues: false
+          args: "--config=$(pwd)/.golangci.yml --new-from-rev=HEAD~1"
+
   tests:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -16,10 +67,10 @@ jobs:
         run: go test -race ./...
 
   releases:
-    needs: tests
+    needs: [linter-master, linter-pull-request, tests]
     name: GoReleaser Build on All OS but Windows
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,7 +89,7 @@ jobs:
           CGO_ENABLED: 0
 
   releases-windows:
-    needs: tests
+    needs: [linter-master, linter-pull-request, tests]
     name: GoReleaser Build on Windows
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: windows-latest
