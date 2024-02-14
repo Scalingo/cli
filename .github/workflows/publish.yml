@@ -28,8 +28,6 @@ jobs:
         run: echo "NEW_FROM_REV=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
       - name: "Execute golangci-lint on a pull request"
         uses: golangci/golangci-lint-action@v4
-        env:
-          NEW_FROM_REV: ${{ steps.new-from-rev.outputs.NEW_FROM_REV }}
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
           # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new` and `--new-from-rev`
