@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # We needed to define the fetch-depth to 0 so that we can get the commit ID of the master branch
+          # We need to define the fetch-depth to 0 so that we can get the commit ID of the master branch
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
@@ -40,6 +40,9 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
+        with:
+          # We need to define the fetch-depth to 2 so that we can get new offenses since HEAD~1
+          fetch-depth: 2
       - uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
