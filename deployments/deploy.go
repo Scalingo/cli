@@ -12,8 +12,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
 	scalingoio "github.com/Scalingo/go-scalingo/v6/io"
-
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type DeployRes struct {
@@ -27,7 +26,7 @@ type DeployOpts struct {
 func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpts) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	var archiveURL string
@@ -37,7 +36,7 @@ func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpt
 	} else { // if archivePath is a file
 		archiveURL, err = uploadArchivePath(ctx, client, archivePath)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrapf(ctx, err, "upload archive path")
 		}
 	}
 
@@ -52,7 +51,7 @@ func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpt
 	}
 	deployment, err := client.DeploymentsCreate(ctx, app, params)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "create archive deployment")
 	}
 
 	scalingoio.Status("Your deployment has been queued and is going to start…")
@@ -69,7 +68,7 @@ func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpt
 		DeploymentID: deployment.ID,
 	})
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "stream archive deployment logs")
 	}
 
 	return nil
@@ -78,38 +77,38 @@ func Deploy(ctx context.Context, app, archivePath, gitRef string, opts DeployOpt
 func uploadArchivePath(ctx context.Context, client *scalingo.Client, archivePath string) (string, error) {
 	archiveFd, err := os.OpenFile(archivePath, os.O_RDONLY, 0640)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to open archive: %v", archivePath)
+		return "", errors.Wrapf(ctx, err, "open archive: %v", archivePath)
 	}
 	defer archiveFd.Close()
 
 	stat, err := archiveFd.Stat()
 	if err != nil {
-		return "", errgo.Notef(err, "fail to stat archive: %v", archivePath)
+		return "", errors.Wrapf(ctx, err, "stat archive: %v", archivePath)
 	}
 
 	sources, err := client.SourcesCreate(ctx)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrapf(ctx, err, "create source to upload archive")
 	}
 
-	res, err := uploadArchive(sources.UploadURL, archiveFd, stat.Size())
+	res, err := uploadArchive(ctx, sources.UploadURL, archiveFd, stat.Size())
 	if err != nil {
-		return "", errgo.Notef(err, "fail to upload archive: %v", archivePath)
+		return "", errors.Wrapf(ctx, err, "fail to upload archive: %v", archivePath)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(res.Body)
-		return "", errgo.Newf("wrong status code after upload %s, body: %s", res.Status, string(body))
+		return "", errors.Newf(ctx, "wrong status code after upload %s, body: %s", res.Status, string(body))
 	}
 
 	return sources.DownloadURL, nil
 }
 
-func uploadArchive(uploadURL string, archiveReader io.Reader, archiveSize int64) (*http.Response, error) {
+func uploadArchive(ctx context.Context, uploadURL string, archiveReader io.Reader, archiveSize int64) (*http.Response, error) {
 	scalingoio.Status("Uploading archive…")
-	req, err := http.NewRequest("PUT", uploadURL, archiveReader)
+	req, err := http.NewRequestWithContext(ctx, "PUT", uploadURL, archiveReader)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to create the PUT request to upload the WAR archive")
+		return nil, errors.Wrapf(ctx, err, "fail to create the PUT request to upload the WAR archive")
 	}
 
 	req.Header.Set("Content-Type", "application/x-gzip")

@@ -8,6 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func ManualReviewApp(ctx context.Context, app string, pullRequestID int) error {
@@ -17,12 +18,12 @@ func ManualReviewApp(ctx context.Context, app string, pullRequestID int) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	err = c.SCMRepoLinkManualReviewApp(ctx, app, strconv.Itoa(pullRequestID))
 	if err != nil {
-		return errgo.Notef(err, "fail to manually create a review app")
+		return errors.Wrapf(ctx, err, "fail to manually create a review app")
 	}
 
 	io.Statusf("Manual review app created for app '%s' with pull/merge request id '%d'.\n", app, pullRequestID)

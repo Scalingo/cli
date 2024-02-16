@@ -14,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
 	"github.com/Scalingo/go-scalingo/v6/debug"
+	errorspkg "github.com/Scalingo/go-utils/errors/v2"
 )
 
 var ErrDeploymentFailed = errors.New("Deployment failed")
@@ -43,7 +44,7 @@ type statusData struct {
 func Stream(ctx context.Context, opts *StreamOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errorspkg.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	app, err := c.AppsShow(ctx, opts.AppName)

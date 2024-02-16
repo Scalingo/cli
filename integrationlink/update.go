@@ -9,6 +9,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Update(ctx context.Context, app string, params scalingo.SCMRepoLinkUpdateParams) error {
@@ -18,13 +19,13 @@ func Update(ctx context.Context, app string, params scalingo.SCMRepoLinkUpdatePa
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = c.SCMRepoLinkUpdate(ctx, app, params)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			return errgo.Notef(err, "fail to update integration link")
+			return errors.Wrapf(ctx, err, "fail to update integration link")
 		}
 
 		return utils.AskAndStopFreeTrial(ctx, c, func() error {
