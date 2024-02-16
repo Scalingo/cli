@@ -4,22 +4,23 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	alerts, err := c.AlertsList(ctx, app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "list alerts")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
@@ -49,7 +50,7 @@ func List(ctx context.Context, app string) error {
 
 		row := []string{
 			alert.ID,
-			fmt.Sprint(!alert.Disabled),
+			strconv.FormatBool(!alert.Disabled),
 			alert.ContainerType,
 			alert.Metric,
 			fmt.Sprintf("%s %.2f%s", above, alert.Limit, durationString),
