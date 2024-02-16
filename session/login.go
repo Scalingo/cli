@@ -39,9 +39,9 @@ func Login(ctx context.Context, opts LoginOpts) error {
 			io.Error("SSH connection failed.")
 			if opts.SSH {
 				if errors.RootCause(err) == netssh.ErrNoAuthSucceed {
-					return errgo.Notef(err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
+					return errors.Wrapf(ctx, err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
 				}
-				return errgo.Notef(err, "fail to login with SSH")
+				return errors.Wrapf(ctx, err, "fail to login with SSH")
 			}
 		} else {
 			return nil
@@ -63,7 +63,7 @@ func loginWithUserAndPassword(ctx context.Context) error {
 func loginWithToken(ctx context.Context, token string) error {
 	err := finalizeLogin(ctx, token)
 	if err != nil {
-		return errgo.Notef(err, "token invalid")
+		return errors.Wrapf(ctx, err, "token invalid")
 	}
 	return nil
 }
@@ -75,12 +75,12 @@ func loginWithSSH(ctx context.Context, identity string) error {
 			SkipAuth: true,
 		})
 		if err != nil {
-			return errgo.Notef(err, "fail to ensure region cache")
+			return errors.Wrapf(ctx, err, "fail to ensure region cache")
 		}
 
 		defaultRegion, err := regions.Default()
 		if err != nil {
-			return errgo.Notef(err, "fail to find default region")
+			return errors.Wrapf(ctx, err, "fail to find default region")
 		}
 
 		host = defaultRegion.SSH
@@ -92,18 +92,18 @@ func loginWithSSH(ctx context.Context, identity string) error {
 		Identity: identity,
 	})
 	if err != nil {
-		return errgo.Notef(err, "fail to connect to SSH server")
+		return errors.Wrapf(ctx, err, "fail to connect to SSH server")
 	}
 	channel, reqs, err := client.OpenChannel("session", []byte{})
 	if err != nil {
-		return errgo.Notef(err, "fail to open SSH channel")
+		return errors.Wrapf(ctx, err, "fail to open SSH channel")
 	}
 
 	defer client.Close()
 
 	_, err = channel.SendRequest("auth.v2@scalingo.com", false, []byte{})
 	if err != nil {
-		return errgo.Notef(err, "SSH authentication request fails")
+		return errors.Wrapf(ctx, err, "SSH authentication request fails")
 	}
 	req := <-reqs
 	if req == nil {
@@ -120,12 +120,12 @@ func loginWithSSH(ctx context.Context, identity string) error {
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		return errgo.Notef(err, "fail to get current hostname")
+		return errors.Wrapf(ctx, err, "fail to get current hostname")
 	}
 
 	c, err := config.ScalingoUnauthenticatedAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to create an unauthenticated Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to create an unauthenticated Scalingo client")
 	}
 	token, err := c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
 		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
@@ -146,7 +146,7 @@ func loginWithSSH(ctx context.Context, identity string) error {
 func finalizeLogin(ctx context.Context, token string) error {
 	c, err := config.ScalingoAuthClientFromToken(ctx, token)
 	if err != nil {
-		return errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+		return errors.Wrapf(ctx, err, "fail to create an authenticated Scalingo client using the API token")
 	}
 	user, err := c.Self(ctx)
 	if err != nil {

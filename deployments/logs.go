@@ -9,17 +9,18 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Logs(ctx context.Context, app, deploymentID string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	if deploymentID == "" {
 		deployments, err := client.DeploymentList(ctx, app)
 		if err != nil {
-			return errgo.Notef(err, "fail to get the most recent deployment")
+			return errors.Wrapf(ctx, err, "fail to get the most recent deployment")
 		}
 		if len(deployments) == 0 {
 			return errgo.New("This application has not been deployed")

@@ -8,23 +8,23 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	deployments, pagination, err := c.DeploymentListWithPagination(ctx, app, paginationOpts)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the application deployments")
+		return errors.Wrapf(ctx, err, "fail to list the application deployments")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

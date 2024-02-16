@@ -14,10 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type DeployWarRes struct {
@@ -32,19 +31,19 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	if strings.HasPrefix(warPath, "http://") || strings.HasPrefix(warPath, "https://") {
-		warReadStream, warSize, err = getURLInfo(warPath)
+		warReadStream, warSize, err = getURLInfo(ctx, warPath)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrapf(ctx, err, "get WAR URL info")
 		}
 		warFileName = appName + ".war"
 	} else {
-		warReadStream, warSize, warFileName, err = getFileInfo(warPath)
+		warReadStream, warSize, warFileName, err = getFileInfo(ctx, warPath)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrapf(ctx, err, "get WAR file info")
 		}
 	}
 	defer warReadStream.Close()
@@ -60,13 +59,13 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 	if warSize != 0 {
 		header.Size = warSize
 	} else {
-		return errgo.New("Unknown WAR size")
+		return errors.New(ctx, "unknown WAR size")
 	}
 
 	// Get the sources endpoints
 	sources, err := c.SourcesCreate(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "create WAR deployment source")
 	}
 
 	archiveBuffer := new(bytes.Buffer)
@@ -75,34 +74,34 @@ func DeployWar(ctx context.Context, appName, warPath, gitRef string, opts Deploy
 
 	err = tarWriter.WriteHeader(header)
 	if err != nil {
-		return errgo.Notef(err, "fail to create tarball")
+		return errors.Wrapf(ctx, err, "create tarball")
 	}
 
 	_, err = io.Copy(tarWriter, warReadStream)
 	if err != nil {
-		return errgo.Notef(err, "fail to copy war content")
+		return errors.Wrapf(ctx, err, "copy war content")
 	}
 
 	tarWriter.Close()
 	gzWriter.Close()
 
-	res, err := uploadArchive(sources.UploadURL, archiveBuffer, int64(archiveBuffer.Len()))
+	res, err := uploadArchive(ctx, sources.UploadURL, archiveBuffer, int64(archiveBuffer.Len()))
 	if err != nil {
-		return errgo.Notef(err, "fail to upload the WAR archive")
+		return errors.Wrapf(ctx, err, "upload the WAR archive")
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return errgo.Newf("wrong status code after upload %s", res.Status)
+		return errors.Newf(ctx, "wrong status code after upload: %s", res.Status)
 	}
 
 	return Deploy(ctx, appName, sources.DownloadURL, gitRef, opts)
 }
 
-func getURLInfo(warPath string) (io.ReadCloser, int64, error) {
+func getURLInfo(ctx context.Context, warPath string) (io.ReadCloser, int64, error) {
 	res, err := http.Get(warPath)
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, 0, errors.Wrapf(ctx, err, "get WAR file")
 	}
 
 	warSize := int64(0)
@@ -118,7 +117,7 @@ func getURLInfo(warPath string) (io.ReadCloser, int64, error) {
 	return warReadStream, warSize, nil
 }
 
-func getFileInfo(warPath string) (io.ReadCloser, int64, string, error) {
+func getFileInfo(ctx context.Context, warPath string) (io.ReadCloser, int64, string, error) {
 	warSize := int64(0)
 	warFileName := filepath.Base(warPath)
 	fi, err := os.Stat(warPath)
@@ -129,7 +128,7 @@ func getFileInfo(warPath string) (io.ReadCloser, int64, string, error) {
 
 	warReadStream, err := os.Open(warPath)
 	if err != nil {
-		return nil, 0, "", errgo.Mask(err, errgo.Any)
+		return nil, 0, "", errors.Wrapf(ctx, err, "open WAR file")
 	}
 
 	return warReadStream, warSize, warFileName, nil

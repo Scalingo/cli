@@ -3,21 +3,20 @@ package alerts
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Remove(ctx context.Context, app, id string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	err = c.AlertRemove(ctx, app, id)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "remove alert")
 	}
 
 	io.Status("The alert has been deleted")

@@ -23,19 +23,19 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	integration, err := c.SCMIntegrationsShow(ctx, string(integrationType))
 	if err != nil {
-		return errgo.Notef(err, "fail to get the integration")
+		return errors.Wrapf(ctx, err, "fail to get the integration")
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
 	if err != nil {
 		scerr, ok := errors.RootCause(err).(*http.RequestFailedError)
 		if !ok || scerr.Code != 404 {
-			return errgo.Notef(err, "fail to get the integration link for this app")
+			return errors.Wrapf(ctx, err, "fail to get the integration link for this app")
 		}
 	}
 
@@ -59,7 +59,7 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 			})
 		}
 
-		return errgo.Notef(err, "fail to create the repo link")
+		return errors.Wrapf(ctx, err, "fail to create the repo link")
 	}
 
 	io.Statusf("Your app '%s' is linked to the repository %s.\n", app, integrationURL)

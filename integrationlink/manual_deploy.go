@@ -8,6 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {
@@ -17,12 +18,12 @@ func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	deploy, err := c.SCMRepoLinkManualDeploy(ctx, app, branch)
 	if err != nil {
-		return errgo.Notef(err, "fail to trigger manual deploy")
+		return errors.Wrapf(ctx, err, "fail to trigger manual deploy")
 	}
 
 	io.Statusf("Manual deployment triggered for app '%s' on branch '%s'.\n", app, branch)
@@ -36,7 +37,7 @@ func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {
 		DeploymentID: deploy.ID,
 	})
 	if err != nil {
-		return errgo.Notef(err, "stream deployment logs")
+		return errors.Wrapf(ctx, err, "stream deployment logs")
 	}
 
 	return nil
