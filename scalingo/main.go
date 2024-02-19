@@ -139,11 +139,16 @@ func main() {
 		fmt.Println("Fail to run command:", err)
 	}
 
-	// We want to display to the user if a new version is available
-	// Whatever the success of the execution of their command is.
-	updateCheckErr := update.Check()
-	if updateCheckErr != nil {
-		debug.Println("Failed to check if executable should be updated", updateCheckErr)
+	// Do not show update check during autocomplete
+	if bashComplete {
+		debug.Println("Do not check available update during autocompletion")
+	} else {
+		// We want to display to the user if a new version is available
+		// Whatever the success of the execution of their command is.
+		updateCheckErr := update.Check()
+		if updateCheckErr != nil {
+			debug.Printf("Failed to check if executable should be updated: %v\n", updateCheckErr)
+		}
 	}
 
 	if err != nil {
