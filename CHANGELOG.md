@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(autocomplete): do not show update message on autocomplete
+
 ### 1.30.1
 
 * feat(addons): add aliases for database user management (i.e. using format: `database-users-<action>`) ([PR#1031](https://github.com/Scalingo/cli/pull/1031))
