@@ -27,6 +27,27 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 		return nil
 	}
 
+	c, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return errors.Wrap(ctx, err, "get Scalingo client")
+	}
+	l, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	if err != nil {
+		return errors.Wrap(ctx, err, "list the database's users")
+	}
+
+	// Check if the user exists
+	var userExists bool
+	for _, user := range l {
+		if user.Name == username {
+			userExists = true
+			break
+		}
+	}
+	if userExists {
+		return errors.New(ctx, fmt.Sprintf("User \"%s\" already exists", username))
+	}
+
 	password, confirmedPassword, err := askForPasswordWithRetry(ctx, 3)
 	if err != nil {
 		io.Error(err)
@@ -38,11 +59,6 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 		isPasswordGenerated = true
 		password = gopassword.Generate(64)
 		confirmedPassword = password
-	}
-
-	c, err := config.ScalingoClient(ctx)
-	if err != nil {
-		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	user := scalingo.DatabaseCreateUserParam{
