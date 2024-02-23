@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/gopassword"
 )
 
-func CreateUser(ctx context.Context, app, addonUUID, username string, readonly bool) error {
+func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 	isSupported, err := doesDatabaseHandleUserManagement(ctx, app, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get user management information")
@@ -44,8 +44,8 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 			break
 		}
 	}
-	if userExists {
-		return errors.New(ctx, fmt.Sprintf("User \"%s\" already exists", username))
+	if !userExists {
+		return errors.New(ctx, fmt.Sprintf("User \"%s\" does not exist", username))
 	}
 
 	password, confirmedPassword, err := askForPasswordWithRetry(ctx, 3)
@@ -61,23 +61,21 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 		confirmedPassword = password
 	}
 
-	user := scalingo.DatabaseCreateUserParam{
+	user := scalingo.DatabaseUpdateUserParam{
 		DatabaseID:           addonUUID,
-		Name:                 username,
 		Password:             password,
 		PasswordConfirmation: confirmedPassword,
-		ReadOnly:             readonly,
 	}
-	databaseUsers, err := c.DatabaseCreateUser(ctx, app, addonUUID, user)
+	databaseUsers, err := c.DatabaseUpdateUser(ctx, app, addonUUID, username, user)
 	if err != nil {
-		return errors.Wrap(ctx, err, "create the given database user")
+		return errors.Wrap(ctx, err, "update password of the given database user")
 	}
 
 	if isPasswordGenerated {
-		fmt.Printf("User \"%s\" created with password \"%s\".\n", databaseUsers.Name, password)
+		fmt.Printf("User \"%s\" updated with password \"%s\".\n", databaseUsers.Name, password)
 		return nil
 	}
 
-	fmt.Printf("User \"%s\" created.\n", databaseUsers.Name)
+	fmt.Printf("User \"%s\" password updated.\n", databaseUsers.Name)
 	return nil
 }

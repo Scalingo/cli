@@ -3,6 +3,7 @@
 ### To be Released
 
 * fix(autocomplete): do not show update message on autocomplete
+* feat(databases): add databases users update
 
 ### 1.30.1
 

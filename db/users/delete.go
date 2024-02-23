@@ -7,13 +7,13 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v6"
-	scErrors "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 	isSupported, err := doesDatabaseHandleUserManagement(ctx, app, addonUUID)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get user management information")
+		return errors.Wrap(ctx, err, "get user management information")
 	}
 
 	if !isSupported {
@@ -23,12 +23,12 @@ func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	databaseUsers, err := c.DatabaseListUsers(ctx, app, addonUUID)
 	if err != nil {
-		return scErrors.Wrap(ctx, err, "list the database's users")
+		return errors.Wrap(ctx, err, "list the database's users")
 	}
 
 	var givenUser *scalingo.DatabaseUser
@@ -50,7 +50,7 @@ func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 
 	err = c.DatabaseDeleteUser(ctx, app, addonUUID, username)
 	if err != nil {
-		return scErrors.Wrapf(ctx, err, "delete given user from database %v", username)
+		return errors.Wrapf(ctx, err, "delete given user from database %v", username)
 	}
 	return nil
 }

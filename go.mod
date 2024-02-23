@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v6 v6.7.6
+	github.com/Scalingo/go-scalingo/v6 v6.7.7
 	github.com/Scalingo/go-utils/errors/v2 v2.3.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1

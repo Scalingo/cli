@@ -277,6 +277,29 @@ func (c *Client) DatabaseCreateUser(ctx context.Context, app, addonID string, us
 	return res.DatabaseUser, nil
 }
 
+type DatabaseUpdateUserParam struct {
+	DatabaseID           string `json:"database_id"`
+	Password             string `json:"password,omitempty"`
+	PasswordConfirmation string `json:"password_confirmation,omitempty"`
+}
+
+type databaseUpdateUserPayload struct {
+	DatabaseUser DatabaseUpdateUserParam `json:"database_user"`
+}
+
+// DatabaseUpdateUser updates a user to the given database addon
+func (c *Client) DatabaseUpdateUser(ctx context.Context, app, addonID, username string, databaseUserParams DatabaseUpdateUserParam) (DatabaseUser, error) {
+	res := DatabaseUserResponse{}
+	payload := databaseUpdateUserPayload{
+		DatabaseUser: databaseUserParams,
+	}
+	err := c.DBAPI(app, addonID).SubresourceUpdate(ctx, "databases", addonID, "users", username, payload, &res)
+	if err != nil {
+		return res.DatabaseUser, errors.Wrapf(ctx, err, "update a user on database %s", addonID)
+	}
+	return res.DatabaseUser, nil
+}
+
 // DatabaseUsersResponse is the response body of database list users
 type DatabaseUsersResponse struct {
 	DatabaseUsers []DatabaseUser `json:"database-users"`

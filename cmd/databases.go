@@ -242,6 +242,43 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			return nil
 		},
 	}
+	databaseUpdateUserPassword = cli.Command{
+		Name:      "database-users-update-password",
+		Aliases:   []string{"database-update-user-password"},
+		Category:  "Addons",
+		ArgsUsage: "user",
+		Usage:     "Update a database user's password",
+		Flags: []cli.Flag{
+			&appFlag,
+			&addonFlag,
+		},
+		Description: CommandDescription{
+			Description: `Update password for unprotected database user.
+
+Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
+			Examples: []string{
+				"scalingo --app myapp --addon addon-uuid database-users-update-password my_user",
+			},
+		}.Render(),
+
+		Action: func(c *cli.Context) error {
+			if c.NArg() < 1 {
+				return cli.ShowCommandHelp(c, "database-users-update-password")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			addonName := addonUUIDFromFlags(c, currentApp, true)
+
+			username := c.Args().First()
+
+			err := dbUsers.UpdateUser(c.Context, currentApp, addonName, username)
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+			return nil
+		},
+	}
 )
 
 func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
