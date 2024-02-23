@@ -52,5 +52,6 @@ func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 	if err != nil {
 		return errors.Wrapf(ctx, err, "delete given user from database %v", username)
 	}
+	io.Statusf("User %v has been deleted\n", username)
 	return nil
 }
