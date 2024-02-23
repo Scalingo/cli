@@ -24,7 +24,7 @@ type Client interface {
 	SubresourceList(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error
 	SubresourceAdd(ctx context.Context, resource, resourceID, subresource string, payload, data interface{}) error
 	SubresourceGet(ctx context.Context, resource, resourceID, subresource, id string, payload, data interface{}) error
-	SubresourceUpdate(rctx context.Context, esource, resourceID, subresource, id string, payload, data interface{}) error
+	SubresourceUpdate(ctx context.Context, resource, resourceID, subresource, id string, payload, data interface{}) error
 	SubresourceDelete(ctx context.Context, resource, resourceID, subresource, id string) error
 	DoRequest(ctx context.Context, req *APIRequest, data interface{}) error
 	Do(context.Context, *APIRequest) (*http.Response, error)
