@@ -31,21 +31,24 @@ func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
+
 	l, err := c.DatabaseListUsers(ctx, app, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list the database's users")
 	}
-
-	// Check if the user exists
-	var userExists bool
-	for _, user := range l {
-		if user.Name == username {
-			userExists = true
+	// Check if the userParam exists and is not protected
+	var user *scalingo.DatabaseUser
+	for _, u := range l {
+		if u.Name == username {
+			user = &u
 			break
 		}
 	}
-	if !userExists {
+	if user == nil {
 		return errors.New(ctx, fmt.Sprintf("User \"%s\" does not exist", username))
+	}
+	if user.Protected {
+		return errors.New(ctx, fmt.Sprintf("User \"%s\" is protected", username))
 	}
 
 	password, confirmedPassword, err := askForPasswordWithRetry(ctx, 3)
@@ -61,12 +64,12 @@ func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 		confirmedPassword = password
 	}
 
-	user := scalingo.DatabaseUpdateUserParam{
+	userUpdateParam := scalingo.DatabaseUpdateUserParam{
 		DatabaseID:           addonUUID,
 		Password:             password,
 		PasswordConfirmation: confirmedPassword,
 	}
-	databaseUsers, err := c.DatabaseUpdateUser(ctx, app, addonUUID, username, user)
+	databaseUsers, err := c.DatabaseUpdateUser(ctx, app, addonUUID, username, userUpdateParam)
 	if err != nil {
 		return errors.Wrap(ctx, err, "update password of the given database user")
 	}
