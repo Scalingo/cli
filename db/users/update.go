@@ -27,14 +27,30 @@ func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 		return nil
 	}
 
-	password, confirmedPassword, err := askForPassword(ctx)
+	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "ask for password")
+		return errors.Wrap(ctx, err, "get Scalingo client")
+	}
+	l, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	if err != nil {
+		return errors.Wrap(ctx, err, "list the database's users")
 	}
 
-	passwordValidation, ok := isPasswordValid(password, confirmedPassword)
-	if !ok && password != "" {
-		io.Error(passwordValidation)
+	// Check if the user exists
+	var userExists bool
+	for _, user := range l {
+		if user.Name == username {
+			userExists = true
+			break
+		}
+	}
+	if !userExists {
+		return errors.New(ctx, fmt.Sprintf("User \"%s\" does not exist", username))
+	}
+
+	password, confirmedPassword, err := askForPasswordWithRetry(ctx, 3)
+	if err != nil {
+		io.Error(err)
 		return nil
 	}
 
@@ -43,11 +59,6 @@ func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 		isPasswordGenerated = true
 		password = gopassword.Generate(64)
 		confirmedPassword = password
-	}
-
-	c, err := config.ScalingoClient(ctx)
-	if err != nil {
-		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	user := scalingo.DatabaseUpdateUserParam{
