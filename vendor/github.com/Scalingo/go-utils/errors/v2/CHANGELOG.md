@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v2.4.0
+
+* docs(errors): deprecate use of `errgo` in `ErrCtx`
+
 ## v2.3.0
 
 * feat: add `Is` and `As` to match standard library

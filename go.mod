@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v6 v6.7.7
-	github.com/Scalingo/go-utils/errors/v2 v2.3.0
+	github.com/Scalingo/go-utils/errors/v2 v2.4.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
 	github.com/Scalingo/gopassword v1.0.2
@@ -25,7 +25,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.27.1
-	golang.org/x/crypto v0.19.0
+	golang.org/x/crypto v0.20.0
 	golang.org/x/term v0.17.0
 	golang.org/x/text v0.14.0
 	gopkg.in/errgo.v1 v1.0.1
@@ -34,7 +34,7 @@ require (
 require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
-	github.com/ProtonMail/go-crypto v1.1.0-alpha.0 // indirect
+	github.com/ProtonMail/go-crypto v1.1.0-alpha.1 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
