@@ -49,7 +49,7 @@ func List(ctx context.Context, app string) error {
 			if !ok {
 				letsencryptStatus = string(domain.LetsEncryptStatus)
 			}
-			row = append(row, fmt.Sprintf("Let's Encrypt: %s", letsencryptStatus))
+			row = append(row, "Let's Encrypt "+letsencryptStatus)
 		} else {
 			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
 		}
