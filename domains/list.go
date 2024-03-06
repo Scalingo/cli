@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -32,8 +33,8 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Domain", "TLS/SSL"})
 	hasCanonical := false
+	headers := []string{"Domain", "TLS/SSL"}
 
 	for _, domain := range domains {
 		domainName := domain.Name
@@ -42,6 +43,7 @@ func List(ctx context.Context, app string) error {
 			domainName += " (*)"
 		}
 		row := []string{domainName}
+
 		if !domain.SSL {
 			row = append(row, "-")
 		} else if domain.LetsEncrypt {
@@ -53,8 +55,18 @@ func List(ctx context.Context, app string) error {
 		} else {
 			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
 		}
+
+		if domain.LetsEncryptStatus == scalingo.LetsEncryptStatusDNSRequired {
+			if !slices.Contains(headers, "Manual Action") {
+				headers = append(headers, "Manual Action")
+			}
+			row = append(row, fmt.Sprintf("%v \n%v", domain.AcmeDNSFqdn, domain.AcmeDNSValue))
+		}
+
 		t.Append(row)
 	}
+
+	t.SetHeader(headers)
 	t.Render()
 
 	if hasCanonical {
