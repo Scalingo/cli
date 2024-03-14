@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   linter-pull-request:
-    name: golangci-lint on a PR
+    name: golangci-lint on a PR or from a tag
     runs-on: ubuntu-22.04
     if: github.ref != 'refs/heads/master'
     steps:
