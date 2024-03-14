@@ -2,8 +2,10 @@
 
 ### To be Released
 
-* fix(autocomplete): do not show update message on autocomplete
-* feat(databases): add databases users update
+### 1.30.2
+
+* fix(autocomplete): do not show update message on autocomplete ([PR#1044](https://github.com/Scalingo/cli/pull/1044))
+* feat(databases): add databases users update ([PR#1036](https://github.com/Scalingo/cli/pull/1036))
 
 ### 1.30.1
 
