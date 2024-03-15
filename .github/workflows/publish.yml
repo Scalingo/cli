@@ -2,8 +2,11 @@ name: Test and Release Go CLI
 
 on: [push]
 
+# The list of permissions is explained on the GitHub doc:
+# https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
 permissions:
-  contents: read
+  # Write permissions is needed to create a new release
+  contents: write
   # allow read access to pull request. Use with `only-new-issues` option.
   pull-requests: read
 
