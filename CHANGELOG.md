@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* fix(cmd): addons-info working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
+
 ### 1.31.0
 
 * fix(autocomplete): do not show update message on autocomplete ([PR#1044](https://github.com/Scalingo/cli/pull/1044))
