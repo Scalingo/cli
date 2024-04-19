@@ -15,7 +15,7 @@ import (
 var letsencryptStatusString = map[string]string{
 	string(scalingo.LetsEncryptStatusPendingDNS):  "Pending DNS",
 	string(scalingo.LetsEncryptStatusNew):         "Creating",
-	string(scalingo.LetsEncryptStatusCreated):     "In use",
+	string(scalingo.LetsEncryptStatusCreated):     "Created",
 	string(scalingo.LetsEncryptStatusDNSRequired): "DNS required",
 	string(scalingo.LetsEncryptStatusError):       "Error",
 }
@@ -31,7 +31,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Domain", "TLS/SSL"})
+	t.SetHeader([]string{"Domain", "TLS/SSL", "TLS Subject", "Let's Encrypt Certificate"})
 	hasCanonical := false
 
 	for _, domain := range domains {
@@ -40,18 +40,32 @@ func List(ctx context.Context, app string) error {
 			hasCanonical = true
 			domainName += " (*)"
 		}
-		row := []string{domainName}
-		if !domain.SSL {
-			row = append(row, "-")
-		} else if domain.LetsEncrypt {
-			letsencryptStatus, ok := letsencryptStatusString[string(domain.LetsEncryptStatus)]
-			if !ok {
-				letsencryptStatus = string(domain.LetsEncryptStatus)
+
+		tls := "-"
+		letsEncrypt := "Disabled"
+		if domain.LetsEncryptEnabled {
+			// If the domain is using Let's Encrypt (and not a custom cert), we mention it
+			if domain.LetsEncrypt {
+				tls = "Let's Encrypt"
 			}
-			row = append(row, fmt.Sprintf("Let's Encrypt: %s", letsencryptStatus))
-		} else {
-			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
+			// In any case we display the state of creation of the Let's Encrypt certificate
+			// So if a customer certification is used, it is still mentionned we have it
+			var ok bool
+			letsEncrypt, ok = letsencryptStatusString[string(domain.LetsEncryptStatus)]
+			if !ok {
+				letsEncrypt = string(domain.LetsEncryptStatus)
+			}
+
+			if !domain.LetsEncrypt && domain.LetsEncryptStatus == scalingo.LetsEncryptStatusCreated {
+				letsEncrypt = "Created, Not in use"
+			}
 		}
+
+		if domain.SSL && !domain.LetsEncrypt {
+			tls = fmt.Sprintf("Valid until %v", domain.Validity)
+		}
+
+		row := []string{domainName, tls, domain.TLSCert, letsEncrypt}
 		t.Append(row)
 	}
 	t.Render()
