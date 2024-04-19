@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/urfave/cli/v2"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/domains"
 	"github.com/Scalingo/cli/utils"
+	scalingo "github.com/Scalingo/go-scalingo/v7"
 )
 
 var (
@@ -46,29 +50,48 @@ var (
 		Usage:     "Add a custom domain to an application",
 		ArgsUsage: "domain",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate", Value: "domain.crt"},
-			&cli.StringFlag{Name: "key", Usage: "SSL Keypair", Value: "domain.key"},
+			&cli.StringFlag{Name: "cert", Usage: "SSL Signed Certificate"},
+			&cli.StringFlag{Name: "key", Usage: "SSL Keypair"},
+			&cli.BoolFlag{Name: "no-letsencrypt", Usage: "Disable automatic Let's Encrypt certificate generation", Value: false},
 		},
 		Description: CommandDescription{
 			Description: "Add a custom domain to an application",
-			Examples:    []string{"scalingo --app my-app domains-add example.com"},
-			SeeAlso:     []string{"domains", "domains-remove"},
+			Examples: []string{
+				"scalingo --app my-app domains-add example.com",
+				"scalingo --app my-app domains-add --cert ./cert.pem --key ./key.pem example.com",
+				"scalingo --app my-app domains-add --no-letsencrypt example.com",
+			},
+			SeeAlso: []string{"domains", "domains-remove"},
 		}.Render(),
 
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
+
 			if c.Args().Len() == 1 {
 				cert := c.String("cert")
-				if cert == "domain.crt" {
-					cert = ""
-				}
 				key := c.String("key")
-				if key == "domain.key" {
-					key = ""
+				certContent, keyContent, err := validateTLSParams(cert, key)
+				if err != nil {
+					errorQuit(c.Context, err)
 				}
-				err = domains.Add(c.Context, currentApp, c.Args().First(), cert, key)
+
+				params := scalingo.DomainsAddParams{
+					Name: c.Args().First(),
+				}
+				if certContent != "" {
+					params.TLSCert = &certContent
+				}
+				if keyContent != "" {
+					params.TLSKey = &keyContent
+				}
+				if c.Bool("no-letsencrypt") {
+					letsEncryptEnabled := false
+					params.LetsEncryptEnabled = &letsEncryptEnabled
+				}
+
+				err = domains.Add(c.Context, currentApp, params)
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
 			}
@@ -138,16 +161,22 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-			var err error
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
-				err = domains.DisableSSL(c.Context, currentApp, c.Args().First())
+				err := domains.DisableSSL(c.Context, currentApp, c.Args().First())
+				if err != nil {
+					errorQuit(c.Context, err)
+				}
 			} else if c.Args().Len() == 1 {
-				err = domains.EnableSSL(c.Context, currentApp, c.Args().First(), c.String("cert"), c.String("key"))
+				certContent, keyContent, err := validateTLSParams(c.String("cert"), c.String("key"))
+				if err != nil {
+					errorQuit(c.Context, err)
+				}
+				err = domains.EnableSSL(c.Context, currentApp, c.Args().First(), certContent, keyContent)
+				if err != nil {
+					errorQuit(c.Context, err)
+				}
 			} else {
 				cli.ShowCommandHelp(c, "domains-ssl")
-			}
-			if err != nil {
-				errorQuit(c.Context, err)
 			}
 			return nil
 		},
@@ -219,3 +248,27 @@ This domain is called the canonical domain. This command sets the canonical doma
 		},
 	}
 )
+
+func validateTLSParams(cert, key string) (string, string, error) {
+	if cert == "" && key == "" {
+		return "", "", nil
+	}
+
+	if cert == "" && key != "" {
+		return "", "", errgo.New("--cert <certificate path> should be defined")
+	}
+
+	if key == "" && cert != "" {
+		return "", "", errgo.New("--key <key path> should be defined")
+	}
+
+	certContent, err := os.ReadFile(cert)
+	if err != nil {
+		return "", "", errgo.Notef(err, "fail to read the TLS certificate")
+	}
+	keyContent, err := os.ReadFile(key)
+	if err != nil {
+		return "", "", errgo.Notef(err, "fail to read the private key")
+	}
+	return string(certContent), string(keyContent), nil
+}
