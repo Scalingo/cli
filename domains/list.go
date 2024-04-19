@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	scalingo "github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var letsencryptStatusString = map[string]string{
@@ -23,16 +24,17 @@ var letsencryptStatusString = map[string]string{
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client to list domains")
 	}
+
 	domains, err := c.DomainsList(ctx, app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "list domains")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Domain", "TLS/SSL"})
 	hasCanonical := false
+	headers := []string{"Domain", "TLS/SSL"}
 
 	for _, domain := range domains {
 		domainName := domain.Name
@@ -41,6 +43,7 @@ func List(ctx context.Context, app string) error {
 			domainName += " (*)"
 		}
 		row := []string{domainName}
+
 		if !domain.SSL {
 			row = append(row, "-")
 		} else if domain.LetsEncrypt {
@@ -48,12 +51,22 @@ func List(ctx context.Context, app string) error {
 			if !ok {
 				letsencryptStatus = string(domain.LetsEncryptStatus)
 			}
-			row = append(row, fmt.Sprintf("Let's Encrypt: %s", letsencryptStatus))
+			row = append(row, "Let's Encrypt "+letsencryptStatus)
 		} else {
 			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
 		}
+
+		if domain.LetsEncryptStatus == scalingo.LetsEncryptStatusDNSRequired {
+			if !slices.Contains(headers, "Manual Action") {
+				headers = append(headers, "Manual Action")
+			}
+			row = append(row, fmt.Sprintf("%v \n%v", domain.AcmeDNSFqdn, domain.AcmeDNSValue))
+		}
+
 		t.Append(row)
 	}
+
+	t.SetHeader(headers)
 	t.Render()
 
 	if hasCanonical {
