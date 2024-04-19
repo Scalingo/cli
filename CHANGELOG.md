@@ -2,7 +2,8 @@
 
 ### To be Released
 
-* fix(cmd): addons-info working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
+* feat(domains): `domains-add` now supports `--no-letsencrypt` flag to completely disable Let's Encrypt certificat generation
+* fix(cmd): `addons-info` working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
 
 ### 1.31.0
 
