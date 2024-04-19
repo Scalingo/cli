@@ -67,7 +67,6 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-			var err error
 
 			if c.Args().Len() == 1 {
 				cert := c.String("cert")
@@ -92,12 +91,11 @@ var (
 				}
 
 				err = domains.Add(c.Context, currentApp, params)
+				if err != nil {
+					errorQuit(c.Context, err)
+				}
 			} else {
 				cli.ShowCommandHelp(c, "domains-add")
-			}
-
-			if err != nil {
-				errorQuit(c.Context, err)
 			}
 			return nil
 		},
