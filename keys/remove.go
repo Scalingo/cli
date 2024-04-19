@@ -7,7 +7,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func Remove(ctx context.Context, name string) error {

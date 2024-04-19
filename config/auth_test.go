@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/Scalingo/cli/config/auth"
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func TestStoreAuth(t *testing.T) {

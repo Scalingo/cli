@@ -7,8 +7,8 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v6"
-	"github.com/Scalingo/go-scalingo/v6/debug"
+	scalingo "github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v7/debug"
 )
 
 type ProvisionParams struct {

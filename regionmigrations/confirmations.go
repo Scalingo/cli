@@ -5,7 +5,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func ConfirmPrepare(migration scalingo.RegionMigration) bool {

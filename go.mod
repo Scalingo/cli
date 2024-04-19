@@ -35,6 +35,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/ProtonMail/go-crypto v1.1.0-alpha.2 // indirect
+	github.com/Scalingo/go-scalingo/v7 v7.0.0 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect

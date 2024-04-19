@@ -7,7 +7,7 @@ import (
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/regionmigrations"
 	"github.com/Scalingo/cli/utils"
-	scalingo "github.com/Scalingo/go-scalingo/v6"
+	scalingo "github.com/Scalingo/go-scalingo/v7"
 )
 
 var (

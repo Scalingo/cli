@@ -15,8 +15,8 @@ import (
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
-	scalingo "github.com/Scalingo/go-scalingo/v6"
-	scalingohttp "github.com/Scalingo/go-scalingo/v6/http"
+	scalingo "github.com/Scalingo/go-scalingo/v7"
+	scalingohttp "github.com/Scalingo/go-scalingo/v7/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
