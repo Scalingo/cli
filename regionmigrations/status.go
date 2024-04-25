@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	scalingo "github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func showMigrationStatusSuccess(ctx context.Context, appID string, migration scalingo.RegionMigration) {

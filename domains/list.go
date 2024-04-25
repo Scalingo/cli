@@ -9,7 +9,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 var letsencryptStatusString = map[string]string{

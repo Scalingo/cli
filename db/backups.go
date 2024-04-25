@@ -11,7 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	scalingo "github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func ListBackups(ctx context.Context, app, addon string) error {
