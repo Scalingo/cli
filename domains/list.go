@@ -49,7 +49,7 @@ func List(ctx context.Context, app string) error {
 				tls = "Let's Encrypt"
 			}
 			// In any case we display the state of creation of the Let's Encrypt certificate
-			// So if a customer certification is used, it is still mentionned we have it
+			// So if a customer certification is used, it is still mentioned we have it
 			var ok bool
 			letsEncrypt, ok = letsencryptStatusString[string(domain.LetsEncryptStatus)]
 			if !ok {
