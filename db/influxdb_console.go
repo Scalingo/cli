@@ -43,7 +43,6 @@ func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 		App:        opts.App,
 		Cmd:        cmd,
 		Size:       opts.Size,
-		Async:      true,
 	}
 
 	err = apps.Run(ctx, runOpts)
