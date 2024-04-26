@@ -7,7 +7,7 @@ import (
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	scalingo "github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func Create(ctx context.Context, app string, destination string, dstAppName string) error {

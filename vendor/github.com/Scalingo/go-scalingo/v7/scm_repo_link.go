@@ -1,0 +1,253 @@
+package scalingo
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-scalingo/v7/http"
+)
+
+type SCMRepoLinkService interface {
+	SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error)
+	SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error)
+	SCMRepoLinkCreate(ctx context.Context, app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error)
+	SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
+	SCMRepoLinkDelete(ctx context.Context, app string) error
+	SCMRepoLinkPullRequest(ctx context.Context, app string, number int) (*RepoLinkPullRequest, error)
+
+	SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) (*Deployment, error)
+	SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error
+	SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Deployment, error)
+	SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*ReviewApp, error)
+}
+
+type SCMRepoLinkCreateParams struct {
+	Source                            *string `json:"source,omitempty"`
+	Branch                            *string `json:"branch,omitempty"`
+	AuthIntegrationUUID               *string `json:"auth_integration_uuid,omitempty"`
+	AutoDeployEnabled                 *bool   `json:"auto_deploy_enabled,omitempty"`
+	DeployReviewAppsEnabled           *bool   `json:"deploy_review_apps_enabled,omitempty"`
+	DestroyOnCloseEnabled             *bool   `json:"delete_on_close_enabled,omitempty"`
+	HoursBeforeDeleteOnClose          *uint   `json:"hours_before_delete_on_close,omitempty"`
+	DestroyStaleEnabled               *bool   `json:"delete_stale_enabled,omitempty"`
+	HoursBeforeDeleteStale            *uint   `json:"hours_before_delete_stale,omitempty"`
+	AutomaticCreationFromForksAllowed *bool   `json:"automatic_creation_from_forks_allowed,omitempty"`
+}
+
+type SCMRepoLinkUpdateParams struct {
+	Branch                            *string `json:"branch,omitempty"`
+	AutoDeployEnabled                 *bool   `json:"auto_deploy_enabled,omitempty"`
+	DeployReviewAppsEnabled           *bool   `json:"deploy_review_apps_enabled,omitempty"`
+	DestroyOnCloseEnabled             *bool   `json:"delete_on_close_enabled,omitempty"`
+	HoursBeforeDeleteOnClose          *uint   `json:"hours_before_delete_on_close,omitempty"`
+	DestroyStaleEnabled               *bool   `json:"delete_stale_enabled,omitempty"`
+	HoursBeforeDeleteStale            *uint   `json:"hours_before_delete_stale,omitempty"`
+	AutomaticCreationFromForksAllowed *bool   `json:"automatic_creation_from_forks_allowed,omitempty"`
+}
+
+type SCMRepoLink struct {
+	ID                                string            `json:"id"`
+	AppID                             string            `json:"app_id"`
+	Linker                            SCMRepoLinkLinker `json:"linker"`
+	URL                               string            `json:"url"`
+	Owner                             string            `json:"owner"`
+	Repo                              string            `json:"repo"`
+	Branch                            string            `json:"branch"`
+	SCMType                           SCMType           `json:"scm_type"`
+	CreatedAt                         time.Time         `json:"created_at"`
+	UpdatedAt                         time.Time         `json:"updated_at"`
+	AutoDeployEnabled                 bool              `json:"auto_deploy_enabled"`
+	AuthIntegrationUUID               string            `json:"auth_integration_uuid"`
+	DeployReviewAppsEnabled           bool              `json:"deploy_review_apps_enabled"`
+	DeleteOnCloseEnabled              bool              `json:"delete_on_close_enabled"`
+	DeleteStaleEnabled                bool              `json:"delete_stale_enabled"`
+	HoursBeforeDeleteOnClose          uint              `json:"hours_before_delete_on_close"`
+	HoursBeforeDeleteStale            uint              `json:"hours_before_delete_stale"`
+	LastAutoDeployAt                  time.Time         `json:"last_auto_deploy_at"`
+	AutomaticCreationFromForksAllowed bool              `json:"automatic_creation_from_forks_allowed"`
+}
+
+type SCMRepoLinkLinker struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	ID       string `json:"id"`
+}
+
+type SCMRepoLinksResponse struct {
+	SCMRepoLinks []*SCMRepoLink `json:"scm_repo_links"`
+	Meta         struct {
+		PaginationMeta PaginationMeta `json:"pagination"`
+	}
+}
+
+type ScmRepoLinkResponse struct {
+	SCMRepoLink *SCMRepoLink `json:"scm_repo_link"`
+}
+
+type SCMRepoLinkDeploymentsResponse struct {
+	Deployments []*Deployment `json:"deployments"`
+}
+
+type SCMRepoLinkManualDeployResponse struct {
+	Deployment *Deployment `json:"deployment"`
+}
+
+type SCMRepoLinkReviewAppsResponse struct {
+	ReviewApps []*ReviewApp `json:"review_apps"`
+}
+
+type SCMRepoLinkPullRequestResponse struct {
+	Pull RepoLinkPullRequest `json:"pull"`
+}
+
+type RepoLinkPullRequest struct {
+	ID                    int    `json:"id"`
+	Number                int    `json:"number"`
+	Title                 string `json:"title"`
+	HTMLURL               string `json:"html_url"`
+	SourceRepoName        string `json:"source_repo_name"`
+	SourceRepoHTMLURL     string `json:"source_repo_html_url"`
+	OpenedFromAForkedRepo bool   `json:"opened_from_a_forked_repo"`
+}
+
+var _ SCMRepoLinkService = (*Client)(nil)
+
+func (c *Client) SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error) {
+	var res SCMRepoLinksResponse
+	err := c.ScalingoAPI().ResourceList(ctx, "scm_repo_links", opts.ToMap(), &res)
+	if err != nil {
+		return nil, PaginationMeta{}, errgo.Notef(err, "fail to list SCM repo links")
+	}
+	return res.SCMRepoLinks, res.Meta.PaginationMeta, nil
+}
+
+func (c *Client) SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error) {
+	var res ScmRepoLinkResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "GET",
+		Endpoint: "/apps/" + app + "/scm_repo_link",
+		Expected: http.Statuses{200},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get this SCM repo link")
+	}
+	return res.SCMRepoLink, nil
+}
+
+func (c *Client) SCMRepoLinkCreate(ctx context.Context, app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error) {
+	var res ScmRepoLinkResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/scm_repo_link",
+		Expected: http.Statuses{201},
+		Params:   map[string]SCMRepoLinkCreateParams{"scm_repo_link": params},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to create the SCM repo link")
+	}
+
+	return res.SCMRepoLink, nil
+}
+
+func (c *Client) SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error) {
+	var res ScmRepoLinkResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "PATCH",
+		Endpoint: "/apps/" + app + "/scm_repo_link",
+		Expected: http.Statuses{200},
+		Params:   map[string]SCMRepoLinkUpdateParams{"scm_repo_link": params},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to update this SCM repo link")
+	}
+
+	return res.SCMRepoLink, nil
+}
+
+func (c *Client) SCMRepoLinkDelete(ctx context.Context, app string) error {
+	res, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
+		Method:   "DELETE",
+		Endpoint: "/apps/" + app + "/scm_repo_link",
+		Expected: http.Statuses{204},
+	})
+	if err != nil {
+		return errgo.Notef(err, "fail to delete this SCM repo link")
+	}
+	defer res.Body.Close()
+
+	return nil
+}
+
+func (c *Client) SCMRepoLinkPullRequest(ctx context.Context, app string, number int) (*RepoLinkPullRequest, error) {
+	var res SCMRepoLinkPullRequestResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "GET",
+		Endpoint: fmt.Sprintf("/apps/%s/scm_repo_link/pulls/%d", app, number),
+		Expected: http.Statuses{200},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to get this SCM repo link")
+	}
+	return &res.Pull, nil
+}
+
+func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string) (*Deployment, error) {
+	var res SCMRepoLinkManualDeployResponse
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/scm_repo_link/manual_deploy",
+		Expected: http.Statuses{200},
+		Params:   map[string]string{"branch": branch},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to trigger manual app deployment")
+	}
+
+	return res.Deployment, nil
+}
+
+func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullRequestID string) error {
+	res, err := c.ScalingoAPI().Do(ctx, &http.APIRequest{
+		Method:   "POST",
+		Endpoint: "/apps/" + app + "/scm_repo_link/manual_review_app",
+		Expected: http.Statuses{200},
+		Params:   map[string]string{"pull_request_id": pullRequestID},
+	})
+	if err != nil {
+		return errgo.Notef(err, "fail to trigger manual review app deployment")
+	}
+	defer res.Body.Close()
+
+	return nil
+}
+
+func (c *Client) SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Deployment, error) {
+	var res SCMRepoLinkDeploymentsResponse
+
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "GET",
+		Endpoint: "/apps/" + app + "/scm_repo_link/deployments",
+		Expected: http.Statuses{200},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to list deployments of this SCM repo link")
+	}
+	return res.Deployments, nil
+}
+
+func (c *Client) SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*ReviewApp, error) {
+	var res SCMRepoLinkReviewAppsResponse
+
+	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
+		Method:   "GET",
+		Endpoint: "/apps/" + app + "/scm_repo_link/review_apps",
+		Expected: http.Statuses{200},
+	}, &res)
+	if err != nil {
+		return nil, errgo.Notef(err, "fail to list review apps of this SCM repo link")
+	}
+	return res.ReviewApps, nil
+}

@@ -7,7 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/events"
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func Events(ctx context.Context, paginationOpts scalingo.PaginationOpts) error {

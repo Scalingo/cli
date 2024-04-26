@@ -6,7 +6,7 @@ import (
 
 	errgo "gopkg.in/errgo.v1"
 
-	scalingo "github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 func WatchMigration(ctx context.Context, client *scalingo.Client, appID, migrationID string, opts RefreshOpts) error {

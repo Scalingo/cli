@@ -3,31 +3,20 @@ package domains
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func Add(ctx context.Context, app string, domain string, cert string, key string) error {
-	certContent, keyContent, err := validateSSL(cert, key)
-	if err != nil {
-		return errgo.Mask(err)
-	}
-
+func Add(ctx context.Context, app string, params scalingo.DomainsAddParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
-	d, err := c.DomainsAdd(ctx, app, scalingo.Domain{
-		Name:    domain,
-		TLSCert: certContent,
-		TLSKey:  keyContent,
-	})
-
+	d, err := c.DomainsAdd(ctx, app, params)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "add domain to application")
 	}
 
 	io.Status("Domain", d.Name, "has been created, access your app at the following URL:\n")

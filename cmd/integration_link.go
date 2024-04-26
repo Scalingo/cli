@@ -19,8 +19,8 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/scmintegrations"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v6"
-	"github.com/Scalingo/go-scalingo/v6/http"
+	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v7/http"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
