@@ -38,7 +38,6 @@ type RunOpts struct {
 	DisplayCmd     string
 	Silent         bool
 	Detached       bool
-	Async          bool
 	Size           string
 	Type           string
 	Cmd            []string
@@ -105,9 +104,6 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if opts.StdoutCopyFunc != nil {
 		runCtx.stdoutCopyFunc = opts.StdoutCopyFunc
 	}
-	if opts.Detached {
-		opts.Async = false
-	}
 
 	env, err := runCtx.buildEnv(opts.CmdEnv)
 	if err != nil {
@@ -127,7 +123,6 @@ func Run(ctx context.Context, opts RunOpts) error {
 			Env:      env,
 			Size:     opts.Size,
 			Detached: opts.Detached,
-			Async:    opts.Async,
 		},
 	)
 	if err != nil {

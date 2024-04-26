@@ -28,7 +28,6 @@ func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 		App:        opts.App,
 		Cmd:        []string{"dbclient-fetcher", "pgsql", "&&", "psql", "'" + postgreSQLURL.String() + "'"},
 		Size:       opts.Size,
-		Async:      true,
 	}
 
 	err = apps.Run(ctx, runOpts)

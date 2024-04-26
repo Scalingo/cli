@@ -35,7 +35,6 @@ func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 		App:        opts.App,
 		Cmd:        []string{"dbclient-fetcher", "mysql", "&&", "mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
 		Size:       opts.Size,
-		Async:      true,
 	}
 
 	err = apps.Run(ctx, runOpts)
