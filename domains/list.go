@@ -41,15 +41,16 @@ func List(ctx context.Context, app string) error {
 			domainName += " (*)"
 		}
 		row := []string{domainName}
-		if !domain.SSL {
+		switch {
+		case !domain.SSL:
 			row = append(row, "-")
-		} else if domain.LetsEncrypt {
+		case domain.LetsEncrypt:
 			letsencryptStatus, ok := letsencryptStatusString[string(domain.LetsEncryptStatus)]
 			if !ok {
 				letsencryptStatus = string(domain.LetsEncryptStatus)
 			}
-			row = append(row, fmt.Sprintf("Let's Encrypt: %s", letsencryptStatus))
-		} else {
+			row = append(row, "Let's Encrypt: "+letsencryptStatus)
+		default:
 			row = append(row, fmt.Sprintf("Valid until %v", domain.Validity))
 		}
 		t.Append(row)
