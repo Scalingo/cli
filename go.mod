@@ -12,7 +12,7 @@ require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/dustin/go-humanize v1.0.1
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/google/go-github/v47 v47.1.0
 	github.com/gorilla/websocket v1.5.1
@@ -25,9 +25,9 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v2 v2.27.2
-	golang.org/x/crypto v0.22.0
-	golang.org/x/term v0.19.0
-	golang.org/x/text v0.14.0
+	golang.org/x/crypto v0.23.0
+	golang.org/x/term v0.20.0
+	golang.org/x/text v0.15.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
@@ -38,7 +38,7 @@ require (
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/cloudflare/circl v1.3.8 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
-	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
+	github.com/cyphar/filepath-securejoin v0.2.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
@@ -63,8 +63,8 @@ require (
 	github.com/skeema/knownhosts v1.2.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xrash/smetrics v0.0.0-20240312152122-5f08fbb34913 // indirect
-	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
