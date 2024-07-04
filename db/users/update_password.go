@@ -75,7 +75,7 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 			return errors.Wrap(ctx, err, "update password of the given database user")
 		}
 	} else {
-		databaseUser, err = c.DatabaseUserPasswordReset(ctx, app, addonUUID, username)
+		databaseUser, err = c.DatabaseUserResetPassword(ctx, app, addonUUID, username)
 		if err != nil {
 			return errors.Wrap(ctx, err, "reset the password of the given database user")
 		}

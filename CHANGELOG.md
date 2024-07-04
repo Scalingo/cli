@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* feat(database/users): use API DatabaseUserPasswordReset method for resetting password
+* feat(database/users): use API DatabaseUserResetPassword method for resetting password
 
 ### 1.32.0
 
