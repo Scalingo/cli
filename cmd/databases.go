@@ -272,7 +272,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 			username := c.Args().First()
 
-			err := dbUsers.UpdateUser(c.Context, currentApp, addonName, username)
+			err := dbUsers.UpdateUserPassword(c.Context, currentApp, addonName, username)
 			if err != nil {
 				errorQuit(c.Context, err)
 			}
