@@ -74,16 +74,16 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 		if err != nil {
 			return errors.Wrap(ctx, err, "update password of the given database user")
 		}
-	} else {
-		databaseUser, err = c.DatabaseUserResetPassword(ctx, app, addonUUID, username)
-		if err != nil {
-			return errors.Wrap(ctx, err, "reset the password of the given database user")
-		}
 
-		fmt.Printf("User \"%s\" updated with password \"%s\".\n", databaseUser.Name, databaseUser.Password)
+		fmt.Printf("User \"%s\" password updated.\n", databaseUser.Name)
 		return nil
 	}
 
-	fmt.Printf("User \"%s\" password updated.\n", databaseUser.Name)
+	databaseUser, err = c.DatabaseUserResetPassword(ctx, app, addonUUID, username)
+	if err != nil {
+		return errors.Wrap(ctx, err, "reset the password of the given database user")
+	}
+
+	fmt.Printf("User \"%s\" updated with password \"%s\".\n", databaseUser.Name, databaseUser.Password)
 	return nil
 }
