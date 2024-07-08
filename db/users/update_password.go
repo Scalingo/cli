@@ -8,10 +8,9 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v7"
 	"github.com/Scalingo/go-utils/errors/v2"
-	"github.com/Scalingo/gopassword"
 )
 
-func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
+func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) error {
 	isSupported, err := doesDatabaseHandleUserManagement(ctx, app, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get user management information")
@@ -60,25 +59,31 @@ func UpdateUser(ctx context.Context, app, addonUUID, username string) error {
 	isPasswordGenerated := false
 	if password == "" {
 		isPasswordGenerated = true
-		password = gopassword.Generate(64)
-		confirmedPassword = password
 	}
 
-	userUpdateParam := scalingo.DatabaseUpdateUserParam{
-		DatabaseID:           addonUUID,
-		Password:             password,
-		PasswordConfirmation: confirmedPassword,
-	}
-	databaseUsers, err := c.DatabaseUpdateUser(ctx, app, addonUUID, username, userUpdateParam)
-	if err != nil {
-		return errors.Wrap(ctx, err, "update password of the given database user")
-	}
+	var databaseUser scalingo.DatabaseUser
 
-	if isPasswordGenerated {
-		fmt.Printf("User \"%s\" updated with password \"%s\".\n", databaseUsers.Name, password)
+	// We have two different API calls here to avoid breaking backwards compatibility of the CLI
+	if !isPasswordGenerated {
+		userUpdateParam := scalingo.DatabaseUpdateUserParam{
+			DatabaseID:           addonUUID,
+			Password:             password,
+			PasswordConfirmation: confirmedPassword,
+		}
+		databaseUser, err = c.DatabaseUpdateUser(ctx, app, addonUUID, username, userUpdateParam)
+		if err != nil {
+			return errors.Wrap(ctx, err, "update password of the given database user")
+		}
+
+		fmt.Printf("User \"%s\" password updated.\n", databaseUser.Name)
 		return nil
 	}
 
-	fmt.Printf("User \"%s\" password updated.\n", databaseUsers.Name)
+	databaseUser, err = c.DatabaseUserResetPassword(ctx, app, addonUUID, username)
+	if err != nil {
+		return errors.Wrap(ctx, err, "reset the password of the given database user")
+	}
+
+	fmt.Printf("User \"%s\" updated with password \"%s\".\n", databaseUser.Name, databaseUser.Password)
 	return nil
 }

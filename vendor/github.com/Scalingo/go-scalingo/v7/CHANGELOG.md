@@ -2,6 +2,11 @@
 
 ## To Be Released
 
+## 7.0.1
+
+* feat(apps):  add the `private_network_ids` field to the model
+* feat(database/users): add the `DatabaseUserResetPassword` method
+
 ## 7.0.0
 
 * feat(domains): Add `letsencrypt_enabled` parameter

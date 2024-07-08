@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(database/users): use API DatabaseUserResetPassword method for resetting password
+
 ### 1.32.0
 
 * feat(domains): `domains-add` now supports `--no-letsencrypt` flag to completely disable Let's Encrypt certificat generation ([PR#1058](https://github.com/Scalingo/cli/pull/1058))
