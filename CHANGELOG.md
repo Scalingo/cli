@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.32.1
+
 * feat(database/users): use API DatabaseUserResetPassword method for resetting password
 
 ### 1.32.0
