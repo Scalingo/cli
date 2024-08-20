@@ -33,7 +33,6 @@ func MongoConsole(ctx context.Context, opts MongoConsoleOpts) error {
 		App:        opts.App,
 		Cmd:        append(command, "'"+mongoURL.String()+"'"),
 		Size:       opts.Size,
-		Async:      true,
 	})
 	if err != nil {
 		return errgo.Newf("fail to run MongoDB console: %v", err)
