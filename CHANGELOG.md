@@ -2,6 +2,7 @@
 
 ### To be Released
 
+* fix(one-off): remove async one-off ([PR#1060](https://github.com/Scalingo/cli/pull/1060))
 * fix(cmd): addons-info working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
 
 ### 1.31.0
