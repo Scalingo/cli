@@ -2,7 +2,7 @@
 
 ### To be Released
 
-* fix(one-off): remove async one-off ([PR#1060](https://github.com/Scalingo/cli/pull/1060))
+* fix(one-off): remove async field from the run command ([PR#1060](https://github.com/Scalingo/cli/pull/1060))
 * feat(database/users): use API DatabaseUserResetPassword method for resetting password
 
 ### 1.32.0
