@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v7 v7.0.1
+	github.com/Scalingo/go-scalingo/v7 v7.0.2
 	github.com/Scalingo/go-utils/errors/v2 v2.4.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1

@@ -21,7 +21,6 @@ type RunOpts struct {
 	Env        map[string]string
 	Size       string
 	Detached   bool
-	Async      bool
 	HasUploads bool
 }
 
@@ -40,7 +39,6 @@ func (c *Client) Run(ctx context.Context, opts RunOpts) (*RunRes, error) {
 			"env":         opts.Env,
 			"size":        opts.Size,
 			"detached":    opts.Detached,
-			"async":       opts.Async,
 			"has_uploads": opts.HasUploads,
 		},
 	}
