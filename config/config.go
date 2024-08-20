@@ -14,7 +14,7 @@ import (
 	"github.com/stvp/rollbar"
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 type ConfigFile struct {

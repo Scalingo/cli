@@ -3,7 +3,12 @@
 ### To be Released
 
 * fix(one-off): remove async one-off ([PR#1060](https://github.com/Scalingo/cli/pull/1060))
-* fix(cmd): addons-info working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
+* feat(database/users): use API DatabaseUserResetPassword method for resetting password
+
+### 1.32.0
+
+* feat(domains): `domains-add` now supports `--no-letsencrypt` flag to completely disable Let's Encrypt certificat generation ([PR#1058](https://github.com/Scalingo/cli/pull/1058))
+* fix(cmd): `addons-info` working for non-db addons ([PR#1055](https://github.com/Scalingo/cli/pull/1055))
 
 ### 1.31.0
 

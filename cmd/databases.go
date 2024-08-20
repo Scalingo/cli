@@ -13,7 +13,7 @@ import (
 	dbUsers "github.com/Scalingo/cli/db/users"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v6"
+	"github.com/Scalingo/go-scalingo/v7"
 )
 
 var (
@@ -272,7 +272,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 			username := c.Args().First()
 
-			err := dbUsers.UpdateUser(c.Context, currentApp, addonName, username)
+			err := dbUsers.UpdateUserPassword(c.Context, currentApp, addonName, username)
 			if err != nil {
 				errorQuit(c.Context, err)
 			}

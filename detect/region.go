@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
 
-	"github.com/Scalingo/go-scalingo/v6/debug"
+	"github.com/Scalingo/go-scalingo/v7/debug"
 )
 
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository

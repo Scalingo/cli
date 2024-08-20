@@ -30,7 +30,7 @@ jobs:
         id: new-from-rev
         run: echo "NEW_FROM_REV=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
       - name: "Execute golangci-lint on a pull request"
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v6
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
           # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
@@ -53,7 +53,7 @@ jobs:
       - name: Get golangci-lint configuration file
         run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
       - name: "Execute golangci-lint on the master branch"
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v6
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
           # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
@@ -92,9 +92,9 @@ jobs:
           go-version-file: "go.mod"
           check-latest: true
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
+          version: "~> v2"
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -120,9 +120,9 @@ jobs:
           go-version-file: "go.mod"
           check-latest: true
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
+          version: "~> v2"
           args: release --config .goreleaser-windows.yaml --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
