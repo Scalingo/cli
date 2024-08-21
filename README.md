@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.32.0
+# Scalingo-CLI v1.32.1
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.32.0
+   1.32.1
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -283,7 +283,7 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-version="1.32.0"
+version="1.32.1"
 
 git switch --create release/${version}
 git add .
