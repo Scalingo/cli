@@ -3,12 +3,14 @@ package gopassword
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"strings"
 )
 
+const defaultLength = 64
+const defaultSpecialChar = "_"
+
 func Generate(n ...int) string {
-	length := 20
+	length := defaultLength
 	if len(n) > 0 {
 		length = n[0]
 	}
@@ -23,15 +25,8 @@ func Generate(n ...int) string {
 	randString := base64.StdEncoding.EncodeToString(randBytes)
 
 	password := randString[:length]
-	password = strings.Replace(password, "+", "_", -1)
-	password = strings.Replace(password, "/", "-", -1)
-
-	if password[0] == '-' {
-		password = fmt.Sprintf("_%s", password[1:])
-	}
-	if password[length-1] == '-' {
-		password = fmt.Sprintf("%s_", password[:length-1])
-	}
+	password = strings.ReplaceAll(password, "+", defaultSpecialChar)
+	password = strings.ReplaceAll(password, "/", defaultSpecialChar)
 
 	return password
 }

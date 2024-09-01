@@ -1,6 +1,7 @@
 module github.com/Scalingo/cli
 
 go 1.21
+toolchain go1.22.5
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
@@ -8,7 +9,7 @@ require (
 	github.com/Scalingo/go-utils/errors/v2 v2.4.0
 	github.com/Scalingo/go-utils/logger v1.2.0
 	github.com/Scalingo/go-utils/retry v1.1.1
-	github.com/Scalingo/gopassword v1.0.2
+	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.1
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/dustin/go-humanize v1.0.1
@@ -24,19 +25,19 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/stvp/rollbar v0.5.1
-	github.com/urfave/cli/v2 v2.27.3
-	golang.org/x/crypto v0.25.0
-	golang.org/x/term v0.22.0
-	golang.org/x/text v0.16.0
+	github.com/urfave/cli/v2 v2.27.4
+	golang.org/x/crypto v0.26.0
+	golang.org/x/term v0.23.0
+	golang.org/x/text v0.17.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
 require (
-	dario.cat/mergo v1.0.0 // indirect
+	dario.cat/mergo v1.0.1 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.1.0-alpha.5-proton // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
-	github.com/cloudflare/circl v1.3.9 // indirect
+	github.com/cloudflare/circl v1.4.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/cyphar/filepath-securejoin v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -63,8 +64,8 @@ require (
 	github.com/skeema/knownhosts v1.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
