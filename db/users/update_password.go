@@ -21,7 +21,7 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 		return nil
 	}
 
-	if usernameValidation, ok := isUsernameValid(username); !ok {
+	if usernameValidation, ok := IsUsernameValid(username); !ok {
 		io.Error(usernameValidation)
 		return nil
 	}
