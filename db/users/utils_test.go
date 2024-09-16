@@ -104,5 +104,4 @@ func Test_IsUsernameValid(t *testing.T) {
 			assert.Equal(t, testCase.expectedMessage, message)
 		})
 	}
-
 }
