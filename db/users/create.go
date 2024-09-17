@@ -22,7 +22,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 		return nil
 	}
 
-	if usernameValidation, ok := IsUsernameValid(username); !ok {
+	if usernameValidation, ok := isUsernameValid(username); !ok {
 		io.Error(usernameValidation)
 		return nil
 	}

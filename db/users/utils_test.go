@@ -1,14 +1,12 @@
-package users_test
+package users
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/Scalingo/cli/db/users"
 )
 
-func Test_IsPasswordValid(t *testing.T) {
+func Test_isPasswordValid(t *testing.T) {
 	testPasswords := map[string]struct {
 		password         string
 		confirmation     string
@@ -55,7 +53,7 @@ func Test_IsPasswordValid(t *testing.T) {
 
 	for name, testCase := range testPasswords {
 		t.Run(name, func(t *testing.T) {
-			message, isValid := users.IsPasswordValid(testCase.password, testCase.confirmation)
+			message, isValid := isPasswordValid(testCase.password, testCase.confirmation)
 
 			assert.Equal(t, testCase.expectedValidity, isValid)
 			assert.Equal(t, testCase.expectedMessage, message)
@@ -63,7 +61,7 @@ func Test_IsPasswordValid(t *testing.T) {
 	}
 }
 
-func Test_IsUsernameValid(t *testing.T) {
+func Test_isUsernameValid(t *testing.T) {
 	testPasswords := map[string]struct {
 		username         string
 		expectedValidity bool
@@ -98,7 +96,7 @@ func Test_IsUsernameValid(t *testing.T) {
 
 	for name, testCase := range testPasswords {
 		t.Run(name, func(t *testing.T) {
-			message, isValid := users.IsUsernameValid(testCase.username)
+			message, isValid := isUsernameValid(testCase.username)
 
 			assert.Equal(t, testCase.expectedValidity, isValid)
 			assert.Equal(t, testCase.expectedMessage, message)

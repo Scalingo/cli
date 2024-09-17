@@ -49,7 +49,7 @@ func askForPasswordWithRetry(ctx context.Context, remainingRetries int) (string,
 		return "", "", errors.Wrap(ctx, err, "ask for password")
 	}
 
-	passwordValidation, ok := IsPasswordValid(password, confirmedPassword)
+	passwordValidation, ok := isPasswordValid(password, confirmedPassword)
 	if !ok {
 		if remainingRetries == 1 {
 			return "", "", errors.Newf(ctx, "%s. Too many retries", passwordValidation)
@@ -79,7 +79,7 @@ func askForPassword(ctx context.Context) (string, string, error) {
 	return string(password), string(confirmedPassword), nil
 }
 
-func IsPasswordValid(password, confirmedPassword string) (string, bool) {
+func isPasswordValid(password, confirmedPassword string) (string, bool) {
 	if password == "" && confirmedPassword == "" {
 		return "", true
 	}
@@ -93,7 +93,7 @@ func IsPasswordValid(password, confirmedPassword string) (string, bool) {
 	return "", true
 }
 
-func IsUsernameValid(username string) (string, bool) {
+func isUsernameValid(username string) (string, bool) {
 	if len(username) < 6 || len(username) > 32 {
 		return "Name must contain between 6 and 32 characters", false
 	}
