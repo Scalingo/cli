@@ -87,15 +87,15 @@ func isPasswordValid(password, confirmedPassword string) (string, bool) {
 	if password != confirmedPassword {
 		return "Password confirmation doesn't match", false
 	}
-	if len(password) < 8 || len(password) > 64 {
-		return "Password must contain between 8 and 64 characters", false
+	if len(password) < 24 || len(password) > 64 {
+		return "Password must contain between 24 and 64 characters", false
 	}
 	return "", true
 }
 
 func isUsernameValid(username string) (string, bool) {
 	if len(username) < 6 || len(username) > 32 {
-		return "name must contain between 6 and 32 characters", false
+		return "Name must contain between 6 and 32 characters", false
 	}
 	return "", true
 }

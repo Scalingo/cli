@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(database/users): raise minimum user password length to 24 ([PR#1077](https://github.com/Scalingo/cli/pull/1077))
+
 ### 1.33.0
 
 * fix(one-off): remove async field from the run command ([PR#1060](https://github.com/Scalingo/cli/pull/1060))

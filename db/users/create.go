@@ -57,7 +57,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 	isPasswordGenerated := false
 	if password == "" {
 		isPasswordGenerated = true
-		password = gopassword.Generate(64)
+		password = gopassword.Generate()
 		confirmedPassword = password
 	}
 
