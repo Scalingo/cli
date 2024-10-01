@@ -84,11 +84,11 @@ github.com/cloudflare/circl/math/mlsbset
 github.com/cloudflare/circl/sign
 github.com/cloudflare/circl/sign/ed25519
 github.com/cloudflare/circl/sign/ed448
-# github.com/cpuguy83/go-md2man/v2 v2.0.4
+# github.com/cpuguy83/go-md2man/v2 v2.0.5
 ## explicit; go 1.11
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/cyphar/filepath-securejoin v0.3.1
-## explicit; go 1.20
+# github.com/cyphar/filepath-securejoin v0.3.3
+## explicit; go 1.21
 github.com/cyphar/filepath-securejoin
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
@@ -265,7 +265,7 @@ github.com/xanzy/ssh-agent
 # github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
 ## explicit; go 1.15
 github.com/xrash/smetrics
-# golang.org/x/crypto v0.26.0
+# golang.org/x/crypto v0.27.0
 ## explicit; go 1.20
 golang.org/x/crypto/argon2
 golang.org/x/crypto/blake2b
@@ -287,22 +287,22 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.28.0
+# golang.org/x/net v0.29.0
 ## explicit; go 1.18
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.23.0
+# golang.org/x/sys v0.25.0
 ## explicit; go 1.18
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.23.0
+# golang.org/x/term v0.24.0
 ## explicit; go 1.18
 golang.org/x/term
-# golang.org/x/text v0.17.0
+# golang.org/x/text v0.18.0
 ## explicit; go 1.18
 golang.org/x/text/cases
 golang.org/x/text/internal
