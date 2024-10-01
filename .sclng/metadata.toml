@@ -1,0 +1,7 @@
+dependencies = []
+description = "'scalingo' CLI provided to users"
+flags = ["cli"]
+languages = ["go"]
+owner = "etienne@scalingo.com"
+team = "IST"
+version = "1.1.1"
