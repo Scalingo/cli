@@ -7,6 +7,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type ContextKey string
+
+const loggerContextKey ContextKey = "logger"
+
 // Opt is a function-option type for the Default() method.
 type Opt func(*logrus.Logger)
 
@@ -28,6 +32,17 @@ func WithHooks(hooks []logrus.Hook) Opt {
 		for _, h := range hooks {
 			l.Hooks.Add(h)
 		}
+	}
+}
+
+// WithSetRedactedFields redacts fields or parts of fields according to the regular expressions provided.
+// If the regular expression is nil, the field is replaced by "REDACTED".
+func WithSetRedactedFields(fields []*RedactionOption) Opt {
+	return func(l *logrus.Logger) {
+		l.SetFormatter(&RedactingFormatter{
+			Formatter: l.Formatter,
+			fields:    fields,
+		})
 	}
 }
 
@@ -60,12 +75,12 @@ func NewContextWithLogger() context.Context {
 
 // AddLoggerToContext add the Default() logger on top of the current context
 func AddLoggerToContext(ctx context.Context) context.Context {
-	return context.WithValue(ctx, "logger", Default())
+	return context.WithValue(ctx, loggerContextKey, Default())
 }
 
 // Get return the logger stored in the context or create a new one if the logger is not set
 func Get(ctx context.Context) logrus.FieldLogger {
-	if logger, ok := ctx.Value("logger").(logrus.FieldLogger); ok {
+	if logger, ok := ctx.Value(loggerContextKey).(logrus.FieldLogger); ok {
 		return logger
 	}
 
@@ -86,5 +101,5 @@ func WithFieldsToCtx(ctx context.Context, fields logrus.Fields) (context.Context
 
 // ToCtx add a logger to a context
 func ToCtx(ctx context.Context, logger logrus.FieldLogger) context.Context {
-	return context.WithValue(ctx, "logger", logger)
+	return context.WithValue(ctx, loggerContextKey, logger)
 }
