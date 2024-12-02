@@ -2,6 +2,12 @@
 
 ## To be Released
 
+## v1.3.0
+
+* feat(logger): Add configuration option to redact sensitive fields
+* build(deps): bump github.com/rollbar/rollbar-go from 1.4.4 to 1.4.5
+* build(deps): bump github.com/stretchr/testify from 1.8.0 to 1.8.1
+
 ## v1.2.0
 
 * build(deps): bump github.com/sirupsen/logrus from 1.8.1 to 1.9.0
