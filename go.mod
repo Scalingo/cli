@@ -1,6 +1,7 @@
 module github.com/Scalingo/cli
 
-go 1.21
+go 1.22.9
+
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v7 v7.0.2
