@@ -2,6 +2,7 @@ package apps
 
 import (
 	"archive/tar"
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"context"
@@ -12,7 +13,6 @@ import (
 	"mime/multipart"
 	"net"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
@@ -322,42 +322,43 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 		return nil, nil, errgo.New("No attach URL to connect to")
 	}
 
-	req, err := http.NewRequest("CONNECT", runCtx.attachURL, nil)
-	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
-	}
-	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
-
-	if err != nil {
-		return nil, nil, errgo.Notef(err, "fail to generate auth")
-	}
-	req.SetBasicAuth("", token)
-
 	url, err := url.Parse(runCtx.attachURL)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
-	dial, err := net.Dial("tcp", url.Host)
+	// Establish an initial TCP connection
+	conn, err := net.Dial("tcp", url.Host)
 	if err != nil {
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
-	var conn *httputil.ClientConn
+	// Wrap with TLS if using HTTPS
 	if url.Scheme == "https" {
-		host := strings.Split(url.Host, ":")[0]
 		tlsConfig := config.TLSConfig.Clone()
-		tlsConfig.ServerName = host
-		tlsConn := tls.Client(dial, tlsConfig)
-		conn = httputil.NewClientConn(tlsConn, nil)
-	} else if url.Scheme == "http" {
-		conn = httputil.NewClientConn(dial, nil)
-	} else {
-		return nil, nil, errgo.Newf("invalid scheme format %s", url.Scheme)
+		tlsConfig.ServerName = strings.Split(url.Host, ":")[0]
+		conn = tls.Client(conn, tlsConfig)
 	}
 
-	res, err := conn.Do(req)
-	if err != httputil.ErrPersistEOF && err != nil {
+	req, err := http.NewRequest("CONNECT", runCtx.attachURL, nil)
+	if err != nil {
+		return nil, nil, errgo.Mask(err, errgo.Any)
+	}
+
+	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
+	if err != nil {
+		return nil, nil, errgo.Notef(err, "fail to generate auth")
+	}
+	req.SetBasicAuth("", token)
+
+	// Write the HTTP request directly to the connection
+	err = req.Write(conn)
+	if err != nil {
+		return nil, nil, errgo.Mask(err, errgo.Any)
+	}
+
+	resp, err := http.ReadResponse(bufio.NewReader(conn), req)
+	if err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
 				return nil, nil, errgo.Newf(
@@ -371,8 +372,11 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 		return nil, nil, errgo.Mask(err, errgo.Any)
 	}
 
-	connection, _ := conn.Hijack()
-	return res, connection, nil
+	if resp.StatusCode != http.StatusOK {
+		return resp, nil, nil
+	}
+
+	return resp, conn, nil
 }
 
 func (runCtx *runContext) validateFiles(files []string) error {
