@@ -20,8 +20,6 @@ import (
 	"runtime"
 	"strings"
 
-	errgo "gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/apps/run"
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/httpclient"
@@ -59,7 +57,7 @@ type runContext struct {
 func Run(ctx context.Context, opts RunOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	firstReadDone := make(chan struct{})
@@ -73,7 +71,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if opts.Type != "" {
 		processes, err := c.AppsContainerTypes(ctx, opts.App)
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "get container types")
 		}
 		for _, p := range processes {
 			if p.Name == opts.Type {
@@ -81,7 +79,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 			}
 		}
 		if strings.Join(opts.Cmd, "") == "" {
-			return errgo.New("no such type")
+			return errors.New(ctx, "no such type")
 		}
 	}
 
@@ -107,12 +105,12 @@ func Run(ctx context.Context, opts RunOpts) error {
 
 	env, err := runCtx.buildEnv(opts.CmdEnv)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "build environment")
 	}
 
-	err = runCtx.validateFiles(opts.Files)
+	err = runCtx.validateFiles(ctx, opts.Files)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "validate files")
 	}
 
 	runRes, err := c.Run(
@@ -126,7 +124,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 		},
 	)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "run command")
 	}
 
 	debug.Printf("%+v\n", runRes)
@@ -145,7 +143,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	waiter.SetPrompt(fmt.Sprintf("-----> Starting container %v   ", runRes.Container.Label))
 	operation, err := waiter.WaitOperation(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "wait operation")
+		return errors.Wrap(ctx, err, "wait operation")
 	}
 	runCtx.attachURL = operation.StartOneOffData.AttachURL
 	debug.Println("Run Service URL is", runCtx.attachURL)
@@ -177,16 +175,16 @@ func Run(ctx context.Context, opts RunOpts) error {
 
 	res, socket, err := runCtx.connectToRunServer(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "connect to run server")
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return errgo.Newf("Fail to attach: %s", res.Status)
+		return errors.Newf(ctx, "invalid status code: %s", res.Status)
 	}
 
 	if term.IsATTY(os.Stdin) {
 		if err := term.MakeRaw(os.Stdin); err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "make stdin raw")
 		}
 	}
 
@@ -232,20 +230,20 @@ func Run(ctx context.Context, opts RunOpts) error {
 
 	_, err = runCtx.stdoutCopyFunc(os.Stdout, socket)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "copy stdout")
 	}
 
 	stopSignalsMonitoring <- true
 
 	if term.IsATTY(os.Stdin) {
 		if err := term.Restore(os.Stdin); err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "restore stdin")
 		}
 	}
 
 	exitCode, err := runCtx.exitCode(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "get exit code")
 	}
 
 	defer os.Exit(exitCode)
@@ -270,30 +268,30 @@ func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 
 func (runCtx *runContext) exitCode(ctx context.Context) (int, error) {
 	if runCtx.attachURL == "" {
-		return -1, errgo.New("No attach URL to connect to")
+		return -1, errors.New(ctx, "no attach URL to connect to")
 	}
 
 	req, err := http.NewRequest("GET", runCtx.attachURL+"/wait", nil)
 	if err != nil {
-		return -1, errgo.Mask(err, errgo.Any)
+		return -1, errors.Wrap(ctx, err, "create request")
 	}
 
 	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 	if err != nil {
-		return -1, errgo.Notef(err, "fail to generate auth")
+		return -1, errors.Wrap(ctx, err, "get access token")
 	}
 
 	req.SetBasicAuth("", token)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return -1, errgo.Mask(err)
+		return -1, errors.Wrap(ctx, err, "send request")
 	}
 	defer res.Body.Close()
 
 	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
-		return -1, errgo.Notef(err, "fail to read body when getting exit code")
+		return -1, errors.Wrap(ctx, err, "read response body")
 	}
 	debug.Println("exit code body:", string(body))
 
@@ -311,7 +309,7 @@ func (runCtx *runContext) exitCode(ctx context.Context) (int, error) {
 	waitRes := map[string]int{}
 	err = json.NewDecoder(bytes.NewBuffer(body)).Decode(&waitRes)
 	if err != nil {
-		return -1, errgo.Notef(err, "invalid response when getting exit code")
+		return -1, errors.Wrap(ctx, err, "decode response")
 	}
 
 	return waitRes["exit_code"], nil
@@ -319,18 +317,18 @@ func (runCtx *runContext) exitCode(ctx context.Context) (int, error) {
 
 func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Response, net.Conn, error) {
 	if runCtx.attachURL == "" {
-		return nil, nil, errgo.New("No attach URL to connect to")
+		return nil, nil, errors.New(ctx, "no attach URL to connect to")
 	}
 
 	url, err := url.Parse(runCtx.attachURL)
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errors.Wrap(ctx, err, "parse URL")
 	}
 
 	// Establish an initial TCP connection
 	conn, err := net.Dial("tcp", url.Host)
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errors.Wrap(ctx, err, "establish initial TCP connection")
 	}
 
 	// Wrap with TLS if using HTTPS
@@ -342,48 +340,48 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 
 	req, err := http.NewRequest("CONNECT", runCtx.attachURL, nil)
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errors.Wrap(ctx, err, "create request")
 	}
 
 	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 	if err != nil {
-		return nil, nil, errgo.Notef(err, "fail to generate auth")
+		return nil, nil, errors.Wrap(ctx, err, "get access token")
 	}
 	req.SetBasicAuth("", token)
 
 	// Write the HTTP request directly to the connection
 	err = req.Write(conn)
 	if err != nil {
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errors.Wrap(ctx, err, "write request")
 	}
 
 	resp, err := http.ReadResponse(bufio.NewReader(conn), req)
 	if err != nil {
 		if err, ok := err.(*net.OpError); ok {
 			if err.Err.Error() == "record overflow" {
-				return nil, nil, errgo.Newf(
-					"Fail to create a secure connection to Scalingo server\n"+
+				return nil, nil, errors.New(ctx, fmt.Sprintf(
+					"secure connection error to Scalingo server\n"+
 						"The encountered error is: %v (ID: CLI-1001)\n"+
 						"Your firewall or proxy may block the connection to %s",
 					err, url.Host,
-				)
+				))
 			}
 		}
-		return nil, nil, errgo.Mask(err, errgo.Any)
+		return nil, nil, errors.Wrap(ctx, err, "read response")
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return resp, nil, nil
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusAccepted {
+		return resp, nil, errors.Newf(ctx, "invalid status code: %s", resp.Status)
 	}
 
 	return resp, conn, nil
 }
 
-func (runCtx *runContext) validateFiles(files []string) error {
+func (runCtx *runContext) validateFiles(ctx context.Context, files []string) error {
 	for _, file := range files {
 		_, err := os.Stat(file)
 		if err != nil {
-			return errgo.Notef(err, "can't upload %s", file)
+			return errors.Newf(ctx, "file %s does not exist", file)
 		}
 	}
 	return nil
@@ -393,95 +391,95 @@ func (runCtx *runContext) uploadFiles(ctx context.Context, endpoint string, file
 	for _, file := range files {
 		stat, err := os.Stat(file)
 		if err != nil {
-			return errgo.Notef(err, "can't stat file %s", file)
+			return errors.Wrapf(ctx, err, "stat file %s", file)
 		}
 		relPath := file
 		file, err = filepath.Abs(relPath)
 		if err != nil {
-			return errgo.Notef(err, "impossible to get absolute path of %s", relPath)
+			return errors.Wrapf(ctx, err, "get absolute path of %s", relPath)
 		}
 		if stat.IsDir() {
 			dir := file
-			file, err = runCtx.compressDir(dir)
+			file, err = runCtx.compressDir(ctx, dir)
 			if err != nil {
-				return errgo.Notef(err, "fail to compress directory %s", dir)
+				return errors.Wrapf(ctx, err, "compress directory %s", dir)
 			}
 		}
 		err = runCtx.uploadFile(ctx, endpoint, file)
 		if err != nil {
-			return errgo.Notef(err, "fail to upload file %s", file)
+			return errors.Wrapf(ctx, err, "upload file %s", file)
 		}
 	}
 	return nil
 }
 
-func (runCtx *runContext) compressDir(dir string) (string, error) {
+func (runCtx *runContext) compressDir(ctx context.Context, dir string) (string, error) {
 	tmpDir, err := os.MkdirTemp(os.TempDir(), "job-file")
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "create temporary directory")
 	}
 	fd, err := os.OpenFile(filepath.Join(tmpDir, filepath.Base(dir)+".tar"), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "create tar file")
 	}
 	fmt.Fprintln(runCtx.waitingTextOutputWriter, "Compressing directory", dir, "to", fd.Name())
 
-	err = runCtx.createTarArchive(fd, dir)
+	err = runCtx.createTarArchive(ctx, fd, dir)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "create tar archive")
 	}
 
-	file, err := runCtx.compressToGzip(fd.Name())
+	file, err := runCtx.compressToGzip(ctx, fd.Name())
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "compress to gzip")
 	}
 
 	return file, nil
 }
 
-func (runCtx *runContext) createTarArchive(fd *os.File, dir string) error {
+func (runCtx *runContext) createTarArchive(ctx context.Context, fd *os.File, dir string) error {
 	tarFd := tar.NewWriter(fd)
 	defer tarFd.Close()
 	err := filepath.Walk(dir, func(name string, info os.FileInfo, err error) error {
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "walk directory")
 		}
 		if info.IsDir() {
 			return nil
 		}
 		tarHeader, err := tar.FileInfoHeader(info, name)
 		if err != nil {
-			return fmt.Errorf("fail to build tar header: %v", err)
+			return errors.Wrap(ctx, err, "build tar header")
 		}
 		err = tarFd.WriteHeader(tarHeader)
 		if err != nil {
-			return fmt.Errorf("fail to write tar header: %v", err)
+			return errors.Wrap(ctx, err, "write tar header")
 		}
 		fileFd, err := os.OpenFile(name, os.O_RDONLY, 0600)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "open file")
 		}
 		_, err = stdio.Copy(tarFd, fileFd)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "copy file content")
 		}
 		return nil
 	})
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "walk through directory")
 	}
 	return nil
 }
 
-func (runCtx *runContext) compressToGzip(file string) (string, error) {
+func (runCtx *runContext) compressToGzip(ctx context.Context, file string) (string, error) {
 	fdSource, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "open source file")
 	}
 	defer fdSource.Close()
 	fdDest, err := os.OpenFile(file+".gz", os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "create destination file")
 	}
 	defer fdDest.Close()
 	writer := gzip.NewWriter(fdDest)
@@ -489,7 +487,7 @@ func (runCtx *runContext) compressToGzip(file string) (string, error) {
 
 	_, err = stdio.Copy(writer, fdSource)
 	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
+		return "", errors.Wrap(ctx, err, "compress file")
 	}
 
 	return fdDest.Name(), nil
@@ -501,36 +499,36 @@ func (runCtx *runContext) uploadFile(ctx context.Context, endpoint string, file 
 	multipartFile := multipart.NewWriter(body)
 	writer, err := multipartFile.CreateFormFile("file", name)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "create form file")
 	}
 
 	fd, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "open file")
 	}
 
 	_, err = stdio.Copy(writer, fd)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "copy to form writer")
 	}
 
 	err = fd.Close()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "close file")
 	}
 	err = multipartFile.Close()
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "close multipart form")
 	}
 
 	req, err := http.NewRequest("POST", endpoint, body)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "create request")
 	}
 
 	token, err := runCtx.scalingoClient.GetAccessToken(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to generate token")
+		return errors.Wrap(ctx, err, "generate access token")
 	}
 	req.SetBasicAuth("", token)
 
@@ -541,12 +539,12 @@ func (runCtx *runContext) uploadFile(ctx context.Context, endpoint string, file 
 
 	res, err := httpclient.Do(req)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "send request")
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
 		b, _ := stdio.ReadAll(res.Body)
-		return errgo.Newf("Invalid return code %v (%s)", res.Status, strings.TrimSpace(string(b)))
+		return errors.Newf(ctx, "invalid status code %v (%s)", res.Status, strings.TrimSpace(string(b)))
 	}
 	return nil
 }
