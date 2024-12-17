@@ -334,7 +334,7 @@ func (runCtx *runContext) connectToRunServer(ctx context.Context) (*http.Respons
 	// Wrap with TLS if using HTTPS
 	if url.Scheme == "https" {
 		tlsConfig := config.TLSConfig.Clone()
-		tlsConfig.ServerName = strings.Split(url.Host, ":")[0]
+		tlsConfig.ServerName = url.Hostname()
 		conn = tls.Client(conn, tlsConfig)
 	}
 
