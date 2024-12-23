@@ -1,6 +1,8 @@
 package apps
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestParseEnvVar(t *testing.T) {
 	ctx := &runContext{}
