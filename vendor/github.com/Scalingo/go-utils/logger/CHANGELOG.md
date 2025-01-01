@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v1.3.1
+
+* fix(logger): remove custom type (use string) for logger context key
+
 ## v1.3.0
 
 * feat(logger): Add configuration option to redact sensitive fields
