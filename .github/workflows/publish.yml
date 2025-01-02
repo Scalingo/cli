@@ -69,6 +69,8 @@ jobs:
         with:
           go-version-file: "go.mod"
           check-latest: true
+      - name: go mod vendor
+        run: go mod vendor
       - name: Execute the tests
         run: go test -race ./...
 
