@@ -7,9 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ContextKey string
-
-const loggerContextKey ContextKey = "logger"
+const loggerContextKey = "logger"
 
 // Opt is a function-option type for the Default() method.
 type Opt func(*logrus.Logger)
