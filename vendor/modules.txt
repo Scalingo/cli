@@ -48,7 +48,7 @@ github.com/Scalingo/go-scalingo/v7/io
 # github.com/Scalingo/go-utils/errors/v2 v2.4.0
 ## explicit; go 1.20
 github.com/Scalingo/go-utils/errors/v2
-# github.com/Scalingo/go-utils/logger v1.4.0
+# github.com/Scalingo/go-utils/logger v1.5.0
 ## explicit; go 1.22.5
 github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/retry v1.1.1
@@ -254,7 +254,7 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli/v2 v2.27.5
+# github.com/urfave/cli/v2 v2.27.6
 ## explicit; go 1.18
 github.com/urfave/cli/v2
 # github.com/xanzy/ssh-agent v0.3.3
@@ -263,7 +263,7 @@ github.com/xanzy/ssh-agent
 # github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
 ## explicit; go 1.15
 github.com/xrash/smetrics
-# golang.org/x/crypto v0.35.0
+# golang.org/x/crypto v0.36.0
 ## explicit; go 1.23.0
 golang.org/x/crypto/argon2
 golang.org/x/crypto/blake2b
@@ -287,23 +287,23 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.36.0
+# golang.org/x/net v0.38.0
 ## explicit; go 1.23.0
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.30.0
-## explicit; go 1.18
+# golang.org/x/sys v0.31.0
+## explicit; go 1.23.0
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.29.0
-## explicit; go 1.18
+# golang.org/x/term v0.30.0
+## explicit; go 1.23.0
 golang.org/x/term
-# golang.org/x/text v0.22.0
-## explicit; go 1.18
+# golang.org/x/text v0.23.0
+## explicit; go 1.23.0
 golang.org/x/text/cases
 golang.org/x/text/internal
 golang.org/x/text/internal/language
