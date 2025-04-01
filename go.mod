@@ -1,12 +1,13 @@
 module github.com/Scalingo/cli
 
 go 1.23.4
+toolchain go1.24.1
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v7 v7.0.2
 	github.com/Scalingo/go-utils/errors/v2 v2.4.0
-	github.com/Scalingo/go-utils/logger v1.4.0
+	github.com/Scalingo/go-utils/logger v1.5.0
 	github.com/Scalingo/go-utils/retry v1.1.1
 	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.2
@@ -24,10 +25,10 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/stvp/rollbar v0.5.1
-	github.com/urfave/cli/v2 v2.27.5
-	golang.org/x/crypto v0.35.0
-	golang.org/x/term v0.29.0
-	golang.org/x/text v0.22.0
+	github.com/urfave/cli/v2 v2.27.6
+	golang.org/x/crypto v0.36.0
+	golang.org/x/term v0.30.0
+	golang.org/x/text v0.23.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
@@ -63,8 +64,8 @@ require (
 	github.com/skeema/knownhosts v1.3.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	golang.org/x/net v0.36.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
