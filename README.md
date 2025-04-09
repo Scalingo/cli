@@ -65,22 +65,31 @@ COMMANDS:
      help  Shows a list of commands or help for one command
 
    Addons:
-     addons                    List used add-ons
-     addons-add                Provision an add-on for your application
-     addons-remove             Remove an existing addon from your app
-     addons-upgrade            Upgrade or downgrade an add-on attached to your app
-     addons-info               Display information about an add-on attached to your app
-     backups-config            Configure the periodic backups of a database
-     database-enable-feature   Enable a togglable feature from a database
-     database-disable-feature  Enable a togglable feature from a database
-     backups                   List backups for an addon
-     backups-create            Ask for a new backup
-     backups-download          Download a backup
-     backup-download           Download a backup
+     addons                                                         List used add-ons
+     addons-add                                                     Provision an add-on for your application
+     addons-remove                                                  Remove an existing addon from your app
+     addons-upgrade                                                 Upgrade or downgrade an add-on attached to your app
+     addons-info                                                    Display information about an add-on attached to your app
+     addons-config                                                  Configure an add-on attached to your app
+     backups-config                                                 Configure the periodic backups of a database
+     database-enable-feature                                        Enable a togglable feature from a database
+     database-disable-feature                                       Enable a togglable feature from a database
+     database-users-list, database-list-users                       Print database's users
+     database-users-delete, database-delete-user                    Delete a database's user
+     database-users-create, database-create-user                    Create new database user
+     database-users-update-password, database-update-user-password  Update a database user's password
+     database-maintenance-info                                      Show a database maintenance
+     backups                                                        List backups for an addon
+     backups-create                                                 Ask for a new backup
+     backups-download                                               Download a backup
+     backup-download                                                Download a backup
 
    Addons - Global:
      addons-list   List all addons
      addons-plans  List plans
+
+   Addons Maintenance:
+     database-maintenance-list  List the past and future maintenance on the given database
 
    Alerts:
      alerts          List the alerts of an application
@@ -210,13 +219,6 @@ COMMANDS:
      keys         List your SSH public keys
      keys-add     Add a public SSH key to deploy your apps
      keys-remove  Remove a public SSH key
-
-   Region migrations:
-     migration-create  Start migrating an app to another region
-     migration-run     Run a specific migration step
-     migration-abort   Abort a migration
-     migrations        List all migrations linked to an app
-     migration-follow  Follow a running migration
 
    Review Apps:
      review-apps  Show review apps of the parent application

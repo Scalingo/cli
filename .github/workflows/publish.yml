@@ -33,7 +33,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
-          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/welcome/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
           # only-new-issues: false
           args: "--config=$(pwd)/.golangci.yml --new-from-rev=${{ steps.new-from-rev.outputs.NEW_FROM_REV }}"
 

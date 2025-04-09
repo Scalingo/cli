@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* feat(regionmigrations): remove the commands
+
 ### 1.34.0
 
 * feat(database/users): raise minimum user password length to 24 ([PR#1077](https://github.com/Scalingo/cli/pull/1077))
