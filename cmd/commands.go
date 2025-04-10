@@ -281,13 +281,6 @@ var (
 		&autoscalersDisableCommand,
 		&autoscalersEnableCommand,
 
-		// Migrations
-		&migrationCreateCommand,
-		&migrationRunCommand,
-		&migrationAbortCommand,
-		&migrationListCommand,
-		&migrationFollowCommand,
-
 		// Log drains
 		&logDrainsAddCommand,
 		&logDrainsListCommand,
