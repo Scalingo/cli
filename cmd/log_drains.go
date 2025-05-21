@@ -58,7 +58,6 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
 		},
 	}
-
 	logDrainsAddCommand = cli.Command{
 		Name:     "log-drains-add",
 		Category: "Log drains",
@@ -68,7 +67,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			&cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
 			&cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
 			&cli.StringFlag{Name: "type", Usage: "Communication protocol", Required: true},
-			&cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK"},
+			&cli.StringFlag{Name: "url", Usage: "URL of self hosted ELK or OpenSearch"},
 			&cli.StringFlag{Name: "host", Usage: "Host of logs management service"},
 			&cli.StringFlag{Name: "port", Usage: "Port of logs management service"},
 			&cli.StringFlag{Name: "token", Usage: "Used by certain vendor for authentication"},
@@ -96,6 +95,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				"scalingo --app my-app log-drains-add --type syslog --host custom.logstash.com --port 12345",
 				"scalingo --app my-app log-drains-add --type syslog --token 123456789abcdef --host custom.logstash.com --port 12345",
 				"scalingo --app my-app log-drains-add --type elk --url https://my-user:123456789abcdef@logstash-app-name.osc-fr1.scalingo.io",
+				"scalingo --app my-app log-drains-add --type opensearch --url https://my-user:123456789abcdef@my-app-name.opensearch.osc-fr1.scalingo-dbs.com:30123/yourindex/_doc?pipeline=your_pipeline",
 				"scalingo --app my-app --addon ad-3c2f8c81-99bd-4667-9791-466799bd4667 log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
 				"scalingo --app my-app --with-addons log-drains-add --type datadog --token 123456789abcdef --drain-region eu-west-2",
 			},
