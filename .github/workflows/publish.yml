@@ -27,15 +27,15 @@ jobs:
       - name: Get golangci-lint configuration file
         run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
       - name: Get master branch commit ID
-        id: new-from-rev
-        run: echo "NEW_FROM_REV=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
+        id: new-from-merge-base
+        run: echo "NEW-FROM-MERGE-BASE=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
       - name: "Execute golangci-lint on a pull request"
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
-          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/welcome/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/welcome/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-merge-base`
           # only-new-issues: false
-          args: "--config=$(pwd)/.golangci.yml --new-from-rev=${{ steps.new-from-rev.outputs.NEW_FROM_REV }}"
+          args: "--config=$(pwd)/.golangci.yml --new-from-merge-base=${{ steps.new-from-merge-base.outputs.NEW-FROM-MERGE-BASE }}"
 
   linter-master:
     name: golangci-lint on master branch
@@ -53,12 +53,12 @@ jobs:
       - name: Get golangci-lint configuration file
         run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
       - name: "Execute golangci-lint on the master branch"
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
-          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-rev`
+          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-merge-base`
           # only-new-issues: false
-          args: "--config=$(pwd)/.golangci.yml --new-from-rev=HEAD~1"
+          args: "--config=$(pwd)/.golangci.yml --new-from-merge-base=HEAD~1"
 
   tests:
     name: Unit Tests
