@@ -52,12 +52,12 @@ func (w *OperationWaiter) SetPrompt(p string) {
 func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operation, error) {
 	opURL, err := url.Parse(w.url)
 	if err != nil {
-		return nil, errors.Notef(ctx, err, "parse url of operation")
+		return nil, errors.Wrap(ctx, err, "parse url of operation")
 	}
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return nil, errors.Notef(ctx, err, "get Scalingo client")
+		return nil, errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	var op *scalingo.Operation
@@ -70,7 +70,7 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 
 	op, err = c.OperationsShow(ctx, w.app, opID)
 	if err != nil {
-		return nil, errors.Notef(ctx, err, "get operation %v", opID)
+		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
@@ -89,7 +89,7 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 		}
 	}()
 
-	fmt.Fprintf(w.output, w.prompt)
+	fmt.Fprint(w.output, w.prompt)
 	spinner := io.NewSpinner(os.Stderr)
 	go spinner.Start()
 	defer spinner.Stop()
@@ -97,7 +97,7 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	for {
 		select {
 		case err := <-errs:
-			return op, errors.Notef(ctx, err, "get operation %v", op.ID)
+			return op, errors.Wrapf(ctx, err, "get operation %v", op.ID)
 		case <-done:
 			if op.Status == "done" {
 				fmt.Printf("\bDone in %.3f seconds\n", op.ElapsedDuration())
