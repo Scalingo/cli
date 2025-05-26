@@ -292,11 +292,11 @@ func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
 	// "3 Europe/Paris"
 	s := strings.Split(flag, " ")
 	if len(s) < 2 {
-		return -1, nil, errors.New("fail to parse the schedule-at flag")
+		return -1, nil, errors.New("parse the schedule-at value")
 	}
 	scheduleAt, err = strconv.Atoi(s[0])
 	if err != nil {
-		return -1, nil, errors.New("fail to parse the schedule-at flag")
+		return -1, nil, errors.New("parse the schedule-at value")
 	}
 	loc, err := time.LoadLocation(s[1])
 	if err != nil {
