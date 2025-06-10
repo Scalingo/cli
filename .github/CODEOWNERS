@@ -1,0 +1,3 @@
+# Dependabot reviewers assignment
+go.sum @EtienneM
+.github/workflows/* @EtienneM
