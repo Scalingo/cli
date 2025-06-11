@@ -29,8 +29,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetColWidth(60)
-	t.SetHeader([]string{"Command", "Size", "Last execution", "Next execution"})
+	t.Header([]string{"Command", "Size", "Last execution", "Next execution"})
 
 	for _, job := range cronTasks.Jobs {
 		lastExecution := job.LastExecutionDate.Format(utils.TimeFormat)

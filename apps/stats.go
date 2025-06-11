@@ -63,7 +63,7 @@ func displayLiveStatsTable(stats []*scalingo.ContainerStat) {
 
 func displayStatsTable(stats []*scalingo.ContainerStat) error {
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "CPU", "Memory", "Swap"})
+	t.Header([]string{"Name", "CPU", "Memory", "Swap"})
 
 	for i, s := range stats {
 		t.Append([]string{

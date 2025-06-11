@@ -22,7 +22,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Active", "Container type", "Metric", "Target", "Min containers", "Max containers"})
+	t.Header([]string{"Active", "Container type", "Metric", "Target", "Min containers", "Max containers"})
 
 	for _, autoscaler := range autoscalers {
 		t.Append([]string{

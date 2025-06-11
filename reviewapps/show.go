@@ -29,7 +29,7 @@ func Show(ctx context.Context, appID string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"App", "PR", "PR Branch", "Created At", "Status", "URL"})
+	t.Header([]string{"App", "PR", "PR Branch", "Created At", "Status", "URL"})
 	for _, ra := range reviewApps {
 		date := ra.CreatedAt.Local().Format(utils.TimeFormat)
 

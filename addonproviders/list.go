@@ -21,7 +21,7 @@ func List(ctx context.Context) error {
 		return errors.Wrapf(ctx, err, "list addon providers")
 	}
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Name"})
+	t.Header([]string{"ID", "Name"})
 
 	for _, addon := range addonProviders {
 		t.Append([]string{addon.ID, addon.Name})

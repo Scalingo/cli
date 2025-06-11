@@ -28,7 +28,7 @@ func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpt
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status", "Image Size"})
+	t.Header([]string{"ID", "Date", "Duration", "User", "Git Ref", "Status", "Image Size"})
 
 	for _, deployment := range deployments {
 		var duration string

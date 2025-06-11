@@ -34,7 +34,7 @@ func List(ctx context.Context, app string) error {
 	if hasRemindEvery {
 		headers = append(headers, "Remind Every")
 	}
-	t.SetHeader(headers)
+	t.Header(headers)
 
 	for _, alert := range alerts {
 		var above string

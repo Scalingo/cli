@@ -26,7 +26,7 @@ func List(ctx context.Context, app string, addonName string, paginationOpts scal
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Type", "Started At", "Ended At", "Status"})
+	t.Header([]string{"ID", "Type", "Started At", "Ended At", "Status"})
 
 	for _, maintenance := range maintenances {
 		startedAt := "Not started"
