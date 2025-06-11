@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v2.5.0
+
+* chore(go): upgrade to Go 1.24
+
 ## v2.4.0
 
 * docs(errors): deprecate use of `errgo` in `ErrCtx`

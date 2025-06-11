@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v1.6.0
+
+* chore(go): upgrade to Go 1.24
+
 ## v1.5.0
 
 * feat(logger): add close wrapper of rollbar plugin
