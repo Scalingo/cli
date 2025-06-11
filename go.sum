@@ -13,8 +13,8 @@ github.com/Scalingo/go-scalingo/v7 v7.0.2 h1:g39KNRBVq7No5psCfst8CWcqH9Qb/gskRG0
 github.com/Scalingo/go-scalingo/v7 v7.0.2/go.mod h1:nraQDEEaoQwxKMmGux+eTXVeZNXWExS/kK7VkOvYGGw=
 github.com/Scalingo/go-utils/errors/v2 v2.5.0 h1:aBQF3st7gBS9UbXa8RxkhO1qZb+6e/Ziwdvdf8P+DrA=
 github.com/Scalingo/go-utils/errors/v2 v2.5.0/go.mod h1:aY5TjRfIlqlsKTJGpxuk7AnporNVjn0LdcquXenLwjg=
-github.com/Scalingo/go-utils/logger v1.9.0 h1:djr3YaA7LourAjsZmkgQebtMHQLnHwJz8M1vj9+/8R4=
-github.com/Scalingo/go-utils/logger v1.9.0/go.mod h1:2wzJAC2aOGzpEtKs+PcWhecSe/wVJua8wguDajbk0j0=
+github.com/Scalingo/go-utils/logger v1.6.0 h1:YyorhN7NNN0zsIYFtfgfY0pTSPek2pgppX500O0I7H8=
+github.com/Scalingo/go-utils/logger v1.6.0/go.mod h1:2wzJAC2aOGzpEtKs+PcWhecSe/wVJua8wguDajbk0j0=
 github.com/Scalingo/gopassword v1.1.0 h1:UBK4U1l3gEZ78d6ESEhkN78DmrulqYgJTazeJl6Rtog=
 github.com/Scalingo/gopassword v1.1.0/go.mod h1:tEaoO0VXIt9eyW54ny/rfTZ6i0Kmr4Ay73P1gc7LNsw=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=

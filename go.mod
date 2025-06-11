@@ -1,12 +1,14 @@
 module github.com/Scalingo/cli
 
-go 1.24
+go 1.24.3
+
+toolchain go1.24.4
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v7 v7.0.2
 	github.com/Scalingo/go-utils/errors/v2 v2.5.0
-	github.com/Scalingo/go-utils/logger v1.9.0
+	github.com/Scalingo/go-utils/logger v1.6.0
 	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.2
 	github.com/cheggaaa/pb/v3 v3.1.7
