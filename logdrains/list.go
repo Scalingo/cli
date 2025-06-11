@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -74,14 +75,18 @@ func List(ctx context.Context, app string, opts ListAddonOpts) error {
 
 func drawDrainsTable(drains []printableDrains) {
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "URL"})
-	t.SetAutoMergeCells(true)
+	t.Header([]string{"Name", "URL"})
+	tablewriter.WithRowMergeMode(tw.MergeBoth)
 
 	objLength := len(drains)
 
 	for _, printableDrain := range drains {
 		if len(printableDrain.DrainURLs) > 1 && objLength > 1 {
-			t.SetRowLine(true)
+			tablewriter.WithRendition(tw.Rendition{
+				Settings: tw.Settings{
+					Separators: tw.Separators{BetweenRows: tw.On},
+				},
+			})
 		}
 		for _, drain := range printableDrain.DrainURLs {
 			t.Append([]string{

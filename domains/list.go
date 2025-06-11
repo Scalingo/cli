@@ -31,7 +31,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Domain", "TLS/SSL", "TLS Subject", "Let's Encrypt Certificate"})
+	t.Header([]string{"Domain", "TLS/SSL", "TLS Subject", "Let's Encrypt Certificate"})
 	hasCanonical := false
 
 	for _, domain := range domains {

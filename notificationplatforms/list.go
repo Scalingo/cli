@@ -22,7 +22,7 @@ func List(ctx context.Context) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name"})
+	t.Header([]string{"Name"})
 
 	for _, r := range resources {
 		t.Append([]string{r.Name})

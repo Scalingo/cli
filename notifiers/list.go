@@ -24,7 +24,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events"})
+	t.Header([]string{"ID", "Type", "Name", "Enabled", "Send all events", "Selected events"})
 
 	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {

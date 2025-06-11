@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
@@ -52,7 +53,7 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetAutoWrapText(false)
+	tablewriter.WithRowAutoWrap(tw.WrapNone)
 	t.Append([]string{"ID", fmt.Sprintf("%v", maintenanceInfo.ID)})
 	t.Append([]string{"Type", fmt.Sprintf("%v", maintenanceInfo.Type)})
 	t.Append([]string{"Started At", fmt.Sprintf("%v", startedAtMessage)})

@@ -29,7 +29,7 @@ func List(ctx context.Context) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "Role", "Status"})
+	t.Header([]string{"Name", "Role", "Status"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {

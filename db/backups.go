@@ -25,7 +25,7 @@ func ListBackups(ctx context.Context, app, addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"ID", "Created At", "Size", "Status"})
+	t.Header([]string{"ID", "Created At", "Size", "Status"})
 
 	for _, backup := range backups {
 		t.Append([]string{

@@ -37,8 +37,7 @@ func List(ctx context.Context) error {
 	io.Statusf("You already have %d SCM integration%s linked with your Scalingo account:\n", nbrIntegrations, pluralIntegration)
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetColWidth(60)
-	t.SetHeader([]string{"ID", "Type", "URL", "Username", "Email"})
+	t.Header([]string{"ID", "Type", "URL", "Username", "Email"})
 	for _, i := range integrations {
 		t.Append([]string{i.ID, scalingo.SCMTypeDisplay[i.SCMType], i.URL, i.Username, i.Email})
 	}

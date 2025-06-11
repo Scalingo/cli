@@ -21,8 +21,7 @@ func List(ctx context.Context) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetColWidth(60)
-	t.SetHeader([]string{"Name", "Display", "API Endpoint"})
+	t.Header([]string{"Name", "Display", "API Endpoint"})
 
 	for _, r := range regions {
 		t.Append([]string{r.Name, r.DisplayName, r.API})

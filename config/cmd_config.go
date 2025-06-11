@@ -32,8 +32,7 @@ func SetRegion(ctx context.Context, regionName string) error {
 
 func Display() {
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetColWidth(60)
-	t.SetHeader([]string{"Configuration key", "Value"})
+	t.Header([]string{"Configuration key", "Value"})
 	t.Append([]string{"region", C.ConfigFile.Region})
 	t.Render()
 }

@@ -61,8 +61,7 @@ func ImportKeys(ctx context.Context, id string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetColWidth(60)
-	t.SetHeader([]string{"Name", "Content"})
+	t.Header([]string{"Name", "Content"})
 	for _, k := range keys {
 		t.Append([]string{k.Name, k.Content[0:20] + "..." + k.Content[len(k.Content)-30:]})
 	}

@@ -23,7 +23,7 @@ func ContainerTypes(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Name", "Amount", "Size", "Command"})
+	t.Header([]string{"Name", "Amount", "Size", "Command"})
 
 	hasAutoscaler := false
 	autoscalers, err := c.AutoscalersList(ctx, app)

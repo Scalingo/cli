@@ -24,9 +24,9 @@ func List(ctx context.Context, isWithDeprecatedFlag bool) error {
 	t := tablewriter.NewWriter(os.Stdout)
 
 	if isWithDeprecatedFlag {
-		t.SetHeader([]string{"ID", "Name", "Description", "Default?", "Deprecated?", "Deprecation date"})
+		t.Header([]string{"ID", "Name", "Description", "Default?", "Deprecated?", "Deprecation date"})
 	} else {
-		t.SetHeader([]string{"ID", "Name", "Description", "Default?"})
+		t.Header([]string{"ID", "Name", "Description", "Default?"})
 	}
 
 	for _, stack := range stacks {

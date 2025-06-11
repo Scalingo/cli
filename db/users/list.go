@@ -39,7 +39,7 @@ func List(ctx context.Context, app, addonUUID string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader(header)
+	t.Header(header)
 
 	for _, user := range databaseUsers {
 		line := []string{

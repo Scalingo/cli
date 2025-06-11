@@ -30,7 +30,7 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.SetHeader([]string{"Email", "Username", "Status"})
+	t.Header([]string{"Email", "Username", "Status"})
 
 	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner})
 	for _, collaborator := range collaborators {
