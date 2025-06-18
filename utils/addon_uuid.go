@@ -31,6 +31,8 @@ func GetAddonUUIDFromType(ctx context.Context, app, addonTypeOrUUID string) (str
 		"influx": "influxdb",
 
 		"es": "elasticsearch",
+
+		"redis": "redis® oss",
 	}
 	addonTypeFromAlias, isAlias := aliases[addonType]
 	if isAlias {
