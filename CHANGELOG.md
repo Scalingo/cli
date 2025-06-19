@@ -2,6 +2,8 @@
 
 ### To be Released
 
+### 1.35.0
+
 * feat(regionmigrations): remove the commands [#1104](https://github.com/Scalingo/cli/pull/1104)
 * chore(go) update go version to 1.24 [#1108](https://github.com/Scalingo/cli/pull/1108)
 * fix(redis/logs): fix retrieval of logs for redis addon when using `--addon redis` [#1115](https://github.com/Scalingo/cli/pull/1115)
