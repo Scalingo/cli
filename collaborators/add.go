@@ -10,12 +10,12 @@ import (
 	"github.com/Scalingo/go-scalingo/v8"
 )
 
-func Add(ctx context.Context, app, email string, isLimited bool) error {
+func Add(ctx context.Context, app string, params scalingo.CollaboratorAddParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	collaborator, err := c.CollaboratorAdd(ctx, app, scalingo.CollaboratorAddParams{Email: email, IsLimited: isLimited})
+	collaborator, err := c.CollaboratorAdd(ctx, app, params)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
