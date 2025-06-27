@@ -10,7 +10,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v8"
 )
 
 // EnableFeature is the command handler to enable a database feature on a given

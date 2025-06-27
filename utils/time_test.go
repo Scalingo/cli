@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v8"
 )
 
 func Test_beginningOfDay(t *testing.T) {

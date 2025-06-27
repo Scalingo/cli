@@ -49,7 +49,7 @@ var (
 				cli.ShowCommandHelp(c, "collaborators-add")
 			} else {
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-				err := collaborators.Add(c.Context, currentApp, c.Args().First())
+				err := collaborators.Add(c.Context, currentApp, c.Args().First(), false)
 				if err != nil {
 					errorQuit(c.Context, err)
 				}

@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/go-scalingo/v7/debug"
+	"github.com/Scalingo/go-scalingo/v8/debug"
 )
 
 func FlagAppAutoComplete(c *cli.Context) bool {

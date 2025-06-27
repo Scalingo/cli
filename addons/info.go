@@ -18,7 +18,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v8"
 )
 
 // Info is the command handler displaying static information about one given addon
