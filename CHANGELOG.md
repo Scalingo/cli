@@ -1,6 +1,6 @@
 # Changelog
 
-### To be Released
+### 1.35.1
 
 * chore(deps): Bump go-scalingo to v8.1.0
 
