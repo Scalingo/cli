@@ -26,8 +26,8 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo/v7"
-	"github.com/Scalingo/go-scalingo/v7/debug"
+	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v8/debug"
 	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 

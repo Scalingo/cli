@@ -11,7 +11,7 @@ import (
 	gitconfig "github.com/go-git/go-git/v5/config"
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/go-scalingo/v7/debug"
+	"github.com/Scalingo/go-scalingo/v8/debug"
 )
 
 // DetectGit detects if current directory is a Git repository

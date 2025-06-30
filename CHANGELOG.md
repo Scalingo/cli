@@ -2,6 +2,8 @@
 
 ### To be Released
 
+* chore(deps): Bump go-scalingo to v8.1.0
+
 ### 1.35.0
 
 * feat(regionmigrations): remove the commands [#1104](https://github.com/Scalingo/cli/pull/1104)

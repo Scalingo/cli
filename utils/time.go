@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v8"
 )
 
 const (

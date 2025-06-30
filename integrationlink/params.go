@@ -3,7 +3,7 @@ package integrationlink
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/Scalingo/go-scalingo/v7"
+	"github.com/Scalingo/go-scalingo/v8"
 )
 
 func CheckAndFillParams(c *cli.Context) *scalingo.SCMRepoLinkUpdateParams {
