@@ -7,8 +7,8 @@ toolchain go1.24.4
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v8 v8.1.0
-	github.com/Scalingo/go-utils/errors/v2 v2.5.0
-	github.com/Scalingo/go-utils/logger v1.6.0
+	github.com/Scalingo/go-utils/errors/v2 v2.5.1
+	github.com/Scalingo/go-utils/logger v1.9.0
 	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.2
 	github.com/cheggaaa/pb/v3 v3.1.7
@@ -24,7 +24,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/stvp/rollbar v0.5.1
-	github.com/urfave/cli/v2 v2.27.6
+	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.39.0
 	golang.org/x/term v0.32.0
 	golang.org/x/text v0.26.0
