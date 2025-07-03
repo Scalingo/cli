@@ -115,6 +115,12 @@ var (
 			}
 
 			if disable {
+				continueB := askContinue("This operation will disable the periodic backups of a database. Are you sure?")
+				if !continueB {
+					errorQuit(c.Context, errors.New("unschedule operation was not confirmed"))
+					return nil
+				}
+
 				params.Enabled = utils.BoolPtr(false)
 			}
 			if scheduleAtFlag != "" {
