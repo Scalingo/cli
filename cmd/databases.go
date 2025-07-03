@@ -115,12 +115,10 @@ var (
 			}
 
 			if disable {
-				f := false
-				params.Enabled = &f
+				params.Enabled = utils.BoolPtr(false)
 			}
 			if scheduleAtFlag != "" {
-				t := true
-				params.Enabled = &t
+				params.Enabled = utils.BoolPtr(true)
 				scheduleAt, loc, err := parseScheduleAtFlag(scheduleAtFlag)
 				if err != nil {
 					errorQuit(c.Context, err)

@@ -86,8 +86,7 @@ var (
 					params.TLSKey = &keyContent
 				}
 				if c.Bool("no-letsencrypt") {
-					letsEncryptEnabled := false
-					params.LetsEncryptEnabled = &letsEncryptEnabled
+					params.LetsEncryptEnabled = utils.BoolPtr(false)
 				}
 
 				err = domains.Add(c.Context, currentApp, params)
