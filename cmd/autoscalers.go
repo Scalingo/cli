@@ -171,9 +171,8 @@ var (
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			disabled := false
 			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
-				Disabled: &disabled,
+				Disabled: utils.BoolPtr(false),
 			})
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -209,9 +208,8 @@ var (
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			disabled := true
 			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
-				Disabled: &disabled,
+				Disabled: utils.BoolPtr(true),
 			})
 			if err != nil {
 				errorQuit(c.Context, err)

@@ -171,11 +171,9 @@ var (
 
 			var active *bool
 			if c.IsSet("enable") {
-				tmpActive := true
-				active = &tmpActive
+				active = utils.BoolPtr(true)
 			} else if c.IsSet("disable") {
-				tmpActive := false
-				active = &tmpActive
+				active = utils.BoolPtr(false)
 			} else {
 				active = nil
 			}

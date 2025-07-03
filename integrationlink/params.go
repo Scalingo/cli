@@ -3,6 +3,7 @@ package integrationlink
 import (
 	"github.com/urfave/cli/v2"
 
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8"
 )
 
@@ -41,36 +42,30 @@ func (p *paramsChecker) lookupBranch() *string {
 
 func (p *paramsChecker) lookupAutoDeploy() *bool {
 	if p.ctx.IsSet("auto-deploy") {
-		t := true
-		return &t
+		return utils.BoolPtr(true)
 	}
 	if p.ctx.IsSet("no-auto-deploy") {
-		f := false
-		return &f
+		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupDeployReviewApps() *bool {
 	if p.ctx.IsSet("deploy-review-apps") {
-		t := true
-		return &t
+		return utils.BoolPtr(true)
 	}
 	if p.ctx.IsSet("no-deploy-review-apps") {
-		f := false
-		return &f
+		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupDestroyOnClose() *bool {
 	if p.ctx.IsSet("destroy-on-close") {
-		t := true
-		return &t
+		return utils.BoolPtr(true)
 	}
 	if p.ctx.IsSet("no-destroy-on-close") {
-		f := false
-		return &f
+		return utils.BoolPtr(false)
 	}
 	return nil
 }
@@ -86,24 +81,20 @@ func (p *paramsChecker) lookupHoursBeforeDestroyOnClose() *uint {
 
 func (p *paramsChecker) lookupDestroyOnStale() *bool {
 	if p.ctx.IsSet("destroy-on-stale") {
-		t := true
-		return &t
+		return utils.BoolPtr(true)
 	}
 	if p.ctx.IsSet("no-destroy-on-stale") {
-		f := false
-		return &f
+		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupAllowReviewAppsFromForks() *bool {
 	if p.ctx.IsSet("allow-review-apps-from-forks") {
-		t := true
-		return &t
+		return utils.BoolPtr(true)
 	}
 	if p.ctx.IsSet("no-allow-review-apps-from-forks") {
-		f := false
-		return &f
+		return utils.BoolPtr(false)
 	}
 	return nil
 }

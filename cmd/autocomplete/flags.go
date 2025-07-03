@@ -62,7 +62,7 @@ func DisplayFlags(flags []cli.Flag) {
 
 	isBoolFlag := false
 	if _, ok := lastFlag.(*cli.BoolFlag); ok {
-		isBoolFlag = true && found
+		isBoolFlag = found
 	}
 
 	if !strings.HasPrefix(lastArg, "-") || isBoolFlag {

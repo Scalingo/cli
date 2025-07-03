@@ -205,9 +205,8 @@ var (
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			disabled := false
 			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
-				Disabled: &disabled,
+				Disabled: utils.BoolPtr(false),
 			})
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -244,9 +243,8 @@ var (
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
-			disabled := true
 			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
-				Disabled: &disabled,
+				Disabled: utils.BoolPtr(true),
 			})
 			if err != nil {
 				errorQuit(c.Context, err)

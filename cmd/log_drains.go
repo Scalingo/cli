@@ -13,6 +13,8 @@ import (
 	"github.com/Scalingo/go-scalingo/v8"
 )
 
+const confirmDeletionSuffix = "\n\tConfirm deletion ?"
+
 var (
 	logDrainsListCommand = cli.Command{
 		Name:     "log-drains",
@@ -194,7 +196,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				// app only
 				message += " for the application " + currentApp
 			}
-			result := askContinue(message)
+			result := askContinue(message + confirmDeletionSuffix)
 			if !result {
 				fmt.Println("Aborted")
 				return nil
@@ -221,7 +223,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 func askContinue(message string) bool {
 	result := false
 	prompt := &survey.Confirm{
-		Message: message + "\n\tConfirm deletion ?",
+		Message: message,
 	}
 	survey.AskOne(prompt, &result, nil)
 	return result
