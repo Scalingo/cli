@@ -92,7 +92,7 @@ var (
 			Description: "Add a notifier for your application",
 			Examples: []string{
 				"scalingo --app my-app notifiers-add --platform slack --name \"My notifier\" --webhook-url https://hooks.slack.com/services/1234 --event deployment --event stop_app",
-				"scalingo --app my-app notifiers-add --platform webhook -name \"My notifier\" --webhook-url https://custom-webhook.com --send-all-events",
+				"scalingo --app my-app notifiers-add --platform webhook --name \"My notifier\" --webhook-url https://custom-webhook.com --send-all-events",
 			},
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
