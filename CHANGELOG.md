@@ -1,5 +1,9 @@
 # Changelog
 
+## To Be Released
+
+* feat(backups-config): Warn user before unscheduling periodic backups
+
 ### 1.35.1
 
 * chore(deps): Bump go-scalingo to v8.1.0

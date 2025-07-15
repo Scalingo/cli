@@ -482,16 +482,15 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		return params, errgo.Notef(err, "error enquiring about branch and automatic review apps deployment")
 	}
 
-	t := true
 	if answers.Branch != "" {
 		params.Branch = &answers.Branch
-		params.AutoDeployEnabled = &t
+		params.AutoDeployEnabled = utils.BoolPtr(true)
 	}
 	if !answers.AutoReviewApps {
 		return params, nil
 	}
 
-	params.DeployReviewAppsEnabled = &t
+	params.DeployReviewAppsEnabled = utils.BoolPtr(true)
 
 	destroyOnClose := true
 	err = survey.AskOne(&survey.Confirm{

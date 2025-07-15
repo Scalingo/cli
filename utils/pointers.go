@@ -15,3 +15,7 @@ func Float64Ptr(r float64) *float64 {
 func StringPtr(r string) *string {
 	return &r
 }
+
+func BoolPtr(r bool) *bool {
+	return &r
+}
