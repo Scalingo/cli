@@ -64,6 +64,25 @@ func (ev *EventRenameAppType) String() string {
 	)
 }
 
+type EventUpdateAppProjectTypeData struct {
+	OldProjectName string `json:"old_project_name"`
+	NewProjectName string `json:"new_project_name"`
+	OldProjectID   string `json:"old_project_id"`
+	NewProjectID   string `json:"new_project_id"`
+}
+
+type EventUpdateAppProjectType struct {
+	Event
+	TypeData EventUpdateAppProjectTypeData `json:"type_data"`
+}
+
+func (ev *EventUpdateAppProjectType) String() string {
+	return fmt.Sprintf(
+		"the application has been moved from project '%s' (%s) to '%s' (%s)",
+		ev.TypeData.OldProjectName, ev.TypeData.OldProjectID, ev.TypeData.NewProjectName, ev.TypeData.NewProjectID,
+	)
+}
+
 type EventTransferAppTypeData struct {
 	OldOwner EventUser `json:"old_owner"`
 	NewOwner EventUser `json:"new_owner"`

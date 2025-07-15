@@ -19,6 +19,8 @@ type Event struct {
 	AppName     string                 `json:"app_name"`
 	RawTypeData json.RawMessage        `json:"type_data"`
 	TypeData    map[string]interface{} `json:"-"`
+	ProjectID   string                 `json:"project_id"`
+	ProjectName string                 `json:"project_name"`
 }
 
 type EventSecurityTypeData struct {
@@ -75,6 +77,7 @@ const (
 	EventEditApp                     EventTypeName = "edit_app"
 	EventDeleteApp                   EventTypeName = "delete_app"
 	EventRenameApp                   EventTypeName = "rename_app"
+	EventUpdateAppProject            EventTypeName = "update_app_project"
 	EventTransferApp                 EventTypeName = "transfer_app"
 	EventRestart                     EventTypeName = "restart"
 	EventScale                       EventTypeName = "scale"
@@ -155,6 +158,11 @@ const (
 	// retro-compatibility. They are replaced by SCM events.
 	EventLinkGithub   EventTypeName = "link_github"
 	EventUnlinkGithub EventTypeName = "unlink_github"
+
+	// Project scoped events
+	EventDeleteProject EventTypeName = "delete_project"
+	EventNewProject    EventTypeName = "new_project"
+	EventEditProject   EventTypeName = "edit_project"
 )
 
 type EventNewUserType struct {
@@ -969,4 +977,59 @@ func (ev *EventCompleteDatabaseMaintenanceType) String() string {
 
 func (ev *EventCompleteDatabaseMaintenanceType) Who() string {
 	return ev.Event.Who()
+}
+
+// Project deleted
+type EventDeleteProjectTypeData struct {
+}
+
+type EventDeleteProjectType struct {
+	Event
+	TypeData EventDeleteProjectTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteProjectType) String() string {
+	return fmt.Sprintf("The project '%s' has been deleted", ev.ProjectName)
+}
+
+// New project created
+type EventNewProjectTypeData struct {
+	Default bool `json:"default"`
+}
+
+type EventNewProjectType struct {
+	Event
+	TypeData EventNewProjectTypeData `json:"type_data"`
+}
+
+func (ev *EventNewProjectType) String() string {
+	return fmt.Sprintf("The project '%s' has been created", ev.ProjectName)
+}
+
+// Project edited
+type EditProjectValue struct {
+	Name     string `json:"name"`
+	Value    string `json:"value"`
+	OldValue string `json:"old_value"`
+}
+
+type EditProjectValues []EditProjectValue
+
+type EventEditProjectTypeData struct {
+	UpdatedValues EditProjectValues `json:"updated_values"`
+}
+
+type EventEditProjectType struct {
+	Event
+	TypeData EventEditProjectTypeData `json:"type_data"`
+}
+
+func (ev *EventEditProjectType) String() string {
+	changes := []string{}
+
+	for _, v := range ev.TypeData.UpdatedValues {
+		changes = append(changes, fmt.Sprintf("%s modified from '%v' to '%v'", v.Name, v.OldValue, v.Value))
+	}
+
+	return fmt.Sprintf("project settings have been updated: %s", strings.Join(changes, ", "))
 }
