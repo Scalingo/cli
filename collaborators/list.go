@@ -3,6 +3,7 @@ package collaborators
 import (
 	"context"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
@@ -30,11 +31,12 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Email", "Username", "Status"})
+	t.Header([]string{"Email", "Username", "Status", "Is Limited"})
 
-	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner})
+	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner, "false"})
 	for _, collaborator := range collaborators {
-		t.Append([]string{collaborator.Email, collaborator.Username, string(collaborator.Status)})
+		t.Append([]string{collaborator.Email, collaborator.Username,
+			string(collaborator.Status), strconv.FormatBool(collaborator.IsLimited)})
 	}
 	t.Render()
 	return nil
