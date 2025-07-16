@@ -4,10 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/olekukonko/tablewriter"
 )
 
 const (
@@ -19,16 +18,17 @@ const (
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "fail to get Scalingo client")
 	}
+
 	collaborators, err := c.CollaboratorsList(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to list collaborators")
+		return errors.Wrap(ctx, err, "fail to list collaborators")
 	}
 
 	scapp, err := c.AppsShow(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to get application information")
+		return errors.Wrap(ctx, err, "fail to get application information")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
