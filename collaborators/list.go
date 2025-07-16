@@ -3,7 +3,6 @@ package collaborators
 import (
 	"context"
 	"os"
-	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 	"gopkg.in/errgo.v1"
@@ -12,7 +11,9 @@ import (
 )
 
 const (
-	CollaboratorOwner = "owner"
+	owner        = "owner"
+	collaborator = "collaborator"
+	limited      = "limited collaborator"
 )
 
 func List(ctx context.Context, app string) error {
@@ -31,13 +32,22 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Email", "Username", "Status", "Is Limited"})
+	t.Header([]string{"Email", "Username", "Status", "Role"})
 
-	_ = t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner, "false"})
+	_ = t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, owner, owner})
 	for _, collaborator := range collaborators {
 		_ = t.Append([]string{collaborator.Email, collaborator.Username,
-			string(collaborator.Status), strconv.FormatBool(collaborator.IsLimited)})
+			string(collaborator.Status), collaboratorToTole(collaborator.IsLimited)})
 	}
 	_ = t.Render()
 	return nil
+}
+
+// collaboratorToTole converts a collaborator into a human-readable role.
+func collaboratorToTole(isLimited bool) string {
+	if isLimited {
+		return limited
+	}
+
+	return collaborator
 }
