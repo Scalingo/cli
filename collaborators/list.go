@@ -33,11 +33,11 @@ func List(ctx context.Context, app string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"Email", "Username", "Status", "Is Limited"})
 
-	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner, "false"})
+	_ = t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner, "false"})
 	for _, collaborator := range collaborators {
-		t.Append([]string{collaborator.Email, collaborator.Username,
+		_ = t.Append([]string{collaborator.Email, collaborator.Username,
 			string(collaborator.Status), strconv.FormatBool(collaborator.IsLimited)})
 	}
-	t.Render()
+	_ = t.Render()
 	return nil
 }
