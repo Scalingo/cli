@@ -102,8 +102,8 @@ var (
 			&cli.BoolFlag{Name: "limited", Value: false, Usage: "Set to true if you want to update this collaborator with the limited role"},
 		},
 		Description: CommandDescription{
-			Description: "Update a collaborator from an application, allowing to mark it as limited colloborator or not",
-			Examples:    []string{"scalingo --app my-app collaborators-update user@example.com --limited true"},
+			Description: "Update a collaborator from an application, allowing to mark it as limited collaborator or not",
+			Examples:    []string{"scalingo --app my-app collaborators-update --limited=true user@example.com"},
 		}.Render(),
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
