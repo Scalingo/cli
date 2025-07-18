@@ -4,9 +4,10 @@ import (
 	"context"
 	"os"
 
+	"github.com/olekukonko/tablewriter"
+
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-utils/errors/v2"
-	"github.com/olekukonko/tablewriter"
 )
 
 const (

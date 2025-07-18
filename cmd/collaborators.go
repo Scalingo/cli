@@ -87,8 +87,8 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")
-			autocomplete.CollaboratorsGenericListAutoComplete(c)
+			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")
+			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
 		},
 	}
 
@@ -108,7 +108,7 @@ var (
 		Action: func(c *cli.Context) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "collaborators-update")
+				_ = cli.ShowCommandHelp(c, "collaborators-update")
 			} else {
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 				err := collaborators.Update(c.Context, currentApp, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
@@ -119,8 +119,8 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "collaborators-update")
-			autocomplete.CollaboratorsGenericListAutoComplete(c)
+			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-update")
+			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
 		},
 	}
 )

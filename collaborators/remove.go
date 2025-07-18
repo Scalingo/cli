@@ -2,7 +2,7 @@ package collaborators
 
 import (
 	"context"
-	stderr "errors"
+	stderrors "errors"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	errNotFound = stderr.New("collaborator not found")
+	errNotFound = stderrors.New("collaborator not found")
 )
 
 func Remove(ctx context.Context, app, email string) error {
@@ -21,7 +21,7 @@ func Remove(ctx context.Context, app, email string) error {
 	}
 
 	collaborator, err := getFromEmail(ctx, client, app, email)
-	if stderr.Is(err, errNotFound) {
+	if stderrors.Is(err, errNotFound) {
 		io.Error(email + " is not a collaborator of " + app + ".")
 		return nil
 	} else if err != nil {
