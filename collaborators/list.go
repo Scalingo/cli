@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	CollaboratorOwner = "owner"
+	owner        = "owner"
+	collaborator = "collaborator"
+	limited      = "limited collaborator"
 )
 
 func List(ctx context.Context, app string) error {
@@ -30,12 +32,22 @@ func List(ctx context.Context, app string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Email", "Username", "Status"})
+	t.Header([]string{"Email", "Username", "Status", "Role"})
 
-	t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, CollaboratorOwner})
+	_ = t.Append([]string{scapp.Owner.Email, scapp.Owner.Username, owner, owner})
 	for _, collaborator := range collaborators {
-		t.Append([]string{collaborator.Email, collaborator.Username, string(collaborator.Status)})
+		_ = t.Append([]string{collaborator.Email, collaborator.Username,
+			string(collaborator.Status), collaboratorToTole(collaborator.IsLimited)})
 	}
-	t.Render()
+	_ = t.Render()
 	return nil
+}
+
+// collaboratorToTole converts a collaborator into a human-readable role.
+func collaboratorToTole(isLimited bool) string {
+	if isLimited {
+		return limited
+	}
+
+	return collaborator
 }
