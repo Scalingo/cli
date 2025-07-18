@@ -88,7 +88,39 @@ var (
 		},
 		BashComplete: func(c *cli.Context) {
 			autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")
-			autocomplete.CollaboratorsRemoveAutoComplete(c)
+			autocomplete.CollaboratorsGenericListAutoComplete(c)
+		},
+	}
+
+	CollaboratorsUpdateCommand = cli.Command{
+		Name:      "collaborators-update",
+		Category:  "Collaborators",
+		Usage:     "Update a collaborator from an application",
+		ArgsUsage: "email",
+		Flags: []cli.Flag{
+			&appFlag,
+			&cli.BoolFlag{Name: "limited", Value: false, Usage: "Set to true if you want to update this collaborator with the limited role"},
+		},
+		Description: CommandDescription{
+			Description: "Update a collaborator from an application, allowing to mark it as limited colloborator or not",
+			Examples:    []string{"scalingo --app my-app collaborators-update user@example.com --limited true"},
+		}.Render(),
+		Action: func(c *cli.Context) error {
+			currentApp := detect.CurrentApp(c)
+			if c.Args().Len() != 1 {
+				cli.ShowCommandHelp(c, "collaborators-update")
+			} else {
+				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+				err := collaborators.Update(c.Context, currentApp, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
+				if err != nil {
+					errorQuit(c.Context, err)
+				}
+			}
+			return nil
+		},
+		BashComplete: func(c *cli.Context) {
+			autocomplete.CmdFlagsAutoComplete(c, "collaborators-update")
+			autocomplete.CollaboratorsGenericListAutoComplete(c)
 		},
 	}
 )

@@ -136,6 +136,7 @@ COMMANDS:
      collaborators         List the collaborators of an application
      collaborators-add     Invite someone to work on an application
      collaborators-remove  Revoke permission to collaborate on an application
+     collaborators-update  Update a collaborator from an application
 
    Cron Tasks:
      cron-tasks  List the cron tasks of an application
