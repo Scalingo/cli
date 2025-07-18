@@ -2,8 +2,8 @@
 
 ## To Be Released
 
-* feat(backups-config): Warn user before unscheduling periodic backups
-* feat(collaborators): Update list to include `is_limited` information
+* feat(backups-config): warn user before unscheduling periodic backups
+* feat(collaborators): update list to include `is_limited` information
 * feat(collaborators): add command to update a collaborator
 
 ### 1.35.1
