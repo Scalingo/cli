@@ -2,7 +2,6 @@ package collaborators
 
 import (
 	"context"
-	stderrors "errors"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -13,15 +12,15 @@ import (
 func Update(ctx context.Context, app, email string, params scalingo.CollaboratorUpdateParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	collaborator, err := getFromEmail(ctx, c, app, email)
-	if stderrors.Is(err, errNotFound) {
+	if errors.Is(err, errNotFound) {
 		io.Error(email + " is not a collaborator of " + app + ".")
 		return nil
 	} else if err != nil {
-		return errors.Wrap(ctx, err, "fail to get from email")
+		return errors.Wrap(ctx, err, "get from email")
 	}
 
 	collaborator, err = c.CollaboratorUpdate(ctx, app, collaborator.ID, params)

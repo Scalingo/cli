@@ -17,20 +17,20 @@ var (
 func Remove(ctx context.Context, app, email string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	collaborator, err := getFromEmail(ctx, client, app, email)
-	if stderrors.Is(err, errNotFound) {
+	if errors.Is(err, errNotFound) {
 		io.Error(email + " is not a collaborator of " + app + ".")
 		return nil
 	} else if err != nil {
-		return errors.Wrap(ctx, err, "fail to get from email")
+		return errors.Wrap(ctx, err, "get from email")
 	}
 
 	err = client.CollaboratorRemove(ctx, app, collaborator.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to remove collaborator")
+		return errors.Wrap(ctx, err, "remove collaborator")
 	}
 
 	io.Status(email, "has been removed from the collaborators of", app)
@@ -40,7 +40,7 @@ func Remove(ctx context.Context, app, email string) error {
 func getFromEmail(ctx context.Context, client *scalingo.Client, app, email string) (scalingo.Collaborator, error) {
 	collaborators, err := client.CollaboratorsList(ctx, app)
 	if err != nil {
-		return scalingo.Collaborator{}, errors.Wrap(ctx, err, "fail to list collaborators")
+		return scalingo.Collaborator{}, errors.Wrap(ctx, err, "list collaborators")
 	}
 	for _, collaborator := range collaborators {
 		if collaborator.Email == email {

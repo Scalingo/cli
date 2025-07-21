@@ -12,12 +12,12 @@ import (
 func Add(ctx context.Context, app string, params scalingo.CollaboratorAddParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	collaborator, err := c.CollaboratorAdd(ctx, app, params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to add collaborator")
+		return errors.Wrap(ctx, err, "add collaborator")
 	}
 
 	io.Status(collaborator.Email, "has been invited to collaborate to", app)

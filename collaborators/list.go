@@ -19,17 +19,17 @@ const (
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	collaborators, err := c.CollaboratorsList(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to list collaborators")
+		return errors.Wrap(ctx, err, "list collaborators")
 	}
 
 	scapp, err := c.AppsShow(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get application information")
+		return errors.Wrap(ctx, err, "get application information")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
