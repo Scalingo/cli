@@ -24,6 +24,8 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+
+				return nil
 			}
 
 			err := collaborators.List(c.Context, currentApp)
@@ -55,6 +57,8 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+
+				return nil
 			}
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
@@ -88,6 +92,8 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+
+				return nil
 			}
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
@@ -124,6 +130,8 @@ var (
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
+
+				return nil
 			}
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
