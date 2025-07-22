@@ -46,7 +46,7 @@ var (
 		ArgsUsage: "addon-name plan",
 		Description: CommandDescription{
 			Description: "Provision an add-on for your application",
-			Examples:    []string{"scalingo --app my-app addons-add mongodb mongo-starter-512"},
+			Examples:    []string{"scalingo --app my-app addons-add mongodb postgresql-starter-1024"},
 			SeeAlso:     []string{"addons-list", "addons-plans"},
 		}.Render(),
 
