@@ -112,7 +112,7 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 	if requestFailedErr.Code == 401 {
 		if currentUser != nil {
 			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
-			io.Errorf("Are you sure %s is a collaborator of this app?\n", currentUser.Username)
+			io.Errorf("Are you sure %s is a collaborator of this app with sufficient privileges?\n", currentUser.Username)
 		} else {
 			io.Errorf("Failed to read credentials for current user: %v", autherr)
 		}
