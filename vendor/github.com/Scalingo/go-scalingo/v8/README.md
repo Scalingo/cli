@@ -1,6 +1,6 @@
 [ ![Codeship Status for Scalingo/go-scalingo](https://app.codeship.com/projects/cf518dc0-0034-0136-d6b3-5a0245e77f67/status?branch=master)](https://app.codeship.com/projects/279805)
 
-# Go client for Scalingo API v8.1.0
+# Go client for Scalingo API v8.3.0
 
 This repository is the Go client for the [Scalingo APIs](https://developers.scalingo.com/).
 
@@ -71,6 +71,8 @@ documentation](https://developers.scalingo.com/index#errors).
 
 ### Release a New Version
 
+#### Create the new release
+
 Bump new version number in:
 
 - `CHANGELOG.md`
@@ -80,7 +82,7 @@ Bump new version number in:
 Commit, tag and create a new release:
 
 ```sh
-version="8.1.0"
+version="8.3.0"
 
 git switch --create release/${version}
 git add CHANGELOG.md README.md version.go
@@ -99,3 +101,8 @@ gh release create v${version}
 
 The title of the release should be the version number and the text of the
 release is the same as the changelog.
+
+#### Document the new release on the documentation
+
+When a new version is released, it must be documented on the general [changelog](https://doc.scalingo.com/changelog).
+In order to do that, a new file must be created in this [folder](https://github.com/Scalingo/documentation/tree/master/src/changelog/sdk/_posts).

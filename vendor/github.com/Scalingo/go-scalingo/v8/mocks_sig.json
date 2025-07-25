@@ -6,7 +6,7 @@
   "github.com/Scalingo/go-scalingo.AppsService": "bd ac 01 ef a1 ae 45 1e b8 66 b7 d1 ec e3 71 31 c2 62 01 5f",
   "github.com/Scalingo/go-scalingo.AutoscalersService": "9f cf 1b 7a dc 9d e3 d3 62 89 41 0f d4 30 83 28 7b 40 f1 72",
   "github.com/Scalingo/go-scalingo.BackupsService": "66 59 74 49 68 65 69 e4 b0 97 8e a2 45 e6 ff fc 71 85 06 16",
-  "github.com/Scalingo/go-scalingo.CollaboratorsService": "1b 74 d7 c0 4c da dc 56 22 89 dc 7a 9e ba 77 33 e9 2a 2b 68",
+  "github.com/Scalingo/go-scalingo.CollaboratorsService": "c9 3a 93 de 00 2d e8 87 9c cc bd 3f f0 0e a1 48 78 a4 d7 3a",
   "github.com/Scalingo/go-scalingo.ContainerSizesService": "e2 db 25 a1 01 52 dc e9 6f 7b f4 59 68 95 86 b9 5e 39 8a 61",
   "github.com/Scalingo/go-scalingo.ContainersService": "ef 14 ae 81 c9 b4 6a 13 48 e8 bf 44 7d b5 b2 a6 4d e5 02 11",
   "github.com/Scalingo/go-scalingo.CronTasksService": "9b d9 a3 ca 9f 9a f7 73 cb b1 aa 80 df 90 21 ff 14 92 b4 4d",

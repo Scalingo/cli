@@ -2,17 +2,13 @@
 
 ## To be Released
 
-## v1.9.0
+## v1.9.1
 
-* chore(go): upgrade to Go 1.24
+* chore: retract version 1.9.0. It had accidentally been released rather than a lower version (1.6.0). Hence we retract it and release a new version 1.9.1.
 
-## v1.8.0
+## v1.6.1
 
-* chore(go): upgrade to Go 1.24
-
-## v1.7.0
-
-* chore(go): upgrade to Go 1.24
+* chore(go): corrective bump - Go version regression from 1.24.3 to 1.24
 
 ## v1.6.0
 

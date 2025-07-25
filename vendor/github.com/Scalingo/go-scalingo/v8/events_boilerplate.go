@@ -23,6 +23,10 @@ func (e *EventRenameAppType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
+func (e *EventUpdateAppProjectType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
 func (e *EventTransferAppType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -328,5 +332,17 @@ func (e *EventLinkGithubType) TypeDataPtr() interface{} {
 }
 
 func (e *EventUnlinkGithubType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDeleteProjectType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventNewProjectType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventEditProjectType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }

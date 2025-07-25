@@ -199,6 +199,7 @@ var (
 		&CollaboratorsListCommand,
 		&CollaboratorsAddCommand,
 		&CollaboratorsRemoveCommand,
+		&CollaboratorsUpdateCommand,
 
 		// Stacks
 		&stacksListCommand,

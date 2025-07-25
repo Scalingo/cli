@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v2"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
+func CollaboratorsGenericListAutoComplete(c *cli.Context) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
@@ -17,7 +17,7 @@ func CollaboratorsRemoveAutoComplete(c *cli.Context) error {
 
 	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(c.Context, err, "fail to get Scalingo client")
 	}
 	collaborators, err := client.CollaboratorsList(c.Context, appName)
 	if err == nil {

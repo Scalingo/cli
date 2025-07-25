@@ -2,6 +2,17 @@
 
 ## To Be Released
 
+## 8.3.0
+
+* feat(collaborators): add update collaborator method
+
+## 8.2.0
+
+* feat(projects): add edit project event
+* feat(projects): add delete project event
+* feat(projects): add new project created event
+* feat(projects): add update app project event
+
 ## 8.1.0
 
 * feat(collaborators): add collaborator role change event

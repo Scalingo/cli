@@ -22,6 +22,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDeleteAppType{Event: ev}
 	case EventRenameApp:
 		e = &EventRenameAppType{Event: ev}
+	case EventUpdateAppProject:
+		e = &EventUpdateAppProjectType{Event: ev}
 	case EventTransferApp:
 		e = &EventTransferAppType{Event: ev}
 	case EventRestart:
@@ -176,6 +178,12 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventLinkGithubType{Event: ev}
 	case EventUnlinkGithub:
 		e = &EventUnlinkGithubType{Event: ev}
+	case EventDeleteProject:
+		e = &EventDeleteProjectType{Event: ev}
+	case EventNewProject:
+		e = &EventNewProjectType{Event: ev}
+	case EventEditProject:
+		e = &EventEditProjectType{Event: ev}
 	default:
 		return pev
 	}
