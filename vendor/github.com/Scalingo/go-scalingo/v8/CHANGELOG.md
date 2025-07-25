@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 8.3.0
+
 * feat(collaborators): add update collaborator method
 
 ## 8.2.0
