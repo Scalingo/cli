@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+### 1.36.0
+
 * feat(backups-config): warn user before unscheduling periodic backups
 * feat(collaborators): update list to include `is_limited` information
 * feat(collaborators): add command to update a collaborator

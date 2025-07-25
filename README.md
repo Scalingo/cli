@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.35.1
+# Scalingo-CLI v1.36.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -56,7 +56,7 @@ USAGE:
    scalingo [global options] command [command options] [arguments...]
 
 VERSION:
-   1.35.1
+   1.36.0
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -266,12 +266,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.35.1
+git checkout -b v1.36.0
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.35.1
+git push --set-upstream origin v1.36.0
 ```
 
 ### New Version Bump
@@ -286,7 +286,7 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-version="1.35.1"
+version="1.36.0"
 
 git switch --create release/${version}
 git add .
@@ -316,7 +316,7 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.35.1 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.36.0 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
-1.35.1
+1.36.0
