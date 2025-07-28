@@ -116,6 +116,14 @@ type App struct {
 	Limits             map[string]interface{} `json:"limits"`
 	HDSResource        bool                   `json:"hds_resource"`
 	PrivateNetworksIDs []string               `json:"private_networks_ids"`
+	Project            appProject             `json:"project,omitempty"`
+}
+
+// appProject is a partial copy of the type `Project` in `projects.go`
+// This is required because the API doesn't fill the entire object in the scope of applications.
+type appProject struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func (app App) String() string {

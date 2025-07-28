@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(projects): add types and methods to handle projects
+
 ## 8.3.0
 
 * feat(collaborators): add update collaborator method
