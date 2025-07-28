@@ -12,6 +12,11 @@ import (
 	"github.com/Scalingo/cli/io"
 )
 
+const (
+	roleOwner        = "owner"
+	roleCollaborator = "collaborator"
+)
+
 func List(ctx context.Context) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
@@ -29,7 +34,7 @@ func List(ctx context.Context) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Role", "Status"})
+	t.Header([]string{"Name", "Role", "Status", "Project"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
@@ -37,11 +42,12 @@ func List(ctx context.Context) error {
 	}
 
 	for _, app := range apps {
+		role := roleCollaborator
 		if app.Owner.Email == currentUser.Email {
-			t.Append([]string{app.Name, "owner", string(app.Status)})
-		} else {
-			t.Append([]string{app.Name, "collaborator", string(app.Status)})
+			role = roleOwner
 		}
+
+		t.Append([]string{app.Name, role, string(app.Status), app.Project.Name})
 	}
 	t.Render()
 
