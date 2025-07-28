@@ -32,6 +32,7 @@ func Info(ctx context.Context, appName string) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"Settings", "Value"})
+	t.Append([]string{"Project", app.Project.Name})
 	t.Append([]string{"Force HTTPS", fmt.Sprintf("%v", app.ForceHTTPS)})
 	t.Append([]string{"Sticky Session", fmt.Sprintf("%v", app.StickySession)})
 	t.Append([]string{"Stack", stackName})
