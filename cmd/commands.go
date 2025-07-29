@@ -295,6 +295,7 @@ var (
 
 		// Projects
 		&projectsListCommand,
+		&projectsAddCommand,
 	}
 
 	globalCommands = []*cli.Command{
