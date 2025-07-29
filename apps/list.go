@@ -47,7 +47,7 @@ func List(ctx context.Context, projectSlug string) error {
 			role = roleOwner
 		}
 
-		t.Append([]string{app.Name, role, string(app.Status), app.Project.Name})
+		t.Append([]string{app.Name, role, string(app.Status), app.ProjectSlug()})
 	}
 	t.Render()
 
