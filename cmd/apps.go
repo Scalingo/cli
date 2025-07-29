@@ -22,7 +22,7 @@ var (
 			projectSlug := c.String("project")
 			if projectSlug != "" {
 				projectSlugSplit := strings.Split(projectSlug, "/")
-				if len(projectSlugSplit) != 2 {
+				if len(projectSlugSplit) != 2 || (len(projectSlugSplit) == 2 && (projectSlugSplit[0] == "" || projectSlugSplit[1] == "")) {
 					errorQuitWithHelpMessage(errors.New(c.Context, "project filter doesn't respect the expected format"), c, "apps")
 				}
 			}
