@@ -2,6 +2,9 @@
 
 ## To Be Released
 
+* feat(apps): add the project of the applications in `apps` and `apps-info`
+* feat(apps): create a new filter `project` on the `apps` command
+
 ### 1.36.0
 
 * feat(backups-config): warn user before unscheduling periodic backups
