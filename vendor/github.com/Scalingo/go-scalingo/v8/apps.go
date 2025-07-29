@@ -2,6 +2,7 @@ package scalingo
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -124,6 +125,11 @@ type App struct {
 type appProject struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+// ProjectSlug returns a unique identifier for a project, under the format <ownerUsername>/<projectName>.
+func (app App) ProjectSlug() string {
+	return fmt.Sprintf("%s/%s", app.Owner.Username, app.Project.Name)
 }
 
 func (app App) String() string {
