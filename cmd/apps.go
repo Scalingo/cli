@@ -32,7 +32,7 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "apps")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "apps")
 		},
 	}
 
@@ -54,7 +54,7 @@ var (
 			return nil
 		},
 		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "apps-info")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "apps-info")
 		},
 	}
 )
