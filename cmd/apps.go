@@ -13,9 +13,10 @@ var (
 		Name:        "apps",
 		Category:    "Global",
 		Description: "List your apps and give some details about them",
+		Flags:       []cli.Flag{&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter needs to use the format <ownerUsername>/<projectName>"}},
 		Usage:       "List your apps",
 		Action: func(c *cli.Context) error {
-			if err := apps.List(c.Context); err != nil {
+			if err := apps.List(c.Context, c.String("project")); err != nil {
 				errorQuit(c.Context, err)
 			}
 			return nil

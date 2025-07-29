@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 const (
@@ -17,15 +17,15 @@ const (
 	roleCollaborator = "collaborator"
 )
 
-func List(ctx context.Context) error {
+func List(ctx context.Context, projectSlug string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	apps, err := c.AppsList(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "list apps")
 	}
 
 	if len(apps) == 0 {
@@ -38,7 +38,7 @@ func List(ctx context.Context) error {
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get current user")
+		return errors.Wrap(ctx, err, "fail to get current user")
 	}
 
 	for _, app := range apps {
