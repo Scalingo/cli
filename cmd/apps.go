@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -16,7 +19,14 @@ var (
 		Flags:       []cli.Flag{&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter needs to use the format <ownerUsername>/<projectName>"}},
 		Usage:       "List your apps",
 		Action: func(c *cli.Context) error {
-			if err := apps.List(c.Context, c.String("project")); err != nil {
+			projectSlug := c.String("project")
+			if projectSlug != "" {
+				projectSlugSplit := strings.Split(projectSlug, "/")
+				if len(projectSlugSplit) != 2 {
+					errorQuitWithHelpMessage(errors.New(c.Context, "project filter doesn't respect the expected format"), c, "apps")
+				}
+			}
+			if err := apps.List(c.Context, projectSlug); err != nil {
 				errorQuit(c.Context, err)
 			}
 			return nil

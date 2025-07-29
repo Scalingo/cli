@@ -42,6 +42,11 @@ func List(ctx context.Context, projectSlug string) error {
 	}
 
 	for _, app := range apps {
+		// If a filter was set but the app is not in the project, skip to the next one.
+		if projectSlug != "" && projectSlug != app.ProjectSlug() {
+			continue
+		}
+
 		role := roleCollaborator
 		if app.Owner.Email == currentUser.Email {
 			role = roleOwner
