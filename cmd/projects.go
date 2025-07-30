@@ -109,4 +109,33 @@ var (
 			_ = autocomplete.ProjectsGenericListAutoComplete(c)
 		},
 	}
+
+	projectsRemoveCommand = cli.Command{
+		Name:      "projects-remove",
+		Category:  "Projects",
+		Usage:     "Remove a project",
+		ArgsUsage: "project-id",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Remove a project, given it is not the default one",
+			Examples:    []string{"scalingo projects-remove prj-00000000-0000-0000-0000-000000000000"},
+		}.Render(),
+		Action: func(c *cli.Context) error {
+			projectID := c.Args().First()
+			if projectID == "" {
+				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-remove")
+			}
+
+			err := projects.Remove(c.Context, projectID)
+			if err != nil {
+				errorQuit(c.Context, err)
+			}
+
+			return nil
+		},
+		BashComplete: func(c *cli.Context) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-remove")
+			_ = autocomplete.ProjectsGenericListAutoComplete(c)
+		},
+	}
 )
