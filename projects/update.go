@@ -9,18 +9,18 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func Add(ctx context.Context, params scalingo.ProjectAddParams) error {
+func Update(ctx context.Context, projectID string, params scalingo.ProjectUpdateParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	project, err := c.ProjectAdd(ctx, params)
+	project, err := c.ProjectUpdate(ctx, projectID, params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "add project")
+		return errors.Wrap(ctx, err, "update project")
 	}
 
-	io.Status(project.Name, "has been created")
+	io.Status(project.Name, "has been updated")
 
 	return nil
 }
