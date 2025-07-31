@@ -292,6 +292,12 @@ var (
 
 		// Cron tasks
 		&cronTasksListCommand,
+
+		// Projects
+		&projectsListCommand,
+		&projectsAddCommand,
+		&projectsUpdateCommand,
+		&projectsRemoveCommand,
 	}
 
 	globalCommands = []*cli.Command{
