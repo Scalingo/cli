@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -32,12 +33,13 @@ func Info(ctx context.Context, appName string) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"Settings", "Value"})
-	t.Append([]string{"Force HTTPS", fmt.Sprintf("%v", app.ForceHTTPS)})
-	t.Append([]string{"Sticky Session", fmt.Sprintf("%v", app.StickySession)})
-	t.Append([]string{"Stack", stackName})
-	t.Append([]string{"Status", fmt.Sprintf("%v", app.Status)})
-	t.Append([]string{"HDS", fmt.Sprintf("%v", app.HDSResource)})
-	t.Render()
+	_ = t.Append([]string{"Project", app.ProjectSlug()})
+	_ = t.Append([]string{"Force HTTPS", strconv.FormatBool(app.ForceHTTPS)})
+	_ = t.Append([]string{"Sticky Session", strconv.FormatBool(app.StickySession)})
+	_ = t.Append([]string{"Stack", stackName})
+	_ = t.Append([]string{"Status", fmt.Sprintf("%v", app.Status)})
+	_ = t.Append([]string{"HDS", strconv.FormatBool(app.HDSResource)})
+	_ = t.Render()
 
 	return nil
 }
