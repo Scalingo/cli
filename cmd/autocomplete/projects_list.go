@@ -12,7 +12,7 @@ import (
 func ProjectsGenericListAutoComplete(c *cli.Context) error {
 	client, err := config.ScalingoClient(c.Context)
 	if err != nil {
-		return errors.Wrap(c.Context, err, "fail to get Scalingo client")
+		return errors.Wrap(c.Context, err, "get Scalingo client")
 	}
 	projects, err := client.ProjectsList(c.Context)
 	if err == nil {
