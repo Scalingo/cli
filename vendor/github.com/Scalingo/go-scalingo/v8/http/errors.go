@@ -34,6 +34,10 @@ type (
 		Code string `json:"code"`
 	}
 
+	ConflictError struct {
+		Err string `json:"error"`
+	}
+
 	UnprocessableEntity struct {
 		Errors map[string][]string `json:"errors"`
 	}
@@ -112,62 +116,73 @@ func (err ForbiddenError) Error() string {
 	return fmt.Sprintf("Request forbidden (403): %v", err.Err)
 }
 
+func (err ConflictError) Error() string {
+	return fmt.Sprintf("409 Conflict → %v", err.Err)
+}
+
 func NewRequestFailedError(res *http.Response, req *APIRequest) error {
 	debug.Printf("APIRequest Error: [%d] %s %s%s", res.StatusCode, req.Method, req.URL, req.Endpoint)
 	defer res.Body.Close()
 	switch res.StatusCode {
-	case 400:
+	case http.StatusBadRequest: // 400
 		var badRequestError BadRequestError
 		err := parseJSON(res, &badRequestError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
-	case 401:
+	case http.StatusUnauthorized: // 401
 		var apiErr APIError
 		err := parseJSON(res, &apiErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
-	case 402:
+	case http.StatusPaymentRequired: // 402
 		var paymentRequiredErr PaymentRequiredError
 		err := parseJSON(res, &paymentRequiredErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
-	case 403:
+	case http.StatusForbidden: // 403
 		var forbiddenError ForbiddenError
 		err := parseJSON(res, &forbiddenError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: forbiddenError, Req: req}
-	case 404:
+	case http.StatusNotFound: // 404
 		var notFoundErr NotFoundError
 		err := parseJSON(res, &notFoundErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: notFoundErr, Req: req}
-	case 422:
+	case http.StatusConflict: // 409
+		var conflictErr ConflictError
+		err := parseJSON(res, &conflictErr)
+		if err != nil {
+			return err
+		}
+		return &RequestFailedError{Code: res.StatusCode, APIError: conflictErr, Req: req}
+	case http.StatusUnprocessableEntity: // 422
 		var unprocessableError UnprocessableEntity
 		err := parseJSON(res, &unprocessableError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: unprocessableError, Req: req}
-	case 429:
+	case http.StatusTooManyRequests: // 429
 		var tooManyRequestsError TooManyRequestsError
 		err := parseJSON(res, &tooManyRequestsError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: tooManyRequestsError, Req: req}
-	case 500:
+	case http.StatusInternalServerError: // 500
 		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("server internal error - our team has been notified"), Req: req}
-	case 503:
+	case http.StatusServiceUnavailable: // 503
 		return &RequestFailedError{Code: res.StatusCode, APIError: fmt.Errorf("upstream provider returned an error, please retry later"), Req: req}
 	default:
 		return &RequestFailedError{Code: res.StatusCode, APIError: fmt.Errorf("invalid status from server: %v", res.Status), Req: req}

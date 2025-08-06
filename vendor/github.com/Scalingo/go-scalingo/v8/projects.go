@@ -45,9 +45,11 @@ type projectAddParamsPayload struct {
 	Project ProjectAddParams `json:"project"`
 }
 
+// ProjectUpdateParams holds the attribute to update a project.
+// The omitempty directive is required because the API doesn't handle eg `"default": null` so the field cannot be set.
 type ProjectUpdateParams struct {
-	Name    *string `json:"name"`
-	Default *bool   `json:"default"`
+	Name    *string `json:"name,omitempty"`
+	Default *bool   `json:"default,omitempty"`
 }
 
 type projectUpdateParamsPayload struct {
