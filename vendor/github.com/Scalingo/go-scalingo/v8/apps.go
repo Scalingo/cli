@@ -80,6 +80,7 @@ type AppsCreateOpts struct {
 	Name      string `json:"name"`
 	ParentApp string `json:"parent_id,omitempty"`
 	StackID   string `json:"stack_id,omitempty"`
+	ProjectID string `json:"project_id,omitempty"`
 }
 
 type AppResponse struct {
