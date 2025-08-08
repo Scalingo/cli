@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 8.4.0
+
 * feat(projects): add types and methods to handle projects
 * task: handle 409 return calls (Conflict)
 

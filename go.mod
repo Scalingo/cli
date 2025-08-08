@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v8 v8.3.1-0.20250806122655-60d12659a68f
+	github.com/Scalingo/go-scalingo/v8 v8.4.0
 	github.com/Scalingo/go-utils/errors/v2 v2.5.1
 	github.com/Scalingo/go-utils/logger v1.9.1
 	github.com/Scalingo/gopassword v1.1.0
@@ -25,7 +25,7 @@ require (
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.39.0
 	golang.org/x/term v0.32.0
-	golang.org/x/text v0.27.0
+	golang.org/x/text v0.28.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
