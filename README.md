@@ -216,6 +216,12 @@ COMMANDS:
    Notifiers - Global:
      notification-platforms  List all notification platforms
 
+   Projects:
+     projects         List the projects that you own
+     projects-add     Create a project
+     projects-update  Update a project
+     projects-remove  Remove a project
+
    Public SSH Keys:
      keys         List your SSH public keys
      keys-add     Add a public SSH key to deploy your apps

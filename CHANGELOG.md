@@ -5,6 +5,7 @@
 * feat(apps): add the project of the applications in `apps` and `apps-info`
 * feat(apps): create a new filter `project` on the `apps` command
 * feat(apps): add parameter `project-id` on the `create` command
+* feat(projects): create all commands to handle `projects`
 
 ### 1.36.0
 
