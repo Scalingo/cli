@@ -2,6 +2,7 @@ package scalingo
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -79,6 +80,7 @@ type AppsCreateOpts struct {
 	Name      string `json:"name"`
 	ParentApp string `json:"parent_id,omitempty"`
 	StackID   string `json:"stack_id,omitempty"`
+	ProjectID string `json:"project_id,omitempty"`
 }
 
 type AppResponse struct {
@@ -116,6 +118,19 @@ type App struct {
 	Limits             map[string]interface{} `json:"limits"`
 	HDSResource        bool                   `json:"hds_resource"`
 	PrivateNetworksIDs []string               `json:"private_networks_ids"`
+	Project            appProject             `json:"project,omitempty"`
+}
+
+// appProject is a partial copy of the type `Project` in `projects.go`
+// This is required because the API doesn't fill the entire object in the scope of applications.
+type appProject struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// ProjectSlug returns a unique identifier for a project, under the format <ownerUsername>/<projectName>.
+func (app App) ProjectSlug() string {
+	return fmt.Sprintf("%s/%s", app.Owner.Username, app.Project.Name)
 }
 
 func (app App) String() string {

@@ -6,21 +6,26 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func List(ctx context.Context) error {
+const (
+	roleOwner        = "owner"
+	roleCollaborator = "collaborator"
+)
+
+func List(ctx context.Context, projectSlug string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
 	apps, err := c.AppsList(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "list apps")
 	}
 
 	if len(apps) == 0 {
@@ -29,21 +34,27 @@ func List(ctx context.Context) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Role", "Status"})
+	t.Header([]string{"Name", "Role", "Status", "Project"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get current user")
+		return errors.Wrap(ctx, err, "fail to get current user")
 	}
 
 	for _, app := range apps {
-		if app.Owner.Email == currentUser.Email {
-			t.Append([]string{app.Name, "owner", string(app.Status)})
-		} else {
-			t.Append([]string{app.Name, "collaborator", string(app.Status)})
+		// If a filter was set but the app is not in the project, skip to the next one.
+		if projectSlug != "" && projectSlug != app.ProjectSlug() {
+			continue
 		}
+
+		role := roleCollaborator
+		if app.Owner.Email == currentUser.Email {
+			role = roleOwner
+		}
+
+		_ = t.Append([]string{app.Name, role, string(app.Status), app.ProjectSlug()})
 	}
-	t.Render()
+	_ = t.Render()
 
 	return nil
 }
