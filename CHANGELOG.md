@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+### 1.37.0
+
 * feat(apps): add the project of the applications in `apps` and `apps-info`
 * feat(apps): create a new filter `project` on the `apps` command
 * feat(apps): add parameter `project-id` on the `create` command
