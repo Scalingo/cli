@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	cli "github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/detect"

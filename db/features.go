@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"

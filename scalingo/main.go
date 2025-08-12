@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/stvp/rollbar"
-	cli "github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"

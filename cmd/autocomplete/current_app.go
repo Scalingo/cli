@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 func getFlagByName(lastArg string, flags []cli.Flag) (bool, cli.Flag) {

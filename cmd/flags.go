@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"

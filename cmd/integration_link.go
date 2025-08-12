@@ -10,7 +10,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"

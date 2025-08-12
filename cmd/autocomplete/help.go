@@ -3,7 +3,7 @@ package autocomplete
 import (
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 func HelpAutoComplete(c *cli.Context) error {

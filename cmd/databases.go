@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/db"
 	dbUsers "github.com/Scalingo/cli/db/users"
