@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"strings"
 
 	"github.com/urfave/cli/v3"
@@ -18,20 +19,20 @@ var (
 		Description: "List your apps and give some details about them",
 		Flags:       []cli.Flag{&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter uses the format <ownerUsername>/<projectName>"}},
 		Usage:       "List your apps",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			projectSlug := c.String("project")
 			if projectSlug != "" {
 				projectSlugSplit := strings.Split(projectSlug, "/")
 				if len(projectSlugSplit) != 2 || (len(projectSlugSplit) == 2 && (projectSlugSplit[0] == "" || projectSlugSplit[1] == "")) {
-					errorQuitWithHelpMessage(errors.New(c.Context, "project filter doesn't respect the expected format"), c, "apps")
+					errorQuitWithHelpMessage(errors.New(ctx, "project filter doesn't respect the expected format"), c, "apps")
 				}
 			}
-			if err := apps.List(c.Context, projectSlug); err != nil {
-				errorQuit(c.Context, err)
+			if err := apps.List(ctx, projectSlug); err != nil {
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "apps")
 		},
 	}
@@ -46,14 +47,14 @@ var (
 			Examples:    []string{"scalingo apps-info --app my-app"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			if err := apps.Info(c.Context, currentApp); err != nil {
-				errorQuit(c.Context, err)
+			if err := apps.Info(ctx, currentApp); err != nil {
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "apps-info")
 		},
 	}

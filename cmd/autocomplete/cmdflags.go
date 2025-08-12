@@ -6,9 +6,9 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func CmdFlagsAutoComplete(c *cli.Context, command string) error {
+func CmdFlagsAutoComplete(c *cli.Command, command string) error {
 	var cmd *cli.Command
-	for _, cmd = range c.App.Commands {
+	for _, cmd = range c.Commands {
 		if cmd.Name == command {
 			break
 		}
