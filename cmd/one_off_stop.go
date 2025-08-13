@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"regexp"
 
 	"github.com/urfave/cli/v3"
@@ -38,17 +39,17 @@ var (
 			labelHasOnlyDigit, err := regexp.MatchString("^[0-9]+$", oneOffLabel)
 			if err != nil {
 				// This should never occur as we are pretty sure the provided regexp is valid.
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			if labelHasOnlyDigit {
 				oneOffLabel = "one-off-" + oneOffLabel
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err = apps.OneOffStop(c.Context, currentApp, oneOffLabel)
+			err = apps.OneOffStop(ctx, currentApp, oneOffLabel)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
