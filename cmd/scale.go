@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -30,25 +32,25 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.Args().Len() == 0 {
-				err := apps.ContainerTypes(c.Context, currentApp)
+				err := apps.ContainerTypes(ctx, currentApp)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
-			err := apps.Scale(c.Context, currentApp, c.Bool("s"), c.Args().Slice())
+			err := apps.Scale(ctx, currentApp, c.Bool("s"), c.Args().Slice())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "scale")
-			autocomplete.ScaleAutoComplete(c)
+			_ = autocomplete.ScaleAutoComplete(ctx, c)
 		},
 	}
 )
