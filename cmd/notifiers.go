@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -25,13 +27,13 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = notifiers.List(c.Context, currentApp)
+				err = notifiers.List(ctx, currentApp)
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "notifiers")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -55,19 +57,19 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Details(c.Context, currentApp, c.Args().First())
+				err = notifiers.Details(ctx, currentApp, c.Args().First())
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "notifiers-details")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
-			autocomplete.NotifiersAutoComplete(c)
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 
@@ -99,7 +101,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.String("platform") == "" {
 				_ = cli.ShowCommandHelp(ctx, c, "notifiers-add")
@@ -128,9 +130,9 @@ var (
 				},
 			}
 
-			err := notifiers.Provision(c.Context, currentApp, c.String("platform"), params)
+			err := notifiers.Provision(ctx, currentApp, c.String("platform"), params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -166,7 +168,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 
 			var active *bool
@@ -201,18 +203,18 @@ var (
 				},
 			}
 			if c.Args().Len() >= 1 {
-				err = notifiers.Update(c.Context, currentApp, c.Args().First(), params)
+				err = notifiers.Update(ctx, currentApp, c.Args().First(), params)
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "notifiers-update")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
-			autocomplete.NotifiersAutoComplete(c)
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 
@@ -229,21 +231,21 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())
+				err = notifiers.Destroy(ctx, currentApp, c.Args().First())
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "notifiers-remove")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
-			autocomplete.NotifiersAutoComplete(c)
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 )

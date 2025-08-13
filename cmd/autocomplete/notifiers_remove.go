@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/urfave/cli/v3"
@@ -9,17 +10,17 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func NotifiersAutoComplete(c *cli.Context) error {
+func NotifiersAutoComplete(ctx context.Context, c *cli.Command) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
 	}
 
-	client, err := config.ScalingoClient(c.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.NotifiersList(c.Context, appName)
+	resources, err := client.NotifiersList(ctx, appName)
 	if err == nil {
 		for _, resource := range resources {
 			fmt.Println(resource.GetID())
