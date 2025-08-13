@@ -13,7 +13,7 @@ func CmdFlagsAutoComplete(c *cli.Command, command string) error {
 			break
 		}
 	}
-	if cmd.Name != command {
+	if cmd == nil || cmd.Name != command {
 		return nil
 	}
 
