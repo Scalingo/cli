@@ -6,9 +6,9 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func HelpAutoComplete(c *cli.Context) error {
-	for cmd := range c.App.Commands {
-		fmt.Println(c.App.Commands[cmd].Name)
+func HelpAutoComplete(c *cli.Command) error {
+	for cmd := range c.Commands {
+		fmt.Println(c.Commands[cmd].Name)
 	}
 
 	return nil
