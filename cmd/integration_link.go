@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/url"
@@ -44,9 +45,9 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Show(c.Context, currentApp)
+			err := integrationlink.Show(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -99,18 +100,18 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(c.Context, errgo.Notef(err, "error parsing the repository url"))
+				errorQuit(ctx, errgo.Notef(err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
 				integrationURL = fmt.Sprintf("https://%s", integrationURL)
 			}
 
-			integrationType, err := scmintegrations.GetTypeFromURL(c.Context, integrationURL)
+			integrationType, err := scmintegrations.GetTypeFromURL(ctx, integrationURL)
 			if err != nil {
 				if scalingoerrors.RootCause(err) == scmintegrations.ErrNotFound {
 					// If no integration matches the given URL, display a helpful status
@@ -129,14 +130,14 @@ List of available integrations:
 					}
 					os.Exit(1)
 				}
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			var params scalingo.SCMRepoLinkCreateParams
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
 				branch := c.String("branch")
@@ -182,7 +183,7 @@ List of available integrations:
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
 					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 					if err != nil {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 				}
 
@@ -198,7 +199,7 @@ List of available integrations:
 				}
 			}
 
-			err = integrationlink.Create(c.Context, currentApp, integrationType, integrationURL, params)
+			err = integrationlink.Create(ctx, currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				scerr, ok := scalingoerrors.RootCause(err).(*http.RequestFailedError)
 				if ok {
@@ -216,10 +217,10 @@ List of available integrations:
 						io.Error("")
 						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
 					} else {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 				} else {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
@@ -301,21 +302,21 @@ List of available integrations:
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				params.AutomaticCreationFromForksAllowed = &stillAllowed
 			}
 
-			err := integrationlink.Update(c.Context, currentApp, *params)
+			err := integrationlink.Update(ctx, currentApp, *params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -342,11 +343,11 @@ List of available integrations:
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := integrationlink.Delete(c.Context, currentApp)
+			err := integrationlink.Delete(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -378,9 +379,9 @@ List of available integrations:
 			currentApp := detect.CurrentApp(c)
 			branchName := c.Args().First()
 			follow := c.Bool("follow")
-			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName, follow)
+			err := integrationlink.ManualDeploy(ctx, currentApp, branchName, follow)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -414,16 +415,16 @@ List of available integrations:
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			pullRequestID, err := strconv.Atoi(c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, errgo.Notef(err, "invalid pull / merge request id"))
+				errorQuit(ctx, errgo.Notef(err, "invalid pull / merge request id"))
 			}
 
-			pullRequest, err := integrationlink.PullRequest(c.Context, currentApp, pullRequestID)
+			pullRequest, err := integrationlink.PullRequest(ctx, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			if pullRequest.OpenedFromAForkedRepo {
@@ -432,7 +433,7 @@ List of available integrations:
 					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
 					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository?")
 					if err != nil {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 
 					if !allowReviewAppsFromForks {
@@ -442,9 +443,9 @@ List of available integrations:
 				}
 			}
 
-			err = integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
+			err = integrationlink.ManualReviewApp(ctx, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
