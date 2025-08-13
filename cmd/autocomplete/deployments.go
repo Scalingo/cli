@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/urfave/cli/v3"
@@ -10,14 +11,14 @@ import (
 	"github.com/Scalingo/cli/detect"
 )
 
-func DeploymentsAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient(c.Context)
+func DeploymentsAutoComplete(ctx context.Context, c *cli.Command) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 	currentApp := detect.CurrentApp(c)
 
-	deployments, err := client.DeploymentList(c.Context, currentApp)
+	deployments, err := client.DeploymentList(ctx, currentApp)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

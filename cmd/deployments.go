@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -29,10 +30,10 @@ var (
 				cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-				err := deployments.ResetCache(c.Context, currentApp)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+				err := deployments.ResetCache(ctx, currentApp)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				io.Status("Deployment cache successfully deleted")
 			}
@@ -54,12 +55,12 @@ var (
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.List(c.Context, currentApp, scalingo.PaginationOpts{
+			err := deployments.List(ctx, currentApp, scalingo.PaginationOpts{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -75,7 +76,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(ctx, c, "deployment-logs")
+				_ = cli.ShowCommandHelp(ctx, c, "deployment-logs")
 			}
 
 			deploymentID := ""
@@ -83,14 +84,14 @@ var (
 				deploymentID = c.Args().First()
 			}
 
-			err := deployments.Logs(c.Context, currentApp, deploymentID)
+			err := deployments.Logs(ctx, currentApp, deploymentID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.DeploymentsAutoComplete(c)
+			_ = autocomplete.DeploymentsAutoComplete(ctx, c)
 		},
 	}
 	deploymentFollowCommand = cli.Command{
@@ -103,11 +104,11 @@ var (
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.Stream(c.Context, &deployments.StreamOpts{
+			err := deployments.Stream(ctx, &deployments.StreamOpts{
 				AppName: currentApp,
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -138,7 +139,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Len() != 1 && args.Len() != 2 {
-				cli.ShowCommandHelp(ctx, c, "deploy")
+				_ = cli.ShowCommandHelp(ctx, c, "deploy")
 				return nil
 			}
 			archivePath := args.First()
@@ -147,25 +148,25 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 				gitRef = args.Slice()[1]
 			}
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
-				err := deployments.DeployWar(c.Context, currentApp, archivePath, gitRef, opts)
+				err := deployments.DeployWar(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
 				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
-				err := deployments.Deploy(c.Context, currentApp, archivePath, gitRef, opts)
+				err := deployments.Deploy(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "deploy")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "deploy")
 		},
 	}
 )
