@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -16,7 +18,6 @@ var (
 		Usage:       "Logout from Scalingo",
 		Description: "Remove login information stored on your computer",
 		Action: func(ctx context.Context, c *cli.Command) error {
-			ctx := c.Context
 			currentUser, err := config.C.CurrentUser(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
