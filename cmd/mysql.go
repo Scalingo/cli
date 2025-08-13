@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -39,15 +41,15 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.MySQLConsole(c.Context, db.MySQLConsoleOpts{
+			err := db.MySQLConsole(ctx, db.MySQLConsoleOpts{
 				App:          currentApp,
 				Size:         c.String("s"),
 				VariableName: c.String("e"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
