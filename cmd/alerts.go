@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/alerts"
@@ -25,18 +27,18 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "alerts")
+				_ = cli.ShowCommandHelp(ctx, c, "alerts")
 				return nil
 			}
 
-			err := alerts.List(c.Context, detect.CurrentApp(c))
+			err := alerts.List(ctx, detect.CurrentApp(c))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts")
 		},
 	}
 
@@ -64,20 +66,20 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if !isValidAlertAddOpts(c) {
-				err := cli.ShowCommandHelp(c, "alerts-add")
+				err := cli.ShowCommandHelp(ctx, c, "alerts-add")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			remindEvery := c.Duration("r")
 			durationBeforeTrigger := c.Duration("duration-before-trigger")
-			err := alerts.Add(c.Context, currentApp, scalingo.AlertAddParams{
+			err := alerts.Add(ctx, currentApp, scalingo.AlertAddParams{
 				ContainerType:         c.String("c"),
 				Metric:                c.String("m"),
 				Limit:                 c.Float64("l"),
@@ -87,12 +89,12 @@ var (
 				Notifiers:             c.StringSlice("n"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
 
@@ -123,9 +125,9 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "alerts-update")
+				err := cli.ShowCommandHelp(ctx, c, "alerts-update")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
@@ -133,7 +135,7 @@ var (
 			alertID := c.Args().First()
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			params := scalingo.AlertUpdateParams{}
 			if c.IsSet("c") {
@@ -169,14 +171,14 @@ var (
 				params.Notifiers = &n
 			}
 
-			err := alerts.Update(c.Context, currentApp, alertID, params)
+			err := alerts.Update(ctx, currentApp, alertID, params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
 
@@ -194,27 +196,27 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "alerts-enable")
+				err := cli.ShowCommandHelp(ctx, c, "alerts-enable")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
+			err := alerts.Update(ctx, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: utils.BoolPtr(false),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts-enable")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-enable")
 		},
 	}
 
@@ -232,27 +234,27 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "alerts-disable")
+				err := cli.ShowCommandHelp(ctx, c, "alerts-disable")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := alerts.Update(c.Context, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
+			err := alerts.Update(ctx, currentApp, c.Args().First(), scalingo.AlertUpdateParams{
 				Disabled: utils.BoolPtr(true),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts-disable")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-disable")
 		},
 	}
 
@@ -269,17 +271,17 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "alerts-remove")
+				cli.ShowCommandHelp(ctx, c, "alerts-remove")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := alerts.Remove(c.Context, currentApp, c.Args().First())
+			err := alerts.Remove(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -289,7 +291,7 @@ var (
 	}
 )
 
-func isValidAlertAddOpts(c *cli.Context) bool {
+func isValidAlertAddOpts(c *cli.Command) bool {
 	if c.Args().Len() > 0 {
 		return false
 	}
