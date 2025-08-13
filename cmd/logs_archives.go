@@ -30,7 +30,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "logs-archives")
+				_ = cli.ShowCommandHelp(ctx, c, "logs-archives")
 				return nil
 			}
 
@@ -53,7 +53,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "logs-archives")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "logs-archives")
 		},
 	}
 )

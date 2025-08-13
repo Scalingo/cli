@@ -89,7 +89,7 @@ var (
 				Detached: c.Bool("detached"),
 			}
 			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
-				cli.ShowCommandHelp(ctx, c, "run")
+				_ = cli.ShowCommandHelp(ctx, c, "run")
 				return nil
 			}
 
@@ -107,7 +107,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "run")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "run")
 		},
 	}
 )

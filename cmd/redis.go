@@ -35,7 +35,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "redis-console")
+				_ = cli.ShowCommandHelp(ctx, c, "redis-console")
 				return nil
 			}
 			currentApp := detect.CurrentApp(c)
@@ -53,7 +53,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "redis-console")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "redis-console")
 		},
 	}
 )

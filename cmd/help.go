@@ -13,14 +13,14 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Present() {
-				cli.ShowCommandHelp(ctx, c, args.First())
+				_ = cli.ShowCommandHelp(ctx, c, args.First())
 				return nil
 			}
 			cli.ShowAppHelp(c)
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "help")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "help")
 			autocomplete.HelpAutoComplete(c)
 		},
 	}

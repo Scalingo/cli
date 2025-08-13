@@ -30,7 +30,7 @@ var (
 					PerPage: c.Int("per-page"),
 				})
 			} else {
-				cli.ShowCommandHelp(ctx, c, "user-timeline")
+				_ = cli.ShowCommandHelp(ctx, c, "user-timeline")
 			}
 
 			if err != nil {
@@ -39,7 +39,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "user-timeline")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "user-timeline")
 		},
 	}
 )

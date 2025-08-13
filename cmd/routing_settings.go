@@ -26,7 +26,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(ctx, c, "force-https")
+				_ = cli.ShowCommandHelp(ctx, c, "force-https")
 				return nil
 			}
 
@@ -44,7 +44,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "force-https")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "force-https")
 		},
 	}
 
@@ -65,7 +65,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(ctx, c, "sticky-session")
+				_ = cli.ShowCommandHelp(ctx, c, "sticky-session")
 				return nil
 			}
 
@@ -83,7 +83,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
 		},
 	}
 
@@ -104,7 +104,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(ctx, c, "router-logs")
+				_ = cli.ShowCommandHelp(ctx, c, "router-logs")
 				return nil
 			}
 
@@ -122,7 +122,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "router-logs")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "router-logs")
 		},
 	}
 )

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/urfave/cli/v3"
@@ -27,21 +28,21 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			err = env.Display(c.Context, currentApp)
+			err = env.Display(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "env")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
 		},
 	}
 
@@ -59,22 +60,22 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			variableValue, err := env.Get(c.Context, currentApp, c.Args().First())
+			variableValue, err := env.Get(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			fmt.Println(variableValue)
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "env")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
 		},
 	}
 
@@ -100,18 +101,18 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
-				err = env.Add(c.Context, currentApp, c.Args().Slice(), c.String("f"))
+				err = env.Add(ctx, currentApp, c.Args().Slice(), c.String("f"))
 			} else {
-				cli.ShowCommandHelp(ctx, c, "env-set")
+				_ = cli.ShowCommandHelp(ctx, c, "env-set")
 				return nil
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "env-set")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env-set")
 		},
 	}
 
@@ -131,18 +132,18 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 {
-				err = env.Delete(c.Context, currentApp, c.Args().Slice())
+				err = env.Delete(ctx, currentApp, c.Args().Slice())
 			} else {
-				cli.ShowCommandHelp(ctx, c, "env-unset")
+				_ = cli.ShowCommandHelp(ctx, c, "env-unset")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "env-unset")
-			autocomplete.EnvUnsetAutoComplete(c)
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env-unset")
+			_ = autocomplete.EnvUnsetAutoComplete(ctx, c)
 		},
 	}
 )

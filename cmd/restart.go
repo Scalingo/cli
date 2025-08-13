@@ -37,7 +37,7 @@ var (
 		},
 
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "restart")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "restart")
 			autocomplete.RestartAutoComplete(c)
 		},
 	}

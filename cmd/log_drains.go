@@ -39,7 +39,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "log-drains")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains")
 				return nil
 			}
 
@@ -57,7 +57,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains")
 		},
 	}
 
@@ -112,7 +112,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			utils.CheckForConsent(c.Context, currentApp)
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
-				cli.ShowCommandHelp(ctx, c, "log-drains-add")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-add")
 				return nil
 			}
 
@@ -138,7 +138,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
 		},
 	}
 
@@ -171,7 +171,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "log-drains-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 			drain := c.Args().First()
@@ -179,7 +179,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			addonID := addonUUIDFromFlags(c, currentApp)
 
 			if addonID != "" && c.Bool("only-app") {
-				cli.ShowCommandHelp(ctx, c, "log-drains-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 
@@ -214,7 +214,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
 			autocomplete.LogDrainsRemoveAutoComplete(c)
 		},
 	}

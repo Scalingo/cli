@@ -33,7 +33,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "logout")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "logout")
 		},
 	}
 )

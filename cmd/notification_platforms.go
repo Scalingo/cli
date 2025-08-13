@@ -22,7 +22,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "platforms-list")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "platforms-list")
 		},
 	}
 )

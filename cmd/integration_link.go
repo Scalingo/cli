@@ -39,7 +39,7 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "integration-link")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link")
 				return nil
 			}
 
@@ -94,7 +94,7 @@ List of available integrations:
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "integration-link-create")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-create")
 				return nil
 			}
 
@@ -263,7 +263,7 @@ List of available integrations:
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NumFlags() == 0 || c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "integration-link-update")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-update")
 				return nil
 			}
 			autoDeploy := c.Bool("auto-deploy")
@@ -336,7 +336,7 @@ List of available integrations:
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "integration-link-delete")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-delete")
 				return nil
 			}
 
@@ -371,7 +371,7 @@ List of available integrations:
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "integration-link-manual-deploy")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-manual-deploy")
 				return nil
 			}
 
@@ -408,7 +408,7 @@ List of available integrations:
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "integration-link-manual-review-app")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-manual-review-app")
 				return nil
 			}
 

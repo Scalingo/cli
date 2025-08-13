@@ -28,7 +28,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "one-off-stop")
+				_ = cli.ShowCommandHelp(ctx, c, "one-off-stop")
 				return nil
 			}
 			oneOffLabel := c.Args().First()
@@ -53,7 +53,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "one-off-stop")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "one-off-stop")
 		},
 	}
 )

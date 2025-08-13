@@ -35,7 +35,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "rename")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "rename")
 		},
 	}
 )

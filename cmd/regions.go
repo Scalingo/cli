@@ -21,7 +21,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "regions")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "regions")
 		},
 	}
 )

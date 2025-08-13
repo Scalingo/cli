@@ -47,7 +47,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "scale")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "scale")
 			autocomplete.ScaleAutoComplete(c)
 		},
 	}

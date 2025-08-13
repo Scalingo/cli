@@ -34,7 +34,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "mongo-console")
+				_ = cli.ShowCommandHelp(ctx, c, "mongo-console")
 				return nil
 			}
 
@@ -52,7 +52,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "mongo-console")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "mongo-console")
 		},
 	}
 )

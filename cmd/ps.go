@@ -22,7 +22,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "ps")
+				_ = cli.ShowCommandHelp(ctx, c, "ps")
 				return nil
 			}
 
@@ -33,7 +33,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "ps")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "ps")
 		},
 	}
 )

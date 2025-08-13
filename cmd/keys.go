@@ -25,7 +25,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys")
 		},
 	}
 
@@ -42,7 +42,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
-				cli.ShowCommandHelp(ctx, c, "keys-add")
+				_ = cli.ShowCommandHelp(ctx, c, "keys-add")
 				return nil
 			}
 			err := keys.Add(c.Context, c.Args().First(), c.Args().Slice()[1])
@@ -52,7 +52,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys-add")
 		},
 	}
 
@@ -69,7 +69,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "keys-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "keys-remove")
 				return nil
 			}
 			err := keys.Remove(c.Context, c.Args().First())
@@ -79,7 +79,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
 			autocomplete.KeysRemoveAutoComplete(c)
 		},
 	}

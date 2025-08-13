@@ -271,7 +271,7 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "alerts-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "alerts-remove")
 				return nil
 			}
 
@@ -286,7 +286,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "alerts-remove")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-remove")
 		},
 	}
 )

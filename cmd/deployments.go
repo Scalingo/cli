@@ -27,7 +27,7 @@ var (
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
+				_ = cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
 				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)

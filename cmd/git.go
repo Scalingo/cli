@@ -32,7 +32,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "git-setup")
+				_ = cli.ShowCommandHelp(ctx, c, "git-setup")
 				return nil
 			}
 
@@ -49,7 +49,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "git-setup")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "git-setup")
 		},
 	}
 	gitShow = cli.Command{
@@ -64,7 +64,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "git-show")
+				_ = cli.ShowCommandHelp(ctx, c, "git-show")
 				return nil
 			}
 			currentApp := detect.CurrentApp(c)
@@ -77,7 +77,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "git-show")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "git-show")
 		},
 	}
 )

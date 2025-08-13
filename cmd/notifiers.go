@@ -27,7 +27,7 @@ var (
 			if c.Args().Len() == 0 {
 				err = notifiers.List(c.Context, currentApp)
 			} else {
-				cli.ShowCommandHelp(ctx, c, "notifiers")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers")
 			}
 
 			if err != nil {
@@ -36,7 +36,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers")
 		},
 	}
 
@@ -57,7 +57,7 @@ var (
 			if c.Args().Len() == 1 {
 				err = notifiers.Details(c.Context, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(ctx, c, "notifiers-details")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-details")
 			}
 
 			if err != nil {
@@ -66,7 +66,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
 			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
@@ -102,7 +102,7 @@ var (
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			if c.String("platform") == "" {
-				cli.ShowCommandHelp(ctx, c, "notifiers-add")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-add")
 			}
 
 			var active bool
@@ -135,7 +135,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
 		},
 	}
 
@@ -203,7 +203,7 @@ var (
 			if c.Args().Len() >= 1 {
 				err = notifiers.Update(c.Context, currentApp, c.Args().First(), params)
 			} else {
-				cli.ShowCommandHelp(ctx, c, "notifiers-update")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-update")
 			}
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -211,7 +211,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
 			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
@@ -234,7 +234,7 @@ var (
 			if c.Args().Len() == 1 {
 				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(ctx, c, "notifiers-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-remove")
 			}
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -242,7 +242,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
 			autocomplete.NotifiersAutoComplete(c)
 		},
 	}
