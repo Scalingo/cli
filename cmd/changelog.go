@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -20,12 +22,12 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			err := update.ShowLastChangelog()
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "changelog")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "changelog")
 		},
 	}
 )
