@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"os"
 
 	"github.com/urfave/cli/v3"
@@ -71,9 +72,9 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.Tunnel(c.Context, db.TunnelOpts{
+			err := db.Tunnel(ctx, db.TunnelOpts{
 				App:       currentApp,
 				DBEnvVar:  c.Args().First(),
 				Identity:  sshIdentity,
@@ -82,13 +83,13 @@ var (
 				Reconnect: c.Bool("reconnect"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")
-			autocomplete.DbTunnelAutoComplete(c)
+			_ = autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")
+			_ = autocomplete.DbTunnelAutoComplete(ctx, c)
 		},
 	}
 )

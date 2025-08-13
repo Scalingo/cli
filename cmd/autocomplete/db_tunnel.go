@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
@@ -12,7 +13,7 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func DbTunnelAutoComplete(c *cli.Context) error {
+func DbTunnelAutoComplete(ctx context.Context, c *cli.Command) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
@@ -24,11 +25,11 @@ func DbTunnelAutoComplete(c *cli.Context) error {
 	}
 
 	if !strings.HasPrefix(lastArg, "-") {
-		client, err := config.ScalingoClient(c.Context)
+		client, err := config.ScalingoClient(ctx)
 		if err != nil {
 			return errgo.Notef(err, "fail to get Scalingo client")
 		}
-		variables, err := client.VariablesList(c.Context, appName)
+		variables, err := client.VariablesList(ctx, appName)
 		if err == nil {
 			for _, v := range variables {
 				if matched, err := regexp.Match("SCALINGO_.*_URL", []byte(v.Name)); matched && err == nil {
