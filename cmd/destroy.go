@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -29,7 +31,7 @@ var (
 			var currentApp string
 
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(ctx, c, "destroy")
+				_ = cli.ShowCommandHelp(ctx, c, "destroy")
 			} else {
 				if c.Args().Len() != 0 {
 					currentApp = c.Args().First()
@@ -37,16 +39,16 @@ var (
 					currentApp = detect.CurrentApp(c)
 				}
 
-				utils.CheckForConsent(c.Context, currentApp)
-				err := apps.Destroy(c.Context, currentApp, c.Bool("force"))
+				utils.CheckForConsent(ctx, currentApp)
+				err := apps.Destroy(ctx, currentApp, c.Bool("force"))
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "destroy")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "destroy")
 		},
 	}
 )
