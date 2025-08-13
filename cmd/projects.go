@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -17,9 +19,9 @@ var (
 		Description: "List all the projects of which you are an owner",
 		Action: func(ctx context.Context, c *cli.Command) error {
 
-			err := projects.List(c.Context)
+			err := projects.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
@@ -45,9 +47,9 @@ var (
 			},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := projects.Add(c.Context, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
+			err := projects.Add(ctx, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
@@ -77,7 +79,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), ctx, c, "projects-update")
+				errorQuitWithHelpMessage(errors.New(ctx, "missing project ID parameter"), ctx, c, "projects-update")
 			}
 
 			var newProjectNamePtr *string
@@ -94,19 +96,19 @@ var (
 			}
 
 			if newProjectNamePtr == nil && !def {
-				errorQuitWithHelpMessage(errors.New(c.Context, "no parameters were submitted"), ctx, c, "projects-update")
+				errorQuitWithHelpMessage(errors.New(ctx, "no parameters were submitted"), ctx, c, "projects-update")
 			}
 
-			err := projects.Update(c.Context, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
+			err := projects.Update(ctx, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-update")
-			_ = autocomplete.ProjectsGenericListAutoComplete(c)
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
 
@@ -123,19 +125,19 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), ctx, c, "projects-remove")
+				errorQuitWithHelpMessage(errors.New(ctx, "missing project ID parameter"), ctx, c, "projects-remove")
 			}
 
-			err := projects.Remove(c.Context, projectID)
+			err := projects.Remove(ctx, projectID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-remove")
-			_ = autocomplete.ProjectsGenericListAutoComplete(c)
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
 )
