@@ -39,7 +39,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 			if c.NArg() != 1 {
 				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
@@ -69,7 +69,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 			if c.NArg() != 1 {
 				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
@@ -106,7 +106,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
 			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")
@@ -163,7 +163,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
 			err := dbUsers.List(ctx, currentApp, addonName)
 			if err != nil {
@@ -196,7 +196,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
 			username := c.Args().First()
 
@@ -236,7 +236,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
 			username := c.Args().First()
 
@@ -273,7 +273,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
 			username := c.Args().First()
 
