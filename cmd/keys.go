@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -18,9 +20,9 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := keys.List(c.Context)
+			err := keys.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -45,9 +47,9 @@ var (
 				_ = cli.ShowCommandHelp(ctx, c, "keys-add")
 				return nil
 			}
-			err := keys.Add(c.Context, c.Args().First(), c.Args().Slice()[1])
+			err := keys.Add(ctx, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -72,15 +74,15 @@ var (
 				_ = cli.ShowCommandHelp(ctx, c, "keys-remove")
 				return nil
 			}
-			err := keys.Remove(c.Context, c.Args().First())
+			err := keys.Remove(ctx, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
-			autocomplete.KeysRemoveAutoComplete(c)
+			_ = autocomplete.KeysRemoveAutoComplete(ctx)
 		},
 	}
 )

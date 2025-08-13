@@ -1,20 +1,20 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func KeysRemoveAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient(c.Context)
+func KeysRemoveAutoComplete(ctx context.Context) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	keys, err := client.KeysList(c.Context)
+	keys, err := client.KeysList(ctx)
 	if err == nil {
 		for _, key := range keys {
 			fmt.Println(key.Name)
