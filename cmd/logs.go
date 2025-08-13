@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -44,20 +46,20 @@ var (
 
 			var err error
 			if addonName == "" {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-				err = apps.Logs(c.Context, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
+				err = apps.Logs(ctx, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
 			} else {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-				err = db.Logs(c.Context, currentApp, addonName, db.LogsOpts{
+				err = db.Logs(ctx, currentApp, addonName, db.LogsOpts{
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
