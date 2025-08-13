@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -25,7 +27,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			var err error
 			if c.Args().Len() == 0 {
-				err = user.Events(c.Context, scalingo.PaginationOpts{
+				err = user.Events(ctx, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
 				})
@@ -34,7 +36,7 @@ var (
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
