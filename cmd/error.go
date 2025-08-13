@@ -59,10 +59,10 @@ func (r *ReportError) Report() {
 	//rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
 }
 
-func errorQuitWithHelpMessage(err error, ctxCli *cli.Context, command string) {
-	displayError(ctxCli.Context, err)
+func errorQuitWithHelpMessage(err error, ctx context.Context, c *cli.Command, command string) {
+	displayError(ctx, err)
 	fmt.Print("\n")
-	_ = cli.ShowCommandHelp(ctxCli, command)
+	_ = cli.ShowCommandHelp(ctx, c, command)
 
 	os.Exit(1)
 }

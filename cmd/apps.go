@@ -24,7 +24,7 @@ var (
 			if projectSlug != "" {
 				projectSlugSplit := strings.Split(projectSlug, "/")
 				if len(projectSlugSplit) != 2 || (len(projectSlugSplit) == 2 && (projectSlugSplit[0] == "" || projectSlugSplit[1] == "")) {
-					errorQuitWithHelpMessage(errors.New(ctx, "project filter doesn't respect the expected format"), c, "apps")
+					errorQuitWithHelpMessage(errors.New(ctx, "project filter doesn't respect the expected format"), ctx, c, "apps")
 				}
 			}
 			if err := apps.List(ctx, projectSlug); err != nil {

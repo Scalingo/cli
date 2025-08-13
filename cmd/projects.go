@@ -77,7 +77,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-update")
+				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), ctx, c, "projects-update")
 			}
 
 			var newProjectNamePtr *string
@@ -94,7 +94,7 @@ var (
 			}
 
 			if newProjectNamePtr == nil && !def {
-				errorQuitWithHelpMessage(errors.New(c.Context, "no parameters were submitted"), c, "projects-update")
+				errorQuitWithHelpMessage(errors.New(c.Context, "no parameters were submitted"), ctx, c, "projects-update")
 			}
 
 			err := projects.Update(c.Context, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
@@ -123,7 +123,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-remove")
+				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), ctx, c, "projects-remove")
 			}
 
 			err := projects.Remove(c.Context, projectID)
