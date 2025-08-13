@@ -26,7 +26,7 @@ var (
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "deployment-delete-cache")
+				cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
 				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
@@ -75,7 +75,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "deployment-logs")
+				cli.ShowCommandHelp(ctx, c, "deployment-logs")
 			}
 
 			deploymentID := ""
@@ -138,7 +138,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Len() != 1 && args.Len() != 2 {
-				cli.ShowCommandHelp(c, "deploy")
+				cli.ShowCommandHelp(ctx, c, "deploy")
 				return nil
 			}
 			archivePath := args.First()

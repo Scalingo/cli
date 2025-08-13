@@ -21,7 +21,7 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "review-apps")
+				cli.ShowCommandHelp(ctx, c, "review-apps")
 				return nil
 			}
 

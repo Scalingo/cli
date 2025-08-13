@@ -30,7 +30,7 @@ var (
 					PerPage: c.Int("per-page"),
 				})
 			} else {
-				cli.ShowCommandHelp(c, "user-timeline")
+				cli.ShowCommandHelp(ctx, c, "user-timeline")
 			}
 
 			if err != nil {

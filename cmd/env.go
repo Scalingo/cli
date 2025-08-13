@@ -27,7 +27,7 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "env")
+				cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
@@ -59,7 +59,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "env")
+				cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
@@ -102,7 +102,7 @@ var (
 			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
 				err = env.Add(c.Context, currentApp, c.Args().Slice(), c.String("f"))
 			} else {
-				cli.ShowCommandHelp(c, "env-set")
+				cli.ShowCommandHelp(ctx, c, "env-set")
 				return nil
 			}
 			if err != nil {
@@ -133,7 +133,7 @@ var (
 			if c.Args().Len() > 0 {
 				err = env.Delete(c.Context, currentApp, c.Args().Slice())
 			} else {
-				cli.ShowCommandHelp(c, "env-unset")
+				cli.ShowCommandHelp(ctx, c, "env-unset")
 			}
 			if err != nil {
 				errorQuit(c.Context, err)

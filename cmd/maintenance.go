@@ -61,7 +61,7 @@ var databaseMaintenanceInfo = cli.Command{
 	Action: func(ctx context.Context, c *cli.Command) error {
 		currentApp := detect.CurrentApp(c)
 		if c.Args().Len() != 1 {
-			err := cli.ShowCommandHelp(c, "database-maintenance-info")
+			err := cli.ShowCommandHelp(ctx, c, "database-maintenance-info")
 			if err != nil {
 				errorQuit(c.Context, err)
 			}

@@ -42,7 +42,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
-				cli.ShowCommandHelp(c, "keys-add")
+				cli.ShowCommandHelp(ctx, c, "keys-add")
 				return nil
 			}
 			err := keys.Add(c.Context, c.Args().First(), c.Args().Slice()[1])
@@ -69,7 +69,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "keys-remove")
+				cli.ShowCommandHelp(ctx, c, "keys-remove")
 				return nil
 			}
 			err := keys.Remove(c.Context, c.Args().First())

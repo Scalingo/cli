@@ -21,7 +21,7 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "open")
+				cli.ShowCommandHelp(ctx, c, "open")
 				return nil
 			}
 

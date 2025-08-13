@@ -60,7 +60,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-add")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-add")
 				return nil
 			}
 
@@ -119,7 +119,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-delete")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-delete")
 				return nil
 			}
 
@@ -150,7 +150,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-import-keys")
 				return nil
 			}
 

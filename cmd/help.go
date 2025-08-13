@@ -13,7 +13,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Present() {
-				cli.ShowCommandHelp(c, args.First())
+				cli.ShowCommandHelp(ctx, c, args.First())
 				return nil
 			}
 			cli.ShowAppHelp(c)

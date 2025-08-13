@@ -46,7 +46,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "stacks-set")
+				cli.ShowCommandHelp(ctx, c, "stacks-set")
 				return nil
 			}
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)

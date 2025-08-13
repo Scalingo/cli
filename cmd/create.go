@@ -30,7 +30,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				_ = cli.ShowCommandHelp(c, "create")
+				_ = cli.ShowCommandHelp(ctx, c, "create")
 				return nil
 			}
 

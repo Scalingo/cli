@@ -32,7 +32,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "git-setup")
+				cli.ShowCommandHelp(ctx, c, "git-setup")
 				return nil
 			}
 
@@ -64,7 +64,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "git-show")
+				cli.ShowCommandHelp(ctx, c, "git-show")
 				return nil
 			}
 			currentApp := detect.CurrentApp(c)

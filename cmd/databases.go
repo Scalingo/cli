@@ -190,7 +190,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				return cli.ShowCommandHelp(c, "database-users-delete")
+				return cli.ShowCommandHelp(ctx, c, "database-users-delete")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -230,7 +230,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				return cli.ShowCommandHelp(c, "database-users-create")
+				return cli.ShowCommandHelp(ctx, c, "database-users-create")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -267,7 +267,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() < 1 {
-				return cli.ShowCommandHelp(c, "database-users-update-password")
+				return cli.ShowCommandHelp(ctx, c, "database-users-update-password")
 			}
 
 			currentApp := detect.CurrentApp(c)

@@ -21,7 +21,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() > 0 {
-				cli.ShowCommandHelp(c, "cron-tasks")
+				cli.ShowCommandHelp(ctx, c, "cron-tasks")
 				return nil
 			}
 

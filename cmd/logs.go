@@ -36,7 +36,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "logs")
+				cli.ShowCommandHelp(ctx, c, "logs")
 				return nil
 			}
 

@@ -29,7 +29,7 @@ var (
 			var currentApp string
 
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "destroy")
+				cli.ShowCommandHelp(ctx, c, "destroy")
 			} else {
 				if c.Args().Len() != 0 {
 					currentApp = c.Args().First()

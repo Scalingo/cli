@@ -26,7 +26,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "force-https")
+				cli.ShowCommandHelp(ctx, c, "force-https")
 				return nil
 			}
 
@@ -65,7 +65,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "sticky-session")
+				cli.ShowCommandHelp(ctx, c, "sticky-session")
 				return nil
 			}
 
@@ -104,7 +104,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "router-logs")
+				cli.ShowCommandHelp(ctx, c, "router-logs")
 				return nil
 			}
 

@@ -27,7 +27,7 @@ var (
 			if c.Args().Len() == 0 {
 				err = notifiers.List(c.Context, currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers")
+				cli.ShowCommandHelp(ctx, c, "notifiers")
 			}
 
 			if err != nil {
@@ -57,7 +57,7 @@ var (
 			if c.Args().Len() == 1 {
 				err = notifiers.Details(c.Context, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-details")
+				cli.ShowCommandHelp(ctx, c, "notifiers-details")
 			}
 
 			if err != nil {
@@ -102,7 +102,7 @@ var (
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
 			if c.String("platform") == "" {
-				cli.ShowCommandHelp(c, "notifiers-add")
+				cli.ShowCommandHelp(ctx, c, "notifiers-add")
 			}
 
 			var active bool
@@ -203,7 +203,7 @@ var (
 			if c.Args().Len() >= 1 {
 				err = notifiers.Update(c.Context, currentApp, c.Args().First(), params)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-update")
+				cli.ShowCommandHelp(ctx, c, "notifiers-update")
 			}
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -234,7 +234,7 @@ var (
 			if c.Args().Len() == 1 {
 				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-remove")
+				cli.ShowCommandHelp(ctx, c, "notifiers-remove")
 			}
 			if err != nil {
 				errorQuit(c.Context, err)

@@ -28,7 +28,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "one-off-stop")
+				cli.ShowCommandHelp(ctx, c, "one-off-stop")
 				return nil
 			}
 			oneOffLabel := c.Args().First()

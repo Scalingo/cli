@@ -67,7 +67,7 @@ var (
 				sshIdentity = c.String("identity")
 			}
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "db-tunnel")
+				cli.ShowCommandHelp(ctx, c, "db-tunnel")
 				return nil
 			}
 

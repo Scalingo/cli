@@ -31,7 +31,7 @@ var (
 			if c.Args().Len() == 0 {
 				err = domains.List(c.Context, currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "domains")
+				cli.ShowCommandHelp(ctx, c, "domains")
 			}
 
 			if err != nil {
@@ -94,7 +94,7 @@ var (
 					errorQuit(c.Context, err)
 				}
 			} else {
-				cli.ShowCommandHelp(c, "domains-add")
+				cli.ShowCommandHelp(ctx, c, "domains-add")
 			}
 			return nil
 		},
@@ -122,7 +122,7 @@ var (
 			if c.Args().Len() == 1 {
 				err = domains.Remove(c.Context, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(c, "domains-remove")
+				cli.ShowCommandHelp(ctx, c, "domains-remove")
 			}
 
 			if err != nil {
@@ -173,7 +173,7 @@ var (
 					errorQuit(c.Context, err)
 				}
 			} else {
-				cli.ShowCommandHelp(c, "domains-ssl")
+				cli.ShowCommandHelp(ctx, c, "domains-ssl")
 			}
 			return nil
 		},
@@ -198,7 +198,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "set-canonical-domain")
+				cli.ShowCommandHelp(ctx, c, "set-canonical-domain")
 				return nil
 			}
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
@@ -228,7 +228,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "unset-canonical-domain")
+				cli.ShowCommandHelp(ctx, c, "unset-canonical-domain")
 				return nil
 			}
 

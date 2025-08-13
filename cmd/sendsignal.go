@@ -32,7 +32,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
-				err := cli.ShowCommandHelp(c, "send-signal")
+				err := cli.ShowCommandHelp(ctx, c, "send-signal")
 				if err != nil {
 					return errgo.Notef(err, "fail to show command helper")
 				}

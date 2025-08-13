@@ -35,7 +35,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "redis-console")
+				cli.ShowCommandHelp(ctx, c, "redis-console")
 				return nil
 			}
 			currentApp := detect.CurrentApp(c)

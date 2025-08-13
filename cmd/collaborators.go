@@ -20,7 +20,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				err := cli.ShowCommandHelp(c, "collaborators")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators")
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
@@ -53,7 +53,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-add")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-add")
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
@@ -88,7 +88,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-remove")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-remove")
 				if err != nil {
 					errorQuit(c.Context, err)
 				}
@@ -126,7 +126,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-update")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-update")
 				if err != nil {
 					errorQuit(c.Context, err)
 				}

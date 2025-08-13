@@ -89,7 +89,7 @@ var (
 				Detached: c.Bool("detached"),
 			}
 			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
-				cli.ShowCommandHelp(c, "run")
+				cli.ShowCommandHelp(ctx, c, "run")
 				return nil
 			}
 

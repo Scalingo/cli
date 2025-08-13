@@ -28,7 +28,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "timeline")
+				cli.ShowCommandHelp(ctx, c, "timeline")
 				return nil
 			}
 
