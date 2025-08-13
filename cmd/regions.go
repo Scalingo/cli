@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -14,9 +16,9 @@ var (
 		Usage:       "List available regions",
 		Description: "List available regions",
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := regions.List(c.Context)
+			err := regions.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
