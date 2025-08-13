@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/urfave/cli/v3"
@@ -9,17 +10,17 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func CollaboratorsGenericListAutoComplete(c *cli.Context) error {
+func CollaboratorsGenericListAutoComplete(ctx context.Context, c *cli.Command) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
 	}
 
-	client, err := config.ScalingoClient(c.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrap(c.Context, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "fail to get Scalingo client")
 	}
-	collaborators, err := client.CollaboratorsList(c.Context, appName)
+	collaborators, err := client.CollaboratorsList(ctx, appName)
 	if err == nil {
 		for _, col := range collaborators {
 			fmt.Println(col.Email)
