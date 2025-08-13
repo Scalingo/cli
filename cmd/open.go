@@ -19,7 +19,7 @@ var (
 			Description: "Open app on default web browser",
 			Examples:    []string{"scalingo --app my-app open"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "open")
 				return nil

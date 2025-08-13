@@ -23,7 +23,7 @@ var (
 			SeeAlso:     []string{"env-get", "env-set", "env-unset"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() != 0 {
@@ -57,7 +57,7 @@ var (
 			SeeAlso:     []string{"env", "env-set", "env-unset"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "env")
 				return nil
@@ -96,7 +96,7 @@ var (
 			},
 			SeeAlso: []string{"env", "env-get", "env-unset"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
@@ -127,7 +127,7 @@ var (
 			SeeAlso:     []string{"env", "env-get", "env-set"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 {

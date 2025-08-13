@@ -13,7 +13,7 @@ var (
 		Category:    "CLI Internals",
 		Usage:       "Update 'scalingo' SDK client",
 		Description: "Update 'scalingo' SDK client",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := update.Check()
 			if err != nil {
 				errorQuit(c.Context, err)

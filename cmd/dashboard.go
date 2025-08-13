@@ -20,7 +20,7 @@ var (
 			Examples:    []string{"scalingo --app my-app dashboard"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "dashboard")
 				return nil

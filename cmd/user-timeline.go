@@ -22,7 +22,7 @@ var (
 			Examples:    []string{"scalingo user-timeline --page 3 --per-page 20"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			var err error
 			if c.Args().Len() == 0 {
 				err = user.Events(c.Context, scalingo.PaginationOpts{

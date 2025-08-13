@@ -25,7 +25,7 @@ var (
 				"scalingo --app my-app one-off-stop 1234",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "one-off-stop")

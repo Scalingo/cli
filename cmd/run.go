@@ -76,7 +76,7 @@ var (
 
    Example
      scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			opts := apps.RunOpts{
 				App:      currentApp,

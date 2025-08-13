@@ -15,7 +15,7 @@ var (
 		Category:    "Projects",
 		Usage:       "List the projects that you own",
 		Description: "List all the projects of which you are an owner",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 
 			err := projects.List(c.Context)
 			if err != nil {
@@ -44,7 +44,7 @@ var (
 				"scalingo projects-add --default my-awesome-project # Create a new project that is the default one",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := projects.Add(c.Context, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -74,7 +74,7 @@ var (
 				"scalingo projects-update --name new-project-name prj-00000000-0000-0000-0000-000000000000 # Change the project name",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
 				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-update")
@@ -120,7 +120,7 @@ var (
 			Description: "Remove a project, given it is not the default one",
 			Examples:    []string{"scalingo projects-remove prj-00000000-0000-0000-0000-000000000000"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
 				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-remove")

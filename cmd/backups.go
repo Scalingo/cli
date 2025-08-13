@@ -21,7 +21,7 @@ var (
 			SeeAlso:     []string{"addons", "backups-download"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
@@ -43,7 +43,7 @@ var (
 			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-create"},
 			SeeAlso:     []string{"backups", "addons"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
@@ -80,7 +80,7 @@ var (
 			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-download --backup my_backup"},
 			SeeAlso:     []string{"backups", "addons"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 

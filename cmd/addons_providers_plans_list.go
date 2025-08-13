@@ -17,7 +17,7 @@ var (
 			Examples:    []string{"scalingo addon-plans scalingo-mongodb"},
 		}.Render(),
 		Usage: "List plans",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "addons-plans")
 				return nil

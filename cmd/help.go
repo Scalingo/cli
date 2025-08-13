@@ -10,7 +10,7 @@ var (
 	HelpCommand = cli.Command{
 		Name:  "help",
 		Usage: "Shows a list of commands or help for one command",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Present() {
 				cli.ShowCommandHelp(c, args.First())

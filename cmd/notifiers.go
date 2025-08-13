@@ -21,7 +21,7 @@ var (
 			Examples:    []string{"scalingo --app my-app notifiers"},
 			SeeAlso:     []string{"notifiers-add", "notifiers-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
@@ -51,7 +51,7 @@ var (
 			Examples:    []string{"scalingo --app my-app notifiers-details my-notifier"},
 			SeeAlso:     []string{"notifiers"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
@@ -96,7 +96,7 @@ var (
 			},
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
@@ -164,7 +164,7 @@ var (
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
@@ -227,7 +227,7 @@ var (
 			Examples:    []string{"scalingo --app my-app notifier-remove my-notifier"},
 			SeeAlso:     []string{"notifiers", "notifiers-add"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error

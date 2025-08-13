@@ -25,7 +25,7 @@ var (
 			SeeAlso:     []string{"domains-add", "domains-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
@@ -64,7 +64,7 @@ var (
 			SeeAlso: []string{"domains", "domains-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
@@ -115,7 +115,7 @@ var (
 			SeeAlso:     []string{"domains", "domains-add"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			var err error
@@ -155,7 +155,7 @@ var (
 			SeeAlso: []string{"domains", "domains-add"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
@@ -195,7 +195,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 			SeeAlso:  []string{"domains", "domains-add", "unset-canonical-domain"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "set-canonical-domain")
@@ -225,7 +225,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 			SeeAlso:     []string{"domains", "domains-add", "set-canonical-domain"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "unset-canonical-domain")

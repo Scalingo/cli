@@ -21,7 +21,7 @@ var (
 		},
 		Usage:       "Login to Scalingo platform",
 		Description: "Login to Scalingo platform",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Bool("ssh") && c.Bool("password-only") {
 				errorQuit(c.Context, errors.New("you cannot use both --ssh and --password-only at the same time"))
 			}

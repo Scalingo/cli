@@ -19,7 +19,7 @@ var (
 			Description: "Configure the CLI.\n\nCan also be configured using the environment variable SCALINGO_REGION",
 			Examples:    []string{"scalingo config --region agora-fr1"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			regionName := regionNameFromFlags(c)
 			if regionName != "" {
 				err := config.SetRegion(c.Context, regionName)

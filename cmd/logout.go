@@ -15,7 +15,7 @@ var (
 		Category:    "Global",
 		Usage:       "Logout from Scalingo",
 		Description: "Remove login information stored on your computer",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			ctx := c.Context
 			currentUser, err := config.C.CurrentUser(ctx)
 			if err != nil {

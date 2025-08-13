@@ -32,7 +32,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			},
 			SeeAlso: []string{"mongo-console", "pgsql-console"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "mysql-console")
 				return nil

@@ -17,7 +17,7 @@ var (
 			SeeAlso:     []string{"keys-add", "keys-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := keys.List(c.Context)
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -40,7 +40,7 @@ var (
 			SeeAlso:     []string{"keys", "keys-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
 				cli.ShowCommandHelp(c, "keys-add")
 				return nil
@@ -67,7 +67,7 @@ var (
 			SeeAlso:     []string{"keys", "keys-add"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "keys-remove")
 				return nil

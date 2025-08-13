@@ -37,7 +37,7 @@ var (
 			Examples:    []string{"scalingo --app my-app integration-link"},
 			SeeAlso:     []string{"integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link")
 				return nil
@@ -92,7 +92,7 @@ List of available integrations:
 			},
 			SeeAlso: []string{"integration-link", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-create")
 				return nil
@@ -261,7 +261,7 @@ List of available integrations:
 			},
 			SeeAlso: []string{"integration-link", "integration-link-create", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NumFlags() == 0 || c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-update")
 				return nil
@@ -334,7 +334,7 @@ List of available integrations:
 			Examples:    []string{"scalingo --app my-app integration-link-delete"},
 			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "integration-link-delete")
 				return nil
@@ -369,7 +369,7 @@ List of available integrations:
 			Examples:    []string{"scalingo --app my-app integration-link-manual-deploy mybranch"},
 			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-deploy")
 				return nil
@@ -406,7 +406,7 @@ List of available integrations:
 			Examples: []string{"scalingo --app my-app integration-link-manual-review-app --aware-of-security-risks 42"},
 			SeeAlso:  []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "integration-link-manual-review-app")
 				return nil

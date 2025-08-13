@@ -56,7 +56,7 @@ var (
 
    Example
      $ scalingo --app rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var sshIdentity string
 			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {

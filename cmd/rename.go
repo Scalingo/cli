@@ -22,7 +22,7 @@ var (
 			Description: "Rename an application",
 			Examples:    []string{"scalingo rename --app my-app --new-name my-app-production"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			newName := c.String("new-name")
 

@@ -14,7 +14,7 @@ var (
 		Description: "List all notification platforms you can use with a notifier.",
 		Usage:       "List all notification platforms",
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := notificationplatforms.List(c.Context)
 			if err != nil {
 				errorQuit(c.Context, err)

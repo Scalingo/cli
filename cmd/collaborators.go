@@ -17,7 +17,7 @@ var (
 		Usage:       "List the collaborators of an application",
 		Flags:       []cli.Flag{&appFlag},
 		Description: "List all the collaborators of an application and display information about them",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				err := cli.ShowCommandHelp(c, "collaborators")
@@ -50,7 +50,7 @@ var (
 			Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email",
 			Examples:    []string{"scalingo --app my-app collaborators-add user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "collaborators-add")
@@ -85,7 +85,7 @@ var (
 			Description: "Revoke the invitation of collaboration to the given email",
 			Examples:    []string{"scalingo -a myapp collaborators-remove user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "collaborators-remove")
@@ -123,7 +123,7 @@ var (
 			Description: "Update a collaborator from an application, allowing to mark it as limited collaborator or not",
 			Examples:    []string{"scalingo --app my-app collaborators-update --limited=true user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "collaborators-update")

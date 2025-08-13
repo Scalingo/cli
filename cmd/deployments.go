@@ -24,7 +24,7 @@ var (
 		Description: ` Delete the deployment cache (in case of corruption mostly)
     $ scalingo -a myapp deployment-delete-cache
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "deployment-delete-cache")
 			} else {
@@ -52,7 +52,7 @@ var (
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			err := deployments.List(c.Context, currentApp, scalingo.PaginationOpts{
 				Page:    c.Int("page"),
@@ -72,7 +72,7 @@ var (
 		Description: ` Get the logs of an app deployment
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
 				cli.ShowCommandHelp(c, "deployment-logs")
@@ -101,7 +101,7 @@ var (
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			err := deployments.Stream(c.Context, &deployments.StreamOpts{
 				AppName: currentApp,
@@ -135,7 +135,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			SeeAlso: []string{"deployments", "deployment-follow"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Len() != 1 && args.Len() != 2 {
 				cli.ShowCommandHelp(c, "deploy")

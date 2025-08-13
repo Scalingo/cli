@@ -13,7 +13,7 @@ var (
 		Category:    "Global",
 		Usage:       "Get the logged in profile",
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := user.Self(c.Context)
 			if err != nil {
 				errorQuit(c.Context, err)

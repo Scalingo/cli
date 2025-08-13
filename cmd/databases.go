@@ -35,7 +35,7 @@ var (
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
@@ -65,7 +65,7 @@ var (
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
@@ -102,7 +102,7 @@ var (
 			SeeAlso: []string{"addons", "backup-download"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
@@ -159,7 +159,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
@@ -188,7 +188,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				return cli.ShowCommandHelp(c, "database-users-delete")
 			}
@@ -228,7 +228,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
 				return cli.ShowCommandHelp(c, "database-users-create")
 			}
@@ -265,7 +265,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() < 1 {
 				return cli.ShowCommandHelp(c, "database-users-update-password")
 			}

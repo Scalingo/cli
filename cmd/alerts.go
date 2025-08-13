@@ -23,7 +23,7 @@ var (
 			SeeAlso:     []string{"alerts-add", "alerts-update", "alerts-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "alerts")
 				return nil
@@ -62,7 +62,7 @@ var (
 			},
 			SeeAlso: []string{"alerts-update", "alerts-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if !isValidAlertAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "alerts-add")
 				if err != nil {
@@ -121,7 +121,7 @@ var (
 			SeeAlso: []string{"alerts-disable", "alerts-enable"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-update")
 				if err != nil {
@@ -192,7 +192,7 @@ var (
 			SeeAlso:     []string{"alerts-update", "alerts-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-enable")
 				if err != nil {
@@ -230,7 +230,7 @@ var (
 			SeeAlso:     []string{"alerts-update", "alerts-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "alerts-disable")
 				if err != nil {
@@ -267,7 +267,7 @@ var (
 			Examples:    []string{"scalingo --app my-app alerts-remove alert-id"},
 			SeeAlso:     []string{"alerts-add", "alerts-update"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "alerts-remove")
 				return nil

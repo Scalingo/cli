@@ -17,7 +17,7 @@ var (
 		Usage:       "List the autoscalers of an application",
 		Flags:       []cli.Flag{&appFlag},
 		Description: "List all the autoscalers of an application and display information about them.",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "autoscalers")
 				return nil
@@ -53,7 +53,7 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 2 --max-containers 4"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if !isValidAutoscalerAddOpts(c) {
 				err := cli.ShowCommandHelp(c, "autoscalers-add")
 				if err != nil {
@@ -103,7 +103,7 @@ var (
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 || !c.IsSet("c") {
 				err := cli.ShowCommandHelp(c, "autoscalers-update")
 				if err != nil {
@@ -158,7 +158,7 @@ var (
 			Description: "Enable an autoscaler",
 			Examples:    []string{"scalingo --app my-app autoscalers-enable web"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-enable")
 				if err != nil {
@@ -195,7 +195,7 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-disable web"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(c, "autoscalers-disable")
 				if err != nil {
@@ -232,7 +232,7 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-remove web"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "autoscalers-remove")
 				return nil

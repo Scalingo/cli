@@ -25,7 +25,7 @@ var (
 			Examples:    []string{"scalingo --app my-app timeline"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "timeline")

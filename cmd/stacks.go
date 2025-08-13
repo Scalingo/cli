@@ -22,7 +22,7 @@ var (
 			SeeAlso:     []string{"stacks-set"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := stacks.List(c.Context, c.Bool("with-deprecated"))
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -43,7 +43,7 @@ var (
 			SeeAlso:     []string{"stacks"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "stacks-set")

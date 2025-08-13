@@ -33,7 +33,7 @@ var (
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},
 			&cli.StringFlag{Name: "filter", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "logs")

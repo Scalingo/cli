@@ -23,7 +23,7 @@ var (
 			Description: "When enabled, this feature will automatically redirect HTTP traffic to HTTPS for all domains associated with this application.",
 			Examples:    []string{"scalingo --app my-app force-https --enable"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
 				cli.ShowCommandHelp(c, "force-https")
@@ -62,7 +62,7 @@ var (
 			Examples:    []string{"scalingo --app my-app sticky-session --enable"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
 				cli.ShowCommandHelp(c, "sticky-session")
@@ -101,7 +101,7 @@ var (
 			Examples:    []string{"scalingo --app my-app router-logs --enable"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
 				cli.ShowCommandHelp(c, "router-logs")

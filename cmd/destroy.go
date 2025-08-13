@@ -25,7 +25,7 @@ var (
 				"scalingo --app my-app destroy --force",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			var currentApp string
 
 			if c.Args().Len() > 1 {

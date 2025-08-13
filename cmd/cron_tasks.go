@@ -19,7 +19,7 @@ var (
 			Examples:    []string{"scalingo --app my-app cron-tasks"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() > 0 {
 				cli.ShowCommandHelp(c, "cron-tasks")
 				return nil

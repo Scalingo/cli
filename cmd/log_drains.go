@@ -36,7 +36,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			},
 			SeeAlso: []string{"log-drains-add", "log-drains-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
 				cli.ShowCommandHelp(c, "log-drains")
@@ -104,7 +104,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			SeeAlso: []string{"log-drains", "log-drains-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 
 			addonID := addonUUIDFromFlags(c, currentApp)
@@ -168,7 +168,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 
 	# See also commands 'log-drains-add', 'log-drains'`,
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
 				cli.ShowCommandHelp(c, "log-drains-remove")

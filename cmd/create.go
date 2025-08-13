@@ -28,7 +28,7 @@ var (
 			&cli.StringFlag{Name: "project-id", Value: "", Usage: "Project to which the application should be linked. If not provided, the app will be assigned to your default project"},
 		},
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
 				_ = cli.ShowCommandHelp(c, "create")
 				return nil

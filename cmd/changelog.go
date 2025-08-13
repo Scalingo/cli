@@ -17,7 +17,7 @@ var (
 			Examples:    []string{"scalingo changelog"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := update.ShowLastChangelog()
 			if err != nil {
 				errorQuit(c.Context, err)

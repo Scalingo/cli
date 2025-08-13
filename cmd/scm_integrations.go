@@ -22,7 +22,7 @@ var (
 			SeeAlso:     []string{"integrations-add", "integrations-delete", "integrations-import-keys"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			err := scmintegrations.List(c.Context)
 			if err != nil {
 				errorQuit(c.Context, err)
@@ -58,7 +58,7 @@ var (
 
 	# See also commands 'integrations', 'integrations-delete', 'integrations-import-keys'`,
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-add")
 				return nil
@@ -117,7 +117,7 @@ var (
 			SeeAlso: []string{"integrations", "integrations-add", "integrations-import-keys"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-delete")
 				return nil
@@ -148,7 +148,7 @@ var (
 			SeeAlso: []string{"integrations", "integrations-add", "integrations-delete"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
 				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
 				return nil

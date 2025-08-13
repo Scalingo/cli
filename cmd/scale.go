@@ -28,7 +28,7 @@ var (
 				"scalingo --app my-app scale web:+1 worker:-1",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
 
