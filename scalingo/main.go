@@ -116,7 +116,7 @@ func main() {
 
 	bashComplete := false
 	for i := range os.Args {
-		if strings.Contains(os.Args[i], "generate-bash-completion") {
+		if strings.Contains(os.Args[i], "generate-shell-completion") {
 			bashComplete = true
 		}
 	}
