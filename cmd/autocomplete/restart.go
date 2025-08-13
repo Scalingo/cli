@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/urfave/cli/v3"
@@ -9,17 +10,17 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
-func RestartAutoComplete(c *cli.Context) error {
+func RestartAutoComplete(ctx context.Context, c *cli.Command) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
 	}
 
-	client, err := config.ScalingoClient(c.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	processes, err := client.AppsContainerTypes(c.Context, appName)
+	processes, err := client.AppsContainerTypes(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err)
 	}
