@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -22,7 +24,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "dashboard")
+				_ = cli.ShowCommandHelp(ctx, c, "dashboard")
 				return nil
 			}
 
@@ -30,7 +32,7 @@ var (
 			currentRegion := config.C.ScalingoRegion
 			err := apps.Dashboard(currentApp, currentRegion)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
