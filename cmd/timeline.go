@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -32,13 +34,13 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
-			err := apps.Events(c.Context, currentApp, scalingo.PaginationOpts{
+			utils.CheckForConsent(ctx, currentApp)
+			err := apps.Events(ctx, currentApp, scalingo.PaginationOpts{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
