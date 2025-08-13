@@ -6,7 +6,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/urfave/cli/v3"
-	errgo "gopkg.in/errgo.v1"
+	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -15,18 +15,18 @@ import (
 
 // EnableFeature is the command handler to enable a database feature on a given
 // database addon, like 'force-ssl' or 'public-availability'
-func EnableFeature(appctx *cli.Context, app, addon, feature string) error {
+func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature string) error {
 	spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spinner.Suffix = " Enabling database feature"
 	spinner.Start()
 	defer spinner.Stop()
 
-	client, err := config.ScalingoClient(appctx.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	res, err := client.DatabaseEnableFeature(appctx.Context, app, addon, feature)
+	res, err := client.DatabaseEnableFeature(ctx, app, addon, feature)
 	if err != nil {
 		return errgo.Notef(err, "fail to enable feature '%v'", feature)
 	}
@@ -41,9 +41,9 @@ func EnableFeature(appctx *cli.Context, app, addon, feature string) error {
 		io.Statusf("Feature %v is being enabled\n", feature)
 	}
 
-	if res.Status == scalingo.DatabaseFeatureStatusPending && appctx.Bool("synchronous") {
+	if res.Status == scalingo.DatabaseFeatureStatusPending && c.Bool("synchronous") {
 		io.Infof("Waiting for operation completion...")
-		err = waitFeatureUntilActivated(appctx.Context, client, app, addon, feature)
+		err = waitFeatureUntilActivated(ctx, client, app, addon, feature)
 		if err != nil {
 			return errgo.Notef(err, "fail to wait for feature '%v' to be enabled", feature)
 		}

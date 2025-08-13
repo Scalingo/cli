@@ -44,7 +44,7 @@ var (
 				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.EnableFeature(c, currentApp, addonName, feature)
+			err := db.EnableFeature(ctx, c, currentApp, addonName, feature)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

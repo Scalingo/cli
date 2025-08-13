@@ -7,7 +7,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v8"
 )
 
-func CheckAndFillParams(c *cli.Context) *scalingo.SCMRepoLinkUpdateParams {
+func CheckAndFillParams(c *cli.Command) *scalingo.SCMRepoLinkUpdateParams {
 	paramsChecker := newParamsChecker(c)
 	params := &scalingo.SCMRepoLinkUpdateParams{
 		Branch:                            paramsChecker.lookupBranch(),
@@ -24,86 +24,86 @@ func CheckAndFillParams(c *cli.Context) *scalingo.SCMRepoLinkUpdateParams {
 }
 
 type paramsChecker struct {
-	ctx *cli.Context
+	c *cli.Command
 }
 
-func newParamsChecker(ctx *cli.Context) *paramsChecker {
-	return &paramsChecker{ctx: ctx}
+func newParamsChecker(c *cli.Command) *paramsChecker {
+	return &paramsChecker{c: c}
 }
 
 func (p *paramsChecker) lookupBranch() *string {
-	if !p.ctx.IsSet("branch") {
+	if !p.c.IsSet("branch") {
 		return nil
 	}
 
-	branch := p.ctx.String("branch")
+	branch := p.c.String("branch")
 	return &branch
 }
 
 func (p *paramsChecker) lookupAutoDeploy() *bool {
-	if p.ctx.IsSet("auto-deploy") {
+	if p.c.IsSet("auto-deploy") {
 		return utils.BoolPtr(true)
 	}
-	if p.ctx.IsSet("no-auto-deploy") {
+	if p.c.IsSet("no-auto-deploy") {
 		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupDeployReviewApps() *bool {
-	if p.ctx.IsSet("deploy-review-apps") {
+	if p.c.IsSet("deploy-review-apps") {
 		return utils.BoolPtr(true)
 	}
-	if p.ctx.IsSet("no-deploy-review-apps") {
+	if p.c.IsSet("no-deploy-review-apps") {
 		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupDestroyOnClose() *bool {
-	if p.ctx.IsSet("destroy-on-close") {
+	if p.c.IsSet("destroy-on-close") {
 		return utils.BoolPtr(true)
 	}
-	if p.ctx.IsSet("no-destroy-on-close") {
+	if p.c.IsSet("no-destroy-on-close") {
 		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupHoursBeforeDestroyOnClose() *uint {
-	if !p.ctx.IsSet("hours-before-destroy-on-close") {
+	if !p.c.IsSet("hours-before-destroy-on-close") {
 		return nil
 	}
 
-	hoursBeforeDestroyOnClose := p.ctx.Uint("hours-before-destroy-on-close")
+	hoursBeforeDestroyOnClose := p.c.Uint("hours-before-destroy-on-close")
 	return &hoursBeforeDestroyOnClose
 }
 
 func (p *paramsChecker) lookupDestroyOnStale() *bool {
-	if p.ctx.IsSet("destroy-on-stale") {
+	if p.c.IsSet("destroy-on-stale") {
 		return utils.BoolPtr(true)
 	}
-	if p.ctx.IsSet("no-destroy-on-stale") {
+	if p.c.IsSet("no-destroy-on-stale") {
 		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupAllowReviewAppsFromForks() *bool {
-	if p.ctx.IsSet("allow-review-apps-from-forks") {
+	if p.c.IsSet("allow-review-apps-from-forks") {
 		return utils.BoolPtr(true)
 	}
-	if p.ctx.IsSet("no-allow-review-apps-from-forks") {
+	if p.c.IsSet("no-allow-review-apps-from-forks") {
 		return utils.BoolPtr(false)
 	}
 	return nil
 }
 
 func (p *paramsChecker) lookupHoursBeforeDestroyOnStale() *uint {
-	if !p.ctx.IsSet("hours-before-destroy-on-stale") {
+	if !p.c.IsSet("hours-before-destroy-on-stale") {
 		return nil
 	}
 
-	hoursBeforeDestroyOnStale := p.ctx.Uint("hours-before-destroy-on-stale")
+	hoursBeforeDestroyOnStale := p.c.Uint("hours-before-destroy-on-stale")
 	return &hoursBeforeDestroyOnStale
 }
