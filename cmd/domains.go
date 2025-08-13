@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"os"
 
 	"github.com/urfave/cli/v3"
@@ -29,18 +30,18 @@ var (
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = domains.List(c.Context, currentApp)
+				err = domains.List(ctx, currentApp)
 			} else {
-				cli.ShowCommandHelp(ctx, c, "domains")
+				_ = cli.ShowCommandHelp(ctx, c, "domains")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "domains")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "domains")
 		},
 	}
 
@@ -66,14 +67,14 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.Args().Len() == 1 {
 				cert := c.String("cert")
 				key := c.String("key")
 				certContent, keyContent, err := validateTLSParams(cert, key)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				params := scalingo.DomainsAddParams{
@@ -89,17 +90,17 @@ var (
 					params.LetsEncryptEnabled = utils.BoolPtr(false)
 				}
 
-				err = domains.Add(c.Context, currentApp, params)
+				err = domains.Add(ctx, currentApp, params)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
-				cli.ShowCommandHelp(ctx, c, "domains-add")
+				_ = cli.ShowCommandHelp(ctx, c, "domains-add")
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "domains-add")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "domains-add")
 		},
 	}
 
@@ -117,22 +118,22 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
-				err = domains.Remove(c.Context, currentApp, c.Args().First())
+				err = domains.Remove(ctx, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(ctx, c, "domains-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "domains-remove")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "domains-remove")
-			autocomplete.DomainsRemoveAutoComplete(c)
+			_ = autocomplete.CmdFlagsAutoComplete(c, "domains-remove")
+			_ = autocomplete.DomainsRemoveAutoComplete(ctx, c)
 		},
 	}
 
@@ -157,28 +158,28 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
-				err := domains.DisableSSL(c.Context, currentApp, c.Args().First())
+				err := domains.DisableSSL(ctx, currentApp, c.Args().First())
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else if c.Args().Len() == 1 {
 				certContent, keyContent, err := validateTLSParams(c.String("cert"), c.String("key"))
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
-				err = domains.EnableSSL(c.Context, currentApp, c.Args().First(), certContent, keyContent)
+				err = domains.EnableSSL(ctx, currentApp, c.Args().First(), certContent, keyContent)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
-				cli.ShowCommandHelp(ctx, c, "domains-ssl")
+				_ = cli.ShowCommandHelp(ctx, c, "domains-ssl")
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "domains-ssl")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "domains-ssl")
 		},
 	}
 
@@ -198,19 +199,19 @@ This domain is called the canonical domain. This command sets the canonical doma
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(ctx, c, "set-canonical-domain")
+				_ = cli.ShowCommandHelp(ctx, c, "set-canonical-domain")
 				return nil
 			}
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := domains.SetCanonical(c.Context, currentApp, c.Args().First())
+			err := domains.SetCanonical(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "set-canonical-domain")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "set-canonical-domain")
 		},
 	}
 
@@ -228,20 +229,20 @@ This domain is called the canonical domain. This command sets the canonical doma
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(ctx, c, "unset-canonical-domain")
+				_ = cli.ShowCommandHelp(ctx, c, "unset-canonical-domain")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := domains.UnsetCanonical(c.Context, currentApp)
+			err := domains.UnsetCanonical(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "unset-canonical-domain")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "unset-canonical-domain")
 		},
 	}
 )
