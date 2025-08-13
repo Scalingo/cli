@@ -35,7 +35,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators")
 		},
 	}
@@ -69,7 +69,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-add")
 			_ = autocomplete.CollaboratorsAddAutoComplete(c)
 		},
@@ -104,7 +104,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")
 			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
 		},
@@ -142,7 +142,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-update")
 			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
 		},

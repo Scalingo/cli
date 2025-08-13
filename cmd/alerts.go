@@ -35,7 +35,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts")
 		},
 	}
@@ -91,7 +91,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
@@ -175,7 +175,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
@@ -213,7 +213,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-enable")
 		},
 	}
@@ -251,7 +251,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-disable")
 		},
 	}
@@ -283,7 +283,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "alerts-remove")
 		},
 	}

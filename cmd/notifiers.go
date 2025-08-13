@@ -35,7 +35,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
 		},
 	}
@@ -65,7 +65,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
 			autocomplete.NotifiersAutoComplete(c)
 		},
@@ -134,7 +134,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
 		},
 	}
@@ -210,7 +210,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
 			autocomplete.NotifiersAutoComplete(c)
 		},
@@ -241,7 +241,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
 			autocomplete.NotifiersAutoComplete(c)
 		},

@@ -43,7 +43,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "force-https")
 		},
 	}
@@ -82,7 +82,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
 		},
 	}
@@ -121,7 +121,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "router-logs")
 		},
 	}

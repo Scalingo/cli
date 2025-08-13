@@ -32,7 +32,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers")
 		},
 	}
@@ -78,7 +78,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-add")
 		},
 	}
@@ -143,7 +143,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-update")
 		},
 	}
@@ -179,7 +179,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-enable")
 		},
 	}
@@ -216,7 +216,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-disable")
 		},
 	}
@@ -248,7 +248,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-remove")
 		},
 	}

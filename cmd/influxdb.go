@@ -52,7 +52,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "influxdb-console")
 		},
 	}

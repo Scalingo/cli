@@ -24,7 +24,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects")
 		},
 	}
@@ -52,7 +52,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-add")
 		},
 	}
@@ -104,7 +104,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-update")
 			_ = autocomplete.ProjectsGenericListAutoComplete(c)
 		},
@@ -133,7 +133,7 @@ var (
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-remove")
 			_ = autocomplete.ProjectsGenericListAutoComplete(c)
 		},

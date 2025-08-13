@@ -89,7 +89,7 @@ var (
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.DeploymentsAutoComplete(c)
 		},
 	}
@@ -164,7 +164,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			autocomplete.CmdFlagsAutoComplete(c, "deploy")
 		},
 	}
