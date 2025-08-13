@@ -15,13 +15,13 @@ var (
 		Category:    "Addons - Global",
 		Description: "List all addons you can add to your app",
 		Usage:       "List all addons",
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			if err := addonproviders.List(ctx); err != nil {
 				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-list")
 		},
 	}

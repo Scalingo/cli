@@ -57,7 +57,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains")
 		},
 	}
@@ -138,7 +138,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
 		},
 	}

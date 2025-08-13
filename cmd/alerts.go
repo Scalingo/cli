@@ -37,7 +37,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts")
 		},
 	}
@@ -93,7 +93,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
@@ -177,7 +177,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-add")
 		},
 	}
@@ -215,7 +215,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-enable")
 		},
 	}
@@ -253,7 +253,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-disable")
 		},
 	}
@@ -285,7 +285,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "alerts-remove")
 		},
 	}

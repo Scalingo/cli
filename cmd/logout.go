@@ -33,7 +33,7 @@ var (
 			io.Status("Scalingo credentials have been deleted.")
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "logout")
 		},
 	}
