@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -15,9 +17,9 @@ var (
 		Usage:       "List all notification platforms",
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := notificationplatforms.List(c.Context)
+			err := notificationplatforms.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
