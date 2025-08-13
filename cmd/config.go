@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -22,9 +24,9 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			regionName := regionNameFromFlags(c)
 			if regionName != "" {
-				err := config.SetRegion(c.Context, regionName)
+				err := config.SetRegion(ctx, regionName)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 
@@ -35,7 +37,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.CmdFlagsAutoComplete(c, "config")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "config")
 		},
 	}
 )
