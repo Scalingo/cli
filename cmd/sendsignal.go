@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
@@ -38,12 +40,12 @@ var (
 				}
 				return nil
 			}
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Args().Slice())
+			err := apps.SendSignal(ctx, currentApp, c.String("signal"), c.Args().Slice())
 			if err != nil {
 				rootError := errors.RootCause(err)
-				errorQuit(c.Context, rootError)
+				errorQuit(ctx, rootError)
 			}
 			return nil
 		},
