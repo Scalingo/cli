@@ -19,14 +19,14 @@ var (
 			Examples:    []string{"scalingo changelog"},
 		}.Render(),
 
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := update.ShowLastChangelog()
 			if err != nil {
 				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "changelog")
 		},
 	}
