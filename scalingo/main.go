@@ -37,7 +37,7 @@ func defaultAction(ctx context.Context, c *cli.Command) error {
 
 	err := cmd.HelpCommand.Action(ctx, c)
 	if err != nil {
-		return errors.Notef(ctx, err, "help command execution")
+		return errors.Wrapf(ctx, err, "help command execution")
 	}
 
 	cmd.ShowSuggestions(c)

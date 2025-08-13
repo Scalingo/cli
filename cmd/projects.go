@@ -17,7 +17,7 @@ var (
 		Category:    "Projects",
 		Usage:       "List the projects that you own",
 		Description: "List all the projects of which you are an owner",
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 
 			err := projects.List(ctx)
 			if err != nil {
@@ -79,7 +79,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(ctx, "missing project ID parameter"), ctx, c, "projects-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-update")
 			}
 
 			var newProjectNamePtr *string
@@ -96,7 +96,7 @@ var (
 			}
 
 			if newProjectNamePtr == nil && !def {
-				errorQuitWithHelpMessage(errors.New(ctx, "no parameters were submitted"), ctx, c, "projects-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "no parameters were submitted"), c, "projects-update")
 			}
 
 			err := projects.Update(ctx, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
@@ -125,7 +125,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(ctx, "missing project ID parameter"), ctx, c, "projects-remove")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-remove")
 			}
 
 			err := projects.Remove(ctx, projectID)

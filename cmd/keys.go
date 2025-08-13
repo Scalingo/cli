@@ -19,7 +19,7 @@ var (
 			SeeAlso:     []string{"keys-add", "keys-remove"},
 		}.Render(),
 
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := keys.List(ctx)
 			if err != nil {
 				errorQuit(ctx, err)

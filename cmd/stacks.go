@@ -59,7 +59,7 @@ var (
 			}
 			return nil
 		},
-		ShellComplete: func(ctx context.Context, c *cli.Command) {
+		ShellComplete: func(ctx context.Context, _ *cli.Command) {
 			_ = autocomplete.StacksSetAutoComplete(ctx)
 		},
 	}

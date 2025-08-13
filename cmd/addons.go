@@ -210,7 +210,7 @@ var (
 			}
 
 			if config.MaintenanceWindowHour == nil && config.MaintenanceWindowDay == nil {
-				errorQuitWithHelpMessage(errors.New(ctx, "cannot update your addon without a specified option"), ctx, c, "addons-config")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
 			}
 
 			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)

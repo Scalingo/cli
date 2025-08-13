@@ -15,7 +15,7 @@ var (
 		Category:    "Global",
 		Usage:       "List available regions",
 		Description: "List available regions",
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := regions.List(ctx)
 			if err != nil {
 				errorQuit(ctx, err)

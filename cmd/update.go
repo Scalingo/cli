@@ -15,7 +15,7 @@ var (
 		Category:    "CLI Internals",
 		Usage:       "Update 'scalingo' SDK client",
 		Description: "Update 'scalingo' SDK client",
-		Action: func(ctx context.Context, c *cli.Command) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := update.Check()
 			if err != nil {
 				errorQuit(ctx, err)
