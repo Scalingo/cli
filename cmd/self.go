@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/user"
@@ -14,9 +16,9 @@ var (
 		Usage:       "Get the logged in profile",
 		Description: "Returns the logged in profile and print its username. Comes in handy when owning multiple accounts.",
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := user.Self(c.Context)
+			err := user.Self(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
