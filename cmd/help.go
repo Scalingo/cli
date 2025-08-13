@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -16,12 +18,12 @@ var (
 				_ = cli.ShowCommandHelp(ctx, c, args.First())
 				return nil
 			}
-			cli.ShowAppHelp(c)
+			_ = cli.ShowAppHelp(c)
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "help")
-			autocomplete.HelpAutoComplete(c)
+			_ = autocomplete.HelpAutoComplete(c)
 		},
 	}
 )
