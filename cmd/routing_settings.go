@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
@@ -30,16 +32,16 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := true
 			if c.IsSet("disable") {
 				enable = false
 			}
 
-			err := apps.ForceHTTPS(c.Context, currentApp, enable)
+			err := apps.ForceHTTPS(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -69,16 +71,16 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := true
 			if c.IsSet("disable") {
 				enable = false
 			}
 
-			err := apps.StickySession(c.Context, currentApp, enable)
+			err := apps.StickySession(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -108,16 +110,16 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := false
 			if c.IsSet("enable") {
 				enable = true
 			}
 
-			err := apps.RouterLogs(c.Context, currentApp, enable)
+			err := apps.RouterLogs(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
