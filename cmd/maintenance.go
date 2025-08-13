@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/db/maintenance"
@@ -29,15 +31,15 @@ var databaseMaintenanceList = cli.Command{
 
 	Action: func(ctx context.Context, c *cli.Command) error {
 		currentApp := detect.CurrentApp(c)
-		utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+		utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 		addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
-		err := maintenance.List(c.Context, currentApp, addonName, scalingo.PaginationOpts{
+		err := maintenance.List(ctx, currentApp, addonName, scalingo.PaginationOpts{
 			Page:    c.Int("page"),
 			PerPage: c.Int("per-page"),
 		})
 		if err != nil {
-			errorQuit(c.Context, err)
+			errorQuit(ctx, err)
 		}
 		return nil
 	},
@@ -63,18 +65,18 @@ var databaseMaintenanceInfo = cli.Command{
 		if c.Args().Len() != 1 {
 			err := cli.ShowCommandHelp(ctx, c, "database-maintenance-info")
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		}
 
-		utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+		utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 		addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 		maintenanceID := c.Args().First()
 
-		err := maintenance.Info(c.Context, currentApp, addonName, maintenanceID)
+		err := maintenance.Info(ctx, currentApp, addonName, maintenanceID)
 		if err != nil {
-			errorQuit(c.Context, err)
+			errorQuit(ctx, err)
 		}
 		return nil
 	},
