@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -43,16 +44,16 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
 			addonID := addonUUIDFromFlags(ctx, c, currentApp)
 
-			err := logdrains.List(c.Context, currentApp, logdrains.ListAddonOpts{
+			err := logdrains.List(ctx, currentApp, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
 				AddonID:    addonID,
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -109,7 +110,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 
 			addonID := addonUUIDFromFlags(ctx, c, currentApp)
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				_ = cli.ShowCommandHelp(ctx, c, "log-drains-add")
@@ -120,7 +121,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
-			err := logdrains.Add(c.Context, currentApp, logdrains.AddDrainOpts{
+			err := logdrains.Add(ctx, currentApp, logdrains.AddDrainOpts{
 				WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
 				AddonID:    addonID,
 				Params: scalingo.LogDrainAddParams{
@@ -133,7 +134,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				},
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -183,7 +184,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
 			message := "This operation will delete the log drain " + drain
 			if addonID == "" && !c.Bool("only-app") {
@@ -202,20 +203,20 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				return nil
 			}
 
-			err := logdrains.Remove(c.Context, currentApp, logdrains.RemoveAddonOpts{
+			err := logdrains.Remove(ctx, currentApp, logdrains.RemoveAddonOpts{
 				AddonID: addonID,
 				OnlyApp: c.Bool("only-app"),
 				URL:     drain,
 			})
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
-			autocomplete.LogDrainsRemoveAutoComplete(c)
+			_ = autocomplete.LogDrainsRemoveAutoComplete(ctx, c)
 		},
 	}
 )
@@ -225,6 +226,6 @@ func askContinue(message string) bool {
 	prompt := &survey.Confirm{
 		Message: message,
 	}
-	survey.AskOne(prompt, &result, nil)
+	_ = survey.AskOne(prompt, &result, nil)
 	return result
 }
