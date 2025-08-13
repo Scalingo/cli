@@ -1,21 +1,21 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func StacksSetAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient(c.Context)
+func StacksSetAutoComplete(ctx context.Context) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	stacks, err := client.StacksList(c.Context)
+	stacks, err := client.StacksList(ctx)
 	if err != nil {
 		return nil
 	}

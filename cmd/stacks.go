@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -23,9 +25,9 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := stacks.List(c.Context, c.Bool("with-deprecated"))
+			err := stacks.List(ctx, c.Bool("with-deprecated"))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -49,16 +51,16 @@ var (
 				_ = cli.ShowCommandHelp(ctx, c, "stacks-set")
 				return nil
 			}
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := stacks.Set(c.Context, currentApp, c.Args().First())
+			err := stacks.Set(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			autocomplete.StacksSetAutoComplete(c)
+			_ = autocomplete.StacksSetAutoComplete(ctx)
 		},
 	}
 )
