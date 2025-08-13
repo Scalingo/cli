@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"text/template"
 
@@ -78,22 +79,22 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 }
 
 func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
-	return func(c *cli.Context) error {
+	return func(ctx context.Context, c *cli.Command) error {
 		token := os.Getenv("SCALINGO_API_TOKEN")
 
-		currentUser, err := config.C.CurrentUser(c.Context)
+		currentUser, err := config.C.CurrentUser(ctx)
 		if err != nil || currentUser == nil {
-			err := session.Login(c.Context, session.LoginOpts{APIToken: token})
+			err := session.Login(ctx, session.LoginOpts{APIToken: token})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 		}
 
-		regions, err := config.EnsureRegionsCache(c.Context, config.C, config.GetRegionOpts{
+		regions, err := config.EnsureRegionsCache(ctx, config.C, config.GetRegionOpts{
 			Token: token,
 		})
 		if err != nil {
-			errorQuit(c.Context, err)
+			errorQuit(ctx, err)
 		}
 		currentRegion := regionNameFromFlags(c)
 
@@ -112,7 +113,7 @@ func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
 			config.C.ScalingoRegion = currentRegion
 		}
 
-		return action(c)
+		return action(ctx, c)
 	}
 }
 
