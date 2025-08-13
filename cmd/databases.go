@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -37,15 +38,15 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
-				errorQuit(c.Context, errors.New("feature argument should be specified"))
+				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
 			err := db.EnableFeature(c, currentApp, addonName, feature)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -67,15 +68,15 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 			if c.NArg() != 1 {
-				errorQuit(c.Context, errors.New("feature argument should be specified"))
+				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.DisableFeature(c.Context, currentApp, addonName, feature)
+			err := db.DisableFeature(ctx, currentApp, addonName, feature)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -104,20 +105,20 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
 			if scheduleAtFlag != "" && disable {
-				errorQuit(c.Context, errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
+				errorQuit(ctx, errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
 			if disable {
 				continueB := askContinue("This operation will disable the periodic backups of a database. Are you sure?")
 				if !continueB {
-					errorQuit(c.Context, errors.New("unschedule operation was not confirmed"))
+					errorQuit(ctx, errors.New("unschedule operation was not confirmed"))
 					return nil
 				}
 
@@ -127,7 +128,7 @@ var (
 				params.Enabled = utils.BoolPtr(true)
 				scheduleAt, loc, err := parseScheduleAtFlag(scheduleAtFlag)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, loc)
 				hour := localTime.UTC().Hour()
@@ -135,9 +136,9 @@ var (
 			}
 
 			if disable || scheduleAtFlag != "" {
-				err := db.BackupsConfiguration(c.Context, currentApp, addonName, params)
+				err := db.BackupsConfiguration(ctx, currentApp, addonName, params)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
@@ -161,12 +162,12 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
-			err := dbUsers.List(c.Context, currentApp, addonName)
+			err := dbUsers.List(ctx, currentApp, addonName)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -194,14 +195,14 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			username := c.Args().First()
 
-			err := dbUsers.DeleteUser(c.Context, currentApp, addonName, username)
+			err := dbUsers.DeleteUser(ctx, currentApp, addonName, username)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -234,14 +235,14 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			username := c.Args().First()
 
-			err := dbUsers.CreateUser(c.Context, currentApp, addonName, username, c.Bool("read-only"))
+			err := dbUsers.CreateUser(ctx, currentApp, addonName, username, c.Bool("read-only"))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -271,14 +272,14 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 			addonName := addonUUIDFromFlags(c, currentApp, true)
 
 			username := c.Args().First()
 
-			err := dbUsers.UpdateUserPassword(c.Context, currentApp, addonName, username)
+			err := dbUsers.UpdateUserPassword(ctx, currentApp, addonName, username)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},

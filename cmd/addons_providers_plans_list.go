@@ -30,7 +30,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			_ = autocomplete.AddonsPlansAutoComplete(c)
+			_ = autocomplete.AddonsPlansAutoComplete(ctx, c)
 		},
 	}
 )
