@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/deployments"
@@ -24,15 +25,15 @@ var (
 		Description: ` Delete the deployment cache (in case of corruption mostly)
     $ scalingo -a myapp deployment-delete-cache
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "deployment-delete-cache")
+				_ = cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
 			} else {
 				currentApp := detect.CurrentApp(c)
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-				err := deployments.ResetCache(c.Context, currentApp)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+				err := deployments.ResetCache(ctx, currentApp)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				io.Status("Deployment cache successfully deleted")
 			}
@@ -52,14 +53,14 @@ var (
 		Description: ` List all of your previous app deployments
     $ scalingo -a myapp deployments
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.List(c.Context, currentApp, scalingo.PaginationOpts{
+			err := deployments.List(ctx, currentApp, scalingo.PaginationOpts{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -72,10 +73,10 @@ var (
 		Description: ` Get the logs of an app deployment
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "deployment-logs")
+				_ = cli.ShowCommandHelp(ctx, c, "deployment-logs")
 			}
 
 			deploymentID := ""
@@ -83,14 +84,14 @@ var (
 				deploymentID = c.Args().First()
 			}
 
-			err := deployments.Logs(c.Context, currentApp, deploymentID)
+			err := deployments.Logs(ctx, currentApp, deploymentID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.DeploymentsAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.DeploymentsAutoComplete(ctx, c)
 		},
 	}
 	deploymentFollowCommand = cli.Command{
@@ -101,13 +102,13 @@ var (
 		Description: ` Get real-time deployment informations
 		$ scalingo -a myapp deployment-follow
 `,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			err := deployments.Stream(c.Context, &deployments.StreamOpts{
+			err := deployments.Stream(ctx, &deployments.StreamOpts{
 				AppName: currentApp,
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -135,10 +136,10 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			SeeAlso: []string{"deployments", "deployment-follow"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Len() != 1 && args.Len() != 2 {
-				cli.ShowCommandHelp(c, "deploy")
+				_ = cli.ShowCommandHelp(ctx, c, "deploy")
 				return nil
 			}
 			archivePath := args.First()
@@ -147,25 +148,25 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 				gitRef = args.Slice()[1]
 			}
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
 				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
-				err := deployments.DeployWar(c.Context, currentApp, archivePath, gitRef, opts)
+				err := deployments.DeployWar(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
 				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
-				err := deployments.Deploy(c.Context, currentApp, archivePath, gitRef, opts)
+				err := deployments.Deploy(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "deploy")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "deploy")
 		},
 	}
 )

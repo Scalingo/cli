@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"context"
+
 	"errors"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/session"
@@ -21,24 +23,24 @@ var (
 		},
 		Usage:       "Login to Scalingo platform",
 		Description: "Login to Scalingo platform",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Bool("ssh") && c.Bool("password-only") {
-				errorQuit(c.Context, errors.New("you cannot use both --ssh and --password-only at the same time"))
+				errorQuit(ctx, errors.New("you cannot use both --ssh and --password-only at the same time"))
 			}
 
-			err := session.Login(c.Context, session.LoginOpts{
+			err := session.Login(ctx, session.LoginOpts{
 				APIToken:     c.String("api-token"),
 				PasswordOnly: c.Bool("password-only"),
 				SSH:          c.Bool("ssh"),
 				SSHIdentity:  c.String("ssh-identity"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "login")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "login")
 		},
 	}
 )

@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
 
-	"github.com/Scalingo/cli/reviewapps"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/reviewapps"
 )
 
 var (
@@ -19,20 +20,20 @@ var (
 			Description: "Show review apps of the parent application",
 			Examples:    []string{"scalingo --app my-app review-apps"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "review-apps")
+				_ = cli.ShowCommandHelp(ctx, c, "review-apps")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := reviewapps.Show(c.Context, currentApp)
+			err := reviewapps.Show(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "review-apps")
 		},
 	}

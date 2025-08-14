@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"regexp"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -25,10 +26,10 @@ var (
 				"scalingo --app my-app one-off-stop 1234",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "one-off-stop")
+				_ = cli.ShowCommandHelp(ctx, c, "one-off-stop")
 				return nil
 			}
 			oneOffLabel := c.Args().First()
@@ -38,22 +39,22 @@ var (
 			labelHasOnlyDigit, err := regexp.MatchString("^[0-9]+$", oneOffLabel)
 			if err != nil {
 				// This should never occur as we are pretty sure the provided regexp is valid.
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			if labelHasOnlyDigit {
 				oneOffLabel = "one-off-" + oneOffLabel
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err = apps.OneOffStop(c.Context, currentApp, oneOffLabel)
+			err = apps.OneOffStop(ctx, currentApp, oneOffLabel)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "one-off-stop")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "one-off-stop")
 		},
 	}
 )

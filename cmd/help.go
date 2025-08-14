@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 )
@@ -10,18 +12,18 @@ var (
 	HelpCommand = cli.Command{
 		Name:  "help",
 		Usage: "Shows a list of commands or help for one command",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args()
 			if args.Present() {
-				cli.ShowCommandHelp(c, args.First())
+				_ = cli.ShowCommandHelp(ctx, c, args.First())
 				return nil
 			}
-			cli.ShowAppHelp(c)
+			_ = cli.ShowAppHelp(c)
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "help")
-			autocomplete.HelpAutoComplete(c)
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "help")
+			_ = autocomplete.HelpAutoComplete(c)
 		},
 	}
 )

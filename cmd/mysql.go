@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/db"
@@ -32,27 +34,27 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			},
 			SeeAlso: []string{"mongo-console", "pgsql-console"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "mysql-console")
+				_ = cli.ShowCommandHelp(ctx, c, "mysql-console")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.MySQLConsole(c.Context, db.MySQLConsoleOpts{
+			err := db.MySQLConsole(ctx, db.MySQLConsoleOpts{
 				App:          currentApp,
 				Size:         c.String("s"),
 				VariableName: c.String("e"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "mysql-console")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "mysql-console")
 		},
 	}
 )

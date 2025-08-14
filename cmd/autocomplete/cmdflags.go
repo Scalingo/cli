@@ -3,22 +3,16 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-func CmdFlagsAutoComplete(c *cli.Context, command string) error {
-	var cmd *cli.Command
-	for _, cmd = range c.App.Commands {
-		if cmd.Name == command {
-			break
-		}
-	}
-	if cmd.Name != command {
+func CmdFlagsAutoComplete(c *cli.Command, command string) error {
+	if c.Name != command {
 		return nil
 	}
 
 	if len(os.Args) > 1 {
-		DisplayFlags(cmd.Flags)
+		DisplayFlags(c.Flags)
 	}
 
 	return nil

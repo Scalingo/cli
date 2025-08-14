@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -26,19 +28,19 @@ var (
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			if err := apps.Restart(c.Context, currentApp, c.Bool("s"), c.Args().Slice()); err != nil {
-				errorQuit(c.Context, err)
+			if err := apps.Restart(ctx, currentApp, c.Bool("s"), c.Args().Slice()); err != nil {
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
 
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "restart")
-			autocomplete.RestartAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "restart")
+			_ = autocomplete.RestartAutoComplete(ctx, c)
 		},
 	}
 )

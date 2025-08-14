@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	cli "github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/detect"
@@ -21,19 +23,18 @@ var (
 			Examples:    []string{"scalingo --app my-app stats"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "stats")
+				_ = cli.ShowCommandHelp(ctx, c, "stats")
 				return nil
 			}
 
-			err := apps.Stats(c.Context, currentApp, c.Bool("stream"))
+			err := apps.Stats(ctx, currentApp, c.Bool("stream"))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {},
 	}
 )

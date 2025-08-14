@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/addonproviders"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -17,18 +19,18 @@ var (
 			Examples:    []string{"scalingo addon-plans scalingo-mongodb"},
 		}.Render(),
 		Usage: "List plans",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "addons-plans")
+				_ = cli.ShowCommandHelp(ctx, c, "addons-plans")
 				return nil
 			}
-			if err := addonproviders.Plans(c.Context, c.Args().First()); err != nil {
-				errorQuit(c.Context, err)
+			if err := addonproviders.Plans(ctx, c.Args().First()); err != nil {
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.AddonsPlansAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.AddonsPlansAutoComplete(ctx, c)
 		},
 	}
 )

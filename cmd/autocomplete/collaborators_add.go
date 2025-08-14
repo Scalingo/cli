@@ -1,10 +1,11 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -12,24 +13,24 @@ import (
 	"github.com/Scalingo/go-scalingo/v8/debug"
 )
 
-func CollaboratorsAddAutoComplete(c *cli.Context) error {
+func CollaboratorsAddAutoComplete(ctx context.Context, c *cli.Command) error {
 	var err error
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
 	}
 
-	apps, err := appsList(c.Context)
+	apps, err := appsList(ctx)
 	if err != nil {
 		debug.Println("fail to get apps list:", err)
 		return nil
 	}
 
-	client, err := config.ScalingoClient(c.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	currentAppCollaborators, err := client.CollaboratorsList(c.Context, appName)
+	currentAppCollaborators, err := client.CollaboratorsList(ctx, appName)
 	if err != nil {
 		return nil
 	}
@@ -41,7 +42,7 @@ func CollaboratorsAddAutoComplete(c *cli.Context) error {
 	for _, app := range apps {
 		go func(app *scalingo.App) {
 			defer wg.Done()
-			appCollaborators, erro := client.CollaboratorsList(c.Context, app.Name)
+			appCollaborators, erro := client.CollaboratorsList(ctx, app.Name)
 			if erro != nil {
 				config.C.Logger.Println(erro.Error())
 				apiError = erro

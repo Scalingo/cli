@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/stvp/rollbar"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -59,10 +59,10 @@ func (r *ReportError) Report() {
 	//rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
 }
 
-func errorQuitWithHelpMessage(err error, ctxCli *cli.Context, command string) {
-	displayError(ctxCli.Context, err)
+func errorQuitWithHelpMessage(ctx context.Context, err error, c *cli.Command, command string) {
+	displayError(ctx, err)
 	fmt.Print("\n")
-	_ = cli.ShowCommandHelp(ctxCli, command)
+	_ = cli.ShowCommandHelp(ctx, c, command)
 
 	os.Exit(1)
 }

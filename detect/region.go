@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
@@ -15,7 +15,7 @@ import (
 
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository
 // If not found it returns an empty string
-func GetRegionFromGitRemote(c *cli.Context, rc *config.RegionsCache) string {
+func GetRegionFromGitRemote(c *cli.Command, rc *config.RegionsCache) string {
 	remoteName := RemoteNameFromFlags(c)
 
 	if dir, ok := utils.DetectGit(); ok {

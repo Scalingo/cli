@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/apps"
@@ -29,25 +31,25 @@ var (
 				"scalingo --app my-app send-signal --signal SIGUSR2 web",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
-				err := cli.ShowCommandHelp(c, "send-signal")
+				err := cli.ShowCommandHelp(ctx, c, "send-signal")
 				if err != nil {
 					return errgo.Notef(err, "fail to show command helper")
 				}
 				return nil
 			}
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := apps.SendSignal(c.Context, currentApp, c.String("signal"), c.Args().Slice())
+			err := apps.SendSignal(ctx, currentApp, c.String("signal"), c.Args().Slice())
 			if err != nil {
 				rootError := errors.RootCause(err)
-				errorQuit(c.Context, rootError)
+				errorQuit(ctx, rootError)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "send-signal")
 		},
 	}

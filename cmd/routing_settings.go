@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -23,28 +25,28 @@ var (
 			Description: "When enabled, this feature will automatically redirect HTTP traffic to HTTPS for all domains associated with this application.",
 			Examples:    []string{"scalingo --app my-app force-https --enable"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "force-https")
+				_ = cli.ShowCommandHelp(ctx, c, "force-https")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := true
 			if c.IsSet("disable") {
 				enable = false
 			}
 
-			err := apps.ForceHTTPS(c.Context, currentApp, enable)
+			err := apps.ForceHTTPS(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "force-https")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "force-https")
 		},
 	}
 
@@ -62,28 +64,28 @@ var (
 			Examples:    []string{"scalingo --app my-app sticky-session --enable"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "sticky-session")
+				_ = cli.ShowCommandHelp(ctx, c, "sticky-session")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := true
 			if c.IsSet("disable") {
 				enable = false
 			}
 
-			err := apps.StickySession(c.Context, currentApp, enable)
+			err := apps.StickySession(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "sticky-session")
 		},
 	}
 
@@ -101,28 +103,28 @@ var (
 			Examples:    []string{"scalingo --app my-app router-logs --enable"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 1 {
-				cli.ShowCommandHelp(c, "router-logs")
+				_ = cli.ShowCommandHelp(ctx, c, "router-logs")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			enable := false
 			if c.IsSet("enable") {
 				enable = true
 			}
 
-			err := apps.RouterLogs(c.Context, currentApp, enable)
+			err := apps.RouterLogs(ctx, currentApp, enable)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "router-logs")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "router-logs")
 		},
 	}
 )

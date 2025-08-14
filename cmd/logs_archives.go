@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -27,33 +29,33 @@ var (
 		Flags: []cli.Flag{&appFlag, &addonFlag,
 			&cli.IntFlag{Name: "page", Aliases: []string{"p"}, Usage: "Page number"},
 		},
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "logs-archives")
+				_ = cli.ShowCommandHelp(ctx, c, "logs-archives")
 				return nil
 			}
 
-			addonName := addonUUIDFromFlags(c, currentApp)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp)
 
 			var err error
 			if addonName == "" {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-				err = apps.LogsArchives(c.Context, currentApp, c.Int("p"))
+				err = apps.LogsArchives(ctx, currentApp, c.Int("p"))
 			} else {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-				err = db.LogsArchives(c.Context, currentApp, addonName, c.Int("p"))
+				err = db.LogsArchives(ctx, currentApp, addonName, c.Int("p"))
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "logs-archives")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "logs-archives")
 		},
 	}
 )

@@ -1,15 +1,14 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
-
-	"github.com/urfave/cli/v2"
 
 	"github.com/Scalingo/go-scalingo/v8/debug"
 )
 
-func FlagAppAutoComplete(c *cli.Context) bool {
-	apps, err := appsList(c.Context)
+func FlagAppAutoComplete(ctx context.Context) bool {
+	apps, err := appsList(ctx)
 	if err != nil {
 		debug.Println("fail to get apps list:", err)
 		return false

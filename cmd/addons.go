@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -21,21 +23,21 @@ var (
 			Examples:    []string{"scalingo --app my-app addons"},
 			SeeAlso:     []string{"addons-add", "addons-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() > 0 {
-				return cli.ShowCommandHelp(c, "addons")
+				return cli.ShowCommandHelp(ctx, c, "addons")
 			}
 
-			err := addons.List(c.Context, currentApp)
+			err := addons.List(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons")
 		},
 	}
 	addonsAddCommand = cli.Command{
@@ -50,24 +52,24 @@ var (
 			SeeAlso:     []string{"addons-list", "addons-plans"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 2 {
-				return cli.ShowCommandHelp(c, "addons-add")
+				return cli.ShowCommandHelp(ctx, c, "addons-add")
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			err := addons.Provision(c.Context, currentApp, c.Args().First(), c.Args().Slice()[1])
+			err := addons.Provision(ctx, currentApp, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-add")
-			autocomplete.AddonsAddAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-add")
+			_ = autocomplete.AddonsAddAutoComplete(ctx)
 		},
 	}
 	addonsRemoveCommand = cli.Command{
@@ -82,29 +84,29 @@ var (
 			SeeAlso:     []string{"addons", "addons-add"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				return cli.ShowCommandHelp(c, "addons-remove")
+				return cli.ShowCommandHelp(ctx, c, "addons-remove")
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
+			addonUUID, err := utils.GetAddonUUIDFromType(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
-			err = addons.Destroy(c.Context, currentApp, addonUUID)
+			err = addons.Destroy(ctx, currentApp, addonUUID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-remove")
-			autocomplete.AddonsRemoveAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-remove")
+			_ = autocomplete.AddonsRemoveAutoComplete(ctx, c)
 		},
 	}
 	addonsUpgradeCommand = cli.Command{
@@ -119,26 +121,26 @@ var (
 			SeeAlso:     []string{"addons-plans", "addons-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 2 {
-				return cli.ShowCommandHelp(c, "addons-upgrade")
+				return cli.ShowCommandHelp(ctx, c, "addons-upgrade")
 			}
 
-			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, c.Args().First())
+			addonUUID, err := utils.GetAddonUUIDFromType(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
-			err = addons.Upgrade(c.Context, currentApp, addonUUID, c.Args().Slice()[1])
+			err = addons.Upgrade(ctx, currentApp, addonUUID, c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-upgrade")
-			autocomplete.AddonsUpgradeAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-upgrade")
+			_ = autocomplete.AddonsUpgradeAutoComplete(ctx, c)
 		},
 	}
 	addonsInfoCommand = cli.Command{
@@ -152,28 +154,28 @@ var (
 			Examples:    []string{"scalingo --app my-app addons-info addon_uuid"},
 			SeeAlso:     []string{"addons", "addons-upgrade"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				return cli.ShowCommandHelp(c, "addons-info")
+				return cli.ShowCommandHelp(ctx, c, "addons-info")
 			}
 
 			currentApp := detect.CurrentApp(c)
 			addonName := c.Args().First()
 
-			addonUUID, err := utils.GetAddonUUIDFromType(c.Context, currentApp, addonName)
+			addonUUID, err := utils.GetAddonUUIDFromType(ctx, currentApp, addonName)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
-			err = addons.Info(c.Context, currentApp, addonUUID)
+			err = addons.Info(ctx, currentApp, addonUUID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-info")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-info")
 		},
 	}
 	addonsConfigCommand = cli.Command{
@@ -190,12 +192,11 @@ var (
 			Examples:    []string{"scalingo --app my-app addons-config --maintenance-window-day tuesday --maintenance-window-hour 2 addon_uuid"},
 			SeeAlso:     []string{"addons", "addons-info"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				return cli.ShowCommandHelp(c, "addons-config")
+				return cli.ShowCommandHelp(ctx, c, "addons-config")
 			}
 
-			ctx := c.Context
 			currentApp := detect.CurrentApp(c)
 			currentAddon := c.Args().First()
 			config := addons.UpdateAddonConfigOpts{}
@@ -209,20 +210,20 @@ var (
 			}
 
 			if config.MaintenanceWindowHour == nil && config.MaintenanceWindowDay == nil {
-				errorQuitWithHelpMessage(errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
 			}
 
 			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			err := autocomplete.CmdFlagsAutoComplete(c, "addons-config")
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 		},
 	}

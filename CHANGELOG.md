@@ -2,6 +2,9 @@
 
 ## To Be Released
 
+/!\ This change required the [command completion](https://doc.scalingo.com/tools/cli/start#command-completion) to be re-run
+* chore(deps): update urfave/cli from v2 to v3
+
 ### 1.37.0
 
 * feat(apps): add the project of the applications in `apps` and `apps-info`

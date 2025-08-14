@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -36,28 +37,28 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			},
 			SeeAlso: []string{"log-drains-add", "log-drains-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "log-drains")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			addonID := addonUUIDFromFlags(c, currentApp)
+			addonID := addonUUIDFromFlags(ctx, c, currentApp)
 
-			err := logdrains.List(c.Context, currentApp, logdrains.ListAddonOpts{
+			err := logdrains.List(ctx, currentApp, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
 				AddonID:    addonID,
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains")
 		},
 	}
 
@@ -104,15 +105,15 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 			SeeAlso: []string{"log-drains", "log-drains-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 
-			addonID := addonUUIDFromFlags(c, currentApp)
+			addonID := addonUUIDFromFlags(ctx, c, currentApp)
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
-				cli.ShowCommandHelp(c, "log-drains-add")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-add")
 				return nil
 			}
 
@@ -120,7 +121,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
-			err := logdrains.Add(c.Context, currentApp, logdrains.AddDrainOpts{
+			err := logdrains.Add(ctx, currentApp, logdrains.AddDrainOpts{
 				WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
 				AddonID:    addonID,
 				Params: scalingo.LogDrainAddParams{
@@ -133,12 +134,12 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				},
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-add")
 		},
 	}
 
@@ -168,22 +169,22 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 
 	# See also commands 'log-drains-add', 'log-drains'`,
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "log-drains-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 			drain := c.Args().First()
 
-			addonID := addonUUIDFromFlags(c, currentApp)
+			addonID := addonUUIDFromFlags(ctx, c, currentApp)
 
 			if addonID != "" && c.Bool("only-app") {
-				cli.ShowCommandHelp(c, "log-drains-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
 			message := "This operation will delete the log drain " + drain
 			if addonID == "" && !c.Bool("only-app") {
@@ -202,20 +203,20 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				return nil
 			}
 
-			err := logdrains.Remove(c.Context, currentApp, logdrains.RemoveAddonOpts{
+			err := logdrains.Remove(ctx, currentApp, logdrains.RemoveAddonOpts{
 				AddonID: addonID,
 				OnlyApp: c.Bool("only-app"),
 				URL:     drain,
 			})
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
-			autocomplete.LogDrainsRemoveAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "log-drains-remove")
+			_ = autocomplete.LogDrainsRemoveAutoComplete(ctx, c)
 		},
 	}
 )
@@ -225,6 +226,6 @@ func askContinue(message string) bool {
 	prompt := &survey.Confirm{
 		Message: message,
 	}
-	survey.AskOne(prompt, &result, nil)
+	_ = survey.AskOne(prompt, &result, nil)
 	return result
 }

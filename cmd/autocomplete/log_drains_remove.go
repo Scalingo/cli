@@ -1,25 +1,26 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func LogDrainsRemoveAutoComplete(c *cli.Context) error {
+func LogDrainsRemoveAutoComplete(ctx context.Context, c *cli.Command) error {
 	appName := CurrentAppCompletion(c)
 	if appName == "" {
 		return nil
 	}
 
-	client, err := config.ScalingoClient(c.Context)
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	drains, err := client.LogDrainsList(c.Context, appName)
+	drains, err := client.LogDrainsList(ctx, appName)
 	if err != nil {
 		return errgo.Notef(err, "fail to get log drains list")
 	}

@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
@@ -17,15 +19,15 @@ var (
 			SeeAlso:     []string{"keys-add", "keys-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
-			err := keys.List(c.Context)
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			err := keys.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys")
 		},
 	}
 
@@ -40,19 +42,19 @@ var (
 			SeeAlso:     []string{"keys", "keys-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
-				cli.ShowCommandHelp(c, "keys-add")
+				_ = cli.ShowCommandHelp(ctx, c, "keys-add")
 				return nil
 			}
-			err := keys.Add(c.Context, c.Args().First(), c.Args().Slice()[1])
+			err := keys.Add(ctx, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys-add")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys-add")
 		},
 	}
 
@@ -67,20 +69,20 @@ var (
 			SeeAlso:     []string{"keys", "keys-add"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "keys-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "keys-remove")
 				return nil
 			}
-			err := keys.Remove(c.Context, c.Args().First())
+			err := keys.Remove(ctx, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
-			autocomplete.KeysRemoveAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "keys-remove")
+			_ = autocomplete.KeysRemoveAutoComplete(ctx)
 		},
 	}
 )

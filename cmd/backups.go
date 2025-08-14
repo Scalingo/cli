@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
@@ -21,13 +23,13 @@ var (
 			SeeAlso:     []string{"addons", "backups-download"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
-			err := db.ListBackups(c.Context, currentApp, addonName)
+			err := db.ListBackups(ctx, currentApp, addonName)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -43,15 +45,15 @@ var (
 			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-create"},
 			SeeAlso:     []string{"backups", "addons"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.CreateBackup(c.Context, currentApp, addonName)
+			err := db.CreateBackup(ctx, currentApp, addonName)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -80,11 +82,11 @@ var (
 			Examples:    []string{"scalingo --app my-app --addon addon_uuid backups-download --backup my_backup"},
 			SeeAlso:     []string{"backups", "addons"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			addonName := addonUUIDFromFlags(c, currentApp, true)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
 			backup := c.String("backup")
 			opts := db.DownloadBackupOpts{
@@ -92,9 +94,9 @@ var (
 				Silent: c.Bool("silent"),
 			}
 
-			err := db.DownloadBackup(c.Context, currentApp, addonName, backup, opts)
+			err := db.DownloadBackup(ctx, currentApp, addonName, backup, opts)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -106,9 +108,9 @@ var (
 		Usage:       backupsDownloadCommand.Usage,
 		Description: backupsDownloadCommand.Description,
 		Flags:       backupsDownloadCommand.Flags,
-		Before: func(*cli.Context) error {
+		Before: func(ctx context.Context, _ *cli.Command) (context.Context, error) {
 			io.Warningf("DEPRECATED: please use backups-download instead of this command\n\n")
-			return nil
+			return ctx, nil
 		},
 		Action: backupsDownloadCommand.Action,
 	}

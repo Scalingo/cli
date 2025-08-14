@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -28,19 +30,19 @@ var (
 			&cli.StringFlag{Name: "project-id", Value: "", Usage: "Project to which the application should be linked. If not provided, the app will be assigned to your default project"},
 		},
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				_ = cli.ShowCommandHelp(c, "create")
+				_ = cli.ShowCommandHelp(ctx, c, "create")
 				return nil
 			}
 
-			err := apps.Create(c.Context, c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"), c.String("project-id"))
+			err := apps.Create(ctx, c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"), c.String("project-id"))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "create")
 		},
 	}
