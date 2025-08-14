@@ -7,18 +7,12 @@ import (
 )
 
 func CmdFlagsAutoComplete(c *cli.Command, command string) error {
-	var cmd *cli.Command
-	for _, cmd = range c.Commands {
-		if cmd.Name == command {
-			break
-		}
-	}
-	if cmd == nil || cmd.Name != command {
+	if c.Name != command {
 		return nil
 	}
 
 	if len(os.Args) > 1 {
-		DisplayFlags(cmd.Flags)
+		DisplayFlags(c.Flags)
 	}
 
 	return nil
