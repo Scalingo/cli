@@ -82,7 +82,7 @@ func main() {
 	ctx := logger.ToCtx(context.Background(), log)
 
 	app := cli.Command{}
-	app.Name = "Scalingo Client"
+	app.Name = "scalingo"
 	app.Authors = []any{mail.Address{Name: "Scalingo Team", Address: "hello@scalingo.com"}}
 	app.Usage = "Manage your apps and containers"
 	app.Version = config.Version
