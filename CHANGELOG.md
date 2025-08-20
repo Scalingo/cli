@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+### 1.38.0
+
 /!\ This change required the [command completion](https://doc.scalingo.com/tools/cli/start#command-completion) to be re-run
 * chore(deps): update urfave/cli from v2 to v3
 
