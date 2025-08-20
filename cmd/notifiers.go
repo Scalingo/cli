@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -21,22 +23,22 @@ var (
 			Examples:    []string{"scalingo --app my-app notifiers"},
 			SeeAlso:     []string{"notifiers-add", "notifiers-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 0 {
-				err = notifiers.List(c.Context, currentApp)
+				err = notifiers.List(ctx, currentApp)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers")
 		},
 	}
 
@@ -51,23 +53,23 @@ var (
 			Examples:    []string{"scalingo --app my-app notifiers-details my-notifier"},
 			SeeAlso:     []string{"notifiers"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Details(c.Context, currentApp, c.Args().First())
+				err = notifiers.Details(ctx, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-details")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-details")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
-			autocomplete.NotifiersAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-details")
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 
@@ -83,9 +85,9 @@ var (
 			&cli.BoolFlag{Name: "send-all-events", Aliases: []string{"sa"}, Usage: "If true the notifier will send all events. Default: false"},
 			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(), Usage: "List of selected events. Default: []"},
-			&cli.StringSliceFlag{Name: "email", Value: cli.NewStringSlice(), Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "collaborator", Value: cli.NewStringSlice(), Usage: "The usernames of the collaborators who will receive notifications"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: []string{}, Usage: "List of selected events. Default: []"},
+			&cli.StringSliceFlag{Name: "email", Value: []string{}, Usage: "The emails (multiple option accepted) to send notifications (if applicable)"},
+			&cli.StringSliceFlag{Name: "collaborator", Value: []string{}, Usage: "The usernames of the collaborators who will receive notifications"},
 		},
 		Usage: "Add a notifier for your application",
 		Description: CommandDescription{
@@ -96,13 +98,13 @@ var (
 			},
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.String("platform") == "" {
-				cli.ShowCommandHelp(c, "notifiers-add")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-add")
 			}
 
 			var active bool
@@ -128,14 +130,14 @@ var (
 				},
 			}
 
-			err := notifiers.Provision(c.Context, currentApp, c.String("platform"), params)
+			err := notifiers.Provision(ctx, currentApp, c.String("platform"), params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-add")
 		},
 	}
 
@@ -151,7 +153,7 @@ var (
 			&cli.StringFlag{Name: "webhook-url", Aliases: []string{"u"}, Value: "", Usage: "The webhook url to send notification (if applicable)"},
 			&cli.StringFlag{Name: "phone", Value: "", Usage: "The phone number to send notifications (if applicable)"},
 			&cli.StringFlag{Name: "email", Value: "", Usage: "The email to send notifications (if applicable)"},
-			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: cli.NewStringSlice(), Usage: "List of selected events. Default: []"},
+			&cli.StringSliceFlag{Name: "event", Aliases: []string{"ev"}, Value: []string{}, Usage: "List of selected events. Default: []"},
 		},
 		Usage:     "Update a notifier",
 		ArgsUsage: "notifier-id",
@@ -164,9 +166,9 @@ var (
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 
 			var active *bool
@@ -201,18 +203,18 @@ var (
 				},
 			}
 			if c.Args().Len() >= 1 {
-				err = notifiers.Update(c.Context, currentApp, c.Args().First(), params)
+				err = notifiers.Update(ctx, currentApp, c.Args().First(), params)
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-update")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-update")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
-			autocomplete.NotifiersAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-update")
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 
@@ -227,23 +229,23 @@ var (
 			Examples:    []string{"scalingo --app my-app notifier-remove my-notifier"},
 			SeeAlso:     []string{"notifiers", "notifiers-add"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
-				err = notifiers.Destroy(c.Context, currentApp, c.Args().First())
+				err = notifiers.Destroy(ctx, currentApp, c.Args().First())
 			} else {
-				cli.ShowCommandHelp(c, "notifiers-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "notifiers-remove")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
-			autocomplete.NotifiersAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "notifiers-remove")
+			_ = autocomplete.NotifiersAutoComplete(ctx, c)
 		},
 	}
 )

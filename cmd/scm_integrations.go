@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/url"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/scmintegrations"
@@ -22,14 +23,14 @@ var (
 			SeeAlso:     []string{"integrations-add", "integrations-delete", "integrations-import-keys"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
-			err := scmintegrations.List(c.Context)
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			err := scmintegrations.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations")
 		},
 	}
@@ -58,9 +59,9 @@ var (
 
 	# See also commands 'integrations', 'integrations-delete', 'integrations-import-keys'`,
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-add")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-add")
 				return nil
 			}
 
@@ -73,15 +74,15 @@ var (
 				break
 			case scalingo.SCMGithubEnterpriseType, scalingo.SCMGitlabSelfHostedType:
 				if integrationURL == "" || token == "" {
-					errorQuit(c.Context, errors.New("both --url and --token must be set"))
+					errorQuit(ctx, errors.New("both --url and --token must be set"))
 				}
 
 				u, err := url.Parse(integrationURL)
 				if err != nil || u.Scheme == "" || u.Host == "" {
-					errorQuit(c.Context, fmt.Errorf("'%s' is not a valid URL", integrationURL))
+					errorQuit(ctx, fmt.Errorf("'%s' is not a valid URL", integrationURL))
 				}
 			default:
-				errorQuit(c.Context, errors.New(
+				errorQuit(ctx, errors.New(
 					"unknown integration. Available integrations: github, github-enterprise, gitlab, gitlab-self-hosted",
 				))
 			}
@@ -92,13 +93,13 @@ var (
 				Token:   token,
 			}
 
-			err := scmintegrations.Create(c.Context, args)
+			err := scmintegrations.Create(ctx, args)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-add")
 		},
 	}
@@ -117,19 +118,19 @@ var (
 			SeeAlso: []string{"integrations", "integrations-add", "integrations-import-keys"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-delete")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-delete")
 				return nil
 			}
 
-			err := scmintegrations.Delete(c.Context, c.Args().First())
+			err := scmintegrations.Delete(ctx, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-delete")
 		},
 	}
@@ -148,19 +149,19 @@ var (
 			SeeAlso: []string{"integrations", "integrations-add", "integrations-delete"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NArg() != 1 {
-				_ = cli.ShowCommandHelp(c, "integrations-import-keys")
+				_ = cli.ShowCommandHelp(ctx, c, "integrations-import-keys")
 				return nil
 			}
 
-			err := scmintegrations.ImportKeys(c.Context, c.Args().First())
+			err := scmintegrations.ImportKeys(ctx, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integrations-import-keys")
 		},
 	}

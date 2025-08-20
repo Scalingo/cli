@@ -76,7 +76,7 @@ func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
 	if err != nil {
 		return errgo.Mask(err)
 	}
-	defer fd.Close()
+	defer func() { _ = fd.Close() }()
 	cache := appsCache{
 		Apps:      apps,
 		CreatedAt: time.Now(),

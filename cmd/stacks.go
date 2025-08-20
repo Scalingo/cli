@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -22,10 +24,10 @@ var (
 			SeeAlso:     []string{"stacks-set"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
-			err := stacks.List(c.Context, c.Bool("with-deprecated"))
+		Action: func(ctx context.Context, c *cli.Command) error {
+			err := stacks.List(ctx, c.Bool("with-deprecated"))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
@@ -43,22 +45,22 @@ var (
 			SeeAlso:     []string{"stacks"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "stacks-set")
+				_ = cli.ShowCommandHelp(ctx, c, "stacks-set")
 				return nil
 			}
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := stacks.Set(c.Context, currentApp, c.Args().First())
+			err := stacks.Set(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.StacksSetAutoComplete(c)
+		ShellComplete: func(ctx context.Context, _ *cli.Command) {
+			_ = autocomplete.StacksSetAutoComplete(ctx)
 		},
 	}
 )

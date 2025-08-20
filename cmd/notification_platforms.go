@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/notificationplatforms"
@@ -14,15 +16,15 @@ var (
 		Description: "List all notification platforms you can use with a notifier.",
 		Usage:       "List all notification platforms",
 
-		Action: func(c *cli.Context) error {
-			err := notificationplatforms.List(c.Context)
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			err := notificationplatforms.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "platforms-list")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "platforms-list")
 		},
 	}
 )

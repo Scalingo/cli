@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/collaborators"
@@ -17,25 +19,25 @@ var (
 		Usage:       "List the collaborators of an application",
 		Flags:       []cli.Flag{&appFlag},
 		Description: "List all the collaborators of an application and display information about them",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				err := cli.ShowCommandHelp(c, "collaborators")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				return nil
 			}
 
-			err := collaborators.List(c.Context, currentApp)
+			err := collaborators.List(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators")
 		},
 	}
@@ -50,28 +52,28 @@ var (
 			Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email",
 			Examples:    []string{"scalingo --app my-app collaborators-add user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-add")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-add")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Add(c.Context, currentApp, scalingo.CollaboratorAddParams{Email: c.Args().First(), IsLimited: false})
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+			err := collaborators.Add(ctx, currentApp, scalingo.CollaboratorAddParams{Email: c.Args().First(), IsLimited: false})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-add")
-			_ = autocomplete.CollaboratorsAddAutoComplete(c)
+			_ = autocomplete.CollaboratorsAddAutoComplete(ctx, c)
 		},
 	}
 
@@ -85,28 +87,28 @@ var (
 			Description: "Revoke the invitation of collaboration to the given email",
 			Examples:    []string{"scalingo -a myapp collaborators-remove user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-remove")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-remove")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Remove(c.Context, currentApp, c.Args().First())
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+			err := collaborators.Remove(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-remove")
-			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
+			_ = autocomplete.CollaboratorsGenericListAutoComplete(ctx, c)
 		},
 	}
 
@@ -123,28 +125,28 @@ var (
 			Description: "Update a collaborator from an application, allowing to mark it as limited collaborator or not",
 			Examples:    []string{"scalingo --app my-app collaborators-update --limited=true user@example.com"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "collaborators-update")
+				err := cli.ShowCommandHelp(ctx, c, "collaborators-update")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Update(c.Context, currentApp, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+			err := collaborators.Update(ctx, currentApp, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "collaborators-update")
-			_ = autocomplete.CollaboratorsGenericListAutoComplete(c)
+			_ = autocomplete.CollaboratorsGenericListAutoComplete(ctx, c)
 		},
 	}
 )

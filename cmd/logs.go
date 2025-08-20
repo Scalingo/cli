@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -33,36 +35,36 @@ var (
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},
 			&cli.StringFlag{Name: "filter", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "logs")
+				_ = cli.ShowCommandHelp(ctx, c, "logs")
 				return nil
 			}
 
-			addonName := addonUUIDFromFlags(c, currentApp)
+			addonName := addonUUIDFromFlags(ctx, c, currentApp)
 
 			var err error
 			if addonName == "" {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-				err = apps.Logs(c.Context, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
+				err = apps.Logs(ctx, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
 			} else {
-				utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-				err = db.Logs(c.Context, currentApp, addonName, db.LogsOpts{
+				err = db.Logs(ctx, currentApp, addonName, db.LogsOpts{
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "logs")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "logs")
 		},
 	}
 )

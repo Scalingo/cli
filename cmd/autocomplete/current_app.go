@@ -3,15 +3,14 @@ package autocomplete
 import (
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8/debug"
 )
 
-func CurrentAppCompletion(c *cli.Context) string {
-	appName := ""
+func CurrentAppCompletion(c *cli.Command) string {
 	var err error
 
 	if len(os.Args) >= 2 {
@@ -23,7 +22,9 @@ func CurrentAppCompletion(c *cli.Context) string {
 			}
 		}
 	}
-	if appName == "" && os.Getenv("SCALINGO_APP") != "" {
+
+	var appName string
+	if os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
 	}
 	if dir, ok := utils.DetectGit(); appName == "" && ok {
@@ -32,5 +33,6 @@ func CurrentAppCompletion(c *cli.Context) string {
 			debug.Println(err)
 		}
 	}
+
 	return appName
 }

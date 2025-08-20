@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-func ShowSuggestions(c *cli.Context) {
+func ShowSuggestions(c *cli.Command) {
 	var suggestions []string
 	cmdName := c.Args().First()
 
@@ -18,7 +18,7 @@ func ShowSuggestions(c *cli.Context) {
 	endRange := len(cmdName) - startRange
 
 	if startRange >= 0 {
-		for _, cmd := range c.App.Commands {
+		for _, cmd := range c.Commands {
 			if strings.HasPrefix(cmd.Name, cmdName[:startRange]) {
 				suggestions = append(suggestions, cmd.Name)
 			} else if strings.HasSuffix(cmd.Name, cmdName[endRange:]) {

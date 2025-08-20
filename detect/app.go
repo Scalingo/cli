@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/utils"
@@ -16,7 +16,7 @@ import (
 // CurrentApp returns the app name if it has been found in one of the following:
 // app flag, environment variable "SCALINGO_APP", current Git remote
 // returns an empty string if not found
-func CurrentApp(c *cli.Context) string {
+func CurrentApp(c *cli.Command) string {
 	var err error
 
 	appName := extractAppNameFromCommandLine(c)
@@ -64,7 +64,7 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 }
 
 // RemoteNameFromFlags returns the remote name specified in command flags
-func RemoteNameFromFlags(c *cli.Context) string {
+func RemoteNameFromFlags(c *cli.Command) string {
 	for _, cliContext := range c.Lineage() {
 		if cliContext.String("remote") != "" {
 			return cliContext.String("remote")
@@ -73,7 +73,7 @@ func RemoteNameFromFlags(c *cli.Context) string {
 	return ""
 }
 
-func extractAppNameFromCommandLine(c *cli.Context) string {
+func extractAppNameFromCommandLine(c *cli.Command) string {
 	for _, cliContext := range c.Lineage() {
 		appName := cliContext.String("app")
 		if appName != "" && appName != "<name>" {

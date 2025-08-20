@@ -1,11 +1,12 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 func getFlagByName(lastArg string, flags []cli.Flag) (bool, cli.Flag) {
@@ -83,12 +84,12 @@ func DisplayFlags(flags []cli.Flag) {
 	}
 }
 
-func FlagsAutoComplete(c *cli.Context, flag string) bool {
+func FlagsAutoComplete(ctx context.Context, flag string) bool {
 	switch flag {
 	case "-r", "--remote":
-		return CountFlags([]string{"-r", "--remote"}) == 1 && FlagRemoteAutoComplete(c)
+		return CountFlags([]string{"-r", "--remote"}) == 1 && FlagRemoteAutoComplete()
 	case "-a", "--app":
-		return CountFlags([]string{"-a", "--app"}) == 1 && FlagAppAutoComplete(c)
+		return CountFlags([]string{"-a", "--app"}) == 1 && FlagAppAutoComplete(ctx)
 	}
 
 	return false

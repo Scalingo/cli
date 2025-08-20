@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
@@ -23,25 +24,25 @@ var (
 			SeeAlso:     []string{"env-get", "env-set", "env-unset"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			err = env.Display(c.Context, currentApp)
+			err = env.Display(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "env")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
 		},
 	}
 
@@ -57,24 +58,24 @@ var (
 			SeeAlso:     []string{"env", "env-set", "env-unset"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, "env")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			variableValue, err := env.Get(c.Context, currentApp, c.Args().First())
+			variableValue, err := env.Get(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			fmt.Println(variableValue)
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "env")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
 		},
 	}
 
@@ -96,22 +97,22 @@ var (
 			},
 			SeeAlso: []string{"env", "env-get", "env-unset"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
-				err = env.Add(c.Context, currentApp, c.Args().Slice(), c.String("f"))
+				err = env.Add(ctx, currentApp, c.Args().Slice(), c.String("f"))
 			} else {
-				cli.ShowCommandHelp(c, "env-set")
+				_ = cli.ShowCommandHelp(ctx, c, "env-set")
 				return nil
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "env-set")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env-set")
 		},
 	}
 
@@ -127,22 +128,22 @@ var (
 			SeeAlso:     []string{"env", "env-get", "env-set"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var err error
 			if c.Args().Len() > 0 {
-				err = env.Delete(c.Context, currentApp, c.Args().Slice())
+				err = env.Delete(ctx, currentApp, c.Args().Slice())
 			} else {
-				cli.ShowCommandHelp(c, "env-unset")
+				_ = cli.ShowCommandHelp(ctx, c, "env-unset")
 			}
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "env-unset")
-			autocomplete.EnvUnsetAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "env-unset")
+			_ = autocomplete.EnvUnsetAutoComplete(ctx, c)
 		},
 	}
 )

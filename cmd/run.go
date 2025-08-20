@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -76,7 +78,7 @@ var (
 
    Example
      scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			opts := apps.RunOpts{
 				App:      currentApp,
@@ -89,7 +91,7 @@ var (
 				Detached: c.Bool("detached"),
 			}
 			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
-				cli.ShowCommandHelp(c, "run")
+				_ = cli.ShowCommandHelp(ctx, c, "run")
 				return nil
 			}
 
@@ -98,16 +100,16 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp)
+			utils.CheckForConsent(ctx, currentApp)
 
-			err := apps.Run(c.Context, opts)
+			err := apps.Run(ctx, opts)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "run")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "run")
 		},
 	}
 )

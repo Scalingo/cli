@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/url"
@@ -10,7 +11,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
@@ -37,20 +38,20 @@ var (
 			Examples:    []string{"scalingo --app my-app integration-link"},
 			SeeAlso:     []string{"integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "integration-link")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := integrationlink.Show(c.Context, currentApp)
+			err := integrationlink.Show(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link")
 		},
 	}
@@ -92,25 +93,25 @@ List of available integrations:
 			},
 			SeeAlso: []string{"integration-link", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "integration-link-create")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-create")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(c.Context, errgo.Notef(err, "error parsing the repository url"))
+				errorQuit(ctx, errgo.Notef(err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
 				integrationURL = fmt.Sprintf("https://%s", integrationURL)
 			}
 
-			integrationType, err := scmintegrations.GetTypeFromURL(c.Context, integrationURL)
+			integrationType, err := scmintegrations.GetTypeFromURL(ctx, integrationURL)
 			if err != nil {
 				if scalingoerrors.RootCause(err) == scmintegrations.ErrNotFound {
 					// If no integration matches the given URL, display a helpful status
@@ -129,40 +130,40 @@ List of available integrations:
 					}
 					os.Exit(1)
 				}
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			var params scalingo.SCMRepoLinkCreateParams
 			if c.NumFlags() == 0 {
 				params, err = interactiveCreate()
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			} else {
 				branch := c.String("branch")
 				autoDeploy := c.Bool("auto-deploy")
 				noAutoDeploy := c.Bool("no-auto-deploy")
 				if autoDeploy && noAutoDeploy {
-					errorQuitWithHelpMessage(errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
 				}
 
 				deployReviewApps := c.Bool("deploy-review-apps")
 				noDeployReviewApps := c.Bool("no-deploy-review-apps")
 				if deployReviewApps && noDeployReviewApps {
-					errorQuitWithHelpMessage(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
 				}
 
 				destroyOnClose := c.Bool("destroy-on-close")
 				noDestroyOnClose := c.Bool("no-destroy-on-close")
 				if destroyOnClose && noDestroyOnClose {
-					errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
 
 				destroyOnStale := c.Bool("destroy-on-stale")
 				noDestroyOnStale := c.Bool("no-destroy-on-stale")
 				if destroyOnStale && noDestroyOnStale {
-					errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
@@ -170,19 +171,19 @@ List of available integrations:
 				noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 				if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-					errorQuitWithHelpMessage(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-					errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
 					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 					if err != nil {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 				}
 
@@ -198,7 +199,7 @@ List of available integrations:
 				}
 			}
 
-			err = integrationlink.Create(c.Context, currentApp, integrationType, integrationURL, params)
+			err = integrationlink.Create(ctx, currentApp, integrationType, integrationURL, params)
 			if err != nil {
 				scerr, ok := scalingoerrors.RootCause(err).(*http.RequestFailedError)
 				if ok {
@@ -216,15 +217,15 @@ List of available integrations:
 						io.Error("")
 						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
 					} else {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 				} else {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-create")
 		},
 	}
@@ -261,65 +262,65 @@ List of available integrations:
 			},
 			SeeAlso: []string{"integration-link", "integration-link-create", "integration-link-delete", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.NumFlags() == 0 || c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "integration-link-update")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-update")
 				return nil
 			}
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
 			if autoDeploy && noAutoDeploy {
-				errorQuitWithHelpMessage(errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
 			}
 			deployReviewApps := c.Bool("deploy-review-apps")
 			noDeployReviewApps := c.Bool("no-deploy-review-apps")
 			if deployReviewApps && noDeployReviewApps {
-				errorQuitWithHelpMessage(errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
 			}
 			destroyOnClose := c.Bool("destroy-on-close")
 			noDestroyOnClose := c.Bool("no-destroy-on-close")
 			if destroyOnClose && noDestroyOnClose {
-				errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
 			}
 			destroyOnStale := c.Bool("destroy-on-stale")
 			noDestroyOnStale := c.Bool("no-destroy-on-stale")
 			if destroyOnStale && noDestroyOnStale {
-				errorQuitWithHelpMessage(errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
 			}
 
 			allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
 			noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-				errorQuitWithHelpMessage(errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 			if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-				errorQuitWithHelpMessage(errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
 				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 
 				params.AutomaticCreationFromForksAllowed = &stillAllowed
 			}
 
-			err := integrationlink.Update(c.Context, currentApp, *params)
+			err := integrationlink.Update(ctx, currentApp, *params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-update")
 		},
 	}
@@ -334,23 +335,23 @@ List of available integrations:
 			Examples:    []string{"scalingo --app my-app integration-link-delete"},
 			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-manual-deploy", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "integration-link-delete")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-delete")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := integrationlink.Delete(c.Context, currentApp)
+			err := integrationlink.Delete(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-delete")
 		},
 	}
@@ -369,22 +370,22 @@ List of available integrations:
 			Examples:    []string{"scalingo --app my-app integration-link-manual-deploy mybranch"},
 			SeeAlso:     []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-review-app"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "integration-link-manual-deploy")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-manual-deploy")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 			branchName := c.Args().First()
 			follow := c.Bool("follow")
-			err := integrationlink.ManualDeploy(c.Context, currentApp, branchName, follow)
+			err := integrationlink.ManualDeploy(ctx, currentApp, branchName, follow)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-deploy")
 		},
 	}
@@ -406,24 +407,24 @@ List of available integrations:
 			Examples: []string{"scalingo --app my-app integration-link-manual-review-app --aware-of-security-risks 42"},
 			SeeAlso:  []string{"integration-link", "integration-link-create", "integration-link-update", "integration-link-delete", "integration-link-manual-deploy"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "integration-link-manual-review-app")
+				_ = cli.ShowCommandHelp(ctx, c, "integration-link-manual-review-app")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			pullRequestID, err := strconv.Atoi(c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, errgo.Notef(err, "invalid pull / merge request id"))
+				errorQuit(ctx, errgo.Notef(err, "invalid pull / merge request id"))
 			}
 
-			pullRequest, err := integrationlink.PullRequest(c.Context, currentApp, pullRequestID)
+			pullRequest, err := integrationlink.PullRequest(ctx, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			if pullRequest.OpenedFromAForkedRepo {
@@ -432,7 +433,7 @@ List of available integrations:
 					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
 					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository?")
 					if err != nil {
-						errorQuit(c.Context, err)
+						errorQuit(ctx, err)
 					}
 
 					if !allowReviewAppsFromForks {
@@ -442,13 +443,13 @@ List of available integrations:
 				}
 			}
 
-			err = integrationlink.ManualReviewApp(c.Context, currentApp, pullRequestID)
+			err = integrationlink.ManualReviewApp(ctx, currentApp, pullRequestID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "integration-link-manual-review-app")
 		},
 	}

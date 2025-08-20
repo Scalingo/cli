@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/addonproviders"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -13,14 +15,14 @@ var (
 		Category:    "Addons - Global",
 		Description: "List all addons you can add to your app",
 		Usage:       "List all addons",
-		Action: func(c *cli.Context) error {
-			if err := addonproviders.List(c.Context); err != nil {
-				errorQuit(c.Context, err)
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			if err := addonproviders.List(ctx); err != nil {
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "addons-list")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "addons-list")
 		},
 	}
 )

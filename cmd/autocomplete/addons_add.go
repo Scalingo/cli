@@ -1,21 +1,21 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	"github.com/urfave/cli/v2"
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 )
 
-func AddonsAddAutoComplete(c *cli.Context) error {
-	client, err := config.ScalingoClient(c.Context)
+func AddonsAddAutoComplete(ctx context.Context) error {
+	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
-	resources, err := client.AddonProvidersList(c.Context)
+	resources, err := client.AddonProvidersList(ctx)
 	if len(os.Args) > 1 && err == nil {
 		lastArg := os.Args[len(os.Args)-2]
 		isAddonNameSet := false
@@ -28,7 +28,7 @@ func AddonsAddAutoComplete(c *cli.Context) error {
 		}
 
 		if isAddonNameSet {
-			plans, err := client.AddonProviderPlansList(c.Context, lastArg)
+			plans, err := client.AddonProviderPlansList(ctx, lastArg)
 
 			if err == nil {
 				for _, plan := range plans {

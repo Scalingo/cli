@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
@@ -15,8 +17,7 @@ var (
 		Category:    "Global",
 		Usage:       "Logout from Scalingo",
 		Description: "Remove login information stored on your computer",
-		Action: func(c *cli.Context) error {
-			ctx := c.Context
+		Action: func(ctx context.Context, _ *cli.Command) error {
 			currentUser, err := config.C.CurrentUser(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
@@ -32,8 +33,8 @@ var (
 			io.Status("Scalingo credentials have been deleted.")
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "logout")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "logout")
 		},
 	}
 )

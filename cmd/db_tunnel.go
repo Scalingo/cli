@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crypto/sshkeys"
@@ -56,7 +57,7 @@ var (
 
    Example
      $ scalingo --app rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
 			var sshIdentity string
 			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {
@@ -67,13 +68,13 @@ var (
 				sshIdentity = c.String("identity")
 			}
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "db-tunnel")
+				_ = cli.ShowCommandHelp(ctx, c, "db-tunnel")
 				return nil
 			}
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.Tunnel(c.Context, db.TunnelOpts{
+			err := db.Tunnel(ctx, db.TunnelOpts{
 				App:       currentApp,
 				DBEnvVar:  c.Args().First(),
 				Identity:  sshIdentity,
@@ -82,13 +83,13 @@ var (
 				Reconnect: c.Bool("reconnect"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")
-			autocomplete.DbTunnelAutoComplete(c)
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "db-tunnel")
+			_ = autocomplete.DbTunnelAutoComplete(ctx, c)
 		},
 	}
 )

@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/projects"
@@ -15,16 +17,16 @@ var (
 		Category:    "Projects",
 		Usage:       "List the projects that you own",
 		Description: "List all the projects of which you are an owner",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, _ *cli.Command) error {
 
-			err := projects.List(c.Context)
+			err := projects.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects")
 		},
 	}
@@ -44,15 +46,15 @@ var (
 				"scalingo projects-add --default my-awesome-project # Create a new project that is the default one",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
-			err := projects.Add(c.Context, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
+		Action: func(ctx context.Context, c *cli.Command) error {
+			err := projects.Add(ctx, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-add")
 		},
 	}
@@ -74,10 +76,10 @@ var (
 				"scalingo projects-update --name new-project-name prj-00000000-0000-0000-0000-000000000000 # Change the project name",
 			},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-update")
 			}
 
 			var newProjectNamePtr *string
@@ -94,19 +96,19 @@ var (
 			}
 
 			if newProjectNamePtr == nil && !def {
-				errorQuitWithHelpMessage(errors.New(c.Context, "no parameters were submitted"), c, "projects-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "no parameters were submitted"), c, "projects-update")
 			}
 
-			err := projects.Update(c.Context, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
+			err := projects.Update(ctx, projectID, scalingo.ProjectUpdateParams{Name: newProjectNamePtr, Default: defaultPtr})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-update")
-			_ = autocomplete.ProjectsGenericListAutoComplete(c)
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
 
@@ -120,22 +122,22 @@ var (
 			Description: "Remove a project, given it is not the default one",
 			Examples:    []string{"scalingo projects-remove prj-00000000-0000-0000-0000-000000000000"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(errors.New(c.Context, "missing project ID parameter"), c, "projects-remove")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-remove")
 			}
 
-			err := projects.Remove(c.Context, projectID)
+			err := projects.Remove(ctx, projectID)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-remove")
-			_ = autocomplete.ProjectsGenericListAutoComplete(c)
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
 )

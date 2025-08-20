@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/regions"
@@ -13,15 +15,15 @@ var (
 		Category:    "Global",
 		Usage:       "List available regions",
 		Description: "List available regions",
-		Action: func(c *cli.Context) error {
-			err := regions.List(c.Context)
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			err := regions.List(ctx)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "regions")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "regions")
 		},
 	}
 )

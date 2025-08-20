@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/crontasks"
@@ -19,21 +21,21 @@ var (
 			Examples:    []string{"scalingo --app my-app cron-tasks"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() > 0 {
-				cli.ShowCommandHelp(c, "cron-tasks")
+				_ = cli.ShowCommandHelp(ctx, c, "cron-tasks")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
-			err := crontasks.List(c.Context, currentApp)
+			err := crontasks.List(ctx, currentApp)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "cron-tasks")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "cron-tasks")
 		},
 	}
 )

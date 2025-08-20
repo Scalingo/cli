@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/autoscalers"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -17,23 +19,23 @@ var (
 		Usage:       "List the autoscalers of an application",
 		Flags:       []cli.Flag{&appFlag},
 		Description: "List all the autoscalers of an application and display information about them.",
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "autoscalers")
+				_ = cli.ShowCommandHelp(ctx, c, "autoscalers")
 				return nil
 			}
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := autoscalers.List(c.Context, detect.CurrentApp(c))
+			err := autoscalers.List(ctx, detect.CurrentApp(c))
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers")
 		},
 	}
 
@@ -53,20 +55,20 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-add --container-type web --metric cpu --target 0.75 --min-containers 2 --max-containers 4"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if !isValidAutoscalerAddOpts(c) {
-				err := cli.ShowCommandHelp(c, "autoscalers-add")
+				err := cli.ShowCommandHelp(ctx, c, "autoscalers-add")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := autoscalers.Add(c.Context, currentApp, scalingo.AutoscalerAddParams{
+			err := autoscalers.Add(ctx, currentApp, scalingo.AutoscalerAddParams{
 				ContainerType: c.String("c"),
 				Metric:        c.String("m"),
 				Target:        c.Float64("t"),
@@ -74,12 +76,12 @@ var (
 				MaxContainers: c.Int("max-containers"),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-add")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers-add")
 		},
 	}
 
@@ -103,18 +105,18 @@ var (
 			},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 || !c.IsSet("c") {
-				err := cli.ShowCommandHelp(c, "autoscalers-update")
+				err := cli.ShowCommandHelp(ctx, c, "autoscalers-update")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			params := scalingo.AutoscalerUpdateParams{}
 			if c.IsSet("m") {
@@ -137,14 +139,14 @@ var (
 				d := c.Bool("d")
 				params.Disabled = &d
 			}
-			err := autoscalers.Update(c.Context, currentApp, c.String("c"), params)
+			err := autoscalers.Update(ctx, currentApp, c.String("c"), params)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-update")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers-update")
 		},
 	}
 
@@ -158,29 +160,29 @@ var (
 			Description: "Enable an autoscaler",
 			Examples:    []string{"scalingo --app my-app autoscalers-enable web"},
 		}.Render(),
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "autoscalers-enable")
+				err := cli.ShowCommandHelp(ctx, c, "autoscalers-enable")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
+			err := autoscalers.Update(ctx, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: utils.BoolPtr(false),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-enable")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers-enable")
 		},
 	}
 
@@ -195,29 +197,29 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-disable web"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				err := cli.ShowCommandHelp(c, "autoscalers-disable")
+				err := cli.ShowCommandHelp(ctx, c, "autoscalers-disable")
 				if err != nil {
-					errorQuit(c.Context, err)
+					errorQuit(ctx, err)
 				}
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := autoscalers.Update(c.Context, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
+			err := autoscalers.Update(ctx, currentApp, c.Args().First(), scalingo.AutoscalerUpdateParams{
 				Disabled: utils.BoolPtr(true),
 			})
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-disable")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers-disable")
 		},
 	}
 
@@ -232,29 +234,29 @@ var (
 			Examples:    []string{"scalingo --app my-app autoscalers-remove web"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				cli.ShowCommandHelp(c, "autoscalers-remove")
+				_ = cli.ShowCommandHelp(ctx, c, "autoscalers-remove")
 				return nil
 			}
 
 			currentApp := detect.CurrentApp(c)
 
-			utils.CheckForConsent(c.Context, currentApp, utils.ConsentTypeContainers)
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			err := autoscalers.Remove(c.Context, currentApp, c.Args().First())
+			err := autoscalers.Remove(ctx, currentApp, c.Args().First())
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "autoscalers-remove")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "autoscalers-remove")
 		},
 	}
 )
 
-func isValidAutoscalerAddOpts(c *cli.Context) bool {
+func isValidAutoscalerAddOpts(c *cli.Command) bool {
 	if c.Args().Len() > 0 {
 		return false
 	}

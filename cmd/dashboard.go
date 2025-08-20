@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -20,9 +22,9 @@ var (
 			Examples:    []string{"scalingo --app my-app dashboard"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				cli.ShowCommandHelp(c, "dashboard")
+				_ = cli.ShowCommandHelp(ctx, c, "dashboard")
 				return nil
 			}
 
@@ -30,11 +32,11 @@ var (
 			currentRegion := config.C.ScalingoRegion
 			err := apps.Dashboard(currentApp, currentRegion)
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
+		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "dashboard")
 		},
 	}

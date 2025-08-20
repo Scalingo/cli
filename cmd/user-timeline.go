@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"context"
+
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/user"
@@ -22,24 +24,24 @@ var (
 			Examples:    []string{"scalingo user-timeline --page 3 --per-page 20"},
 		}.Render(),
 
-		Action: func(c *cli.Context) error {
+		Action: func(ctx context.Context, c *cli.Command) error {
 			var err error
 			if c.Args().Len() == 0 {
-				err = user.Events(c.Context, scalingo.PaginationOpts{
+				err = user.Events(ctx, scalingo.PaginationOpts{
 					Page:    c.Int("page"),
 					PerPage: c.Int("per-page"),
 				})
 			} else {
-				cli.ShowCommandHelp(c, "user-timeline")
+				_ = cli.ShowCommandHelp(ctx, c, "user-timeline")
 			}
 
 			if err != nil {
-				errorQuit(c.Context, err)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},
-		BashComplete: func(c *cli.Context) {
-			autocomplete.CmdFlagsAutoComplete(c, "user-timeline")
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "user-timeline")
 		},
 	}
 )

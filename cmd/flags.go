@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
@@ -25,7 +26,7 @@ var (
 )
 
 // exitIfMissing is optional. Set to true to show a message requesting for the --addon flag.
-func addonUUIDFromFlags(c *cli.Context, app string, exitIfMissing ...bool) string {
+func addonUUIDFromFlags(ctx context.Context, c *cli.Command, app string, exitIfMissing ...bool) string {
 	var addonName string
 
 	for _, cliContext := range c.Lineage() {
@@ -49,7 +50,7 @@ func addonUUIDFromFlags(c *cli.Context, app string, exitIfMissing ...bool) strin
 
 	var addonUUID string
 	var err error
-	addonUUID, err = utils.GetAddonUUIDFromType(c.Context, app, addonName)
+	addonUUID, err = utils.GetAddonUUIDFromType(ctx, app, addonName)
 	if err != nil {
 		io.Error("Unable to get the addon UUID based on its type:", err)
 		os.Exit(1)
@@ -58,7 +59,7 @@ func addonUUIDFromFlags(c *cli.Context, app string, exitIfMissing ...bool) strin
 	return addonUUID
 }
 
-func regionNameFromFlags(c *cli.Context) string {
+func regionNameFromFlags(c *cli.Command) string {
 	for _, cliContext := range c.Lineage() {
 		if cliContext.String("region") != "" {
 			return cliContext.String("region")
