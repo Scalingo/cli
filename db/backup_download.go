@@ -10,12 +10,17 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/cheggaaa/pb/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v8"
 	"github.com/Scalingo/go-scalingo/v8/debug"
 	httpclient "github.com/Scalingo/go-scalingo/v8/http"
+	"github.com/Scalingo/go-utils/errors/v2"
+)
+
+const (
+	elasticsearchProviderID = "elasticsearch"
+	openSearchProviderID    = "opensearch"
 )
 
 type DownloadBackupOpts struct {
@@ -23,7 +28,7 @@ type DownloadBackupOpts struct {
 	Silent bool
 }
 
-func DownloadBackup(ctx context.Context, app, addon, backupID string, opts DownloadBackupOpts) error {
+func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts DownloadBackupOpts) error {
 	// Output management (manage -s and -o - flags)
 	var fileWriter io.Writer
 	var logWriter io.Writer
@@ -43,21 +48,32 @@ func DownloadBackup(ctx context.Context, app, addon, backupID string, opts Downl
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client to download a backup")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
+
+	addon, err := client.AddonShow(ctx, app, addonID)
+	if err != nil {
+		return errors.Wrap(ctx, err, "get addon information")
+	}
+
+	if addon.AddonProvider != nil &&
+		(addon.AddonProvider.ID == elasticsearchProviderID || addon.AddonProvider.ID == openSearchProviderID) {
+		return errors.Newf(ctx, "backups are not supported for %s addon", addon.AddonProvider.Name)
+	}
+
 	if backupID == "" {
-		backups, err := client.BackupList(ctx, app, addon)
+		backups, err := client.BackupList(ctx, app, addonID)
 		if err != nil {
-			return errgo.Notef(err, "fail to get the most recent backup")
+			return errors.Wrap(ctx, err, "list backups")
 		}
 		if len(backups) == 0 {
-			return errgo.New("this addon has no backup")
+			return errors.New(ctx, "this addon has no backup")
 		}
-		backupID, err = getLastSuccessfulBackup(backups)
+		backupID, err = getLastSuccessfulBackup(ctx, backups)
 		if err != nil {
-			return errgo.Notef(err, "fail to get a successful backup")
+			return errors.Wrap(ctx, err, "get a successful backup")
 		}
-		fmt.Fprintln(logWriter, "-----> Selected the most recent successful backup")
+		_, _ = fmt.Fprintln(logWriter, "-----> Selected the most recent successful backup")
 	}
 
 	// Start a spinner when loading metadatas
@@ -67,9 +83,9 @@ func DownloadBackup(ctx context.Context, app, addon, backupID string, opts Downl
 	spinner.Start()
 
 	// Get backup metadatas
-	backup, err := client.BackupShow(ctx, app, addon, backupID)
+	backup, err := client.BackupShow(ctx, app, addonID, backupID)
 	if err != nil {
-		return errgo.Notef(err, "fail to get backup")
+		return errors.Wrap(ctx, err, "get backup")
 	}
 
 	// Generate the filename and file writer
@@ -86,22 +102,22 @@ func DownloadBackup(ctx context.Context, app, addon, backupID string, opts Downl
 		// Open the output file
 		f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
 		if err != nil {
-			return errgo.Notef(err, "fail to open file")
+			return errors.Wrap(ctx, err, "fail to open file")
 		}
 		fileWriter = f // Set the output file as the fileWriter
 	}
 
 	// Get the pre-signed download URL
-	downloadURL, err := client.BackupDownloadURL(ctx, app, addon, backupID)
+	downloadURL, err := client.BackupDownloadURL(ctx, app, addonID, backupID)
 	if err != nil {
-		return errgo.Notef(err, "fail to get backup download URL")
+		return errors.Wrap(ctx, err, "get backup download URL")
 	}
 
 	debug.Println("Temporary URL to download backup is: ", downloadURL)
 	// Start the download
 	resp, err := http.Get(downloadURL)
 	if err != nil {
-		return errgo.Notef(err, "fail to start download")
+		return errors.Wrap(ctx, err, "start download")
 	}
 	defer resp.Body.Close()
 
@@ -111,7 +127,7 @@ func DownloadBackup(ctx context.Context, app, addon, backupID string, opts Downl
 	if resp.StatusCode != http.StatusOK {
 		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
 			URL:    downloadURL,
-			Method: "GET",
+			Method: http.MethodGet,
 		})
 	}
 
@@ -127,11 +143,11 @@ func DownloadBackup(ctx context.Context, app, addon, backupID string, opts Downl
 	} else {
 		// If we were writing the backup to a file, write the file path
 		bar.Finish()
-		fmt.Fprintf(logWriter, "===> %s\n", filepath)
+		_, _ = fmt.Fprintf(logWriter, "===> %s\n", filepath)
 	}
 
 	if err != nil {
-		return errgo.Notef(err, "fail to download file")
+		return errors.Wrap(ctx, err, "download file")
 	}
 
 	return nil
@@ -151,11 +167,11 @@ func isDir(path string) bool {
 	return s.IsDir()
 }
 
-func getLastSuccessfulBackup(backups []scalingo.Backup) (string, error) {
+func getLastSuccessfulBackup(ctx context.Context, backups []scalingo.Backup) (string, error) {
 	for _, backup := range backups {
 		if backup.Status == scalingo.BackupStatusDone {
 			return backup.ID, nil
 		}
 	}
-	return "", errgo.New("can't find any successful backup")
+	return "", errors.New(ctx, "can't find any successful backup")
 }

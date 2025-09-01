@@ -13,12 +13,11 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/Scalingo/go-utils/errors/v2"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 // Info is the command handler displaying static information about one given addon
@@ -46,14 +45,14 @@ func Info(ctx context.Context, app, addon string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Append([]string{"Addon Provider", addonInfo.AddonProvider.Name})
-	t.Append([]string{"Plan", addonInfo.Plan.Name})
-	t.Append([]string{"Status", fmt.Sprintf("%v", addonInfo.Status)})
+	_ = t.Append([]string{"Addon Provider", addonInfo.AddonProvider.Name})
+	_ = t.Append([]string{"Plan", addonInfo.Plan.Name})
+	_ = t.Append([]string{"Status", fmt.Sprintf("%v", addonInfo.Status)})
 	for _, line := range dbInfo {
-		t.Append(line)
+		_ = t.Append(line)
 	}
 
-	t.Render()
+	_ = t.Render()
 
 	return nil
 }
