@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(backups): prevent download of OpenSearch and ElasticSearch backups
+
 ### 1.38.0
 
 /!\ This change required the [command completion](https://doc.scalingo.com/tools/cli/start#command-completion) to be re-run
