@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* feat(backups): prevent download of OpenSearch and ElasticSearch backups
+* feat(backups): prevent download of OpenSearch and Elasticsearch backups
 
 ### 1.38.0
 

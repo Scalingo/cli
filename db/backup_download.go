@@ -18,6 +18,11 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
+const (
+	elasticsearchProviderID = "elasticsearch"
+	openSearchProviderID    = "opensearch"
+)
+
 type DownloadBackupOpts struct {
 	Output string
 	Silent bool
@@ -52,8 +57,8 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	}
 
 	if addon.AddonProvider != nil &&
-		(addon.AddonProvider.ID == "elasticsearch" || addon.AddonProvider.ID == "opensearch") {
-		return errors.Newf(ctx, "backups are not supported for %s addon", addon.AddonProvider.ID)
+		(addon.AddonProvider.ID == elasticsearchProviderID || addon.AddonProvider.ID == openSearchProviderID) {
+		return errors.Newf(ctx, "backups are not supported for %s addon", addon.AddonProvider.Name)
 	}
 
 	if backupID == "" {
