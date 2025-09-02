@@ -27,14 +27,16 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
-			var err error
-			if c.Args().Len() == 0 {
-				err = domains.List(ctx, currentApp)
-			} else {
-				_ = cli.ShowCommandHelp(ctx, c, "domains")
+			if c.Args().Len() > 0 {
+				err := cli.ShowCommandHelp(c, "domains")
+				if err != nil {
+					errorQuit(ctx, err)
+				}
+				return nil
 			}
 
+			currentApp := detect.CurrentApp(c)
+			err := domains.List(ctx, currentApp)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
