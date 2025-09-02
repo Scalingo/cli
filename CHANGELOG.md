@@ -3,6 +3,7 @@
 ## To Be Released
 
 * feat(backups): prevent download of OpenSearch and Elasticsearch backups
+* feat(domains): add 'Manual Action' column if needed
 
 ### 1.38.0
 
