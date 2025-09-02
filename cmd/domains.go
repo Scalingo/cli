@@ -5,13 +5,13 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/domains"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -28,7 +28,7 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() > 0 {
-				err := cli.ShowCommandHelp(c, "domains")
+				err := cli.ShowCommandHelp(ctx, c, "domains")
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -74,7 +74,7 @@ var (
 			if c.Args().Len() == 1 {
 				cert := c.String("cert")
 				key := c.String("key")
-				certContent, keyContent, err := validateTLSParams(cert, key)
+				certContent, keyContent, err := validateTLSParams(ctx, cert, key)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -167,7 +167,7 @@ var (
 					errorQuit(ctx, err)
 				}
 			} else if c.Args().Len() == 1 {
-				certContent, keyContent, err := validateTLSParams(c.String("cert"), c.String("key"))
+				certContent, keyContent, err := validateTLSParams(ctx, c.String("cert"), c.String("key"))
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -249,26 +249,26 @@ This domain is called the canonical domain. This command sets the canonical doma
 	}
 )
 
-func validateTLSParams(cert, key string) (string, string, error) {
+func validateTLSParams(ctx context.Context, cert, key string) (string, string, error) {
 	if cert == "" && key == "" {
 		return "", "", nil
 	}
 
 	if cert == "" && key != "" {
-		return "", "", errgo.New("--cert <certificate path> should be defined")
+		return "", "", errors.New(ctx, "--cert <certificate path> should be defined")
 	}
 
 	if key == "" && cert != "" {
-		return "", "", errgo.New("--key <key path> should be defined")
+		return "", "", errors.New(ctx, "--key <key path> should be defined")
 	}
 
 	certContent, err := os.ReadFile(cert)
 	if err != nil {
-		return "", "", errgo.Notef(err, "fail to read the TLS certificate")
+		return "", "", errors.Wrap(ctx, err, "fail to read the TLS certificate")
 	}
 	keyContent, err := os.ReadFile(key)
 	if err != nil {
-		return "", "", errgo.Notef(err, "fail to read the private key")
+		return "", "", errors.Wrap(ctx, err, "fail to read the private key")
 	}
 	return string(certContent), string(keyContent), nil
 }

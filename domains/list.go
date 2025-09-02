@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var letsencryptStatusString = map[string]string{
@@ -23,11 +23,11 @@ var letsencryptStatusString = map[string]string{
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "fail to get Scalingo client")
 	}
 	domains, err := c.DomainsList(ctx, app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "list domains")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
