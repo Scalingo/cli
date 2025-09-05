@@ -118,7 +118,7 @@ var (
 			if disable {
 				continueB := askContinue("Disabling periodic backups will prevent Scalingo from restoring your database in case of data loss or corruption. Backups are a critical safeguard, and we strongly recommend keeping them enabled. Do you want to continue? (yes/no)")
 				if !continueB {
-					errorQuit(ctx, errors.New("Periodic backups are still enabled"))
+					errorQuit(ctx, errors.New("periodic backups are still enabled"))
 					return nil
 				}
 
