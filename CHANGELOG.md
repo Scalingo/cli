@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* task(backups-config): update error message when unscheduling periodic backup
 * feat(backups): prevent download of OpenSearch and Elasticsearch backups
 
 ### 1.38.0
