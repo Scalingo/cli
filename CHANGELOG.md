@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* task(backups-config): update error message when unscheduling periodic backup
 * feat(backups): prevent download of OpenSearch and Elasticsearch backups
 * feat(domains): add 'Manual Action' column if needed
 
