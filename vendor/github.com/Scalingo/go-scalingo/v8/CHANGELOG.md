@@ -1,6 +1,8 @@
 # Changelog
 
 ## To Be Released
+* feat(projects): add project_id to delete project event
+* feat(private-networks): add private_networks service and method to list application private network domain names
 
 ## 8.4.0
 
