@@ -3,6 +3,9 @@
 ## To Be Released
 
 * feat(private-networks): add command to list private network domain names
+
+## 1.39.0
+
 * task(backups-config): update error message when unscheduling periodic backup
 * feat(backups): prevent download of OpenSearch and Elasticsearch backups
 * feat(domains): add 'Manual Action' column if needed
