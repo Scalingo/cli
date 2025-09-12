@@ -68,10 +68,10 @@ func List(ctx context.Context, app string, format string, page string, perPage s
 			containerType := containerTypeWeb
 			parts := strings.Split(string(domain), ".")
 			slices.Reverse(parts)
-			if len(parts) == 4 {
+			if len(parts) == 5 {
 				containerType = containerTypeWeb
-			} else if len(parts) > 4 {
-				containerType = parts[4]
+			} else if len(parts) > 5 {
+				containerType = parts[5]
 			}
 			err := t.Append([]string{containerType, string(domain)})
 			if err != nil {
