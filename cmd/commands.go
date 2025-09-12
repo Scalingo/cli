@@ -299,6 +299,9 @@ var (
 		&projectsAddCommand,
 		&projectsUpdateCommand,
 		&projectsRemoveCommand,
+
+		// Private Networks
+		&privateNetworksApplicationDomainsListCommand,
 	}
 
 	globalCommands = []*cli.Command{

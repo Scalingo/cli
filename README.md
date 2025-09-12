@@ -216,6 +216,9 @@ COMMANDS:
    Notifiers - Global:
      notification-platforms  List all notification platforms
 
+   Private Networks:
+     private-networks-domains: List the private network domain names of an application
+
    Projects:
      projects         List the projects that you own
      projects-add     Create a project

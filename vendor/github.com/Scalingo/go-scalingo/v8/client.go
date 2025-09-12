@@ -33,6 +33,7 @@ type API interface {
 	NotificationPlatformsService
 	NotifiersService
 	OperationsService
+	PrivateNetworksService
 	RegionsService
 	RunsService
 	SignUpService
