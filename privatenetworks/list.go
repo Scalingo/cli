@@ -15,6 +15,8 @@ import (
 	"github.com/Scalingo/cli/config"
 )
 
+const containerTypeWeb = "web"
+
 func List(ctx context.Context, app string, format string, page string, perPage string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
@@ -45,10 +47,10 @@ func List(ctx context.Context, app string, format string, page string, perPage s
 
 				// place "web" container types at the top of the list
 				if i == 5 {
-					if iParts[len(iParts)-i] == "web" && jParts[len(jParts)-i] != "web" {
+					if iParts[len(iParts)-i] == containerTypeWeb && jParts[len(jParts)-i] != containerTypeWeb {
 						return true
 					}
-					if iParts[len(iParts)-i] != "web" && jParts[len(jParts)-i] == "web" {
+					if iParts[len(iParts)-i] != containerTypeWeb && jParts[len(jParts)-i] == containerTypeWeb {
 						return false
 					}
 				}
@@ -63,11 +65,11 @@ func List(ctx context.Context, app string, format string, page string, perPage s
 		t.Header([]string{"Container Type", "Domain Name"})
 
 		for _, domain := range domainNames {
-			containerType := "web"
+			containerType := containerTypeWeb
 			parts := strings.Split(string(domain), ".")
 			slices.Reverse(parts)
 			if len(parts) == 4 {
-				containerType = "web"
+				containerType = containerTypeWeb
 			} else if len(parts) > 4 {
 				containerType = parts[4]
 			}
