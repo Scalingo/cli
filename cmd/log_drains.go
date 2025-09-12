@@ -22,6 +22,7 @@ var (
 		Category: "Log drains",
 		Flags: []cli.Flag{&appFlag,
 			&addonFlag,
+			databaseFlag(),
 			&cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
 		},
 		Usage: "List the log drains of an application",
@@ -67,6 +68,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 		Category: "Log drains",
 		Usage:    "Add a log drain to an application",
 		Flags: []cli.Flag{&appFlag,
+			databaseFlag(),
 			&addonFlag,
 			&cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
 			&cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
@@ -148,6 +150,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 		Category: "Log drains",
 		Flags: []cli.Flag{
 			&appFlag,
+			databaseFlag(),
 			&addonFlag,
 			&cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
 		},

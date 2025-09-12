@@ -25,6 +25,17 @@ var (
 	}
 )
 
+func databaseFlag() *cli.StringFlag {
+	if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		return &cli.StringFlag{
+			Name:  "database",
+			Value: "<database_name>",
+			Usage: "ID of the current database",
+		}
+	}
+	return &cli.StringFlag{}
+}
+
 // exitIfMissing is optional. Set to true to show a message requesting for the --addon flag.
 func addonUUIDFromFlags(ctx context.Context, c *cli.Command, app string, exitIfMissing ...bool) string {
 	var addonName string
