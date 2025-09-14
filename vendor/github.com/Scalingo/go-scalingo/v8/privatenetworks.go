@@ -24,11 +24,13 @@ type PrivateNetworkDomainsRes struct {
 }
 
 func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, page string, perPage string) ([]PrivateNetworkDomain, error) {
+	cursorInt := 0
 	if page != "" {
 		pageInt, err := strconv.Atoi(page)
 		if err != nil || pageInt < 1 {
 			return nil, errgo.Newf("invalid page number: %s", page)
 		}
+		cursorInt = pageInt - 1
 	}
 
 	if perPage != "" {
@@ -39,7 +41,7 @@ func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, pag
 	}
 
 	params := url.Values{}
-	params.Set("cursor", page)
+	params.Set("cursor", strconv.Itoa(cursorInt))
 	params.Set("amount_items", perPage)
 	req := &httpclient.APIRequest{
 		Method:   http.MethodGet,
