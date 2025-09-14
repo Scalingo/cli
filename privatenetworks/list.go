@@ -28,11 +28,6 @@ func List(ctx context.Context, app string, format string, page string, perPage s
 		return errgo.Notef(err, "fail to list private network domains")
 	}
 
-	if len(domainNames) == 0 {
-		fmt.Println("No private network domain found")
-		return nil
-	}
-
 	switch format {
 	case "table":
 		sort.Slice(domainNames, func(i, j int) bool {
@@ -78,6 +73,10 @@ func List(ctx context.Context, app string, format string, page string, perPage s
 				return errgo.Notef(err, "fail to append row to table")
 			}
 		}
+		if len(domainNames) == 0 {
+			_ = t.Append([]string{"...", "No private network domains found"})
+		}
+
 		err := t.Render()
 		if err != nil {
 			return errgo.Notef(err, "fail to render table")
