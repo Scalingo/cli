@@ -117,7 +117,6 @@ var (
 		Category:  "Projects",
 		Usage:     "Remove a project",
 		ArgsUsage: "project-id",
-		Flags:     []cli.Flag{&appFlag},
 		Description: CommandDescription{
 			Description: "Remove a project, given it is not the default one",
 			Examples:    []string{"scalingo projects-remove prj-00000000-0000-0000-0000-000000000000"},
