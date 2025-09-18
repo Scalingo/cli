@@ -15,6 +15,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type ConfigFile struct {
@@ -217,6 +218,23 @@ func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
 		return nil, errgo.Notef(err, "fail to create Scalingo client")
 	}
 	return scalingo.New(ctx, config)
+}
+
+func ScalingoDatabaseClient(ctx context.Context) (*scalingo.PreviewClient, error) {
+	authenticator := &CliAuthenticator{}
+	_, token, err := authenticator.LoadAuth(ctx)
+	if err != nil {
+		return nil, errors.Wrapf(ctx, err, "load credentials")
+	}
+	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token.Token})
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "create Scalingo client")
+	}
+	c, err := scalingo.New(ctx, config)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "create Scalingo client")
+	}
+	return scalingo.NewPreviewClient(c), nil
 }
 
 func ScalingoClientForRegion(ctx context.Context, region string) (*scalingo.Client, error) {

@@ -46,7 +46,14 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentResource)
+			consent := []utils.ConsentType{}
+			if currentDatabase != "" || c.Bool("with-addons") || c.Bool("with-databases") {
+				consent = append(consent, utils.ConsentTypeDBs)
+			}
+			if currentResource != "" && currentDatabase == "" {
+				consent = append(consent, utils.ConsentTypeContainers)
+			}
+			utils.CheckForConsent(ctx, currentResource, consent...)
 
 			addonID := currentDatabase
 			if currentDatabase == "" {

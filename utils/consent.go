@@ -17,9 +17,9 @@ const (
 	ConsentTypeDBs        ConsentType = "dbs"
 )
 
-// CheckForConsent will check if an operator does have consent before executing a command. If they doesn't or if the CLI can't determine if the user has consent, it will ask for the operator confirmation
-// All display takes place on Stderr to minimize the chance that it will collide in situation where stdout is piped to another process (typically `scalingo logs | grep SOMETHING`)
-func CheckForConsent(ctx context.Context, appName string, consentTypes ...ConsentType) {
+// CheckForConsent will check if an operator does have consent before executing a command. If they doesn't or if the CLI can't determine if the user has consent, it will ask for the operator confirmation.
+// All display takes place on Stderr to minimize the chance that it will collide in situation where stdout is piped to another process (typically `scalingo logs | grep SOMETHING`).
+func CheckForConsent(ctx context.Context, resourceName string, consentTypes ...ConsentType) {
 	needConsentForContainers := false
 	needConsentForDBs := false
 
@@ -63,7 +63,27 @@ func CheckForConsent(ctx context.Context, appName string, consentTypes ...Consen
 	}
 
 	for _, app := range apps {
-		if app.Name == appName {
+		if app.Name == resourceName {
+			// The operator is a collaborator, no consent needed
+			return
+		}
+	}
+
+	dbClient, err := config.ScalingoDatabaseClient(ctx)
+	if err != nil {
+		askForConsent(false)
+		return
+	}
+
+	// Check if the operator is a collaborator on the targeted database
+	dbs, err := dbClient.DatabasesList(ctx)
+	if err != nil {
+		askForConsent(false)
+		return
+	}
+
+	for _, db := range dbs {
+		if db.App.Name == resourceName {
 			// The operator is a collaborator, no consent needed
 			return
 		}
@@ -71,7 +91,7 @@ func CheckForConsent(ctx context.Context, appName string, consentTypes ...Consen
 
 	// The operator is not a collaborator, checking for consent
 
-	app, err := c.AppsShow(ctx, appName)
+	app, err := c.AppsShow(ctx, resourceName)
 	if err != nil {
 		askForConsent(false)
 		return
