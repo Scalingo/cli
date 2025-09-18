@@ -19,7 +19,11 @@ import (
 var errDatabaseNotFound = stderrors.New("database name not found")
 
 // GetCurrentResource is the new helper to get the current resource (app or database).
-//
+func GetCurrentResource(ctx context.Context, c *cli.Command) string {
+	resource, _ := GetCurrentResourceAndDatabase(ctx, c)
+	return resource
+}
+
 // GetCurrentResourceAndDatabase returns the current resource (app or database)
 // and the current database UUID if any.
 // It exits CLI in case of error.

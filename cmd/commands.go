@@ -176,7 +176,7 @@ var (
 
 		// Events
 		&UserTimelineCommand,
-		&TimelineCommand,
+		&timelineCommand,
 
 		// Environment
 		&envCommand,
