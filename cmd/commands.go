@@ -198,10 +198,10 @@ var (
 		&deploymentCacheResetCommand,
 
 		// Collaborators
-		&CollaboratorsListCommand,
-		&CollaboratorsAddCommand,
-		&CollaboratorsRemoveCommand,
-		&CollaboratorsUpdateCommand,
+		&collaboratorsListCommand,
+		&collaboratorsAddCommand,
+		&collaboratorsRemoveCommand,
+		&collaboratorsUpdateCommand,
 
 		// Stacks
 		&stacksListCommand,

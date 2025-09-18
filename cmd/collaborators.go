@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	CollaboratorsListCommand = cli.Command{
+	collaboratorsListCommand = cli.Command{
 		Name:        "collaborators",
 		Category:    "Collaborators",
 		Usage:       "List the collaborators of an application",
-		Flags:       []cli.Flag{&appFlag},
+		Flags:       []cli.Flag{&appFlag, databaseFlag()},
 		Description: "List all the collaborators of an application and display information about them",
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 0 {
 				err := cli.ShowCommandHelp(ctx, c, "collaborators")
 				if err != nil {
@@ -30,7 +30,7 @@ var (
 				return nil
 			}
 
-			err := collaborators.List(ctx, currentApp)
+			err := collaborators.List(ctx, currentResource)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -42,18 +42,18 @@ var (
 		},
 	}
 
-	CollaboratorsAddCommand = cli.Command{
+	collaboratorsAddCommand = cli.Command{
 		Name:      "collaborators-add",
 		Category:  "Collaborators",
 		Usage:     "Invite someone to work on an application",
 		ArgsUsage: "email",
-		Flags:     []cli.Flag{&appFlag},
+		Flags:     []cli.Flag{&appFlag, databaseFlag()},
 		Description: CommandDescription{
 			Description: "Invite someone to collaborate on an application, an invitation will be sent to the given email",
 			Examples:    []string{"scalingo --app my-app collaborators-add user@example.com"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(ctx, c, "collaborators-add")
 				if err != nil {
@@ -63,8 +63,8 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Add(ctx, currentApp, scalingo.CollaboratorAddParams{Email: c.Args().First(), IsLimited: false})
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeContainers)
+			err := collaborators.Add(ctx, currentResource, scalingo.CollaboratorAddParams{Email: c.Args().First(), IsLimited: false})
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -77,18 +77,18 @@ var (
 		},
 	}
 
-	CollaboratorsRemoveCommand = cli.Command{
+	collaboratorsRemoveCommand = cli.Command{
 		Name:      "collaborators-remove",
 		Category:  "Collaborators",
 		Usage:     "Revoke permission to collaborate on an application",
 		ArgsUsage: "email",
-		Flags:     []cli.Flag{&appFlag},
+		Flags:     []cli.Flag{&appFlag, databaseFlag()},
 		Description: CommandDescription{
 			Description: "Revoke the invitation of collaboration to the given email",
 			Examples:    []string{"scalingo -a myapp collaborators-remove user@example.com"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(ctx, c, "collaborators-remove")
 				if err != nil {
@@ -98,8 +98,8 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Remove(ctx, currentApp, c.Args().First())
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeContainers)
+			err := collaborators.Remove(ctx, currentResource, c.Args().First())
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -112,13 +112,14 @@ var (
 		},
 	}
 
-	CollaboratorsUpdateCommand = cli.Command{
+	collaboratorsUpdateCommand = cli.Command{
 		Name:      "collaborators-update",
 		Category:  "Collaborators",
 		Usage:     "Update a collaborator from an application",
 		ArgsUsage: "email",
 		Flags: []cli.Flag{
 			&appFlag,
+			databaseFlag(),
 			&cli.BoolFlag{Name: "limited", Value: false, Usage: "Set to true if you want to update this collaborator with the limited role"},
 		},
 		Description: CommandDescription{
@@ -126,7 +127,7 @@ var (
 			Examples:    []string{"scalingo --app my-app collaborators-update --limited=true user@example.com"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 1 {
 				err := cli.ShowCommandHelp(ctx, c, "collaborators-update")
 				if err != nil {
@@ -136,8 +137,8 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
-			err := collaborators.Update(ctx, currentApp, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeContainers)
+			err := collaborators.Update(ctx, currentResource, c.Args().First(), scalingo.CollaboratorUpdateParams{IsLimited: c.Bool("limited")})
 			if err != nil {
 				errorQuit(ctx, err)
 			}
