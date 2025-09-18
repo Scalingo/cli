@@ -37,7 +37,7 @@ github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v8 v8.4.1-0.20250911224912-2307cb7e7460 => ../go-scalingo
+# github.com/Scalingo/go-scalingo/v8 v8.4.1 => ../go-scalingo
 ## explicit; go 1.24
 github.com/Scalingo/go-scalingo/v8
 github.com/Scalingo/go-scalingo/v8/billing
@@ -51,6 +51,9 @@ github.com/Scalingo/go-utils/errors/v2
 # github.com/Scalingo/go-utils/logger v1.9.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/logger
+# github.com/Scalingo/go-utils/pagination v1.1.1
+## explicit; go 1.24
+github.com/Scalingo/go-utils/pagination
 # github.com/Scalingo/gopassword v1.1.0
 ## explicit; go 1.22
 github.com/Scalingo/gopassword
