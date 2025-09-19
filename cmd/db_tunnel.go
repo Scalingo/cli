@@ -10,7 +10,9 @@ import (
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/cli/db"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -58,7 +60,16 @@ var (
    Example
      $ scalingo --app rails-app db-tunnel -i ~/.ssh/custom_key DATABASE_URL`,
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
+			isDB, err := utils.IsResourceDatabase(ctx, currentResource)
+			if err != nil && !errors.Is(err, utils.ErrResourceNotFound) {
+				errorQuit(ctx, err)
+			}
+			if isDB {
+				io.Error("It is currently impossible to use `db-tunnel` on a database.")
+				return nil
+			}
+
 			var sshIdentity string
 			if c.String("identity") == "" && os.Getenv("SSH_AUTH_SOCK") != "" {
 				sshIdentity = "ssh-agent"
@@ -72,10 +83,10 @@ var (
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			err := db.Tunnel(ctx, db.TunnelOpts{
-				App:       currentApp,
+			err = db.Tunnel(ctx, db.TunnelOpts{
+				App:       currentResource,
 				DBEnvVar:  c.Args().First(),
 				Identity:  sshIdentity,
 				Port:      c.Int("port"),

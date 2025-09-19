@@ -89,7 +89,7 @@ func CurrentApp(c *cli.Command) string {
 // currentDatabaseNameAndUUID returns the database name and its UUID
 // if database name has been found in one of the following:
 // database flag, environment variable "SCALINGO_DATABASE".
-// It returns an empty string and ErrDatabaseNotFound error if the database name
+// It returns an empty string and errDatabaseNotFound error if the database name
 // is not provided or resource ID not found.
 func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, string, error) {
 	dbName := extractDatabaseNameFromCommandLineOrEnv(c)

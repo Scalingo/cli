@@ -9,7 +9,9 @@ import (
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -27,11 +29,22 @@ var (
 			},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "one-off-stop")
 				return nil
 			}
+			isDB, err := utils.IsResourceDatabase(ctx, currentResource)
+			if err != nil && !errors.Is(err, utils.ErrResourceNotFound) {
+				errorQuit(ctx, err)
+			}
+			if isDB {
+				io.Error("It is currently impossible to use `one-off-stop` on a database.")
+				return nil
+			}
+
+			currentApp := currentResource
+
 			oneOffLabel := c.Args().First()
 
 			// If oneOffLabel only contains digits, the client typed something like:

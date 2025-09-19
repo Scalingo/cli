@@ -8,6 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type ConsentType string
@@ -103,10 +104,16 @@ func CheckForConsent(ctx context.Context, resourceName string, consentTypes ...C
 		return
 	}
 
+	isDB, err := IsResourceDatabase(ctx, resourceName)
+	if err != nil && !errors.Is(err, ErrResourceNotFound) {
+		askForConsent(false)
+		return
+	}
+
 	containers := checkAccessContent(app.DataAccessConsent.ContainersUntil)
 	databases := checkAccessContent(app.DataAccessConsent.DatabasesUntil)
 
-	if needConsentForContainers && !containers {
+	if needConsentForContainers && !containers && !isDB {
 		askForConsent(true)
 		return
 	}
