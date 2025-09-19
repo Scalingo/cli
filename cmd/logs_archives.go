@@ -26,27 +26,30 @@ var (
 				"scalingo --app my-app logs-archives --addon addon-id  # Addon logs archives",
 			},
 		}.Render(),
-		Flags: []cli.Flag{&appFlag, &addonFlag,
+		Flags: []cli.Flag{&appFlag, &addonFlag, databaseFlag(),
 			&cli.IntFlag{Name: "page", Aliases: []string{"p"}, Usage: "Page number"},
 		},
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "logs-archives")
 				return nil
 			}
 
-			addonName := addonUUIDFromFlags(ctx, c, currentApp)
+			addonID := currentDatabase
+			if currentDatabase == "" {
+				addonID = addonUUIDFromFlags(ctx, c, currentResource)
+			}
 
 			var err error
-			if addonName == "" {
-				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+			if addonID == "" {
+				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeContainers)
 
-				err = apps.LogsArchives(ctx, currentApp, c.Int("p"))
+				err = apps.LogsArchives(ctx, currentResource, c.Int("p"))
 			} else {
-				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
+				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-				err = db.LogsArchives(ctx, currentApp, addonName, c.Int("p"))
+				err = db.LogsArchives(ctx, currentResource, addonID, c.Int("p"))
 			}
 
 			if err != nil {
