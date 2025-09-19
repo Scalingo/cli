@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(projects): create all commands to handle next generation `databases`
+
 ## 1.39.0
 
 * task(backups-config): update error message when unscheduling periodic backup

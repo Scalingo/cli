@@ -254,6 +254,9 @@ var (
 		&databaseCreateUser,
 		&databaseUpdateUserPassword,
 
+		// Databases next generation
+		&databasesList,
+
 		// Maintenance
 		&databaseMaintenanceList,
 		&databaseMaintenanceInfo,
