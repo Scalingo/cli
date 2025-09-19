@@ -30,29 +30,32 @@ var (
 				"scalingo --app my-app logs --follow -F \"worker|clock\"",
 			},
 		}.Render(),
-		Flags: []cli.Flag{&appFlag, &addonFlag,
+		Flags: []cli.Flag{&appFlag, &addonFlag, databaseFlag(),
 			&cli.IntFlag{Name: "lines", Aliases: []string{"n"}, Value: 20, Usage: "Number of log lines to dump"},
 			&cli.BoolFlag{Name: "follow", Aliases: []string{"f"}, Usage: "Stream logs of app, (as \"tail -f\")"},
 			&cli.StringFlag{Name: "filter", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "logs")
 				return nil
 			}
 
-			addonName := addonUUIDFromFlags(ctx, c, currentApp)
+			addonID := currentDatabase
+			if currentDatabase == "" {
+				addonID = addonUUIDFromFlags(ctx, c, currentResource)
+			}
 
 			var err error
-			if addonName == "" {
-				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+			if addonID == "" {
+				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeContainers)
 
-				err = apps.Logs(ctx, currentApp, c.Bool("f"), c.Int("n"), c.String("F"))
+				err = apps.Logs(ctx, currentResource, c.Bool("f"), c.Int("n"), c.String("F"))
 			} else {
-				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
+				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-				err = db.Logs(ctx, currentApp, addonName, db.LogsOpts{
+				err = db.Logs(ctx, currentResource, addonID, db.LogsOpts{
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})
