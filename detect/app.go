@@ -114,6 +114,11 @@ func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, st
 		return "", "", errDatabaseNotFound
 	}
 
+	if len(addons) > 1 {
+		fmt.Println("Multiple databases found with the given name, it may be an application. Please use the database name instead.")
+		return "", "", errDatabaseNotFound
+	}
+
 	databaseUUID := addons[0].ID
 
 	if databaseUUID == "" {
