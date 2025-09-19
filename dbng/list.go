@@ -26,7 +26,7 @@ func List(ctx context.Context) error {
 	io.Warning("This command only displays databases next generation where you are the owner")
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Plan", "Role", "Status", "Project"})
+	t.Header([]string{"Name", "ID", "Type", "Plan", "Role", "Status", "Project"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
@@ -36,7 +36,15 @@ func List(ctx context.Context) error {
 	for _, db := range databases {
 		role := utils.AppRole(currentUser, &db.App)
 
-		_ = t.Append([]string{db.App.Name, db.Addon.Plan.Name, string(role), string(db.Addon.Status), db.App.Project.Name})
+		_ = t.Append([]string{
+			db.App.Name,
+			db.App.ID,
+			db.Addon.AddonProvider.Name,
+			db.Addon.Plan.Name,
+			string(role),
+			string(db.Addon.Status),
+			db.App.Project.Name,
+		})
 	}
 	_ = t.Render()
 

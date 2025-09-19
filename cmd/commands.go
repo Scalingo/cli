@@ -256,6 +256,7 @@ var (
 
 		// Databases next generation
 		&databasesList,
+		&databaseShow,
 
 		// Maintenance
 		&databaseMaintenanceList,
