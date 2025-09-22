@@ -19,7 +19,7 @@ var (
 		Usage:    "List the databases next generation that you own",
 		Description: CommandDescription{
 			Description: "List all the databases next generation of which you are an owner",
-			SeeAlso:     []string{"database-info", "database-create"},
+			SeeAlso:     []string{"database-info", "database-create", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := dbng.List(ctx)
@@ -42,7 +42,7 @@ var (
 		Description: CommandDescription{
 			Description: "View database next generation detailed informations",
 			Examples:    []string{"scalingo database-info database_id"},
-			SeeAlso:     []string{"databases", "database-create"},
+			SeeAlso:     []string{"databases", "database-create", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
@@ -79,7 +79,7 @@ var (
 			Examples: []string{
 				"scalingo database-create --type postgresql --plan postgresql-dbng-starter-2048 my_super_database",
 			},
-			SeeAlso: []string{"databases", "database-info"},
+			SeeAlso: []string{"databases", "database-info", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
@@ -103,6 +103,36 @@ var (
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "database-create")
+		},
+	}
+
+	databaseDelete = cli.Command{
+		Name:      "database-destroy",
+		Category:  "Databases",
+		Usage:     "Delete database next generation",
+		ArgsUsage: "database-id",
+		Description: CommandDescription{
+			Description: "Delete database next generation",
+			Examples:    []string{"scalingo database-destroy database_id"},
+			SeeAlso:     []string{"databases", "database-info", "database-create"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			currentApp := detect.CurrentApp(c)
+			if c.Args().Len() != 1 {
+				return cli.ShowCommandHelp(ctx, c, "database-destroy")
+			}
+
+			utils.CheckForConsent(ctx, currentApp)
+
+			err := dbng.Delete(ctx, c.Args().First())
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+
+			return nil
+		},
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "database-destroy")
 		},
 	}
 )

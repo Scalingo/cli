@@ -258,6 +258,7 @@ var (
 		&databasesList,
 		&databaseShow,
 		&databaseAdd,
+		&databaseDelete,
 
 		// Maintenance
 		&databaseMaintenanceList,
