@@ -72,6 +72,7 @@ var (
 					return errors.New(ctx, "invalid per_page number")
 				}
 			}
+
 			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
 				err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))

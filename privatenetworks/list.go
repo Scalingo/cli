@@ -32,14 +32,18 @@ func List(ctx context.Context, app string, format string, page uint, perPage uin
 		t := tablewriter.NewWriter(os.Stdout)
 		t.Header([]string{"Container Type", "Domain Name"})
 
+		// The container type is the 6th part of the domain name when split by "." and reversed
+		// e.g. for "1.web.ap-9142978a-3f9d-48d3-8caa-b042d401ac30.pn-ad0fd6a1-d05e-40ea-bf63-c4f8a75a9d8c.private-network.internal.",
+		// the container type is "web" when counting from the right (0-based index)
+		const containerTypeIndex = 5
 		for _, domain := range domainNames.Data {
 			containerType := containerTypeWeb
 			parts := strings.Split(domain, ".")
 			slices.Reverse(parts)
-			if len(parts) == 5 {
+			if len(parts) == containerTypeIndex {
 				containerType = containerTypeWeb
-			} else if len(parts) > 5 {
-				containerType = parts[5]
+			} else if len(parts) > containerTypeIndex {
+				containerType = parts[containerTypeIndex]
 			}
 			err := t.Append([]string{containerType, domain})
 			if err != nil {
