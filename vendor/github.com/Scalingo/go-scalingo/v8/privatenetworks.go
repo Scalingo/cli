@@ -6,14 +6,17 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/sirupsen/logrus"
 	"gopkg.in/errgo.v1"
 
 	httpclient "github.com/Scalingo/go-scalingo/v8/http"
+	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/logger"
 	"github.com/Scalingo/go-utils/pagination"
 )
 
 type PrivateNetworksService interface {
-	PrivateNetworksDomainsList(ctx context.Context, app string, page string, perPage string) (pagination.Paginated[[]PrivateNetworkDomain], error)
+	PrivateNetworksDomainsList(ctx context.Context, app string, page uint, perPage uint) (pagination.Paginated[[]PrivateNetworkDomain], error)
 }
 
 var _ PrivateNetworksService = (*Client)(nil)
@@ -24,29 +27,32 @@ type PrivateNetworkDomainsRes struct {
 	Domains pagination.Paginated[[]PrivateNetworkDomain] `json:"domain_names"`
 }
 
-func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, page string, perPage string) (pagination.Paginated[[]PrivateNetworkDomain], error) {
+func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, page uint, perPage uint) (pagination.Paginated[[]PrivateNetworkDomain], error) {
+	ctx, _ = logger.WithFieldsToCtx(ctx,
+		logrus.Fields{
+			"app":      app,
+			"page":     page,
+			"per_page": perPage,
+		})
+
 	var err error
-	pageInt := 1
-	if page != "" {
-		pageInt, err = strconv.Atoi(page)
-		if err != nil || pageInt < 1 {
-			return pagination.Paginated[[]PrivateNetworkDomain]{}, errgo.Newf("invalid page number: %s", page)
-		}
+	validationErr := errors.NewValidationErrorsBuilder()
+	if page < 1 {
+		validationErr.Set("page", "must be greater than zero")
+		return pagination.Paginated[[]PrivateNetworkDomain]{}, validationErr.Build()
 	}
 
-	if perPage != "" {
-		perPageInt, err := strconv.Atoi(perPage)
-		if err != nil || perPageInt < 1 || perPageInt > 50 {
-			return pagination.Paginated[[]PrivateNetworkDomain]{}, errgo.Newf("invalid per_page number: %s", perPage)
-		}
+	if perPage < 1 || perPage > 50 {
+		validationErr.Set("per_page", "must be between 1 and 50")
+		return pagination.Paginated[[]PrivateNetworkDomain]{}, validationErr.Build()
 	}
 
 	params := url.Values{}
-	params.Set("page", strconv.Itoa(pageInt))
-	params.Set("per-page", perPage)
+	params.Set("page", strconv.Itoa(int(page)))
+	params.Set("per-page", strconv.Itoa(int(perPage)))
 	req := &httpclient.APIRequest{
 		Method:   http.MethodGet,
-		Endpoint: "/apps/" + app + "/private-network-domain-names?" + params.Encode(),
+		Endpoint: "/apps/" + app + "/private_network_domain_names?" + params.Encode(),
 	}
 	var domainRes PrivateNetworkDomainsRes
 	err = c.ScalingoAPI().DoRequest(ctx, req, &domainRes)

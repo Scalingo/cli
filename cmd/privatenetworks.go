@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v3"
@@ -9,6 +10,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/privatenetworks"
+	"github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/go-utils/logger"
 )
 
@@ -54,10 +56,25 @@ var (
 				"format":   formatStr,
 			})
 
-			currentApp := detect.CurrentApp(c)
 			var err error
+			var page int
+			if pageStr != "" {
+				page, err = strconv.Atoi(pageStr)
+				if err != nil || page < 1 {
+					return errors.New(ctx, "invalid page number")
+				}
+			}
+
+			var perPage int
+			if perPageStr != "" {
+				perPage, err = strconv.Atoi(perPageStr)
+				if err != nil || perPage < 1 || perPage > 50 {
+					return errors.New(ctx, "invalid per_page number")
+				}
+			}
+			currentApp := detect.CurrentApp(c)
 			if c.Args().Len() == 0 {
-				err = privatenetworks.List(ctx, currentApp, formatStr, pageStr, perPageStr)
+				err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "private-networks-domain-names")
 			}
