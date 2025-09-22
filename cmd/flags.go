@@ -18,6 +18,12 @@ var (
 		Value:   "<name>",
 		Usage:   "Name of the current app",
 	}
+	projectFlag = cli.StringFlag{
+		Name:    "project",
+		Aliases: []string{"p"},
+		Value:   "<name>",
+		Usage:   "Name of the current project",
+	}
 	addonFlag = cli.StringFlag{
 		Name:  "addon",
 		Value: "<addon_id>",
