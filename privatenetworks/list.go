@@ -17,12 +17,12 @@ import (
 const containerTypeWeb = "web"
 
 func List(ctx context.Context, app string, format string, page uint, perPage uint) error {
-	c, err := config.ScalingoClient(ctx)
+	scalingoClient, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
-	domainNames, err := c.PrivateNetworksDomainsList(ctx, app, page, perPage)
+	domainNames, err := scalingoClient.PrivateNetworksDomainsList(ctx, app, page, perPage)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "list private network domains")
 	}
