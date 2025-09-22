@@ -37,7 +37,7 @@ func Show(ctx context.Context, appID string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Append("ID", db.App.ID)
 	t.Append("Name", db.App.Name)
-	t.Append("Type", db.Database.TypeName)
+	t.Append("Type", db.Addon.AddonProvider.Name)
 	t.Append("Plan", db.Addon.Plan.Name)
 	t.Append("Status", db.Database.Status)
 	t.Append("Version", db.Database.ReadableVersion)
