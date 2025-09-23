@@ -34,17 +34,20 @@ func Show(ctx context.Context, appID string) error {
 		}
 	}
 
+	data := [][]string{
+		{"ID", db.App.ID},
+		{"Name", db.App.Name},
+		{"Type", db.Addon.AddonProvider.Name},
+		{"Plan", db.Addon.Plan.Name},
+		{"Status", string(db.Database.Status)},
+		{"Version", db.Database.ReadableVersion},
+		{"Force TLS  ", forceSSL},
+		{"Internet Accessibility", internetAccess},
+		{"Maintenance window", utils.FormatMaintenanceWindowWithTimezone(db.Database.MaintenanceWindow, time.Local)},
+	}
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Append("ID", db.App.ID)
-	t.Append("Name", db.App.Name)
-	t.Append("Type", db.Addon.AddonProvider.Name)
-	t.Append("Plan", db.Addon.Plan.Name)
-	t.Append("Status", db.Database.Status)
-	t.Append("Version", db.Database.ReadableVersion)
-	t.Append("Force TLS  ", forceSSL)
-	t.Append("Internet Accessibility", internetAccess)
-	t.Append("Maintenance window", utils.FormatMaintenanceWindowWithTimezone(db.Database.MaintenanceWindow, time.Local))
-	t.Render()
+	_ = t.Bulk(data)
+	_ = t.Render()
 
 	return nil
 }

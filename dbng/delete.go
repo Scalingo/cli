@@ -26,7 +26,10 @@ func Delete(ctx context.Context, appID string) error {
 
 	fmt.Print("\nTo confirm type the ID or the name of the database: ")
 	var validationID string
-	fmt.Scan(&validationID)
+	_, err = fmt.Scan(&validationID)
+	if err != nil {
+		return errors.Wrap(ctx, err, "delete database confirmation")
+	}
 	fmt.Println()
 
 	if validationID != db.App.ID && validationID != db.App.Name {

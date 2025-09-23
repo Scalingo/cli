@@ -21,7 +21,6 @@ var aliases = map[string]string{
 }
 
 func Add(ctx context.Context, params scalingo.DatabaseCreateParams) error {
-
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
