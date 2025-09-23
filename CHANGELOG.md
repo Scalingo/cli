@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.40.0
+
 * feat(private-networks): add command to list private network domain names
 
 ## 1.39.0
