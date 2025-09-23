@@ -58,10 +58,7 @@ func List(ctx context.Context, app string, format string, page uint, perPage uin
 
 		fmt.Printf("Page %d/%d\nTotal number of domains %d\n", domainNames.Meta.CurrentPage, domainNames.Meta.TotalPages, domainNames.Meta.TotalCount)
 	case "json":
-		jsonOutput, err := json.Marshal(domainNames)
-		if err != nil {
-			return errors.Wrapf(ctx, err, "generate output JSON from domain names")
-		}
+		jsonOutput, _ := json.Marshal(domainNames)
 		fmt.Println(string(jsonOutput))
 	}
 
