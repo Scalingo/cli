@@ -3,6 +3,7 @@
 ## To Be Released
 
 * feat(apps): create `project-set` command for applications
+* feat(private-networks): add command to list private network domain names
 
 ## 1.39.0
 
