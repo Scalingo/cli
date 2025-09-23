@@ -58,4 +58,34 @@ var (
 			_ = autocomplete.CmdFlagsAutoComplete(c, "apps-info")
 		},
 	}
+
+	appsProjectSetCommand = cli.Command{
+		Name:      "project-set",
+		Category:  "App Management",
+		Usage:     "Set the project of an app",
+		ArgsUsage: "stack-id",
+		Flags:     []cli.Flag{&appFlag},
+		Description: CommandDescription{
+			Description: "Set the project of an application",
+			Examples:    []string{"scalingo --app my-app project-set prj-00000000-0000-0000-0000-000000000000"},
+		}.Render(),
+
+		Action: func(ctx context.Context, c *cli.Command) error {
+			projectID := c.Args().First()
+			if projectID == "" {
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "project-set")
+			}
+
+			currentApp := detect.CurrentApp(c)
+			err := apps.ProjectSet(ctx, currentApp, projectID)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+			return nil
+		},
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "project-set")
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
+		},
+	}
 )

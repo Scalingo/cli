@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(apps): create `project-set` command for applications
+
 ## 1.39.0
 
 * task(backups-config): update error message when unscheduling periodic backup
