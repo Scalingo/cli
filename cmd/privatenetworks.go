@@ -47,6 +47,14 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
+			if c.Args().Len() == 0 {
+				err := cli.ShowCommandHelp(ctx, c, "private-networks-domain-names")
+				if err != nil {
+					errorQuit(ctx, err)
+				}
+				return nil
+			}
+
 			pageStr := c.String("page")
 			perPageStr := c.String("per-page")
 			formatStr := c.String("format")
@@ -74,12 +82,8 @@ var (
 			}
 
 			currentApp := detect.CurrentApp(c)
-			if c.Args().Len() == 0 {
-				err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
-			} else {
-				_ = cli.ShowCommandHelp(ctx, c, "private-networks-domain-names")
-			}
 
+			err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
