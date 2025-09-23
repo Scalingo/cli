@@ -140,6 +140,14 @@ func NewAppCommands() *AppCommands {
 	for _, cmd := range globalCommands {
 		cmds.addCommand(Command{Global: true, Command: cmd})
 	}
+
+	// Enable, or not, Preview commands.
+	if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		for _, cmd := range regionalPreviewCommands {
+			cmds.addCommand(Command{Command: cmd})
+		}
+	}
+
 	return &cmds
 }
 
@@ -254,12 +262,6 @@ var (
 		&databaseCreateUser,
 		&databaseUpdateUserPassword,
 
-		// Databases next generation
-		&databasesList,
-		&databaseShow,
-		&databaseAdd,
-		&databaseDelete,
-
 		// Maintenance
 		&databaseMaintenanceList,
 		&databaseMaintenanceInfo,
@@ -305,6 +307,14 @@ var (
 		&projectsAddCommand,
 		&projectsUpdateCommand,
 		&projectsRemoveCommand,
+	}
+
+	regionalPreviewCommands = []*cli.Command{
+		// Databases next generation
+		&databasesList,
+		&databaseShow,
+		&databaseAdd,
+		&databaseDelete,
 	}
 
 	globalCommands = []*cli.Command{
