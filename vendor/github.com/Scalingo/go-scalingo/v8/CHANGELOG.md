@@ -1,8 +1,19 @@
 # Changelog
 
 ## To Be Released
-* feat(projects): add project_id to delete project event
+
+## 8.6.0
+
 * feat(private-networks): add private_networks service and method to list application private network domain names
+
+## 8.5.0
+
+- feat(client): create a new client for preview features
+- feat(databases): extend the preview client with types and methods to handle databases next generation
+
+## 8.4.1
+
+* feat(projects): add project_id to delete project event
 
 ## 8.4.0
 
@@ -37,7 +48,7 @@
 
 ## 7.0.1
 
-* feat(apps):  add the `private_network_ids` field to the model
+* feat(apps): add the `private_network_ids` field to the model
 * feat(database/users): add the `DatabaseUserResetPassword` method
 
 ## 7.0.0

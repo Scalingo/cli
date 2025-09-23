@@ -6,12 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v8/http"
 	"github.com/Scalingo/go-utils/errors/v2"
-	"github.com/Scalingo/go-utils/logger"
 	"github.com/Scalingo/go-utils/pagination"
 )
 
@@ -28,13 +24,6 @@ type PrivateNetworkDomainsRes struct {
 }
 
 func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, page uint, perPage uint) (pagination.Paginated[[]PrivateNetworkDomain], error) {
-	ctx, _ = logger.WithFieldsToCtx(ctx,
-		logrus.Fields{
-			"app":      app,
-			"page":     page,
-			"per_page": perPage,
-		})
-
 	var err error
 	validationErr := errors.NewValidationErrorsBuilder()
 	if page < 1 {
@@ -57,7 +46,7 @@ func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, pag
 	var domainRes PrivateNetworkDomainsRes
 	err = c.ScalingoAPI().DoRequest(ctx, req, &domainRes)
 	if err != nil {
-		return pagination.Paginated[[]PrivateNetworkDomain]{}, errgo.Mask(err)
+		return pagination.Paginated[[]PrivateNetworkDomain]{}, errors.Wrap(ctx, err, "make api call to list the private network domain names")
 	}
 
 	return domainRes.Domains, nil
