@@ -73,11 +73,13 @@ var (
 			&cli.StringFlag{Name: "type", Usage: "Database type", Required: true},
 			&cli.StringFlag{Name: "plan", Usage: "Database plan", Required: true},
 			&cli.StringFlag{Name: "project", Usage: "Project ID", Required: false},
+			&cli.BoolFlag{Name: "wait", Usage: "Wait for creation", Required: false},
 		},
 		Description: CommandDescription{
 			Description: "Create a new database next generation",
 			Examples: []string{
 				"scalingo database-create --type postgresql --plan postgresql-dbng-starter-2048 my_super_database",
+				"scalingo database-create --type postgresql --plan postgresql-dbng-starter-2048 --wait my_super_database",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-destroy"},
 		}.Render(),
@@ -89,12 +91,13 @@ var (
 
 			utils.CheckForConsent(ctx, currentApp)
 
-			err := dbng.Add(ctx, scalingo.DatabaseCreateParams{
+			params := scalingo.DatabaseCreateParams{
 				AddonProviderID: c.String("type"),
 				PlanID:          c.String("plan"),
 				ProjectID:       c.String("project"),
 				Name:            c.Args().First(),
-			})
+			}
+			err := dbng.Add(ctx, params, c.Bool("wait"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
