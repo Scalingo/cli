@@ -47,7 +47,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			if c.Args().Len() == 0 {
+			if c.Args().Len() > 0 {
 				err := cli.ShowCommandHelp(ctx, c, "private-networks-domain-names")
 				if err != nil {
 					errorQuit(ctx, err)
