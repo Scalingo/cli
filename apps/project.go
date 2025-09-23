@@ -19,7 +19,7 @@ func ProjectSet(ctx context.Context, appName, projectID string) error {
 		return errors.Wrap(ctx, err, "set project for app")
 	}
 
-	io.Statusf("Project ID has been set to %s on %s\n", projectID, appName)
+	io.Statusf("Project ID has been set to %s for the application %s\n", projectID, appName)
 
 	return nil
 }
