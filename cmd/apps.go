@@ -63,7 +63,7 @@ var (
 		Name:      "project-set",
 		Category:  "App Management",
 		Usage:     "Set the project of an app",
-		ArgsUsage: "stack-id",
+		ArgsUsage: "project-id",
 		Flags:     []cli.Flag{&appFlag},
 		Description: CommandDescription{
 			Description: "Set the project of an application",
