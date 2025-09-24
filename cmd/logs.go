@@ -36,16 +36,13 @@ var (
 			&cli.StringFlag{Name: "filter", Aliases: []string{"F"}, Usage: "Filter containers logs that will be displayed"},
 		},
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "logs")
 				return nil
 			}
 
-			addonID := currentDatabase
-			if currentDatabase == "" {
-				addonID = addonUUIDFromFlags(ctx, c, currentResource)
-			}
+			addonID := addonUUIDFromFlags(ctx, c, currentResource)
 
 			var err error
 			if addonID == "" {

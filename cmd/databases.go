@@ -161,13 +161,10 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			addonName := currentDatabase
-			if currentDatabase == "" {
-				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
-			}
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 
 			err := dbUsers.List(ctx, currentResource, addonName)
 			if err != nil {
@@ -198,13 +195,10 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-delete")
 			}
 
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			addonName := currentDatabase
-			if currentDatabase == "" {
-				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
-			}
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 
 			username := c.Args().First()
 
@@ -242,13 +236,10 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-create")
 			}
 
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			addonName := currentDatabase
-			if currentDatabase == "" {
-				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
-			}
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 
 			username := c.Args().First()
 
@@ -283,13 +274,10 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-update-password")
 			}
 
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			addonName := currentDatabase
-			if currentDatabase == "" {
-				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
-			}
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 
 			username := c.Args().First()
 

@@ -55,10 +55,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			}
 			utils.CheckForConsent(ctx, currentResource, consent...)
 
-			addonID := currentDatabase
-			if currentDatabase == "" {
-				addonID = addonUUIDFromFlags(ctx, c, currentResource)
-			}
+			addonID := addonUUIDFromFlags(ctx, c, currentResource)
 
 			err := logdrains.List(ctx, currentResource, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),

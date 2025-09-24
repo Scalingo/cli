@@ -30,16 +30,13 @@ var (
 			&cli.IntFlag{Name: "page", Aliases: []string{"p"}, Usage: "Page number"},
 		},
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "logs-archives")
 				return nil
 			}
 
-			addonID := currentDatabase
-			if currentDatabase == "" {
-				addonID = addonUUIDFromFlags(ctx, c, currentResource)
-			}
+			addonID := addonUUIDFromFlags(ctx, c, currentResource)
 
 			var err error
 			if addonID == "" {
