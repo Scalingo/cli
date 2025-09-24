@@ -60,8 +60,9 @@ var (
 
 			return nil
 		},
-		ShellComplete: func(_ context.Context, c *cli.Command) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "database-info")
+			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
 		},
 	}
 
@@ -137,8 +138,9 @@ var (
 
 			return nil
 		},
-		ShellComplete: func(_ context.Context, c *cli.Command) {
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "database-destroy")
+			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
 		},
 	}
 )
