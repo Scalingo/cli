@@ -75,12 +75,11 @@ func Add(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) e
 func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID string) error {
 	for range time.Tick(10 * time.Second) {
 		db, err := client.Preview().DatabaseShow(ctx, appID)
-		if err != nil {
-			if errors.Is(err, scalingo.ErrDatabaseNotFound) {
-				continue
-			}
+	if errors.Is(err, scalingo.ErrDatabaseNotFound) {
+		continue
+	} else if err != nil {
 			return err
-		}
+	}
 		if db.Database.Status == scalingo.DatabaseStatusRunning && db.App.Status == scalingo.AppStatusRunning {
 			break
 		}
