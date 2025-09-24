@@ -30,7 +30,7 @@ func Upgrade(ctx context.Context, app, addonID, plan string) error {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	planID, err := utils.CheckPlanExist(ctx, c, addon.AddonProvider.ID, plan)
+	planID, err := utils.FindPlan(ctx, c, addon.AddonProvider.ID, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

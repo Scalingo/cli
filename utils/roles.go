@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	roleOwner        = "owner"
-	roleCollaborator = "collaborator"
+	roleOwner        Role = "owner"
+	roleCollaborator Role = "collaborator"
 )
 
 type Role string

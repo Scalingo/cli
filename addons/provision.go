@@ -25,7 +25,7 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	planID, err := utils.CheckPlanExist(ctx, c, addon, plan)
+	planID, err := utils.FindPlan(ctx, c, addon, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}

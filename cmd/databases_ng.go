@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	databasesList = cli.Command{
+	databasesListCommand = cli.Command{
 		Name:     "databases",
 		Category: "Databases",
 		Usage:    "List the databases next generation that you own",
@@ -34,7 +34,7 @@ var (
 		},
 	}
 
-	databaseShow = cli.Command{
+	databaseShowCommand = cli.Command{
 		Name:      "database-info",
 		Category:  "Databases",
 		Usage:     "View database next generation",
@@ -46,13 +46,14 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			if c.Args().Len() != 1 {
+			appID := c.Args().First()
+			if appID == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-info")
 			}
 
 			utils.CheckForConsent(ctx, currentApp)
 
-			err := dbng.Show(ctx, c.Args().First())
+			err := dbng.Show(ctx, appID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -64,7 +65,7 @@ var (
 		},
 	}
 
-	databaseAdd = cli.Command{
+	databaseAddCommand = cli.Command{
 		Name:      "database-create",
 		Category:  "Databases",
 		Usage:     "Create a database next generation",
@@ -85,7 +86,8 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			if c.Args().Len() != 1 {
+			appName := c.Args().First()
+			if appName == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-create")
 			}
 
@@ -95,7 +97,7 @@ var (
 				AddonProviderID: c.String("type"),
 				PlanID:          c.String("plan"),
 				ProjectID:       c.String("project"),
-				Name:            c.Args().First(),
+				Name:            appName,
 			}
 			err := dbng.Add(ctx, params, c.Bool("wait"))
 			if err != nil {
@@ -109,7 +111,7 @@ var (
 		},
 	}
 
-	databaseDelete = cli.Command{
+	databaseDeleteCommand = cli.Command{
 		Name:      "database-destroy",
 		Category:  "Databases",
 		Usage:     "Delete database next generation",
@@ -121,13 +123,14 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(c)
-			if c.Args().Len() != 1 {
+			appID := c.Args().First()
+			if appID == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-destroy")
 			}
 
 			utils.CheckForConsent(ctx, currentApp)
 
-			err := dbng.Delete(ctx, c.Args().First())
+			err := dbng.Delete(ctx, appID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

@@ -315,10 +315,10 @@ var (
 
 	regionalPreviewCommands = []*cli.Command{
 		// Databases next generation
-		&databasesList,
-		&databaseShow,
-		&databaseAdd,
-		&databaseDelete,
+		&databasesListCommand,
+		&databaseShowCommand,
+		&databaseAddCommand,
+		&databaseDeleteCommand,
 	}
 
 	globalCommands = []*cli.Command{

@@ -34,7 +34,7 @@ func Add(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) e
 		return errors.New(ctx, "invalid database type")
 	}
 
-	planID, err := utils.CheckPlanExist(ctx, c, addon, params.PlanID)
+	planID, err := utils.FindPlan(ctx, c, addon, params.PlanID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "invalid database plan")
 	}
@@ -45,7 +45,7 @@ func Add(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) e
 
 	db, err := c.Preview().DatabaseCreate(ctx, params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "add database")
+		return errors.Wrap(ctx, err, "create database")
 	}
 	io.Statusf("Your %s database %s ('%s') is being provisioned…\n\n",
 		db.Addon.AddonProvider.Name,
@@ -75,11 +75,11 @@ func Add(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) e
 func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID string) error {
 	for range time.Tick(10 * time.Second) {
 		db, err := client.Preview().DatabaseShow(ctx, appID)
-	if errors.Is(err, scalingo.ErrDatabaseNotFound) {
-		continue
-	} else if err != nil {
+		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
+			continue
+		} else if err != nil {
 			return err
-	}
+		}
 		if db.Database.Status == scalingo.DatabaseStatusRunning && db.App.Status == scalingo.AppStatusRunning {
 			break
 		}
