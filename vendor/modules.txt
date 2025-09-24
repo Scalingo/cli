@@ -37,7 +37,7 @@ github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v8 v8.5.0
+# github.com/Scalingo/go-scalingo/v8 v8.7.0
 ## explicit; go 1.24
 github.com/Scalingo/go-scalingo/v8
 github.com/Scalingo/go-scalingo/v8/billing
@@ -51,6 +51,9 @@ github.com/Scalingo/go-utils/errors/v2
 # github.com/Scalingo/go-utils/logger v1.9.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/logger
+# github.com/Scalingo/go-utils/pagination v1.1.1
+## explicit; go 1.24
+github.com/Scalingo/go-utils/pagination
 # github.com/Scalingo/gopassword v1.1.0
 ## explicit; go 1.22
 github.com/Scalingo/gopassword
@@ -302,8 +305,8 @@ golang.org/x/sys/windows
 # golang.org/x/term v0.34.0
 ## explicit; go 1.23.0
 golang.org/x/term
-# golang.org/x/text v0.28.0
-## explicit; go 1.23.0
+# golang.org/x/text v0.29.0
+## explicit; go 1.24.0
 golang.org/x/text/cases
 golang.org/x/text/internal
 golang.org/x/text/internal/language

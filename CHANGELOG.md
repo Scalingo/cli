@@ -4,6 +4,13 @@
 
 * feat(projects): create all commands to handle next generation `databases`
 
+## 1.40.0
+
+Some features listed in this changelog, like private networks, are currently only available to selected users.
+
+* feat(apps): create `project-set` command for applications
+* feat(private-networks): add command to list private network domain names
+
 ## 1.39.0
 
 * task(backups-config): update error message when unscheduling periodic backup

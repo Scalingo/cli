@@ -161,6 +161,7 @@ var (
 		&appsInfoCommand,
 		&openCommand,
 		&dashboardCommand,
+		&appsProjectSetCommand,
 
 		// Apps Actions
 		&logsCommand,
@@ -307,6 +308,9 @@ var (
 		&projectsAddCommand,
 		&projectsUpdateCommand,
 		&projectsRemoveCommand,
+
+		// Private Networks
+		&privateNetworksApplicationDomainsListCommand,
 	}
 
 	regionalPreviewCommands = []*cli.Command{

@@ -335,6 +335,12 @@ func (c *Client) AppsStickySession(ctx context.Context, name string, enable bool
 	})
 }
 
+func (c *Client) AppsSetProject(ctx context.Context, name string, projectID string) (*App, error) {
+	return c.appsUpdate(ctx, name, map[string]interface{}{
+		"project_id": projectID,
+	})
+}
+
 func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]interface{}) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
