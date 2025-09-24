@@ -161,11 +161,15 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-			err := dbUsers.List(ctx, currentApp, addonName)
+			addonName := currentDatabase
+			if currentDatabase == "" {
+				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+			}
+
+			err := dbUsers.List(ctx, currentResource, addonName)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -194,13 +198,17 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-delete")
 			}
 
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := currentDatabase
+			if currentDatabase == "" {
+				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+			}
 
 			username := c.Args().First()
 
-			err := dbUsers.DeleteUser(ctx, currentApp, addonName, username)
+			err := dbUsers.DeleteUser(ctx, currentResource, addonName, username)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -234,13 +242,17 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-create")
 			}
 
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := currentDatabase
+			if currentDatabase == "" {
+				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+			}
 
 			username := c.Args().First()
 
-			err := dbUsers.CreateUser(ctx, currentApp, addonName, username, c.Bool("read-only"))
+			err := dbUsers.CreateUser(ctx, currentResource, addonName, username, c.Bool("read-only"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -271,13 +283,17 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 				return cli.ShowCommandHelp(ctx, c, "database-users-update-password")
 			}
 
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := currentDatabase
+			if currentDatabase == "" {
+				addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+			}
 
 			username := c.Args().First()
 
-			err := dbUsers.UpdateUserPassword(ctx, currentApp, addonName, username)
+			err := dbUsers.UpdateUserPassword(ctx, currentResource, addonName, username)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
