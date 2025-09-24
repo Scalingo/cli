@@ -30,11 +30,15 @@ var databaseMaintenanceList = cli.Command{
 	}.Render(),
 
 	Action: func(ctx context.Context, c *cli.Command) error {
-		currentApp := detect.CurrentApp(c)
-		utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-		addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+		currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
 
-		err := maintenance.List(ctx, currentApp, addonName, scalingo.PaginationOpts{
+		utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+		addonName := currentDatabase
+		if currentDatabase == "" {
+			addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+		}
+
+		err := maintenance.List(ctx, currentResource, addonName, scalingo.PaginationOpts{
 			Page:    c.Int("page"),
 			PerPage: c.Int("per-page"),
 		})
@@ -61,7 +65,7 @@ var databaseMaintenanceInfo = cli.Command{
 		},
 	}.Render(),
 	Action: func(ctx context.Context, c *cli.Command) error {
-		currentApp := detect.CurrentApp(c)
+		currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
 		if c.Args().Len() != 1 {
 			err := cli.ShowCommandHelp(ctx, c, "database-maintenance-info")
 			if err != nil {
@@ -70,11 +74,14 @@ var databaseMaintenanceInfo = cli.Command{
 			return nil
 		}
 
-		utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-		addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+		utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+		addonName := currentDatabase
+		if currentDatabase == "" {
+			addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+		}
 		maintenanceID := c.Args().First()
 
-		err := maintenance.Info(ctx, currentApp, addonName, maintenanceID)
+		err := maintenance.Info(ctx, currentResource, addonName, maintenanceID)
 		if err != nil {
 			errorQuit(ctx, err)
 		}
