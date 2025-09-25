@@ -23,7 +23,7 @@ func List(ctx context.Context) error {
 		return errors.Wrap(ctx, err, "list databases")
 	}
 
-	io.Warning("This command only displays databases next generation where you are the owner")
+	io.Warning("This command only displays databases next generation you own.")
 
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"ID", "Name", "Type", "Plan", "Role", "Status", "Project"})
