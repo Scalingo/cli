@@ -37,14 +37,15 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource := detect.GetCurrentResource(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 			if c.NArg() != 1 {
 				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.EnableFeature(ctx, c, currentApp, addonName, feature)
+			err := db.EnableFeature(ctx, c, currentResource, addonName, feature)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -67,14 +68,15 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource := detect.GetCurrentResource(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 			if c.NArg() != 1 {
 				errorQuit(ctx, errors.New("feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.DisableFeature(ctx, currentApp, addonName, feature)
+			err := db.DisableFeature(ctx, currentResource, addonName, feature)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -104,9 +106,10 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
-			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
+			currentResource := detect.GetCurrentResource(ctx, c)
+			utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+
+			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 
 			params := scalingo.DatabaseUpdatePeriodicBackupsConfigParams{}
 			scheduleAtFlag := c.String("schedule-at")
@@ -136,7 +139,7 @@ var (
 			}
 
 			if disable || scheduleAtFlag != "" {
-				err := db.BackupsConfiguration(ctx, currentApp, addonName, params)
+				err := db.BackupsConfiguration(ctx, currentResource, addonName, params)
 				if err != nil {
 					errorQuit(ctx, err)
 				}

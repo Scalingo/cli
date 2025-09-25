@@ -39,6 +39,8 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 		io.Warningf("Feature %v failed to get activated, please contact our support\n", feature)
 	case scalingo.DatabaseFeatureStatusPending:
 		io.Statusf("Feature %v is being enabled\n", feature)
+	default:
+		io.Status(res.Message)
 	}
 
 	if res.Status == scalingo.DatabaseFeatureStatusPending && c.Bool("synchronous") {
