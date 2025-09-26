@@ -41,7 +41,7 @@ func Delete(ctx context.Context, appID string) error {
 		return errors.Wrap(ctx, err, "delete database")
 	}
 
-	io.Status("The database is being deleted.")
+	io.Statusf("The database %s has been deleted.", db.App.ID)
 
 	return nil
 }
