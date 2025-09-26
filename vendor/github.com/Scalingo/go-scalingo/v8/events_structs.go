@@ -981,6 +981,7 @@ func (ev *EventCompleteDatabaseMaintenanceType) Who() string {
 
 // Project deleted
 type EventDeleteProjectTypeData struct {
+	ProjectID string `json:"project_id"`
 }
 
 type EventDeleteProjectType struct {

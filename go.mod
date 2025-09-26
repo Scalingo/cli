@@ -1,10 +1,12 @@
 module github.com/Scalingo/cli
 
-go 1.24
+go 1.24.0
+
+toolchain go1.24.3
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v8 v8.4.0
+	github.com/Scalingo/go-scalingo/v8 v8.7.0
 	github.com/Scalingo/go-utils/errors/v2 v2.5.1
 	github.com/Scalingo/go-utils/logger v1.9.1
 	github.com/Scalingo/gopassword v1.1.0
@@ -20,12 +22,13 @@ require (
 	github.com/olekukonko/tablewriter v1.0.9
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/pkg/errors v0.9.1
+	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.11.1
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v3 v3.4.1
 	golang.org/x/crypto v0.41.0
 	golang.org/x/term v0.34.0
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.29.0
 	gopkg.in/errgo.v1 v1.0.1
 )
 
@@ -33,6 +36,7 @@ require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.3.0 // indirect
+	github.com/Scalingo/go-utils/pagination v1.1.1 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
@@ -58,7 +62,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sergi/go-diff v1.4.0 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	golang.org/x/net v0.43.0 // indirect
