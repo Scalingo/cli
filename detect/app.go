@@ -2,7 +2,6 @@ package detect
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strings"
 
@@ -11,6 +10,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8/debug"
 	"github.com/Scalingo/go-utils/errors/v2"
@@ -35,7 +35,7 @@ func GetCurrentResourceAndDatabase(ctx context.Context, c *cli.Command) (string,
 	currentApp := extractAppName(c)
 	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)
 	if err != nil && !errors.Is(err, errDatabaseNotFound) {
-		fmt.Println(err)
+		io.Error(err)
 		os.Exit(1)
 	}
 
@@ -49,12 +49,12 @@ func GetCurrentResourceAndDatabase(ctx context.Context, c *cli.Command) (string,
 	}
 
 	if appFlagSet && currentDatabase != "" && databaseUUID != "" {
-		fmt.Println("You can't use --app and --database flags together.")
+		io.Error("You can't use --app and --database flags together.")
 		os.Exit(1)
 	}
 
 	if currentApp == "" && currentDatabase == "" {
-		fmt.Println("No application or database found. Please use --app or --database flag.")
+		io.Error("No application or database found. Please use --app or --database flag.")
 		os.Exit(1)
 	}
 
@@ -78,7 +78,7 @@ func CurrentApp(c *cli.Command) string {
 	appName := extractAppName(c)
 
 	if appName == "" {
-		fmt.Println("Unable to find the application name, please use --app flag.")
+		io.Error("Unable to find the application name, please use --app flag.")
 		os.Exit(1)
 	}
 	debug.Println("[detect] App name is", appName)
@@ -110,19 +110,19 @@ func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, st
 	}
 
 	if len(addons) == 0 {
-		fmt.Println("No database found with the given name.")
+		io.Warning("No database found with the given name.")
 		return "", "", errDatabaseNotFound
 	}
 
 	if len(addons) > 1 {
-		fmt.Println("Multiple databases found with the given name, it may be an application. Please use the database name instead.")
+		io.Error("Multiple databases found with the given name, it may be an application. Please use the database name instead.")
 		return "", "", errDatabaseNotFound
 	}
 
 	databaseUUID := addons[0].ID
 
 	if databaseUUID == "" {
-		fmt.Println("Unable to find the database ID with the given name.")
+		io.Error("Unable to find the database ID with the given name.")
 		return "", "", errDatabaseNotFound
 	}
 

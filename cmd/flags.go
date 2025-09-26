@@ -54,10 +54,8 @@ func addonUUIDFromFlags(ctx context.Context, c *cli.Command, app string, exitIfM
 		addonName = os.Getenv("SCALINGO_ADDON")
 	}
 
-	if addonName == "" {
-		if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
-			_, addonName = detect.GetCurrentResourceAndDatabase(ctx, c)
-		}
+	if addonName == "" && os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		_, addonName = detect.GetCurrentResourceAndDatabase(ctx, c)
 	}
 
 	if addonName == "" && len(exitIfMissing) > 0 && exitIfMissing[0] {
