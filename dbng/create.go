@@ -15,26 +15,15 @@ import (
 
 const dbngTypePostgresql = "dedicated-pg"
 
-var aliases = map[string]string{
-	"psql":             dbngTypePostgresql,
-	"pgsql":            dbngTypePostgresql,
-	"postgres":         dbngTypePostgresql,
-	"postgresql":       dbngTypePostgresql,
-	dbngTypePostgresql: dbngTypePostgresql,
-}
-
 func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	addon, ok := aliases[params.AddonProviderID]
-	if !ok {
-		return errors.New(ctx, "invalid database type")
-	}
+	addon := params.AddonProviderID
 
-	planID, err := utils.FindPlan(ctx, c, addon, params.PlanID)
+	planID, err := utils.FindPlan(ctx, c, params.AddonProviderID, params.PlanID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "invalid database plan")
 	}
