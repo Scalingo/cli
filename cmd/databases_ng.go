@@ -20,8 +20,6 @@ var (
 			SeeAlso:     []string{"database-info", "database-create", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
-			// TODO(david): check for consent
-
 			err := dbng.List(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
