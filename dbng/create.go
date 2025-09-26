@@ -23,7 +23,7 @@ var aliases = map[string]string{
 	dbngTypePostgresql: dbngTypePostgresql,
 }
 
-func Add(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
+func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")

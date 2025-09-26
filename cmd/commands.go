@@ -316,9 +316,9 @@ var (
 	regionalPreviewCommands = []*cli.Command{
 		// Databases next generation
 		&databasesListCommand,
-		&databaseShowCommand,
-		&databaseAddCommand,
-		&databaseDeleteCommand,
+		&databaseInfoCommand,
+		&databaseCreateCommand,
+		&databaseDestroyCommand,
 	}
 
 	globalCommands = []*cli.Command{

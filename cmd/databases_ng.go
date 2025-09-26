@@ -34,7 +34,7 @@ var (
 		},
 	}
 
-	databaseShowCommand = cli.Command{
+	databaseInfoCommand = cli.Command{
 		Name:      "database-info",
 		Category:  "Databases NG",
 		Usage:     "View database next generation",
@@ -52,7 +52,7 @@ var (
 
 			// TODO(david): check for consent
 
-			err := dbng.Show(ctx, appID)
+			err := dbng.Info(ctx, appID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -65,7 +65,7 @@ var (
 		},
 	}
 
-	databaseAddCommand = cli.Command{
+	databaseCreateCommand = cli.Command{
 		Name:      "database-create",
 		Category:  "Databases NG",
 		Usage:     "Create a database next generation",
@@ -96,7 +96,7 @@ var (
 				ProjectID:       c.String("project"),
 				Name:            appName,
 			}
-			err := dbng.Add(ctx, params, c.Bool("wait"))
+			err := dbng.Create(ctx, params, c.Bool("wait"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -108,7 +108,7 @@ var (
 		},
 	}
 
-	databaseDeleteCommand = cli.Command{
+	databaseDestroyCommand = cli.Command{
 		Name:      "database-destroy",
 		Category:  "Databases NG",
 		Usage:     "Delete database next generation",
@@ -124,7 +124,7 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-destroy")
 			}
 
-			err := dbng.Delete(ctx, appID)
+			err := dbng.Destroy(ctx, appID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

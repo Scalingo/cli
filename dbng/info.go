@@ -13,7 +13,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-func Show(ctx context.Context, appID string) error {
+func Info(ctx context.Context, appID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
