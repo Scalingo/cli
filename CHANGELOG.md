@@ -5,7 +5,7 @@
 Some features listed in this changelog, like databases next generation, are currently only available in preview to 
 selected users.
 
-* feat(databases next generation): create all commands to handle next generation `databases`
+* feat(databases next generation): create all commands to handle next generation `databases`.
 
 ## 1.40.0
 
