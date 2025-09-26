@@ -121,6 +121,7 @@ var (
 			if appID == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-destroy")
 			}
+TODO(David) check consent
 
 			err := dbng.Destroy(ctx, appID)
 			if err != nil {
