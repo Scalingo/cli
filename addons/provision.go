@@ -2,7 +2,6 @@ package addons
 
 import (
 	"context"
-	"errors"
 
 	"gopkg.in/errgo.v1"
 
@@ -26,7 +25,7 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	planID, err := checkPlanExist(ctx, c, addon, plan)
+	planID, err := utils.FindPlan(ctx, c, addon, plan)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
@@ -54,17 +53,4 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 		io.Info("Message from addon provider:", params.Message)
 	}
 	return nil
-}
-
-func checkPlanExist(ctx context.Context, c *scalingo.Client, addon, plan string) (string, error) {
-	plans, err := c.AddonProviderPlansList(ctx, addon)
-	if err != nil {
-		return "", errgo.Mask(err, errgo.Any)
-	}
-	for _, p := range plans {
-		if plan == p.Name {
-			return p.ID, nil
-		}
-	}
-	return "", errors.New("plan " + plan + " doesn't exist for addon " + addon)
 }

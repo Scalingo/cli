@@ -9,12 +9,8 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-utils/errors/v2"
-)
-
-const (
-	roleOwner        = "owner"
-	roleCollaborator = "collaborator"
 )
 
 func List(ctx context.Context, projectSlug string) error {
@@ -47,12 +43,9 @@ func List(ctx context.Context, projectSlug string) error {
 			continue
 		}
 
-		role := roleCollaborator
-		if app.Owner.Email == currentUser.Email {
-			role = roleOwner
-		}
+		role := utils.AppRole(currentUser, app)
 
-		_ = t.Append([]string{app.Name, role, string(app.Status), app.ProjectSlug()})
+		_ = t.Append([]string{app.Name, string(role), string(app.Status), app.ProjectSlug()})
 	}
 	_ = t.Render()
 

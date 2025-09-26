@@ -63,11 +63,12 @@ func getDatabaseInfo(ctx context.Context, c *scalingo.Client, app, addon string)
 		return [][]string{}, errors.Wrap(ctx, err, "get database information")
 	}
 
-	forceSsl, internetAccess := "disabled", "disabled"
+	forceSSL, internetAccess := "disabled", "disabled"
 	for _, feature := range dbInfo.Features {
-		if feature.Name == "force-ssl" {
-			forceSsl = strings.ToLower(string(feature.Status))
-		} else if feature.Name == "publicly-available" {
+		switch feature.Name {
+		case "force-ssl":
+			forceSSL = strings.ToLower(string(feature.Status))
+		case "publicly-available":
 			internetAccess = strings.ToLower(string(feature.Status))
 		}
 	}
@@ -75,7 +76,7 @@ func getDatabaseInfo(ctx context.Context, c *scalingo.Client, app, addon string)
 	lines := [][]string{
 		{"Database Type", dbInfo.TypeName},
 		{"Version", dbInfo.ReadableVersion},
-		{"Force TLS", forceSsl},
+		{"Force TLS", forceSSL},
 		{"Internet Accessibility", internetAccess},
 		{"Maintenance window", utils.FormatMaintenanceWindowWithTimezone(dbInfo.MaintenanceWindow, time.Local)},
 	}

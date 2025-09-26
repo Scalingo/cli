@@ -140,6 +140,14 @@ func NewAppCommands() *AppCommands {
 	for _, cmd := range globalCommands {
 		cmds.addCommand(Command{Global: true, Command: cmd})
 	}
+
+	// Enable, or not, Preview commands.
+	if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		for _, cmd := range regionalPreviewCommands {
+			cmds.addCommand(Command{Command: cmd})
+		}
+	}
+
 	return &cmds
 }
 
@@ -303,6 +311,14 @@ var (
 
 		// Private Networks
 		&privateNetworksApplicationDomainsListCommand,
+	}
+
+	regionalPreviewCommands = []*cli.Command{
+		// Databases next generation
+		&databasesListCommand,
+		&databaseInfoCommand,
+		&databaseCreateCommand,
+		&databaseDestroyCommand,
 	}
 
 	globalCommands = []*cli.Command{

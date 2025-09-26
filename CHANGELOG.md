@@ -2,6 +2,11 @@
 
 ## To Be Released
 
+Some features listed in this changelog, like databases next generation, are currently only available in preview to 
+selected users.
+
+* feat(databases next generation): create all commands to handle next generation `databases`.
+
 ## 1.40.0
 
 Some features listed in this changelog, like private networks, are currently only available to selected users.
