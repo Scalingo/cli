@@ -69,7 +69,7 @@ func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID 
 		} else if err != nil {
 			return err
 		}
-		if db.Database.Status == scalingo.DatabaseStatusRunning && db.App.Status == scalingo.AppStatusRunning {
+		if db.Database.Status == scalingo.DatabaseStatusRunning {
 			break
 		}
 	}
