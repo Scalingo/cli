@@ -16,10 +16,20 @@ type AddDrainOpts struct {
 	Params     scalingo.LogDrainAddParams
 }
 
-func Add(ctx context.Context, app string, opts AddDrainOpts) error {
+func Add(ctx context.Context, app, database string, opts AddDrainOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to add a log drain")
+	}
+
+	if database != "" {
+		d, err := c.LogDrainAddonAdd(ctx, app, database, opts.Params)
+		if err != nil {
+			io.Status("fail to add drain to", "'"+app+"' database addon:\n\t", err)
+		} else {
+			io.Status("Log drain", d.Drain.URL, "has been added to the database", app)
+		}
+		return nil
 	}
 
 	if opts.AddonID == "" || opts.WithAddons {

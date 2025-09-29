@@ -23,7 +23,7 @@ type ListAddonOpts struct {
 	AddonID    string
 }
 
-func List(ctx context.Context, app string, opts ListAddonOpts) error {
+func List(ctx context.Context, resourceName string, opts ListAddonOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
@@ -32,26 +32,27 @@ func List(ctx context.Context, app string, opts ListAddonOpts) error {
 	appToPrint := []printableDrains{}
 
 	if opts.AddonID == "" {
-		logDrains, err := c.LogDrainsList(ctx, app)
+		logDrains, err := c.LogDrainsList(ctx, resourceName)
 		if err != nil {
 			return errgo.Notef(err, "fail to list the log drains")
 		}
 		if len(logDrains) > 0 {
 			appToPrint = append(appToPrint, printableDrains{
-				AppName:   app,
+				AppName:   resourceName,
 				DrainURLs: logDrains,
 			})
 		}
 	}
+
 	if opts.AddonID != "" || opts.WithAddons {
-		addons, err := c.AddonsList(ctx, app)
+		addons, err := c.AddonsList(ctx, resourceName)
 		if err != nil {
 			return errgo.Notef(err, "fail to list addons")
 		}
 
 		for _, addon := range addons {
 			if opts.AddonID == addon.ID || opts.WithAddons {
-				drains, err := c.LogDrainsAddonList(ctx, app, addon.ID)
+				drains, err := c.LogDrainsAddonList(ctx, resourceName, addon.ID)
 				if err != nil {
 					io.Status(err)
 				}

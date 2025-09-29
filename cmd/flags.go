@@ -6,6 +6,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
+	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8/debug"
@@ -25,6 +26,19 @@ var (
 	}
 )
 
+func databaseFlag() *cli.StringFlag {
+	if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		return &cli.StringFlag{
+			Name:  "database",
+			Value: "<database_name>",
+			Usage: "ID of the current database",
+		}
+	}
+	return &cli.StringFlag{}
+}
+
+// addonUUIDFromFlags returns the addon UUID based on the --addon flag, the SCALINGO_ADDON env var
+// or the current detected database.
 // exitIfMissing is optional. Set to true to show a message requesting for the --addon flag.
 func addonUUIDFromFlags(ctx context.Context, c *cli.Command, app string, exitIfMissing ...bool) string {
 	var addonName string
@@ -38,6 +52,10 @@ func addonUUIDFromFlags(ctx context.Context, c *cli.Command, app string, exitIfM
 
 	if addonName == "" && os.Getenv("SCALINGO_ADDON") != "" {
 		addonName = os.Getenv("SCALINGO_ADDON")
+	}
+
+	if addonName == "" && os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		_, addonName = detect.GetCurrentResourceAndDatabase(ctx, c)
 	}
 
 	if addonName == "" && len(exitIfMissing) > 0 && exitIfMissing[0] {

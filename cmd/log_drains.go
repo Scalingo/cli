@@ -22,6 +22,7 @@ var (
 		Category: "Log drains",
 		Flags: []cli.Flag{&appFlag,
 			&addonFlag,
+			databaseFlag(),
 			&cli.BoolFlag{Name: "with-addons", Usage: "also list the log drains of all addons"},
 		},
 		Usage: "List the log drains of an application",
@@ -38,17 +39,25 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 			SeeAlso: []string{"log-drains-add", "log-drains-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "log-drains")
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp)
+			consent := []utils.ConsentType{}
+			if currentDatabase != "" || c.Bool("with-addons") || c.Bool("with-databases") {
+				consent = append(consent, utils.ConsentTypeDBs)
+			}
+			if currentResource != "" && currentDatabase == "" {
+				consent = append(consent, utils.ConsentTypeContainers)
+			}
+			utils.CheckForConsent(ctx, currentResource, consent...)
 
-			addonID := addonUUIDFromFlags(ctx, c, currentApp)
+			addonID := addonUUIDFromFlags(ctx, c, currentResource)
 
-			err := logdrains.List(ctx, currentApp, logdrains.ListAddonOpts{
+			err := logdrains.List(ctx, currentResource, logdrains.ListAddonOpts{
 				WithAddons: c.Bool("with-addons"),
 				AddonID:    addonID,
 			})
@@ -67,6 +76,7 @@ Use the parameter "--with-addons" to list log drains of all addons connected to 
 		Category: "Log drains",
 		Usage:    "Add a log drain to an application",
 		Flags: []cli.Flag{&appFlag,
+			databaseFlag(),
 			&addonFlag,
 			&cli.BoolFlag{Name: "with-addons", Usage: "also add the log drains to all addons"},
 			&cli.BoolFlag{Name: "with-databases", Usage: "also add the log drains to all databases"},
@@ -106,11 +116,16 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
 
-			addonID := addonUUIDFromFlags(ctx, c, currentApp)
+			utils.CheckForConsent(ctx, currentResource)
 
-			utils.CheckForConsent(ctx, currentApp)
+			var addonID string
+			if currentDatabase != "" {
+				addonID = currentDatabase
+			} else {
+				addonID = addonUUIDFromFlags(ctx, c, currentResource)
+			}
 
 			if addonID != "" && (c.Bool("with-addons") || c.Bool("with-databases")) {
 				_ = cli.ShowCommandHelp(ctx, c, "log-drains-add")
@@ -121,7 +136,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 				fmt.Println("Warning: At the moment, only database addons are able to forward logs to a drain.")
 			}
 
-			err := logdrains.Add(ctx, currentApp, logdrains.AddDrainOpts{
+			err := logdrains.Add(ctx, currentResource, currentDatabase, logdrains.AddDrainOpts{
 				WithAddons: c.Bool("with-addons") || c.Bool("with-databases"),
 				AddonID:    addonID,
 				Params: scalingo.LogDrainAddParams{
@@ -148,6 +163,7 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 		Category: "Log drains",
 		Flags: []cli.Flag{
 			&appFlag,
+			databaseFlag(),
 			&addonFlag,
 			&cli.BoolFlag{Name: "only-app", Usage: "remove the log drains for the application only"},
 		},
@@ -170,40 +186,51 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 	# See also commands 'log-drains-add', 'log-drains'`,
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+
 			if c.Args().Len() != 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 			drain := c.Args().First()
 
-			addonID := addonUUIDFromFlags(ctx, c, currentApp)
+			var addonID string
+			if currentDatabase != "" {
+				addonID = currentDatabase
+			} else {
+				addonID = addonUUIDFromFlags(ctx, c, currentResource)
+			}
 
 			if addonID != "" && c.Bool("only-app") {
 				_ = cli.ShowCommandHelp(ctx, c, "log-drains-remove")
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp)
+			utils.CheckForConsent(ctx, currentResource)
 
-			message := "This operation will delete the log drain " + drain
-			if addonID == "" && !c.Bool("only-app") {
+			var target string
+			switch {
+			case currentDatabase != "":
+				// database
+				target = " for the database " + currentDatabase
+			case addonID == "" && !c.Bool("only-app"):
 				// addons + app
-				message += " for the application and all its addons"
-			} else if addonID != "" && !c.Bool("only-app") {
+				target = " for the application and all its addons"
+			case addonID != "" && !c.Bool("only-app"):
 				// addon only
-				message += " for the addon " + addonID
-			} else {
-				// app only
-				message += " for the application " + currentApp
+				target = " for the addon " + addonID
+			default:
+				// app only or database
+				target = " for the application " + currentResource
 			}
+
+			message := "This operation will delete the log drain " + drain + target
 			result := askContinue(message + confirmDeletionSuffix)
 			if !result {
 				fmt.Println("Aborted")
 				return nil
 			}
-
-			err := logdrains.Remove(ctx, currentApp, logdrains.RemoveAddonOpts{
+			err := logdrains.Remove(ctx, currentResource, currentDatabase, logdrains.RemoveAddonOpts{
 				AddonID: addonID,
 				OnlyApp: c.Bool("only-app"),
 				URL:     drain,

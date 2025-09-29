@@ -16,7 +16,7 @@ var (
 	envCommand = cli.Command{
 		Name:     "env",
 		Category: "Environment",
-		Flags:    []cli.Flag{&appFlag},
+		Flags:    []cli.Flag{&appFlag, databaseFlag()},
 		Usage:    "Display the environment variables of your apps",
 		Description: CommandDescription{
 			Description: "List all the environment variables of your app",
@@ -25,7 +25,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.GetCurrentResource(ctx, c)
 			var err error
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "env")
@@ -49,7 +49,7 @@ var (
 	envGetCommand = cli.Command{
 		Name:      "env-get",
 		Category:  "Environment",
-		Flags:     []cli.Flag{&appFlag},
+		Flags:     []cli.Flag{&appFlag, databaseFlag()},
 		Usage:     "Get the requested environment variable from your app",
 		ArgsUsage: "variable-name",
 		Description: CommandDescription{
@@ -64,10 +64,11 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
-			utils.CheckForConsent(ctx, currentApp)
+			currentResource := detect.GetCurrentResource(ctx, c)
 
-			variableValue, err := env.Get(ctx, currentApp, c.Args().First())
+			utils.CheckForConsent(ctx, currentResource)
+
+			variableValue, err := env.Get(ctx, currentResource, c.Args().First())
 			if err != nil {
 				errorQuit(ctx, err)
 			}

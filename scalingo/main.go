@@ -92,6 +92,11 @@ func main() {
 		&cli.StringFlag{Name: "remote", Aliases: []string{"r"}, Value: "scalingo", Usage: "Name of the remote"},
 		&cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"},
 	}
+	if os.Getenv("SCALINGO_PREVIEW_FEATURES") == "true" {
+		app.Flags = append(app.Flags,
+			&cli.StringFlag{Name: "database", Aliases: []string{"d"}, Value: "<database_name>", Usage: "Name of the database", Sources: cli.EnvVars("SCALINGO_DATABASE")},
+		)
+	}
 	app.EnableShellCompletion = true
 	app.ShellComplete = func(ctx context.Context, c *cli.Command) {
 		ScalingoAppComplete(ctx, c)

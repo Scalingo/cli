@@ -11,6 +11,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -23,6 +24,14 @@ func doesDatabaseHandleUserManagement(ctx context.Context, app, addonUUID string
 	addonsClient, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return false, errors.Wrap(ctx, err, "get Scalingo client")
+	}
+
+	isDB, err := utils.IsResourceDatabase(ctx, app)
+	if err != nil && !errors.Is(err, utils.ErrResourceNotFound) {
+		return false, errors.Wrap(ctx, err, "check if the resource is a database")
+	}
+	if isDB {
+		return true, nil
 	}
 
 	addon, err := addonsClient.AddonShow(ctx, app, addonUUID)

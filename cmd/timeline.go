@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	TimelineCommand = cli.Command{
+	timelineCommand = cli.Command{
 		Name:     "timeline",
 		Category: "Events",
 		Flags: []cli.Flag{
@@ -28,14 +28,14 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentResource := detect.GetCurrentResource(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "timeline")
 				return nil
 			}
 
-			utils.CheckForConsent(ctx, currentApp)
-			err := apps.Events(ctx, currentApp, scalingo.PaginationOpts{
+			utils.CheckForConsent(ctx, currentResource)
+			err := apps.Events(ctx, currentResource, scalingo.PaginationOpts{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
 			})

@@ -76,8 +76,8 @@ var (
 				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "project-set")
 			}
 
-			currentApp := detect.CurrentApp(c)
-			err := apps.ProjectSet(ctx, currentApp, projectID)
+			currentResource := detect.GetCurrentResource(ctx, c)
+			err := apps.ProjectSet(ctx, currentResource, projectID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type RemoveAddonOpts struct {
@@ -15,10 +16,19 @@ type RemoveAddonOpts struct {
 	URL     string
 }
 
-func Remove(ctx context.Context, app string, opts RemoveAddonOpts) error {
+func Remove(ctx context.Context, app, database string, opts RemoveAddonOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client to remove a log drain from the application")
+	}
+
+	if database != "" {
+		err := c.LogDrainAddonRemove(ctx, app, database, opts.URL)
+		if err != nil {
+			return errors.Wrapf(ctx, err, "remove the log drain from the database %s", database)
+		}
+		io.Status("The log drain", opts.URL, "has been deleted from the database", database)
+		return nil
 	}
 
 	if opts.AddonID != "" {

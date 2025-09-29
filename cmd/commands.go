@@ -28,13 +28,13 @@ type Command struct {
 }
 
 type CommandDescription struct {
-	// Mandatory description of the command
+	// Mandatory description of the command.
 	Description string
 
-	// Examples on how to use the command
+	// Examples on how to use the command.
 	Examples []string
 
-	//
+	// Commands that may be related to this command.
 	SeeAlso []string
 }
 
@@ -184,7 +184,7 @@ var (
 
 		// Events
 		&UserTimelineCommand,
-		&TimelineCommand,
+		&timelineCommand,
 
 		// Environment
 		&envCommand,
@@ -206,10 +206,10 @@ var (
 		&deploymentCacheResetCommand,
 
 		// Collaborators
-		&CollaboratorsListCommand,
-		&CollaboratorsAddCommand,
-		&CollaboratorsRemoveCommand,
-		&CollaboratorsUpdateCommand,
+		&collaboratorsListCommand,
+		&collaboratorsAddCommand,
+		&collaboratorsRemoveCommand,
+		&collaboratorsUpdateCommand,
 
 		// Stacks
 		&stacksListCommand,
