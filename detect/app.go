@@ -18,6 +18,20 @@ import (
 
 var errDatabaseNotFound = stderrors.New("database name not found")
 
+// GetCurrentDatabase is a helper to get the current database name and UUID.
+func GetCurrentDatabase(ctx context.Context, c *cli.Command) (string, string) {
+	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)
+	if err != nil && !errors.Is(err, errDatabaseNotFound) {
+		io.Error(err)
+		os.Exit(1)
+	}
+	if err != nil {
+		io.Error("No database found. Please use --database flag.")
+		os.Exit(1)
+	}
+	return currentDatabase, databaseUUID
+}
+
 // GetCurrentResource is the new helper to get the current resource (app or database).
 func GetCurrentResource(ctx context.Context, c *cli.Command) string {
 	resource, _ := GetCurrentResourceAndDatabase(ctx, c)
