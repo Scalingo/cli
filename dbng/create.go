@@ -13,8 +13,6 @@ import (
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
-const dbngTypePostgresql = "dedicated-pg"
-
 func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
