@@ -21,12 +21,12 @@ var errDatabaseNotFound = stderrors.New("database name not found")
 // GetCurrentDatabase is a helper to get the current database name and UUID.
 func GetCurrentDatabase(ctx context.Context, c *cli.Command) (string, string) {
 	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)
-	if err != nil && !errors.Is(err, errDatabaseNotFound) {
-		io.Error(err)
+	if errors.Is(err, errDatabaseNotFound) {
+		io.Error("No database found. Please use --database flag.")
 		os.Exit(1)
 	}
 	if err != nil {
-		io.Error("No database found. Please use --database flag.")
+		io.Error(err)
 		os.Exit(1)
 	}
 	return currentDatabase, databaseUUID
