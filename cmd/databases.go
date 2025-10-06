@@ -23,7 +23,7 @@ var (
 		Category:  "Addons",
 		Usage:     "Enable a togglable feature from a database",
 		ArgsUsage: "feature-id",
-		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.BoolFlag{
+		Flags: []cli.Flag{&appFlag, &addonFlag, databaseFlag(), &cli.BoolFlag{
 			Name:  "synchronous",
 			Usage: "Wait for the feature to be enabled synchronously",
 		}},
@@ -58,7 +58,7 @@ var (
 		Category:  "Addons",
 		Usage:     "Enable a togglable feature from a database",
 		ArgsUsage: "feature-id",
-		Flags:     []cli.Flag{&appFlag, &addonFlag},
+		Flags:     []cli.Flag{&appFlag, &addonFlag, databaseFlag()},
 		Description: CommandDescription{
 			Description: "Disable a togglable feature from a database",
 			Examples: []string{
@@ -88,7 +88,7 @@ var (
 		Name:     "backups-config",
 		Category: "Addons",
 		Usage:    "Configure the periodic backups of a database",
-		Flags: []cli.Flag{&appFlag, &addonFlag, &cli.StringFlag{
+		Flags: []cli.Flag{&appFlag, &addonFlag, databaseFlag(), &cli.StringFlag{
 			Name:  "schedule-at",
 			Usage: "Enable daily backups and schedule them at the specified hour of the day (in local time zone). It is also possible to specify the timezone to use.",
 		}, &cli.BoolFlag{
@@ -153,7 +153,7 @@ var (
 		Aliases:  []string{"database-list-users"},
 		Category: "Addons",
 		Usage:    "Print database's users",
-		Flags:    []cli.Flag{&appFlag, &addonFlag},
+		Flags:    []cli.Flag{&appFlag, &addonFlag, databaseFlag()},
 		Description: CommandDescription{
 			Description: `List the users of a database
 
@@ -183,7 +183,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		Category:  "Addons",
 		ArgsUsage: "user",
 		Usage:     "Delete a database's user",
-		Flags:     []cli.Flag{&appFlag, &addonFlag},
+		Flags:     []cli.Flag{&appFlag, &addonFlag, databaseFlag()},
 		Description: CommandDescription{
 			Description: `Delete the given user of a database
 
@@ -222,6 +222,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		Flags: []cli.Flag{
 			&appFlag,
 			&addonFlag,
+			databaseFlag(),
 			&cli.BoolFlag{Name: "read-only", Usage: "Create a user with read-only rights"},
 		},
 		Description: CommandDescription{
@@ -262,6 +263,7 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 		Flags: []cli.Flag{
 			&appFlag,
 			&addonFlag,
+			databaseFlag(),
 		},
 		Description: CommandDescription{
 			Description: `Update password for unprotected database user.

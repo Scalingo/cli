@@ -7,6 +7,9 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/dbng"
+	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v8"
 )
 
@@ -15,6 +18,7 @@ var (
 		Name:     "databases",
 		Category: "Global",
 		Usage:    "List the databases next generation that you own",
+		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all the databases next generation of which you are an owner",
 			SeeAlso:     []string{"database-info", "database-create", "database-destroy"},
@@ -37,20 +41,29 @@ var (
 		Category:  "Databases NG",
 		Usage:     "View database next generation",
 		ArgsUsage: "database-id",
+		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "View database next generation detailed informations",
-			Examples:    []string{"scalingo database-info database_id"},
-			SeeAlso:     []string{"databases", "database-create", "database-destroy"},
+			Examples: []string{
+				"scalingo database-info database_id",
+				"scalingo database-info --database database_id",
+			},
+			SeeAlso: []string{"databases", "database-create", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			appID := c.Args().First()
-			if appID == "" {
+			databaseID := c.Args().First()
+			if databaseID == "" {
+				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			}
+
+			if databaseID == "" {
+				io.Error("Please provide a database ID or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-info")
 			}
 
-			// TODO(david): check for consent
+			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.Info(ctx, appID)
+			err := dbng.Info(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -77,8 +90,8 @@ var (
 		Description: CommandDescription{
 			Description: "Create a new database next generation",
 			Examples: []string{
-				"scalingo database-create --type postgresql --plan postgresql-dbng-starter-2048 my_super_database",
-				"scalingo database-create --type postgresql --plan postgresql-dbng-starter-2048 --wait my_super_database",
+				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 my_super_database",
+				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 --wait my_super_database",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-destroy"},
 		}.Render(),
@@ -111,20 +124,29 @@ var (
 		Category:  "Databases NG",
 		Usage:     "Delete database next generation",
 		ArgsUsage: "database-id",
+		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Delete database next generation",
-			Examples:    []string{"scalingo database-destroy database_id"},
-			SeeAlso:     []string{"databases", "database-info", "database-create"},
+			Examples: []string{
+				"scalingo database-destroy database_id",
+				"scalingo database-destroy --database database_id",
+			},
+			SeeAlso: []string{"databases", "database-info", "database-create"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			appID := c.Args().First()
-			if appID == "" {
+			databaseID := c.Args().First()
+			if databaseID == "" {
+				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			}
+
+			if databaseID == "" {
+				io.Error("Please provide a database ID or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-destroy")
 			}
 
-			// TODO(David) check consent
+			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.Destroy(ctx, appID)
+			err := dbng.Destroy(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

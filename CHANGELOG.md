@@ -5,8 +5,31 @@
 Some features listed in this changelog, like databases next generation, are currently only available in preview to
 selected users.
 
-* feat(databases next generation): create all commands to handle next generation `databases`.
 * fix(privatenetworks): default format should be `table`
+* feat(databases next generation): create all commands to handle next generation `databases`.
+* feat(databases next generation): add the support of `--database` flag for several commands:
+  * database-enable-feature
+  * database-disable-feature
+  * database-users-list
+  * database-users-delete
+  * database-users-create
+  * database-users-update-password
+  * backups-config
+  * project-set
+  * database-maintenance-list
+  * database-maintenance-info
+  * env
+  * env-get
+  * logs-archives
+  * logs
+  * log-drains
+  * log-drains-add
+  * log-drains-remove
+  * collaborators
+  * collaborators-add
+  * collaborators-remove
+  * collaborators-update
+  * timeline
 
 ## 1.40.0
 

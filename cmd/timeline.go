@@ -18,6 +18,7 @@ var (
 		Category: "Events",
 		Flags: []cli.Flag{
 			&appFlag,
+			databaseFlag(),
 			&cli.IntFlag{Name: "page", Usage: "Page to display", Value: 1},
 			&cli.IntFlag{Name: "per-page", Usage: "Number of events to display", Value: 30},
 		},
