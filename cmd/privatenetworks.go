@@ -26,7 +26,7 @@ var (
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{
 				Name:  "format",
-				Value: "json",
+				Value: outputFormatTable,
 				Usage: "[" + outputFormatJSON + "|" + outputFormatTable + "]",
 			},
 			&cli.StringFlag{
