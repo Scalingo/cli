@@ -2,10 +2,11 @@
 
 ## To Be Released
 
-Some features listed in this changelog, like databases next generation, are currently only available in preview to 
+Some features listed in this changelog, like databases next generation, are currently only available in preview to
 selected users.
 
 * feat(databases next generation): create all commands to handle next generation `databases`.
+* fix(privatenetworks): default format should be `table`
 
 ## 1.40.0
 
