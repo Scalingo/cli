@@ -18,6 +18,7 @@ var (
 		Name:     "databases",
 		Category: "Global",
 		Usage:    "List the databases next generation that you own",
+		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all the databases next generation of which you are an owner",
 			SeeAlso:     []string{"database-info", "database-create", "database-destroy"},
@@ -40,6 +41,7 @@ var (
 		Category:  "Databases NG",
 		Usage:     "View database next generation",
 		ArgsUsage: "database-id",
+		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "View database next generation detailed informations",
 			Examples: []string{
@@ -122,6 +124,7 @@ var (
 		Category:  "Databases NG",
 		Usage:     "Delete database next generation",
 		ArgsUsage: "database-id",
+		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Delete database next generation",
 			Examples: []string{
