@@ -46,8 +46,11 @@ func (f *RedactingFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		}
 
 		// Replace field content according to the regexp
-		entry.Data[redactionOption.Field] = redactionOption.Regexp.
-			ReplaceAllString(entry.Data[redactionOption.Field].(string), replaceWith)
+		src, ok := entry.Data[redactionOption.Field].(string)
+		if !ok {
+			continue
+		}
+		entry.Data[redactionOption.Field] = redactionOption.Regexp.ReplaceAllString(src, replaceWith)
 	}
 	return f.Formatter.Format(entry)
 }
