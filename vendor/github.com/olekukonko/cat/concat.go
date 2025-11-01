@@ -1,6 +1,9 @@
 package cat
 
-import "strings"
+import (
+	"reflect"
+	"strings"
+)
 
 // Append appends args to dst and returns the grown slice.
 // Callers can reuse dst across calls to amortize allocs.
@@ -363,9 +366,28 @@ func RepeatWith(sep string, val any, n int) string {
 	return b.Output()
 }
 
+// Reflect converts a reflect.Value to its string representation.
+// It handles all kinds of reflected values including primitives, structs, slices, maps, etc.
+// For nil values, it returns the nilString constant ("<nil>").
+// For unexported or inaccessible fields, it returns unexportedString ("<?>").
+// The output follows Go's syntax conventions where applicable (e.g., slices as [a, b], maps as {k:v}).
+func Reflect(r reflect.Value) string {
+	if !r.IsValid() {
+		return nilString
+	}
+
+	var b strings.Builder
+	writeReflect(&b, r.Interface(), 0)
+	return b.String()
+}
+
 // Space concatenates arguments with space separators.
 // Convenience for With using " " as separator.
 func Space(args ...any) string { return With(space, args...) }
+
+// Dot concatenates arguments with dot separators.
+// Convenience for With using " " as separator.
+func Dot(args ...any) string { return With(dot, args...) }
 
 // Suffix concatenates with a suffix (no separator).
 // Equivalent to SuffixWith with empty sep.
@@ -523,4 +545,31 @@ func WrapWith(sep, before, after string, args ...any) string {
 	b.Add(after)
 
 	return b.Output()
+}
+
+// Pad surrounds a string with spaces on both sides.
+// Ensures proper spacing for SQL operators like "=", "AND", etc.
+// Example: Pad("=") returns " = " for cleaner formatting.
+func Pad(s string) string {
+	return Concat(space, s, space)
+}
+
+// PadWith adds a separator before the string and a space after it.
+// Useful for formatting SQL parts with custom leading separators.
+// Example: PadWith(",", "column") returns ",column ".
+func PadWith(sep, s string) string {
+	return Concat(sep, s, space)
+}
+
+// Parens wraps content in parentheses
+// Useful for grouping SQL conditions or expressions
+// Example: Parens("a = b AND c = d") → "(a = b AND c = d)"
+func Parens(content string) string {
+	return Concat(parenOpen, content, parenClose)
+}
+
+// ParensWith wraps multiple arguments in parentheses with a separator
+// Example: ParensWith(" AND ", "a = b", "c = d") → "(a = b AND c = d)"
+func ParensWith(sep string, args ...any) string {
+	return Concat(parenOpen, With(sep, args...), parenClose)
 }

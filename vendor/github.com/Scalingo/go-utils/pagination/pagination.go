@@ -3,17 +3,17 @@ package pagination
 import "math"
 
 type Meta struct {
-	CurrentPage int   `json:"current_page"`
-	PerPage     int   `json:"per_page"`
-	PrevPage    int   `json:"prev_page"`
-	NextPage    int   `json:"next_page"`
-	TotalPages  int   `json:"total_pages"`
-	TotalCount  int64 `json:"total_count"` // int64 to support result sets with >2.17B rows
+	CurrentPage int   `json:"current_page" log:"current_page"`
+	PerPage     int   `json:"per_page" log:"per_page"`
+	PrevPage    int   `json:"prev_page" log:"prev_page"`
+	NextPage    int   `json:"next_page" log:"next_page"`
+	TotalPages  int   `json:"total_pages" log:"total_pages"`
+	TotalCount  int64 `json:"total_count" log:"total_count"` // int64 to support result sets with >2.17B rows
 }
 
 type Paginated[T any] struct {
 	Data T    `json:"data"`
-	Meta Meta `json:"meta"`
+	Meta Meta `json:"meta" log:"meta"`
 }
 
 func New[T any](data T, pageRequest Request, totalCount int64) Paginated[T] {

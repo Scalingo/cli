@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"io"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -30,6 +31,12 @@ func WithHooks(hooks []logrus.Hook) Opt {
 		for _, h := range hooks {
 			l.Hooks.Add(h)
 		}
+	}
+}
+
+func WithOutput(w io.Writer) Opt {
+	return func(l *logrus.Logger) {
+		l.SetOutput(w)
 	}
 }
 

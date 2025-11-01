@@ -1,4 +1,4 @@
-## Package `pagination` v1.1.1
+## Package `pagination` v1.1.2
 
 This is a pagination library for Go.
 
@@ -23,7 +23,7 @@ The `Paginated` struct is used to return a page of items along with the total nu
 
 // Example data returned
 
-```json 
+```json
 {
   "data": [],
   "meta": {
@@ -91,7 +91,7 @@ In this example:
         {ID: 29, Name: "Item 29"},
         {ID: 30, Name: "Item 30"},
     }
-        
+
     page := 2
 	perPage := 10
     p := pagination.New[[]Item](items, pagination.NewRequest(page, perPage), 123)
