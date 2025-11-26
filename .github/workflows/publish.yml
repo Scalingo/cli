@@ -1,6 +1,10 @@
 name: Test and Release Go CLI
 
-on: [push]
+on:
+  pull_request:
+  push:
+    branches: [main, master, prod]
+    tags: ["*"]
 
 # The list of permissions is explained on the GitHub doc:
 # https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
@@ -11,84 +15,28 @@ permissions:
   pull-requests: read
 
 jobs:
-  linter-pull-request:
-    name: golangci-lint on a PR or from a tag
-    runs-on: ubuntu-22.04
-    if: github.ref != 'refs/heads/master'
+  linter:
+    name: Linter on a PR
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-        with:
-          # We need to define the fetch-depth to 0 so that we can get the commit ID of the master branch
-          fetch-depth: 0
-      - uses: actions/setup-go@v6
-        with:
-          go-version-file: "go.mod"
-          check-latest: true
-      - name: Get golangci-lint configuration file
-        run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
-      - name: Get master branch commit ID
-        id: new-from-merge-base
-        run: echo "NEW-FROM-MERGE-BASE=$( git rev-parse origin/master )" >> "$GITHUB_OUTPUT"
-      - name: "Execute golangci-lint on a pull request"
-        uses: golangci/golangci-lint-action@v8
-        with:
-          # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
-          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/welcome/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-merge-base`
-          # only-new-issues: false
-          args: "--config=$(pwd)/.golangci.yml --new-from-merge-base=${{ steps.new-from-merge-base.outputs.NEW-FROM-MERGE-BASE }}"
-
-  linter-master:
-    name: golangci-lint on master branch
-    runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          # We need to define the fetch-depth to 2 so that we can get new offenses since HEAD~1
-          fetch-depth: 2
-      - uses: actions/setup-go@v6
-        with:
-          go-version-file: "go.mod"
-          check-latest: true
-      - name: Get golangci-lint configuration file
-        run: wget --output-document=$(pwd)/.golangci.yml https://sc-devtools.s3.eu-west-1.amazonaws.com/golang-ci/golangci.yml
-      - name: "Execute golangci-lint on the master branch"
-        uses: golangci/golangci-lint-action@v8
-        with:
-          # The `only-new-issues` flag is not working (https://github.com/golangci/golangci-lint-action/issues/531).
-          # We rather decided to use the suggestion from the FAQ (https://golangci-lint.run/usage/faq/#how-to-integrate-golangci-lint-into-large-project-with-thousands-of-issues) and use `--new-from-merge-base`
-          # only-new-issues: false
-          args: "--config=$(pwd)/.golangci.yml --new-from-merge-base=HEAD~1"
+      - uses: Scalingo/actions/go-linter@main
 
   tests:
     name: Unit Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version-file: "go.mod"
-          check-latest: true
-      - name: go mod vendor
-        run: go mod vendor
-      - name: Execute the tests
-        run: go test -race ./...
+      - uses: Scalingo/actions/go-tests@main
 
   releases:
-    needs: [linter-master, linter-pull-request, tests]
+    needs: [tests]
     name: GoReleaser Build on All OS but Windows
-    # Usage of needs implies that the job will only run if all the jobs it depends on are successful.
-    # But in our case, either linter-master or linter-pull-request will be skipped.
-    # So we need to add a condition to check if the linter-master or linter-pull-request job is successful.
-    # To do so, we use the `if` condition but we also need to add `always()` to make sure the job is run
-    # related to https://github.com/actions/runner/issues/2205
-    # since a success() is added by default and skipped jobs make success to fail we need this workaround
-    if: always() && startsWith(github.ref, 'refs/tags/') && (needs.linter-master.result == 'success' || needs.linter-pull-request.result == 'success')
-    runs-on: ubuntu-22.04
+    if: ${{ github.ref_type == 'tag' }}
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # See: https://goreleaser.com/ci/actions/
+          fetch-depth: 0 # required by GoReleaser (https://goreleaser.com/ci/actions/#fetch-all-history)
       - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
@@ -103,20 +51,14 @@ jobs:
           CGO_ENABLED: 0
 
   releases-windows:
-    needs: [linter-master, linter-pull-request, tests]
+    needs: [tests]
     name: GoReleaser Build on Windows
-    # Usage of needs implies that the job will only run if all the jobs it depends on are successful.
-    # But in our case, either linter-master or linter-pull-request will be skipped.
-    # So we need to add a condition to check if the linter-master or linter-pull-request job is successful.
-    # To do so, we use the `if` condition but we also need to add `always()` to make sure the job is run
-    # related to https://github.com/actions/runner/issues/2205
-    # since a success() is added by default and skipped jobs make success to fail we need this workaround
-    if: always() && startsWith(github.ref, 'refs/tags/') && (needs.linter-master.result == 'success' || needs.linter-pull-request.result == 'success')
+    if: ${{ github.ref_type == 'tag' }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # See: https://goreleaser.com/ci/actions/
+          fetch-depth: 0 # required by GoReleaser (https://goreleaser.com/ci/actions/#fetch-all-history)
       - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
