@@ -9,9 +9,9 @@ permissions:
 
 jobs:
   dependabot:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Automatically merge Dependabot PRs
-        uses: scalingo/ghaction-dependabot-automerge@v1
+        uses: Scalingo/actions/dependabot-automerge@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
