@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 8.7.1
+
+* feat(events) add database backup events
+
 ## 8.7.0
 
 * feat(applications): create a new method to set the project

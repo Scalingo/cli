@@ -131,6 +131,14 @@ func (e *EventDatabaseRemoveFeatureType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 
+func (e *EventDatabaseBackupFailedType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDatabaseBackupSucceededType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
 func (e *EventNewCollaboratorType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }

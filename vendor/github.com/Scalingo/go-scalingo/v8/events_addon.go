@@ -1,6 +1,9 @@
 package scalingo
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type EventAddon struct {
 	AddonProviderName string `json:"addon_provider_name"`
@@ -155,4 +158,87 @@ func (ev *EventDatabaseRemoveFeatureType) String() string {
 		"Feature %s disabled for addon '%s' (%s) ",
 		ev.TypeData.Feature, ev.TypeData.AddonUUID, ev.TypeData.AddonProviderName,
 	)
+}
+
+type EventDatabaseBackupSucceededType struct {
+	Event
+	TypeData EventDatabaseBackupSucceededTypeData `json:"type_data"`
+}
+
+func (ev *EventDatabaseBackupSucceededType) Who() string {
+	if ev.User.Email == ScalingoDeployUserEmail {
+		return "Scalingo Automated Backup Service"
+	}
+
+	return ev.Event.Who()
+}
+
+func (ev *EventDatabaseBackupSucceededType) String() string {
+	methodStr := "B"
+
+	switch ev.TypeData.BackupMethod {
+	case BackupMethodPeriodic:
+		methodStr = "Periodic b"
+	case BackupMethodManual:
+		methodStr = "Manual b"
+	}
+	return fmt.Sprintf(
+		"%sackup %s for addon '%s' (%s) succeeded",
+		methodStr,
+		ev.TypeData.BackupID, ev.TypeData.AddonName, ev.TypeData.ResourceID,
+	)
+}
+
+type EventDatabaseBackupSucceededTypeData struct {
+	AddonUUID    string       `json:"addon_uuid"`
+	AddonName    string       `json:"addon_name"`
+	ResourceID   string       `json:"resource_id"`
+	BackupMethod BackupMethod `json:"backup_method"`
+	BackupID     string       `json:"backup_id"`
+	BackupStatus string       `json:"backup_status"`
+	StartedAt    time.Time    `json:"started_at"`
+	EndedAt      time.Time    `json:"ended_at"`
+	EventSecurityTypeData
+}
+
+type EventDatabaseBackupFailedType struct {
+	Event
+	TypeData EventDatabaseBackupFailedTypeData `json:"type_data"`
+}
+
+func (ev *EventDatabaseBackupFailedType) Who() string {
+	if ev.User.Email == ScalingoDeployUserEmail {
+		return "Scalingo Automated Backup Service"
+	}
+
+	return ev.Event.Who()
+}
+
+func (ev *EventDatabaseBackupFailedType) String() string {
+	methodStr := ""
+
+	switch ev.TypeData.BackupMethod {
+	case BackupMethodPeriodic:
+		methodStr = "Periodic"
+	case BackupMethodManual:
+		methodStr = "Manual"
+	}
+
+	return fmt.Sprintf(
+		"%s backup %s for addon '%s' (%s) failed",
+		methodStr,
+		ev.TypeData.BackupID, ev.TypeData.AddonName, ev.TypeData.ResourceID,
+	)
+}
+
+type EventDatabaseBackupFailedTypeData struct {
+	AddonUUID    string       `json:"addon_uuid"`
+	AddonName    string       `json:"addon_name"`
+	BackupMethod BackupMethod `json:"backup_method"`
+	ResourceID   string       `json:"resource_id"`
+	BackupID     string       `json:"backup_id"`
+	BackupStatus string       `json:"backup_status"`
+	StartedAt    time.Time    `json:"started_at"`
+	EndedAt      time.Time    `json:"ended_at"`
+	EventSecurityTypeData
 }
