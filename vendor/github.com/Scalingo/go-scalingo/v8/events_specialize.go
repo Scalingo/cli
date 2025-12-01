@@ -76,6 +76,10 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDatabaseAddFeatureType{Event: ev}
 	case EventDatabaseRemoveFeature:
 		e = &EventDatabaseRemoveFeatureType{Event: ev}
+	case EventDatabaseBackupFailed:
+		e = &EventDatabaseBackupFailedType{Event: ev}
+	case EventDatabaseBackupSucceeded:
+		e = &EventDatabaseBackupSucceededType{Event: ev}
 	case EventNewCollaborator:
 		e = &EventNewCollaboratorType{Event: ev}
 	case EventAcceptCollaborator:
