@@ -3,6 +3,7 @@ package scalingo
 import (
 	"context"
 	stderrors "errors"
+	"fmt"
 
 	"github.com/Scalingo/go-utils/errors/v2"
 )
@@ -26,9 +27,23 @@ var _ DatabasesPreviewService = (*PreviewClient)(nil)
 
 // DatabaseNG stands for Database Next Generation.
 type DatabaseNG struct {
-	App      App       `json:"app"`
-	Addon    Addon     `json:"addon"`
+	DatabaseInfo
 	Database *Database `json:"database,omitempty"`
+	App      App       `json:"app"`
+}
+
+type databaseNgResponse struct {
+	// App      App          `json:"app"` 	// Thoses fields will be removed
+	// Addon    Addon        `json:"addon"` // Thoses fields will be removed
+	Database DatabaseInfo `json:"database"`
+}
+
+type DatabaseInfo struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	ProjectID  string `json:"project_id"`
+	Technology string `json:"technology"`
+	Plan       string `json:"plan"`
 }
 
 type PreviewClient struct {
@@ -60,11 +75,22 @@ func (c *PreviewClient) DatabaseCreate(ctx context.Context, params DatabaseCreat
 
 func (c *PreviewClient) DatabasesList(ctx context.Context) ([]DatabaseNG, error) {
 	var res []DatabaseNG
+	var listResp []databaseNgResponse
 
-	err := c.parent.ScalingoAPI().ResourceList(ctx, databasesResource, nil, &res)
+	err := c.parent.ScalingoAPI().ResourceList(ctx, databasesResource, nil, &listResp)
 	if err != nil {
 		return res, errors.Wrap(ctx, err, "list databases")
 	}
+
+	for _, response := range listResp {
+		databaseNG, err := c.formatDatabaseNG(ctx, response)
+		if err != nil {
+			return res, errors.Wrap(ctx, err, "populate databaseNG")
+		}
+
+		res = append(res, databaseNG)
+	}
+
 	return res, nil
 }
 
@@ -72,19 +98,10 @@ func (c *PreviewClient) DatabasesList(ctx context.Context) ([]DatabaseNG, error)
 func (c *PreviewClient) DatabaseShow(ctx context.Context, appID string) (DatabaseNG, error) {
 	var res DatabaseNG
 
-	databaseNG, err := c.searchDatabase(ctx, appID)
+	res, err := c.searchDatabase(ctx, appID)
 	if err != nil {
 		return res, errors.Wrap(ctx, err, "search database")
 	}
-
-	database, err := c.parent.DatabaseShow(ctx, databaseNG.App.ID, databaseNG.Addon.ID)
-	if err != nil {
-		return res, errors.Wrap(ctx, err, "show database")
-	}
-
-	res.App = databaseNG.App
-	res.Addon = databaseNG.Addon
-	res.Database = &database
 
 	return res, nil
 }
@@ -96,7 +113,7 @@ func (c *PreviewClient) DatabaseDestroy(ctx context.Context, appID string) error
 		return errors.Wrap(ctx, err, "search database")
 	}
 
-	appName := database.App.Name
+	appName := database.DatabaseInfo.Name
 
 	err = c.parent.AppsDestroy(ctx, appName, appName)
 	if err != nil {
@@ -115,9 +132,34 @@ func (c *PreviewClient) searchDatabase(ctx context.Context, appID string) (Datab
 	}
 
 	for _, databaseNG := range databases {
-		if databaseNG.App.ID == appID {
+		if databaseNG.ID == appID {
 			return databaseNG, nil
 		}
 	}
 	return res, ErrDatabaseNotFound
+}
+
+// formatDatabaseNG populates a DatabaseNG without using the App and Addon from the databases endpoints.
+func (c *PreviewClient) formatDatabaseNG(ctx context.Context, response databaseNgResponse) (DatabaseNG, error) {
+	var res DatabaseNG
+
+	res.DatabaseInfo = response.Database
+
+	addons, err := c.parent.AddonsList(ctx, response.Database.ID)
+	if err != nil {
+		return res, errors.Wrap(ctx, err, "list addons")
+	}
+
+	err = c.parent.ScalingoAPI().ResourceGet(ctx, "apps", response.Database.ID, nil, &res.App)
+	if err != nil {
+		return res, errors.Wrap(ctx, err, "show app")
+	}
+
+	database, err := c.parent.DatabaseShow(ctx, response.Database.ID, addons[0].ID)
+	if err != nil {
+		fmt.Printf("Addons probably deleted: %+v\n", addons[0])
+	}
+	res.Database = &database
+
+	return res, nil
 }

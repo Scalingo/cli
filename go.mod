@@ -2,6 +2,8 @@ module github.com/Scalingo/cli
 
 go 1.24.0
 
+replace github.com/Scalingo/go-scalingo/v8 => ../go-scalingo
+
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Scalingo/go-scalingo/v8 v8.7.1

@@ -17,7 +17,7 @@ func DatabasesNgListAutoComplete(ctx context.Context) error {
 	databases, err := client.Preview().DatabasesList(ctx)
 	if err == nil {
 		for _, db := range databases {
-			fmt.Println(db.App.ID)
+			fmt.Println(db.DatabaseInfo.ID)
 		}
 	}
 

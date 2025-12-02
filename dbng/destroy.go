@@ -20,7 +20,7 @@ func Destroy(ctx context.Context, appID string) error {
 		return errors.Wrap(ctx, err, "delete database")
 	}
 
-	io.Warningf("You're going to delete database %s ('%s'),\n", db.App.ID, db.App.Name)
+	io.Warningf("You're going to delete database %s ('%s'),\n", db.DatabaseInfo.ID, db.DatabaseInfo.Name)
 	io.Warning()
 	io.Warning("This operation is irreversible, all data including backups of your database will be deleted.")
 
@@ -32,7 +32,7 @@ func Destroy(ctx context.Context, appID string) error {
 	}
 	fmt.Println()
 
-	if validationID != db.App.ID && validationID != db.App.Name {
+	if validationID != db.DatabaseInfo.ID && validationID != db.DatabaseInfo.Name {
 		return errors.Newf(ctx, "'%s' is not the ID or the name of the database, aborting…\n", validationID)
 	}
 
@@ -41,7 +41,7 @@ func Destroy(ctx context.Context, appID string) error {
 		return errors.Wrap(ctx, err, "delete database")
 	}
 
-	io.Statusf("The database %s has been deleted.", db.App.ID)
+	io.Statusf("The database %s has been deleted.", db.DatabaseInfo.ID)
 
 	return nil
 }

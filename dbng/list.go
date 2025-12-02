@@ -2,6 +2,7 @@ package dbng
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -26,7 +27,7 @@ func List(ctx context.Context) error {
 	io.Warning("This command only displays databases next generation you own.")
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"ID", "Name", "Type", "Plan", "Role", "Status", "Project"})
+	t.Header([]string{"ID", "Name", "Technology", "Plan", "Role", "Status", "Project"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {
@@ -36,13 +37,15 @@ func List(ctx context.Context) error {
 	for _, db := range databases {
 		role := utils.AppRole(currentUser, &db.App)
 
+		fmt.Println("======> Project:", db.App.Project)
+
 		_ = t.Append([]string{
-			db.App.ID,
-			db.App.Name,
-			db.Addon.AddonProvider.Name,
-			db.Addon.Plan.Name,
+			db.DatabaseInfo.ID,
+			db.DatabaseInfo.Name,
+			db.DatabaseInfo.Technology,
+			db.DatabaseInfo.Plan,
 			string(role),
-			string(db.Addon.Status),
+			string(db.Database.Status),
 			db.App.Project.Name,
 		})
 	}
