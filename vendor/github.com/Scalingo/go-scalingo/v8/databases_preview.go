@@ -113,9 +113,7 @@ func (c *PreviewClient) DatabaseDestroy(ctx context.Context, appID string) error
 		return errors.Wrap(ctx, err, "search database")
 	}
 
-	appName := database.DatabaseInfo.Name
-
-	err = c.parent.AppsDestroy(ctx, appName, appName)
+	err = c.parent.AppsDestroy(ctx, database.Name, database.Name)
 	if err != nil {
 		return errors.Wrap(ctx, err, "destroy database app")
 	}
