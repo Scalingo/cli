@@ -5,6 +5,7 @@
 Some features listed in this changelog, like databases next generation, are currently only available in preview to
 selected users.
 
+* feat(projects): add command to get project and private network information
 * fix(privatenetworks): default format should be `table`
 * feat(databases next generation): create all commands to handle next generation `databases`.
 * feat(databases next generation): add the support of `--database` flag for several commands:
