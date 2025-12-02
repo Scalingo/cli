@@ -27,12 +27,12 @@ func Get(ctx context.Context, projectID string) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"Project Field", "Value"})
 
-	t.Append([]string{"Name", project.Name})
-	t.Append([]string{"ID", project.ID})
-	t.Append([]string{"Default", strconv.FormatBool(project.Default)})
-	t.Append([]string{"Created At", project.CreatedAt.String()})
-	t.Append([]string{"Updated At", project.UpdatedAt.String()})
-	t.Append([]string{"Owner", project.Owner.Username})
+	_ = t.Append([]string{"Name", project.Name})
+	_ = t.Append([]string{"ID", project.ID})
+	_ = t.Append([]string{"Default", strconv.FormatBool(project.Default)})
+	_ = t.Append([]string{"Created At", project.CreatedAt.String()})
+	_ = t.Append([]string{"Updated At", project.UpdatedAt.String()})
+	_ = t.Append([]string{"Owner", project.Owner.Username})
 
 	if project.Flags["private-network"] {
 		_ = t.Append([]string{"", ""})
@@ -58,7 +58,6 @@ func Get(ctx context.Context, projectID string) error {
 				_ = t.Append([]string{"", usedIP})
 			}
 		}
-
 	}
 
 	_ = t.Render()
