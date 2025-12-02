@@ -224,7 +224,8 @@ COMMANDS:
      projects-add     Create a project
      projects-update  Update a project
      projects-remove  Remove a project
-
+     projects-info    Gets information about a project
+     
    Public SSH Keys:
      keys         List your SSH public keys
      keys-add     Add a public SSH key to deploy your apps

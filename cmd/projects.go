@@ -139,4 +139,32 @@ var (
 			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
+
+	projectsInfoCommand = cli.Command{
+		Name:      "projects-info",
+		Category:  "Projects",
+		Usage:     "Info on a project",
+		ArgsUsage: "project-id",
+		Description: CommandDescription{
+			Description: "Get info on a project",
+			Examples:    []string{"scalingo projects-info --project-id prj-00000000-0000-0000-0000-000000000000"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			projectID := c.Args().First()
+			if projectID == "" {
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-info")
+			}
+
+			err := projects.Get(ctx, projectID)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+
+			return nil
+		},
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-info")
+			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
+		},
+	}
 )

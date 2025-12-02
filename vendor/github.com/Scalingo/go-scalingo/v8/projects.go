@@ -15,17 +15,28 @@ type ProjectsService interface {
 	ProjectUpdate(ctx context.Context, projectID string, params ProjectUpdateParams) (Project, error)
 	ProjectGet(ctx context.Context, projectID string) (Project, error)
 	ProjectDelete(ctx context.Context, projectID string) error
+	ProjectPrivateNetworkGet(ctx context.Context, projectID string) (ProjectPrivateNetwork, error)
 }
 
 var _ ProjectsService = (*Client)(nil)
 
 type Project struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Default   bool      `json:"default"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Owner     Owner     `json:"owner"`
+	ID        string          `json:"id"`
+	Name      string          `json:"name"`
+	Default   bool            `json:"default"`
+	Flags     map[string]bool `json:"flags"`
+	CreatedAt time.Time       `json:"created_at"`
+	UpdatedAt time.Time       `json:"updated_at"`
+	Owner     Owner           `json:"owner"`
+}
+
+type ProjectPrivateNetwork struct {
+	ID           string   `json:"id"`
+	Subnet       string   `json:"subnet"`
+	Gateway      string   `json:"gateway"`
+	MaxIPsCount  int      `json:"max_ips_count"`
+	UsedIPsCount int      `json:"used_ips_count"`
+	UsedIPs      []string `json:"used_ips"`
 }
 
 type ProjectsRes struct {
@@ -103,4 +114,14 @@ func (c *Client) ProjectDelete(ctx context.Context, projectID string) error {
 	}
 
 	return nil
+}
+
+func (c *Client) ProjectPrivateNetworkGet(ctx context.Context, projectID string) (ProjectPrivateNetwork, error) {
+	var privateNetwork ProjectPrivateNetwork
+	err := c.ScalingoAPI().SubresourceGet(ctx, projectResource, projectID, "private_network", "", nil, &privateNetwork)
+	if err != nil {
+		return ProjectPrivateNetwork{}, errors.Wrap(ctx, err, "get project private network")
+	}
+
+	return privateNetwork, nil
 }

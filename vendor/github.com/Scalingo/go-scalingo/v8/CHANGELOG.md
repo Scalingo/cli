@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(projects): get project private network information
+
 ## 8.7.1
 
 * feat(events) add database backup events
