@@ -35,9 +35,9 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		return errors.Wrap(ctx, err, "create database")
 	}
 	io.Statusf("Your %s database %s ('%s') is being provisioned…\n\n",
-		db.DatabaseInfo.Technology,
-		db.DatabaseInfo.ID,
-		db.DatabaseInfo.Name,
+		db.Technology,
+		db.ID,
+		db.Name,
 	)
 
 	if wait {
