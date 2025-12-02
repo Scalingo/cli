@@ -15,7 +15,7 @@ type ProjectsService interface {
 	ProjectUpdate(ctx context.Context, projectID string, params ProjectUpdateParams) (Project, error)
 	ProjectGet(ctx context.Context, projectID string) (Project, error)
 	ProjectDelete(ctx context.Context, projectID string) error
-	ProjectPrivateNetworkGet(ctx context.Context, projectID string) (ProjectPrivateNetwork, error)
+	ProjectPrivateNetworkList(ctx context.Context, projectID string) (ProjectPrivateNetwork, error)
 }
 
 var _ ProjectsService = (*Client)(nil)
@@ -116,7 +116,7 @@ func (c *Client) ProjectDelete(ctx context.Context, projectID string) error {
 	return nil
 }
 
-func (c *Client) ProjectPrivateNetworkGet(ctx context.Context, projectID string) (ProjectPrivateNetwork, error) {
+func (c *Client) ProjectPrivateNetworkList(ctx context.Context, projectID string) (ProjectPrivateNetwork, error) {
 	var privateNetwork ProjectPrivateNetwork
 	err := c.ScalingoAPI().SubresourceGet(ctx, projectResource, projectID, "private_network", "", nil, &privateNetwork)
 	if err != nil {
