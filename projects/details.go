@@ -30,8 +30,6 @@ func Get(ctx context.Context, projectID string) error {
 	_ = t.Append([]string{"Name", project.Name})
 	_ = t.Append([]string{"ID", project.ID})
 	_ = t.Append([]string{"Default", strconv.FormatBool(project.Default)})
-	_ = t.Append([]string{"Created At", project.CreatedAt.String()})
-	_ = t.Append([]string{"Updated At", project.UpdatedAt.String()})
 	_ = t.Append([]string{"Owner", project.Owner.Username})
 
 	if project.Flags["private-network"] {
@@ -46,8 +44,8 @@ func Get(ctx context.Context, projectID string) error {
 			_ = t.Append([]string{" - ID", privateNetworkInfo.ID})
 			_ = t.Append([]string{" - Subnet", privateNetworkInfo.Subnet})
 			_ = t.Append([]string{" - Gateway IP", privateNetworkInfo.Gateway})
-			_ = t.Append([]string{" - Max IPs", strconv.Itoa(privateNetworkInfo.MaxIPsCount)})
-			_ = t.Append([]string{" - Used IPs Count", strconv.Itoa(privateNetworkInfo.UsedIPsCount)})
+			_ = t.Append([]string{" - Total number of assignable IPs", strconv.Itoa(privateNetworkInfo.MaxIPsCount)})
+			_ = t.Append([]string{" - Used IPs count", strconv.Itoa(privateNetworkInfo.UsedIPsCount)})
 
 			if len(privateNetworkInfo.UsedIPs) == 0 {
 				_ = t.Append([]string{" - Used IPs", "None"})

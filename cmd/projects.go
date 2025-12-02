@@ -140,19 +140,19 @@ var (
 		},
 	}
 
-	projectsInfoCommand = cli.Command{
-		Name:      "projects-info",
+	projectsDetailsCommand = cli.Command{
+		Name:      "projects-details",
 		Category:  "Projects",
-		Usage:     "Info on a project",
+		Usage:     "Get details about a project",
 		ArgsUsage: "project-id",
 		Description: CommandDescription{
-			Description: "Get info on a project",
-			Examples:    []string{"scalingo projects-info --project-id prj-00000000-0000-0000-0000-000000000000"},
+			Description: "Get details about a project",
+			Examples:    []string{"scalingo projects-details prj-00000000-0000-0000-0000-000000000000"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectID := c.Args().First()
 			if projectID == "" {
-				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-info")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "missing project ID parameter"), c, "projects-details")
 			}
 
 			err := projects.Get(ctx, projectID)
@@ -163,7 +163,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-info")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "projects-details")
 			_ = autocomplete.ProjectsGenericListAutoComplete(ctx)
 		},
 	}
