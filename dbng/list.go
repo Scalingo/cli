@@ -2,7 +2,6 @@ package dbng
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -36,8 +35,6 @@ func List(ctx context.Context) error {
 
 	for _, db := range databases {
 		role := utils.AppRole(currentUser, &db.App)
-
-		fmt.Println("======> Project:", db.App.Project)
 
 		_ = t.Append([]string{
 			db.DatabaseInfo.ID,

@@ -150,10 +150,11 @@ func (c *PreviewClient) formatDatabaseNG(ctx context.Context, response databaseN
 		return res, errors.Wrap(ctx, err, "list addons")
 	}
 
-	err = c.parent.ScalingoAPI().ResourceGet(ctx, "apps", response.Database.ID, nil, &res.App)
+	appPtr, err := c.parent.AppsShow(ctx, response.Database.Name)
 	if err != nil {
 		return res, errors.Wrap(ctx, err, "show app")
 	}
+	res.App = *appPtr
 
 	database, err := c.parent.DatabaseShow(ctx, response.Database.ID, addons[0].ID)
 	if err != nil {
