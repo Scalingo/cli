@@ -38,7 +38,7 @@ func Get(ctx context.Context, projectID string) error {
 		_ = t.Append([]string{"", ""})
 		_ = t.Append([]string{"Private Network", "true"})
 
-		privateNetworkInfo, err := client.ProjectPrivateNetworkList(ctx, projectID)
+		privateNetworkInfo, err := client.ProjectPrivateNetworkGet(ctx, projectID)
 		if err != nil {
 			log.WithError(err).Error("Failed to fetch private network info")
 			_ = t.Append([]string{"", "Failed to fetch private network info"})
