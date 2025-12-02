@@ -1,4 +1,4 @@
-# Go client for Scalingo API v8.7.1
+# Go client for Scalingo API v8.8.0
 
 This repository is the Go client for the [Scalingo APIs](https://developers.scalingo.com/).
 
@@ -80,7 +80,7 @@ Bump new version number in:
 Commit, tag and create a new release:
 
 ```sh
-version="8.7.1"
+version="8.8.0"
 
 git switch --create release/${version}
 git add CHANGELOG.md README.md version.go
