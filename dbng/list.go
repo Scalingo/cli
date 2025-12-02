@@ -26,7 +26,7 @@ func List(ctx context.Context) error {
 	io.Warning("This command only displays databases next generation you own.")
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"ID", "Name", "Technology", "Plan", "Role", "Status", "Project"})
+	t.Header([]string{"ID", "Name", "Type", "Plan", "Role", "Status", "Project"})
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {

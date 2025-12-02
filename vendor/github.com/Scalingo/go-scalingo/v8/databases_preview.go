@@ -156,7 +156,7 @@ func (c *PreviewClient) formatDatabaseNG(ctx context.Context, response databaseN
 
 	database, err := c.parent.DatabaseShow(ctx, response.Database.ID, addons[0].ID)
 	if err != nil {
-		fmt.Printf("Addons probably deleted: %+v\n", addons[0])
+		fmt.Printf("Addons probably deleted for app: %+v\n", res.DatabaseInfo.Name)
 	}
 	res.Database = &database
 
