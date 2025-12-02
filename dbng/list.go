@@ -37,10 +37,10 @@ func List(ctx context.Context) error {
 		role := utils.AppRole(currentUser, &db.App)
 
 		_ = t.Append([]string{
-			db.DatabaseInfo.ID,
-			db.DatabaseInfo.Name,
-			db.DatabaseInfo.Technology,
-			db.DatabaseInfo.Plan,
+			db.ID,
+			db.Name,
+			db.Technology,
+			db.Plan,
 			string(role),
 			string(db.Database.Status),
 			db.App.Project.Name,

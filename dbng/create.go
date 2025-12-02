@@ -46,7 +46,7 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		spinner.Start()
 		defer spinner.Stop()
 
-		err = waitForRunningDatabase(ctx, c, db.DatabaseInfo.ID)
+		err = waitForRunningDatabase(ctx, c, db.ID)
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for running database")
 		}

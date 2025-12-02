@@ -35,10 +35,10 @@ func Info(ctx context.Context, appID string) error {
 	}
 
 	data := [][]string{
-		{"ID", db.DatabaseInfo.ID},
-		{"Name", db.DatabaseInfo.Name},
-		{"Type", db.DatabaseInfo.Technology},
-		{"Plan", db.DatabaseInfo.Plan},
+		{"ID", db.ID},
+		{"Name", db.Name},
+		{"Type", db.Technology},
+		{"Plan", db.Plan},
 		{"Status", string(db.Database.Status)},
 		{"Version", db.Database.ReadableVersion},
 		{"Force TLS  ", forceSSL},

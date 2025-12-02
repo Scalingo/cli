@@ -84,7 +84,7 @@ func CheckForConsent(ctx context.Context, resourceName string, consentTypes ...C
 	}
 
 	for _, db := range dbs {
-		if db.DatabaseInfo.Name == resourceName || db.DatabaseInfo.ID == resourceName {
+		if db.Name == resourceName || db.ID == resourceName {
 			// The operator is a collaborator, no consent needed
 			return
 		}
