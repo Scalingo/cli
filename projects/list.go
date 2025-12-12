@@ -2,6 +2,7 @@ package projects
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 
@@ -26,10 +27,15 @@ func List(ctx context.Context) error {
 	io.Warning("This command only displays projects where you are the owner")
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Default", "ID"})
+	t.Header([]string{"Name", "Default", "ID", "Private Network"})
 
 	for _, project := range projects {
-		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID})
+		hasPrivateNetwork := ""
+		if project.Flags["private-network"] {
+			hasPrivateNetwork = "true"
+		}
+		fmt.Print(project.Flags)
+		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID, hasPrivateNetwork})
 	}
 	_ = t.Render()
 

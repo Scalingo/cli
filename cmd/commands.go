@@ -308,6 +308,7 @@ var (
 		&projectsAddCommand,
 		&projectsUpdateCommand,
 		&projectsRemoveCommand,
+		&projectsDetailsCommand,
 
 		// Private Networks
 		&privateNetworksApplicationDomainsListCommand,
