@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 1.42.0
+
+* chore(dependencies): bump to the latest go-scalingo version 
+
 ## 1.41.0
 
 Some features listed in this changelog, like databases next generation, are currently only available in preview to
