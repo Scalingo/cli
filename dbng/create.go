@@ -35,9 +35,9 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		return errors.Wrap(ctx, err, "create database")
 	}
 	io.Statusf("Your %s database %s ('%s') is being provisioned…\n\n",
-		db.Addon.AddonProvider.Name,
-		db.App.ID,
-		db.App.Name,
+		db.Technology,
+		db.ID,
+		db.Name,
 	)
 
 	if wait {
@@ -46,7 +46,7 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		spinner.Start()
 		defer spinner.Stop()
 
-		err = waitForRunningDatabase(ctx, c, db.App.ID)
+		err = waitForRunningDatabase(ctx, c, db.ID)
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for running database")
 		}
