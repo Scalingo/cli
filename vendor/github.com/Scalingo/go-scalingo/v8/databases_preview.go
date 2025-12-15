@@ -57,14 +57,18 @@ type DatabaseCreateParams struct {
 	ProjectID       string `json:"project_id,omitempty"`
 }
 
+type DatabaseCreateResponse struct {
+	Database DatabaseNG `json:"database"`
+}
+
 func (c *PreviewClient) DatabaseCreate(ctx context.Context, params DatabaseCreateParams) (DatabaseNG, error) {
-	var res DatabaseNG
+	var res DatabaseCreateResponse
 
 	err := c.parent.ScalingoAPI().ResourceAdd(ctx, databasesResource, params, &res)
 	if err != nil {
-		return res, errors.Wrap(ctx, err, "create database")
+		return DatabaseNG{}, errors.Wrap(ctx, err, "create database")
 	}
-	return res, nil
+	return res.Database, nil
 }
 
 func (c *PreviewClient) DatabasesList(ctx context.Context) ([]DatabaseNG, error) {

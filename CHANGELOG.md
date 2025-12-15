@@ -2,6 +2,9 @@
 
 ## To Be Released
 
+* fix(database next generation): fix database ng creation message [1167](https://github.com/Scalingo/cli/pull/1167)
+* chore(deps): Bump go-scalingo to v8.9.1
+
 ## 1.41.0
 
 Some features listed in this changelog, like databases next generation, are currently only available in preview to

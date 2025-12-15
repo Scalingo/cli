@@ -1,15 +1,17 @@
 # Changelog
 
+## To Be Released
+
+## 8.9.1
+
+* fix(database next generation): fix database object returned by create method [451](https://github.com/Scalingo/go-scalingo/pull/451)
+
 ## 8.9.0
 
 * feat(databases): update databases preview service to use database object from API
 * feat(addons): add support of `to_be_discontinued` attribute
 * feat(databases): add firewall rules management for databases next generation
 * feat(addons): add support of `trial_available` attribute
-
-## 8.8.0
-
-* feat(projects): get project private network information
 
 ## 8.8.0
 
