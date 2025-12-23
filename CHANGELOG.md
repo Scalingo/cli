@@ -3,7 +3,7 @@
 ## To Be Released
 
 * fix(database next generation): fix database ng creation message [1167](https://github.com/Scalingo/cli/pull/1167)
-* chore(deps): Bump go-scalingo to v8.9.1
+* chore(deps): Bump go-scalingo to v8.10.1
 
 ## 1.41.0
 

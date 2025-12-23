@@ -2,6 +2,18 @@
 
 ## To Be Released
 
+## 8.10.1
+
+* fix(firewall): use response wrapper for FirewallRulesCreate
+
+## 8.10.0
+
+* feat(plans): add the use of token authentication when the client is already authenticated
+
+## 8.9.2
+
+* fix(addons-providers): change DisabledAlternativePlanID type to string
+
 ## 8.9.1
 
 * fix(database next generation): fix database object returned by create method [451](https://github.com/Scalingo/go-scalingo/pull/451)

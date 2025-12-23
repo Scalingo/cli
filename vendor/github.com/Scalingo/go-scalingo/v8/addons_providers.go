@@ -23,7 +23,7 @@ type Plan struct {
 	Position                  int    `json:"position"`
 	OnDemand                  bool   `json:"on_demand"`
 	Disabled                  bool   `json:"disabled"`
-	DisabledAlternativePlanID bool   `json:"disabled_alternative_plan_id"`
+	DisabledAlternativePlanID string `json:"disabled_alternative_plan_id"`
 	SKU                       string `json:"sku"`
 	HDSAvailable              bool   `json:"hds_available"`
 	ToBeDiscontinued          bool   `json:"to_be_discontinued"`
@@ -60,7 +60,7 @@ type ListParams struct {
 
 func (c *Client) AddonProvidersList(ctx context.Context) ([]*AddonProvider, error) {
 	req := &http.APIRequest{
-		NoAuth:   true,
+		NoAuth:   !c.isAuthenticatedClient(),
 		Endpoint: "/addon_providers",
 	}
 	var params ListParams
@@ -89,7 +89,7 @@ func (c *Client) AddonProviderPlansList(ctx context.Context, addon string) ([]*P
 
 	var params PlansParams
 	req := &http.APIRequest{
-		NoAuth:   true,
+		NoAuth:   !c.isAuthenticatedClient(),
 		Endpoint: "/addon_providers/" + addon + "/plans",
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &params)
