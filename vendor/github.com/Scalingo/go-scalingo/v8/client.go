@@ -201,3 +201,7 @@ func (c *Client) AuthAPI() http.Client {
 func (c *Client) Preview() *PreviewClient {
 	return NewPreviewClient(c)
 }
+
+func (c *Client) isAuthenticatedClient() bool {
+	return c.ScalingoAPI().IsAuthenticatedClient()
+}
