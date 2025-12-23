@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 8.10.1
+
+* fix(firewall): use response wrapper for FirewallRulesCreate
+
 ## 8.10.0
 
 * feat(plans): add the use of token authentication when the client is already authenticated

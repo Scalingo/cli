@@ -48,6 +48,10 @@ type FirewallManagedRangesResponse struct {
 	ManagedRanges []FirewallManagedRange `json:"ranges"`
 }
 
+type FirewallRuleResponse struct {
+	FirewallRule FirewallRule `json:"rule"`
+}
+
 type FirewallRulesResponse struct {
 	FirewallRules []FirewallRule `json:"rules"`
 }
@@ -55,13 +59,13 @@ type FirewallRulesResponse struct {
 var _ FirewallRulesService = (*PreviewClient)(nil)
 
 func (c *PreviewClient) FirewallRulesCreate(ctx context.Context, appID string, addonID string, params FirewallRuleCreateParams) (FirewallRule, error) {
-	var res FirewallRule
+	var res FirewallRuleResponse
 
 	err := c.parent.DBAPI(appID, addonID).SubresourceAdd(ctx, "databases", addonID, firewallRulesResource, params, &res)
 	if err != nil {
-		return res, errors.Wrap(ctx, err, "create firewall rule")
+		return res.FirewallRule, errors.Wrap(ctx, err, "create firewall rule")
 	}
-	return res, nil
+	return res.FirewallRule, nil
 }
 
 func (c *PreviewClient) FirewallRulesList(ctx context.Context, appID string, addonID string) ([]FirewallRule, error) {
