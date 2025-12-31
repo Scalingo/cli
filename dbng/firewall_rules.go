@@ -61,7 +61,7 @@ func FirewallRulesAdd(ctx context.Context, databaseID, addonID string, params sc
 	}
 
 	io.Statusf("Firewall rule '%s' has been added to database '%s'.\n", rule.ID, databaseID)
-	io.Warning("Firewall rules take time to be applied due to infrastructure provisioning.")
+	io.Warning("Expect some delay for the firewall rules to be applied, due to infrastructure provisioning.")
 
 	return nil
 }
@@ -78,7 +78,7 @@ func FirewallRulesRemove(ctx context.Context, databaseID, addonID, ruleID string
 	}
 
 	io.Statusf("Firewall rule '%s' has been removed from database '%s'.\n", ruleID, databaseID)
-	io.Warning("Firewall rules take time to be applied due to infrastructure provisioning.")
+	io.Warning("Expect some delay for the firewall rules to be applied, due to infrastructure provisioning.")
 
 	return nil
 }
