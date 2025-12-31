@@ -18,6 +18,27 @@ import (
 
 var errDatabaseNotFound = stderrors.New("database name not found")
 
+// GetAddonIDFromDatabase resolves the addon ID from a database ID by calling the API.
+// This is useful when the database ID is provided as a positional argument.
+func GetAddonIDFromDatabase(ctx context.Context, databaseID string) (string, error) {
+	client, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return "", errors.Wrap(ctx, err, "get Scalingo client")
+	}
+
+	// In case of a database, addons list should return only one element.
+	addons, err := client.AddonsList(ctx, databaseID)
+	if err != nil {
+		return "", errors.Wrap(ctx, err, "list addons")
+	}
+
+	if len(addons) == 0 {
+		return "", errors.Newf(ctx, "no addon found for database %s", databaseID)
+	}
+
+	return addons[0].ID, nil
+}
+
 // GetCurrentDatabase is a helper to get the current database name and UUID.
 func GetCurrentDatabase(ctx context.Context, c *cli.Command) (string, string) {
 	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)

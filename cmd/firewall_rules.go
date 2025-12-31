@@ -23,18 +23,23 @@ var (
 		Description: CommandDescription{
 			Description: "List all firewall rules of a database next generation",
 			Examples: []string{
-				"scalingo database-firewall-rules database_id",
-				"scalingo --database database_id database-firewall-rules",
+				"scalingo database-firewall-rules my-db-id",
+				"scalingo --database my-db database-firewall-rules",
 			},
 			SeeAlso: []string{"database-firewall-rules-add", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := c.Args().First()
-			var addonID string
+			var databaseID, addonID string
+			var err error
+
+			databaseID = c.Args().First()
 			if databaseID == "" {
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
 			} else {
-				_, addonID = detect.GetCurrentDatabase(ctx, c)
+				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
+				if err != nil {
+					errorQuit(ctx, err)
+				}
 			}
 
 			if databaseID == "" {
@@ -44,7 +49,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.FirewallRulesList(ctx, databaseID, addonID)
+			err = dbng.FirewallRulesList(ctx, databaseID, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -58,9 +63,10 @@ var (
 	}
 
 	databaseFirewallRulesAddCommand = cli.Command{
-		Name:     "database-firewall-rules-add",
-		Category: "Databases NG",
-		Usage:    "Add a firewall rule to a database",
+		Name:      "database-firewall-rules-add",
+		Category:  "Databases NG",
+		Usage:     "Add a firewall rule to a database",
+		ArgsUsage: "database-id",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.StringFlag{Name: "cidr", Usage: "CIDR range (e.g., 203.0.113.0/24)"},
@@ -70,16 +76,27 @@ var (
 		Description: CommandDescription{
 			Description: "Add a firewall rule to a database next generation. Either --cidr or --managed-range must be specified, but not both.",
 			Examples: []string{
-				"scalingo --database database_id database-firewall-rules-add --cidr 203.0.113.0/24 --label \"Office network\"",
-				"scalingo --database database_id database-firewall-rules-add --managed-range mr-scalingo-osc-fr1",
+				"scalingo database-firewall-rules-add my-db-id --cidr 203.0.113.0/24 --label \"Office network\"",
+				"scalingo --database my-db database-firewall-rules-add --managed-range mr-scalingo-osc-fr1",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID, addonID := detect.GetCurrentDatabase(ctx, c)
+			var databaseID, addonID string
+			var err error
+
+			databaseID = c.Args().First()
+			if databaseID == "" {
+				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
+			} else {
+				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
+				if err != nil {
+					errorQuit(ctx, err)
+				}
+			}
 
 			if databaseID == "" {
-				io.Error("Please provide a database ID using --database flag")
+				io.Error("Please provide a database ID or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
@@ -113,7 +130,7 @@ var (
 				}
 			}
 
-			err := dbng.FirewallRulesAdd(ctx, databaseID, addonID, params)
+			err = dbng.FirewallRulesAdd(ctx, databaseID, addonID, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -130,32 +147,46 @@ var (
 		Name:      "database-firewall-rules-remove",
 		Category:  "Databases NG",
 		Usage:     "Remove a firewall rule from a database",
-		ArgsUsage: "rule-id",
+		ArgsUsage: "database-id rule-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Remove a firewall rule from a database next generation",
 			Examples: []string{
-				"scalingo --database database_id database-firewall-rules-remove rule_id",
+				"scalingo database-firewall-rules-remove my-db-id rule-id",
+				"scalingo --database my-db database-firewall-rules-remove rule-id",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID, addonID := detect.GetCurrentDatabase(ctx, c)
+			var databaseID, addonID, ruleID string
+			var err error
 
-			if databaseID == "" {
-				io.Error("Please provide a database ID using --database flag")
+			args := c.Args().Slice()
+			if len(args) == 2 {
+				// Both database-id and rule-id provided as positional args
+				databaseID = args[0]
+				ruleID = args[1]
+				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
+				if err != nil {
+					errorQuit(ctx, err)
+				}
+			} else if len(args) == 1 {
+				// Only rule-id provided, database from --database flag
+				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
+				ruleID = args[0]
+			} else {
+				io.Error("Please provide a rule ID")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
-			ruleID := c.Args().First()
-			if ruleID == "" {
-				io.Error("Please provide a rule ID")
+			if databaseID == "" {
+				io.Error("Please provide a database ID or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.FirewallRulesRemove(ctx, databaseID, addonID, ruleID)
+			err = dbng.FirewallRulesRemove(ctx, databaseID, addonID, ruleID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -177,18 +208,23 @@ var (
 		Description: CommandDescription{
 			Description: "List all available managed ranges for firewall rules of a database next generation",
 			Examples: []string{
-				"scalingo database-firewall-managed-ranges database_id",
-				"scalingo --database database_id database-firewall-managed-ranges",
+				"scalingo database-firewall-managed-ranges my-db-id",
+				"scalingo --database my-db database-firewall-managed-ranges",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-rules-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := c.Args().First()
-			var addonID string
+			var databaseID, addonID string
+			var err error
+
+			databaseID = c.Args().First()
 			if databaseID == "" {
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
 			} else {
-				_, addonID = detect.GetCurrentDatabase(ctx, c)
+				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
+				if err != nil {
+					errorQuit(ctx, err)
+				}
 			}
 
 			if databaseID == "" {
@@ -198,7 +234,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.FirewallManagedRangesList(ctx, databaseID, addonID)
+			err = dbng.FirewallManagedRangesList(ctx, databaseID, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
