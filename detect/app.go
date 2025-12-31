@@ -36,6 +36,10 @@ func GetAddonIDFromDatabase(ctx context.Context, databaseID string) (string, err
 		return "", errors.Newf(ctx, "no addon found for database %s", databaseID)
 	}
 
+	if len(addons) > 1 {
+		return "", errors.Newf(ctx, "multiple addons found for %s, it may be an application", databaseID)
+	}
+
 	return addons[0].ID, nil
 }
 
