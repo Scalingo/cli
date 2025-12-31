@@ -26,7 +26,10 @@ func GetAddonIDFromDatabase(ctx context.Context, databaseID string) (string, err
 		return "", errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	// In case of a database, addons list should return only one element.
+	// AddonsList works for both apps and DBNG databases (same API endpoint).
+	// A DBNG database is modeled as an app with a single addon (itself),
+	// whereas an application can have multiple addons (postgresql, redis, etc.).
+	// If multiple addons are returned, the ID is likely an application, not a database.
 	addons, err := client.AddonsList(ctx, databaseID)
 	if err != nil {
 		return "", errors.Wrap(ctx, err, "list addons")
