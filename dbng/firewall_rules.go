@@ -29,7 +29,7 @@ func FirewallRulesList(ctx context.Context, databaseID, addonID string) error {
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"ID", "Type", "CIDR/Range", "Label"})
+	t.Header([]string{"ID", "Type", "CIDR or Range ID", "Label"})
 
 	for _, rule := range rules {
 		cidrOrRange := rule.CIDR
