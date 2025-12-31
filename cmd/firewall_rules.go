@@ -32,18 +32,19 @@ var (
 			var databaseID, addonID string
 			var err error
 
-			databaseID = c.Args().First()
-			if databaseID == "" {
+			switch c.Args().Len() {
+			case 0:
+				// No positional arg, database from --database flag
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			} else {
+			case 1:
+				// database-id provided as positional arg
+				databaseID = c.Args().First()
 				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-			}
-
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			default:
+				io.Error("Too many arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
 			}
 
@@ -85,18 +86,19 @@ var (
 			var databaseID, addonID string
 			var err error
 
-			databaseID = c.Args().First()
-			if databaseID == "" {
+			switch c.Args().Len() {
+			case 0:
+				// No positional arg, database from --database flag
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			} else {
+			case 1:
+				// database-id provided as positional arg
+				databaseID = c.Args().First()
 				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-			}
-
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			default:
+				io.Error("Too many arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
@@ -162,7 +164,8 @@ var (
 			var err error
 
 			args := c.Args().Slice()
-			if len(args) == 2 {
+			switch len(args) {
+			case 2:
 				// Both database-id and rule-id provided as positional args
 				databaseID = args[0]
 				ruleID = args[1]
@@ -170,11 +173,11 @@ var (
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-			} else if len(args) == 1 {
+			case 1:
 				// Only rule-id provided, database from --database flag
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
 				ruleID = args[0]
-			} else {
+			default:
 				io.Error("Please provide a rule ID")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
@@ -217,18 +220,19 @@ var (
 			var databaseID, addonID string
 			var err error
 
-			databaseID = c.Args().First()
-			if databaseID == "" {
+			switch c.Args().Len() {
+			case 0:
+				// No positional arg, database from --database flag
 				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			} else {
+			case 1:
+				// database-id provided as positional arg
+				databaseID = c.Args().First()
 				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-			}
-
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			default:
+				io.Error("Too many arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
 			}
 
