@@ -165,6 +165,14 @@ var (
 
 			args := c.Args().Slice()
 			switch len(args) {
+			case 0:
+				// No arguments provided
+				io.Error("Missing required argument: rule-id")
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
+			case 1:
+				// Only rule-id provided, database from --database flag
+				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
+				ruleID = args[0]
 			case 2:
 				// Both database-id and rule-id provided as positional args
 				databaseID = args[0]
@@ -173,12 +181,8 @@ var (
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-			case 1:
-				// Only rule-id provided, database from --database flag
-				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-				ruleID = args[0]
 			default:
-				io.Error("Please provide a rule ID")
+				io.Error("Invalid number of arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
