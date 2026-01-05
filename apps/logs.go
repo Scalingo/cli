@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"strings"
-	"time"
 
 	"gopkg.in/errgo.v1"
 
@@ -14,12 +13,6 @@ import (
 	"github.com/Scalingo/go-scalingo/v8"
 	"github.com/Scalingo/go-scalingo/v8/debug"
 )
-
-type WSEvent struct {
-	Type      string    `json:"event"`
-	Log       string    `json:"log"`
-	Timestamp time.Time `json:"timestamp"`
-}
 
 type LogsRes struct {
 	LogsURL string        `json:"logs_url"`
