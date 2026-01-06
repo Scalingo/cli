@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 
 	"github.com/urfave/cli/v3"
 
@@ -30,11 +31,11 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if errors.Is(err, detect.ErrTooManyArguments) {
+				io.Error(err)
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
+			}
 			if err != nil {
-				if err == detect.ErrTooManyArguments {
-					io.Error(err)
-					return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
-				}
 				errorQuit(ctx, err)
 			}
 
@@ -74,11 +75,11 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if errors.Is(err, detect.ErrTooManyArguments) {
+				io.Error(err)
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
+			}
 			if err != nil {
-				if err == detect.ErrTooManyArguments {
-					io.Error(err)
-					return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
-				}
 				errorQuit(ctx, err)
 			}
 
@@ -96,10 +97,6 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
-			if managedRange != "" && label != "" {
-				io.Warning("--label flag is ignored for managed ranges")
-			}
-
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
 			var params scalingo.FirewallRuleCreateParams
@@ -113,6 +110,7 @@ var (
 				params = scalingo.FirewallRuleCreateParams{
 					Type:    scalingo.FirewallRuleTypeManagedRange,
 					RangeID: managedRange,
+					Label:   label,
 				}
 			}
 
@@ -206,11 +204,11 @@ var (
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if errors.Is(err, detect.ErrTooManyArguments) {
+				io.Error(err)
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
+			}
 			if err != nil {
-				if err == detect.ErrTooManyArguments {
-					io.Error(err)
-					return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
-				}
 				errorQuit(ctx, err)
 			}
 
