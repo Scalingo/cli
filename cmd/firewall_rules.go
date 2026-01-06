@@ -29,28 +29,18 @@ var (
 			SeeAlso: []string{"database-firewall-rules-add", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			var databaseID, addonID string
-			var err error
-
-			switch c.Args().Len() {
-			case 0:
-				// No positional arg, database from --database flag
-				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			case 1:
-				// database-id provided as positional arg
-				databaseID = c.Args().First()
-				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
-				if err != nil {
-					errorQuit(ctx, err)
+			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if err != nil {
+				if err == detect.ErrTooManyArguments {
+					io.Error(err)
+					return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
 				}
-			default:
-				io.Error("Too many arguments")
-				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
+				errorQuit(ctx, err)
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesList(ctx, databaseID, addonID)
+			err = dbng.FirewallRulesList(ctx, databaseName, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -83,23 +73,13 @@ var (
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			var databaseID, addonID string
-			var err error
-
-			switch c.Args().Len() {
-			case 0:
-				// No positional arg, database from --database flag
-				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			case 1:
-				// database-id provided as positional arg
-				databaseID = c.Args().First()
-				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
-				if err != nil {
-					errorQuit(ctx, err)
+			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if err != nil {
+				if err == detect.ErrTooManyArguments {
+					io.Error(err)
+					return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 				}
-			default:
-				io.Error("Too many arguments")
-				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
+				errorQuit(ctx, err)
 			}
 
 			cidr := c.String("cidr")
@@ -116,7 +96,11 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			if managedRange != "" && label != "" {
+				io.Warning("--label flag is ignored for managed ranges")
+			}
+
+			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
 			var params scalingo.FirewallRuleCreateParams
 			if cidr != "" {
@@ -132,7 +116,7 @@ var (
 				}
 			}
 
-			err = dbng.FirewallRulesAdd(ctx, databaseID, addonID, params)
+			err = dbng.FirewallRulesAdd(ctx, databaseName, addonID, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -160,7 +144,7 @@ var (
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			var databaseID, addonID, ruleID string
+			var databaseName, addonID, ruleID string
 			var err error
 
 			args := c.Args().Slice()
@@ -171,13 +155,13 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			case 1:
 				// Only rule-id provided, database from --database flag
-				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
+				databaseName, addonID = detect.GetCurrentDatabase(ctx, c)
 				ruleID = args[0]
 			case 2:
-				// Both database-id and rule-id provided as positional args
-				databaseID = args[0]
+				// Both database-name and rule-id provided as positional args
+				databaseName = args[0]
 				ruleID = args[1]
-				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
+				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseName)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -186,14 +170,14 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			if databaseName == "" {
+				io.Error("Please provide a database name or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesRemove(ctx, databaseID, addonID, ruleID)
+			err = dbng.FirewallRulesRemove(ctx, databaseName, addonID, ruleID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -221,28 +205,18 @@ var (
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-rules-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			var databaseID, addonID string
-			var err error
-
-			switch c.Args().Len() {
-			case 0:
-				// No positional arg, database from --database flag
-				databaseID, addonID = detect.GetCurrentDatabase(ctx, c)
-			case 1:
-				// database-id provided as positional arg
-				databaseID = c.Args().First()
-				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseID)
-				if err != nil {
-					errorQuit(ctx, err)
+			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			if err != nil {
+				if err == detect.ErrTooManyArguments {
+					io.Error(err)
+					return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
 				}
-			default:
-				io.Error("Too many arguments")
-				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
+				errorQuit(ctx, err)
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallManagedRangesList(ctx, databaseID, addonID)
+			err = dbng.FirewallManagedRangesList(ctx, databaseName, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
