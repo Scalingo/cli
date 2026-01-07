@@ -2,7 +2,6 @@ package projects
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -34,7 +33,6 @@ func List(ctx context.Context) error {
 		if project.Flags["private-network"] {
 			hasPrivateNetwork = "true"
 		}
-		fmt.Print(project.Flags)
 		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID, hasPrivateNetwork})
 	}
 	_ = t.Render()
