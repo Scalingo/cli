@@ -18,6 +18,60 @@ import (
 
 var errDatabaseNotFound = stderrors.New("database name not found")
 
+// GetAddonIDFromDatabase resolves the addon ID from a database name by calling the API.
+// This is useful when the database name is provided as a positional argument.
+func GetAddonIDFromDatabase(ctx context.Context, databaseName string) (string, error) {
+	client, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return "", errors.Wrap(ctx, err, "get Scalingo client")
+	}
+
+	// AddonsList works for both apps and DBNG databases (same API endpoint).
+	// A DBNG database is modeled as an app with a single addon (itself),
+	// whereas an application can have multiple addons (postgresql, redis, etc.).
+	// If multiple addons are returned, the ID is likely an application, not a database.
+	addons, err := client.AddonsList(ctx, databaseName)
+	if err != nil {
+		return "", errors.Wrap(ctx, err, "list addons")
+	}
+
+	if len(addons) == 0 {
+		return "", errors.Newf(ctx, "no addon found for database %s", databaseName)
+	}
+
+	if len(addons) > 1 {
+		return "", errors.Newf(ctx, "multiple addons found for %s, it may be an application", databaseName)
+	}
+
+	return addons[0].ID, nil
+}
+
+// ErrTooManyArguments is returned when too many arguments are provided
+var ErrTooManyArguments = stderrors.New("too many arguments")
+
+// GetDatabaseFromArgs resolves the database name and addon ID from command arguments.
+// If no positional argument is provided, it uses the --database flag.
+// If one positional argument is provided, it uses it as the database name.
+// Returns ErrTooManyArguments if more than one argument is provided.
+func GetDatabaseFromArgs(ctx context.Context, c *cli.Command) (string, string, error) {
+	switch c.Args().Len() {
+	case 0:
+		// No positional arg, database from --database flag
+		databaseName, addonID := GetCurrentDatabase(ctx, c)
+		return databaseName, addonID, nil
+	case 1:
+		// database-name provided as positional arg
+		databaseName := c.Args().First()
+		addonID, err := GetAddonIDFromDatabase(ctx, databaseName)
+		if err != nil {
+			return "", "", err
+		}
+		return databaseName, addonID, nil
+	default:
+		return "", "", ErrTooManyArguments
+	}
+}
+
 // GetCurrentDatabase is a helper to get the current database name and UUID.
 func GetCurrentDatabase(ctx context.Context, c *cli.Command) (string, string) {
 	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)

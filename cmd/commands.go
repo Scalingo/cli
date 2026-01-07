@@ -320,6 +320,12 @@ var (
 		&databaseInfoCommand,
 		&databaseCreateCommand,
 		&databaseDestroyCommand,
+
+		// Firewall rules
+		&databaseFirewallRulesListCommand,
+		&databaseFirewallRulesAddCommand,
+		&databaseFirewallRulesRemoveCommand,
+		&databaseFirewallManagedRangesCommand,
 	}
 
 	globalCommands = []*cli.Command{
