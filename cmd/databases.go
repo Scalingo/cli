@@ -14,7 +14,7 @@ import (
 	dbUsers "github.com/Scalingo/cli/db/users"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 var (

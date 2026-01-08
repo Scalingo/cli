@@ -8,6 +8,7 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 func AddonsAddAutoComplete(ctx context.Context) error {
@@ -28,7 +29,7 @@ func AddonsAddAutoComplete(ctx context.Context) error {
 		}
 
 		if isAddonNameSet {
-			plans, err := client.AddonProviderPlansList(ctx, lastArg)
+			plans, err := client.AddonProviderPlansList(ctx, lastArg, scalingo.AddonProviderPlansListOpts{})
 
 			if err == nil {
 				for _, plan := range plans {

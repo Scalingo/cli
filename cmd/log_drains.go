@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/logdrains"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 const confirmDeletionSuffix = "\n\tConfirm deletion ?"

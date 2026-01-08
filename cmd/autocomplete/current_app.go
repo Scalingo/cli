@@ -7,7 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8/debug"
+	"github.com/Scalingo/go-scalingo/v9/debug"
 )
 
 func CurrentAppCompletion(c *cli.Command) string {

@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 

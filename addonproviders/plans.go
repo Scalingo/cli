@@ -7,6 +7,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-scalingo/v9"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -16,7 +17,7 @@ func Plans(ctx context.Context, addon string) error {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	plans, err := c.AddonProviderPlansList(ctx, addon)
+	plans, err := c.AddonProviderPlansList(ctx, addon, scalingo.AddonProviderPlansListOpts{})
 	if err != nil {
 		return errors.Wrapf(ctx, err, "list addon provider plans")
 	}

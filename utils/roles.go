@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 const (

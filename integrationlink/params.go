@@ -4,7 +4,7 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 func CheckAndFillParams(c *cli.Command) *scalingo.SCMRepoLinkUpdateParams {
