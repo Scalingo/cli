@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 var (
@@ -97,6 +97,11 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
+			if managedRange != "" && label != "" {
+				io.Error("Cannot specify --label with --managed-range")
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
+			}
+
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
 			var params scalingo.FirewallRuleCreateParams
@@ -110,7 +115,6 @@ var (
 				params = scalingo.FirewallRuleCreateParams{
 					Type:    scalingo.FirewallRuleTypeManagedRange,
 					RangeID: managedRange,
-					Label:   label,
 				}
 			}
 
