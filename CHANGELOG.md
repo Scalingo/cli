@@ -2,6 +2,9 @@
 
 ## To Be Released
 
+* chore(deps): Bump go-scalingo to v9.0.3
+* fix(databases next generation): reject --label flag for managed firewall rules
+
 ## 1.41.1
 
 * fix(database next generation): fix database ng creation message [1167](https://github.com/Scalingo/cli/pull/1167)

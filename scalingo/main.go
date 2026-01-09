@@ -15,7 +15,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
-	"github.com/Scalingo/go-scalingo/v8/debug"
+	"github.com/Scalingo/go-scalingo/v9/debug"
 	"github.com/Scalingo/go-utils/errors/v2"
 	"github.com/Scalingo/go-utils/logger"
 )

@@ -6,7 +6,7 @@ import (
 	stderrors "github.com/pkg/errors"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v8/debug"
+	"github.com/Scalingo/go-scalingo/v9/debug"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 

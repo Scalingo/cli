@@ -11,8 +11,8 @@ import (
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
-	"github.com/Scalingo/go-scalingo/v8/io"
+	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-scalingo/v9/io"
 )
 
 var (

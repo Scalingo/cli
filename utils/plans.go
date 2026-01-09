@@ -5,11 +5,11 @@ import (
 
 	"github.com/Scalingo/go-utils/errors/v2"
 
-	"github.com/Scalingo/go-scalingo/v8"
+	"github.com/Scalingo/go-scalingo/v9"
 )
 
 func FindPlan(ctx context.Context, c *scalingo.Client, addon, plan string) (string, error) {
-	plans, err := c.AddonProviderPlansList(ctx, addon)
+	plans, err := c.AddonProviderPlansList(ctx, addon, scalingo.AddonProviderPlansListOpts{})
 	if err != nil {
 		return "", errors.Wrapf(ctx, err, "list addon %s plans", addon)
 	}

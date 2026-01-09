@@ -13,9 +13,9 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v8"
-	"github.com/Scalingo/go-scalingo/v8/debug"
-	"github.com/Scalingo/go-scalingo/v8/http"
+	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v9/http"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
