@@ -2,8 +2,16 @@
 
 ## To Be Released
 
-* chore(deps): Bump go-scalingo to v9.0.3
+## 1.42.0
+
+* feat(databases next generation): add firewall rules management commands:
+  * `database-firewall-rules` - List firewall rules
+  * `database-firewall-rules-add` - Add custom CIDR or managed range rule
+  * `database-firewall-rules-remove` - Remove a rule
+  * `database-firewall-managed-ranges` - List available managed ranges
 * fix(databases next generation): reject --label flag for managed firewall rules
+* fix(projects): remove debug log
+* chore(deps): Bump go-scalingo to v9.0.3
 
 ## 1.41.1
 
