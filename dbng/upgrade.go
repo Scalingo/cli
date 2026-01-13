@@ -37,7 +37,23 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 		return errors.Newf(ctx, "no addons found for database application %s", db.App.ID)
 	}
 
-	_, err = c.AddonUpgrade(ctx, db.App.ID, addons[0].ID, scalingo.AddonUpgradeParams{
+	var dbAddon *scalingo.Addon
+	if db.Database.ResourceID != "" {
+		for _, addon := range addons {
+			if addon.ResourceID == db.Database.ResourceID {
+				dbAddon = addon
+				break
+			}
+		}
+	}
+	if dbAddon == nil && len(addons) == 1 {
+		dbAddon = addons[0]
+	}
+	if dbAddon == nil {
+		return errors.Newf(ctx, "no addon matching database %s (%s) found for application %s", db.Name, db.ID, db.App.ID)
+	}
+
+	_, err = c.AddonUpgrade(ctx, db.App.ID, dbAddon.ID, scalingo.AddonUpgradeParams{
 		PlanID: planID,
 	})
 	if err != nil {
@@ -54,14 +70,13 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 		spin := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		spin.Suffix = " Waiting for the plan change to complete\n"
 		spin.Start()
-		defer spin.Stop()
 
 		err = waitForDatabasePlanChange(ctx, c, db.ID)
+		spin.Stop()
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for database plan change")
 		}
 
-		spin.Stop()
 		io.Status("Your database plan change is complete.")
 	}
 
@@ -87,7 +102,9 @@ func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, dat
 }
 
 func waitForDatabaseStatus(ctx context.Context, client *scalingo.Client, databaseID string, check func(scalingo.DatabaseStatus) bool) error {
-	for range time.Tick(10 * time.Second) {
+	ticker := time.NewTicker(10 * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
 		db, err := client.Preview().DatabaseShow(ctx, databaseID)
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			continue
