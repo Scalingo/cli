@@ -38,16 +38,15 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 	}
 
 	var dbAddon *scalingo.Addon
-	if db.Database.ResourceID != "" {
+	if len(addons) == 1 {
+		dbAddon = addons[0]
+	} else if db.Database.ResourceID != "" {
 		for _, addon := range addons {
 			if addon.ResourceID == db.Database.ResourceID {
 				dbAddon = addon
 				break
 			}
 		}
-	}
-	if dbAddon == nil && len(addons) == 1 {
-		dbAddon = addons[0]
 	}
 	if dbAddon == nil {
 		return errors.Newf(ctx, "no addon matching database %s (%s) found for application %s", db.Name, db.ID, db.App.ID)
@@ -70,9 +69,9 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 		spin := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		spin.Suffix = " Waiting for the plan change to complete\n"
 		spin.Start()
+		defer spin.Stop()
 
 		err = waitForDatabasePlanChange(ctx, c, db.ID)
-		spin.Stop()
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for database plan change")
 		}
