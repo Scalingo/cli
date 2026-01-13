@@ -143,8 +143,10 @@ var (
 			var plan string
 
 			switch len(args) {
+			case 0:
+				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 			case 1:
-				if c.IsSet("database") || os.Getenv("SCALINGO_DATABASE") != "" {
+				if databaseNameFromFlags(c) != "" || os.Getenv("SCALINGO_DATABASE") != "" {
 					databaseID, _ = detect.GetCurrentDatabase(ctx, c)
 					plan = args[0]
 				} else {

@@ -24,6 +24,11 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 		return errors.Wrap(ctx, err, "show database")
 	}
 
+	if plan == db.Plan {
+		io.Statusf("Database %s ('%s') is already on plan %s.\n", db.ID, db.Name, db.Plan)
+		return nil
+	}
+
 	planID, err := utils.FindPlan(ctx, c, db.Technology, plan)
 	if err != nil {
 		return errors.Wrap(ctx, err, "invalid database plan")
