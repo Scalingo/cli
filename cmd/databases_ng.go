@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"os"
 
 	"github.com/urfave/cli/v3"
 
@@ -21,7 +22,7 @@ var (
 		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all the databases next generation of which you are an owner",
-			SeeAlso:     []string{"database-info", "database-create", "database-destroy"},
+			SeeAlso:     []string{"database-info", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
 			err := dbng.List(ctx)
@@ -48,7 +49,7 @@ var (
 				"scalingo database-info database_id",
 				"scalingo database-info --database database_id",
 			},
-			SeeAlso: []string{"databases", "database-create", "database-destroy"},
+			SeeAlso: []string{"databases", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := c.Args().First()
@@ -93,7 +94,7 @@ var (
 				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 my_super_database",
 				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 --wait my_super_database",
 			},
-			SeeAlso: []string{"databases", "database-info", "database-destroy"},
+			SeeAlso: []string{"databases", "database-info", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			appName := c.Args().First()
@@ -119,6 +120,69 @@ var (
 		},
 	}
 
+	databaseUpgradeCommand = cli.Command{
+		Name:      "database-upgrade",
+		Category:  "Databases NG",
+		Usage:     "Upgrade database next generation plan",
+		ArgsUsage: "database-id plan",
+		Flags: []cli.Flag{
+			databaseFlag(),
+			&cli.BoolFlag{Name: "wait", Usage: "Wait for plan change", Required: false},
+		},
+		Description: CommandDescription{
+			Description: "Upgrade a database next generation plan",
+			Examples: []string{
+				"scalingo database-upgrade database_id postgresql-ng-enterprise-8192",
+				"scalingo database-upgrade --database database_id --wait postgresql-ng-enterprise-8192",
+			},
+			SeeAlso: []string{"databases", "database-info", "database-create", "database-destroy"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			args := c.Args().Slice()
+			var databaseID string
+			var plan string
+
+			switch len(args) {
+			case 1:
+				if c.IsSet("database") || os.Getenv("SCALINGO_DATABASE") != "" {
+					databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+					plan = args[0]
+				} else {
+					io.Error("Missing required argument: plan")
+					return cli.ShowCommandHelp(ctx, c, "database-upgrade")
+				}
+			case 2:
+				databaseID = args[0]
+				plan = args[1]
+			default:
+				io.Error("Invalid number of arguments")
+				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
+			}
+
+			if databaseID == "" {
+				io.Error("Please provide a database ID or use --database flag")
+				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
+			}
+			if plan == "" {
+				io.Error("Please provide a plan name")
+				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
+			}
+
+			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+
+			err := dbng.Upgrade(ctx, databaseID, plan, c.Bool("wait"))
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+
+			return nil
+		},
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "database-upgrade")
+			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
+		},
+	}
+
 	databaseDestroyCommand = cli.Command{
 		Name:      "database-destroy",
 		Category:  "Databases NG",
@@ -131,7 +195,7 @@ var (
 				"scalingo database-destroy database_id",
 				"scalingo database-destroy --database database_id",
 			},
-			SeeAlso: []string{"databases", "database-info", "database-create"},
+			SeeAlso: []string{"databases", "database-info", "database-create", "database-upgrade"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := c.Args().First()

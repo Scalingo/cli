@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(databases next generation): add database plan upgrade command
+
 ## 1.42.0
 
 * feat(databases next generation): add firewall rules management commands:
