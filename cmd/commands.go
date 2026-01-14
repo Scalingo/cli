@@ -319,6 +319,7 @@ var (
 		&databasesListCommand,
 		&databaseInfoCommand,
 		&databaseCreateCommand,
+		&databaseUpgradeCommand,
 		&databaseDestroyCommand,
 
 		// Firewall rules
