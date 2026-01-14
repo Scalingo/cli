@@ -354,3 +354,23 @@ func (e *EventNewProjectType) TypeDataPtr() interface{} {
 func (e *EventEditProjectType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
+
+func (e *EventNewProjectTransferInvitationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventAcceptProjectTransferInvitationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventAcceptProjectTransferInvitationErrorType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventCancelProjectTransferInvitationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDeclineProjectTransferInvitationType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}

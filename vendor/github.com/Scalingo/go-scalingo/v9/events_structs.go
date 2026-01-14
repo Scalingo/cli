@@ -164,9 +164,14 @@ const (
 	EventUnlinkGithub EventTypeName = "unlink_github"
 
 	// Project scoped events
-	EventDeleteProject EventTypeName = "delete_project"
-	EventNewProject    EventTypeName = "new_project"
-	EventEditProject   EventTypeName = "edit_project"
+	EventDeleteProject                        EventTypeName = "delete_project"
+	EventNewProject                           EventTypeName = "new_project"
+	EventEditProject                          EventTypeName = "edit_project"
+	EventNewProjectTransferInvitation         EventTypeName = "new_project_transfer_invitation"
+	EventAcceptProjectTransferInvitation      EventTypeName = "accept_project_transfer_invitation"
+	EventAcceptProjectTransferInvitationError EventTypeName = "accept_project_transfer_invitation_error"
+	EventCancelProjectTransferInvitation      EventTypeName = "cancel_project_transfer_invitation"
+	EventDeclineProjectTransferInvitation     EventTypeName = "decline_project_transfer_invitation"
 )
 
 type EventNewUserType struct {
@@ -1037,4 +1042,110 @@ func (ev *EventEditProjectType) String() string {
 	}
 
 	return fmt.Sprintf("project settings have been updated: %s", strings.Join(changes, ", "))
+}
+
+// Project transfer invitation created
+type EventNewProjectTransferInvitationTypeData struct {
+	InvitationID      string `json:"invitation_id"`
+	RecipientEmail    string `json:"recipient_email"`
+	RecipientUsername string `json:"recipient_username"`
+}
+
+type EventNewProjectTransferInvitationType struct {
+	Event
+	TypeData EventNewProjectTransferInvitationTypeData `json:"type_data"`
+}
+
+func (ev *EventNewProjectTransferInvitationType) String() string {
+	if ev.TypeData.RecipientEmail != "" {
+		return fmt.Sprintf("A transfer invitation for project '%s' has been sent to %s", ev.ProjectName, ev.TypeData.RecipientEmail)
+	}
+	if ev.TypeData.RecipientUsername != "" {
+		return fmt.Sprintf("A transfer invitation for project '%s' has been sent to %s", ev.ProjectName, ev.TypeData.RecipientUsername)
+	}
+	return fmt.Sprintf("A transfer invitation for project '%s' has been sent", ev.ProjectName)
+}
+
+// Project transfer invitation accepted
+type EventAcceptProjectTransferInvitationTypeData struct {
+	InvitationID      string `json:"invitation_id"`
+	RecipientEmail    string `json:"recipient_email"`
+	RecipientUsername string `json:"recipient_username"`
+}
+
+type EventAcceptProjectTransferInvitationType struct {
+	Event
+	TypeData EventAcceptProjectTransferInvitationTypeData `json:"type_data"`
+}
+
+func (ev *EventAcceptProjectTransferInvitationType) String() string {
+	if ev.TypeData.RecipientEmail != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' has been accepted by %s", ev.ProjectName, ev.TypeData.RecipientEmail)
+	}
+	if ev.TypeData.RecipientUsername != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' has been accepted by %s", ev.ProjectName, ev.TypeData.RecipientUsername)
+	}
+	return fmt.Sprintf("The transfer invitation for project '%s' has been accepted", ev.ProjectName)
+}
+
+// Project transfer invitation acceptance failed
+type EventAcceptProjectTransferInvitationErrorTypeData struct {
+	InvitationID string `json:"invitation_id"`
+	Error        string `json:"error"`
+}
+
+type EventAcceptProjectTransferInvitationErrorType struct {
+	Event
+	TypeData EventAcceptProjectTransferInvitationErrorTypeData `json:"type_data"`
+}
+
+func (ev *EventAcceptProjectTransferInvitationErrorType) String() string {
+	if ev.TypeData.Error != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' could not be accepted: %s", ev.ProjectName, ev.TypeData.Error)
+	}
+	return fmt.Sprintf("The transfer invitation for project '%s' could not be accepted", ev.ProjectName)
+}
+
+// Project transfer invitation canceled
+type EventCancelProjectTransferInvitationTypeData struct {
+	InvitationID      string `json:"invitation_id"`
+	RecipientEmail    string `json:"recipient_email"`
+	RecipientUsername string `json:"recipient_username"`
+}
+
+type EventCancelProjectTransferInvitationType struct {
+	Event
+	TypeData EventCancelProjectTransferInvitationTypeData `json:"type_data"`
+}
+
+func (ev *EventCancelProjectTransferInvitationType) String() string {
+	if ev.TypeData.RecipientEmail != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' sent to %s has been canceled", ev.ProjectName, ev.TypeData.RecipientEmail)
+	}
+	if ev.TypeData.RecipientUsername != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' sent to %s has been canceled", ev.ProjectName, ev.TypeData.RecipientUsername)
+	}
+	return fmt.Sprintf("The transfer invitation for project '%s' has been canceled", ev.ProjectName)
+}
+
+// Project transfer invitation declined
+type EventDeclineProjectTransferInvitationTypeData struct {
+	InvitationID      string `json:"invitation_id"`
+	RecipientEmail    string `json:"recipient_email"`
+	RecipientUsername string `json:"recipient_username"`
+}
+
+type EventDeclineProjectTransferInvitationType struct {
+	Event
+	TypeData EventDeclineProjectTransferInvitationTypeData `json:"type_data"`
+}
+
+func (ev *EventDeclineProjectTransferInvitationType) String() string {
+	if ev.TypeData.RecipientEmail != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' sent to %s has been declined", ev.ProjectName, ev.TypeData.RecipientEmail)
+	}
+	if ev.TypeData.RecipientUsername != "" {
+		return fmt.Sprintf("The transfer invitation for project '%s' sent to %s has been declined", ev.ProjectName, ev.TypeData.RecipientUsername)
+	}
+	return fmt.Sprintf("The transfer invitation for project '%s' has been declined", ev.ProjectName)
 }
