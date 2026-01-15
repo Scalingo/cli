@@ -37,6 +37,16 @@ func databaseFlag() *cli.StringFlag {
 	return &cli.StringFlag{}
 }
 
+func databaseNameFromFlags(c *cli.Command) string {
+	for _, cliContext := range c.Lineage() {
+		dbName := cliContext.String("database")
+		if dbName != "" && dbName != "<database_name>" {
+			return dbName
+		}
+	}
+	return ""
+}
+
 // addonUUIDFromFlags returns the addon UUID based on the --addon flag, the SCALINGO_ADDON env var
 // or the current detected database.
 // exitIfMissing is optional. Set to true to show a message requesting for the --addon flag.
