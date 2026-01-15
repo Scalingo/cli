@@ -28,6 +28,7 @@ var (
 			&cli.StringFlag{Name: "remote", Value: "scalingo", Usage: "Remote to add to your current git repository"},
 			&cli.StringFlag{Name: "buildpack", Value: "", Usage: "URL to a custom buildpack that Scalingo should use to build your application"},
 			&cli.StringFlag{Name: "project-id", Value: "", Usage: "Project to which the application should be linked. If not provided, the app will be assigned to your default project"},
+			&cli.BoolFlag{Name: "hds-resource", Value: false, Usage: "Whether the application should be an HDS resource"},
 		},
 
 		Action: func(ctx context.Context, c *cli.Command) error {
@@ -36,7 +37,7 @@ var (
 				return nil
 			}
 
-			err := apps.Create(ctx, c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"), c.String("project-id"))
+			err := apps.Create(ctx, c.Args().First(), detect.RemoteNameFromFlags(c), c.String("buildpack"), c.String("project-id"), c.Bool("hds-resource"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
