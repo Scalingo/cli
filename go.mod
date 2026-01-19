@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v9 v9.0.4-0.20260114154850-fd7ba53b207c
+	github.com/Scalingo/go-scalingo/v9 v9.1.0
 	github.com/Scalingo/go-utils/errors/v2 v2.5.1
 	github.com/Scalingo/go-utils/logger v1.11.0
 	github.com/Scalingo/gopassword v1.1.0
