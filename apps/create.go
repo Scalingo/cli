@@ -11,13 +11,13 @@ import (
 	"github.com/Scalingo/go-scalingo/v9"
 )
 
-func Create(ctx context.Context, appName, remote, buildpack, projectID string) error {
+func Create(ctx context.Context, appName, remote, buildpack, projectID string, hdsResource bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	app, err := c.AppsCreate(ctx, scalingo.AppsCreateOpts{Name: appName, ProjectID: projectID})
+	app, err := c.AppsCreate(ctx, scalingo.AppsCreateOpts{Name: appName, ProjectID: projectID, HDSResource: hdsResource})
 	if err != nil {
 		if utils.IsRegionDisabledError(err) {
 			return handleRegionDisabledError(ctx, appName, c)
@@ -27,7 +27,7 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string) e
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(ctx, c, func() error {
-			return Create(ctx, appName, remote, buildpack, projectID)
+			return Create(ctx, appName, remote, buildpack, projectID, hdsResource)
 		})
 	}
 

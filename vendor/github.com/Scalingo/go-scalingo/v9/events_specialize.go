@@ -188,6 +188,16 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventNewProjectType{Event: ev}
 	case EventEditProject:
 		e = &EventEditProjectType{Event: ev}
+	case EventNewProjectTransferInvitation:
+		e = &EventNewProjectTransferInvitationType{Event: ev}
+	case EventAcceptProjectTransferInvitation:
+		e = &EventAcceptProjectTransferInvitationType{Event: ev}
+	case EventAcceptProjectTransferInvitationError:
+		e = &EventAcceptProjectTransferInvitationErrorType{Event: ev}
+	case EventCancelProjectTransferInvitation:
+		e = &EventCancelProjectTransferInvitationType{Event: ev}
+	case EventDeclineProjectTransferInvitation:
+		e = &EventDeclineProjectTransferInvitationType{Event: ev}
 	default:
 		return pev
 	}

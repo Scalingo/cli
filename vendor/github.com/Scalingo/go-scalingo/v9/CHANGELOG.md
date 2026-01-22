@@ -2,6 +2,11 @@
 
 ## To Be Released
 
+## 9.1.0
+
+* feat(projects): add transfer invitations events
+* feat(apps): support HDS resource on application creation
+
 ## 9.0.3
 
 * fix(databases): parse databases list response with proper JSON structure
