@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.43.0
+
 * feat(databases next generation): add database plan upgrade command
 * feat(apps): support HDS resource on application creation
 
