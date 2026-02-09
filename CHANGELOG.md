@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* fix(dist): fix the `install.sh` script
+* fix(dist): improve version detection in `install.sh`
 
 ## 1.43.0
 
