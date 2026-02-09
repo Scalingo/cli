@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(dist): fix the `install.sh` script
+
 ## 1.43.0
 
 * feat(databases next generation): add database plan upgrade command
