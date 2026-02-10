@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.43.1
+
 * fix(dist): improve version detection in `install.sh`
 
 ## 1.43.0
