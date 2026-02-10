@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(dist): improve version detection in `install.sh`
+
 ## 1.43.0
 
 * feat(databases next generation): add database plan upgrade command

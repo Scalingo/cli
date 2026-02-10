@@ -178,8 +178,8 @@ main() {
   if [ -x "$target" ] && [ -z "$yes_to_overwrite" ] ; then
     export DISABLE_UPDATE_CHECKER=true
     # Use cut's short parameter to be compatible with MacOS: https://ss64.com/osx/cut.html
-    new_version=$($exe_path --version | cut -d' ' -f4)
-    old_version=$("$target" --version | cut -d' ' -f4)
+    new_version=$($exe_path --version | cut -d' ' -f3)
+    old_version=$("$target" --version | cut -d' ' -f3)
     warn "Scalingo client is already installed (version ${old_version})\n"
 
     if ! ask "Do you want to replace it with version ${new_version}?"  ; then
