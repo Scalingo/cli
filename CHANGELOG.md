@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(databases next generation): fix plan names in examples
+
 ## 1.43.1
 
 * fix(dist): improve version detection in `install.sh`
