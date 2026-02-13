@@ -17,11 +17,11 @@ import (
 var (
 	databasesListCommand = cli.Command{
 		Name:     "databases",
-		Category: "Global",
-		Usage:    "List the databases next generation that you own",
+		Category: "Databases DR",
+		Usage:    "List the databases Dedicated Resources that you own",
 		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "List all the databases next generation of which you are an owner",
+			Description: "List all the databases Dedicated Resources of which you are an owner",
 			SeeAlso:     []string{"database-info", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
@@ -39,12 +39,12 @@ var (
 
 	databaseInfoCommand = cli.Command{
 		Name:      "database-info",
-		Category:  "Databases NG",
-		Usage:     "View database next generation",
+		Category:  "Databases DR",
+		Usage:     "View database Dedicated Resources",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "View database next generation detailed informations",
+			Description: "View database Dedicated Resources detailed information",
 			Examples: []string{
 				"scalingo database-info database_id",
 				"scalingo database-info --database database_id",
@@ -79,8 +79,8 @@ var (
 
 	databaseCreateCommand = cli.Command{
 		Name:      "database-create",
-		Category:  "Databases NG",
-		Usage:     "Create a database next generation",
+		Category:  "Databases DR",
+		Usage:     "Create a database Dedicated Resources",
 		ArgsUsage: "database-name",
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "type", Usage: "Database type", Required: true},
@@ -89,10 +89,10 @@ var (
 			&cli.BoolFlag{Name: "wait", Usage: "Wait for creation", Required: false},
 		},
 		Description: CommandDescription{
-			Description: "Create a new database next generation",
+			Description: "Create a new database Dedicated Resources",
 			Examples: []string{
-				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 my_super_database",
-				"scalingo database-create --type postgresql-ng --plan postgresql-ng-enterprise-4096 --wait my_super_database",
+				"scalingo database-create --type postgresql-ng --plan postgresql-dr-enterprise-4096 my_super_database",
+				"scalingo database-create --type postgresql-ng --plan postgresql-dr-enterprise-4096 --wait my_super_database",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-upgrade", "database-destroy"},
 		}.Render(),
@@ -122,18 +122,18 @@ var (
 
 	databaseUpgradeCommand = cli.Command{
 		Name:      "database-upgrade",
-		Category:  "Databases NG",
-		Usage:     "Upgrade database next generation plan",
+		Category:  "Databases DR",
+		Usage:     "Upgrade database Dedicated Resources plan",
 		ArgsUsage: "database-id plan",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.BoolFlag{Name: "wait", Usage: "Wait for plan change", Required: false},
 		},
 		Description: CommandDescription{
-			Description: "Upgrade a database next generation plan",
+			Description: "Upgrade a database Dedicated Resources plan",
 			Examples: []string{
-				"scalingo database-upgrade database_id postgresql-ng-enterprise-8192",
-				"scalingo database-upgrade --database database_id --wait postgresql-ng-enterprise-8192",
+				"scalingo database-upgrade database_id postgresql-dr-enterprise-8192",
+				"scalingo database-upgrade --database database_id --wait postgresql-dr-enterprise-8192",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-create", "database-destroy"},
 		}.Render(),
@@ -187,12 +187,12 @@ var (
 
 	databaseDestroyCommand = cli.Command{
 		Name:      "database-destroy",
-		Category:  "Databases NG",
-		Usage:     "Delete database next generation",
+		Category:  "Databases DR",
+		Usage:     "Delete database Dedicated Resources",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "Delete database next generation",
+			Description: "Delete database Dedicated Resources",
 			Examples: []string{
 				"scalingo database-destroy database_id",
 				"scalingo database-destroy --database database_id",
