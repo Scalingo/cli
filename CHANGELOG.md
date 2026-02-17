@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.43.2
+
 * fix(databases next generation): fix plan names in examples
 
 ## 1.43.1
