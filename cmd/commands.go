@@ -318,6 +318,7 @@ var (
 		// Databases next generation
 		&databasesListCommand,
 		&databaseInfoCommand,
+		&databaseListPlansCommand,
 		&databaseCreateCommand,
 		&databaseUpgradeCommand,
 		&databaseDestroyCommand,
