@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(cmd) add database-list-plans
+
 ## 1.43.2
 
 * fix(databases next generation): fix plan names in examples

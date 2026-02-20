@@ -77,6 +77,36 @@ var (
 		},
 	}
 
+	databaseListPlansCommand = cli.Command{
+		Name:     "database-list-plans",
+		Category: "Databases DR",
+		Usage:    "List the available plans for database Dedicated Resources",
+		Description: CommandDescription{
+			Description: "List all the available plans for database Dedicated Resources",
+			Examples: []string{
+				"scalingo database-list-plans postgresql-ng",
+			},
+			SeeAlso: []string{"databases", "database-info", "database-create", "database-upgrade", "database-destroy"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			technology := c.Args().First()
+			if technology == "" {
+				io.Error("Please provide a database technology")
+				return cli.ShowCommandHelp(ctx, c, "database-list-plans")
+			}
+
+			err := dbng.ListPlans(ctx, technology)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+
+			return nil
+		},
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "database-list-plans")
+		},
+	}
+
 	databaseCreateCommand = cli.Command{
 		Name:      "database-create",
 		Category:  "Databases DR",
