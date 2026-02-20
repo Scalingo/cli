@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.43.3
+
 * feat(cmd) add database-list-plans
 
 ## 1.43.2
