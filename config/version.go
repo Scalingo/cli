@@ -1,3 +1,3 @@
 package config
 
-var Version = "1.43.2"
+var Version = "1.43.3"
