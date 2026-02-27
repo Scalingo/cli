@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type BackupsService interface {
@@ -60,7 +59,7 @@ func (c *Client) BackupList(ctx context.Context, app string, addonID string) ([]
 	var backupRes BackupsRes
 	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get backup")
+		return nil, errors.Wrap(ctx, err, "get backup")
 	}
 	return backupRes.Backups, nil
 }
@@ -69,7 +68,7 @@ func (c *Client) BackupCreate(ctx context.Context, app, addonID string) (*Backup
 	var backupRes BackupRes
 	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, "databases", addonID, "backups", nil, &backupRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to schedule a new backup")
+		return nil, errors.Wrap(ctx, err, "schedule a new backup")
 	}
 	return &backupRes.Backup, nil
 }
@@ -78,7 +77,7 @@ func (c *Client) BackupShow(ctx context.Context, app, addonID, backup string) (*
 	var backupRes BackupRes
 	err := c.DBAPI(app, addonID).ResourceGet(ctx, "backups", backup, nil, &backupRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get backup")
+		return nil, errors.Wrap(ctx, err, "get backup")
 	}
 	return &backupRes.Backup, nil
 }
@@ -90,14 +89,14 @@ func (c *Client) BackupDownloadURL(ctx context.Context, app, addonID, backupID s
 	}
 	resp, err := c.DBAPI(app, addonID).Do(ctx, req)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get backup archive")
+		return "", errors.Wrap(ctx, err, "get backup archive")
 	}
 	defer resp.Body.Close()
 
 	var downloadRes DownloadURLRes
 	err = json.NewDecoder(resp.Body).Decode(&downloadRes)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to decode backup archive")
+		return "", errors.Wrap(ctx, err, "decode backup archive")
 	}
 	return downloadRes.DownloadURL, nil
 }

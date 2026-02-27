@@ -9,10 +9,12 @@ github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2 h1:+vx7roKuyA63n
 github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2/go.mod h1:HBCaDeC1lPdgDeDbhX8XFpy1jqjK0IBG8W5K+xYqA0w=
 github.com/ProtonMail/go-crypto v1.3.0 h1:ILq8+Sf5If5DCpHQp4PbZdS1J7HDFRXz/+xKBiRGFrw=
 github.com/ProtonMail/go-crypto v1.3.0/go.mod h1:9whxjD8Rbs29b4XWbB8irEcE8KHMqaR2e7GWU1R+/PE=
-github.com/Scalingo/go-scalingo/v9 v9.1.0 h1:VyXg120FnHcgs9i305PC2RF3lEh37JmrEdZxy49g5kQ=
-github.com/Scalingo/go-scalingo/v9 v9.1.0/go.mod h1:35IIuHmIYXHfwwRF1bik8ZJwkyIpsI7dmhqtWslzoYc=
+github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260227154930-b5d3e5afa44b h1:yLHHQ/g/rdqncvv2k+OKJaYje8xSCBaYp/T/y+yipCY=
+github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260227154930-b5d3e5afa44b/go.mod h1:IP0dmaWsauELy5x/SkpP4ZkoanMNbU2h/ZqxVHG5Tv4=
 github.com/Scalingo/go-utils/errors/v2 v2.5.1 h1:1tfJW6/ZxTgrRmFTlKQCOtArQquOW0/XdZQzx8wMHoM=
 github.com/Scalingo/go-utils/errors/v2 v2.5.1/go.mod h1:SbR1JuMtfAl+gpM7ahUW/c3Jm5MMzMAwJBk1pEHkVd8=
+github.com/Scalingo/go-utils/errors/v3 v3.2.0 h1:Ks+v2oRwv3VZfe+xVB+kpfmZouXHVCPHHtwL5W60prc=
+github.com/Scalingo/go-utils/errors/v3 v3.2.0/go.mod h1:jVVNoOdYFjuNkR/BeEZWNWJVvu4jmyLY4udlsQQyBss=
 github.com/Scalingo/go-utils/logger v1.11.0 h1:QUsGgZIv6LWUCyKKy06DuW67FLmzSmWPmnhD/3YlxeM=
 github.com/Scalingo/go-utils/logger v1.11.0/go.mod h1:Aui6aiU13vZ15EqMm6T2HxkvXFEU1czkfQyfNSyiH5Y=
 github.com/Scalingo/go-utils/pagination v1.1.2 h1:DfHxWXK76F6+UyJqmJ/XIxTuwurMIJHRFfiejmPBC+8=
@@ -64,8 +66,8 @@ github.com/go-git/go-git-fixtures/v4 v4.3.2-0.20231010084843-55a94097c399 h1:eMj
 github.com/go-git/go-git-fixtures/v4 v4.3.2-0.20231010084843-55a94097c399/go.mod h1:1OCfN199q1Jm3HZlxleg+Dw/mwps2Wbk9frAWm+4FII=
 github.com/go-git/go-git/v5 v5.16.5 h1:mdkuqblwr57kVfXri5TTH+nMFLNUxIj9Z7F5ykFbw5s=
 github.com/go-git/go-git/v5 v5.16.5/go.mod h1:QOMLpNf1qxuSY4StA/ArOdfFR2TrKEjJiye2kel2m+M=
-github.com/golang-jwt/jwt/v4 v4.5.2 h1:YtQM7lnr8iZ+j5q71MGKkNw9Mn7AjHM68uc9g5fXeUI=
-github.com/golang-jwt/jwt/v4 v4.5.2/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
+github.com/golang-jwt/jwt/v5 v5.3.1 h1:kYf81DTWFe7t+1VvL7eS+jKFVWaUnK9cB1qbwn63YCY=
+github.com/golang-jwt/jwt/v5 v5.3.1/go.mod h1:fxCRLWMO43lRc8nhHWY6LGqRcf+1gQWArsqaEUEa5bE=
 github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 h1:f+oWsMOmNPc8JmEHVZIycC7hBoQxHH9pNKQORJNozsQ=
 github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8/go.mod h1:wcDNUvekVysuuOpQKo3191zZyTpiI6se1N1ULghS0sw=
 github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=

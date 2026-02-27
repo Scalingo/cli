@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/golang/mock/gomock"
 
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"

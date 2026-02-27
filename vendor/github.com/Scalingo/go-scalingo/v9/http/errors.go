@@ -1,15 +1,14 @@
 package http
 
 import (
-	"errors"
+	"context"
+	stderrors "errors"
 	"fmt"
 	"net/http"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/debug"
-	errorspkg "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type (
@@ -59,11 +58,11 @@ type (
 	}
 )
 
-var ErrOTPRequired = errors.New("OTP Required")
+var ErrOTPRequired = stderrors.New("OTP Required")
 
 // IsOTPRequired tests if the authentication backend return an OTP Required error
 func IsOTPRequired(err error) bool {
-	if errorspkg.Is(err, ErrOTPRequired) {
+	if errors.Is(err, ErrOTPRequired) {
 		return true
 	}
 
@@ -120,68 +119,68 @@ func (err ConflictError) Error() string {
 	return fmt.Sprintf("409 Conflict → %v", err.Err)
 }
 
-func NewRequestFailedError(res *http.Response, req *APIRequest) error {
+func NewRequestFailedError(ctx context.Context, res *http.Response, req *APIRequest) error {
 	debug.Printf("APIRequest Error: [%d] %s %s%s", res.StatusCode, req.Method, req.URL, req.Endpoint)
 	defer res.Body.Close()
 	switch res.StatusCode {
 	case http.StatusBadRequest: // 400
 		var badRequestError BadRequestError
-		err := parseJSON(res, &badRequestError)
+		err := parseJSON(ctx, res, &badRequestError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: badRequestError, Req: req}
 	case http.StatusUnauthorized: // 401
 		var apiErr APIError
-		err := parseJSON(res, &apiErr)
+		err := parseJSON(ctx, res, &apiErr)
 		if err != nil {
 			return err
 		}
-		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
+		return &RequestFailedError{Code: res.StatusCode, APIError: errors.New(ctx, "unauthorized - you are not authorized to do this operation"), Req: req, Message: apiErr.Error}
 	case http.StatusPaymentRequired: // 402
 		var paymentRequiredErr PaymentRequiredError
-		err := parseJSON(res, &paymentRequiredErr)
+		err := parseJSON(ctx, res, &paymentRequiredErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: paymentRequiredErr, Req: req}
 	case http.StatusForbidden: // 403
 		var forbiddenError ForbiddenError
-		err := parseJSON(res, &forbiddenError)
+		err := parseJSON(ctx, res, &forbiddenError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: forbiddenError, Req: req}
 	case http.StatusNotFound: // 404
 		var notFoundErr NotFoundError
-		err := parseJSON(res, &notFoundErr)
+		err := parseJSON(ctx, res, &notFoundErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: notFoundErr, Req: req}
 	case http.StatusConflict: // 409
 		var conflictErr ConflictError
-		err := parseJSON(res, &conflictErr)
+		err := parseJSON(ctx, res, &conflictErr)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: conflictErr, Req: req}
 	case http.StatusUnprocessableEntity: // 422
 		var unprocessableError UnprocessableEntity
-		err := parseJSON(res, &unprocessableError)
+		err := parseJSON(ctx, res, &unprocessableError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: unprocessableError, Req: req}
 	case http.StatusTooManyRequests: // 429
 		var tooManyRequestsError TooManyRequestsError
-		err := parseJSON(res, &tooManyRequestsError)
+		err := parseJSON(ctx, res, &tooManyRequestsError)
 		if err != nil {
 			return err
 		}
 		return &RequestFailedError{Code: res.StatusCode, APIError: tooManyRequestsError, Req: req}
 	case http.StatusInternalServerError: // 500
-		return &RequestFailedError{Code: res.StatusCode, APIError: errgo.New("server internal error - our team has been notified"), Req: req}
+		return &RequestFailedError{Code: res.StatusCode, APIError: errors.New(ctx, "server internal error - our team has been notified"), Req: req}
 	case http.StatusServiceUnavailable: // 503
 		return &RequestFailedError{Code: res.StatusCode, APIError: fmt.Errorf("upstream provider returned an error, please retry later"), Req: req}
 	default:

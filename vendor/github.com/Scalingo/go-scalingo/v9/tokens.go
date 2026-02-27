@@ -6,9 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type TokensService interface {
@@ -68,7 +67,7 @@ func (c *Client) TokensList(ctx context.Context) (Tokens, error) {
 
 	err := c.AuthAPI().ResourceList(ctx, "tokens", nil, &tokensRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get tokens")
+		return nil, errors.Wrap(ctx, err, "get tokens")
 	}
 
 	return tokensRes.Tokens, nil
@@ -84,14 +83,14 @@ func (c *Client) TokenExchange(ctx context.Context, token string) (string, error
 
 	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to make request POST /v1/tokens/exchange")
+		return "", errors.Wrap(ctx, err, "make request POST /v1/tokens/exchange")
 	}
 	defer res.Body.Close()
 
 	var btRes BearerTokenRes
 	err = json.NewDecoder(res.Body).Decode(&btRes)
 	if err != nil {
-		return "", errgo.Notef(err, "invalid response from authentication service")
+		return "", errors.Wrap(ctx, err, "invalid response from authentication service")
 	}
 
 	return btRes.Token, nil
@@ -115,14 +114,14 @@ func (c *Client) TokenCreateWithLogin(ctx context.Context, params TokenCreatePar
 		if http.IsOTPRequired(err) {
 			return Token{}, http.ErrOTPRequired
 		}
-		return Token{}, errgo.Notef(err, "request failed")
+		return Token{}, errors.Wrap(ctx, err, "create token with login")
 	}
 	defer resp.Body.Close()
 
 	var tokenRes TokenRes
 	err = json.NewDecoder(resp.Body).Decode(&tokenRes)
 	if err != nil {
-		return Token{}, errgo.NoteMask(err, "invalid response from authentication service", errgo.Any)
+		return Token{}, errors.Wrap(ctx, err, "invalid response from authentication service")
 	}
 
 	return tokenRes.Token, nil
@@ -135,7 +134,7 @@ func (c *Client) TokenCreate(ctx context.Context, params TokenCreateParams) (Tok
 	}
 	err := c.AuthAPI().ResourceAdd(ctx, "tokens", payload, &tokenRes)
 	if err != nil {
-		return Token{}, errgo.Notef(err, "fail to create token")
+		return Token{}, errors.Wrap(ctx, err, "create token")
 	}
 
 	return tokenRes.Token, nil
@@ -145,7 +144,7 @@ func (c *Client) TokenShow(ctx context.Context, id int) (Token, error) {
 	var tokenRes TokenRes
 	err := c.AuthAPI().ResourceGet(ctx, "tokens", strconv.Itoa(id), nil, &tokenRes)
 	if err != nil {
-		return Token{}, errgo.Notef(err, "fail to get token")
+		return Token{}, errors.Wrap(ctx, err, "get token")
 	}
 
 	return tokenRes.Token, nil

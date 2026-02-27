@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type APIConfig struct {
@@ -42,6 +42,7 @@ type ClientConfig struct {
 	APIConfig      APIConfig
 	Endpoint       string
 	TokenGenerator TokenGenerator
+	ExtraHeaders   http.Header
 }
 
 type client struct {
@@ -51,6 +52,7 @@ type client struct {
 	apiConfig      APIConfig
 	httpClient     *http.Client
 	prefix         string
+	extraHeaders   http.Header
 }
 
 func NewClient(cfg ClientConfig) Client {
@@ -74,6 +76,7 @@ func NewClient(cfg ClientConfig) Client {
 				TLSClientConfig: cfg.TLSConfig,
 			},
 		},
+		extraHeaders: cfg.ExtraHeaders,
 	}
 
 	return &c
@@ -163,7 +166,7 @@ func (c *client) SubresourceUpdate(ctx context.Context, resource, resourceID, su
 
 func (c *client) DoRequest(ctx context.Context, req *APIRequest, data interface{}) error {
 	if c.endpoint == "" {
-		return errgo.New("API Endpoint is not defined, did you forget to pass the Region field to the New method?")
+		return errors.New(ctx, "API Endpoint is not defined, did you forget to pass the Region field to the New method?")
 	}
 
 	res, err := c.Do(ctx, req)
@@ -176,9 +179,9 @@ func (c *client) DoRequest(ctx context.Context, req *APIRequest, data interface{
 		return nil
 	}
 
-	err = parseJSON(res, data)
+	err = parseJSON(ctx, res, data)
 	if err != nil {
-		return errgo.Notef(err, "fail to parse JSON of subresource response")
+		return errors.Wrap(ctx, err, "parse JSON of subresource response")
 	}
 	return nil
 }

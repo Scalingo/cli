@@ -3,7 +3,7 @@ package scalingo
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type SourcesService interface {
@@ -25,7 +25,7 @@ func (c *Client) SourcesCreate(ctx context.Context) (*Source, error) {
 	var sourceRes SourcesCreateResponse
 	err := c.ScalingoAPI().ResourceAdd(ctx, "sources", nil, &sourceRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "create source")
 	}
 
 	return sourceRes.Source, nil

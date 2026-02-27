@@ -37,7 +37,7 @@ github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v9 v9.1.0
+# github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260227154930-b5d3e5afa44b
 ## explicit; go 1.24.0
 github.com/Scalingo/go-scalingo/v9
 github.com/Scalingo/go-scalingo/v9/billing
@@ -48,6 +48,9 @@ github.com/Scalingo/go-scalingo/v9/io
 # github.com/Scalingo/go-utils/errors/v2 v2.5.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v2
+# github.com/Scalingo/go-utils/errors/v3 v3.2.0
+## explicit; go 1.24
+github.com/Scalingo/go-utils/errors/v3
 # github.com/Scalingo/go-utils/logger v1.11.0
 ## explicit; go 1.24.0
 github.com/Scalingo/go-utils/logger
@@ -174,9 +177,9 @@ github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
 github.com/go-git/go-git/v5/utils/sync
 github.com/go-git/go-git/v5/utils/trace
-# github.com/golang-jwt/jwt/v4 v4.5.2
-## explicit; go 1.16
-github.com/golang-jwt/jwt/v4
+# github.com/golang-jwt/jwt/v5 v5.3.1
+## explicit; go 1.21
+github.com/golang-jwt/jwt/v5
 # github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8
 ## explicit; go 1.20
 github.com/golang/groupcache/lru

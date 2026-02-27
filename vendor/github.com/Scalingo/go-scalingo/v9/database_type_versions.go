@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type DatabaseTypeVersionPlugin struct {
@@ -48,7 +47,7 @@ func (c Client) DatabaseTypeVersion(ctx context.Context, appID, addonID, version
 		Expected: http.Statuses{200},
 	}, &res)
 	if err != nil {
-		return res.DatabaseTypeVersion, errgo.Notef(err, "fail to get database type version %v", versionID)
+		return res.DatabaseTypeVersion, errors.Wrapf(ctx, err, "get database type version %v", versionID)
 	}
 	return res.DatabaseTypeVersion, nil
 }

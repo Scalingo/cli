@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type SCMType string
@@ -77,7 +76,7 @@ func (c *Client) SCMIntegrationsList(ctx context.Context) ([]SCMIntegration, err
 
 	err := c.AuthAPI().ResourceList(ctx, "scm_integrations", nil, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list SCM integration")
+		return nil, errors.Wrap(ctx, err, "list SCM integration")
 	}
 	return res.SCMIntegrations, nil
 }
@@ -87,7 +86,7 @@ func (c *Client) SCMIntegrationsShow(ctx context.Context, id string) (*SCMIntegr
 
 	err := c.AuthAPI().ResourceGet(ctx, "scm_integrations", id, nil, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get this SCM integration")
+		return nil, errors.Wrap(ctx, err, "get this SCM integration")
 	}
 	return &res.SCMIntegration, nil
 }
@@ -102,7 +101,7 @@ func (c *Client) SCMIntegrationsCreate(ctx context.Context, scmType SCMType, url
 
 	err := c.AuthAPI().ResourceAdd(ctx, "scm_integrations", payload, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to create the SCM integration")
+		return nil, errors.Wrap(ctx, err, "create the SCM integration")
 	}
 
 	return &res.SCMIntegration, nil
@@ -111,7 +110,7 @@ func (c *Client) SCMIntegrationsCreate(ctx context.Context, scmType SCMType, url
 func (c *Client) SCMIntegrationsDelete(ctx context.Context, id string) error {
 	err := c.AuthAPI().ResourceDelete(ctx, "scm_integrations", id)
 	if err != nil {
-		return errgo.Notef(err, "fail to delete this SCM integration")
+		return errors.Wrap(ctx, err, "delete this SCM integration")
 	}
 	return nil
 }
@@ -126,7 +125,7 @@ func (c *Client) SCMIntegrationsImportKeys(ctx context.Context, id string) ([]Ke
 		Expected: http.Statuses{201},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to import ssh keys from this SCM integration")
+		return nil, errors.Wrap(ctx, err, "import ssh keys from this SCM integration")
 	}
 	return res.Keys, nil
 }

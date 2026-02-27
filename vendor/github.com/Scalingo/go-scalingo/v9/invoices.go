@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type InvoicesService interface {
@@ -62,7 +62,7 @@ func (c *Client) InvoicesList(ctx context.Context, opts PaginationOpts) (Invoice
 	var invoicesRes InvoicesRes
 	err := c.ScalingoAPI().ResourceList(ctx, "account/invoices", opts.ToMap(), &invoicesRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Mask(err)
+		return nil, PaginationMeta{}, errors.Wrap(ctx, err, "list invoices")
 	}
 	return invoicesRes.Invoices, invoicesRes.Meta.PaginationMeta, nil
 }
@@ -71,7 +71,7 @@ func (c *Client) InvoiceShow(ctx context.Context, id string) (*Invoice, error) {
 	var invoiceRes InvoiceRes
 	err := c.ScalingoAPI().ResourceGet(ctx, "account/invoices", id, nil, &invoiceRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "show invoice")
 	}
 	return invoiceRes.Invoice, nil
 }

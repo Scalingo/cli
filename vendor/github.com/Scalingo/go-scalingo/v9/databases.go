@@ -5,10 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 // DatabasesService is the interface gathering all the methods related to
@@ -138,9 +136,9 @@ type DatabaseRes struct {
 // DatabaseShow returns the Database info of the given app/addonID
 func (c *Client) DatabaseShow(ctx context.Context, app, addonID string) (Database, error) {
 	var res DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceGet(ctx, "databases", addonID, nil, &res)
+	err := c.DBAPI(app, addonID).ResourceGet(ctx, databasesResource, addonID, nil, &res)
 	if err != nil {
-		return Database{}, errgo.Notef(err, "fail to get the database")
+		return Database{}, errors.Wrapf(ctx, err, "get the database")
 	}
 	return res.Database, nil
 }
@@ -156,11 +154,11 @@ type DatabaseUpdatePeriodicBackupsConfigParams struct {
 // backups for a given database addon
 func (c *Client) DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error) {
 	var dbRes DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]DatabaseUpdatePeriodicBackupsConfigParams{
+	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, databasesResource, addonID, map[string]DatabaseUpdatePeriodicBackupsConfigParams{
 		"database": params,
 	}, &dbRes)
 	if err != nil {
-		return Database{}, errgo.Notef(err, "fail to update periodic backups settings")
+		return Database{}, errors.Wrapf(ctx, err, "update periodic backups settings")
 	}
 	return dbRes.Database, nil
 }
@@ -200,14 +198,14 @@ func (c *Client) DatabaseEnableFeature(ctx context.Context, app, addonID, featur
 
 	res := DatabaseEnableFeatureResponse{}
 	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
-		Method:   "POST",
-		Endpoint: "/databases/" + addonID + "/features",
+		Method:   http.MethodPost,
+		Endpoint: "/" + databasesResource + "/" + addonID + "/features",
 		Expected: httpclient.Statuses{http.StatusOK},
 		Params:   payload,
 	}, &res)
 
 	if err != nil {
-		return res, errgo.Notef(err, "fail to enable database feature %v", feature)
+		return res, errors.Wrapf(ctx, err, "enable database feature %v", feature)
 	}
 
 	return res, nil
@@ -222,14 +220,14 @@ type DatabaseDisableFeatureResponse struct {
 func (c *Client) DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error) {
 	res := DatabaseDisableFeatureResponse{}
 	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
-		Method:   "DELETE",
-		Endpoint: "/databases/" + addonID + "/features",
+		Method:   http.MethodDelete,
+		Endpoint: "/" + databasesResource + "/" + addonID + "/features",
 		Expected: httpclient.Statuses{http.StatusOK},
 		Params:   map[string]string{"feature": feature},
 	}, &res)
 
 	if err != nil {
-		return res, errgo.Notef(err, "fail to disable database feature %v", feature)
+		return res, errors.Wrapf(ctx, err, "disable database feature %v", feature)
 	}
 
 	return res, nil
@@ -270,7 +268,7 @@ func (c *Client) DatabaseCreateUser(ctx context.Context, app, addonID string, us
 	payload := databaseCreateUserPayload{
 		DatabaseUser: user,
 	}
-	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, "databases", addonID, "users", payload, &res)
+	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, databasesResource, addonID, usersResource, payload, &res)
 	if err != nil {
 		return res.DatabaseUser, errors.Wrapf(ctx, err, "create a user on database %s", addonID)
 	}
@@ -293,7 +291,7 @@ func (c *Client) DatabaseUpdateUser(ctx context.Context, app, addonID, username 
 	payload := databaseUpdateUserPayload{
 		DatabaseUser: databaseUserParams,
 	}
-	err := c.DBAPI(app, addonID).SubresourceUpdate(ctx, "databases", addonID, "users", username, payload, &res)
+	err := c.DBAPI(app, addonID).SubresourceUpdate(ctx, databasesResource, addonID, usersResource, username, payload, &res)
 	if err != nil {
 		return res.DatabaseUser, errors.Wrapf(ctx, err, "update a user on database %s", addonID)
 	}
@@ -308,7 +306,7 @@ type DatabaseUsersResponse struct {
 // DatabaseListUsers list the users of the given database addon
 func (c *Client) DatabaseListUsers(ctx context.Context, app, addonID string) ([]DatabaseUser, error) {
 	res := DatabaseUsersResponse{}
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "users", nil, &res)
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, databasesResource, addonID, usersResource, nil, &res)
 	if err != nil {
 		return res.DatabaseUsers, errors.Wrap(ctx, err, "get database list of users")
 	}
@@ -317,15 +315,15 @@ func (c *Client) DatabaseListUsers(ctx context.Context, app, addonID string) ([]
 
 // DatabaseDeleteUser delete an user from the given database addon
 func (c *Client) DatabaseDeleteUser(ctx context.Context, app, addonID, userName string) error {
-	return c.DBAPI(app, addonID).SubresourceDelete(ctx, "databases", addonID, "users", userName)
+	return c.DBAPI(app, addonID).SubresourceDelete(ctx, databasesResource, addonID, usersResource, userName)
 }
 
 // DatabaseUserResetPassword resets the password for a user for given database addon
 func (c *Client) DatabaseUserResetPassword(ctx context.Context, app, addonID, username string) (DatabaseUser, error) {
 	res := DatabaseUserResponse{}
 	req := &httpclient.APIRequest{
-		Method:   "POST",
-		Endpoint: "/databases/" + addonID + "/users/" + username + "/reset_password",
+		Method:   http.MethodPost,
+		Endpoint: "/" + databasesResource + "/" + addonID + "/" + usersResource + "/" + username + "/reset_password",
 		Expected: httpclient.Statuses{http.StatusOK},
 	}
 	err := c.DBAPI(app, addonID).DoRequest(ctx, req, &res)

@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type DeprecationDate struct {
@@ -37,7 +36,7 @@ func (c *Client) StacksList(ctx context.Context) ([]Stack, error) {
 	resmap := map[string][]Stack{}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &resmap)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to request Scalingo API")
+		return nil, errors.Wrap(ctx, err, "request Scalingo API")
 	}
 
 	return resmap["stacks"], nil

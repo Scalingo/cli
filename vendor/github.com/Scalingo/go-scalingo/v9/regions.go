@@ -2,15 +2,15 @@ package scalingo
 
 import (
 	"context"
+	stderrors "errors"
 	"sync"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
-	ErrRegionNotFound = errgo.New("Region not found")
+	ErrRegionNotFound = stderrors.New("Region not found")
 
 	regionCache      = map[string]Region{}
 	regionCacheMutex = &sync.Mutex{}
@@ -41,7 +41,7 @@ func (c *Client) RegionsList(ctx context.Context) ([]Region, error) {
 		Endpoint: "/regions",
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to call GET /regions")
+		return nil, errors.Wrap(ctx, err, "call GET /regions")
 	}
 	return res.Regions, nil
 }
@@ -53,7 +53,7 @@ func (c *Client) getRegion(ctx context.Context, regionName string) (Region, erro
 	if _, ok := regionCache[regionName]; !ok {
 		regions, err := c.RegionsList(ctx)
 		if err != nil {
-			return Region{}, errgo.Notef(err, "fail to list regions")
+			return Region{}, errors.Wrap(ctx, err, "list regions")
 		}
 
 		for _, region := range regions {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AlertsService interface {
@@ -45,7 +45,7 @@ func (c *Client) AlertsList(ctx context.Context, app string) ([]*Alert, error) {
 	var alertsRes AlertsRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "alerts", nil, &alertsRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to query the API to list an alert")
+		return nil, errors.Wrap(ctx, err, "query the API to list an alert")
 	}
 	return alertsRes.Alerts, nil
 }
@@ -81,7 +81,7 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 		Alert: a,
 	}, &alertRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to query the API to create an alert")
+		return nil, errors.Wrap(ctx, err, "query the API to create an alert")
 	}
 	return alertRes.Alert, nil
 }
@@ -90,7 +90,7 @@ func (c *Client) AlertShow(ctx context.Context, app, id string) (*Alert, error) 
 	var alertRes AlertRes
 	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "alerts", id, nil, &alertRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to query the API to show an alert")
+		return nil, errors.Wrap(ctx, err, "query the API to show an alert")
 	}
 	return alertRes.Alert, nil
 }
@@ -110,7 +110,7 @@ func (c *Client) AlertUpdate(ctx context.Context, app, id string, params AlertUp
 	var alertRes AlertRes
 	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "alerts", id, params, &alertRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to query the API to update an alert")
+		return nil, errors.Wrap(ctx, err, "query the API to update an alert")
 	}
 	return alertRes.Alert, nil
 }
@@ -118,7 +118,7 @@ func (c *Client) AlertUpdate(ctx context.Context, app, id string, params AlertUp
 func (c *Client) AlertRemove(ctx context.Context, app, id string) error {
 	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "alerts", id)
 	if err != nil {
-		return errgo.Notef(err, "fail to query the API to remove an alert")
+		return errors.Wrap(ctx, err, "query the API to remove an alert")
 	}
 	return nil
 }
