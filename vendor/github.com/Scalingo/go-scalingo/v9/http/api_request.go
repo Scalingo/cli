@@ -11,10 +11,9 @@ import (
 	"reflect"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/debug"
 	pkgio "github.com/Scalingo/go-scalingo/v9/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type APIRequest struct {
@@ -48,7 +47,7 @@ func (c *client) fillDefaultValues(ctx context.Context, req *APIRequest) error {
 		var err error
 		req.Token, err = c.TokenGenerator().GetAccessToken(ctx)
 		if err != nil {
-			return errgo.Notef(err, "fail to get the access token for this request")
+			return errors.Wrap(ctx, err, "get access token for request")
 		}
 	}
 
@@ -71,7 +70,7 @@ func (statuses Statuses) Contains(status int) bool {
 func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error) {
 	err := c.fillDefaultValues(ctx, req)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to fill client with default values")
+		return nil, errors.Wrap(ctx, err, "fill request default values")
 	}
 
 	endpoint := req.URL + req.Endpoint
@@ -82,25 +81,31 @@ func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error
 	case http.MethodPatch, http.MethodPost, http.MethodPut, "WITH_BODY":
 		buffer, err := json.Marshal(req.Params)
 		if err != nil {
-			return nil, errgo.Notef(err, "fail to marshal params")
+			return nil, errors.Wrap(ctx, err, "marshal params")
 		}
 		body = bytes.NewReader(buffer)
 	case http.MethodGet, http.MethodDelete:
-		values, err := req.BuildQueryFromParams()
+		values, err := req.BuildQueryFromParams(ctx)
 		if err != nil {
-			return nil, errgo.Notef(err, "fail to build the query params")
+			return nil, errors.Wrap(ctx, err, "build the query params")
 		}
 		endpoint = fmt.Sprintf("%s?%s", endpoint, values.Encode())
 	}
 
 	req.HTTPRequest, err = http.NewRequest(req.Method, endpoint, body)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to initialize the '%s' query", req.Method)
+		return nil, errors.Wrapf(ctx, err, "initialize the '%s' query", req.Method)
 	}
 	req.HTTPRequest.Header.Add("User-Agent", c.userAgent)
 	requestID, ok := ctx.Value("request_id").(string)
 	if ok {
 		req.HTTPRequest.Header.Add("X-Request-ID", requestID)
+	}
+
+	for key, values := range c.extraHeaders {
+		for _, value := range values {
+			req.HTTPRequest.Header.Add(key, value)
+		}
 	}
 
 	debug.Printf("[API] %v %v\n", req.HTTPRequest.Method, req.HTTPRequest.URL)
@@ -121,7 +126,7 @@ func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error
 	now := time.Now()
 	res, err := c.doRequest(req.HTTPRequest)
 	if err != nil {
-		return nil, fmt.Errorf("Fail to query %s: %v", req.HTTPRequest.Host, err)
+		return nil, fmt.Errorf("query %s: %v", req.HTTPRequest.Host, err)
 	}
 	debug.Printf(pkgio.Indent("Request ID: %v", 6), res.Header.Get("X-Request-Id"))
 	debug.Printf(pkgio.Indent("Duration: %v", 6), time.Since(now))
@@ -130,7 +135,7 @@ func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error
 		return res, nil
 	}
 
-	return nil, NewRequestFailedError(res, req)
+	return nil, NewRequestFailedError(ctx, res, req)
 }
 
 func (c *client) doRequest(req *http.Request) (*http.Response, error) {
@@ -142,11 +147,11 @@ func (c *client) doRequest(req *http.Request) (*http.Response, error) {
 	return c.HTTPClient().Do(req)
 }
 
-func parseJSON(res *http.Response, data interface{}) error {
+func parseJSON(ctx context.Context, res *http.Response, data any) error {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		reqErr := fmt.Sprintf("%v %v", res.Request.Method, res.Request.URL)
-		return errgo.Newf("fail to read body of request %v: %v", reqErr, err)
+		return errors.Errorf(ctx, "read body of request %v: %v", reqErr, err)
 	}
 
 	debug.Println(string(body))
@@ -154,19 +159,19 @@ func parseJSON(res *http.Response, data interface{}) error {
 	err = json.Unmarshal(body, data)
 	if err != nil {
 		reqErr := fmt.Sprintf("%v %v", res.Request.Method, res.Request.URL)
-		return errgo.Newf("fail to parse JSON of request %v: %v", reqErr, err)
+		return errors.Errorf(ctx, "parse JSON of request %v: %v", reqErr, err)
 	}
 
 	return nil
 }
 
-func (req *APIRequest) BuildQueryFromParams() (url.Values, error) {
+func (req *APIRequest) BuildQueryFromParams(ctx context.Context) (url.Values, error) {
 	values := url.Values{}
 	if reflect.TypeOf(req.Params).Kind() != reflect.Map {
-		return nil, errgo.Newf("%#v is not a map", req.Params)
+		return nil, errors.Errorf(ctx, "%#v is not a map", req.Params)
 	}
 	if reflect.TypeOf(req.Params).Key().Kind() != reflect.String {
-		return nil, errgo.Newf("%#v is not a map of string", req.Params)
+		return nil, errors.Errorf(ctx, "%#v is not a map of string", req.Params)
 	}
 	value := reflect.ValueOf(req.Params)
 	for _, key := range value.MapKeys() {

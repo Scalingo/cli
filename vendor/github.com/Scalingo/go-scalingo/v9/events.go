@@ -7,9 +7,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type EventsService interface {
@@ -32,7 +31,7 @@ func (c *Client) EventsList(ctx context.Context, app string, opts PaginationOpts
 	var eventsRes EventsRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "events", opts.ToMap(), &eventsRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Mask(err)
+		return nil, PaginationMeta{}, errors.Wrap(ctx, err, "list app events")
 	}
 	var events Events
 	for _, ev := range eventsRes.Events {
@@ -50,13 +49,13 @@ func (c *Client) UserEventsList(ctx context.Context, opts PaginationOpts) (Event
 	var eventsRes EventsRes
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Mask(err, errgo.Any)
+		return nil, PaginationMeta{}, errors.Wrap(ctx, err, "list user events")
 	}
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&eventsRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Mask(err, errgo.Any)
+		return nil, PaginationMeta{}, errors.Wrap(ctx, err, "decode user events response")
 	}
 
 	var events Events

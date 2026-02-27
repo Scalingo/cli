@@ -2,6 +2,15 @@
 
 ## To Be Released
 
+* chore(databases): refactor constants
+* build(deps): update `github.com/golang-jwt/jwt` from v4 to v5
+* refactor: replace `errgo` with `github.com/Scalingo/go-utils/errors/v3`
+* feat(logs): `LogsURL` returns a parsed structure
+
+## 9.2.0
+
+* feat(http-client): add extra headers targeting specific APIs
+
 ## 9.1.0
 
 * feat(projects): add transfer invitations events

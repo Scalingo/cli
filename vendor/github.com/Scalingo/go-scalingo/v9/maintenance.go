@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type MaintenanceWindow struct {
@@ -48,7 +48,7 @@ func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addon
 	}, &dbRes)
 
 	if err != nil {
-		return Database{}, errors.Notef(ctx, err, "update database '%v' maintenance window", addonID)
+		return Database{}, errors.Wrapf(ctx, err, "update database '%v' maintenance window", addonID)
 	}
 	return dbRes.Database, nil
 }
@@ -64,7 +64,7 @@ func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID strin
 	var maintenanceRes ListMaintenanceResponse
 	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "maintenance", opts.ToMap(), &maintenanceRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errors.Notef(ctx, err, "list database '%v' maintenance", addonID)
+		return nil, PaginationMeta{}, errors.Wrapf(ctx, err, "list database '%v' maintenance", addonID)
 	}
 	return maintenanceRes.Maintenance, maintenanceRes.Meta.PaginationMeta, nil
 }
@@ -73,7 +73,7 @@ func (c *Client) DatabaseShowMaintenance(ctx context.Context, app, addonID, main
 	var maintenanceRes Maintenance
 	err := c.DBAPI(app, addonID).SubresourceGet(ctx, "databases", addonID, "maintenance", maintenanceID, nil, &maintenanceRes)
 	if err != nil {
-		return maintenanceRes, errors.Notef(ctx, err, "get database '%v' maintenance", addonID)
+		return maintenanceRes, errors.Wrapf(ctx, err, "get database '%v' maintenance", addonID)
 	}
 	return maintenanceRes, nil
 }

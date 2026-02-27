@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v9 v9.1.0
+	github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260227154930-b5d3e5afa44b
 	github.com/Scalingo/go-utils/errors/v2 v2.5.1
 	github.com/Scalingo/go-utils/logger v1.11.0
 	github.com/Scalingo/gopassword v1.1.0
@@ -34,6 +34,7 @@ require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.3.0 // indirect
+	github.com/Scalingo/go-utils/errors/v3 v3.2.0 // indirect
 	github.com/Scalingo/go-utils/pagination v1.1.2 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/clipperhouse/displaywidth v0.8.0 // indirect
@@ -45,7 +46,7 @@ require (
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.7.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
+	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/go-querystring v1.2.0 // indirect

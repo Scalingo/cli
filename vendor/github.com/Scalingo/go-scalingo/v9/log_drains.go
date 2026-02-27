@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type LogDrainsService interface {
@@ -37,7 +36,7 @@ func (c *Client) LogDrainsList(ctx context.Context, app string) ([]LogDrain, err
 	var logDrainsRes LogDrainsRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "log_drains", nil, &logDrainsRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list the log drains")
+		return nil, errors.Wrap(ctx, err, "list the log drains")
 	}
 	return logDrainsRes.Drains, nil
 }
@@ -47,7 +46,7 @@ func (c *Client) LogDrainsAddonList(ctx context.Context, app string, addonID str
 
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "addons/"+addonID+"/log_drains", nil, &logDrainsRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list the log drains of the addon %s", addonID)
+		return nil, errors.Wrapf(ctx, err, "list the log drains of the addon %s", addonID)
 	}
 	return logDrainsRes.Drains, nil
 }
@@ -73,7 +72,7 @@ func (c *Client) LogDrainAdd(ctx context.Context, app string, params LogDrainAdd
 
 	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "log_drains", payload, &logDrainRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to add drain")
+		return nil, errors.Wrap(ctx, err, "add drain")
 	}
 
 	return &logDrainRes, nil
@@ -93,7 +92,7 @@ func (c *Client) LogDrainRemove(ctx context.Context, app, URL string) error {
 
 	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
 	if err != nil {
-		return errgo.Notef(err, "fail to delete log drain")
+		return errors.Wrap(ctx, err, "delete log drain")
 	}
 
 	return nil
@@ -113,7 +112,7 @@ func (c *Client) LogDrainAddonRemove(ctx context.Context, app, addonID string, U
 
 	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
 	if err != nil {
-		return errgo.Notef(err, "fail to delete log drain %s from the addon %s", URL, addonID)
+		return errors.Wrapf(ctx, err, "delete log drain %s from the addon %s", URL, addonID)
 	}
 
 	return nil
@@ -127,7 +126,7 @@ func (c *Client) LogDrainAddonAdd(ctx context.Context, app string, addonID strin
 
 	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "addons/"+addonID+"/log_drains", payload, &logDrainRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to add log drain to the addon %s", addonID)
+		return nil, errors.Wrapf(ctx, err, "add log drain to the addon %s", addonID)
 	}
 
 	return &logDrainRes, nil

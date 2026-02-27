@@ -1,4 +1,4 @@
-# Go client for Scalingo API v9.1.0
+# Go client for Scalingo API v9.2.0
 
 This repository is the Go client for the [Scalingo APIs](https://developers.scalingo.com/).
 
@@ -81,7 +81,7 @@ Bump new version number in:
 Commit, tag and create a new release:
 
 ```sh
-version="9.1.0"
+version="9.2.0"
 
 git switch --create release/${version}
 git add CHANGELOG.md README.md version.go
@@ -105,3 +105,5 @@ release is the same as the changelog.
 
 When a new version is released, it must be documented on the general [changelog](https://doc.scalingo.com/changelog).
 In order to do that, a new file must be created in this [folder](https://github.com/Scalingo/documentation/tree/master/src/changelog/sdk/_posts).
+
+In case of a new major version, one must update the link to [pkg.go.dev](https://pkg.go.dev) on the public documentation page: [`src/_posts/tools/2000-01-01-software-development-kit.md`](https://github.com/Scalingo/documentation/blob/master/src/_posts/tools/2000-01-01-software-development-kit.md)

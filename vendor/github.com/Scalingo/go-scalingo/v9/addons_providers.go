@@ -4,9 +4,8 @@ import (
 	"context"
 	"strconv"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AddonProvidersService interface {
@@ -71,7 +70,7 @@ func (c *Client) AddonProvidersList(ctx context.Context) ([]*AddonProvider, erro
 	var response AddonProvidersListResponse
 	err := c.ScalingoAPI().DoRequest(ctx, req, &response)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "list addon providers")
 	}
 
 	return response.AddonProviders, nil
@@ -104,7 +103,7 @@ func (c *Client) AddonProviderPlansList(ctx context.Context, addon string, opts 
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &response)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get plans")
+		return nil, errors.Wrap(ctx, err, "get plans")
 	}
 	return response.Plans, nil
 }

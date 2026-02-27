@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/debug"
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type NotificationPlatformsService interface {
@@ -41,14 +40,14 @@ func (c *Client) NotificationPlatformsList(ctx context.Context) ([]*Notification
 	}
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "list notification platforms")
 	}
 	defer res.Body.Close()
 
 	var response PlatformsRes
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "decode notification platforms response")
 	}
 
 	return response.NotificationPlatforms, nil
@@ -63,7 +62,7 @@ func (c *Client) NotificationPlatformByName(ctx context.Context, name string) ([
 	}
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "search notification platforms by name")
 	}
 	defer res.Body.Close()
 
@@ -71,7 +70,7 @@ func (c *Client) NotificationPlatformByName(ctx context.Context, name string) ([
 	var response PlatformsRes
 	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "decode notification platform search response")
 	}
 
 	return response.NotificationPlatforms, nil

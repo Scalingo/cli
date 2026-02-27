@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type VariablesService interface {
@@ -56,7 +55,7 @@ func (c *Client) variableList(ctx context.Context, app string, aliases bool) (Va
 	var variablesRes VariablesRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "list app variables")
 	}
 	return variablesRes.Variables, nil
 }
@@ -75,14 +74,14 @@ func (c *Client) VariableSet(ctx context.Context, app string, name string, value
 	}
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, 0, errors.Wrap(ctx, err, "set app variable")
 	}
 	defer res.Body.Close()
 
 	var params VariableSetParams
 	err = json.NewDecoder(res.Body).Decode(&params)
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, 0, errors.Wrap(ctx, err, "decode app variable response")
 	}
 
 	return params.Variable, res.StatusCode, nil
@@ -99,14 +98,14 @@ func (c *Client) VariableMultipleSet(ctx context.Context, app string, variables 
 	}
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, 0, errors.Wrap(ctx, err, "set multiple app variables")
 	}
 	defer res.Body.Close()
 
 	var params VariablesRes
 	err = json.NewDecoder(res.Body).Decode(&params)
 	if err != nil {
-		return nil, 0, errgo.Mask(err, errgo.Any)
+		return nil, 0, errors.Wrap(ctx, err, "decode app variables response")
 	}
 
 	return params.Variables, res.StatusCode, nil

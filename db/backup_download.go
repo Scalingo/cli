@@ -125,7 +125,7 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	spinner.Stop()
 
 	if resp.StatusCode != http.StatusOK {
-		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
+		return httpclient.NewRequestFailedError(ctx, resp, &httpclient.APIRequest{
 			URL:    downloadURL,
 			Method: http.MethodGet,
 		})

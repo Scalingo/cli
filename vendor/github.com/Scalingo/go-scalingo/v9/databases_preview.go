@@ -5,10 +5,8 @@ import (
 	stderrors "errors"
 
 	"github.com/Scalingo/go-scalingo/v9/debug"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
-
-const databasesResource = "databases"
 
 var ErrDatabaseNotFound = stderrors.New("database not found")
 
