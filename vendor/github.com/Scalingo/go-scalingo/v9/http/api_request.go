@@ -103,6 +103,12 @@ func (c *client) Do(ctx context.Context, req *APIRequest) (*http.Response, error
 		req.HTTPRequest.Header.Add("X-Request-ID", requestID)
 	}
 
+	for key, values := range c.extraHeaders {
+		for _, value := range values {
+			req.HTTPRequest.Header.Add(key, value)
+		}
+	}
+
 	debug.Printf("[API] %v %v\n", req.HTTPRequest.Method, req.HTTPRequest.URL)
 	debug.Printf("%s", pkgio.Indent(fmt.Sprintf("User Agent: %v", req.HTTPRequest.UserAgent()), 6))
 	debug.Printf("%s", pkgio.Indent(fmt.Sprintf("Headers: %v", req.HTTPRequest.Header), 6))
