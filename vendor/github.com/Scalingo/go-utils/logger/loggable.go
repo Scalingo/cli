@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Loggable interface {
@@ -82,6 +83,11 @@ func FieldsFor(prefix string, value interface{}) logrus.Fields {
 				// the field do NOT have a zero value, add it to the logger
 			}
 
+			fieldValueObjectId, ok := reflect.TypeAssert[bson.ObjectId](fieldValue)
+			if ok {
+				fields[fmt.Sprintf("%s_%s", prefix, tagName)] = fieldValueObjectId.Hex()
+				continue
+			}
 			fields[fmt.Sprintf("%s_%s", prefix, tagName)] = fieldValue.Interface()
 		}
 	}

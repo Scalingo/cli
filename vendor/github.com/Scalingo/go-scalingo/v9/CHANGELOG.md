@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 9.2.0
+
+* feat(http-client): add extra headers targeting specific APIs
+
 ## 9.1.0
 
 * feat(projects): add transfer invitations events

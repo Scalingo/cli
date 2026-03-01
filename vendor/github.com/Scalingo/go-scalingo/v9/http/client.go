@@ -42,6 +42,7 @@ type ClientConfig struct {
 	APIConfig      APIConfig
 	Endpoint       string
 	TokenGenerator TokenGenerator
+	ExtraHeaders   http.Header
 }
 
 type client struct {
@@ -51,6 +52,7 @@ type client struct {
 	apiConfig      APIConfig
 	httpClient     *http.Client
 	prefix         string
+	extraHeaders   http.Header
 }
 
 func NewClient(cfg ClientConfig) Client {
@@ -74,6 +76,7 @@ func NewClient(cfg ClientConfig) Client {
 				TLSClientConfig: cfg.TLSConfig,
 			},
 		},
+		extraHeaders: cfg.ExtraHeaders,
 	}
 
 	return &c
