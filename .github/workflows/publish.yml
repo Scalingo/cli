@@ -42,7 +42,7 @@ jobs:
           go-version-file: "go.mod"
           check-latest: true
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           version: "~> v2"
           args: release --clean
@@ -64,7 +64,7 @@ jobs:
           go-version-file: "go.mod"
           check-latest: true
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           version: "~> v2"
           args: release --config .goreleaser-windows.yaml --clean
