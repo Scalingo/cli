@@ -16,13 +16,13 @@ func init() {
 	}
 }
 
-func Println(vars ...interface{}) {
+func Println(vars ...any) {
 	if Enable {
 		logger.Println(vars...)
 	}
 }
 
-func Printf(format string, vars ...interface{}) {
+func Printf(format string, vars ...any) {
 	if Enable {
 		logger.Printf(format, vars...)
 	}

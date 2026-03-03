@@ -5,12 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 type InvoicesService interface {
-	InvoicesList(context.Context, PaginationOpts) (Invoices, PaginationMeta, error)
-	InvoiceShow(context.Context, string) (*Invoice, error)
+	InvoicesList(ctx context.Context, paginationReq pagination.Request) (Invoices, pagination.Meta, error)
+	InvoiceShow(ctx context.Context, id string) (*Invoice, error)
 }
 
 var _ InvoicesService = (*Client)(nil)
@@ -50,7 +51,7 @@ type Invoices []*Invoice
 type InvoicesRes struct {
 	Invoices Invoices `json:"invoices"`
 	Meta     struct {
-		PaginationMeta PaginationMeta `json:"pagination"`
+		Pagination pagination.Meta `json:"pagination"`
 	}
 }
 
@@ -58,20 +59,20 @@ type InvoiceRes struct {
 	Invoice *Invoice `json:"invoice"`
 }
 
-func (c *Client) InvoicesList(ctx context.Context, opts PaginationOpts) (Invoices, PaginationMeta, error) {
+func (c *Client) InvoicesList(ctx context.Context, paginationReq pagination.Request) (Invoices, pagination.Meta, error) {
 	var invoicesRes InvoicesRes
-	err := c.ScalingoAPI().ResourceList(ctx, "account/invoices", opts.ToMap(), &invoicesRes)
+	err := c.ScalingoAPI().ResourceList(ctx, "account/invoices", paginationRequestToMap(paginationReq), &invoicesRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Mask(err)
+		return nil, pagination.Meta{}, errors.Wrap(ctx, err, "list invoices")
 	}
-	return invoicesRes.Invoices, invoicesRes.Meta.PaginationMeta, nil
+	return invoicesRes.Invoices, invoicesRes.Meta.Pagination, nil
 }
 
 func (c *Client) InvoiceShow(ctx context.Context, id string) (*Invoice, error) {
 	var invoiceRes InvoiceRes
 	err := c.ScalingoAPI().ResourceGet(ctx, "account/invoices", id, nil, &invoiceRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "show invoice")
 	}
 	return invoiceRes.Invoice, nil
 }

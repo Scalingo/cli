@@ -12,7 +12,8 @@ type omit *struct{}
 // Struct used to serialize a notifier
 type NotifierOutput struct {
 	*Notifier
-	TypeData    NotifierTypeDataParams `json:"type_data,omitempty"`
+
+	TypeData    NotifierTypeDataParams `json:"type_data"`
 	RawTypeData omit                   `json:",omitempty"` // Will always be empty and not serialized
 }
 
@@ -41,8 +42,8 @@ type DetailedNotifier interface {
 	GetSelectedEventIDs() []string
 	IsActive() bool
 	When() string
-	TypeDataPtr() interface{}
-	TypeDataMap() map[string]interface{}
+	TypeDataPtr() any
+	TypeDataMap() map[string]any
 }
 
 type Notifiers []DetailedNotifier
@@ -84,30 +85,31 @@ func (n *Notifier) When() string {
 	return n.UpdatedAt.Format("Mon Jan 02 2006 15:04:05")
 }
 
-func (n *Notifier) TypeDataPtr() interface{} {
+func (n *Notifier) TypeDataPtr() any {
 	return &n.TypeData
 }
 
-func (n *Notifier) TypeDataMap() map[string]interface{} {
-	return map[string]interface{}{}
+func (n *Notifier) TypeDataMap() map[string]any {
+	return map[string]any{}
 }
 
 // Webhook
 type NotifierWebhookType struct {
 	Notifier
-	TypeData NotifierWebhookTypeData `json:"type_data,omitempty"`
+
+	TypeData NotifierWebhookTypeData `json:"type_data"`
 }
 
 type NotifierWebhookTypeData struct {
 	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
-func (n *NotifierWebhookType) TypeDataPtr() interface{} {
+func (n *NotifierWebhookType) TypeDataPtr() any {
 	return &n.TypeData
 }
 
-func (n *NotifierWebhookType) TypeDataMap() map[string]interface{} {
-	return map[string]interface{}{
+func (n *NotifierWebhookType) TypeDataMap() map[string]any {
+	return map[string]any{
 		"webhook url": n.TypeData.WebhookURL,
 	}
 }
@@ -115,19 +117,20 @@ func (n *NotifierWebhookType) TypeDataMap() map[string]interface{} {
 // Slack
 type NotifierSlackType struct {
 	Notifier
-	TypeData NotifierSlackTypeData `json:"type_data,omitempty"`
+
+	TypeData NotifierSlackTypeData `json:"type_data"`
 }
 
 type NotifierSlackTypeData struct {
 	WebhookURL string `json:"webhook_url,omitempty"`
 }
 
-func (n *NotifierSlackType) TypeDataPtr() interface{} {
+func (n *NotifierSlackType) TypeDataPtr() any {
 	return &n.TypeData
 }
 
-func (n *NotifierSlackType) TypeDataMap() map[string]interface{} {
-	return map[string]interface{}{
+func (n *NotifierSlackType) TypeDataMap() map[string]any {
+	return map[string]any{
 		"webhook url": n.TypeData.WebhookURL,
 	}
 }
@@ -135,7 +138,8 @@ func (n *NotifierSlackType) TypeDataMap() map[string]interface{} {
 // Email
 type NotifierEmailType struct {
 	Notifier
-	TypeData NotifierEmailTypeData `json:"type_data,omitempty"`
+
+	TypeData NotifierEmailTypeData `json:"type_data"`
 }
 
 type NotifierEmailTypeData struct {
@@ -143,12 +147,12 @@ type NotifierEmailTypeData struct {
 	UserIDs []string `json:"user_ids,omitempty"`
 }
 
-func (n *NotifierEmailType) TypeDataPtr() interface{} {
+func (n *NotifierEmailType) TypeDataPtr() any {
 	return &n.TypeData
 }
 
-func (n *NotifierEmailType) TypeDataMap() map[string]interface{} {
-	return map[string]interface{}{
+func (n *NotifierEmailType) TypeDataMap() map[string]any {
+	return map[string]any{
 		"emails":   n.TypeData.Emails,
 		"user_ids": n.TypeData.UserIDs,
 	}

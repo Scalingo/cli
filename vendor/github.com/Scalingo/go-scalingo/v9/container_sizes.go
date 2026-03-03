@@ -3,9 +3,8 @@ package scalingo
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type ContainerSize struct {
@@ -39,7 +38,7 @@ func (c *Client) ContainerSizesList(ctx context.Context) ([]ContainerSize, error
 	resmap := map[string][]ContainerSize{}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &resmap)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to request Scalingo API to list the container sizes")
+		return nil, errors.Wrap(ctx, err, "request Scalingo API to list the container sizes")
 	}
 	return resmap["container_sizes"], nil
 }

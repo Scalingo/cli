@@ -9,9 +9,8 @@ import (
 	http0 "net/http"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
-
 	http "github.com/Scalingo/go-scalingo/v9/http"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/golang/mock/gomock"
 
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
@@ -29,7 +29,7 @@ func MockAuth(ctrl *gomock.Controller) *httpmock.MockClient {
 		}
 
 		return &http.Response{
-			Body: io.NopCloser(bytes.NewBuffer([]byte(fmt.Sprintf(`{"token": "%v"}`, jwt)))),
+			Body: io.NopCloser(bytes.NewBuffer(fmt.Appendf(nil, `{"token": "%v"}`, jwt))),
 		}, nil
 	}).AnyTimes()
 	return mock

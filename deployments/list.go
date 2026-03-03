@@ -12,17 +12,17 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v9"
 	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
-func List(ctx context.Context, app string, paginationOpts scalingo.PaginationOpts) error {
+func List(ctx context.Context, app string, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	deployments, pagination, err := c.DeploymentListWithPagination(ctx, app, paginationOpts)
+	deployments, pagination, err := c.DeploymentListWithPagination(ctx, app, paginationReq)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to list the application deployments")
 	}

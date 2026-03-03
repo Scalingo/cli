@@ -4,8 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
-	"gopkg.in/errgo.v1"
+	"github.com/golang-jwt/jwt/v5"
+
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type TokensService interface {
@@ -37,19 +38,22 @@ func (t *APITokenGenerator) GetAccessToken(ctx context.Context) (string, error) 
 	if t.currentJWTexp.IsZero() || time.Until(t.currentJWTexp) < 5*time.Minute {
 		jwtToken, err := t.TokensService.TokenExchange(ctx, t.APIToken)
 		if err != nil {
-			return "", errgo.Notef(err, "fail to get access token")
+			return "", errors.Wrap(ctx, err, "get access token")
 		}
-		token, err := jwt.ParseWithClaims(jwtToken, &apiJWTClaims{}, nil)
-		// If token is nil, nothing has been parsed, if it's not, err will be a
-		// ValidatingError we want to ignore
-		if token == nil {
-			return "", errgo.Notef(err, "fail to parse jwt token")
+
+		token, _, err := jwt.NewParser().ParseUnverified(jwtToken, &apiJWTClaims{})
+		if err != nil {
+			return "", errors.Wrap(ctx, err, "parse JWT token")
+		}
+
+		if token.Valid {
+			return "", errors.New(ctx, "JWT token is not valid")
 		}
 
 		if claims, ok := token.Claims.(*apiJWTClaims); ok {
 			t.currentJWTexp = claims.ExpiresAt.Time
 		} else {
-			return "", errgo.Notef(err, "invalid exp date for jwt token: %v", token.Claims)
+			return "", errors.Errorf(ctx, "invalid exp date for jwt token: %v", token.Claims)
 		}
 
 		t.currentJWT = jwtToken

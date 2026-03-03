@@ -11,16 +11,16 @@ import (
 )
 
 type Event struct {
-	ID          string                 `json:"id"`
-	AppID       string                 `json:"app_id"`
-	CreatedAt   time.Time              `json:"created_at"`
-	User        EventUser              `json:"user"`
-	Type        EventTypeName          `json:"type"`
-	AppName     string                 `json:"app_name"`
-	RawTypeData json.RawMessage        `json:"type_data"`
-	TypeData    map[string]interface{} `json:"-"`
-	ProjectID   string                 `json:"project_id"`
-	ProjectName string                 `json:"project_name"`
+	ID          string          `json:"id"`
+	AppID       string          `json:"app_id"`
+	CreatedAt   time.Time       `json:"created_at"`
+	User        EventUser       `json:"user"`
+	Type        EventTypeName   `json:"type"`
+	AppName     string          `json:"app_name"`
+	RawTypeData json.RawMessage `json:"type_data"`
+	TypeData    map[string]any  `json:"-"`
+	ProjectID   string          `json:"project_id"`
+	ProjectName string          `json:"project_name"`
 }
 
 type EventSecurityTypeData struct {
@@ -31,7 +31,7 @@ func (ev *Event) GetEvent() *Event {
 	return ev
 }
 
-func (ev *Event) TypeDataPtr() interface{} {
+func (ev *Event) TypeDataPtr() any {
 	return ev.TypeData
 }
 
@@ -58,7 +58,7 @@ type DetailedEvent interface {
 	PrintableType() string
 	When() string
 	Who() string
-	TypeDataPtr() interface{}
+	TypeDataPtr() any
 }
 
 type Events []DetailedEvent
@@ -176,6 +176,7 @@ const (
 
 type EventNewUserType struct {
 	Event
+
 	TypeData EventNewUserTypeData `json:"type_data"`
 }
 
@@ -197,6 +198,7 @@ type EventCreateReviewAppTypeData struct {
 
 type EventCreateReviewAppType struct {
 	Event
+
 	TypeData EventCreateReviewAppTypeData `json:"type_data"`
 }
 
@@ -217,6 +219,7 @@ type EventDestroyReviewAppTypeData struct {
 
 type EventDestroyReviewAppType struct {
 	Event
+
 	TypeData EventCreateReviewAppTypeData `json:"type_data"`
 }
 
@@ -229,6 +232,7 @@ type EventNewUserTypeData struct {
 
 type EventLinkGithubType struct {
 	Event
+
 	TypeData EventLinkGithubTypeData `json:"type_data"`
 }
 
@@ -244,6 +248,7 @@ type EventLinkGithubTypeData struct {
 
 type EventUnlinkGithubType struct {
 	Event
+
 	TypeData EventUnlinkGithubTypeData `json:"type_data"`
 }
 
@@ -259,6 +264,7 @@ type EventUnlinkGithubTypeData struct {
 
 type EventLinkSCMType struct {
 	Event
+
 	TypeData EventLinkSCMTypeData `json:"type_data"`
 }
 
@@ -282,6 +288,7 @@ type EventLinkSCMTypeData struct {
 
 type EventUpdateSCMType struct {
 	Event
+
 	TypeData EventLinkSCMTypeData `json:"type_data"`
 }
 
@@ -291,6 +298,7 @@ func (ev *EventUpdateSCMType) String() string {
 
 type EventUnlinkSCMType struct {
 	Event
+
 	TypeData EventUnlinkSCMTypeData `json:"type_data"`
 }
 
@@ -306,6 +314,7 @@ type EventUnlinkSCMTypeData struct {
 
 type EventRunType struct {
 	Event
+
 	TypeData EventRunTypeData `json:"type_data"`
 }
 
@@ -317,7 +326,7 @@ func (ev *EventRunType) String() string {
 
 	if ev.isEventRunFromOperator() {
 		// The command executed is not available to end user if it's executed by a Scalingo operator
-		return fmt.Sprintf("%sone-off container for maintenance/support purposes", detached)
+		return detached + "one-off container for maintenance/support purposes"
 	}
 
 	return fmt.Sprintf("%sone-off container with command '%s'", detached, ev.TypeData.Command)
@@ -343,6 +352,7 @@ type EventRunTypeData struct {
 
 type EventNewDomainType struct {
 	Event
+
 	TypeData EventNewDomainTypeData `json:"type_data"`
 }
 
@@ -357,6 +367,7 @@ type EventNewDomainTypeData struct {
 
 type EventEditDomainType struct {
 	Event
+
 	TypeData EventEditDomainTypeData `json:"type_data"`
 }
 
@@ -381,6 +392,7 @@ type EventEditDomainTypeData struct {
 
 type EventDeleteDomainType struct {
 	Event
+
 	TypeData EventDeleteDomainTypeData `json:"type_data"`
 }
 
@@ -394,12 +406,14 @@ type EventDeleteDomainTypeData struct {
 
 type EventCollaborator struct {
 	EventUser
+
 	Inviter   EventUser `json:"inviter"`
 	IsLimited bool      `json:"is_limited"`
 }
 
 type EventNewCollaboratorType struct {
 	Event
+
 	TypeData EventNewCollaboratorTypeData `json:"type_data"`
 }
 
@@ -416,6 +430,7 @@ type EventNewCollaboratorTypeData struct {
 
 type EventAcceptCollaboratorType struct {
 	Event
+
 	TypeData EventAcceptCollaboratorTypeData `json:"type_data"`
 }
 
@@ -434,6 +449,7 @@ type EventAcceptCollaboratorTypeData struct {
 
 type EventDeleteCollaboratorType struct {
 	Event
+
 	TypeData EventDeleteCollaboratorTypeData `json:"type_data"`
 }
 
@@ -451,6 +467,7 @@ type EventDeleteCollaboratorTypeData struct {
 
 type EventChangeCollaboratorRoleType struct {
 	Event
+
 	TypeData EventChangeCollaboratorRoleTypeData `json:"type_data"`
 }
 
@@ -473,6 +490,7 @@ func (ev *EventChangeCollaboratorRoleType) String() string {
 
 type EventUpgradeDatabaseType struct {
 	Event
+
 	TypeData EventUpgradeDatabaseTypeData `json:"type_data"`
 }
 
@@ -491,7 +509,7 @@ func (ev *EventUpgradeDatabaseType) String() string {
 
 func (ev *EventUpgradeDatabaseType) Who() string {
 	if ev.TypeData.AddonName != "" {
-		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+		return "Addon " + ev.TypeData.AddonName
 	}
 
 	return ev.Event.Who()
@@ -504,6 +522,7 @@ type EventVariable struct {
 
 type EventNewVariableType struct {
 	Event
+
 	TypeData EventNewVariableTypeData `json:"type_data"`
 }
 
@@ -513,7 +532,7 @@ func (ev *EventNewVariableType) String() string {
 
 func (ev *EventNewVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
-		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+		return "Addon " + ev.TypeData.AddonName
 	}
 
 	return ev.Event.Who()
@@ -536,6 +555,7 @@ func (evs EventVariables) Names() string {
 
 type EventEditVariableType struct {
 	Event
+
 	TypeData EventEditVariableTypeData `json:"type_data"`
 }
 
@@ -545,12 +565,14 @@ func (ev *EventEditVariableType) String() string {
 
 type EventEditVariableTypeData struct {
 	EventVariable
+
 	OldValue  string `json:"old_value"`
 	AddonName string `json:"addon_name"`
 }
 
 type EventEditVariablesType struct {
 	Event
+
 	TypeData EventEditVariablesTypeData `json:"type_data"`
 }
 
@@ -570,7 +592,7 @@ func (ev *EventEditVariablesType) String() string {
 
 func (ev *EventEditVariableType) Who() string {
 	if ev.TypeData.AddonName != "" {
-		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+		return "Addon " + ev.TypeData.AddonName
 	}
 
 	return ev.Event.Who()
@@ -584,6 +606,7 @@ type EventEditVariablesTypeData struct {
 
 type EventDeleteVariableType struct {
 	Event
+
 	TypeData EventDeleteVariableTypeData `json:"type_data"`
 }
 
@@ -603,6 +626,7 @@ type EventPaymentAttemptTypeData struct {
 
 type EventPaymentAttemptType struct {
 	Event
+
 	TypeData EventPaymentAttemptTypeData `json:"type_data"`
 }
 
@@ -615,11 +639,12 @@ func (ev *EventPaymentAttemptType) String() string {
 	} else {
 		res += "card"
 	}
-	if ev.TypeData.Status == "new" {
+	switch ev.TypeData.Status {
+	case "new":
 		res += " (pending)"
-	} else if ev.TypeData.Status == "paid" {
+	case "paid":
 		res += " (success)"
-	} else {
+	default:
 		res += " (fail)"
 	}
 	return res
@@ -636,6 +661,7 @@ type EventNewAutoscalerTypeData struct {
 
 type EventNewAutoscalerType struct {
 	Event
+
 	TypeData EventNewAutoscalerTypeData `json:"type_data"`
 }
 
@@ -655,6 +681,7 @@ type EventEditAutoscalerTypeData struct {
 
 type EventEditAutoscalerType struct {
 	Event
+
 	TypeData EventEditAutoscalerTypeData `json:"type_data"`
 }
 
@@ -670,6 +697,7 @@ type EventDeleteAutoscalerTypeData struct {
 
 type EventDeleteAutoscalerType struct {
 	Event
+
 	TypeData EventDeleteAutoscalerTypeData `json:"type_data"`
 }
 
@@ -687,6 +715,7 @@ type EventStartRegionMigrationTypeData struct {
 
 type EventStartRegionMigrationType struct {
 	Event
+
 	TypeData EventStartRegionMigrationTypeData `json:"type_data"`
 }
 
@@ -701,6 +730,7 @@ type EventNewLogDrainTypeData struct {
 
 type EventNewLogDrainType struct {
 	Event
+
 	TypeData EventNewLogDrainTypeData `json:"type_data"`
 }
 
@@ -715,6 +745,7 @@ type EventDeleteLogDrainTypeData struct {
 
 type EventDeleteLogDrainType struct {
 	Event
+
 	TypeData EventDeleteLogDrainTypeData `json:"type_data"`
 }
 
@@ -731,6 +762,7 @@ type EventNewAddonLogDrainTypeData struct {
 
 type EventNewAddonLogDrainType struct {
 	Event
+
 	TypeData EventNewAddonLogDrainTypeData `json:"type_data"`
 }
 
@@ -747,6 +779,7 @@ type EventDeleteAddonLogDrainTypeData struct {
 
 type EventDeleteAddonLogDrainType struct {
 	Event
+
 	TypeData EventDeleteAddonLogDrainTypeData `json:"type_data"`
 }
 
@@ -756,17 +789,18 @@ func (ev *EventDeleteAddonLogDrainType) String() string {
 
 // New notifier
 type EventNewNotifierTypeData struct {
-	NotifierName     string                 `json:"notifier_name"`
-	Active           bool                   `json:"active"`
-	SendAllEvents    bool                   `json:"send_all_events"`
-	SelectedEvents   []string               `json:"selected_events"`
-	NotifierType     string                 `json:"notifier_type"`
-	NotifierTypeData map[string]interface{} `json:"notifier_type_data"`
-	PlatformName     string                 `json:"platform_name"`
+	NotifierName     string         `json:"notifier_name"`
+	Active           bool           `json:"active"`
+	SendAllEvents    bool           `json:"send_all_events"`
+	SelectedEvents   []string       `json:"selected_events"`
+	NotifierType     string         `json:"notifier_type"`
+	NotifierTypeData map[string]any `json:"notifier_type_data"`
+	PlatformName     string         `json:"platform_name"`
 }
 
 type EventNewNotifierType struct {
 	Event
+
 	TypeData EventNewNotifierTypeData `json:"type_data"`
 }
 
@@ -788,17 +822,18 @@ func (ev *EventNewNotifierType) String() string {
 
 // Edit notifier
 type EventEditNotifierTypeData struct {
-	NotifierName     string                 `json:"notifier_name"`
-	Active           bool                   `json:"active"`
-	SendAllEvents    bool                   `json:"send_all_events"`
-	SelectedEvents   []string               `json:"selected_events"`
-	NotifierType     string                 `json:"notifier_type"`
-	NotifierTypeData map[string]interface{} `json:"notifier_type_data"`
-	PlatformName     string                 `json:"platform_name"`
+	NotifierName     string         `json:"notifier_name"`
+	Active           bool           `json:"active"`
+	SendAllEvents    bool           `json:"send_all_events"`
+	SelectedEvents   []string       `json:"selected_events"`
+	NotifierType     string         `json:"notifier_type"`
+	NotifierTypeData map[string]any `json:"notifier_type_data"`
+	PlatformName     string         `json:"platform_name"`
 }
 
 type EventEditNotifierType struct {
 	Event
+
 	TypeData EventEditNotifierTypeData `json:"type_data"`
 }
 
@@ -809,17 +844,18 @@ func (ev *EventEditNotifierType) String() string {
 
 // Delete notifier
 type EventDeleteNotifierTypeData struct {
-	NotifierName     string                 `json:"notifier_name"`
-	Active           bool                   `json:"active"`
-	SendAllEvents    bool                   `json:"send_all_events"`
-	SelectedEvents   []string               `json:"selected_events"`
-	NotifierType     string                 `json:"notifier_type"`
-	NotifierTypeData map[string]interface{} `json:"notifier_type_data"`
-	PlatformName     string                 `json:"platform_name"`
+	NotifierName     string         `json:"notifier_name"`
+	Active           bool           `json:"active"`
+	SendAllEvents    bool           `json:"send_all_events"`
+	SelectedEvents   []string       `json:"selected_events"`
+	NotifierType     string         `json:"notifier_type"`
+	NotifierTypeData map[string]any `json:"notifier_type_data"`
+	PlatformName     string         `json:"platform_name"`
 }
 
 type EventDeleteNotifierType struct {
 	Event
+
 	TypeData EventDeleteNotifierTypeData `json:"type_data"`
 }
 
@@ -844,6 +880,7 @@ type EventEditHDSContactTypeData struct {
 
 type EventEditHDSContactType struct {
 	Event
+
 	TypeData EventEditHDSContactTypeData `json:"type_data"`
 }
 
@@ -861,6 +898,7 @@ type EventCreateDataAccessConsentTypeData struct {
 
 type EventCreateDataAccessConsentType struct {
 	Event
+
 	TypeData EventCreateDataAccessConsentTypeData `json:"type_data"`
 }
 
@@ -884,11 +922,12 @@ type EventTfaEnabledTypeData struct {
 
 type EventTfaEnabledType struct {
 	Event
+
 	TypeData EventTfaEnabledTypeData `json:"type_data"`
 }
 
 func (ev *EventTfaEnabledType) String() string {
-	return fmt.Sprintf("Two factor authentication enabled by %s", ev.TypeData.Provider)
+	return "Two factor authentication enabled by " + ev.TypeData.Provider
 }
 
 // Disable Tfa
@@ -897,6 +936,7 @@ type EventTfaDisabledTypeData struct {
 
 type EventTfaDisabledType struct {
 	Event
+
 	TypeData EventTfaDisabledTypeData `json:"type_data"`
 }
 
@@ -914,6 +954,7 @@ type EventStackChangedTypeData struct {
 
 type EventStackChangedType struct {
 	Event
+
 	TypeData EventStackChangedTypeData `json:"type_data"`
 }
 
@@ -933,6 +974,7 @@ type EventPlanDatabaseMaintenanceTypeData struct {
 
 type EventPlanDatabaseMaintenanceType struct {
 	Event
+
 	TypeData EventPlanDatabaseMaintenanceTypeData `json:"type_data"`
 }
 
@@ -955,6 +997,7 @@ type EventStartDatabaseMaintenanceTypeData struct {
 
 type EventStartDatabaseMaintenanceType struct {
 	Event
+
 	TypeData EventStartDatabaseMaintenanceTypeData `json:"type_data"`
 }
 
@@ -977,6 +1020,7 @@ type EventCompleteDatabaseMaintenanceTypeData struct {
 
 type EventCompleteDatabaseMaintenanceType struct {
 	Event
+
 	TypeData EventCompleteDatabaseMaintenanceTypeData `json:"type_data"`
 }
 
@@ -995,6 +1039,7 @@ type EventDeleteProjectTypeData struct {
 
 type EventDeleteProjectType struct {
 	Event
+
 	TypeData EventDeleteProjectTypeData `json:"type_data"`
 }
 
@@ -1009,6 +1054,7 @@ type EventNewProjectTypeData struct {
 
 type EventNewProjectType struct {
 	Event
+
 	TypeData EventNewProjectTypeData `json:"type_data"`
 }
 
@@ -1031,6 +1077,7 @@ type EventEditProjectTypeData struct {
 
 type EventEditProjectType struct {
 	Event
+
 	TypeData EventEditProjectTypeData `json:"type_data"`
 }
 
@@ -1041,7 +1088,7 @@ func (ev *EventEditProjectType) String() string {
 		changes = append(changes, fmt.Sprintf("%s modified from '%v' to '%v'", v.Name, v.OldValue, v.Value))
 	}
 
-	return fmt.Sprintf("project settings have been updated: %s", strings.Join(changes, ", "))
+	return "project settings have been updated: " + strings.Join(changes, ", ")
 }
 
 // Project transfer invitation created
@@ -1053,6 +1100,7 @@ type EventNewProjectTransferInvitationTypeData struct {
 
 type EventNewProjectTransferInvitationType struct {
 	Event
+
 	TypeData EventNewProjectTransferInvitationTypeData `json:"type_data"`
 }
 
@@ -1075,6 +1123,7 @@ type EventAcceptProjectTransferInvitationTypeData struct {
 
 type EventAcceptProjectTransferInvitationType struct {
 	Event
+
 	TypeData EventAcceptProjectTransferInvitationTypeData `json:"type_data"`
 }
 
@@ -1096,6 +1145,7 @@ type EventAcceptProjectTransferInvitationErrorTypeData struct {
 
 type EventAcceptProjectTransferInvitationErrorType struct {
 	Event
+
 	TypeData EventAcceptProjectTransferInvitationErrorTypeData `json:"type_data"`
 }
 
@@ -1115,6 +1165,7 @@ type EventCancelProjectTransferInvitationTypeData struct {
 
 type EventCancelProjectTransferInvitationType struct {
 	Event
+
 	TypeData EventCancelProjectTransferInvitationTypeData `json:"type_data"`
 }
 
@@ -1137,6 +1188,7 @@ type EventDeclineProjectTransferInvitationTypeData struct {
 
 type EventDeclineProjectTransferInvitationType struct {
 	Event
+
 	TypeData EventDeclineProjectTransferInvitationTypeData `json:"type_data"`
 }
 

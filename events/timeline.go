@@ -6,13 +6,14 @@ import (
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 type DisplayTimelineOpts struct {
 	DisplayAppName bool
 }
 
-func DisplayTimeline(events scalingo.Events, pagination scalingo.PaginationMeta, opts DisplayTimelineOpts) error {
+func DisplayTimeline(events scalingo.Events, pagination pagination.Meta, opts DisplayTimelineOpts) error {
 	longestEventName := 0
 	longestAppName := 0
 	for _, event := range events {

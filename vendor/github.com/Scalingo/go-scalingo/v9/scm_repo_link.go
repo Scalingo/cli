@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 type SCMRepoLinkService interface {
-	SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error)
+	SCMRepoLinkList(ctx context.Context, paginationReq pagination.Request) ([]*SCMRepoLink, pagination.Meta, error)
 	SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error)
 	SCMRepoLinkCreate(ctx context.Context, app string, params SCMRepoLinkCreateParams) (*SCMRepoLink, error)
 	SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRepoLinkUpdateParams) (*SCMRepoLink, error)
@@ -79,7 +79,7 @@ type SCMRepoLinkLinker struct {
 type SCMRepoLinksResponse struct {
 	SCMRepoLinks []*SCMRepoLink `json:"scm_repo_links"`
 	Meta         struct {
-		PaginationMeta PaginationMeta `json:"pagination"`
+		Pagination pagination.Meta `json:"pagination"`
 	}
 }
 
@@ -115,13 +115,13 @@ type RepoLinkPullRequest struct {
 
 var _ SCMRepoLinkService = (*Client)(nil)
 
-func (c *Client) SCMRepoLinkList(ctx context.Context, opts PaginationOpts) ([]*SCMRepoLink, PaginationMeta, error) {
+func (c *Client) SCMRepoLinkList(ctx context.Context, paginationReq pagination.Request) ([]*SCMRepoLink, pagination.Meta, error) {
 	var res SCMRepoLinksResponse
-	err := c.ScalingoAPI().ResourceList(ctx, "scm_repo_links", opts.ToMap(), &res)
+	err := c.ScalingoAPI().ResourceList(ctx, "scm_repo_links", paginationRequestToMap(paginationReq), &res)
 	if err != nil {
-		return nil, PaginationMeta{}, errgo.Notef(err, "fail to list SCM repo links")
+		return nil, pagination.Meta{}, errors.Wrap(ctx, err, "list SCM repo links")
 	}
-	return res.SCMRepoLinks, res.Meta.PaginationMeta, nil
+	return res.SCMRepoLinks, res.Meta.Pagination, nil
 }
 
 func (c *Client) SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink, error) {
@@ -132,7 +132,7 @@ func (c *Client) SCMRepoLinkShow(ctx context.Context, app string) (*SCMRepoLink,
 		Expected: http.Statuses{200},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get this SCM repo link")
+		return nil, errors.Wrap(ctx, err, "get this SCM repo link")
 	}
 	return res.SCMRepoLink, nil
 }
@@ -146,7 +146,7 @@ func (c *Client) SCMRepoLinkCreate(ctx context.Context, app string, params SCMRe
 		Params:   map[string]SCMRepoLinkCreateParams{"scm_repo_link": params},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to create the SCM repo link")
+		return nil, errors.Wrap(ctx, err, "create the SCM repo link")
 	}
 
 	return res.SCMRepoLink, nil
@@ -161,7 +161,7 @@ func (c *Client) SCMRepoLinkUpdate(ctx context.Context, app string, params SCMRe
 		Params:   map[string]SCMRepoLinkUpdateParams{"scm_repo_link": params},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to update this SCM repo link")
+		return nil, errors.Wrap(ctx, err, "update this SCM repo link")
 	}
 
 	return res.SCMRepoLink, nil
@@ -174,7 +174,7 @@ func (c *Client) SCMRepoLinkDelete(ctx context.Context, app string) error {
 		Expected: http.Statuses{204},
 	})
 	if err != nil {
-		return errgo.Notef(err, "fail to delete this SCM repo link")
+		return errors.Wrap(ctx, err, "delete this SCM repo link")
 	}
 	defer res.Body.Close()
 
@@ -189,7 +189,7 @@ func (c *Client) SCMRepoLinkPullRequest(ctx context.Context, app string, number 
 		Expected: http.Statuses{200},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get this SCM repo link")
+		return nil, errors.Wrap(ctx, err, "get this SCM repo link")
 	}
 	return &res.Pull, nil
 }
@@ -203,7 +203,7 @@ func (c *Client) SCMRepoLinkManualDeploy(ctx context.Context, app, branch string
 		Params:   map[string]string{"branch": branch},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to trigger manual app deployment")
+		return nil, errors.Wrap(ctx, err, "trigger manual app deployment")
 	}
 
 	return res.Deployment, nil
@@ -217,7 +217,7 @@ func (c *Client) SCMRepoLinkManualReviewApp(ctx context.Context, app, pullReques
 		Params:   map[string]string{"pull_request_id": pullRequestID},
 	})
 	if err != nil {
-		return errgo.Notef(err, "fail to trigger manual review app deployment")
+		return errors.Wrap(ctx, err, "trigger manual review app deployment")
 	}
 	defer res.Body.Close()
 
@@ -233,7 +233,7 @@ func (c *Client) SCMRepoLinkDeployments(ctx context.Context, app string) ([]*Dep
 		Expected: http.Statuses{200},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list deployments of this SCM repo link")
+		return nil, errors.Wrap(ctx, err, "list deployments of this SCM repo link")
 	}
 	return res.Deployments, nil
 }
@@ -247,7 +247,7 @@ func (c *Client) SCMRepoLinkReviewApps(ctx context.Context, app string) ([]*Revi
 		Expected: http.Statuses{200},
 	}, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list review apps of this SCM repo link")
+		return nil, errors.Wrap(ctx, err, "list review apps of this SCM repo link")
 	}
 	return res.ReviewApps, nil
 }

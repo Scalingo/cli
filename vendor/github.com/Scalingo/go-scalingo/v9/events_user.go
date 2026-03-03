@@ -4,6 +4,7 @@ import "fmt"
 
 type EventNewIntegrationType struct {
 	Event
+
 	TypeData EventNewIntegrationTypeData `json:"type_data"`
 }
 
@@ -34,6 +35,7 @@ type EventNewIntegrationTypeData struct {
 
 type EventDeleteIntegrationType struct {
 	Event
+
 	TypeData EventDeleteIntegrationTypeData `json:"type_data"`
 }
 
@@ -64,6 +66,7 @@ type EventDeleteIntegrationTypeData struct {
 
 type EventAuthorizeGithubType struct {
 	Event
+
 	TypeData EventAuthorizeGithubTypeData `json:"type_data"`
 }
 
@@ -93,6 +96,7 @@ type EventNewKeyTypeData struct {
 
 type EventNewKeyType struct {
 	Event
+
 	TypeData EventNewKeyTypeData `json:"type_data"`
 }
 
@@ -107,6 +111,7 @@ type EventEditKeyTypeData struct {
 
 type EventEditKeyType struct {
 	Event
+
 	TypeData EventEditKeyTypeData `json:"type_data"`
 }
 
@@ -120,6 +125,7 @@ type EventDeleteKeyTypeData struct {
 
 type EventDeleteKeyType struct {
 	Event
+
 	TypeData EventDeleteKeyTypeData `json:"type_data"`
 }
 

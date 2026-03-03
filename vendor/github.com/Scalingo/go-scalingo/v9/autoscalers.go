@@ -3,7 +3,7 @@ package scalingo
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AutoscalersService interface {
@@ -37,7 +37,7 @@ func (c *Client) AutoscalersList(ctx context.Context, app string) ([]Autoscaler,
 	var autoscalersRes AutoscalersRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "autoscalers", nil, &autoscalersRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "list autoscalers")
 	}
 	return autoscalersRes.Autoscalers, nil
 }
@@ -62,7 +62,7 @@ func (c *Client) AutoscalerAdd(ctx context.Context, app string, params Autoscale
 		},
 	}, &autoscalerRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "create autoscaler")
 	}
 	return &autoscalerRes.Autoscaler, nil
 }
@@ -71,7 +71,7 @@ func (c *Client) AutoscalerShow(ctx context.Context, app, id string) (*Autoscale
 	var autoscalerRes AutoscalerRes
 	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "autoscalers", id, nil, &autoscalerRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "show autoscaler")
 	}
 	return &autoscalerRes.Autoscaler, nil
 }
@@ -88,7 +88,7 @@ func (c *Client) AutoscalerUpdate(ctx context.Context, app, id string, params Au
 	var autoscalerRes AutoscalerRes
 	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "autoscalers", id, params, &autoscalerRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "update autoscaler")
 	}
 	return &autoscalerRes.Autoscaler, nil
 }
@@ -96,7 +96,7 @@ func (c *Client) AutoscalerUpdate(ctx context.Context, app, id string, params Au
 func (c *Client) AutoscalerRemove(ctx context.Context, app, id string) error {
 	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "autoscalers", id)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "delete autoscaler")
 	}
 	return nil
 }

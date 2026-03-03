@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AppStatus string
@@ -97,29 +96,29 @@ type AppLinks struct {
 }
 
 type App struct {
-	ID                 string                 `json:"id"`
-	Name               string                 `json:"name"`
-	Region             string                 `json:"region"`
-	Owner              Owner                  `json:"owner"`
-	GitURL             string                 `json:"git_url"`
-	URL                string                 `json:"url"`
-	BaseURL            string                 `json:"base_url"`
-	Status             AppStatus              `json:"status"`
-	LastDeployedAt     *time.Time             `json:"last_deployed_at"`
-	LastDeployedBy     string                 `json:"last_deployed_by"`
-	CreatedAt          *time.Time             `json:"created_at"`
-	UpdatedAt          *time.Time             `json:"updated_at"`
-	Links              *AppLinks              `json:"links"`
-	StackID            string                 `json:"stack_id"`
-	StickySession      bool                   `json:"sticky_session"`
-	ForceHTTPS         bool                   `json:"force_https"`
-	RouterLogs         bool                   `json:"router_logs"`
-	DataAccessConsent  *DataAccessConsent     `json:"data_access_consent,omitempty"`
-	Flags              map[string]bool        `json:"flags"`
-	Limits             map[string]interface{} `json:"limits"`
-	HDSResource        bool                   `json:"hds_resource"`
-	PrivateNetworksIDs []string               `json:"private_networks_ids"`
-	Project            appProject             `json:"project,omitempty"`
+	ID                 string             `json:"id"`
+	Name               string             `json:"name"`
+	Region             string             `json:"region"`
+	Owner              Owner              `json:"owner"`
+	GitURL             string             `json:"git_url"`
+	URL                string             `json:"url"`
+	BaseURL            string             `json:"base_url"`
+	Status             AppStatus          `json:"status"`
+	LastDeployedAt     *time.Time         `json:"last_deployed_at"`
+	LastDeployedBy     string             `json:"last_deployed_by"`
+	CreatedAt          *time.Time         `json:"created_at"`
+	UpdatedAt          *time.Time         `json:"updated_at"`
+	Links              *AppLinks          `json:"links"`
+	StackID            string             `json:"stack_id"`
+	StickySession      bool               `json:"sticky_session"`
+	ForceHTTPS         bool               `json:"force_https"`
+	RouterLogs         bool               `json:"router_logs"`
+	DataAccessConsent  *DataAccessConsent `json:"data_access_consent,omitempty"`
+	Flags              map[string]bool    `json:"flags"`
+	Limits             map[string]any     `json:"limits"`
+	HDSResource        bool               `json:"hds_resource"`
+	PrivateNetworksIDs []string           `json:"private_networks_ids"`
+	Project            appProject         `json:"project"`
 }
 
 // appProject is a partial copy of the type `Project` in `projects.go`
@@ -147,7 +146,7 @@ func (c *Client) AppsList(ctx context.Context) ([]*App, error) {
 
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appsMap)
 	if err != nil {
-		return []*App{}, errgo.Mask(err, errgo.Any)
+		return []*App{}, errors.Wrap(ctx, err, "list apps")
 	}
 	return appsMap["apps"], nil
 }
@@ -159,7 +158,7 @@ func (c *Client) AppsShow(ctx context.Context, appName string) (*App, error) {
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appMap)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "show app")
 	}
 
 	return appMap["app"], nil
@@ -170,7 +169,7 @@ func (c *Client) AppsDestroy(ctx context.Context, name string, currentName strin
 		Method:   "DELETE",
 		Endpoint: "/apps/" + name,
 		Expected: httpclient.Statuses{204},
-		Params: map[string]interface{}{
+		Params: map[string]any{
 			"current_name": currentName,
 		},
 	}
@@ -188,7 +187,7 @@ func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*
 		Method:   "POST",
 		Endpoint: "/apps/" + name + "/rename",
 		Expected: httpclient.Statuses{200},
-		Params: map[string]interface{}{
+		Params: map[string]any{
 			"current_name": name,
 			"new_name":     newName,
 		},
@@ -207,7 +206,7 @@ func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*
 		Method:   "PATCH",
 		Endpoint: "/apps/" + name,
 		Expected: httpclient.Statuses{200},
-		Params: map[string]interface{}{
+		Params: map[string]any{
 			"app": map[string]string{
 				"owner": email,
 			},
@@ -226,7 +225,7 @@ func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (
 		Method:   "PATCH",
 		Endpoint: "/apps/" + app,
 		Expected: httpclient.Statuses{200},
-		Params: map[string]interface{}{
+		Params: map[string]any{
 			"app": map[string]string{
 				"stack_id": stackID,
 			},
@@ -236,7 +235,7 @@ func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (
 	var appRes AppResponse
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to request Scalingo API")
+		return nil, errors.Wrap(ctx, err, "request Scalingo API")
 	}
 
 	return appRes.App, nil
@@ -259,11 +258,11 @@ func (c *Client) AppsCreate(ctx context.Context, opts AppsCreateOpts) (*App, err
 		Method:   "POST",
 		Endpoint: "/apps",
 		Expected: httpclient.Statuses{201},
-		Params:   map[string]interface{}{"app": opts},
+		Params:   map[string]any{"app": opts},
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "create app")
 	}
 	return appRes.App, nil
 }
@@ -275,7 +274,7 @@ func (c *Client) AppsStats(ctx context.Context, app string) (*AppStatsRes, error
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &stats)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "get app stats")
 	}
 	return &stats, nil
 }
@@ -287,7 +286,7 @@ func (c *Client) AppsContainersPs(ctx context.Context, app string) ([]Container,
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &containersRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to execute the GET request to list containers")
+		return nil, errors.Wrap(ctx, err, "execute the GET request to list containers")
 	}
 
 	return containersRes.Containers, nil
@@ -300,7 +299,7 @@ func (c *Client) AppsContainerTypes(ctx context.Context, app string) ([]Containe
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &containerTypesRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to execute the GET request to list container types")
+		return nil, errors.Wrap(ctx, err, "execute the GET request to list container types")
 	}
 
 	return containerTypesRes.Containers, nil
@@ -319,30 +318,30 @@ func (c *Client) AppsScale(ctx context.Context, app string, params *AppsScalePar
 }
 
 func (c *Client) AppsForceHTTPS(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+	return c.appsUpdate(ctx, name, map[string]any{
 		"force_https": enable,
 	})
 }
 
 func (c *Client) AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+	return c.appsUpdate(ctx, name, map[string]any{
 		"router_logs": enable,
 	})
 }
 
 func (c *Client) AppsStickySession(ctx context.Context, name string, enable bool) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+	return c.appsUpdate(ctx, name, map[string]any{
 		"sticky_session": enable,
 	})
 }
 
 func (c *Client) AppsSetProject(ctx context.Context, name string, projectID string) (*App, error) {
-	return c.appsUpdate(ctx, name, map[string]interface{}{
+	return c.appsUpdate(ctx, name, map[string]any{
 		"project_id": projectID,
 	})
 }
 
-func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]interface{}) (*App, error) {
+func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]any) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
 		Method:   "PUT",

@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type UsersService interface {
@@ -35,14 +34,14 @@ func (c *Client) Self(ctx context.Context) (*User, error) {
 	}
 	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "get current user")
 	}
 	defer res.Body.Close()
 
 	var u SelfResponse
 	err = json.NewDecoder(res.Body).Decode(&u)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "decode current user response")
 	}
 	return u.User, nil
 }
@@ -64,21 +63,21 @@ func (c *Client) UpdateUser(ctx context.Context, params UpdateUserParams) (*User
 	req := &http.APIRequest{
 		Method:   "PATCH",
 		Endpoint: "/account/profile",
-		Params: map[string]interface{}{
+		Params: map[string]any{
 			"user": params,
 		},
 		Expected: http.Statuses{200},
 	}
 	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to execute the query to update the user")
+		return nil, errors.Wrap(ctx, err, "execute the query to update the user")
 	}
 	defer res.Body.Close()
 
 	var u UpdateUserResponse
 	err = json.NewDecoder(res.Body).Decode(&u)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to decode response of the query to update the user")
+		return nil, errors.Wrap(ctx, err, "decode response of the query to update the user")
 	}
 
 	return u.User, nil
@@ -88,13 +87,13 @@ func (c *Client) UserStopFreeTrial(ctx context.Context) error {
 	req := &http.APIRequest{
 		Method:   "POST",
 		Endpoint: "/users/stop_free_trial",
-		Params:   map[string]interface{}{},
+		Params:   map[string]any{},
 		Expected: http.Statuses{200},
 	}
 
 	res, err := c.AuthAPI().Do(ctx, req)
 	if err != nil {
-		return errgo.Notef(err, "fail to execute the query to stop user free trial")
+		return errors.Wrap(ctx, err, "execute the query to stop user free trial")
 	}
 	defer res.Body.Close()
 

@@ -3,9 +3,8 @@ package scalingo
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type EventCategory struct {
@@ -31,7 +30,7 @@ func (c *Client) EventTypesList(ctx context.Context) ([]EventType, error) {
 	var res map[string][]EventType
 	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to make request to Scalingo API")
+		return nil, errors.Wrap(ctx, err, "make request to Scalingo API")
 	}
 
 	return res["event_types"], nil
@@ -45,7 +44,7 @@ func (c *Client) EventCategoriesList(ctx context.Context) ([]EventCategory, erro
 	var res map[string][]EventCategory
 	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to make request to Scalingo API")
+		return nil, errors.Wrap(ctx, err, "make request to Scalingo API")
 	}
 
 	return res["event_categories"], nil

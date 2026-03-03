@@ -6,9 +6,8 @@ import (
 	"io"
 	"strconv"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type LogsArchivesService interface {
@@ -41,19 +40,19 @@ func (c *Client) LogsArchivesByCursor(ctx context.Context, app string, cursor st
 
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "list logs archives by cursor")
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "read logs archives response body")
 	}
 
 	var logsRes = LogsArchivesResponse{}
 	err = json.Unmarshal(body, &logsRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "decode logs archives response")
 	}
 
 	return &logsRes, nil
@@ -61,7 +60,7 @@ func (c *Client) LogsArchivesByCursor(ctx context.Context, app string, cursor st
 
 func (c *Client) LogsArchives(ctx context.Context, app string, page int) (*LogsArchivesResponse, error) {
 	if page < 1 {
-		return nil, errgo.New("Page must be greater than 0.")
+		return nil, errors.New(ctx, "Page must be greater than 0.")
 	}
 
 	req := &http.APIRequest{
@@ -73,19 +72,19 @@ func (c *Client) LogsArchives(ctx context.Context, app string, page int) (*LogsA
 
 	res, err := c.ScalingoAPI().Do(ctx, req)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "list logs archives")
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "read logs archives response body")
 	}
 
 	var logsRes = LogsArchivesResponse{}
 	err = json.Unmarshal(body, &logsRes)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "decode logs archives response")
 	}
 
 	return &logsRes, nil

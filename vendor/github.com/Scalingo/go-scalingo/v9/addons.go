@@ -7,9 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AddonsService interface {
@@ -68,7 +67,7 @@ func (c *Client) AddonsList(ctx context.Context, app string) ([]*Addon, error) {
 	var addonsRes AddonsRes
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "addons", nil, &addonsRes)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrap(ctx, err, "list addons")
 	}
 	return addonsRes.Addons, nil
 }
@@ -78,7 +77,7 @@ func (c *Client) AddonShow(ctx context.Context, app, addonID string) (Addon, err
 
 	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "addons", addonID, nil, &addonRes)
 	if err != nil {
-		return Addon{}, errgo.Mask(err, errgo.Any)
+		return Addon{}, errors.Wrap(ctx, err, "show addon")
 	}
 
 	return addonRes.Addon, nil
@@ -99,7 +98,7 @@ func (c *Client) AddonProvision(ctx context.Context, app string, params AddonPro
 	var addonRes AddonRes
 	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "addons", AddonProvisionParamsWrapper{params}, &addonRes)
 	if err != nil {
-		return AddonRes{}, errgo.Mask(err, errgo.Any)
+		return AddonRes{}, errors.Wrap(ctx, err, "provision addon")
 	}
 	return addonRes, nil
 }
@@ -123,7 +122,7 @@ func (c *Client) AddonUpgrade(ctx context.Context, app, addonID string, params A
 		AddonUpgradeParamsWrapper{Addon: params}, &addonRes,
 	)
 	if err != nil {
-		return AddonRes{}, errgo.Mask(err, errgo.Any)
+		return AddonRes{}, errors.Wrap(ctx, err, "upgrade addon")
 	}
 	return addonRes, nil
 }
@@ -135,7 +134,7 @@ func (c *Client) AddonToken(ctx context.Context, app, addonID string) (string, e
 		Endpoint: "/apps/" + app + "/addons/" + addonID + "/token",
 	}, &res)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get addon token")
+		return "", errors.Wrap(ctx, err, "get addon token")
 	}
 
 	return res.Addon.Token, nil
@@ -147,13 +146,13 @@ func (c *Client) AddonLogsURL(ctx context.Context, app, addonID string) (string,
 		Endpoint: "/databases/" + addonID + "/logs",
 	})
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get log URL")
+		return "", errors.Wrap(ctx, err, "get addon log URL")
 	}
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&url)
 	if err != nil {
-		return "", errgo.Notef(err, "invalid response")
+		return "", errors.Wrap(ctx, err, "decode addon log URL response")
 	}
 
 	return url.URL, nil
@@ -167,19 +166,19 @@ func (c *Client) AddonLogsArchives(ctx context.Context, app, addonID string, pag
 		},
 	})
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get log archives")
+		return nil, errors.Wrap(ctx, err, "get addon log archives")
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to read body of response")
+		return nil, errors.Wrap(ctx, err, "read addon log archives response body")
 	}
 
 	var logsRes = LogsArchivesResponse{}
 	err = json.Unmarshal(body, &logsRes)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to parse response")
+		return nil, errors.Wrap(ctx, err, "decode addon log archives response")
 	}
 
 	return &logsRes, nil

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type CronTasksService interface {
@@ -16,8 +16,8 @@ var _ CronTasksService = (*Client)(nil)
 type Job struct {
 	Command           string    `json:"command"`
 	Size              string    `json:"size,omitempty"`
-	LastExecutionDate time.Time `json:"last_execution_date,omitempty"`
-	NextExecutionDate time.Time `json:"next_execution_date,omitempty"`
+	LastExecutionDate time.Time `json:"last_execution_date"`
+	NextExecutionDate time.Time `json:"next_execution_date"`
 }
 
 type CronTasks struct {
@@ -28,7 +28,7 @@ func (c *Client) CronTasksGet(ctx context.Context, app string) (CronTasks, error
 	resp := CronTasks{}
 	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "cron_tasks", nil, &resp)
 	if err != nil {
-		return CronTasks{}, errgo.Notef(err, "fail to get cron tasks")
+		return CronTasks{}, errors.Wrap(ctx, err, "get cron tasks")
 	}
 	return resp, nil
 }

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type API interface {
@@ -110,7 +109,7 @@ func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
 	if err == ErrRegionNotFound {
 		return nil, err
 	} else if err != nil {
-		return nil, errgo.Notef(err, "fail to get region informations")
+		return nil, errors.Wrap(ctx, err, "get region informations")
 	}
 
 	cfg.APIEndpoint = region.API

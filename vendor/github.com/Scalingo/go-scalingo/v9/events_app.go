@@ -11,6 +11,7 @@ type EventNewAppTypeData struct {
 
 type EventNewAppType struct {
 	Event
+
 	TypeData EventNewAppTypeData `json:"type_data"`
 }
 
@@ -24,6 +25,7 @@ type EventEditAppTypeData struct {
 
 type EventEditAppType struct {
 	Event
+
 	TypeData EventEditAppTypeData `json:"type_data"`
 }
 
@@ -54,6 +56,7 @@ type EventRenameAppTypeData struct {
 
 type EventRenameAppType struct {
 	Event
+
 	TypeData EventRenameAppTypeData `json:"type_data"`
 }
 
@@ -73,6 +76,7 @@ type EventUpdateAppProjectTypeData struct {
 
 type EventUpdateAppProjectType struct {
 	Event
+
 	TypeData EventUpdateAppProjectTypeData `json:"type_data"`
 }
 
@@ -90,6 +94,7 @@ type EventTransferAppTypeData struct {
 
 type EventTransferAppType struct {
 	Event
+
 	TypeData EventTransferAppTypeData `json:"type_data"`
 }
 
@@ -107,6 +112,7 @@ type EventRestartTypeData struct {
 
 type EventRestartType struct {
 	Event
+
 	TypeData EventRestartTypeData `json:"type_data"`
 }
 
@@ -119,7 +125,7 @@ func (ev *EventRestartType) String() string {
 
 func (ev *EventRestartType) Who() string {
 	if ev.TypeData.AddonName != "" {
-		return fmt.Sprintf("Addon %s", ev.TypeData.AddonName)
+		return "Addon " + ev.TypeData.AddonName
 	}
 	return ev.Event.Who()
 }
@@ -130,6 +136,7 @@ type EventStopAppTypeData struct {
 
 type EventStopAppType struct {
 	Event
+
 	TypeData EventStopAppTypeData `json:"type_data"`
 }
 
@@ -152,6 +159,7 @@ type EventScaleTypeData struct {
 
 type EventScaleType struct {
 	Event
+
 	TypeData EventScaleTypeData `json:"type_data"`
 }
 
@@ -171,6 +179,7 @@ type EventCrashTypeData struct {
 
 type EventCrashType struct {
 	Event
+
 	TypeData EventCrashTypeData `json:"type_data"`
 }
 
@@ -192,6 +201,7 @@ type EventRepeatedCrashTypeData struct {
 
 type EventRepeatedCrashType struct {
 	Event
+
 	TypeData EventRepeatedCrashTypeData `json:"type_data"`
 }
 
@@ -216,6 +226,7 @@ type EventDeploymentTypeData struct {
 
 type EventDeploymentType struct {
 	Event
+
 	TypeData EventDeploymentTypeData `json:"type_data"`
 }
 

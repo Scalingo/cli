@@ -8,6 +8,7 @@ import (
 
 type EventAddCreditType struct {
 	Event
+
 	TypeData EventAddCreditTypeData `json:"type_data"`
 }
 
@@ -24,16 +25,17 @@ type EventAddCreditTypeData struct {
 
 type EventAddPaymentMethodType struct {
 	Event
+
 	TypeData EventAddPaymentMethodTypeData `json:"type_data"`
 }
 
 func (ev *EventAddPaymentMethodType) String() string {
-	if ev.TypeData.Profile.PaymentMethodType == billing.Stripe {
-		p := ev.TypeData.Profile.Stripe
+	if ev.TypeData.PaymentMethodType == billing.Stripe {
+		p := ev.TypeData.Stripe
 		return fmt.Sprintf("%s card ending with ...%s, expiring in %s", p.Brand, p.Last4, p.Exp)
 	}
 
-	return fmt.Sprintf("'%s' payment method added", ev.TypeData.Profile.PaymentMethodType)
+	return fmt.Sprintf("'%s' payment method added", ev.TypeData.PaymentMethodType)
 }
 
 type EventAddPaymentMethodTypeData struct {
@@ -42,6 +44,7 @@ type EventAddPaymentMethodTypeData struct {
 
 type EventAddVoucherType struct {
 	Event
+
 	TypeData EventAddVoucherTypeData `json:"type_data"`
 }
 

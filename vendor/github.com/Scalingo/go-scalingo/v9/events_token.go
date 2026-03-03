@@ -9,6 +9,7 @@ type EventNewTokenTypeData struct {
 
 type EventNewTokenType struct {
 	Event
+
 	TypeData EventNewTokenTypeData `json:"type_data"`
 }
 
@@ -23,6 +24,7 @@ type EventRegenerateTokenTypeData struct {
 
 type EventRegenerateTokenType struct {
 	Event
+
 	TypeData EventRegenerateTokenTypeData `json:"type_data"`
 }
 
@@ -37,6 +39,7 @@ type EventDeleteTokenTypeData struct {
 
 type EventDeleteTokenType struct {
 	Event
+
 	TypeData EventDeleteTokenTypeData `json:"type_data"`
 }
 

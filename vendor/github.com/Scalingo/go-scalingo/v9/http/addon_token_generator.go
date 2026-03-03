@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type AddonTokenGenerator struct {
@@ -27,7 +27,7 @@ func NewAddonTokenGenerator(app, addon string, exchanger AdddonTokenExchanger) T
 func (c *AddonTokenGenerator) GetAccessToken(ctx context.Context) (string, error) {
 	token, err := c.exchanger.AddonToken(ctx, c.appID, c.addonID)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get addon token")
+		return "", errors.Wrap(ctx, err, "get addon token")
 	}
 	return token, nil
 }

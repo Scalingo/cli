@@ -17,6 +17,7 @@ type EventNewAddonTypeData struct {
 
 type EventNewAddonType struct {
 	Event
+
 	TypeData EventNewAddonTypeData `json:"type_data"`
 }
 
@@ -29,12 +30,14 @@ func (ev *EventNewAddonType) String() string {
 
 type EventUpgradeAddonTypeData struct {
 	EventAddon
+
 	OldPlanName string `json:"old_plan_name"`
 	NewPlanName string `json:"new_plan_name"`
 }
 
 type EventUpgradeAddonType struct {
 	Event
+
 	TypeData EventUpgradeAddonTypeData `json:"type_data"`
 }
 
@@ -60,6 +63,7 @@ type EventAddonUpdatedTypeData struct {
 
 type EventAddonUpdatedType struct {
 	Event
+
 	TypeData EventAddonUpdatedTypeData `json:"type_data"`
 }
 
@@ -77,6 +81,7 @@ type EventDeleteAddonTypeData struct {
 
 type EventDeleteAddonType struct {
 	Event
+
 	TypeData EventDeleteAddonTypeData `json:"type_data"`
 }
 
@@ -93,6 +98,7 @@ type EventResumeAddonTypeData struct {
 
 type EventResumeAddonType struct {
 	Event
+
 	TypeData EventResumeAddonTypeData `json:"type_data"`
 }
 
@@ -105,11 +111,13 @@ func (ev *EventResumeAddonType) String() string {
 
 type EventSuspendAddonTypeData struct {
 	EventAddon
+
 	Reason string `json:"reason"`
 }
 
 type EventSuspendAddonType struct {
 	Event
+
 	TypeData EventSuspendAddonTypeData `json:"type_data"`
 }
 
@@ -122,6 +130,7 @@ func (ev *EventSuspendAddonType) String() string {
 
 type EventDatabaseAddFeatureType struct {
 	Event
+
 	TypeData EventDatabaseAddFeatureTypeData `json:"type_data"`
 }
 
@@ -142,6 +151,7 @@ func (ev *EventDatabaseAddFeatureType) String() string {
 
 type EventDatabaseRemoveFeatureType struct {
 	Event
+
 	TypeData EventDatabaseRemoveFeatureTypeData `json:"type_data"`
 }
 
@@ -162,6 +172,7 @@ func (ev *EventDatabaseRemoveFeatureType) String() string {
 
 type EventDatabaseBackupSucceededType struct {
 	Event
+
 	TypeData EventDatabaseBackupSucceededTypeData `json:"type_data"`
 }
 
@@ -203,6 +214,7 @@ type EventDatabaseBackupSucceededTypeData struct {
 
 type EventDatabaseBackupFailedType struct {
 	Event
+
 	TypeData EventDatabaseBackupFailedTypeData `json:"type_data"`
 }
 

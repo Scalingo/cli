@@ -4,6 +4,7 @@ import "fmt"
 
 type EventLoginSuccessType struct {
 	Event
+
 	TypeData EventLoginSuccessTypeData `json:"type_data"`
 }
 type EventLoginSuccessTypeData EventSecurityTypeData
@@ -14,6 +15,7 @@ func (ev *EventLoginSuccessType) String() string {
 
 type EventLoginFailureType struct {
 	Event
+
 	TypeData EventLoginFailureTypeData `json:"type_data"`
 }
 type EventLoginFailureTypeData EventSecurityTypeData
@@ -24,6 +26,7 @@ func (ev *EventLoginFailureType) String() string {
 
 type EventLoginLockType struct {
 	Event
+
 	TypeData EventLoginLockTypeData `json:"type_data"`
 }
 type EventLoginLockTypeData EventSecurityTypeData
@@ -34,6 +37,7 @@ func (ev *EventLoginLockType) String() string {
 
 type EventLoginUnlockSuccessType struct {
 	Event
+
 	TypeData EventLoginUnlockSuccessTypeData `json:"type_data"`
 }
 type EventLoginUnlockSuccessTypeData EventSecurityTypeData
@@ -44,6 +48,7 @@ func (ev *EventLoginUnlockSuccessType) String() string {
 
 type EventPasswordResetQueryType struct {
 	Event
+
 	TypeData EventPasswordResetQueryTypeData `json:"type_data"`
 }
 type EventPasswordResetQueryTypeData EventSecurityTypeData
@@ -54,6 +59,7 @@ func (ev *EventPasswordResetQueryType) String() string {
 
 type EventPasswordResetSuccessType struct {
 	Event
+
 	TypeData EventPasswordResetSuccessTypeData `json:"type_data"`
 }
 type EventPasswordResetSuccessTypeData EventSecurityTypeData

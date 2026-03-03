@@ -17,6 +17,7 @@ type EventAlertTypeData struct {
 
 type EventAlertType struct {
 	Event
+
 	TypeData EventAlertTypeData `json:"type_data"`
 }
 
@@ -49,6 +50,7 @@ type EventNewAlertTypeData struct {
 
 type EventNewAlertType struct {
 	Event
+
 	TypeData EventNewAlertTypeData `json:"type_data"`
 }
 
@@ -64,6 +66,7 @@ type EventDeleteAlertTypeData struct {
 
 type EventDeleteAlertType struct {
 	Event
+
 	TypeData EventDeleteAlertTypeData `json:"type_data"`
 }
 

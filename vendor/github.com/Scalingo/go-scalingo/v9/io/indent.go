@@ -24,7 +24,7 @@ func Indent(data string, level int) string {
 
 func genIndent(level int) string {
 	buffer := new(bytes.Buffer)
-	for i := 0; i < level; i++ {
+	for range level {
 		buffer.WriteRune(' ')
 	}
 	return buffer.String()

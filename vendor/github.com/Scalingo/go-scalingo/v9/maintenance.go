@@ -4,7 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 type MaintenanceWindow struct {
@@ -41,14 +42,14 @@ const (
 
 func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error) {
 	var dbRes DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]interface{}{
-		"database": map[string]interface{}{
+	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]any{
+		"database": map[string]any{
 			"maintenance_window": params,
 		},
 	}, &dbRes)
 
 	if err != nil {
-		return Database{}, errors.Notef(ctx, err, "update database '%v' maintenance window", addonID)
+		return Database{}, errors.Wrapf(ctx, err, "update database '%v' maintenance window", addonID)
 	}
 	return dbRes.Database, nil
 }
@@ -56,24 +57,24 @@ func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addon
 type ListMaintenanceResponse struct {
 	Maintenance []*Maintenance `json:"maintenance"`
 	Meta        struct {
-		PaginationMeta PaginationMeta `json:"pagination"`
+		Pagination pagination.Meta `json:"pagination"`
 	}
 }
 
-func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID string, opts PaginationOpts) ([]*Maintenance, PaginationMeta, error) {
+func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error) {
 	var maintenanceRes ListMaintenanceResponse
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "maintenance", opts.ToMap(), &maintenanceRes)
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "maintenance", paginationRequestToMap(paginationReq), &maintenanceRes)
 	if err != nil {
-		return nil, PaginationMeta{}, errors.Notef(ctx, err, "list database '%v' maintenance", addonID)
+		return nil, pagination.Meta{}, errors.Wrapf(ctx, err, "list database '%v' maintenance", addonID)
 	}
-	return maintenanceRes.Maintenance, maintenanceRes.Meta.PaginationMeta, nil
+	return maintenanceRes.Maintenance, maintenanceRes.Meta.Pagination, nil
 }
 
 func (c *Client) DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error) {
 	var maintenanceRes Maintenance
 	err := c.DBAPI(app, addonID).SubresourceGet(ctx, "databases", addonID, "maintenance", maintenanceID, nil, &maintenanceRes)
 	if err != nil {
-		return maintenanceRes, errors.Notef(ctx, err, "get database '%v' maintenance", addonID)
+		return maintenanceRes, errors.Wrapf(ctx, err, "get database '%v' maintenance", addonID)
 	}
 	return maintenanceRes, nil
 }
