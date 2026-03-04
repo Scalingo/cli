@@ -12,9 +12,9 @@ import (
 	"github.com/cheggaaa/pb/v3"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v9"
-	"github.com/Scalingo/go-scalingo/v9/debug"
-	httpclient "github.com/Scalingo/go-scalingo/v9/http"
+	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v10/debug"
+	httpclient "github.com/Scalingo/go-scalingo/v10/http"
 	"github.com/Scalingo/go-utils/errors/v2"
 )
 
@@ -125,7 +125,7 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	spinner.Stop()
 
 	if resp.StatusCode != http.StatusOK {
-		return httpclient.NewRequestFailedError(resp, &httpclient.APIRequest{
+		return httpclient.NewRequestFailedError(ctx, resp, &httpclient.APIRequest{
 			URL:    downloadURL,
 			Method: http.MethodGet,
 		})

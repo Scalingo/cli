@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/db/maintenance"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 var databaseMaintenanceList = cli.Command{
@@ -38,7 +38,7 @@ var databaseMaintenanceList = cli.Command{
 			addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
 		}
 
-		err := maintenance.List(ctx, currentResource, addonName, scalingo.PaginationOpts{
+		err := maintenance.List(ctx, currentResource, addonName, pagination.Request{
 			Page:    c.Int("page"),
 			PerPage: c.Int("per-page"),
 		})

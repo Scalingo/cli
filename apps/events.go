@@ -7,16 +7,16 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/events"
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
-func Events(ctx context.Context, app string, paginationOpts scalingo.PaginationOpts) error {
+func Events(ctx context.Context, app string, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errgo.Notef(err, "fail to get Scalingo client")
 	}
 
-	appEvents, pagination, err := c.EventsList(ctx, app, paginationOpts)
+	appEvents, pagination, err := c.EventsList(ctx, app, paginationReq)
 	if err != nil {
 		return errgo.Mask(err)
 	}

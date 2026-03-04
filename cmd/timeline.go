@@ -9,7 +9,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 var (
@@ -36,7 +36,7 @@ var (
 			}
 
 			utils.CheckForConsent(ctx, currentResource)
-			err := apps.Events(ctx, currentResource, scalingo.PaginationOpts{
+			err := apps.Events(ctx, currentResource, pagination.Request{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
 			})

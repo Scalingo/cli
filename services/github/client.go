@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-github/v47/github"
 	"gopkg.in/errgo.v1"
 
-	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v10/debug"
 )
 
 type Client interface {

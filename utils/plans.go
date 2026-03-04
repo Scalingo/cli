@@ -5,7 +5,7 @@ import (
 
 	"github.com/Scalingo/go-utils/errors/v2"
 
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-scalingo/v10"
 )
 
 func FindPlan(ctx context.Context, c *scalingo.Client, addon, plan string) (string, error) {

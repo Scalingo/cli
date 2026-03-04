@@ -2,16 +2,13 @@ package apps
 
 import (
 	"context"
-	"encoding/json"
-	"io"
 	"strings"
 
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
-	"github.com/Scalingo/go-scalingo/v9"
-	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v10"
 )
 
 type LogsRes struct {
@@ -30,37 +27,23 @@ func Logs(ctx context.Context, appName string, stream bool, n int, filter string
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	res, err := c.LogsURL(ctx, appName)
-	if err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		return errgo.Newf("fail to query logs: %s", res.Status)
-	}
-
-	body, err := io.ReadAll(res.Body)
+	logsURLRes, err := c.LogsURL(ctx, appName)
 	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
-	debug.Println("[API-Response] ", string(body))
-
-	logsRes := &LogsRes{}
-	if err = json.Unmarshal(body, &logsRes); err != nil {
-		return errgo.Mask(err, errgo.Any)
-	}
-
-	if err = logs.Dump(ctx, logsRes.LogsURL, n, filter); err != nil {
+	err = logs.Dump(ctx, logsURLRes.LogsURL, n, filter)
+	if err != nil {
 		return errgo.Mask(err, errgo.Any)
 	}
 
 	if stream {
-		if err = logs.Stream(ctx, logsRes.LogsURL, filter); err != nil {
+		err := logs.Stream(ctx, logsURLRes.LogsURL, filter)
+		if err != nil {
 			return errgo.Mask(err, errgo.Any)
 		}
 	}
+
 	return nil
 }
 
