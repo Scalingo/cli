@@ -12,8 +12,8 @@ import (
 	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v9"
-	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v10/debug"
 	errorspkg "github.com/Scalingo/go-utils/errors/v2"
 )
 

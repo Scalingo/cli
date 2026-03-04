@@ -9,7 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-scalingo/v10"
 )
 
 func Destroy(ctx context.Context, app, addonID string) error {

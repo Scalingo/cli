@@ -9,7 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
-	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v10/debug"
 )
 
 var (

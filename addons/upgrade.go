@@ -8,7 +8,7 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v9"
+	"github.com/Scalingo/go-scalingo/v10"
 )
 
 func Upgrade(ctx context.Context, app, addonID, plan string) error {

@@ -1,5 +1,10 @@
 package pagination
 
+import (
+	"net/url"
+	"strconv"
+)
+
 const defaultPerPage = 20
 
 type Request struct {
@@ -21,13 +26,20 @@ func NewRequest(page, perPage int) Request {
 }
 
 // QueryLimit The limit value to use when querying the DB
-func (p Request) QueryLimit() int32 {
+func (r Request) QueryLimit() int32 {
 	// Returns an int32 so that the value can be used as a query argument without typecasting
-	return int32(p.PerPage)
+	return int32(r.PerPage)
 }
 
 // QueryOffset The offset value to use when querying the DB
-func (p Request) QueryOffset() int32 {
+func (r Request) QueryOffset() int32 {
 	// Returns an int32 so that the value can be used as a query argument without typecasting
-	return int32((p.Page - 1) * p.PerPage)
+	return int32((r.Page - 1) * r.PerPage)
+}
+
+func (r Request) ToURLValues() url.Values {
+	values := url.Values{}
+	values.Add("page", strconv.Itoa(r.Page))
+	values.Add("per_page", strconv.Itoa(r.PerPage))
+	return values
 }

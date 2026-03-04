@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v9/io"
+	"github.com/Scalingo/go-scalingo/v10/io"
 	"github.com/Scalingo/go-utils/pagination"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Scalingo/go-scalingo/v9/debug"
+	"github.com/Scalingo/go-scalingo/v10/debug"
 )
 
 func FlagAppAutoComplete(ctx context.Context) bool {

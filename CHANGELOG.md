@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* build(deps): update `github.com/Scalingo/go-scalingo` to v10
+
 ## 1.43.3
 
 * feat(cmd) add database-list-plans

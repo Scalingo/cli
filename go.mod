@@ -4,10 +4,10 @@ go 1.25.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260303154033-30b3625cca61
+	github.com/Scalingo/go-scalingo/v10 v10.0.0
 	github.com/Scalingo/go-utils/errors/v2 v2.5.1
 	github.com/Scalingo/go-utils/logger v1.12.0
-	github.com/Scalingo/go-utils/pagination v1.1.2
+	github.com/Scalingo/go-utils/pagination v1.2.0
 	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.2
 	github.com/cheggaaa/pb/v3 v3.1.7

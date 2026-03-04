@@ -37,14 +37,14 @@ github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v9 v9.2.1-0.20260303154033-30b3625cca61
+# github.com/Scalingo/go-scalingo/v10 v10.0.0
 ## explicit; go 1.24.0
-github.com/Scalingo/go-scalingo/v9
-github.com/Scalingo/go-scalingo/v9/billing
-github.com/Scalingo/go-scalingo/v9/debug
-github.com/Scalingo/go-scalingo/v9/http
-github.com/Scalingo/go-scalingo/v9/http/httpmock
-github.com/Scalingo/go-scalingo/v9/io
+github.com/Scalingo/go-scalingo/v10
+github.com/Scalingo/go-scalingo/v10/billing
+github.com/Scalingo/go-scalingo/v10/debug
+github.com/Scalingo/go-scalingo/v10/http
+github.com/Scalingo/go-scalingo/v10/http/httpmock
+github.com/Scalingo/go-scalingo/v10/io
 # github.com/Scalingo/go-utils/errors/v2 v2.5.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v2
@@ -54,7 +54,7 @@ github.com/Scalingo/go-utils/errors/v3
 # github.com/Scalingo/go-utils/logger v1.12.0
 ## explicit; go 1.25
 github.com/Scalingo/go-utils/logger
-# github.com/Scalingo/go-utils/pagination v1.1.2
+# github.com/Scalingo/go-utils/pagination v1.2.0
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/pagination
 # github.com/Scalingo/gopassword v1.1.0
