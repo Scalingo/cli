@@ -31,7 +31,7 @@ func init() {
 	}
 	go func() {
 		var err error
-		lastVersion, err = getLastVersion(context.TODO())
+		lastVersion, err = getLastVersion(context.Background())
 		if err != nil {
 			config.C.Logger.Println(err)
 			gotAnError = true

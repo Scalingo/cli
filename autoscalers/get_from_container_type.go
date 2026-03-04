@@ -2,19 +2,20 @@ package autoscalers
 
 import (
 	"context"
-	"errors"
+	stderrors "errors"
 
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
-	ErrNotFound = errors.New("autoscaler not found")
+	ErrNotFound = stderrors.New("autoscaler not found")
 )
 
 func getFromContainerType(ctx context.Context, c *scalingo.Client, app, containerType string) (scalingo.Autoscaler, error) {
 	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
-		return scalingo.Autoscaler{}, err
+		return scalingo.Autoscaler{}, errors.Wrap(ctx, err, "list autoscalers")
 	}
 
 	for _, autoscaler := range autoscalers {
