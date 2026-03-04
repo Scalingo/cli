@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/ssh"
 
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type PrivateKey struct {

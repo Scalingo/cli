@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -78,8 +78,7 @@ func SendSignal(ctx context.Context, appName string, signal string, containerNam
 	for _, container := range containersToKill {
 		err := c.ContainersKill(ctx, appName, signal, container.ID)
 		if err != nil {
-			rootError := errors.RootCause(err)
-			io.Errorf("Fail to send signal to container '%v' because of: %v\n", container.Label, rootError)
+			io.Errorf("Fail to send signal to container '%v' because of: %v\n", container.Label, err)
 			continue
 		}
 		io.Statusf("Sent signal '%v' to '%v' container.\n", signal, container.Label)

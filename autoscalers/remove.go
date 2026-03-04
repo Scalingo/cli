@@ -3,7 +3,7 @@ package autoscalers
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -17,7 +17,7 @@ func Remove(ctx context.Context, app, containerType string) error {
 
 	autoscaler, err := getFromContainerType(ctx, c, app, containerType)
 	if err != nil {
-		if errors.RootCause(err) == ErrNotFound {
+		if errors.Is(err, ErrNotFound) {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
 		}

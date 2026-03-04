@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/apps"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type RedisConsoleOpts struct {

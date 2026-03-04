@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -110,8 +110,8 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 	res, err := c.AppsScale(ctx, app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			reqestFailedError, ok := errors.RootCause(err).(*http.RequestFailedError)
-			if !ok {
+			var reqestFailedError *http.RequestFailedError
+			if !errors.As(err, &reqestFailedError) {
 				return errors.Wrapf(ctx, err, "request to scale the application failed")
 			}
 

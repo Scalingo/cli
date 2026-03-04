@@ -17,7 +17,7 @@ import (
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v10"
 	scalingohttp "github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (

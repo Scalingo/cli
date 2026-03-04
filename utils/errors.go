@@ -2,12 +2,12 @@ package utils
 
 import (
 	"github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func IsRegionDisabledError(err error) bool {
-	reqerr, ok := errors.RootCause(err).(*http.RequestFailedError)
-	if !ok || reqerr.Code != 403 {
+	var reqerr *http.RequestFailedError
+	if !errors.As(err, &reqerr) || reqerr.Code != 403 {
 		return false
 	}
 	httperr, ok := reqerr.APIError.(http.ForbiddenError)

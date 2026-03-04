@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
@@ -39,8 +39,8 @@ func AskAndStopFreeTrial(ctx context.Context, c *scalingo.Client, callback func(
 // Return true if the given error is because of a Payment Required error and the free trial is
 // exceeded.
 func IsPaymentRequiredAndFreeTrialExceededError(err error) bool {
-	reqestFailedError, ok := errors.RootCause(err).(*http.RequestFailedError)
-	if !ok || reqestFailedError.Code != 402 {
+	var reqestFailedError *http.RequestFailedError
+	if !errors.As(err, &reqestFailedError) || reqestFailedError.Code != 402 {
 		return false
 	}
 	paymentRequiredErr, ok := reqestFailedError.APIError.(http.PaymentRequiredError)

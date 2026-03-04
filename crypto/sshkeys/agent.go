@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/ssh/agent"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ReadPrivateKeysFromAgent() ([]ssh.Signer, io.Closer, error) {

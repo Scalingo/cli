@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -37,7 +37,7 @@ func Login(ctx context.Context, opts LoginOpts) error {
 			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
 			io.Error("SSH connection failed.")
 			if opts.SSH {
-				if errors.RootCause(err) == netssh.ErrNoAuthSucceed {
+				if errors.Is(err, netssh.ErrNoAuthSucceed) {
 					return errors.Wrapf(ctx, err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
 				}
 				return errors.Wrapf(ctx, err, "fail to login with SSH")

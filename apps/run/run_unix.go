@@ -16,7 +16,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/go-scalingo/v10"

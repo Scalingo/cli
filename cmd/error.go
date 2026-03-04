@@ -20,7 +20,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
 	httpclient "github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type Sysinfo struct {
@@ -82,7 +82,7 @@ func displayError(ctx context.Context, err error) {
 	newReportError(currentUser, err).Report()
 	rollbar.Wait()
 
-	rootError := errors.RootCause(err)
+	rootError := rootCause(err)
 	if httpclient.IsRequestFailedError(rootError) {
 		displayRequestFailedError(rootError, currentUser, autherr, err)
 	} else if _, ok := rootError.(config.UnknownRegionError); ok {
@@ -149,12 +149,24 @@ func newReportError(currentUser *scalingo.User, err error) *ReportError {
 		System:  newSysinfo(),
 	}
 
-	rootError := errors.RootCause(err)
+	rootError := rootCause(err)
 	if httpclient.IsRequestFailedError(rootError) {
 		r.FailedRequest = rootError.(*httpclient.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r
+}
+
+func rootCause(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	root := err
+	for next := errors.UnwrapError(root); next != nil; next = errors.UnwrapError(next) {
+		root = next
+	}
+	return root
 }
 
 func newSysinfo() Sysinfo {

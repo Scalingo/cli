@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -32,8 +32,8 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
 	if err != nil {
-		scerr, ok := errors.RootCause(err).(*http.RequestFailedError)
-		if !ok || scerr.Code != 404 {
+		var scerr *http.RequestFailedError
+		if !errors.As(err, &scerr) || scerr.Code != 404 {
 			return errors.Wrapf(ctx, err, "fail to get the integration link for this app")
 		}
 	}

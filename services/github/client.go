@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/go-github/v47/github"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/go-scalingo/v10/debug"
 )

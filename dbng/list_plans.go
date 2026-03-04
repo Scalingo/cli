@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Scalingo/cli/addonproviders"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ListPlans(ctx context.Context, technology string) error {

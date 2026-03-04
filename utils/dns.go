@@ -4,7 +4,7 @@ import (
 	"context"
 	"net"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func IsCNAME(domain string) (bool, error) {

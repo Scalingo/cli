@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Password(prompt string) (string, error) {

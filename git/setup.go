@@ -9,7 +9,7 @@ import (
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10/debug"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type SetupParams struct {

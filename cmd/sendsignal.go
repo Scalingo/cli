@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -44,8 +44,7 @@ var (
 
 			err := apps.SendSignal(ctx, currentApp, c.String("signal"), c.Args().Slice())
 			if err != nil {
-				rootError := errors.RootCause(err)
-				errorQuit(ctx, rootError)
+				errorQuit(ctx, err)
 			}
 			return nil
 		},

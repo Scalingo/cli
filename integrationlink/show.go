@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 const integrationSettingsTemplateText = `
@@ -55,7 +55,8 @@ func Show(ctx context.Context, app string) error {
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
-	if scerr, ok := errors.RootCause(err).(*http.RequestFailedError); ok && scerr.Code == 404 {
+	var scerr *http.RequestFailedError
+	if errors.As(err, &scerr) && scerr.Code == 404 {
 		io.Statusf("Your app '%s' has no integration link.\n", app)
 		return nil
 	}

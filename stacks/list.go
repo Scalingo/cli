@@ -7,7 +7,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context, isWithDeprecatedFlag bool) error {
