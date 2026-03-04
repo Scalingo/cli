@@ -14,7 +14,6 @@ import (
 
 	"github.com/stvp/rollbar"
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -77,7 +76,7 @@ func displayError(ctx context.Context, err error) {
 	currentUser, autherr := config.C.CurrentUser(ctx)
 	if autherr != nil {
 		debug.Println("Fail to get current user")
-		debug.Println(errgo.Details(err))
+		debug.Println(err)
 	}
 
 	newReportError(currentUser, err).Report()
@@ -95,7 +94,7 @@ func displayError(ctx context.Context, err error) {
 
 func displayScalingoError(err error) {
 	io.Error("An error occurred:")
-	debug.Println(errgo.Details(err))
+	debug.Println(err)
 	message := err.Error()
 	fmt.Println(io.Indent(message, 7))
 }
@@ -132,7 +131,7 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 			io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
 		} else {
 			io.Error("An error occurred:")
-			debug.Println(errgo.Details(err))
+			debug.Println(err)
 			fmt.Println(io.Indent(err.Error(), 7))
 		}
 		return

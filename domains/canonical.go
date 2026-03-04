@@ -3,7 +3,7 @@ package domains
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -12,17 +12,17 @@ import (
 func SetCanonical(ctx context.Context, app, domain string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	d, err := findDomain(ctx, client, app, domain)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	_, err = client.DomainSetCanonical(ctx, app, d.ID)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	io.Statusf("Canonical domain set to %s\n", domain)
@@ -32,12 +32,12 @@ func SetCanonical(ctx context.Context, app, domain string) error {
 func UnsetCanonical(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = c.DomainUnsetCanonical(ctx, app)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	io.Status("Canonical domain disabled")

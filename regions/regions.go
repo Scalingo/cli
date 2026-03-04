@@ -5,7 +5,8 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 )
@@ -13,11 +14,11 @@ import (
 func List(ctx context.Context) error {
 	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get scalingo API client")
+		return errors.Wrapf(ctx, err, "fail to get scalingo API client")
 	}
 	regions, err := c.RegionsList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list available regions")
+		return errors.Wrapf(ctx, err, "fail to list available regions")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

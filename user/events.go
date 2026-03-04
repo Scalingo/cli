@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/events"
@@ -13,11 +13,11 @@ import (
 func Events(ctx context.Context, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	appEvents, pagination, err := c.UserEventsList(ctx, paginationReq)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	return events.DisplayTimeline(appEvents, pagination, events.DisplayTimelineOpts{DisplayAppName: true})

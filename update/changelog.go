@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/services/github"
@@ -14,7 +14,7 @@ import (
 func ShowLastChangelog() error {
 	cliLastRelease, err := github.NewClient().GetLatestRelease(context.Background())
 	if err != nil {
-		return errgo.Notef(err, "fail to get last CLI release")
+		return errors.Wrapf(context.Background(), err, "fail to get last CLI release")
 	}
 
 	if cliLastRelease.GetBody() == "" {

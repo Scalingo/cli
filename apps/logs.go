@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
@@ -19,28 +19,28 @@ type LogsRes struct {
 func Logs(ctx context.Context, appName string, stream bool, n int, filter string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	err = checkFilter(ctx, c, appName, filter)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	logsURLRes, err := c.LogsURL(ctx, appName)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	err = logs.Dump(ctx, logsURLRes.LogsURL, n, filter)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	if stream {
 		err := logs.Stream(ctx, logsURLRes.LogsURL, filter)
 		if err != nil {
-			return errgo.Mask(err, errgo.Any)
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 	}
 
@@ -62,7 +62,7 @@ func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter
 
 	processes, err := c.AppsContainerTypes(ctx, appName)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	filters := strings.Split(filter, "|")
@@ -77,7 +77,7 @@ func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter
 		}
 
 		if !strings.HasPrefix(f, ctName+"-") && f != ctName {
-			return errgo.Newf(
+			return errors.Newf(ctx,
 				"%s is not a valid container filter\n\nEXAMPLES:\n"+
 					"\"scalingo logs -F web\": logs of every web containers\n"+
 					"\"scalingo logs -F web-1\": logs of web container 1\n"+

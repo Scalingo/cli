@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -14,12 +14,12 @@ import (
 func OneOffStop(ctx context.Context, appName, oneOffLabel string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client to stop a running one-off")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client to stop a running one-off")
 	}
 
 	containers, err := c.AppsContainersPs(ctx, appName)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the application containers to get the ID of the container to stop")
+		return errors.Wrapf(ctx, err, "fail to list the application containers to get the ID of the container to stop")
 	}
 
 	var containerToStop *scalingo.Container
@@ -35,7 +35,7 @@ func OneOffStop(ctx context.Context, appName, oneOffLabel string) error {
 
 	err = c.ContainersStop(ctx, appName, containerToStop.ID)
 	if err != nil {
-		return errgo.Notef(err, "fail to stop the container '%s'", oneOffLabel)
+		return errors.Wrapf(ctx, err, "fail to stop the container '%s'", oneOffLabel)
 	}
 
 	io.Statusf("Container one-off %v of the app %v is being asynchronously stopped...\n", io.Bold(containerToStop.Label), io.Bold(appName))

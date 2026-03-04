@@ -7,7 +7,8 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
-	errgo "gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -17,11 +18,11 @@ import (
 func ListBackups(ctx context.Context, app, addon string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	backups, err := client.BackupList(ctx, app, addon)
 	if err != nil {
-		return errgo.Notef(err, "fail to list backups")
+		return errors.Wrapf(ctx, err, "fail to list backups")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

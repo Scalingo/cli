@@ -30,14 +30,14 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "get Scalingo client to update addon config")
+		return errors.Wrapf(ctx, err, "get Scalingo client to update addon config")
 	}
 
 	// If addon does not contain a UUID, we consider it contains an addon type (e.g. MongoDB)
 	if !strings.HasPrefix(addon, "ad-") {
 		addon, err = utils.GetAddonUUIDFromType(ctx, app, addon)
 		if err != nil {
-			return errors.Notef(ctx, err, "fail to get the addon UUID based on its type")
+			return errors.Wrapf(ctx, err, "fail to get the addon UUID based on its type")
 		}
 	}
 
@@ -45,7 +45,7 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 	// to only overload the specified options
 	db, err := c.DatabaseShow(ctx, app, addon)
 	if err != nil {
-		return errors.Notef(ctx, err, "get database information")
+		return errors.Wrapf(ctx, err, "get database information")
 	}
 
 	weekdayLocal, startingHourLocal := utils.ConvertDayAndHourToTimezone(
@@ -58,14 +58,14 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 	if options.MaintenanceWindowDay != nil {
 		day, ok := weekdayNameToWeekdayOrderMap[strings.ToLower(*options.MaintenanceWindowDay)]
 		if !ok {
-			return errors.Notef(ctx, err, "invalid weekday '%s'", *options.MaintenanceWindowDay)
+			return errors.Wrapf(ctx, err, "invalid weekday '%s'", *options.MaintenanceWindowDay)
 		}
 		weekdayLocal = day
 	}
 
 	if options.MaintenanceWindowHour != nil {
 		if *options.MaintenanceWindowHour < 0 || *options.MaintenanceWindowHour > 23 {
-			return errors.Notef(ctx, err, "invalid starting hour '%d': it must be between 0 and 23", *options.MaintenanceWindowHour)
+			return errors.Wrapf(ctx, err, "invalid starting hour '%d': it must be between 0 and 23", *options.MaintenanceWindowHour)
 		}
 		startingHourLocal = *options.MaintenanceWindowHour
 	}
@@ -77,7 +77,7 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 		StartingHourUTC: utils.IntPtr(startingHourUTC),
 	})
 	if err != nil {
-		return errors.Notef(ctx, err, "update the database maintenance window")
+		return errors.Wrapf(ctx, err, "update the database maintenance window")
 	}
 
 	fmt.Println("Addon config updated.")

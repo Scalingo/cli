@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
@@ -14,7 +14,7 @@ import (
 func AddonsAddAutoComplete(ctx context.Context) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	resources, err := client.AddonProvidersList(ctx)
 	if len(os.Args) > 1 && err == nil {

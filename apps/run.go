@@ -28,7 +28,7 @@ import (
 	"github.com/Scalingo/cli/term"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
-	errors "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type RunOpts struct {
@@ -151,7 +151,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if len(opts.Files) > 0 {
 		err := runCtx.uploadFiles(ctx, runCtx.attachURL+"/files", opts.Files)
 		if err != nil {
-			return err
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 	}
 

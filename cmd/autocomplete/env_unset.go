@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 )
@@ -18,7 +19,7 @@ func EnvUnsetAutoComplete(ctx context.Context, c *cli.Command) error {
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	variables, err := client.VariablesList(ctx, appName)
 	if err == nil {

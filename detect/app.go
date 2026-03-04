@@ -7,7 +7,6 @@ import (
 
 	stderrors "github.com/pkg/errors"
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -64,7 +63,7 @@ func GetDatabaseFromArgs(ctx context.Context, c *cli.Command) (string, string, e
 		databaseName := c.Args().First()
 		addonID, err := GetAddonIDFromDatabase(ctx, databaseName)
 		if err != nil {
-			return "", "", err
+			return "", "", errors.Wrapf(ctx, err, "fail to resolve addon ID for database %s", databaseName)
 		}
 		return databaseName, addonID, nil
 	default:
@@ -206,7 +205,7 @@ func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, st
 func GetAppNameFromGitRemote(directory string, remoteName string) (string, error) {
 	remotes, err := utils.ScalingoGitRemotes(directory)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(context.Background(), err, "operation failed")
 	}
 
 	altRemoteName := "scalingo-" + remoteName
@@ -217,7 +216,7 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 		}
 	}
 
-	return "", errgo.Newf("[detect] Scalingo Git remote hasn't been found")
+	return "", errors.Newf(context.Background(), "[detect] Scalingo Git remote hasn't been found")
 }
 
 // RemoteNameFromFlags returns the remote name specified in command flags

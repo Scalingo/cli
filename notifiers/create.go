@@ -3,7 +3,7 @@ package notifiers
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -20,20 +20,20 @@ type ProvisionParams struct {
 func Provision(ctx context.Context, app, platformName string, params ProvisionParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	debug.Printf("[Provision] params: %+v", params)
 
 	if app == "" {
-		return errgo.New("no app defined")
+		return errors.New(ctx, "no app defined")
 	}
 	if platformName == "" {
-		return errgo.New("no platform defined")
+		return errors.New(ctx, "no platform defined")
 	}
 
 	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list event types")
+		return errors.Wrapf(ctx, err, "fail to list event types")
 	}
 	for _, name := range params.SelectedEventNames {
 		for _, t := range eventTypes {
@@ -47,22 +47,22 @@ func Provision(ctx context.Context, app, platformName string, params ProvisionPa
 	if len(params.CollaboratorUsernames) > 0 {
 		params.UserIDs, err = collaboratorUserIDs(ctx, c, app, params.CollaboratorUsernames)
 		if err != nil {
-			return errgo.Notef(err, "invalid collaborator usernames")
+			return errors.Wrapf(ctx, err, "invalid collaborator usernames")
 		}
 	}
 
 	platforms, err := c.NotificationPlatformByName(ctx, platformName)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	if len(platforms) <= 0 {
-		return errgo.Newf("notification platform \"%s\" has not been found", platformName)
+		return errors.Newf(ctx, "notification platform \"%s\" has not been found", platformName)
 	}
 	params.PlatformID = platforms[0].ID
 
 	baseNotifier, err := c.NotifierProvision(ctx, app, params.NotifierParams)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	notifier := baseNotifier.Specialize()
 
@@ -78,12 +78,12 @@ func collaboratorUserIDs(ctx context.Context, c *scalingo.Client, app string, us
 
 	collaborators, err := c.CollaboratorsList(ctx, app)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list collaborators")
+		return nil, errors.Wrapf(ctx, err, "fail to list collaborators")
 	}
 
 	scapp, err := c.AppsShow(ctx, app)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get application information")
+		return nil, errors.Wrapf(ctx, err, "fail to get application information")
 	}
 
 	var id string
@@ -94,7 +94,7 @@ func collaboratorUserIDs(ctx context.Context, c *scalingo.Client, app string, us
 		} else {
 			for _, c := range collaborators {
 				if c.Username == u && c.Status == "pending" {
-					return nil, errgo.Newf("%v is a collaborator but their invitation is still pending", c.Username)
+					return nil, errors.Newf(ctx, "%v is a collaborator but their invitation is still pending", c.Username)
 				} else if c.Username == u {
 					id = c.UserID
 					break
@@ -102,7 +102,7 @@ func collaboratorUserIDs(ctx context.Context, c *scalingo.Client, app string, us
 			}
 		}
 		if id == "" {
-			return nil, errgo.Newf("no such collaborator: %v", u)
+			return nil, errors.Newf(ctx, "no such collaborator: %v", u)
 		}
 
 		ids = append(ids, id)

@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/apps"
 )
@@ -22,12 +22,12 @@ func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 	}
 	influxdbURL, username, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"http", "https"})
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	host, port, err := net.SplitHostPort(influxdbURL.Host)
 	if err != nil {
-		return errgo.Newf("%v has an invalid host", influxdbURL)
+		return errors.Newf(ctx, "%v has an invalid host", influxdbURL)
 	}
 
 	cmd := []string{"dbclient-fetcher", "influxdb", "&&", "influx"}
@@ -47,7 +47,7 @@ func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 
 	err = apps.Run(ctx, runOpts)
 	if err != nil {
-		return errgo.Newf("fail to run InfluxDB console: %v", err)
+		return errors.Newf(ctx, "fail to run InfluxDB console: %v", err)
 	}
 
 	return nil

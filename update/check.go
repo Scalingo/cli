@@ -1,13 +1,14 @@
 package update
 
 import (
+	"context"
 	"fmt"
 	stdio "io"
 	"net/http"
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -55,7 +56,7 @@ func Check() error {
 	}
 
 	if gotAnError {
-		return errgo.New("Update checker: connection error")
+		return errors.New(context.Background(), "Update checker: connection error")
 	}
 	if version == lastVersion {
 		return nil
@@ -73,12 +74,12 @@ func getLastVersion() (string, error) {
 
 	res, err := client.Get(lastVersionURL)
 	if err != nil {
-		return "", errgo.Mask(err)
+		return "", errors.Wrap(context.Background(), err, "operation failed")
 	}
 	defer res.Body.Close()
 	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
-		return "", errgo.Mask(err)
+		return "", errors.Wrap(context.Background(), err, "operation failed")
 	}
 
 	return strings.TrimSpace(string(body)), nil

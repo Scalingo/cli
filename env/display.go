@@ -2,10 +2,10 @@ package env
 
 import (
 	"context"
-	"errors"
+	stderrors "errors"
 	"fmt"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 )
@@ -13,11 +13,11 @@ import (
 func Display(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	vars, err := c.VariablesList(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the environment variables")
+		return errors.Wrapf(ctx, err, "fail to list the environment variables")
 	}
 
 	for _, v := range vars {
@@ -29,11 +29,11 @@ func Display(ctx context.Context, app string) error {
 func Get(ctx context.Context, appName, variableName string) (string, error) {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get Scalingo client to get an environment variable")
+		return "", errors.Wrapf(ctx, err, "fail to get Scalingo client to get an environment variable")
 	}
 	vars, err := c.VariablesListWithoutAlias(ctx, appName)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to list the environment variables")
+		return "", errors.Wrapf(ctx, err, "fail to list the environment variables")
 	}
 
 	for _, v := range vars {
@@ -41,5 +41,5 @@ func Get(ctx context.Context, appName, variableName string) (string, error) {
 			return v.Value, nil
 		}
 	}
-	return "", errors.New("environment variable not found")
+	return "", stderrors.New("environment variable not found")
 }

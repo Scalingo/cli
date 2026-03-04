@@ -18,12 +18,12 @@ import (
 func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	maintenanceInfo, err := c.DatabaseShowMaintenance(ctx, app, addonUUID, maintenanceID)
 	if err != nil {
-		return errors.Notef(ctx, err, "get the maintenance")
+		return errors.Wrapf(ctx, err, "get the maintenance")
 	}
 
 	var startedAtMessage string
@@ -34,7 +34,7 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 	} else {
 		database, err := c.DatabaseShow(ctx, app, addonUUID)
 		if err != nil {
-			return errors.Notef(ctx, err, "get database information")
+			return errors.Wrapf(ctx, err, "get database information")
 		}
 
 		nextMaintenanceWindowStartingDate, nextMaintenanceWindowEndingDate := getNextLocalMaintenanceWindow(time.Now(), database.MaintenanceWindow, maintenanceInfo.Status)

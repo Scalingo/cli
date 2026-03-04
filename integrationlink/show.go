@@ -51,7 +51,7 @@ func enabledIcon(enabled bool) string {
 func Show(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
@@ -60,7 +60,7 @@ func Show(ctx context.Context, app string) error {
 		return nil
 	}
 	if err != nil {
-		return errors.Notef(ctx, err, "fail to get integration link for this app")
+		return errors.Wrapf(ctx, err, "fail to get integration link for this app")
 	}
 
 	templater, err := template.New("integrationSettings").
@@ -71,7 +71,7 @@ func Show(ctx context.Context, app string) error {
 		Parse(integrationSettingsTemplateText)
 
 	if err != nil {
-		return errors.Notef(ctx, err, "invalid integration settings template")
+		return errors.Wrapf(ctx, err, "invalid integration settings template")
 	}
 
 	settings := IntegrationSettings{
@@ -95,7 +95,7 @@ func Show(ctx context.Context, app string) error {
 	err = templater.Execute(os.Stdout, settings)
 
 	if err != nil {
-		return errors.Notef(ctx, err, "failed rendering integration settings")
+		return errors.Wrapf(ctx, err, "failed rendering integration settings")
 	}
 
 	return nil

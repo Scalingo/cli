@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/logs"
@@ -20,23 +20,23 @@ type LogsOpts struct {
 func Logs(ctx context.Context, app, addonUUID string, opts LogsOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	url, err := c.AddonLogsURL(ctx, app, addonUUID)
 	if err != nil {
-		return errgo.Notef(err, "fail to get log URL")
+		return errors.Wrapf(ctx, err, "fail to get log URL")
 	}
 
 	err = logs.Dump(ctx, url, opts.Count, "")
 	if err != nil {
-		return errgo.Notef(err, "fail to dump logs")
+		return errors.Wrapf(ctx, err, "fail to dump logs")
 	}
 
 	if opts.Follow {
 		err := logs.Stream(ctx, url, "")
 		if err != nil {
-			return errgo.Notef(err, "fail to stream logs")
+			return errors.Wrapf(ctx, err, "fail to stream logs")
 		}
 	}
 	return nil

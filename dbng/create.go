@@ -65,7 +65,7 @@ func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID 
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			continue
 		} else if err != nil {
-			return err
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 		if db.Database.Status == scalingo.DatabaseStatusRunning {
 			break

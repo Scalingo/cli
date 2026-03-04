@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/Scalingo/go-scalingo/v10/http"
-	errors "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func IsRegionDisabledError(err error) bool {

@@ -3,7 +3,7 @@ package logdrains
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -19,7 +19,7 @@ type AddDrainOpts struct {
 func Add(ctx context.Context, app, database string, opts AddDrainOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client to add a log drain")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client to add a log drain")
 	}
 
 	if database != "" {
@@ -47,7 +47,7 @@ func Add(ctx context.Context, app, database string, opts AddDrainOpts) error {
 	isAddonIDPresent := false
 	addons, err := c.AddonsList(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to list addons")
+		return errors.Wrapf(ctx, err, "fail to list addons")
 	}
 
 	for _, addon := range addons {
@@ -69,7 +69,7 @@ func Add(ctx context.Context, app, database string, opts AddDrainOpts) error {
 		}
 	}
 	if !isAddonIDPresent && opts.AddonID != "" {
-		return errgo.Notef(nil, "fail to add addon: addon_uuid doesn't exist for this application")
+		return errors.New(ctx, "fail to add addon: addon_uuid doesn't exist for this application")
 	}
 	return nil
 }

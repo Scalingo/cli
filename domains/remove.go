@@ -3,7 +3,7 @@ package domains
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -13,16 +13,16 @@ import (
 func Remove(ctx context.Context, app string, domain string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	d, err := findDomain(ctx, client, app, domain)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	err = client.DomainsRemove(ctx, app, d.ID)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	io.Status("The domain", d.Name, "has been deleted")
@@ -32,7 +32,7 @@ func Remove(ctx context.Context, app string, domain string) error {
 func findDomain(ctx context.Context, client *scalingo.Client, app string, domain string) (scalingo.Domain, error) {
 	domains, err := client.DomainsList(ctx, app)
 	if err != nil {
-		return scalingo.Domain{}, errgo.Mask(err)
+		return scalingo.Domain{}, err
 	}
 
 	for _, d := range domains {
@@ -40,5 +40,5 @@ func findDomain(ctx context.Context, client *scalingo.Client, app string, domain
 			return d, nil
 		}
 	}
-	return scalingo.Domain{}, errgo.New("There is no such domain, please ensure you've added it correctly.\nhttps://my.scalingo.com/apps/" + app + "/domains")
+	return scalingo.Domain{}, errors.New(ctx, "There is no such domain, please ensure you've added it correctly.\nhttps://my.scalingo.com/apps/"+app+"/domains")
 }

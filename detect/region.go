@@ -1,11 +1,13 @@
 package detect
 
 import (
+	"context"
 	"regexp"
 	"strings"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
@@ -56,7 +58,7 @@ func extractRegionFromGitRemote(url string, rc *config.RegionsCache) (string, er
 				return region.Name, nil
 			}
 		}
-		return "", errgo.Newf("[detect] no valid region could be found in the Git remote")
+		return "", errors.Newf(context.Background(), "[detect] no valid region could be found in the Git remote")
 	}
-	return "", errgo.Newf("[detect] could not extract URL from Git remote")
+	return "", errors.Newf(context.Background(), "[detect] could not extract URL from Git remote")
 }

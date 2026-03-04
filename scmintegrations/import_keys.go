@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -18,24 +19,24 @@ func ImportKeys(ctx context.Context, id string) error {
 
 	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	integration, err := c.SCMIntegrationsShow(ctx, id)
 	if err != nil {
-		return errgo.Notef(err, "not linked SCM integration or unknown SCM integration")
+		return errors.Wrapf(ctx, err, "not linked SCM integration or unknown SCM integration")
 	}
 
 	importedKeys, err := c.SCMIntegrationsImportKeys(ctx, id)
 	if err != nil {
-		return errgo.Notef(err, "fail to import keys")
+		return errors.Wrapf(ctx, err, "fail to import keys")
 	}
 
 	nbrKeys := len(importedKeys)
 	if nbrKeys == 0 {
 		alreadyImportedKeys, err := keysContainsName(ctx, c, integration.SCMType.Str())
 		if err != nil {
-			return errgo.Notef(err, "fail to list already imported keys")
+			return errors.Wrapf(ctx, err, "fail to list already imported keys")
 		}
 		alreadyImportedKeysLength := len(alreadyImportedKeys)
 
@@ -80,7 +81,7 @@ func ImportKeys(ctx context.Context, id string) error {
 func keysContainsName(ctx context.Context, c *scalingo.Client, name string) ([]scalingo.Key, error) {
 	keys, err := c.KeysList(ctx)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get keys")
+		return nil, errors.Wrapf(ctx, err, "fail to get keys")
 	}
 
 	var keysAlreadyImported []scalingo.Key

@@ -5,11 +5,10 @@ import (
 	stdio "io"
 	"os"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Logs(ctx context.Context, app, deploymentID string) error {
@@ -23,7 +22,7 @@ func Logs(ctx context.Context, app, deploymentID string) error {
 			return errors.Wrapf(ctx, err, "fail to get the most recent deployment")
 		}
 		if len(deployments) == 0 {
-			return errgo.New("This application has not been deployed")
+			return errors.New(ctx, "This application has not been deployed")
 		}
 		deploymentID = deployments[0].ID
 		io.Infof("-----> Selected the most recent deployment (%s)\n", deploymentID)
@@ -31,13 +30,13 @@ func Logs(ctx context.Context, app, deploymentID string) error {
 	deploy, err := client.Deployment(ctx, app, deploymentID)
 
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	res, err := client.DeploymentLogs(ctx, deploy.Links.Output)
 
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	defer res.Body.Close()

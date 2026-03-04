@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"context"
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"net/url"
 	"os"
 	"strconv"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v3"
@@ -22,7 +22,6 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
-	scalingoerrors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -104,7 +103,7 @@ List of available integrations:
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
 			if err != nil {
-				errorQuit(ctx, errgo.Notef(err, "error parsing the repository url"))
+				errorQuit(ctx, errors.Wrapf(ctx, err, "error parsing the repository url"))
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
@@ -113,7 +112,7 @@ List of available integrations:
 
 			integrationType, err := scmintegrations.GetTypeFromURL(ctx, integrationURL)
 			if err != nil {
-				if scalingoerrors.RootCause(err) == scmintegrations.ErrNotFound {
+				if errors.Is(err, scmintegrations.ErrNotFound) {
 					// If no integration matches the given URL, display a helpful status
 					// message
 					switch integrationURLParsed.Host {
@@ -144,26 +143,26 @@ List of available integrations:
 				autoDeploy := c.Bool("auto-deploy")
 				noAutoDeploy := c.Bool("no-auto-deploy")
 				if autoDeploy && noAutoDeploy {
-					errorQuitWithHelpMessage(ctx, errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
 				}
 
 				deployReviewApps := c.Bool("deploy-review-apps")
 				noDeployReviewApps := c.Bool("no-deploy-review-apps")
 				if deployReviewApps && noDeployReviewApps {
-					errorQuitWithHelpMessage(ctx, errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
 				}
 
 				destroyOnClose := c.Bool("destroy-on-close")
 				noDestroyOnClose := c.Bool("no-destroy-on-close")
 				if destroyOnClose && noDestroyOnClose {
-					errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
 
 				destroyOnStale := c.Bool("destroy-on-stale")
 				noDestroyOnStale := c.Bool("no-destroy-on-stale")
 				if destroyOnStale && noDestroyOnStale {
-					errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
@@ -171,13 +170,13 @@ List of available integrations:
 				noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 				if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-					errorQuitWithHelpMessage(ctx, errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-					errorQuitWithHelpMessage(ctx, errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, stderrors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
@@ -201,8 +200,8 @@ List of available integrations:
 
 			err = integrationlink.Create(ctx, currentApp, integrationType, integrationURL, params)
 			if err != nil {
-				scerr, ok := scalingoerrors.RootCause(err).(*http.RequestFailedError)
-				if ok {
+				var scerr *http.RequestFailedError
+				if errors.As(err, &scerr) {
 					if scerr.Code == 404 {
 						io.Error("Fail to create SCM repository integration: the repository has not been found")
 						io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
@@ -270,35 +269,35 @@ List of available integrations:
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
 			if autoDeploy && noAutoDeploy {
-				errorQuitWithHelpMessage(ctx, errors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
 			}
 			deployReviewApps := c.Bool("deploy-review-apps")
 			noDeployReviewApps := c.Bool("no-deploy-review-apps")
 			if deployReviewApps && noDeployReviewApps {
-				errorQuitWithHelpMessage(ctx, errors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
 			}
 			destroyOnClose := c.Bool("destroy-on-close")
 			noDestroyOnClose := c.Bool("no-destroy-on-close")
 			if destroyOnClose && noDestroyOnClose {
-				errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
 			}
 			destroyOnStale := c.Bool("destroy-on-stale")
 			noDestroyOnStale := c.Bool("no-destroy-on-stale")
 			if destroyOnStale && noDestroyOnStale {
-				errorQuitWithHelpMessage(ctx, errors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
 			}
 
 			allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
 			noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-				errorQuitWithHelpMessage(ctx, errors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 			if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-				errorQuitWithHelpMessage(ctx, errors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, stderrors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			currentApp := detect.CurrentApp(c)
@@ -419,7 +418,7 @@ List of available integrations:
 
 			pullRequestID, err := strconv.Atoi(c.Args().First())
 			if err != nil {
-				errorQuit(ctx, errgo.Notef(err, "invalid pull / merge request id"))
+				errorQuit(ctx, errors.Wrapf(ctx, err, "invalid pull / merge request id"))
 			}
 
 			pullRequest, err := integrationlink.PullRequest(ctx, currentApp, pullRequestID)
@@ -458,7 +457,7 @@ List of available integrations:
 func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	var params scalingo.SCMRepoLinkCreateParams
 	if config.C.DisableInteractive {
-		return params, errors.New("need at least one integration link parameter")
+		return params, stderrors.New("need at least one integration link parameter")
 	}
 	qs := []*survey.Question{
 		{
@@ -480,7 +479,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	}{}
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		return params, errgo.Notef(err, "error enquiring about branch and automatic review apps deployment")
+		return params, errors.Wrapf(context.Background(), err, "error enquiring about branch and automatic review apps deployment")
 	}
 
 	if answers.Branch != "" {
@@ -499,7 +498,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnClose,
 	}, &destroyOnClose, nil)
 	if err != nil {
-		return params, errgo.Notef(err, "error enquiring about destroy on close")
+		return params, errors.Wrapf(context.Background(), err, "error enquiring about destroy on close")
 	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
@@ -509,7 +508,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, errgo.Notef(err, "error enquiring about review apps destroy delay")
+			return params, errors.Wrapf(context.Background(), err, "error enquiring about review apps destroy delay")
 		}
 		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
 		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
@@ -522,7 +521,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnStale,
 	}, &destroyOnStale, nil)
 	if err != nil {
-		return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
+		return params, errors.Wrapf(context.Background(), err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
@@ -532,7 +531,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 			Default: "0",
 		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete))
 		if err != nil {
-			return params, errgo.Notef(err, "error enquiring about stale review apps destroy")
+			return params, errors.Wrapf(context.Background(), err, "error enquiring about stale review apps destroy")
 		}
 		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
 		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
@@ -541,7 +540,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 
 	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
 	if err != nil {
-		return params, errgo.Notef(err, "error enquiring about automatic review apps creation from forks")
+		return params, errors.Wrapf(context.Background(), err, "error enquiring about automatic review apps creation from forks")
 	}
 	params.AutomaticCreationFromForksAllowed = &forksAllowed
 
@@ -551,14 +550,14 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 func validateHoursBeforeDelete(ans interface{}) error {
 	str, ok := ans.(string)
 	if !ok {
-		return errors.New("must be a string")
+		return stderrors.New("must be a string")
 	}
 	i, err := strconv.ParseInt(str, 10, 32)
 	if err != nil {
-		return errgo.Notef(err, "error parsing hours")
+		return errors.Wrapf(context.Background(), err, "error parsing hours")
 	}
 	if i < 0 {
-		return errors.New("must be positive")
+		return stderrors.New("must be positive")
 	}
 	return nil
 }
@@ -576,7 +575,7 @@ func askForConfirmationToAllowReviewAppsFromForks(prompt string) (bool, error) {
 	}, &confirmed, nil)
 
 	if err != nil {
-		return false, err
+		return false, errors.Wrap(context.Background(), err, "fail to confirm review apps from forks")
 	}
 
 	return confirmed, nil

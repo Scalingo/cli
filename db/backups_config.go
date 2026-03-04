@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	errgo "gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -17,24 +17,24 @@ import (
 func BackupsConfiguration(ctx context.Context, app, addon string, params scalingo.DatabaseUpdatePeriodicBackupsConfigParams) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	db, err := client.DatabaseShow(ctx, app, addon)
 	if err != nil {
-		return errgo.Notef(err, "fail to get database current configuration")
+		return errors.Wrapf(ctx, err, "fail to get database current configuration")
 	}
 
 	if params.ScheduledAt != nil && len(db.PeriodicBackupsScheduledAt) > 1 {
 		msg := "Your database is backed up multiple times a day at " +
 			formatScheduledAt(db.PeriodicBackupsScheduledAt) +
 			". Please ask the support to update the frequency of these backups."
-		return errgo.New(msg)
+		return errors.New(ctx, msg)
 	}
 
 	db, err = client.DatabaseUpdatePeriodicBackupsConfig(ctx, app, addon, params)
 	if err != nil {
-		return errgo.Notef(err, "fail to configure the periodic backups")
+		return errors.Wrapf(ctx, err, "fail to configure the periodic backups")
 	}
 
 	if db.PeriodicBackupsEnabled {

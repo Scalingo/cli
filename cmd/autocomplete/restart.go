@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 )
@@ -18,11 +19,11 @@ func RestartAutoComplete(ctx context.Context, c *cli.Command) error {
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	processes, err := client.AppsContainerTypes(ctx, appName)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	for _, ct := range processes {
 		fmt.Println(ct.Name)

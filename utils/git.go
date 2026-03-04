@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"os"
 	"path"
 	"path/filepath"
@@ -9,7 +10,8 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/go-scalingo/v10/debug"
 )
@@ -53,12 +55,12 @@ func ScalingoRepoAutoComplete(dir string) []string {
 func ScalingoGitRemotes(directory string) ([]*git.Remote, error) {
 	repo, err := git.PlainOpen(directory)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to initialize the Git repository")
+		return nil, errors.Wrapf(context.Background(), err, "fail to initialize the Git repository")
 	}
 
 	remotes, err := repo.Remotes()
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to list the remotes")
+		return nil, errors.Wrapf(context.Background(), err, "fail to list the remotes")
 	}
 
 	matchedRemotes := []*git.Remote{}
@@ -84,7 +86,7 @@ func ScalingoGitRemotes(directory string) ([]*git.Remote, error) {
 func AddGitRemote(url string, name string) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return errgo.Notef(err, "fail to initialize the Git repository")
+		return errors.Wrapf(context.Background(), err, "fail to initialize the Git repository")
 	}
 
 	_, err = repo.CreateRemote(&gitconfig.RemoteConfig{
@@ -92,7 +94,7 @@ func AddGitRemote(url string, name string) error {
 		URLs: []string{url},
 	})
 	if err != nil {
-		return errgo.Notef(err, "fail to add the Git remote")
+		return errors.Wrapf(context.Background(), err, "fail to add the Git remote")
 	}
 
 	return nil

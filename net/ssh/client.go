@@ -5,15 +5,15 @@ import (
 	stdio "io"
 
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/crypto/sshkeys"
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
-	ErrNoAuthSucceed = errgo.Newf("No authentication method has succeeded")
+	ErrNoAuthSucceed = errors.Newf(context.Background(), "No authentication method has succeeded")
 )
 
 type ConnectOpts struct {
@@ -30,7 +30,7 @@ func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, er
 		var agentConnection stdio.Closer
 		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
 		if err != nil {
-			return nil, nil, errgo.Mask(err)
+			return nil, nil, errors.Wrap(ctx, err, "fail to read private keys from SSH agent")
 		}
 		defer agentConnection.Close()
 	}
@@ -41,7 +41,7 @@ func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, er
 		}
 		privateKey, err := sshkeys.ReadPrivateKey(ctx, opts.Identity)
 		if err != nil {
-			return nil, nil, errgo.Mask(err)
+			return nil, nil, errors.Wrapf(ctx, err, "fail to read SSH private key from %s", opts.Identity)
 		}
 		privateKeys = append(privateKeys, privateKey)
 	}
@@ -53,7 +53,7 @@ func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, er
 		Keys: privateKeys,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.Wrapf(ctx, err, "fail to connect to SSH server %s", opts.Host)
 	}
 	debug.Println("SSH connection:", client.LocalAddr(), "Key:", string(key.PublicKey().Marshal()))
 	return client, key, nil

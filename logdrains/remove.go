@@ -3,11 +3,10 @@ package logdrains
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type RemoveAddonOpts struct {
@@ -19,7 +18,7 @@ type RemoveAddonOpts struct {
 func Remove(ctx context.Context, app, database string, opts RemoveAddonOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client to remove a log drain from the application")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client to remove a log drain from the application")
 	}
 
 	if database != "" {
@@ -35,7 +34,7 @@ func Remove(ctx context.Context, app, database string, opts RemoveAddonOpts) err
 		// addon only
 		err := c.LogDrainAddonRemove(ctx, app, opts.AddonID, opts.URL)
 		if err != nil {
-			return errgo.Notef(err, "fail to remove the log drain from the addon %s", opts.AddonID)
+			return errors.Wrapf(ctx, err, "fail to remove the log drain from the addon %s", opts.AddonID)
 		}
 		io.Status("The log drain", opts.URL, "has been deleted from the addon", opts.AddonID)
 		return nil
@@ -51,7 +50,7 @@ func Remove(ctx context.Context, app, database string, opts RemoveAddonOpts) err
 	if !opts.OnlyApp {
 		addons, err := c.AddonsList(ctx, app)
 		if err != nil {
-			return errgo.Notef(err, "fail to list addons to remove log drain")
+			return errors.Wrapf(ctx, err, "fail to list addons to remove log drain")
 		}
 
 		for _, addon := range addons {

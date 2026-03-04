@@ -9,7 +9,8 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
@@ -18,17 +19,17 @@ import (
 func Details(ctx context.Context, app, ID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	baseNotifier, err := c.NotifierByID(ctx, app, ID)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	notifier := baseNotifier.Specialize()
 
 	eventTypes, err := c.EventTypesList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list event types")
+		return errors.Wrapf(ctx, err, "fail to list event types")
 	}
 
 	displayDetails(notifier, eventTypes)

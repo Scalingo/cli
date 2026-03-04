@@ -4,12 +4,13 @@
 package term
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 // IsTerminal returns true if f is a terminal.
@@ -39,7 +40,7 @@ func Restore(f *os.File) error {
 func Cols() (int, error) {
 	cols, err := tput("cols")
 	if err != nil {
-		return 0, errgo.Mask(err, errgo.Any)
+		return 0, errors.Wrap(context.Background(), err, "fail to get terminal columns")
 	}
 	return strconv.Atoi(cols)
 }
@@ -47,7 +48,7 @@ func Cols() (int, error) {
 func Lines() (int, error) {
 	cols, err := tput("lines")
 	if err != nil {
-		return 0, errgo.Mask(err, errgo.Any)
+		return 0, errors.Wrap(context.Background(), err, "fail to get terminal lines")
 	}
 	return strconv.Atoi(cols)
 }
@@ -57,7 +58,7 @@ func tput(what string) (string, error) {
 	c.Stderr = os.Stderr
 	out, err := c.Output()
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(context.Background(), err, "operation failed")
 	}
 	return strings.TrimSpace(string(out)), nil
 }

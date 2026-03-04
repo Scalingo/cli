@@ -8,7 +8,8 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
@@ -23,13 +24,13 @@ const (
 func Stats(ctx context.Context, app string, stream bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	if stream {
 		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 		displayLiveStatsTable(stats.Stats)
 
@@ -40,7 +41,7 @@ func Stats(ctx context.Context, app string, stream bool) error {
 				stats, err := c.AppsStats(ctx, app)
 				if err != nil {
 					ticker.Stop()
-					return errgo.Mask(err)
+					return errors.Wrap(ctx, err, "operation failed")
 				}
 				displayLiveStatsTable(stats.Stats)
 			}
@@ -48,7 +49,7 @@ func Stats(ctx context.Context, app string, stream bool) error {
 	} else {
 		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 		return displayStatsTable(stats.Stats)
 	}

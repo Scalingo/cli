@@ -15,7 +15,8 @@ import (
 	"syscall"
 
 	"golang.org/x/term"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/httpclient"
 	"github.com/Scalingo/go-scalingo/v10"
@@ -61,7 +62,7 @@ func HandleSignal(ctx context.Context, c *scalingo.Client, s os.Signal, socket n
 func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 	cols, lines, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
-		return errgo.Notef(err, "fail to get the terminal size")
+		return errors.Wrapf(ctx, err, "fail to get the terminal size")
 	}
 
 	params := UpdateTtyParams{
@@ -72,22 +73,22 @@ func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJSON))
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	token, err := c.GetAccessToken(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get access token")
+		return errors.Wrapf(ctx, err, "fail to get access token")
 	}
 	req.SetBasicAuth("", token)
 	debug.Printf("Updating TTY Size: PUT %v %+v", url, params)
 
 	res, err := httpclient.Do(req)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return errgo.Newf("Invalid error code from run server: %s", res.Status)
+		return errors.Newf(ctx, "Invalid error code from run server: %s", res.Status)
 	}
 
 	return nil

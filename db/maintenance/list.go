@@ -17,12 +17,12 @@ import (
 func List(ctx context.Context, app string, addonName string, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	maintenances, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationReq)
 	if err != nil {
-		return errors.Notef(ctx, err, "list the database maintenance")
+		return errors.Wrapf(ctx, err, "list the database maintenance")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

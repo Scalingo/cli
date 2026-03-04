@@ -6,22 +6,22 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 func Show(ctx context.Context, appID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	reviewApps, err := c.SCMRepoLinkReviewApps(ctx, appID)
 	if err != nil {
-		return errgo.Notef(err, "fail to get review apps for this app")
+		return errors.Wrapf(ctx, err, "fail to get review apps for this app")
 	}
 	if len(reviewApps) == 0 {
 		io.Statusf("No review app for '%s' or specified app is not a parent app.\n", appID)
@@ -35,7 +35,7 @@ func Show(ctx context.Context, appID string) error {
 
 		app, err := c.AppsShow(ctx, ra.AppID)
 		if err != nil {
-			return errgo.Notef(err, "fail to get app from review app")
+			return errors.Wrapf(ctx, err, "fail to get app from review app")
 		}
 
 		t.Append([]string{

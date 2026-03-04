@@ -90,7 +90,7 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, databaseID string) error {
 	db, err := client.Preview().DatabaseShow(ctx, databaseID)
 	if err != nil {
-		return err
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	if db.Database.Status == scalingo.DatabaseStatusRunning {
@@ -98,7 +98,7 @@ func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, dat
 			return status != scalingo.DatabaseStatusRunning
 		})
 		if err != nil {
-			return err
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 	}
 
@@ -113,7 +113,7 @@ func waitForDatabaseStatus(ctx context.Context, client *scalingo.Client, databas
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			continue
 		} else if err != nil {
-			return err
+			return errors.Wrap(ctx, err, "operation failed")
 		}
 		if check(db.Database.Status) {
 			break

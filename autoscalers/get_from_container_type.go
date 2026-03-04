@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/go-scalingo/v10"
 )
 
@@ -16,7 +14,7 @@ var (
 func getFromContainerType(ctx context.Context, c *scalingo.Client, app, containerType string) (scalingo.Autoscaler, error) {
 	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
-		return scalingo.Autoscaler{}, errgo.Mask(err, errgo.Any)
+		return scalingo.Autoscaler{}, err
 	}
 
 	for _, autoscaler := range autoscalers {

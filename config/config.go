@@ -12,10 +12,10 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/stvp/rollbar"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 type ConfigFile struct {
@@ -174,7 +174,7 @@ func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfig
 				Token: opts.APIToken,
 			})
 			if err != nil {
-				return c, errgo.Notef(err, "fail to get region '%v' specifications", config.ScalingoRegion)
+				return c, errors.Wrapf(ctx, err, "fail to get region '%v' specifications", config.ScalingoRegion)
 			}
 			c.APIEndpoint = region.API
 			c.DatabaseAPIEndpoint = region.DatabaseAPI
@@ -186,7 +186,7 @@ func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfig
 func ScalingoClientFromToken(ctx context.Context, token string) (*scalingo.Client, error) {
 	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token})
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to create Scalingo client")
+		return nil, errors.Wrapf(ctx, err, "fail to create Scalingo client")
 	}
 	return scalingo.New(ctx, config)
 }
@@ -202,7 +202,7 @@ func ScalingoAuthClient(ctx context.Context) (*scalingo.Client, error) {
 	auth := &CliAuthenticator{}
 	_, token, err := auth.LoadAuth(ctx)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to load authentication")
+		return nil, errors.Wrapf(ctx, err, "fail to load authentication")
 	}
 	return ScalingoAuthClientFromToken(ctx, token.Token)
 }
@@ -211,11 +211,11 @@ func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth(ctx)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to load credentials")
+		return nil, errors.Wrapf(ctx, err, "fail to load credentials")
 	}
 	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token.Token})
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to create Scalingo client")
+		return nil, errors.Wrapf(ctx, err, "fail to create Scalingo client")
 	}
 	return scalingo.New(ctx, config)
 }
@@ -241,7 +241,7 @@ func ScalingoClientForRegion(ctx context.Context, region string) (*scalingo.Clie
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth(ctx)
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to load credentials")
+		return nil, errors.Wrapf(ctx, err, "fail to load credentials")
 	}
 
 	config := C.scalingoClientBaseConfig(ClientConfigOpts{

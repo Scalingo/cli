@@ -17,12 +17,12 @@ import (
 func Info(ctx context.Context, appName string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	app, err := c.AppsShow(ctx, appName)
 	if err != nil {
-		return errors.Notef(ctx, err, "get the application information from the API")
+		return errors.Wrapf(ctx, err, "get the application information from the API")
 	}
 
 	stackName, err := getStackName(ctx, c, app.StackID)
@@ -47,7 +47,7 @@ func Info(ctx context.Context, appName string) error {
 func getStackName(ctx context.Context, c *scalingo.Client, stackID string) (string, error) {
 	stacks, err := c.StacksList(ctx)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(ctx, err, "operation failed")
 	}
 
 	for _, stack := range stacks {

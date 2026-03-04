@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-utils/errors/v2"
 )
 
 var (
@@ -36,7 +36,7 @@ var (
 			if c.Args().Len() == 0 {
 				err := cli.ShowCommandHelp(ctx, c, "send-signal")
 				if err != nil {
-					return errgo.Notef(err, "fail to show command helper")
+					return errors.Wrapf(ctx, err, "fail to show command helper")
 				}
 				return nil
 			}

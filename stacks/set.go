@@ -3,7 +3,7 @@ package stacks
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
@@ -13,11 +13,11 @@ import (
 func Set(ctx context.Context, app string, stack string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	stacks, err := c.StacksList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list available stacks")
+		return errors.Wrapf(ctx, err, "fail to list available stacks")
 	}
 
 	var stackToSet scalingo.Stack
@@ -29,12 +29,12 @@ func Set(ctx context.Context, app string, stack string) error {
 	}
 
 	if stackToSet.ID == "" {
-		return errgo.Newf("stack '%v' is unknown.", stack)
+		return errors.Newf(ctx, "stack '%v' is unknown.", stack)
 	}
 
 	_, err = c.AppsSetStack(ctx, app, stackToSet.ID)
 	if err != nil {
-		return errgo.Notef(err, "fail to set stack %v (%v)", stackToSet.Name, stackToSet.ID)
+		return errors.Wrapf(ctx, err, "fail to set stack %v (%v)", stackToSet.Name, stackToSet.ID)
 	}
 
 	io.Statusf("Stack of %v has been set to %v (%v)\n", io.Bold(app), io.Bold(stackToSet.Name), stackToSet.ID)

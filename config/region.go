@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/go-scalingo/v10"
@@ -72,7 +72,7 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 		debug.Println("[Regions] Create an unauthenticated client to the authentication service")
 		client, err = ScalingoUnauthenticatedAuthClient(ctx)
 		if err != nil {
-			return RegionsCache{}, errgo.Notef(err, "fail to create an unauthenticated client")
+			return RegionsCache{}, errors.Wrapf(ctx, err, "fail to create an unauthenticated client")
 		}
 	} else {
 		token := &auth.UserToken{Token: opts.Token}
@@ -80,21 +80,21 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 			auth := &CliAuthenticator{}
 			_, token, err = auth.LoadAuth(ctx)
 			if err != nil {
-				return RegionsCache{}, errgo.Notef(err, "fail to load authentication")
+				return RegionsCache{}, errors.Wrapf(ctx, err, "fail to load authentication")
 			}
 		}
 
 		debug.Println("[Regions] Create an authenticated client to the authentication service using the token")
 		client, err = ScalingoAuthClientFromToken(ctx, token.Token)
 		if err != nil {
-			return RegionsCache{}, errgo.Notef(err, "fail to create an authenticated Scalingo client using the API token")
+			return RegionsCache{}, errors.Wrapf(ctx, err, "fail to create an authenticated Scalingo client using the API token")
 		}
 	}
 
 	debug.Println("[Regions] Get the list of regions to fill the cache")
 	regions, err := client.RegionsList(ctx)
 	if err != nil {
-		return RegionsCache{}, errgo.Notef(err, "fail to list available regions")
+		return RegionsCache{}, errors.Wrapf(ctx, err, "fail to list available regions")
 	}
 
 	regionsCache.Regions = regions
@@ -127,7 +127,7 @@ func EnsureRegionsCache(ctx context.Context, c Config, opts GetRegionOpts) (Regi
 func GetRegion(ctx context.Context, c Config, name string, opts GetRegionOpts) (scalingo.Region, error) {
 	regionsCache, err := EnsureRegionsCache(ctx, c, opts)
 	if err != nil {
-		return scalingo.Region{}, errgo.Notef(err, "fail to get the regions cache")
+		return scalingo.Region{}, errors.Wrapf(ctx, err, "fail to get the regions cache")
 	}
 
 	for _, region := range regionsCache.Regions {

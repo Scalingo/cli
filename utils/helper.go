@@ -7,11 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
-	errors "github.com/Scalingo/go-utils/errors/v2"
 )
 
 const (
@@ -24,7 +23,7 @@ const (
 func AskAndStopFreeTrial(ctx context.Context, c *scalingo.Client, callback func() error) error {
 	validate, err := askUserValidation()
 	if err != nil {
-		return errgo.Notef(err, "fail to ask for user to validate to break out of free trial")
+		return errors.Wrapf(ctx, err, "fail to ask for user to validate to break out of free trial")
 	}
 	if !validate {
 		fmt.Println("Do not break free trial.")
@@ -32,7 +31,7 @@ func AskAndStopFreeTrial(ctx context.Context, c *scalingo.Client, callback func(
 	}
 	err = c.UserStopFreeTrial(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to stop user free trial")
+		return errors.Wrapf(ctx, err, "fail to stop user free trial")
 	}
 	return callback()
 }
@@ -55,7 +54,7 @@ func askUserValidation() (bool, error) {
 	fmt.Println("You are still in your free trial. If you continue, your free trial will end and you will be billed for your usage of the platform. Do you agree? [Y/n]")
 	in, err := readCharFromStdin()
 	if err != nil {
-		return false, errgo.Mask(err, errgo.Any)
+		return false, errors.Wrap(context.Background(), err, "fail to read user confirmation")
 	}
 	if in != "" && !strings.EqualFold(in, "Y") {
 		return false, nil
@@ -69,7 +68,7 @@ func readCharFromStdin() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(context.Background(), err, "operation failed")
 	}
 	input = strings.TrimSpace(input)
 	if input == "" {

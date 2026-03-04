@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/apps"
 )
@@ -20,7 +20,7 @@ func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 	}
 	postgreSQLURL, user, _, err := dbURL(ctx, opts.App, opts.VariableName, []string{"postgres", "postgis", "postgresql"})
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	runOpts := apps.RunOpts{
@@ -32,7 +32,7 @@ func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 
 	err = apps.Run(ctx, runOpts)
 	if err != nil {
-		return errgo.Newf("fail to run PostgreSQL console: %v", err)
+		return errors.Newf(ctx, "fail to run PostgreSQL console: %v", err)
 	}
 
 	return nil

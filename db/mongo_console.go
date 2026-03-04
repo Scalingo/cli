@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
+	"github.com/Scalingo/go-utils/errors/v2"
 
 	"github.com/Scalingo/cli/apps"
 )
@@ -20,7 +20,7 @@ func MongoConsole(ctx context.Context, opts MongoConsoleOpts) error {
 	}
 	mongoURL, _, _, err := dbURL(ctx, opts.App, opts.VariableName, []string{"mongodb"})
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "operation failed")
 	}
 
 	command := []string{"dbclient-fetcher", "mongo", "&&", "mongo"}
@@ -35,7 +35,7 @@ func MongoConsole(ctx context.Context, opts MongoConsoleOpts) error {
 		Size:       opts.Size,
 	})
 	if err != nil {
-		return errgo.Newf("fail to run MongoDB console: %v", err)
+		return errors.Newf(ctx, "fail to run MongoDB console: %v", err)
 	}
 
 	return nil
