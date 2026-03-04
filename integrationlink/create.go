@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Create(ctx context.Context, app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkCreateParams) error {

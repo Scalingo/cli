@@ -6,10 +6,9 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Ps(ctx context.Context, app string) error {

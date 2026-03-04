@@ -5,9 +5,8 @@ import (
 	stderrors "errors"
 	"fmt"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Display(ctx context.Context, app string) error {

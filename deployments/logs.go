@@ -5,10 +5,9 @@ import (
 	stdio "io"
 	"os"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Logs(ctx context.Context, app, deploymentID string) error {

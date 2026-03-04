@@ -5,9 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func dbURL(ctx context.Context, appName, envVariableName string, urlSchemes []string) (*url.URL, string, string, error) {

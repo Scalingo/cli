@@ -3,10 +3,9 @@ package integrationlink
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func PullRequest(ctx context.Context, app string, pullRequestID int) (*scalingo.RepoLinkPullRequest, error) {

@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func keepUniqueContainersWithType(containers []scalingo.Container, typeName string) (map[string]scalingo.Container, error) {

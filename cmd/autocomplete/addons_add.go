@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func AddonsAddAutoComplete(ctx context.Context) error {

@@ -3,10 +3,9 @@ package notifiers
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Update(ctx context.Context, app, ID string, params ProvisionParams) error {

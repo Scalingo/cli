@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type MySQLConsoleOpts struct {

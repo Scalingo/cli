@@ -3,11 +3,10 @@ package integrationlink
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {

@@ -3,9 +3,8 @@ package db
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type MongoConsoleOpts struct {

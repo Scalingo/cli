@@ -13,9 +13,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/stvp/rollbar"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type ConfigFile struct {

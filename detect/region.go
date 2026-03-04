@@ -7,12 +7,10 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository

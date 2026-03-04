@@ -9,9 +9,8 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func DbTunnelAutoComplete(ctx context.Context, c *cli.Command) error {

@@ -8,10 +8,9 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context, app string) error {
