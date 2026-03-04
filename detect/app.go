@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	stderrors "github.com/pkg/errors"
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/config"
@@ -15,7 +14,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-var errDatabaseNotFound = stderrors.New("database name not found")
+var errDatabaseNotFound = errors.New(context.Background(), "database name not found")
 
 // GetAddonIDFromDatabase resolves the addon ID from a database name by calling the API.
 // This is useful when the database name is provided as a positional argument.
@@ -46,7 +45,7 @@ func GetAddonIDFromDatabase(ctx context.Context, databaseName string) (string, e
 }
 
 // ErrTooManyArguments is returned when too many arguments are provided
-var ErrTooManyArguments = stderrors.New("too many arguments")
+var ErrTooManyArguments = errors.New(context.Background(), "too many arguments")
 
 // GetDatabaseFromArgs resolves the database name and addon ID from command arguments.
 // If no positional argument is provided, it uses the --database flag.

@@ -10,8 +10,6 @@ import (
 	"strings"
 	"time"
 
-	pkgerrors "github.com/pkg/errors"
-
 	"github.com/Scalingo/cli/config/auth"
 	appio "github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/term"
@@ -21,13 +19,13 @@ import (
 )
 
 var (
-	ErrAuthenticationFailed = pkgerrors.New("authentication failed")
+	ErrAuthenticationFailed = errors.New(context.Background(), "authentication failed")
 )
 
 type CliAuthenticator struct{}
 
 var (
-	ErrUnauthenticated = pkgerrors.New("user unauthenticated")
+	ErrUnauthenticated = errors.New(context.Background(), "user unauthenticated")
 )
 
 func Auth(ctx context.Context) (*scalingo.User, string, error) {
@@ -36,7 +34,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 	var err error
 
 	if C.DisableInteractive {
-		err = pkgerrors.New("Fail to login (interactive mode disabled)")
+		err = errors.New(ctx, "Fail to login (interactive mode disabled)")
 	} else {
 		for i := 0; i < 3; i++ {
 			user, tokens, err = tryAuth(ctx)
@@ -50,7 +48,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 		}
 	}
 	if err == ErrAuthenticationFailed {
-		return nil, "", pkgerrors.New("Forgot your password? https://auth.scalingo.com")
+		return nil, "", errors.New(ctx, "Forgot your password? https://auth.scalingo.com")
 	}
 	if err != nil {
 		return nil, "", errors.Wrapf(ctx, err, "authentication failed")

@@ -5,7 +5,6 @@ import (
 
 	git "github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
-	pkgerrors "github.com/pkg/errors"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10/debug"
@@ -63,10 +62,10 @@ func createRemoteInRepository(repository *git.Repository, remoteName string, url
 		URLs: []string{url},
 	})
 	if err != nil {
-		errWrapped := pkgerrors.Wrapf(err, "create the Git remote")
+		errWrapped := errors.Wrapf(context.Background(), err, "create the Git remote")
 		if err == git.ErrRemoteExists {
 			message := "Fail to configure git repository, '" + remoteName + "' remote already exists (use --force option to override)"
-			errWrapped = pkgerrors.Wrap(errWrapped, message)
+			errWrapped = errors.Wrap(context.Background(), errWrapped, message)
 		}
 		return errWrapped
 	}
@@ -76,7 +75,7 @@ func createRemoteInRepository(repository *git.Repository, remoteName string, url
 func deleteThenCreateRemoteInRepository(repository *git.Repository, remoteName string, url string) error {
 	err := repository.DeleteRemote(remoteName)
 	if err != nil {
-		return pkgerrors.Wrap(err, "delete the Git remote")
+		return errors.Wrap(context.Background(), err, "delete the Git remote")
 	}
 	return createRemoteInRepository(repository, remoteName, url)
 }
