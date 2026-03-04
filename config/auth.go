@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -19,13 +20,13 @@ import (
 )
 
 var (
-	ErrAuthenticationFailed = errors.New(context.Background(), "authentication failed")
+	ErrAuthenticationFailed = stderrors.New("authentication failed")
 )
 
 type CliAuthenticator struct{}
 
 var (
-	ErrUnauthenticated = errors.New(context.Background(), "user unauthenticated")
+	ErrUnauthenticated = stderrors.New("user unauthenticated")
 )
 
 func Auth(ctx context.Context) (*scalingo.User, string, error) {
@@ -219,7 +220,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 		login = strings.TrimRight(login, "\n")
 	}
 
-	password, err := term.Password("       Password: ")
+	password, err := term.Password(ctx, "       Password: ")
 	if err != nil {
 		return nil, "", errors.Wrapf(ctx, err, "read password")
 	}

@@ -1,6 +1,7 @@
 package autocomplete
 
 import (
+	"context"
 	"os"
 
 	"github.com/urfave/cli/v3"
@@ -10,7 +11,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v10/debug"
 )
 
-func CurrentAppCompletion(c *cli.Command) string {
+func CurrentAppCompletion(ctx context.Context, c *cli.Command) string {
 	var err error
 
 	if len(os.Args) >= 2 {
@@ -28,7 +29,7 @@ func CurrentAppCompletion(c *cli.Command) string {
 		appName = os.Getenv("SCALINGO_APP")
 	}
 	if dir, ok := utils.DetectGit(); appName == "" && ok {
-		appName, err = detect.GetAppNameFromGitRemote(dir, detect.RemoteNameFromFlags(c))
+		appName, err = detect.GetAppNameFromGitRemote(ctx, dir, detect.RemoteNameFromFlags(c))
 		if err != nil {
 			debug.Println(err)
 		}

@@ -37,28 +37,28 @@ func Restore(f *os.File) error {
 	return restore(f)
 }
 
-func Cols() (int, error) {
-	cols, err := tput("cols")
+func Cols(ctx context.Context) (int, error) {
+	cols, err := tput(ctx, "cols")
 	if err != nil {
-		return 0, errors.Wrap(context.Background(), err, "fail to get terminal columns")
+		return 0, errors.Wrap(ctx, err, "fail to get terminal columns")
 	}
 	return strconv.Atoi(cols)
 }
 
-func Lines() (int, error) {
-	cols, err := tput("lines")
+func Lines(ctx context.Context) (int, error) {
+	cols, err := tput(ctx, "lines")
 	if err != nil {
-		return 0, errors.Wrap(context.Background(), err, "fail to get terminal lines")
+		return 0, errors.Wrap(ctx, err, "fail to get terminal lines")
 	}
 	return strconv.Atoi(cols)
 }
 
-func tput(what string) (string, error) {
+func tput(ctx context.Context, what string) (string, error) {
 	c := exec.Command("tput", what)
 	c.Stderr = os.Stderr
 	out, err := c.Output()
 	if err != nil {
-		return "", errors.Wrapf(context.Background(), err, "run tput %s", what)
+		return "", errors.Wrapf(ctx, err, "run tput %s", what)
 	}
 	return strings.TrimSpace(string(out)), nil
 }

@@ -30,10 +30,10 @@ func DetectGit() (string, bool) {
 	return "", false
 }
 
-func ScalingoRepoAutoComplete(dir string) []string {
+func ScalingoRepoAutoComplete(ctx context.Context, dir string) []string {
 	var repos []string
 
-	remotes, err := ScalingoGitRemotes(dir)
+	remotes, err := ScalingoGitRemotes(ctx, dir)
 	if err != nil {
 		debug.Println("[detectCompletion] fail to get scalingo remotes in", dir)
 		return repos
@@ -51,15 +51,15 @@ func ScalingoRepoAutoComplete(dir string) []string {
 }
 
 // ScalingoGitRemotes returns an array of remote URLs (*.scalingo.com) from a git repository <directory>
-func ScalingoGitRemotes(directory string) ([]*git.Remote, error) {
+func ScalingoGitRemotes(ctx context.Context, directory string) ([]*git.Remote, error) {
 	repo, err := git.PlainOpen(directory)
 	if err != nil {
-		return nil, errors.Wrapf(context.Background(), err, "fail to initialize the Git repository")
+		return nil, errors.Wrapf(ctx, err, "fail to initialize the Git repository")
 	}
 
 	remotes, err := repo.Remotes()
 	if err != nil {
-		return nil, errors.Wrapf(context.Background(), err, "fail to list the remotes")
+		return nil, errors.Wrapf(ctx, err, "fail to list the remotes")
 	}
 
 	matchedRemotes := []*git.Remote{}
@@ -82,10 +82,10 @@ func ScalingoGitRemotes(directory string) ([]*git.Remote, error) {
 }
 
 // AddGitRemote add a remote URL to the current git repository
-func AddGitRemote(url string, name string) error {
+func AddGitRemote(ctx context.Context, url string, name string) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return errors.Wrapf(context.Background(), err, "fail to initialize the Git repository")
+		return errors.Wrapf(ctx, err, "fail to initialize the Git repository")
 	}
 
 	_, err = repo.CreateRemote(&gitconfig.RemoteConfig{
@@ -93,7 +93,7 @@ func AddGitRemote(url string, name string) error {
 		URLs: []string{url},
 	})
 	if err != nil {
-		return errors.Wrapf(context.Background(), err, "fail to add the Git remote")
+		return errors.Wrapf(ctx, err, "fail to add the Git remote")
 	}
 
 	return nil

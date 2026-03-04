@@ -31,7 +31,7 @@ var (
 				return nil
 			}
 
-			err := alerts.List(ctx, detect.CurrentApp(c))
+			err := alerts.List(ctx, detect.CurrentApp(ctx, c))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -73,7 +73,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -133,7 +133,7 @@ var (
 			}
 
 			alertID := c.Args().First()
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -203,7 +203,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -241,7 +241,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -275,7 +275,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 

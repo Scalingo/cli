@@ -36,7 +36,7 @@ var (
 				if c.Args().Len() != 0 {
 					currentApp = c.Args().First()
 				} else {
-					currentApp = detect.CurrentApp(c)
+					currentApp = detect.CurrentApp(ctx, c)
 				}
 
 				utils.CheckForConsent(ctx, currentApp)

@@ -40,7 +40,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 				_ = cli.ShowCommandHelp(ctx, c, "redis-console")
 				return nil
 			}
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 

@@ -142,7 +142,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 					}
 				}
 
-				err = handleConnToTunnel(client, dbURL, connToTunnel, errs)
+				err = handleConnToTunnel(ctx, client, dbURL, connToTunnel, errs)
 				if err != nil {
 					debug.Println("Error happened in tunnel", err)
 					if !opts.Reconnect {
@@ -171,7 +171,7 @@ func dbEnvVarValue(dbEnvVar string, environ scalingo.Variables) string {
 	return ""
 }
 
-func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, errs chan error) error {
+func handleConnToTunnel(ctx context.Context, sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, errs chan error) error {
 	connID := <-connIDGenerator
 	fmt.Printf("Connect to %s [%v]\n", dbURL.Host, connID)
 	conn, err := sshClient.Dial("tcp", dbURL.Host)
@@ -214,7 +214,7 @@ func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, er
 			return nil
 		}
 
-		return errors.Wrap(context.Background(), err, "handle database tunnel timeout")
+		return errors.Wrap(ctx, err, "handle database tunnel timeout")
 	}
 	return nil
 }

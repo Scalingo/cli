@@ -16,7 +16,7 @@ func DeploymentsAutoComplete(ctx context.Context, c *cli.Command) error {
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
-	currentApp := detect.CurrentApp(c)
+	currentApp := detect.CurrentApp(ctx, c)
 
 	deployments, err := client.DeploymentList(ctx, currentApp)
 	if err != nil {

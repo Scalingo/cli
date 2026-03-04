@@ -10,10 +10,10 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func ShowLastChangelog() error {
-	cliLastRelease, err := github.NewClient().GetLatestRelease(context.Background())
+func ShowLastChangelog(ctx context.Context) error {
+	cliLastRelease, err := github.NewClient().GetLatestRelease(ctx)
 	if err != nil {
-		return errors.Wrapf(context.Background(), err, "fail to get last CLI release")
+		return errors.Wrapf(ctx, err, "fail to get last CLI release")
 	}
 
 	if cliLastRelease.GetBody() == "" {

@@ -11,7 +11,7 @@ import (
 )
 
 func EnvUnsetAutoComplete(ctx context.Context, c *cli.Command) error {
-	appName := CurrentAppCompletion(c)
+	appName := CurrentAppCompletion(ctx, c)
 	if appName == "" {
 		return nil
 	}

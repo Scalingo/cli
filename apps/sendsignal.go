@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func keepUniqueContainersWithType(containers []scalingo.Container, typeName string) (map[string]scalingo.Container, error) {
+func keepUniqueContainersWithType(ctx context.Context, containers []scalingo.Container, typeName string) (map[string]scalingo.Container, error) {
 	containersToKill := map[string]scalingo.Container{}
 
 	hasMatched := false
@@ -23,13 +23,13 @@ func keepUniqueContainersWithType(containers []scalingo.Container, typeName stri
 		}
 	}
 	if !hasMatched {
-		return containersToKill, errors.Newf(context.Background(), "'%v' did not match any container", typeName)
+		return containersToKill, errors.Newf(ctx, "'%v' did not match any container", typeName)
 	}
 
 	return containersToKill, nil
 }
 
-func keepUniqueContainersWithNames(containers []scalingo.Container, names []string) map[string]scalingo.Container {
+func keepUniqueContainersWithNames(ctx context.Context, containers []scalingo.Container, names []string) map[string]scalingo.Container {
 	containersToKill := map[string]scalingo.Container{}
 
 	for _, name := range names {
@@ -39,7 +39,7 @@ func keepUniqueContainersWithNames(containers []scalingo.Container, names []stri
 			}
 		}
 		if _, ok := containersToKill[name]; !ok {
-			containersToKillWithType, err := keepUniqueContainersWithType(containers, name)
+			containersToKillWithType, err := keepUniqueContainersWithType(ctx, containers, name)
 			if err != nil {
 				io.Error(err.Error())
 				continue
@@ -72,7 +72,7 @@ func SendSignal(ctx context.Context, appName string, signal string, containerNam
 		return errors.Wrapf(ctx, err, "fail to list the application containers to get the ID of the container to send the signal")
 	}
 
-	containersToKill := keepUniqueContainersWithNames(containers, containerNames)
+	containersToKill := keepUniqueContainersWithNames(ctx, containers, containerNames)
 
 	for _, container := range containersToKill {
 		err := c.ContainersKill(ctx, appName, signal, container.ID)

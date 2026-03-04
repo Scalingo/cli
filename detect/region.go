@@ -15,11 +15,11 @@ import (
 
 // GetRegionFromGitRemote returns the region name extracted from remotes URL of the current Git repository
 // If not found it returns an empty string
-func GetRegionFromGitRemote(c *cli.Command, rc *config.RegionsCache) string {
+func GetRegionFromGitRemote(ctx context.Context, c *cli.Command, rc *config.RegionsCache) string {
 	remoteName := RemoteNameFromFlags(c)
 
 	if dir, ok := utils.DetectGit(); ok {
-		remotes, err := utils.ScalingoGitRemotes(dir)
+		remotes, err := utils.ScalingoGitRemotes(ctx, dir)
 		if err != nil {
 			debug.Println(err)
 			return ""
@@ -28,7 +28,7 @@ func GetRegionFromGitRemote(c *cli.Command, rc *config.RegionsCache) string {
 		altRemoteName := "scalingo-" + remoteName
 		for _, remote := range remotes {
 			if remote.Config().Name == remoteName || remote.Config().Name == altRemoteName {
-				region, err := extractRegionFromGitRemote(remote.Config().URLs[0], rc)
+				region, err := extractRegionFromGitRemote(ctx, remote.Config().URLs[0], rc)
 				if err != nil {
 					debug.Println(err)
 				}
@@ -45,7 +45,7 @@ func GetRegionFromGitRemote(c *cli.Command, rc *config.RegionsCache) string {
 
 // extractRegionFromGitRemote returns region name from a Git remote URL
 // only if the region is a valid Scalingo region, returns an empty string othervise
-func extractRegionFromGitRemote(url string, rc *config.RegionsCache) (string, error) {
+func extractRegionFromGitRemote(ctx context.Context, url string, rc *config.RegionsCache) (string, error) {
 	// Extract url part from the git remote
 	// e.g.: git@ssh.osc-fr1.scalingo.com:app-name.git -> ssh.osc-fr1.scalingo.com
 	r := regexp.MustCompile(`git@(.*)\:.*`)
@@ -56,7 +56,7 @@ func extractRegionFromGitRemote(url string, rc *config.RegionsCache) (string, er
 				return region.Name, nil
 			}
 		}
-		return "", errors.Newf(context.Background(), "[detect] no valid region could be found in the Git remote")
+		return "", errors.Newf(ctx, "[detect] no valid region could be found in the Git remote")
 	}
-	return "", errors.Newf(context.Background(), "[detect] could not extract URL from Git remote")
+	return "", errors.Newf(ctx, "[detect] could not extract URL from Git remote")
 }

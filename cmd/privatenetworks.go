@@ -81,7 +81,7 @@ var (
 				}
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
 			if err != nil {

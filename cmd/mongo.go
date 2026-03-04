@@ -40,7 +40,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
 			err := db.MongoConsole(ctx, db.MongoConsoleOpts{

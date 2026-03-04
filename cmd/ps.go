@@ -22,7 +22,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "ps")
 				return nil

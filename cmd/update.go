@@ -16,7 +16,7 @@ var (
 		Usage:       "Update 'scalingo' SDK client",
 		Description: "Update 'scalingo' SDK client",
 		Action: func(ctx context.Context, _ *cli.Command) error {
-			err := update.Check()
+			err := update.Check(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

@@ -29,7 +29,7 @@ var (
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "deployment-delete-cache")
 			} else {
-				currentApp := detect.CurrentApp(c)
+				currentApp := detect.CurrentApp(ctx, c)
 				utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 				err := deployments.ResetCache(ctx, currentApp)
 				if err != nil {
@@ -54,7 +54,7 @@ var (
     $ scalingo -a myapp deployments
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			err := deployments.List(ctx, currentApp, pagination.Request{
 				Page:    c.Int("page"),
 				PerPage: c.Int("per-page"),
@@ -74,7 +74,7 @@ var (
 		$ scalingo -a myapp deployment-logs my-deployment
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() > 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "deployment-logs")
 			}
@@ -103,7 +103,7 @@ var (
 		$ scalingo -a myapp deployment-follow
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			err := deployments.Stream(ctx, &deployments.StreamOpts{
 				AppName: currentApp,
 			})
@@ -147,7 +147,7 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			if args.Len() == 2 {
 				gitRef = args.Slice()[1]
 			}
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {

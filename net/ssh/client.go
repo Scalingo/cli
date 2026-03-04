@@ -2,6 +2,7 @@ package ssh
 
 import (
 	"context"
+	stderrors "errors"
 	stdio "io"
 
 	"golang.org/x/crypto/ssh"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-	ErrNoAuthSucceed = errors.Newf(context.Background(), "No authentication method has succeeded")
+	ErrNoAuthSucceed = stderrors.New("no authentication method has succeeded")
 )
 
 type ConnectOpts struct {
@@ -28,7 +29,7 @@ func Connect(ctx context.Context, opts ConnectOpts) (*ssh.Client, ssh.Signer, er
 	)
 	if opts.Identity == "ssh-agent" {
 		var agentConnection stdio.Closer
-		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent()
+		privateKeys, agentConnection, err = sshkeys.ReadPrivateKeysFromAgent(ctx)
 		if err != nil {
 			return nil, nil, errors.Wrap(ctx, err, "fail to read private keys from SSH agent")
 		}

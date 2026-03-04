@@ -1,7 +1,6 @@
 package config
 
 import (
-	"context"
 	"encoding/json"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 )
 
 func TestStoreAuth(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 	u := &scalingo.User{
 		Email:    "test@example.com",
 		Username: "test",
@@ -42,7 +41,7 @@ func TestStoreAuth(t *testing.T) {
 }
 
 func TestExistingAuth(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 	u := &scalingo.User{
 		Email:    "test@example.com",
 		Username: "test",

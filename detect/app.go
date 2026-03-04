@@ -2,6 +2,7 @@ package detect
 
 import (
 	"context"
+	stderrors "errors"
 	"os"
 	"strings"
 
@@ -14,7 +15,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-var errDatabaseNotFound = errors.New(context.Background(), "database name not found")
+var errDatabaseNotFound = stderrors.New("database name not found")
 
 // GetAddonIDFromDatabase resolves the addon ID from a database name by calling the API.
 // This is useful when the database name is provided as a positional argument.
@@ -45,7 +46,7 @@ func GetAddonIDFromDatabase(ctx context.Context, databaseName string) (string, e
 }
 
 // ErrTooManyArguments is returned when too many arguments are provided
-var ErrTooManyArguments = errors.New(context.Background(), "too many arguments")
+var ErrTooManyArguments = stderrors.New("too many arguments")
 
 // GetDatabaseFromArgs resolves the database name and addon ID from command arguments.
 // If no positional argument is provided, it uses the --database flag.
@@ -95,10 +96,10 @@ func GetCurrentResource(ctx context.Context, c *cli.Command) string {
 // It exits CLI in case of error.
 func GetCurrentResourceAndDatabase(ctx context.Context, c *cli.Command) (string, string) {
 	if os.Getenv("SCALINGO_PREVIEW_FEATURES") != "true" {
-		return CurrentApp(c), ""
+		return CurrentApp(ctx, c), ""
 	}
 
-	currentApp := extractAppName(c)
+	currentApp := extractAppName(ctx, c)
 	currentDatabase, databaseUUID, err := currentDatabaseNameAndUUID(ctx, c)
 	if err != nil && !errors.Is(err, errDatabaseNotFound) {
 		io.Error(err)
@@ -140,8 +141,8 @@ func GetCurrentResourceAndDatabase(ctx context.Context, c *cli.Command) (string,
 // CurrentApp returns the app name if it has been found in one of the following:
 // app flag, environment variable "SCALINGO_APP", current Git remote.
 // It returns an empty string if not found.
-func CurrentApp(c *cli.Command) string {
-	appName := extractAppName(c)
+func CurrentApp(ctx context.Context, c *cli.Command) string {
+	appName := extractAppName(ctx, c)
 
 	if appName == "" {
 		io.Error("Unable to find the application name, please use --app flag.")
@@ -201,10 +202,10 @@ func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, st
 // named remoteName or scalingo-<remoteName>.
 //
 // It returns the application name and an error.
-func GetAppNameFromGitRemote(directory string, remoteName string) (string, error) {
-	remotes, err := utils.ScalingoGitRemotes(directory)
+func GetAppNameFromGitRemote(ctx context.Context, directory string, remoteName string) (string, error) {
+	remotes, err := utils.ScalingoGitRemotes(ctx, directory)
 	if err != nil {
-		return "", errors.Wrapf(context.Background(), err, "list git remotes from %s", directory)
+		return "", errors.Wrapf(ctx, err, "list git remotes from %s", directory)
 	}
 
 	altRemoteName := "scalingo-" + remoteName
@@ -215,7 +216,7 @@ func GetAppNameFromGitRemote(directory string, remoteName string) (string, error
 		}
 	}
 
-	return "", errors.Newf(context.Background(), "[detect] Scalingo Git remote hasn't been found")
+	return "", errors.Newf(ctx, "[detect] Scalingo Git remote hasn't been found")
 }
 
 // RemoteNameFromFlags returns the remote name specified in command flags
@@ -228,7 +229,7 @@ func RemoteNameFromFlags(c *cli.Command) string {
 	return ""
 }
 
-func extractAppName(c *cli.Command) string {
+func extractAppName(ctx context.Context, c *cli.Command) string {
 	for _, cliContext := range c.Lineage() {
 		appName := cliContext.String("app")
 		if appName != "" && appName != "<name>" {
@@ -242,7 +243,7 @@ func extractAppName(c *cli.Command) string {
 	if os.Getenv("SCALINGO_APP") != "" {
 		appName = os.Getenv("SCALINGO_APP")
 	} else if dir, ok := utils.DetectGit(); ok {
-		appName, err = GetAppNameFromGitRemote(dir, RemoteNameFromFlags(c))
+		appName, err = GetAppNameFromGitRemote(ctx, dir, RemoteNameFromFlags(c))
 		if err != nil {
 			debug.Println(err)
 		}

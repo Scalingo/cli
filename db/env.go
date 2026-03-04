@@ -20,7 +20,7 @@ func dbURL(ctx context.Context, appName, envVariableName string, urlSchemes []st
 		return nil, "", "", errors.Newf(ctx, "%v is not a valid URL", u)
 	}
 
-	user, password, err := extractCredentials(dbURL)
+	user, password, err := extractCredentials(ctx, dbURL)
 	if err != nil {
 		return nil, "", "", errors.Wrapf(ctx, err, "fail to extract credentials from %s database URL", strings.ToLower(envVariableName))
 	}
@@ -49,14 +49,14 @@ func dbURLFromAPI(ctx context.Context, appName, envVariableName string, urlSchem
 	return "", errors.Newf(ctx, "no %v addon detected", strings.ToLower(envVariableName))
 }
 
-func extractCredentials(u *url.URL) (string, string, error) {
+func extractCredentials(ctx context.Context, u *url.URL) (string, string, error) {
 	if u.User == nil {
-		return "", "", errors.Newf(context.Background(), "%v has no information about the instance credentials", u)
+		return "", "", errors.Newf(ctx, "%v has no information about the instance credentials", u)
 	}
 
 	password, ok := u.User.Password()
 	if !ok {
-		return "", "", errors.Newf(context.Background(), "%v has no information about the instance password", u)
+		return "", "", errors.Newf(ctx, "%v has no information about the instance password", u)
 	}
 
 	return u.User.Username(), password, nil

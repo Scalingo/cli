@@ -61,7 +61,7 @@ func ScalingoAppComplete(ctx context.Context, c *cli.Command) {
 		return
 	}
 	if len(nargs) == 1 && (nargs[0] == "-r" || nargs[0] == "--remote") {
-		autocomplete.FlagRemoteAutoComplete()
+		autocomplete.FlagRemoteAutoComplete(ctx)
 		return
 	}
 
@@ -128,7 +128,7 @@ func main() {
 
 	if !bashComplete {
 		if len(os.Args) >= 2 && os.Args[1] == cmd.UpdateCommand.Name {
-			err := update.Check()
+			err := update.Check(ctx)
 			if err != nil {
 				rollbar.Error(rollbar.ERR, err)
 			}
@@ -150,7 +150,7 @@ func main() {
 	} else {
 		// We want to display to the user if a new version is available
 		// Whatever the success of the execution of their command is.
-		updateCheckErr := update.Check()
+		updateCheckErr := update.Check(ctx)
 		if updateCheckErr != nil {
 			debug.Printf("Failed to check if executable should be updated: %v\n", updateCheckErr)
 		}

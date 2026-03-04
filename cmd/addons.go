@@ -24,7 +24,7 @@ var (
 			SeeAlso:     []string{"addons-add", "addons-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() > 0 {
 				return cli.ShowCommandHelp(ctx, c, "addons")
 			}
@@ -53,7 +53,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 2 {
 				return cli.ShowCommandHelp(ctx, c, "addons-add")
 			}
@@ -85,7 +85,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 1 {
 				return cli.ShowCommandHelp(ctx, c, "addons-remove")
 			}
@@ -122,7 +122,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 2 {
 				return cli.ShowCommandHelp(ctx, c, "addons-upgrade")
 			}
@@ -159,7 +159,7 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "addons-info")
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			addonName := c.Args().First()
 
 			addonUUID, err := utils.GetAddonUUIDFromType(ctx, currentApp, addonName)
@@ -197,7 +197,7 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "addons-config")
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			currentAddon := c.Args().First()
 			config := addons.UpdateAddonConfigOpts{}
 

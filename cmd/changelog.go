@@ -20,7 +20,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, _ *cli.Command) error {
-			err := update.ShowLastChangelog()
+			err := update.ShowLastChangelog(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

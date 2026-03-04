@@ -2,13 +2,14 @@ package utils
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-var ErrResourceNotFound = errors.New(context.Background(), "resource name not found")
+var ErrResourceNotFound = stderrors.New("resource name not found")
 
 const databasesResourceFlag = "dedicated-database"
 

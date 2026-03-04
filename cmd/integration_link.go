@@ -8,8 +8,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/urfave/cli/v3"
 
@@ -22,6 +20,7 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -43,7 +42,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			err := integrationlink.Show(ctx, currentApp)
 			if err != nil {
 				errorQuit(ctx, err)
@@ -98,7 +97,7 @@ List of available integrations:
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			integrationURL := c.Args().First()
 			integrationURLParsed, err := url.Parse(integrationURL)
@@ -134,7 +133,7 @@ List of available integrations:
 
 			var params scalingo.SCMRepoLinkCreateParams
 			if c.NumFlags() == 0 {
-				params, err = interactiveCreate()
+				params, err = interactiveCreate(ctx)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -180,7 +179,7 @@ List of available integrations:
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
-					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
+					allowReviewAppsFromForks, err = askForConfirmationToAllowReviewAppsFromForks(ctx, "Allow automatic creation of review apps from forks?")
 					if err != nil {
 						errorQuit(ctx, err)
 					}
@@ -300,12 +299,12 @@ List of available integrations:
 				errorQuitWithHelpMessage(ctx, stderrors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			params := integrationlink.CheckAndFillParams(c)
 
 			if allowReviewAppsFromForks && !awareOfSecurityRisks {
-				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
+				stillAllowed, err := askForConfirmationToAllowReviewAppsFromForks(ctx, "Allow automatic creation of review apps from forks?")
 				if err != nil {
 					errorQuit(ctx, err)
 				}
@@ -340,7 +339,7 @@ List of available integrations:
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -375,7 +374,7 @@ List of available integrations:
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			branchName := c.Args().First()
 			follow := c.Bool("follow")
 			err := integrationlink.ManualDeploy(ctx, currentApp, branchName, follow)
@@ -412,7 +411,7 @@ List of available integrations:
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -430,7 +429,7 @@ List of available integrations:
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 				if !awareOfSecurityRisks {
 					io.Info("\nYou are about to deploy a Review App from a Pull Request opened from a fork.")
-					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks("Deploy this Pull Request coming from a forked repository?")
+					allowReviewAppsFromForks, err := askForConfirmationToAllowReviewAppsFromForks(ctx, "Deploy this Pull Request coming from a forked repository?")
 					if err != nil {
 						errorQuit(ctx, err)
 					}
@@ -454,7 +453,7 @@ List of available integrations:
 	}
 )
 
-func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
+func interactiveCreate(ctx context.Context) (scalingo.SCMRepoLinkCreateParams, error) {
 	var params scalingo.SCMRepoLinkCreateParams
 	if config.C.DisableInteractive {
 		return params, stderrors.New("need at least one integration link parameter")
@@ -479,7 +478,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 	}{}
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		return params, errors.Wrapf(context.Background(), err, "error enquiring about branch and automatic review apps deployment")
+		return params, errors.Wrapf(ctx, err, "error enquiring about branch and automatic review apps deployment")
 	}
 
 	if answers.Branch != "" {
@@ -498,7 +497,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnClose,
 	}, &destroyOnClose, nil)
 	if err != nil {
-		return params, errors.Wrapf(context.Background(), err, "error enquiring about destroy on close")
+		return params, errors.Wrapf(ctx, err, "error enquiring about destroy on close")
 	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
@@ -506,9 +505,9 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		err = survey.AskOne(&survey.Input{
 			Message: "Hours before automatically destroying the review apps:",
 			Default: "0",
-		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete))
+		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete(ctx)))
 		if err != nil {
-			return params, errors.Wrapf(context.Background(), err, "error enquiring about review apps destroy delay")
+			return params, errors.Wrapf(ctx, err, "error enquiring about review apps destroy delay")
 		}
 		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
 		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
@@ -521,7 +520,7 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		Default: destroyOnStale,
 	}, &destroyOnStale, nil)
 	if err != nil {
-		return params, errors.Wrapf(context.Background(), err, "error enquiring about stale review apps destroy")
+		return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
@@ -529,40 +528,42 @@ func interactiveCreate() (scalingo.SCMRepoLinkCreateParams, error) {
 		err = survey.AskOne(&survey.Input{
 			Message: "Hours before automatically destroying the review apps:",
 			Default: "0",
-		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete))
+		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete(ctx)))
 		if err != nil {
-			return params, errors.Wrapf(context.Background(), err, "error enquiring about stale review apps destroy")
+			return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
 		}
 		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
 		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
 
-	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks("Allow automatic creation of review apps from forks?")
+	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks(ctx, "Allow automatic creation of review apps from forks?")
 	if err != nil {
-		return params, errors.Wrapf(context.Background(), err, "error enquiring about automatic review apps creation from forks")
+		return params, errors.Wrapf(ctx, err, "error enquiring about automatic review apps creation from forks")
 	}
 	params.AutomaticCreationFromForksAllowed = &forksAllowed
 
 	return params, nil
 }
 
-func validateHoursBeforeDelete(ans interface{}) error {
-	str, ok := ans.(string)
-	if !ok {
-		return stderrors.New("must be a string")
+func validateHoursBeforeDelete(ctx context.Context) survey.Validator {
+	return func(ans any) error {
+		str, ok := ans.(string)
+		if !ok {
+			return stderrors.New("must be a string")
+		}
+		i, err := strconv.ParseInt(str, 10, 32)
+		if err != nil {
+			return errors.Wrapf(ctx, err, "error parsing hours")
+		}
+		if i < 0 {
+			return stderrors.New("must be positive")
+		}
+		return nil
 	}
-	i, err := strconv.ParseInt(str, 10, 32)
-	if err != nil {
-		return errors.Wrapf(context.Background(), err, "error parsing hours")
-	}
-	if i < 0 {
-		return stderrors.New("must be positive")
-	}
-	return nil
 }
 
-func askForConfirmationToAllowReviewAppsFromForks(prompt string) (bool, error) {
+func askForConfirmationToAllowReviewAppsFromForks(ctx context.Context, prompt string) (bool, error) {
 	fmt.Println()
 	io.Warning(reviewAppsFromForksSecurityWarning)
 	fmt.Println()
@@ -575,7 +576,7 @@ func askForConfirmationToAllowReviewAppsFromForks(prompt string) (bool, error) {
 	}, &confirmed, nil)
 
 	if err != nil {
-		return false, errors.Wrap(context.Background(), err, "fail to confirm review apps from forks")
+		return false, errors.Wrap(ctx, err, "fail to confirm review apps from forks")
 	}
 
 	return confirmed, nil

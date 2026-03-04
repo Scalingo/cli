@@ -15,7 +15,7 @@ import (
 
 func CollaboratorsAddAutoComplete(ctx context.Context, c *cli.Command) error {
 	var err error
-	appName := CurrentAppCompletion(c)
+	appName := CurrentAppCompletion(ctx, c)
 	if appName == "" {
 		return nil
 	}

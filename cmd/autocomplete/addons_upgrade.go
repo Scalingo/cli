@@ -13,7 +13,7 @@ import (
 )
 
 func AddonsUpgradeAutoComplete(ctx context.Context, c *cli.Command) error {
-	appName := CurrentAppCompletion(c)
+	appName := CurrentAppCompletion(ctx, c)
 	addonName := ""
 	if appName == "" {
 		return nil

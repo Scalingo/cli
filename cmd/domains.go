@@ -35,7 +35,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			err := domains.List(ctx, currentApp)
 			if err != nil {
 				errorQuit(ctx, err)
@@ -68,7 +68,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.Args().Len() == 1 {
@@ -119,7 +119,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {
@@ -159,7 +159,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			if c.Args().Len() == 2 && c.Args().Slice()[1] == "disable" {
 				err := domains.DisableSSL(ctx, currentApp, c.Args().First())
@@ -199,7 +199,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "set-canonical-domain")
 				return nil
@@ -229,7 +229,7 @@ This domain is called the canonical domain. This command sets the canonical doma
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() != 0 {
 				_ = cli.ShowCommandHelp(ctx, c, "unset-canonical-domain")
 				return nil
