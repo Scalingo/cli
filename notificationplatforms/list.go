@@ -18,7 +18,7 @@ func List(ctx context.Context) error {
 
 	resources, err := c.NotificationPlatformsList(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "list notification platforms")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

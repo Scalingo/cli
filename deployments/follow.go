@@ -47,14 +47,14 @@ func Stream(ctx context.Context, opts *StreamOpts) error {
 
 	app, err := c.AppsShow(ctx, opts.AppName)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "get app %s", opts.AppName)
 	}
 
 	debug.Println("Opening socket to: " + app.Links.DeploymentsStream)
 
 	conn, err := c.DeploymentStream(ctx, app.Links.DeploymentsStream)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "open deployment event stream")
 	}
 
 	// This method can focus on one given deployment and will on display events
@@ -84,7 +84,7 @@ func Stream(ctx context.Context, opts *StreamOpts) error {
 				}
 				continue
 			} else {
-				return errors.Wrap(ctx, err, "operation failed")
+				return errors.Wrap(ctx, err, "read deployment event from stream")
 			}
 		} else {
 			switch event.Type {

@@ -40,7 +40,7 @@ func appsList(ctx context.Context) ([]*scalingo.App, error) {
 		}
 		apps, err = c.AppsList(ctx)
 		if err != nil || len(apps) == 0 {
-			return nil, errors.Wrap(ctx, err, "operation failed")
+			return nil, errors.Wrap(ctx, err, "list applications")
 		}
 
 		err = writeAppsAutoCompleteCache(apps)
@@ -55,13 +55,13 @@ func appsList(ctx context.Context) ([]*scalingo.App, error) {
 func appsAutoCompleteCache() ([]*scalingo.App, error) {
 	fd, err := os.Open(appsCacheFile)
 	if err != nil {
-		return nil, errors.Wrap(context.Background(), err, "operation failed")
+		return nil, errors.Wrapf(context.Background(), err, "open apps cache file %s", appsCacheFile)
 	}
 	defer fd.Close()
 	var cache appsCache
 	err = gob.NewDecoder(fd).Decode(&cache)
 	if err != nil {
-		return nil, errors.Wrap(context.Background(), err, "operation failed")
+		return nil, errors.Wrap(context.Background(), err, "decode apps cache file")
 	}
 
 	if time.Since(cache.CreatedAt).Seconds() > appsCacheDuration {
@@ -74,7 +74,7 @@ func appsAutoCompleteCache() ([]*scalingo.App, error) {
 func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
 	fd, err := os.OpenFile(appsCacheFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
-		return errors.Wrap(context.Background(), err, "operation failed")
+		return errors.Wrapf(context.Background(), err, "open apps cache file %s for write", appsCacheFile)
 	}
 	defer func() { _ = fd.Close() }()
 	cache := appsCache{
@@ -83,7 +83,7 @@ func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
 	}
 	err = gob.NewEncoder(fd).Encode(&cache)
 	if err != nil {
-		return errors.Wrap(context.Background(), err, "operation failed")
+		return errors.Wrap(context.Background(), err, "encode apps cache file")
 	}
 
 	return nil

@@ -18,11 +18,11 @@ func Remove(ctx context.Context, name string) error {
 
 	k, err := keyByName(ctx, c, name)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find SSH key %s", name)
 	}
 	err = c.KeysDelete(ctx, k.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "delete SSH key %s", name)
 	}
 
 	fmt.Printf("Key '%s' has been deleted.\n", name)
@@ -32,7 +32,7 @@ func Remove(ctx context.Context, name string) error {
 func keyByName(ctx context.Context, c *scalingo.Client, name string) (*scalingo.Key, error) {
 	keys, err := c.KeysList(ctx)
 	if err != nil {
-		return nil, errors.Wrap(ctx, err, "operation failed")
+		return nil, errors.Wrap(ctx, err, "list SSH keys")
 	}
 	for _, k := range keys {
 		if k.Name == name {

@@ -23,14 +23,14 @@ func Destroy(ctx context.Context, appName string, force bool) error {
 
 	_, err = c.AppsShow(ctx, appName)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "check that app %s exists", appName)
 	}
 
 	if !force {
 		fmt.Printf("/!\\ You're going to delete %s, this operation is irreversible.\nTo confirm type the name of the application: ", appName)
 		validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
-			return errors.Wrap(ctx, err, "operation failed")
+			return errors.Wrap(ctx, err, "read destroy confirmation from stdin")
 		}
 		validationName = strings.Trim(validationName, "\n")
 

@@ -54,7 +54,7 @@ func Login(ctx context.Context, opts LoginOpts) error {
 func loginWithUserAndPassword(ctx context.Context) error {
 	_, _, err := config.Auth(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "authenticate with username and password")
 	}
 	return nil
 }
@@ -149,14 +149,14 @@ func finalizeLogin(ctx context.Context, token string) error {
 	}
 	user, err := c.Self(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "fetch current user")
 	}
 
 	io.Statusf("Hello %s, nice to see you!\n", user.Username)
 
 	err = config.SetCurrentUser(ctx, user, token)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "store current user credentials")
 	}
 	return nil
 }

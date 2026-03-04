@@ -26,7 +26,7 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 	}
 	backup, err := client.BackupCreate(ctx, app, addon)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "create backup for addon %s on app %s", addon, app)
 	}
 
 	for backup.Status != scalingo.BackupStatusDone &&

@@ -15,7 +15,7 @@ func ResetCache(ctx context.Context, app string) error {
 
 	err = c.DeploymentCacheReset(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "reset deployment cache for app %s", app)
 	}
 
 	return nil

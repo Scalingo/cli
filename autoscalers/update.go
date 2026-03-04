@@ -22,11 +22,11 @@ func Update(ctx context.Context, app, containerType string, params scalingo.Auto
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
 		}
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find autoscaler for container type %s on app %s", containerType, app)
 	}
 	_, err = c.AutoscalerUpdate(ctx, app, autoscaler.ID, params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "update autoscaler %s on app %s", autoscaler.ID, app)
 	}
 
 	io.Status("Autoscaler updated on", app, "for", containerType, "containers")

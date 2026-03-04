@@ -22,7 +22,7 @@ func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 	}
 	influxdbURL, username, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"http", "https"})
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "resolve InfluxDB URL from %s", opts.VariableName)
 	}
 
 	host, port, err := net.SplitHostPort(influxdbURL.Host)

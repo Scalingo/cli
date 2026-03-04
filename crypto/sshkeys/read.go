@@ -23,7 +23,7 @@ var (
 func ReadPrivateKey(ctx context.Context, path string) (ssh.Signer, error) {
 	privateKeyContent, err := os.ReadFile(path)
 	if err != nil {
-		return nil, errors.Wrap(ctx, err, "operation failed")
+		return nil, errors.Wrapf(ctx, err, "read private key file %s", path)
 	}
 	return readPrivateKeyWithContent(ctx, path, privateKeyContent)
 }

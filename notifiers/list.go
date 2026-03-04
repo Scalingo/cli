@@ -21,7 +21,7 @@ func List(ctx context.Context, app string) error {
 	}
 	notifiers, err := c.NotifiersList(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list notifiers on app %s", app)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

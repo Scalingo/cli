@@ -20,7 +20,7 @@ func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 	}
 	postgreSQLURL, user, _, err := dbURL(ctx, opts.App, opts.VariableName, []string{"postgres", "postgis", "postgresql"})
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "resolve PostgreSQL URL from %s", opts.VariableName)
 	}
 
 	runOpts := apps.RunOpts{

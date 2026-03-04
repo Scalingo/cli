@@ -73,7 +73,7 @@ func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(paramsJSON))
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "build terminal size update request")
 	}
 	token, err := c.GetAccessToken(ctx)
 	if err != nil {
@@ -84,7 +84,7 @@ func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 
 	res, err := httpclient.Do(req)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "send terminal size update request")
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {

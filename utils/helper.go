@@ -68,7 +68,7 @@ func readCharFromStdin() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		return "", errors.Wrap(context.Background(), err, "operation failed")
+		return "", errors.Wrap(context.Background(), err, "read confirmation from stdin")
 	}
 	input = strings.TrimSpace(input)
 	if input == "" {

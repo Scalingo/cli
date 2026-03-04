@@ -20,7 +20,7 @@ func Restart(ctx context.Context, app string, sync bool, args []string) error {
 
 	res, err := c.AppsRestart(ctx, app, &params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "restart app %s", app)
 	}
 	res.Body.Close()
 
@@ -32,7 +32,7 @@ func Restart(ctx context.Context, app string, sync bool, args []string) error {
 	waiter := NewOperationWaiterFromHTTPResponse(app, res)
 	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "wait for restart operation")
 	}
 
 	fmt.Println("Your application has been restarted.")

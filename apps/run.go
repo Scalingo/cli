@@ -151,7 +151,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	if len(opts.Files) > 0 {
 		err := runCtx.uploadFiles(ctx, runCtx.attachURL+"/files", opts.Files)
 		if err != nil {
-			return errors.Wrap(ctx, err, "operation failed")
+			return errors.Wrap(ctx, err, "upload files to one-off container")
 		}
 	}
 

@@ -30,7 +30,7 @@ func Stats(ctx context.Context, app string, stream bool) error {
 	if stream {
 		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
-			return errors.Wrap(ctx, err, "operation failed")
+			return errors.Wrapf(ctx, err, "fetch stats for app %s", app)
 		}
 		displayLiveStatsTable(stats.Stats)
 
@@ -41,7 +41,7 @@ func Stats(ctx context.Context, app string, stream bool) error {
 				stats, err := c.AppsStats(ctx, app)
 				if err != nil {
 					ticker.Stop()
-					return errors.Wrap(ctx, err, "operation failed")
+					return errors.Wrapf(ctx, err, "refresh stats for app %s", app)
 				}
 				displayLiveStatsTable(stats.Stats)
 			}
@@ -49,7 +49,7 @@ func Stats(ctx context.Context, app string, stream bool) error {
 	} else {
 		stats, err := c.AppsStats(ctx, app)
 		if err != nil {
-			return errors.Wrap(ctx, err, "operation failed")
+			return errors.Wrapf(ctx, err, "fetch stats for app %s", app)
 		}
 		return displayStatsTable(stats.Stats)
 	}

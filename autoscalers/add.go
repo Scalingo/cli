@@ -18,7 +18,7 @@ func Add(ctx context.Context, app string, params scalingo.AutoscalerAddParams) e
 
 	autoscaler, err := c.AutoscalerAdd(ctx, app, params)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "create autoscaler on app %s", app)
 	}
 
 	io.Status("Autoscaler created on", app, "for", autoscaler.ContainerType, "containers")

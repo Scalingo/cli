@@ -11,7 +11,7 @@ func DestroyToken(ctx context.Context) error {
 	authenticator := &config.CliAuthenticator{}
 	err := authenticator.RemoveAuth(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "remove local authentication credentials")
 	}
 	return nil
 }

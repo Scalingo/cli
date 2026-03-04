@@ -30,13 +30,13 @@ func Logs(ctx context.Context, app, deploymentID string) error {
 	deploy, err := client.Deployment(ctx, app, deploymentID)
 
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "get deployment %s", deploymentID)
 	}
 
 	res, err := client.DeploymentLogs(ctx, deploy.Links.Output)
 
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "fetch deployment logs")
 	}
 
 	defer res.Body.Close()

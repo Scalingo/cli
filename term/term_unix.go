@@ -58,7 +58,7 @@ func tput(what string) (string, error) {
 	c.Stderr = os.Stderr
 	out, err := c.Output()
 	if err != nil {
-		return "", errors.Wrap(context.Background(), err, "operation failed")
+		return "", errors.Wrapf(context.Background(), err, "run tput %s", what)
 	}
 	return strings.TrimSpace(string(out)), nil
 }

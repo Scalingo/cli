@@ -74,12 +74,12 @@ func getLastVersion() (string, error) {
 
 	res, err := client.Get(lastVersionURL)
 	if err != nil {
-		return "", errors.Wrap(context.Background(), err, "operation failed")
+		return "", errors.Wrap(context.Background(), err, "fetch latest CLI version")
 	}
 	defer res.Body.Close()
 	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
-		return "", errors.Wrap(context.Background(), err, "operation failed")
+		return "", errors.Wrap(context.Background(), err, "read latest CLI version response")
 	}
 
 	return strings.TrimSpace(string(body)), nil

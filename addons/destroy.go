@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Destroy(ctx context.Context, app, addonID string) error {
@@ -24,9 +23,9 @@ func Destroy(ctx context.Context, app, addonID string) error {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	addon, err := checkAddonExist(ctx, c, app, addonID)
+	addon, err := checkAddonExists(ctx, c, app, addonID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "check addon exists")
 	}
 
 	io.Status("Destroy", addonID)
@@ -44,17 +43,17 @@ func Destroy(ctx context.Context, app, addonID string) error {
 
 	err = c.AddonDestroy(ctx, app, addon.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "addon destroy")
 	}
 
 	io.Status("Addon", addonID, "has been destroyed")
 	return nil
 }
 
-func checkAddonExist(ctx context.Context, c *scalingo.Client, app, addonID string) (*scalingo.Addon, error) {
+func checkAddonExists(ctx context.Context, c *scalingo.Client, app, addonID string) (*scalingo.Addon, error) {
 	resources, err := c.AddonsList(ctx, app)
 	if err != nil {
-		return nil, errors.Wrap(ctx, err, "operation failed")
+		return nil, errors.Wrapf(ctx, err, "list addons for app %s", app)
 	}
 	addonList := []string{}
 	for _, r := range resources {

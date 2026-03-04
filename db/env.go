@@ -37,7 +37,7 @@ func dbURLFromAPI(ctx context.Context, appName, envVariableName string, urlSchem
 
 	variables, err := scalingoClient.VariablesListWithoutAlias(ctx, appName)
 	if err != nil {
-		return "", errors.Wrap(ctx, err, "operation failed")
+		return "", errors.Wrapf(ctx, err, "list variables for app %s", appName)
 	}
 	for _, variable := range variables {
 		for _, scheme := range urlSchemes {

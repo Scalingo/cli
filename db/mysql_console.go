@@ -22,7 +22,7 @@ func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 	}
 	mySQLURL, user, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"mysql", "mysql2"})
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "resolve MySQL URL from %s", opts.VariableName)
 	}
 
 	host, port, err := net.SplitHostPort(mySQLURL.Host)

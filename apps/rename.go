@@ -23,13 +23,13 @@ func Rename(ctx context.Context, appName string, newName string) error {
 
 	_, err = c.AppsShow(ctx, appName)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "check that app %s exists", appName)
 	}
 
 	fmt.Printf("/!\\ You're going to rename '%s' to '%s'\nTo confirm type the name of the application: ", appName, newName)
 	validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "read rename confirmation from stdin")
 	}
 	validationName = strings.Trim(validationName, "\n")
 

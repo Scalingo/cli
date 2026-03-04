@@ -76,7 +76,7 @@ func SetCurrentUser(ctx context.Context, user *scalingo.User, token string) erro
 func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, token string) error {
 	authConfig, err := existingAuth(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "read existing authentication config")
 	}
 
 	var c auth.ConfigPerHostV2

@@ -21,12 +21,12 @@ func Remove(ctx context.Context, app, containerType string) error {
 			io.Error("Container type " + containerType + " has no autoscaler on the app " + app + ".")
 			return nil
 		}
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find autoscaler for container type %s on app %s", containerType, app)
 	}
 
 	err = c.AutoscalerRemove(ctx, app, autoscaler.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "remove autoscaler %s from app %s", autoscaler.ID, app)
 	}
 
 	io.Status("Autoscaler removed on", app, "for", containerType, "containers")

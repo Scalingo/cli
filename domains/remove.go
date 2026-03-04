@@ -17,12 +17,12 @@ func Remove(ctx context.Context, app string, domain string) error {
 	}
 	d, err := findDomain(ctx, client, app, domain)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find domain %s on app %s", domain, app)
 	}
 
 	err = client.DomainsRemove(ctx, app, d.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "remove domain %s from app %s", domain, app)
 	}
 
 	io.Status("The domain", d.Name, "has been deleted")

@@ -21,7 +21,7 @@ func DeploymentsAutoComplete(ctx context.Context, c *cli.Command) error {
 
 	deployments, err := client.DeploymentList(ctx, currentApp)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list deployments for app %s", currentApp)
 	}
 
 	for _, deployment := range deployments {

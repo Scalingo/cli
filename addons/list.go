@@ -6,9 +6,8 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context, app string) error {
@@ -18,7 +17,7 @@ func List(ctx context.Context, app string) error {
 	}
 	resources, err := c.AddonsList(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "addons list")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

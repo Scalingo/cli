@@ -18,7 +18,7 @@ func Events(ctx context.Context, app string, paginationReq pagination.Request) e
 
 	appEvents, pagination, err := c.EventsList(ctx, app, paginationReq)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list events for app %s", app)
 	}
 
 	return events.DisplayTimeline(appEvents, pagination, events.DisplayTimelineOpts{})

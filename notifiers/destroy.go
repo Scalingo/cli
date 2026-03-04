@@ -26,7 +26,7 @@ func Destroy(ctx context.Context, app string, ID string) error {
 
 	notifier, err := getNotifier(ctx, c, app, ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find notifier %s on app %s", ID, app)
 	}
 
 	io.Status("Destroy", notifier.GetName())
@@ -44,7 +44,7 @@ func Destroy(ctx context.Context, app string, ID string) error {
 
 	err = c.NotifierDestroy(ctx, app, notifier.GetID())
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "delete notifier %s on app %s", ID, app)
 	}
 
 	io.Status("Notifier", ID, "has been destroyed")
@@ -54,7 +54,7 @@ func Destroy(ctx context.Context, app string, ID string) error {
 func getNotifier(ctx context.Context, c *scalingo.Client, app string, ID string) (scalingo.DetailedNotifier, error) {
 	resources, err := c.NotifiersList(ctx, app)
 	if err != nil {
-		return nil, errors.Wrap(ctx, err, "operation failed")
+		return nil, errors.Wrapf(ctx, err, "list notifiers on app %s", app)
 	}
 	notifiersList := []string{}
 	for _, r := range resources {

@@ -52,7 +52,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 
 	environ, err := c.VariablesListWithoutAlias(ctx, opts.App)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list variables for app %s", opts.App)
 	}
 
 	dbURLStr := dbEnvVarValue(opts.DBEnvVar, environ)
@@ -114,7 +114,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	for {
 		select {
 		case err := <-errs:
-			return errors.Wrap(ctx, err, "operation failed")
+			return errors.Wrap(ctx, err, "handle database tunnel connection")
 		default:
 		}
 
@@ -215,7 +215,7 @@ func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, er
 			return nil
 		}
 
-		return errors.Wrap(context.Background(), err, "operation failed")
+		return errors.Wrap(context.Background(), err, "handle database tunnel timeout")
 	}
 	return nil
 }

@@ -30,7 +30,7 @@ func Setup(ctx context.Context, appName string, params SetupParams) error {
 
 	err = putRemoteInRepository(repo, params.RemoteName, url, params.ForcePutRemote)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "configure git remote %s", params.RemoteName)
 	}
 
 	io.Status("Successfully added the Git remote", params.RemoteName, "on", appName)
@@ -40,18 +40,18 @@ func Setup(ctx context.Context, appName string, params SetupParams) error {
 func putRemoteInRepository(repository *git.Repository, remoteName string, url string, force bool) error {
 	has, err := repositoryHasRemote(repository, remoteName)
 	if err != nil {
-		return errors.Wrap(context.Background(), err, "operation failed")
+		return errors.Wrapf(context.Background(), err, "check if git remote %s exists", remoteName)
 	}
 	if has && force {
 		err := deleteThenCreateRemoteInRepository(repository, remoteName, url)
 		if err != nil {
-			return errors.Wrap(context.Background(), err, "operation failed")
+			return errors.Wrapf(context.Background(), err, "replace git remote %s", remoteName)
 		}
 		return nil
 	}
 	err = createRemoteInRepository(repository, remoteName, url)
 	if err != nil {
-		return errors.Wrap(context.Background(), err, "operation failed")
+		return errors.Wrapf(context.Background(), err, "create git remote %s", remoteName)
 	}
 	return nil
 }

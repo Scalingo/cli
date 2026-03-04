@@ -53,7 +53,7 @@ func Provision(ctx context.Context, app, platformName string, params ProvisionPa
 
 	platforms, err := c.NotificationPlatformByName(ctx, platformName)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find notification platform %s", platformName)
 	}
 	if len(platforms) <= 0 {
 		return errors.Newf(ctx, "notification platform \"%s\" has not been found", platformName)
@@ -62,7 +62,7 @@ func Provision(ctx context.Context, app, platformName string, params ProvisionPa
 
 	baseNotifier, err := c.NotifierProvision(ctx, app, params.NotifierParams)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "create notifier on app %s", app)
 	}
 	notifier := baseNotifier.Specialize()
 

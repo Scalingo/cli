@@ -23,7 +23,7 @@ func Details(ctx context.Context, app, ID string) error {
 	}
 	baseNotifier, err := c.NotifierByID(ctx, app, ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "get notifier %s on app %s", ID, app)
 	}
 	notifier := baseNotifier.Specialize()
 

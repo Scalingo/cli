@@ -44,7 +44,7 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 
 	res, err := c.Logs(ctx, logsURL, n, filter)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "fetch logs")
 	}
 	defer res.Body.Close()
 
@@ -124,7 +124,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 
 	logsURL, err := url.Parse(logsRawURL)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "parse logs URL %s", logsRawURL)
 	}
 	if logsURL.Scheme == "https" {
 		logsURL.Scheme = "wss"
@@ -141,7 +141,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	header.Add("Origin", fmt.Sprintf("http://scalingo-cli.local/%s", config.Version))
 	conn, resp, err := websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "open logs websocket stream")
 	}
 	defer resp.Body.Close()
 
@@ -173,7 +173,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 			} else if strings.Contains(err.Error(), "use of closed network connect") {
 				return nil
 			} else {
-				return errors.Wrap(ctx, err, "operation failed")
+				return errors.Wrap(ctx, err, "read logs event from websocket stream")
 			}
 		} else {
 			switch event.Type {

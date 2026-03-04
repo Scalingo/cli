@@ -204,7 +204,7 @@ func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, st
 func GetAppNameFromGitRemote(directory string, remoteName string) (string, error) {
 	remotes, err := utils.ScalingoGitRemotes(directory)
 	if err != nil {
-		return "", errors.Wrap(context.Background(), err, "operation failed")
+		return "", errors.Wrapf(context.Background(), err, "list git remotes from %s", directory)
 	}
 
 	altRemoteName := "scalingo-" + remoteName

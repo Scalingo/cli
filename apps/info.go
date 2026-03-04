@@ -47,7 +47,7 @@ func Info(ctx context.Context, appName string) error {
 func getStackName(ctx context.Context, c *scalingo.Client, stackID string) (string, error) {
 	stacks, err := c.StacksList(ctx)
 	if err != nil {
-		return "", errors.Wrap(ctx, err, "operation failed")
+		return "", errors.Wrap(ctx, err, "list stacks")
 	}
 
 	for _, stack := range stacks {

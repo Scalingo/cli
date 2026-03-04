@@ -3,12 +3,11 @@ package addons
 import (
 	"context"
 
-	"github.com/Scalingo/go-utils/errors/v3"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Provision(ctx context.Context, app, addon, plan string) error {
@@ -27,7 +26,7 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 
 	planID, err := utils.FindPlan(ctx, c, addon, plan)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrap(ctx, err, "find plan")
 	}
 
 	params, err := c.AddonProvision(ctx, app, scalingo.AddonProvisionParams{

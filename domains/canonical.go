@@ -17,12 +17,12 @@ func SetCanonical(ctx context.Context, app, domain string) error {
 
 	d, err := findDomain(ctx, client, app, domain)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "find domain %s on app %s", domain, app)
 	}
 
 	_, err = client.DomainSetCanonical(ctx, app, d.ID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "set canonical domain %s on app %s", domain, app)
 	}
 
 	io.Statusf("Canonical domain set to %s\n", domain)
@@ -37,7 +37,7 @@ func UnsetCanonical(ctx context.Context, app string) error {
 
 	_, err = c.DomainUnsetCanonical(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "unset canonical domain on app %s", app)
 	}
 
 	io.Status("Canonical domain disabled")

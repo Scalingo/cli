@@ -19,7 +19,7 @@ func List(ctx context.Context, app string) error {
 	}
 	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list autoscalers on app %s", app)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

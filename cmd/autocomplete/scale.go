@@ -23,7 +23,7 @@ func ScaleAutoComplete(ctx context.Context, c *cli.Command) error {
 	}
 	processes, err := client.AppsContainerTypes(ctx, appName)
 	if err != nil {
-		return errors.Wrap(ctx, err, "operation failed")
+		return errors.Wrapf(ctx, err, "list container types for app %s", appName)
 	}
 	for _, ct := range processes {
 		fmt.Printf("%s:%d:%s\n", ct.Name, ct.Amount, ct.Size)
