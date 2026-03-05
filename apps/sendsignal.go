@@ -3,6 +3,7 @@ package apps
 import (
 	"context"
 	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/Scalingo/cli/config"
@@ -45,9 +46,7 @@ func keepUniqueContainersWithNames(ctx context.Context, containers []scalingo.Co
 				continue
 			}
 
-			for k, v := range containersToKillWithType {
-				containersToKill[k] = v
-			}
+			maps.Copy(containersToKill, containersToKillWithType)
 		}
 	}
 

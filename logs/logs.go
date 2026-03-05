@@ -57,10 +57,9 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	// requested.  On medium to good internet connection, we are fetching lines
 	// faster than we can process them.  This buffer is here to get the logs as
 	// fast as possible since the request will time out after 30s.
-	buffSize := n
-	if buffSize > logsMaxBufferSize { // Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
-		buffSize = logsMaxBufferSize
-	}
+	buffSize := min(n,
+		// Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
+		logsMaxBufferSize)
 
 	// This buffered channel will be used as a buffer between the network
 	// connection and our logs processing pipeline.
@@ -71,13 +70,11 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 
 	// Start a goroutine that will read from buffered channel and send those
 	// lines to the logs processing pipeline.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for bline := range buff {
 			colorizeLogs(bline)
 		}
-	}()
+	})
 
 	// Ensure that all lines are printed out before exiting this method.
 	defer wg.Wait()
@@ -184,7 +181,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	}
 }
 
-type colorFunc func(...interface{}) string
+type colorFunc func(...any) string
 
 func colorizeLogs(logs string) {
 	containerColors := []colorFunc{
@@ -199,9 +196,9 @@ func colorizeLogs(logs string) {
 		color.New(color.FgHiMagenta).SprintFunc(),
 	}
 
-	lines := strings.Split(logs, "\n")
+	lines := strings.SplitSeq(logs, "\n")
 
-	for _, line := range lines {
+	for line := range lines {
 		if line == "" {
 			continue
 		}

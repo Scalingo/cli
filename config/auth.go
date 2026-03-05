@@ -37,7 +37,7 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 	if C.DisableInteractive {
 		err = errors.New(ctx, "Fail to login (interactive mode disabled)")
 	} else {
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			user, tokens, err = tryAuth(ctx)
 			if err == nil {
 				break
