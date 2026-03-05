@@ -4,6 +4,7 @@
 
 * build(deps): update `github.com/Scalingo/go-scalingo` to v10
 * refactor: replace `errgo` and `pkg/errors` with `github.com/Scalingo/go-utils/errors/v3`
+* refactor: autofix by `go fix` and golangci-lint
 
 ## 1.43.3
 
