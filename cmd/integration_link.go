@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	stderrors "errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -142,26 +141,26 @@ List of available integrations:
 				autoDeploy := c.Bool("auto-deploy")
 				noAutoDeploy := c.Bool("no-auto-deploy")
 				if autoDeploy && noAutoDeploy {
-					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-create")
 				}
 
 				deployReviewApps := c.Bool("deploy-review-apps")
 				noDeployReviewApps := c.Bool("no-deploy-review-apps")
 				if deployReviewApps && noDeployReviewApps {
-					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-create")
 				}
 
 				destroyOnClose := c.Bool("destroy-on-close")
 				noDestroyOnClose := c.Bool("no-destroy-on-close")
 				if destroyOnClose && noDestroyOnClose {
-					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnClose := c.Uint("hours-before-destroy-on-close")
 
 				destroyOnStale := c.Bool("destroy-on-stale")
 				noDestroyOnStale := c.Bool("no-destroy-on-stale")
 				if destroyOnStale && noDestroyOnStale {
-					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-create")
 				}
 				hoursBeforeDestroyOnStale := c.Uint("hours-before-destroy-on-stale")
 
@@ -169,13 +168,13 @@ List of available integrations:
 				noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 				if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-					errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 				if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-					errorQuitWithHelpMessage(ctx, stderrors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
+					errorQuitWithHelpMessage(ctx, errors.New(ctx, "flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-create")
 				}
 
 				if deployReviewApps && allowReviewAppsFromForks && !awareOfSecurityRisks {
@@ -268,35 +267,35 @@ List of available integrations:
 			autoDeploy := c.Bool("auto-deploy")
 			noAutoDeploy := c.Bool("no-auto-deploy")
 			if autoDeploy && noAutoDeploy {
-				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both auto-deploy and no-auto-deploy"), c, "integration-link-update")
 			}
 			deployReviewApps := c.Bool("deploy-review-apps")
 			noDeployReviewApps := c.Bool("no-deploy-review-apps")
 			if deployReviewApps && noDeployReviewApps {
-				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both deploy-review-apps and no-deploy-review-apps"), c, "integration-link-update")
 			}
 			destroyOnClose := c.Bool("destroy-on-close")
 			noDestroyOnClose := c.Bool("no-destroy-on-close")
 			if destroyOnClose && noDestroyOnClose {
-				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both destroy-on-close and no-destroy-on-close"), c, "integration-link-update")
 			}
 			destroyOnStale := c.Bool("destroy-on-stale")
 			noDestroyOnStale := c.Bool("no-destroy-on-stale")
 			if destroyOnStale && noDestroyOnStale {
-				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both destroy-on-stale and no-destroy-on-stale"), c, "integration-link-update")
 			}
 
 			allowReviewAppsFromForks := c.Bool("allow-review-apps-from-forks")
 			noAllowReviewAppsFromForks := c.Bool("no-allow-review-apps-from-forks")
 
 			if allowReviewAppsFromForks && noAllowReviewAppsFromForks {
-				errorQuitWithHelpMessage(ctx, stderrors.New("cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot define both allow-review-apps-from-forks and no-allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			awareOfSecurityRisks := c.Bool("aware-of-security-risks")
 
 			if awareOfSecurityRisks && !c.IsSet("allow-review-apps-from-forks") {
-				errorQuitWithHelpMessage(ctx, stderrors.New("flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "flag --aware-of-security-risks must be used in conjunction with --allow-review-apps-from-forks"), c, "integration-link-update")
 			}
 
 			currentApp := detect.CurrentApp(ctx, c)
@@ -456,7 +455,7 @@ List of available integrations:
 func interactiveCreate(ctx context.Context) (scalingo.SCMRepoLinkCreateParams, error) {
 	var params scalingo.SCMRepoLinkCreateParams
 	if config.C.DisableInteractive {
-		return params, stderrors.New("need at least one integration link parameter")
+		return params, errors.New(ctx, "need at least one integration link parameter")
 	}
 	qs := []*survey.Question{
 		{
@@ -550,14 +549,14 @@ func validateHoursBeforeDelete(ctx context.Context) survey.Validator {
 	return func(ans any) error {
 		str, ok := ans.(string)
 		if !ok {
-			return stderrors.New("must be a string")
+			return errors.New(ctx, "must be a string")
 		}
 		i, err := strconv.ParseInt(str, 10, 32)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "error parsing hours")
 		}
 		if i < 0 {
-			return stderrors.New("must be positive")
+			return errors.New(ctx, "must be positive")
 		}
 		return nil
 	}

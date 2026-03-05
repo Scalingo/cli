@@ -2,7 +2,6 @@ package env
 
 import (
 	"context"
-	stderrors "errors"
 	"fmt"
 
 	"github.com/Scalingo/cli/config"
@@ -40,5 +39,5 @@ func Get(ctx context.Context, appName, variableName string) (string, error) {
 			return v.Value, nil
 		}
 	}
-	return "", stderrors.New("environment variable not found")
+	return "", errors.New(ctx, "environment variable not found")
 }
