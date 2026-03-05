@@ -38,7 +38,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			err := git.Setup(ctx, currentApp, git.SetupParams{
@@ -69,7 +69,7 @@ var (
 				_ = cli.ShowCommandHelp(ctx, c, "git-show")
 				return nil
 			}
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			err := git.Show(ctx, currentApp)

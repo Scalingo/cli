@@ -3,21 +3,19 @@ package deployments
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	stderrors "errors"
 	"fmt"
 	stdio "io"
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
-	errorspkg "github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-var ErrDeploymentFailed = errors.New("Deployment failed")
+var ErrDeploymentFailed = stderrors.New("deployment failed")
 
 type StreamOpts struct {
 	AppName      string
@@ -44,19 +42,19 @@ type statusData struct {
 func Stream(ctx context.Context, opts *StreamOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errorspkg.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	app, err := c.AppsShow(ctx, opts.AppName)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "get app %s", opts.AppName)
 	}
 
 	debug.Println("Opening socket to: " + app.Links.DeploymentsStream)
 
 	conn, err := c.DeploymentStream(ctx, app.Links.DeploymentsStream)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "open deployment event stream")
 	}
 
 	// This method can focus on one given deployment and will on display events
@@ -86,7 +84,7 @@ func Stream(ctx context.Context, opts *StreamOpts) error {
 				}
 				continue
 			} else {
-				return errgo.Mask(err, errgo.Any)
+				return errors.Wrap(ctx, err, "read deployment event from stream")
 			}
 		} else {
 			switch event.Type {

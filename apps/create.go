@@ -4,17 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Create(ctx context.Context, appName, remote, buildpack, projectID string, hdsResource bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	app, err := c.AppsCreate(ctx, scalingo.AppsCreateOpts{Name: appName, ProjectID: projectID, HDSResource: hdsResource})
@@ -23,7 +22,7 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 			return handleRegionDisabledError(ctx, appName, c)
 		}
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			return errgo.Notef(err, "fail to create the application")
+			return errors.Wrapf(ctx, err, "fail to create the application")
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(ctx, c, func() error {
@@ -40,7 +39,7 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)
-	if _, ok := utils.DetectGit(); ok && utils.AddGitRemote(app.GitURL, remote) == nil {
+	if _, ok := utils.DetectGit(); ok && utils.AddGitRemote(ctx, app.GitURL, remote) == nil {
 		fmt.Printf("Git repository detected: remote %s added\n→ 'git push %s master' to deploy your app\n", remote, remote)
 	} else {
 		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add %s %s\n→ git push %s master\n", remote, app.GitURL, remote)
@@ -51,10 +50,10 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 func handleRegionDisabledError(ctx context.Context, appName string, c *scalingo.Client) error {
 	regions, rerr := c.RegionsList(ctx)
 	if rerr != nil {
-		return errgo.Notef(rerr, "region is disabled, failed to list available regions")
+		return errors.Wrapf(ctx, rerr, "region is disabled, failed to list available regions")
 	}
 	if len(regions) <= 1 {
-		return errgo.New("region is disabled and there is no other available region")
+		return errors.New(ctx, "region is disabled and there is no other available region")
 	}
 	firstRegion := regions[0]
 	if firstRegion.Name == config.C.ScalingoRegion {

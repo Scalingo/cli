@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type LoginOpts struct {
@@ -38,7 +36,7 @@ func Login(ctx context.Context, opts LoginOpts) error {
 			config.C.Logger.Printf("SSH connection failed: %+v\n", err)
 			io.Error("SSH connection failed.")
 			if opts.SSH {
-				if errors.RootCause(err) == netssh.ErrNoAuthSucceed {
+				if errors.Is(err, netssh.ErrNoAuthSucceed) {
 					return errors.Wrapf(ctx, err, "please use the flag '--ssh-identity /path/to/private/key' to specify your private key")
 				}
 				return errors.Wrapf(ctx, err, "fail to login with SSH")
@@ -55,7 +53,7 @@ func Login(ctx context.Context, opts LoginOpts) error {
 func loginWithUserAndPassword(ctx context.Context) error {
 	_, _, err := config.Auth(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "authenticate with username and password")
 	}
 	return nil
 }
@@ -107,15 +105,15 @@ func loginWithSSH(ctx context.Context, identity string) error {
 	}
 	req := <-reqs
 	if req == nil {
-		return errgo.Newf("invalid response from auth request")
+		return errors.Newf(ctx, "invalid response from auth request")
 	}
 	if req.Type != "auth.v2@scalingo.com" {
-		return errgo.Newf("invalid response from SSH server, type is %v", req.Type)
+		return errors.Newf(ctx, "invalid response from SSH server, type is %v", req.Type)
 	}
 	payload := req.Payload
 
 	if len(payload) == 0 {
-		return errgo.Newf("invalid response from SSH server")
+		return errors.Newf(ctx, "invalid response from SSH server")
 	}
 
 	hostname, err := os.Hostname()
@@ -133,12 +131,12 @@ func loginWithSSH(ctx context.Context, identity string) error {
 		JWT: string(payload),
 	})
 	if err != nil {
-		return errgo.NoteMask(err, "fail to create API token", errgo.Any)
+		return errors.Wrapf(ctx, err, "fail to create API token")
 	}
 
 	err = finalizeLogin(ctx, token.Token)
 	if err != nil {
-		return errgo.NoteMask(err, "fail to finalize login", errgo.Any)
+		return errors.Wrapf(ctx, err, "fail to finalize login")
 	}
 	return nil
 }
@@ -150,14 +148,14 @@ func finalizeLogin(ctx context.Context, token string) error {
 	}
 	user, err := c.Self(ctx)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "fetch current user")
 	}
 
 	io.Statusf("Hello %s, nice to see you!\n", user.Username)
 
 	err = config.SetCurrentUser(ctx, user, token)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "store current user credentials")
 	}
 	return nil
 }

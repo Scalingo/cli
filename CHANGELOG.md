@@ -3,6 +3,7 @@
 ## To Be Released
 
 * build(deps): update `github.com/Scalingo/go-scalingo` to v10
+* refactor: replace `errgo` and `pkg/errors` with `github.com/Scalingo/go-utils/errors/v3`
 
 ## 1.43.3
 

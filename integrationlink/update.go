@@ -3,18 +3,16 @@ package integrationlink
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Update(ctx context.Context, app string, params scalingo.SCMRepoLinkUpdateParams) error {
 	if app == "" {
-		return errgo.New("no app defined")
+		return errors.New(ctx, "no app defined")
 	}
 
 	c, err := config.ScalingoClient(ctx)

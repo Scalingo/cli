@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
 	scalingoio "github.com/Scalingo/go-scalingo/v10/io"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type DeployRes struct {

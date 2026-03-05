@@ -5,19 +5,19 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context) error {
 	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	keys, err := c.KeysList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list SSH keys")
+		return errors.Wrapf(ctx, err, "fail to list SSH keys")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

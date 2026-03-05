@@ -7,11 +7,11 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func CollaboratorsGenericListAutoComplete(ctx context.Context, c *cli.Command) error {
-	appName := CurrentAppCompletion(c)
+	appName := CurrentAppCompletion(ctx, c)
 	if appName == "" {
 		return nil
 	}

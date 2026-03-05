@@ -5,25 +5,24 @@ import (
 	"net/url"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func dbURL(ctx context.Context, appName, envVariableName string, urlSchemes []string) (*url.URL, string, string, error) {
 	u, err := dbURLFromAPI(ctx, appName, envVariableName, urlSchemes)
 	if err != nil {
-		return nil, "", "", errgo.Mask(err)
+		return nil, "", "", errors.Wrapf(ctx, err, "fail to retrieve %s database URL", strings.ToLower(envVariableName))
 	}
 
 	dbURL, err := url.Parse(u)
 	if err != nil {
-		return nil, "", "", errgo.Newf("%v is not a valid URL", u)
+		return nil, "", "", errors.Newf(ctx, "%v is not a valid URL", u)
 	}
 
-	user, password, err := extractCredentials(dbURL)
+	user, password, err := extractCredentials(ctx, dbURL)
 	if err != nil {
-		return nil, "", "", errgo.Mask(err)
+		return nil, "", "", errors.Wrapf(ctx, err, "fail to extract credentials from %s database URL", strings.ToLower(envVariableName))
 	}
 
 	return dbURL, user, password, nil
@@ -32,12 +31,12 @@ func dbURL(ctx context.Context, appName, envVariableName string, urlSchemes []st
 func dbURLFromAPI(ctx context.Context, appName, envVariableName string, urlSchemes []string) (string, error) {
 	scalingoClient, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return "", errgo.Notef(err, "fail to get Scalingo client to list the variables")
+		return "", errors.Wrapf(ctx, err, "fail to get Scalingo client to list the variables")
 	}
 
 	variables, err := scalingoClient.VariablesListWithoutAlias(ctx, appName)
 	if err != nil {
-		return "", errgo.Mask(err)
+		return "", errors.Wrapf(ctx, err, "list variables for app %s", appName)
 	}
 	for _, variable := range variables {
 		for _, scheme := range urlSchemes {
@@ -47,17 +46,17 @@ func dbURLFromAPI(ctx context.Context, appName, envVariableName string, urlSchem
 		}
 	}
 
-	return "", errgo.Newf("no %v addon detected", strings.ToLower(envVariableName))
+	return "", errors.Newf(ctx, "no %v addon detected", strings.ToLower(envVariableName))
 }
 
-func extractCredentials(u *url.URL) (string, string, error) {
+func extractCredentials(ctx context.Context, u *url.URL) (string, string, error) {
 	if u.User == nil {
-		return "", "", errgo.Newf("%v has no information about the instance credentials", u)
+		return "", "", errors.Newf(ctx, "%v has no information about the instance credentials", u)
 	}
 
 	password, ok := u.User.Password()
 	if !ok {
-		return "", "", errgo.Newf("%v has no information about the instance password", u)
+		return "", "", errors.Newf(ctx, "%v has no information about the instance password", u)
 	}
 
 	return u.User.Username(), password, nil

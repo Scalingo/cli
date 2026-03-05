@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/go-github/v47/github"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type Client interface {
@@ -36,7 +36,7 @@ func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease
 	debug.Printf("GitHub response: %#v\n", githubResponse)
 
 	if err != nil {
-		return nil, errgo.Notef(err, "fail to get the latest release of the Scalingo/cli repository")
+		return nil, errors.Wrapf(ctx, err, "fail to get the latest release of the Scalingo/cli repository")
 	}
 
 	return latestRelease, nil

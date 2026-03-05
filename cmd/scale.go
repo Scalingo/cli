@@ -31,7 +31,7 @@ var (
 			},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
 			if c.Args().Len() == 0 {

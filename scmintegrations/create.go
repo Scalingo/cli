@@ -3,11 +3,10 @@ package scmintegrations
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type CreateArgs struct {
@@ -19,7 +18,7 @@ type CreateArgs struct {
 func Create(ctx context.Context, args CreateArgs) error {
 	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	integrationExist := checkIfIntegrationAlreadyExist(ctx, c, args.SCMType.Str())
@@ -36,7 +35,7 @@ func Create(ctx context.Context, args CreateArgs) error {
 
 	_, err = c.SCMIntegrationsCreate(ctx, args.SCMType, args.URL, args.Token)
 	if err != nil {
-		return errgo.Notef(err, "fail to create the SCM integration")
+		return errors.Wrapf(ctx, err, "fail to create the SCM integration")
 	}
 
 	io.Statusf("Your Scalingo account has been linked to your %s account.\n", scalingo.SCMTypeDisplay[args.SCMType])

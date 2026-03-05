@@ -13,13 +13,13 @@ import (
 	"time"
 
 	"golang.org/x/crypto/ssh"
-	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -40,28 +40,28 @@ type TunnelOpts struct {
 func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	region, err := config.GetRegion(ctx, config.C, config.C.ScalingoRegion, config.GetRegionOpts{})
 	if err != nil {
-		return errgo.Notef(err, "fail to retrieve region information")
+		return errors.Wrapf(ctx, err, "fail to retrieve region information")
 	}
 	sshhost := region.SSH
 
 	environ, err := c.VariablesListWithoutAlias(ctx, opts.App)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "list variables for app %s", opts.App)
 	}
 
 	dbURLStr := dbEnvVarValue(opts.DBEnvVar, environ)
 	if dbURLStr == "" {
-		return errgo.Newf("no such environment variable: %s", opts.DBEnvVar)
+		return errors.Newf(ctx, "no such environment variable: %s", opts.DBEnvVar)
 	}
 
 	dbURL, err := url.Parse(dbURLStr)
 	if err != nil {
-		return errgo.Notef(err, "invalid database 'URL': %s", dbURLStr)
+		return errors.Wrapf(ctx, err, "invalid database 'URL': %s", dbURLStr)
 	}
 	fmt.Fprintf(os.Stderr, "Building tunnel to %s\n", dbURL.Host)
 
@@ -72,9 +72,9 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	})
 	if err != nil {
 		if err == netssh.ErrNoAuthSucceed {
-			return errgo.Notef(err, "please use the flag '-i /path/to/private/key' to specify your private key")
+			return errors.Wrapf(ctx, err, "please use the flag '-i /path/to/private/key' to specify your private key")
 		}
-		return errgo.Notef(err, "fail to connect to SSH server")
+		return errors.Wrapf(ctx, err, "fail to connect to SSH server")
 	}
 	client.Close()
 
@@ -90,7 +90,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	for {
 		tcpAddr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:%d", opts.Bind, opts.Port))
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "resolve local TCP address")
 		}
 
 		sock, err = net.ListenTCP("tcp", tcpAddr)
@@ -99,7 +99,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 			continue
 		}
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "listen on local TCP socket")
 		}
 		break
 	}
@@ -113,14 +113,14 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 	for {
 		select {
 		case err := <-errs:
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "handle database tunnel connection")
 		default:
 		}
 
 		debug.Println("Waiting local connection request")
 		connToTunnel, err := sock.AcceptTCP()
 		if err != nil {
-			return errgo.Mask(err)
+			return errors.Wrap(ctx, err, "accept local TCP connection")
 		}
 		debug.Println("New local connection")
 
@@ -142,7 +142,7 @@ func Tunnel(ctx context.Context, opts TunnelOpts) error {
 					}
 				}
 
-				err = handleConnToTunnel(client, dbURL, connToTunnel, errs)
+				err = handleConnToTunnel(ctx, client, dbURL, connToTunnel, errs)
 				if err != nil {
 					debug.Println("Error happened in tunnel", err)
 					if !opts.Reconnect {
@@ -171,7 +171,7 @@ func dbEnvVarValue(dbEnvVar string, environ scalingo.Variables) string {
 	return ""
 }
 
-func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, errs chan error) error {
+func handleConnToTunnel(ctx context.Context, sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, errs chan error) error {
 	connID := <-connIDGenerator
 	fmt.Printf("Connect to %s [%v]\n", dbURL.Host, connID)
 	conn, err := sshClient.Dial("tcp", dbURL.Host)
@@ -214,7 +214,7 @@ func handleConnToTunnel(sshClient *ssh.Client, dbURL *url.URL, sock net.Conn, er
 			return nil
 		}
 
-		return err
+		return errors.Wrap(ctx, err, "handle database tunnel timeout")
 	}
 	return nil
 }

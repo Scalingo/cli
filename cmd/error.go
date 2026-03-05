@@ -14,14 +14,13 @@ import (
 
 	"github.com/stvp/rollbar"
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
 	httpclient "github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type Sysinfo struct {
@@ -77,13 +76,13 @@ func displayError(ctx context.Context, err error) {
 	currentUser, autherr := config.C.CurrentUser(ctx)
 	if autherr != nil {
 		debug.Println("Fail to get current user")
-		debug.Println(errgo.Details(err))
+		debug.Println(err)
 	}
 
 	newReportError(currentUser, err).Report()
 	rollbar.Wait()
 
-	rootError := errors.RootCause(err)
+	rootError := rootCause(err)
 	if httpclient.IsRequestFailedError(rootError) {
 		displayRequestFailedError(rootError, currentUser, autherr, err)
 	} else if _, ok := rootError.(config.UnknownRegionError); ok {
@@ -95,7 +94,7 @@ func displayError(ctx context.Context, err error) {
 
 func displayScalingoError(err error) {
 	io.Error("An error occurred:")
-	debug.Println(errgo.Details(err))
+	debug.Println(err)
 	message := err.Error()
 	fmt.Println(io.Indent(message, 7))
 }
@@ -132,7 +131,7 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 			io.Error("List of available regions for your account is accessible with 'scalingo regions'.")
 		} else {
 			io.Error("An error occurred:")
-			debug.Println(errgo.Details(err))
+			debug.Println(err)
 			fmt.Println(io.Indent(err.Error(), 7))
 		}
 		return
@@ -150,12 +149,24 @@ func newReportError(currentUser *scalingo.User, err error) *ReportError {
 		System:  newSysinfo(),
 	}
 
-	rootError := errors.RootCause(err)
+	rootError := rootCause(err)
 	if httpclient.IsRequestFailedError(rootError) {
 		r.FailedRequest = rootError.(*httpclient.RequestFailedError).Req.HTTPRequest
 	}
 
 	return r
+}
+
+func rootCause(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	root := err
+	for next := errors.UnwrapError(root); next != nil; next = errors.UnwrapError(next) {
+		root = next
+	}
+	return root
 }
 
 func newSysinfo() Sysinfo {

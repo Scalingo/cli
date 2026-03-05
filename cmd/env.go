@@ -99,7 +99,7 @@ var (
 			SeeAlso: []string{"env", "env-get", "env-unset"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			var err error
 			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
 				err = env.Add(ctx, currentApp, c.Args().Slice(), c.String("f"))
@@ -130,7 +130,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			var err error
 			if c.Args().Len() > 0 {
 				err = env.Delete(ctx, currentApp, c.Args().Slice())

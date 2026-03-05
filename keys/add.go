@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Add(ctx context.Context, name string, path string) error {
 	stat, err := os.Stat(path)
 	if err != nil {
-		return errgo.Notef(err, "fail to stat path to the key")
+		return errors.Wrapf(ctx, err, "fail to stat path to the key")
 	}
 	if stat.Mode().IsDir() {
 		return fmt.Errorf("%s: is a directory", path)
@@ -24,16 +23,16 @@ func Add(ctx context.Context, name string, path string) error {
 
 	keyContent, err := os.ReadFile(path)
 	if err != nil {
-		return errgo.Notef(err, "fail to read the key file")
+		return errors.Wrapf(ctx, err, "fail to read the key file")
 	}
 
 	c, err := config.ScalingoAuthClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	_, err = c.KeysAdd(ctx, name, string(keyContent))
 	if err != nil {
-		return errgo.Notef(err, "fail to add the key to Scalingo account")
+		return errors.Wrapf(ctx, err, "fail to add the key to Scalingo account")
 	}
 
 	fmt.Printf("Key '%s' has been added.\n", name)

@@ -26,7 +26,7 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			err := reviewapps.Show(ctx, currentApp)
 			if err != nil {
 				errorQuit(ctx, err)

@@ -6,25 +6,26 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
+
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func SetRegion(ctx context.Context, regionName string) error {
 	region, err := GetRegion(ctx, C, regionName, GetRegionOpts{})
 	if err != nil {
-		return errgo.Notef(err, "fail to select region")
+		return errors.Wrapf(ctx, err, "fail to select region")
 	}
 
 	C.ConfigFile.Region = region.Name
 	fd, err := os.OpenFile(C.ConfigFilePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0640)
 	if err != nil {
-		return errgo.Notef(err, "fail to open config file")
+		return errors.Wrapf(ctx, err, "fail to open config file")
 	}
 	defer fd.Close()
 
 	err = json.NewEncoder(fd).Encode(C.ConfigFile)
 	if err != nil {
-		return errgo.Notef(err, "fail to persist config file %v", C.ConfigFilePath)
+		return errors.Wrapf(ctx, err, "fail to persist config file %v", C.ConfigFilePath)
 	}
 
 	return nil

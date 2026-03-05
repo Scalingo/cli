@@ -1,6 +1,7 @@
 package term
 
 import (
+	"context"
 	"os"
 	"strings"
 )
@@ -31,11 +32,11 @@ func Restore(f *os.File) error {
 }
 
 // Cols returns 80 on Windows.
-func Cols() (int, error) {
+func Cols(_ context.Context) (int, error) {
 	return 80, nil
 }
 
 // Lines returns 24 on Windows.
-func Lines() (int, error) {
+func Lines(_ context.Context) (int, error) {
 	return 24, nil
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
@@ -90,7 +90,7 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, databaseID string) error {
 	db, err := client.Preview().DatabaseShow(ctx, databaseID)
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "get database %s before plan change", databaseID)
 	}
 
 	if db.Database.Status == scalingo.DatabaseStatusRunning {
@@ -98,7 +98,7 @@ func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, dat
 			return status != scalingo.DatabaseStatusRunning
 		})
 		if err != nil {
-			return err
+			return errors.Wrapf(ctx, err, "wait for database %s to leave running state", databaseID)
 		}
 	}
 
@@ -113,7 +113,7 @@ func waitForDatabaseStatus(ctx context.Context, client *scalingo.Client, databas
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			continue
 		} else if err != nil {
-			return err
+			return errors.Wrapf(ctx, err, "get database %s status", databaseID)
 		}
 		if check(db.Database.Status) {
 			break

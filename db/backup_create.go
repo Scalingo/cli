@@ -6,11 +6,11 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
-	errgo "gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func CreateBackup(ctx context.Context, app, addon string) error {
@@ -21,11 +21,11 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	backup, err := client.BackupCreate(ctx, app, addon)
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "create backup for addon %s on app %s", addon, app)
 	}
 
 	for backup.Status != scalingo.BackupStatusDone &&
@@ -42,7 +42,7 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 
 		backup, err = client.BackupShow(ctx, app, addon, backup.ID)
 		if err != nil {
-			return errgo.Notef(err, "fail to refresh backup state")
+			return errors.Wrapf(ctx, err, "fail to refresh backup state")
 		}
 	}
 	spinner.Stop()

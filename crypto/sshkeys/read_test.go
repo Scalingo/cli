@@ -1,7 +1,6 @@
 package sshkeys
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -75,7 +74,7 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.Name, func(t *testing.T) {
-			signer, err := readPrivateKeyWithContent(context.Background(), "n/a", c.PrivateKeyContent)
+			signer, err := readPrivateKeyWithContent(t.Context(), "n/a", c.PrivateKeyContent)
 
 			c.Expect(t, signer, err)
 		})

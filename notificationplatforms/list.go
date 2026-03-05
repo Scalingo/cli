@@ -5,20 +5,20 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	resources, err := c.NotificationPlatformsList(ctx)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "list notification platforms")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

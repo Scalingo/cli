@@ -45,9 +45,6 @@ github.com/Scalingo/go-scalingo/v10/debug
 github.com/Scalingo/go-scalingo/v10/http
 github.com/Scalingo/go-scalingo/v10/http/httpmock
 github.com/Scalingo/go-scalingo/v10/io
-# github.com/Scalingo/go-utils/errors/v2 v2.5.1
-## explicit; go 1.24
-github.com/Scalingo/go-utils/errors/v2
 # github.com/Scalingo/go-utils/errors/v3 v3.2.0
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v3

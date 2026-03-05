@@ -3,21 +3,20 @@ package apps
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ForceHTTPS(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = c.AppsForceHTTPS(ctx, appName, enable)
 	if err != nil {
-		return errgo.Notef(err, "fail to configure force-https feature")
+		return errors.Wrapf(ctx, err, "fail to configure force-https feature")
 	}
 
 	var action string
@@ -34,11 +33,11 @@ func ForceHTTPS(ctx context.Context, appName string, enable bool) error {
 func StickySession(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	_, err = c.AppsStickySession(ctx, appName, enable)
 	if err != nil {
-		return errgo.Notef(err, "fail to configure sticky-session feature")
+		return errors.Wrapf(ctx, err, "fail to configure sticky-session feature")
 	}
 
 	var action string
@@ -55,12 +54,12 @@ func StickySession(ctx context.Context, appName string, enable bool) error {
 func RouterLogs(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = c.AppsRouterLogs(ctx, appName, enable)
 	if err != nil {
-		return errgo.Notef(err, "fail to configure router-logs feature")
+		return errors.Wrapf(ctx, err, "fail to configure router-logs feature")
 	}
 
 	var action string

@@ -5,24 +5,24 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ScaleAutoComplete(ctx context.Context, c *cli.Command) error {
-	appName := CurrentAppCompletion(c)
+	appName := CurrentAppCompletion(ctx, c)
 	if appName == "" {
 		return nil
 	}
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	processes, err := client.AppsContainerTypes(ctx, appName)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "list container types for app %s", appName)
 	}
 	for _, ct := range processes {
 		fmt.Printf("%s:%d:%s\n", ct.Name, ct.Amount, ct.Size)

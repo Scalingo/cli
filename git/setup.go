@@ -5,12 +5,10 @@ import (
 
 	git "github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
-	errgo "gopkg.in/errgo.v1"
-
-	"github.com/pkg/errors"
 
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type SetupParams struct {
@@ -21,71 +19,71 @@ type SetupParams struct {
 func Setup(ctx context.Context, appName string, params SetupParams) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return errgo.Notef(err, "fail to initialize the Git repository")
+		return errors.Wrapf(ctx, err, "fail to initialize the Git repository")
 	}
 
 	url, err := getGitEndpoint(ctx, appName)
 	if err != nil {
-		return errgo.Notef(err, "fail to get the Git endpoint of this app")
+		return errors.Wrapf(ctx, err, "fail to get the Git endpoint of this app")
 	}
 	debug.Println("Adding Git remote", url)
 
-	err = putRemoteInRepository(repo, params.RemoteName, url, params.ForcePutRemote)
+	err = putRemoteInRepository(ctx, repo, params.RemoteName, url, params.ForcePutRemote)
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "configure git remote %s", params.RemoteName)
 	}
 
 	io.Status("Successfully added the Git remote", params.RemoteName, "on", appName)
 	return nil
 }
 
-func putRemoteInRepository(repository *git.Repository, remoteName string, url string, force bool) error {
-	has, err := repositoryHasRemote(repository, remoteName)
+func putRemoteInRepository(ctx context.Context, repository *git.Repository, remoteName string, url string, force bool) error {
+	has, err := repositoryHasRemote(ctx, repository, remoteName)
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "check if git remote %s exists", remoteName)
 	}
 	if has && force {
-		err := deleteThenCreateRemoteInRepository(repository, remoteName, url)
+		err := deleteThenCreateRemoteInRepository(ctx, repository, remoteName, url)
 		if err != nil {
-			return err
+			return errors.Wrapf(ctx, err, "replace git remote %s", remoteName)
 		}
 		return nil
 	}
-	err = createRemoteInRepository(repository, remoteName, url)
+	err = createRemoteInRepository(ctx, repository, remoteName, url)
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "create git remote %s", remoteName)
 	}
 	return nil
 }
 
-func createRemoteInRepository(repository *git.Repository, remoteName string, url string) error {
+func createRemoteInRepository(ctx context.Context, repository *git.Repository, remoteName string, url string) error {
 	_, err := repository.CreateRemote(&gitconfig.RemoteConfig{
 		Name: remoteName,
 		URLs: []string{url},
 	})
 	if err != nil {
-		errWrapped := errors.Wrapf(err, "create the Git remote")
+		errWrapped := errors.Wrapf(ctx, err, "create the Git remote")
 		if err == git.ErrRemoteExists {
 			message := "Fail to configure git repository, '" + remoteName + "' remote already exists (use --force option to override)"
-			errWrapped = errors.Wrap(errWrapped, message)
+			errWrapped = errors.Wrap(ctx, errWrapped, message)
 		}
 		return errWrapped
 	}
 	return nil
 }
 
-func deleteThenCreateRemoteInRepository(repository *git.Repository, remoteName string, url string) error {
+func deleteThenCreateRemoteInRepository(ctx context.Context, repository *git.Repository, remoteName string, url string) error {
 	err := repository.DeleteRemote(remoteName)
 	if err != nil {
-		return errors.Wrap(err, "delete the Git remote")
+		return errors.Wrap(ctx, err, "delete the Git remote")
 	}
-	return createRemoteInRepository(repository, remoteName, url)
+	return createRemoteInRepository(ctx, repository, remoteName, url)
 }
 
-func repositoryHasRemote(repository *git.Repository, remoteName string) (bool, error) {
+func repositoryHasRemote(ctx context.Context, repository *git.Repository, remoteName string) (bool, error) {
 	config, err := repository.Storer.Config()
 	if err != nil {
-		return false, err
+		return false, errors.Wrapf(ctx, err, "fail to get Git repository config for remote %s", remoteName)
 	}
 
 	if _, has := config.Remotes[remoteName]; has {

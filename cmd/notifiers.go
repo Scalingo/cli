@@ -24,7 +24,7 @@ var (
 			SeeAlso:     []string{"notifiers-add", "notifiers-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			var err error
 			if c.Args().Len() == 0 {
 				err = notifiers.List(ctx, currentApp)
@@ -54,7 +54,7 @@ var (
 			SeeAlso:     []string{"notifiers"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			var err error
 			if c.Args().Len() == 1 {
 				err = notifiers.Details(ctx, currentApp, c.Args().First())
@@ -99,7 +99,7 @@ var (
 			SeeAlso: []string{"notifiers", "notifiers-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
@@ -167,7 +167,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 
@@ -230,7 +230,7 @@ var (
 			SeeAlso:     []string{"notifiers", "notifiers-add"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			var err error
 			if c.Args().Len() == 1 {

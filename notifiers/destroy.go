@@ -5,28 +5,27 @@ import (
 	"fmt"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Destroy(ctx context.Context, app string, ID string) error {
 	if app == "" {
-		return errgo.New("no app defined")
+		return errors.New(ctx, "no app defined")
 	}
 	if ID == "" {
-		return errgo.New("no ID defined")
+		return errors.New(ctx, "no ID defined")
 	}
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	notifier, err := getNotifier(ctx, c, app, ID)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "find notifier %s on app %s", ID, app)
 	}
 
 	io.Status("Destroy", notifier.GetName())
@@ -39,12 +38,12 @@ func Destroy(ctx context.Context, app string, ID string) error {
 	fmt.Scan(&validationID)
 
 	if validationID != ID {
-		return errgo.Newf("'%s' is not '%s', aborting…\n", validationID, ID)
+		return errors.Newf(ctx, "'%s' is not '%s', aborting…\n", validationID, ID)
 	}
 
 	err = c.NotifierDestroy(ctx, app, notifier.GetID())
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "delete notifier %s on app %s", ID, app)
 	}
 
 	io.Status("Notifier", ID, "has been destroyed")
@@ -54,7 +53,7 @@ func Destroy(ctx context.Context, app string, ID string) error {
 func getNotifier(ctx context.Context, c *scalingo.Client, app string, ID string) (scalingo.DetailedNotifier, error) {
 	resources, err := c.NotifiersList(ctx, app)
 	if err != nil {
-		return nil, errgo.Mask(err, errgo.Any)
+		return nil, errors.Wrapf(ctx, err, "list notifiers on app %s", app)
 	}
 	notifiersList := []string{}
 	for _, r := range resources {
@@ -63,5 +62,5 @@ func getNotifier(ctx context.Context, c *scalingo.Client, app string, ID string)
 			return r, nil
 		}
 	}
-	return nil, errgo.Newf("Notifier %s doesn't exist for app %s\nExisting notifiers:\n  - %v", ID, app, strings.Join(notifiersList, "\n  - "))
+	return nil, errors.Newf(ctx, "Notifier %s doesn't exist for app %s\nExisting notifiers:\n  - %v", ID, app, strings.Join(notifiersList, "\n  - "))
 }

@@ -6,11 +6,11 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/tw"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type printableDrains struct {
@@ -26,7 +26,7 @@ type ListAddonOpts struct {
 func List(ctx context.Context, resourceName string, opts ListAddonOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	appToPrint := []printableDrains{}
@@ -34,7 +34,7 @@ func List(ctx context.Context, resourceName string, opts ListAddonOpts) error {
 	if opts.AddonID == "" {
 		logDrains, err := c.LogDrainsList(ctx, resourceName)
 		if err != nil {
-			return errgo.Notef(err, "fail to list the log drains")
+			return errors.Wrapf(ctx, err, "fail to list the log drains")
 		}
 		if len(logDrains) > 0 {
 			appToPrint = append(appToPrint, printableDrains{
@@ -47,7 +47,7 @@ func List(ctx context.Context, resourceName string, opts ListAddonOpts) error {
 	if opts.AddonID != "" || opts.WithAddons {
 		addons, err := c.AddonsList(ctx, resourceName)
 		if err != nil {
-			return errgo.Notef(err, "fail to list addons")
+			return errors.Wrapf(ctx, err, "fail to list addons")
 		}
 
 		for _, addon := range addons {

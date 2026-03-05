@@ -27,10 +27,10 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			currentRegion := config.C.ScalingoRegion
 
-			err := apps.Open(currentApp, currentRegion)
+			err := apps.Open(ctx, currentApp, currentRegion)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

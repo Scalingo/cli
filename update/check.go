@@ -1,16 +1,16 @@
 package update
 
 import (
+	"context"
 	"fmt"
 	stdio "io"
 	"net/http"
 	"strings"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 const (
@@ -31,7 +31,7 @@ func init() {
 	}
 	go func() {
 		var err error
-		lastVersion, err = getLastVersion()
+		lastVersion, err = getLastVersion(context.Background())
 		if err != nil {
 			config.C.Logger.Println(err)
 			gotAnError = true
@@ -40,7 +40,7 @@ func init() {
 	}()
 }
 
-func Check() error {
+func Check(ctx context.Context) error {
 	version := config.Version
 
 	if strings.HasSuffix(version, "dev") {
@@ -55,7 +55,7 @@ func Check() error {
 	}
 
 	if gotAnError {
-		return errgo.New("Update checker: connection error")
+		return errors.New(ctx, "Update checker: connection error")
 	}
 	if version == lastVersion {
 		return nil
@@ -66,19 +66,19 @@ func Check() error {
 	return nil
 }
 
-func getLastVersion() (string, error) {
+func getLastVersion(ctx context.Context) (string, error) {
 	client := http.Client{
 		Timeout: 4 * time.Second,
 	}
 
 	res, err := client.Get(lastVersionURL)
 	if err != nil {
-		return "", errgo.Mask(err)
+		return "", errors.Wrap(ctx, err, "fetch latest CLI version")
 	}
 	defer res.Body.Close()
 	body, err := stdio.ReadAll(res.Body)
 	if err != nil {
-		return "", errgo.Mask(err)
+		return "", errors.Wrap(ctx, err, "read latest CLI version response")
 	}
 
 	return strings.TrimSpace(string(body)), nil

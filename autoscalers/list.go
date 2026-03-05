@@ -6,19 +6,19 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "list autoscalers on app %s", app)
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

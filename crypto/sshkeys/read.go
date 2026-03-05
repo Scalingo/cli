@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -22,7 +22,7 @@ var (
 func ReadPrivateKey(ctx context.Context, path string) (ssh.Signer, error) {
 	privateKeyContent, err := os.ReadFile(path)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrapf(ctx, err, "read private key file %s", path)
 	}
 	return readPrivateKeyWithContent(ctx, path, privateKeyContent)
 }
@@ -40,14 +40,14 @@ func readPrivateKeyWithContent(ctx context.Context, path string, privateKeyConte
 	signer, err := privateKey.signer(ctx)
 	if err != nil {
 		if err, ok := err.(asn1.StructuralError); ok && strings.HasPrefix(err.Msg, "tags don't match") || err.Msg == "length too large" {
-			return nil, errgo.Newf("Fail to decrypt SSH key, invalid password.")
+			return nil, errors.Newf(ctx, "Fail to decrypt SSH key, invalid password.")
 		}
 		if err, ok := err.(asn1.SyntaxError); ok && err.Msg == "trailing data" {
-			return nil, errgo.Newf("The password was OK, but something went wrong.\n" +
-				"Please re-run the command with the environment variable DEBUG=1 " +
+			return nil, errors.Newf(ctx, "The password was OK, but something went wrong.\n"+
+				"Please re-run the command with the environment variable DEBUG=1 "+
 				"and create an issue with the command output: https://github.com/Scalingo/cli/issues")
 		}
-		return nil, errgo.Newf("Invalid SSH key or password: %v", err)
+		return nil, errors.Newf(ctx, "Invalid SSH key or password: %v", err)
 	}
 
 	return signer, nil

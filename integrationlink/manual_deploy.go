@@ -3,17 +3,15 @@ package integrationlink
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ManualDeploy(ctx context.Context, app, branch string, follow bool) error {
 	if app == "" {
-		return errgo.New("no app defined")
+		return errors.New(ctx, "no app defined")
 	}
 
 	c, err := config.ScalingoClient(ctx)

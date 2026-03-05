@@ -2,12 +2,11 @@ package utils
 
 import (
 	"context"
-
-	stderrors "github.com/pkg/errors"
+	stderrors "errors"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10/debug"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var ErrResourceNotFound = stderrors.New("resource name not found")

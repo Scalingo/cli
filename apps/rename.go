@@ -7,10 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Rename(ctx context.Context, appName string, newName string) error {
@@ -18,28 +17,28 @@ func Rename(ctx context.Context, appName string, newName string) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = c.AppsShow(ctx, appName)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrapf(ctx, err, "check that app %s exists", appName)
 	}
 
 	fmt.Printf("/!\\ You're going to rename '%s' to '%s'\nTo confirm type the name of the application: ", appName, newName)
 	validationName, err = bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "read rename confirmation from stdin")
 	}
 	validationName = strings.Trim(validationName, "\n")
 
 	if validationName != appName {
-		return errgo.Newf("'%s' is not '%s', aborting…\n", validationName, appName)
+		return errors.Newf(ctx, "'%s' is not '%s', aborting…\n", validationName, appName)
 	}
 
 	_, err = c.AppsRename(ctx, appName, newName)
 	if err != nil {
-		return errgo.Notef(err, "fail to rename app")
+		return errors.Wrapf(ctx, err, "fail to rename app")
 	}
 
 	io.Status("App " + appName + " has been renamed to " + newName)

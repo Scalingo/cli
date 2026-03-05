@@ -87,7 +87,7 @@ func DisplayFlags(flags []cli.Flag) {
 func FlagsAutoComplete(ctx context.Context, flag string) bool {
 	switch flag {
 	case "-r", "--remote":
-		return CountFlags([]string{"-r", "--remote"}) == 1 && FlagRemoteAutoComplete()
+		return CountFlags([]string{"-r", "--remote"}) == 1 && FlagRemoteAutoComplete(ctx)
 	case "-a", "--app":
 		return CountFlags([]string{"-a", "--app"}) == 1 && FlagAppAutoComplete(ctx)
 	}

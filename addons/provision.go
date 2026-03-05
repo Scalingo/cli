@@ -3,31 +3,30 @@ package addons
 import (
 	"context"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Provision(ctx context.Context, app, addon, plan string) error {
 	if app == "" {
-		return errgo.New("no app defined")
+		return errors.New(ctx, "no app defined")
 	} else if addon == "" {
-		return errgo.New("no addon defined")
+		return errors.New(ctx, "no addon defined")
 	} else if plan == "" {
-		return errgo.New("no plan defined")
+		return errors.New(ctx, "no plan defined")
 	}
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	planID, err := utils.FindPlan(ctx, c, addon, plan)
 	if err != nil {
-		return errgo.Mask(err, errgo.Any)
+		return errors.Wrap(ctx, err, "find plan")
 	}
 
 	params, err := c.AddonProvision(ctx, app, scalingo.AddonProvisionParams{
@@ -36,7 +35,7 @@ func Provision(ctx context.Context, app, addon, plan string) error {
 	})
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
-			return errgo.Notef(err, "Fail to provision addon %v", addon)
+			return errors.Wrapf(ctx, err, "Fail to provision addon %v", addon)
 		}
 		// If error is Payment Required and user tries to exceed its free trial
 		return utils.AskAndStopFreeTrial(ctx, c, func() error {

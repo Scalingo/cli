@@ -5,20 +5,18 @@ import (
 	"fmt"
 	"net/url"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Create(ctx context.Context, app string, integrationType scalingo.SCMType, integrationURL string, params scalingo.SCMRepoLinkCreateParams) error {
 	u, err := url.Parse(integrationURL)
 	if err != nil || u.Scheme == "" || u.Host == "" || u.Path == "" {
-		return errgo.New("source repository URL is not valid")
+		return errors.New(ctx, "source repository URL is not valid")
 	}
 
 	c, err := config.ScalingoClient(ctx)
@@ -33,8 +31,8 @@ func Create(ctx context.Context, app string, integrationType scalingo.SCMType, i
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
 	if err != nil {
-		scerr, ok := errors.RootCause(err).(*http.RequestFailedError)
-		if !ok || scerr.Code != 404 {
+		var scerr *http.RequestFailedError
+		if !errors.As(err, &scerr) || scerr.Code != 404 {
 			return errors.Wrapf(ctx, err, "fail to get the integration link for this app")
 		}
 	}

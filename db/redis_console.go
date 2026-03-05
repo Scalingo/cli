@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type RedisConsoleOpts struct {
@@ -23,7 +24,7 @@ func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 	}
 	redisURL, _, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"redis", "rediss"})
 	if err != nil {
-		return err
+		return errors.Wrapf(ctx, err, "resolve Redis URL from %s", opts.VariableName)
 	}
 
 	if redisURL.Scheme == "rediss" {

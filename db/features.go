@@ -6,11 +6,11 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/urfave/cli/v3"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 // EnableFeature is the command handler to enable a database feature on a given
@@ -23,12 +23,12 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	res, err := client.DatabaseEnableFeature(ctx, app, addon, feature)
 	if err != nil {
-		return errgo.Notef(err, "fail to enable feature '%v'", feature)
+		return errors.Wrapf(ctx, err, "fail to enable feature '%v'", feature)
 	}
 	spinner.Stop()
 
@@ -47,7 +47,7 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 		io.Infof("Waiting for operation completion...")
 		err = waitFeatureUntilActivated(ctx, client, app, addon, feature)
 		if err != nil {
-			return errgo.Notef(err, "fail to wait for feature '%v' to be enabled", feature)
+			return errors.Wrapf(ctx, err, "fail to wait for feature '%v' to be enabled", feature)
 		}
 	}
 
@@ -60,7 +60,7 @@ func waitFeatureUntilActivated(ctx context.Context, client *scalingo.Client, app
 	for range ticker.C {
 		db, err := client.DatabaseShow(ctx, app, addon)
 		if err != nil {
-			return errgo.Notef(err, "fail to refresh database metadata")
+			return errors.Wrapf(ctx, err, "fail to refresh database metadata")
 		}
 		for _, f := range db.Features {
 			if f.Name == feature && f.Status != scalingo.DatabaseFeatureStatusPending {
@@ -88,12 +88,12 @@ func DisableFeature(ctx context.Context, app, addon, feature string) error {
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	_, err = client.DatabaseDisableFeature(ctx, app, addon, feature)
 	if err != nil {
-		return errgo.Notef(err, "fail to disable feature '%v'", feature)
+		return errors.Wrapf(ctx, err, "fail to disable feature '%v'", feature)
 	}
 	spinner.Stop()
 

@@ -30,7 +30,7 @@ func TestGetRegionFromGitRemote(t *testing.T) {
 
 	for msg, test := range tests {
 		t.Run(msg, func(t *testing.T) {
-			appName, _ := extractRegionFromGitRemote(test.url, &config.RegionsCache{
+			appName, _ := extractRegionFromGitRemote(t.Context(), test.url, &config.RegionsCache{
 				Regions: []scalingo.Region{
 					{
 						Name: "osc-fr1",

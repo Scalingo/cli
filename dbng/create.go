@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
@@ -65,7 +65,7 @@ func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID 
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			continue
 		} else if err != nil {
-			return err
+			return errors.Wrapf(ctx, err, "get database %s status", appID)
 		}
 		if db.Database.Status == scalingo.DatabaseStatusRunning {
 			break

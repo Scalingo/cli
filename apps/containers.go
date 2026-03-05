@@ -6,20 +6,20 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func ContainerTypes(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client to list container types")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client to list container types")
 	}
 
 	containerTypes, err := c.AppsContainerTypes(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the application container types")
+		return errors.Wrapf(ctx, err, "fail to list the application container types")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
@@ -28,7 +28,7 @@ func ContainerTypes(ctx context.Context, app string) error {
 	hasAutoscaler := false
 	autoscalers, err := c.AutoscalersList(ctx, app)
 	if err != nil {
-		return errgo.Notef(err, "fail to list the autoscalers")
+		return errors.Wrapf(ctx, err, "fail to list the autoscalers")
 	}
 
 	for _, containerType := range containerTypes {

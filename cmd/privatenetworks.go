@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/privatenetworks"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 	"github.com/Scalingo/go-utils/logger"
 )
 
@@ -81,7 +81,7 @@ var (
 				}
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 
 			err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
 			if err != nil {

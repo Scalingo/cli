@@ -1,14 +1,15 @@
 package autocomplete
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Scalingo/cli/utils"
 )
 
-func FlagRemoteAutoComplete() bool {
+func FlagRemoteAutoComplete(ctx context.Context) bool {
 	if dir, ok := utils.DetectGit(); ok {
-		remoteNames := utils.ScalingoRepoAutoComplete(dir)
+		remoteNames := utils.ScalingoRepoAutoComplete(ctx, dir)
 		for _, name := range remoteNames {
 			fmt.Println(name)
 		}

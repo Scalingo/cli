@@ -6,14 +6,14 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func LogsArchives(ctx context.Context, appName string, page int) error {
 	if page < 0 {
-		return errgo.New("Page must be greather than 0.")
+		return errors.New(ctx, "Page must be greather than 0.")
 	}
 	if page == 0 {
 		page = 1
@@ -21,12 +21,12 @@ func LogsArchives(ctx context.Context, appName string, page int) error {
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	logsRes, err := c.LogsArchives(ctx, appName, page)
 	if err != nil {
-		return errgo.Notef(err, "fail to get apps logs archives")
+		return errors.Wrapf(ctx, err, "fail to get apps logs archives")
 	}
 
 	if len(logsRes.Archives) == 0 {

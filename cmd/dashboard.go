@@ -28,9 +28,9 @@ var (
 				return nil
 			}
 
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			currentRegion := config.C.ScalingoRegion
-			err := apps.Dashboard(currentApp, currentRegion)
+			err := apps.Dashboard(ctx, currentApp, currentRegion)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

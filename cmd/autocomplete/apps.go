@@ -3,15 +3,15 @@ package autocomplete
 import (
 	"context"
 	"encoding/gob"
+	stderrors "errors"
 	"os"
 	"path/filepath"
 	"time"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type appsCache struct {
@@ -22,7 +22,7 @@ type appsCache struct {
 var (
 	appsCacheFile     = filepath.Join(config.C.ConfigDir, ".apps-cache")
 	appsCacheDuration = 30.0
-	errExpiredCache   = errgo.New("apps has expired")
+	errExpiredCache   = stderrors.New("apps has expired")
 )
 
 func appsList(ctx context.Context) ([]*scalingo.App, error) {
@@ -31,19 +31,19 @@ func appsList(ctx context.Context) ([]*scalingo.App, error) {
 		apps []*scalingo.App
 	)
 
-	apps, err = appsAutoCompleteCache()
+	apps, err = appsAutoCompleteCache(ctx)
 	if err != nil {
 		debug.Println("fail to get applications autocomplete cache make GET request", err)
 		c, err := config.ScalingoClient(ctx)
 		if err != nil {
-			return nil, errgo.Notef(err, "fail to get Scalingo client")
+			return nil, errors.Wrapf(ctx, err, "fail to get Scalingo client")
 		}
 		apps, err = c.AppsList(ctx)
 		if err != nil || len(apps) == 0 {
-			return nil, errgo.Mask(err)
+			return nil, errors.Wrap(ctx, err, "list applications")
 		}
 
-		err = writeAppsAutoCompleteCache(apps)
+		err = writeAppsAutoCompleteCache(ctx, apps)
 		if err != nil {
 			debug.Println("fail to write applications autocomplete cache", err)
 		}
@@ -52,16 +52,16 @@ func appsList(ctx context.Context) ([]*scalingo.App, error) {
 	return apps, nil
 }
 
-func appsAutoCompleteCache() ([]*scalingo.App, error) {
+func appsAutoCompleteCache(ctx context.Context) ([]*scalingo.App, error) {
 	fd, err := os.Open(appsCacheFile)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrapf(ctx, err, "open apps cache file %s", appsCacheFile)
 	}
 	defer fd.Close()
 	var cache appsCache
 	err = gob.NewDecoder(fd).Decode(&cache)
 	if err != nil {
-		return nil, errgo.Mask(err)
+		return nil, errors.Wrap(ctx, err, "decode apps cache file")
 	}
 
 	if time.Since(cache.CreatedAt).Seconds() > appsCacheDuration {
@@ -71,10 +71,10 @@ func appsAutoCompleteCache() ([]*scalingo.App, error) {
 	return cache.Apps, nil
 }
 
-func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
+func writeAppsAutoCompleteCache(ctx context.Context, apps []*scalingo.App) error {
 	fd, err := os.OpenFile(appsCacheFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "open apps cache file %s for write", appsCacheFile)
 	}
 	defer func() { _ = fd.Close() }()
 	cache := appsCache{
@@ -83,7 +83,7 @@ func writeAppsAutoCompleteCache(apps []*scalingo.App) error {
 	}
 	err = gob.NewEncoder(fd).Encode(&cache)
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrap(ctx, err, "encode apps cache file")
 	}
 
 	return nil

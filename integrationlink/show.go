@@ -12,7 +12,7 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-scalingo/v10/http"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 const integrationSettingsTemplateText = `
@@ -51,16 +51,17 @@ func enabledIcon(enabled bool) string {
 func Show(ctx context.Context, app string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	repoLink, err := c.SCMRepoLinkShow(ctx, app)
-	if scerr, ok := errors.RootCause(err).(*http.RequestFailedError); ok && scerr.Code == 404 {
+	var scerr *http.RequestFailedError
+	if errors.As(err, &scerr) && scerr.Code == 404 {
 		io.Statusf("Your app '%s' has no integration link.\n", app)
 		return nil
 	}
 	if err != nil {
-		return errors.Notef(ctx, err, "fail to get integration link for this app")
+		return errors.Wrapf(ctx, err, "fail to get integration link for this app")
 	}
 
 	templater, err := template.New("integrationSettings").
@@ -71,7 +72,7 @@ func Show(ctx context.Context, app string) error {
 		Parse(integrationSettingsTemplateText)
 
 	if err != nil {
-		return errors.Notef(ctx, err, "invalid integration settings template")
+		return errors.Wrapf(ctx, err, "invalid integration settings template")
 	}
 
 	settings := IntegrationSettings{
@@ -95,7 +96,7 @@ func Show(ctx context.Context, app string) error {
 	err = templater.Execute(os.Stdout, settings)
 
 	if err != nil {
-		return errors.Notef(ctx, err, "failed rendering integration settings")
+		return errors.Wrapf(ctx, err, "failed rendering integration settings")
 	}
 
 	return nil

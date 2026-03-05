@@ -100,7 +100,7 @@ func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {
 
 		// Detecting Region from git remote
 		if currentRegion == "" {
-			currentRegion = detect.GetRegionFromGitRemote(c, &regions)
+			currentRegion = detect.GetRegionFromGitRemote(ctx, c, &regions)
 		}
 
 		if config.C.ScalingoRegion == "" && currentRegion == "" {

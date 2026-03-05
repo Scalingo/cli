@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"gopkg.in/errgo.v1"
-
 	"github.com/Scalingo/cli/apps"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 type MySQLConsoleOpts struct {
@@ -22,12 +21,12 @@ func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 	}
 	mySQLURL, user, password, err := dbURL(ctx, opts.App, opts.VariableName, []string{"mysql", "mysql2"})
 	if err != nil {
-		return errgo.Mask(err)
+		return errors.Wrapf(ctx, err, "resolve MySQL URL from %s", opts.VariableName)
 	}
 
 	host, port, err := net.SplitHostPort(mySQLURL.Host)
 	if err != nil {
-		return errgo.Newf("%v has an invalid host", mySQLURL)
+		return errors.Newf(ctx, "%v has an invalid host", mySQLURL)
 	}
 
 	runOpts := apps.RunOpts{
@@ -39,7 +38,7 @@ func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 
 	err = apps.Run(ctx, runOpts)
 	if err != nil {
-		return errgo.Newf("fail to run MySQL console: %v", err)
+		return errors.Newf(ctx, "fail to run MySQL console: %v", err)
 	}
 
 	return nil

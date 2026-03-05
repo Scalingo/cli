@@ -5,20 +5,20 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/errgo.v1"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 func List(ctx context.Context, isWithDeprecatedFlag bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
 	stacks, err := c.StacksList(ctx)
 	if err != nil {
-		return errgo.Notef(err, "fail to list available stacks")
+		return errors.Wrapf(ctx, err, "fail to list available stacks")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)

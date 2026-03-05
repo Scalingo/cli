@@ -26,7 +26,7 @@ var (
 			Examples:    []string{"scalingo --app my-app force-https --enable"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() > 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "force-https")
 				return nil
@@ -65,7 +65,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() > 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "sticky-session")
 				return nil
@@ -104,7 +104,7 @@ var (
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(c)
+			currentApp := detect.CurrentApp(ctx, c)
 			if c.Args().Len() > 1 {
 				_ = cli.ShowCommandHelp(ctx, c, "router-logs")
 				return nil

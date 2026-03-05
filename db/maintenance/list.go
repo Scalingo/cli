@@ -10,19 +10,19 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-utils/errors/v2"
+	"github.com/Scalingo/go-utils/errors/v3"
 	"github.com/Scalingo/go-utils/pagination"
 )
 
 func List(ctx context.Context, app string, addonName string, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Notef(ctx, err, "get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	maintenances, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationReq)
 	if err != nil {
-		return errors.Notef(ctx, err, "list the database maintenance")
+		return errors.Wrapf(ctx, err, "list the database maintenance")
 	}
 
 	t := tablewriter.NewWriter(os.Stdout)
