@@ -42,7 +42,7 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 			Name:              "Unencrypted RSA Key",
 			PrivateKeyContent: unencryptedRSAKey,
 			Expect: func(t *testing.T, signer ssh.Signer, err error) {
-				require.Nil(t, err)
+				require.NoError(t, err)
 				require.NotNil(t, signer)
 			},
 		},
@@ -50,7 +50,7 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 			Name:              "Unencrypted OpenSSH RSA Key",
 			PrivateKeyContent: unencryptedOpenSSHRSA,
 			Expect: func(t *testing.T, signer ssh.Signer, err error) {
-				require.Nil(t, err)
+				require.NoError(t, err)
 				require.NotNil(t, signer)
 			},
 		},
@@ -66,7 +66,7 @@ func TestReadPrivateKeyWithContent(t *testing.T) {
 			Name:              "Unencrypted OpenSSH ed25519 Key",
 			PrivateKeyContent: unencryptedOpenSSHed25519,
 			Expect: func(t *testing.T, signer ssh.Signer, err error) {
-				require.Nil(t, err)
+				require.NoError(t, err)
 				require.NotNil(t, signer)
 			},
 		},

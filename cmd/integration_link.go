@@ -105,7 +105,7 @@ List of available integrations:
 			}
 			// If the customer forgot to specify the scheme, we automatically prefix with https://
 			if integrationURLParsed.Scheme == "" {
-				integrationURL = fmt.Sprintf("https://%s", integrationURL)
+				integrationURL = "https://" + integrationURL
 			}
 
 			integrationType, err := scmintegrations.GetTypeFromURL(ctx, integrationURL)
@@ -200,20 +200,22 @@ List of available integrations:
 			if err != nil {
 				var scerr *http.RequestFailedError
 				if errors.As(err, &scerr) {
-					if scerr.Code == 404 {
+					switch scerr.Code {
+					case 404:
 						io.Error("Fail to create SCM repository integration: the repository has not been found")
 						io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
-						if integrationType == scalingo.SCMGithubType || integrationType == scalingo.SCMGithubEnterpriseType {
+						switch integrationType {
+						case scalingo.SCMGithubType, scalingo.SCMGithubEnterpriseType:
 							io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-github")
-						} else if integrationType == scalingo.SCMGitlabType || integrationType == scalingo.SCMGitlabSelfHostedType {
+						case scalingo.SCMGitlabType, scalingo.SCMGitlabSelfHostedType:
 							io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-gitlab")
 						}
-					} else if scerr.Code == 403 {
+					case 403:
 						io.Error("Fail to create SCM repository integration: the SCM API returned a 401 error.")
 						io.Error("Did you revoked the Scalingo token from your profile? In such situation, you may want to remove and re-create the SCM integration.")
 						io.Error("")
 						io.Errorf("The complete error message from the SCM API is: %s\n", scerr.APIError)
-					} else {
+					default:
 						errorQuit(ctx, err)
 					}
 				} else {

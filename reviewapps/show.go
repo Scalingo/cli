@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -39,7 +40,7 @@ func Show(ctx context.Context, appID string) error {
 		}
 
 		t.Append([]string{
-			ra.AppName, fmt.Sprintf("%d", ra.PullRequest.Number), ra.PullRequest.BranchName,
+			ra.AppName, strconv.Itoa(ra.PullRequest.Number), ra.PullRequest.BranchName,
 			date, fmt.Sprintf("%v", ra.LastDeployment.Status), app.URL,
 		})
 	}

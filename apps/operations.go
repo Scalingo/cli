@@ -99,10 +99,11 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 		case err := <-errs:
 			return op, errors.Wrapf(ctx, err, "get operation %v", op.ID)
 		case <-done:
-			if op.Status == "done" {
+			switch op.Status {
+			case "done":
 				fmt.Printf("\bDone in %.3f seconds\n", op.ElapsedDuration())
 				return op, nil
-			} else if op.Status == "error" {
+			case "error":
 				fmt.Printf("\bOperation '%s' failed, an error occurred: %v\n", op.Type, op.Error)
 				return op, errors.Newf(ctx, "operation %v failed", op.ID)
 			}

@@ -6,11 +6,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"golang.org/x/term"
@@ -27,7 +27,7 @@ type UpdateTtyParams struct {
 }
 
 func NotifiedSignals() chan os.Signal {
-	signals := make(chan os.Signal)
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals,
 		syscall.SIGINT,
 		syscall.SIGQUIT,
@@ -64,8 +64,8 @@ func updateTtySize(ctx context.Context, c *scalingo.Client, url string) error {
 	}
 
 	params := UpdateTtyParams{
-		fmt.Sprintf("%d", cols),
-		fmt.Sprintf("%d", lines),
+		strconv.Itoa(cols),
+		strconv.Itoa(lines),
 	}
 	paramsJSON, _ := json.Marshal(&params)
 

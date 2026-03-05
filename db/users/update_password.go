@@ -56,10 +56,7 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 		return nil
 	}
 
-	isPasswordGenerated := false
-	if password == "" {
-		isPasswordGenerated = true
-	}
+	isPasswordGenerated := password == ""
 
 	var databaseUser scalingo.DatabaseUser
 

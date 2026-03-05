@@ -183,7 +183,8 @@ func Run(ctx context.Context, opts RunOpts) error {
 	}
 
 	if term.IsATTY(os.Stdin) {
-		if err := term.MakeRaw(os.Stdin); err != nil {
+		err := term.MakeRaw(os.Stdin)
+		if err != nil {
 			return errors.Wrap(ctx, err, "make stdin raw")
 		}
 	}
@@ -236,7 +237,8 @@ func Run(ctx context.Context, opts RunOpts) error {
 	stopSignalsMonitoring <- true
 
 	if term.IsATTY(os.Stdin) {
-		if err := term.Restore(os.Stdin); err != nil {
+		err := term.Restore(os.Stdin)
+		if err != nil {
 			return errors.Wrap(ctx, err, "restore stdin")
 		}
 	}
@@ -259,7 +261,7 @@ func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	for _, cmdVar := range cmdEnv {
 		v := strings.SplitN(cmdVar, "=", 2)
 		if len(v) != 2 || v[0] == "" || v[1] == "" {
-			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
+			return nil, errors.New("Invalid environment, format is '--env VARIABLE=value'")
 		}
 		env[v[0]] = v[1]
 	}

@@ -32,7 +32,8 @@ var (
 			currentApp := detect.CurrentApp(ctx, c)
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			if err := apps.Restart(ctx, currentApp, c.Bool("s"), c.Args().Slice()); err != nil {
+			err := apps.Restart(ctx, currentApp, c.Bool("s"), c.Args().Slice())
+			if err != nil {
 				errorQuit(ctx, err)
 			}
 			return nil

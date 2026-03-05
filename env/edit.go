@@ -19,7 +19,7 @@ var (
 	errSetInvalidSyntax = stderrors.New("format is invalid, accepted: VAR=VAL")
 
 	nameFormat           = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
-	errInvalidNameFormat = fmt.Errorf("name can only be composed with alphanumerical characters, hyphens and underscores")
+	errInvalidNameFormat = errors.New("name can only be composed with alphanumerical characters, hyphens and underscores")
 )
 
 func Add(ctx context.Context, app string, params []string, filePath string) error {

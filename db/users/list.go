@@ -2,8 +2,8 @@ package users
 
 import (
 	"context"
-	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -44,8 +44,8 @@ func List(ctx context.Context, app, addonUUID string) error {
 	for _, user := range databaseUsers {
 		line := []string{
 			user.Name,
-			fmt.Sprintf("%v", user.ReadOnly),
-			fmt.Sprintf("%v", user.Protected),
+			strconv.FormatBool(user.ReadOnly),
+			strconv.FormatBool(user.Protected),
 		}
 		if user.DbmsAttributes != nil {
 			line = append(line, user.DbmsAttributes.PasswordEncryption)

@@ -91,8 +91,8 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	// Generate the filename and file writer
 	filepath := ""
 	if !writeToStdout { // No need to generate the filename nor the file writer if we're outputing to stdout
-		filepath = fmt.Sprintf("%s.tar.gz", backup.Name) // Default filename
-		if opts.Output != "" {                           // If the Output flag was defined
+		filepath = backup.Name + ".tar.gz" // Default filename
+		if opts.Output != "" {             // If the Output flag was defined
 			if isDir(opts.Output) { // If it's a directory use the default filename in this directory
 				filepath = fmt.Sprintf("%s/%s.tar.gz", opts.Output, backup.Name)
 			} else { // If the output is not a directory use it as the filename

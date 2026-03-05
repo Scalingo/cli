@@ -12,7 +12,8 @@ import (
 func Dashboard(ctx context.Context, appName string, region string) error {
 	url := fmt.Sprintf("https://dashboard.scalingo.com/apps/%s/%s", region, appName)
 
-	if err := browser.OpenURL(url); err != nil {
+	err := browser.OpenURL(url)
+	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to open dashboard in browser")
 	}
 

@@ -12,13 +12,15 @@ func TestDelete(t *testing.T) {
 
 func TestIsEnvEditValid(t *testing.T) {
 	v := "VAR1=VAL1"
-	if err := isEnvEditValid(v); err != nil {
+	err := isEnvEditValid(v)
+	if err != nil {
 		t.Fatal(v, "should be valid, got", err)
 	}
 
 	vs := []string{"VAR1=", "=VAL1", "VAR"}
 	for _, v = range vs {
-		if err := isEnvEditValid(v); err == nil {
+		err := isEnvEditValid(v)
+		if err == nil {
 			t.Fatal(v, "should not be valid")
 		} else if err != errSetInvalidSyntax {
 			t.Fatal("expected", errSetInvalidSyntax, "error, got", err)
@@ -27,7 +29,8 @@ func TestIsEnvEditValid(t *testing.T) {
 
 	vs = []string{"VA R=VAL", "	VAR=VAL", "VAR=VAL", "%%%=VAL"}
 	for _, v = range vs {
-		if err := isEnvEditValid(v); err == nil {
+		err := isEnvEditValid(v)
+		if err == nil {
 			t.Fatal(v, "should not be valid")
 		} else if err != errInvalidNameFormat {
 			t.Fatal("expected", errInvalidNameFormat, "error, got", err)

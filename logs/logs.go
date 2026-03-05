@@ -128,13 +128,13 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 		logsURL.Scheme = "ws"
 	}
 
-	logsURLString := fmt.Sprintf("%s&stream=true", logsURL.String())
+	logsURLString := logsURL.String() + "&stream=true"
 	if filter != "" {
 		logsURLString = fmt.Sprintf("%s&filter=%s", logsURLString, filter)
 	}
 
 	header := http.Header{}
-	header.Add("Origin", fmt.Sprintf("http://scalingo-cli.local/%s", config.Version))
+	header.Add("Origin", "http://scalingo-cli.local/"+config.Version)
 	conn, resp, err := websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
 	if err != nil {
 		return errors.Wrap(ctx, err, "open logs websocket stream")
@@ -142,7 +142,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	defer resp.Body.Close()
 
 	signals.CatchQuitSignals = false
-	signals := make(chan os.Signal)
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)
 
 	go func() {

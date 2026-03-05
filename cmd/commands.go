@@ -23,6 +23,7 @@ type AppCommands struct {
 
 type Command struct {
 	*cli.Command
+
 	// Regional flag not available if Global is true
 	Global bool
 }
@@ -64,7 +65,7 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 	cmds.commands = append(cmds.commands, cmd.Command)
 
 	// This argument disables the global help command, but doesn't disable the flag.
-	cmd.Command.HideHelpCommand = true
+	cmd.HideHelpCommand = true
 
 	// Global commands are simply added to the list of commands
 	if cmd.Global {
@@ -73,9 +74,9 @@ func (cmds *AppCommands) addCommand(cmd Command) {
 
 	// Regional commands are modified before being added to the list of commands.
 	regionFlag := &cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"}
-	cmd.Command.Flags = append(cmd.Command.Flags, regionFlag)
-	action := cmd.Command.Action
-	cmd.Command.Action = regionalCommandAction(action)
+	cmd.Flags = append(cmd.Flags, regionFlag)
+	action := cmd.Action
+	cmd.Action = regionalCommandAction(action)
 }
 
 func regionalCommandAction(action cli.ActionFunc) cli.ActionFunc {

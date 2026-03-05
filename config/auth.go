@@ -253,7 +253,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 		}
 
 		apiToken, err = c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
-			Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
+			Name: "Scalingo CLI - " + hostname,
 		}, loginParams)
 		if err != nil {
 			if !otpRequired && scalingohttp.IsOTPRequired(err) {

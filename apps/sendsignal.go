@@ -2,7 +2,6 @@ package apps
 
 import (
 	"context"
-	"fmt"
 	"maps"
 	"strings"
 
@@ -16,7 +15,7 @@ func keepUniqueContainersWithType(ctx context.Context, containers []scalingo.Con
 	containersToKill := map[string]scalingo.Container{}
 
 	hasMatched := false
-	prefix := fmt.Sprintf("%s-", typeName)
+	prefix := typeName + "-"
 	for _, container := range containers {
 		if strings.HasPrefix(container.Label, prefix) {
 			containersToKill[container.Label] = container

@@ -28,7 +28,7 @@ type RegionsCache struct {
 
 func (c RegionsCache) Default() (scalingo.Region, error) {
 	if len(c.Regions) == 0 {
-		return scalingo.Region{}, fmt.Errorf("no region found")
+		return scalingo.Region{}, errors.New("no region found")
 	}
 
 	for _, r := range c.Regions {
@@ -37,7 +37,7 @@ func (c RegionsCache) Default() (scalingo.Region, error) {
 		}
 	}
 
-	return scalingo.Region{}, fmt.Errorf("no default region found")
+	return scalingo.Region{}, errors.New("no default region found")
 }
 
 // GetRegionOpts allows the caller to use a custom API token instead of

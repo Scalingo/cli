@@ -29,7 +29,8 @@ var (
 					errorQuitWithHelpMessage(ctx, errors.New(ctx, "project filter doesn't respect the expected format"), c, "apps")
 				}
 			}
-			if err := apps.List(ctx, projectSlug); err != nil {
+			err := apps.List(ctx, projectSlug)
+			if err != nil {
 				errorQuit(ctx, err)
 			}
 			return nil
