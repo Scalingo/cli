@@ -75,7 +75,7 @@ func loginWithSSH(ctx context.Context, identity string) error {
 			return errors.Wrapf(ctx, err, "fail to ensure region cache")
 		}
 
-		defaultRegion, err := regions.Default()
+		defaultRegion, err := regions.Default(ctx)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "fail to find default region")
 		}

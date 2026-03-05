@@ -57,9 +57,9 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	// requested.  On medium to good internet connection, we are fetching lines
 	// faster than we can process them.  This buffer is here to get the logs as
 	// fast as possible since the request will time out after 30s.
-	buffSize := min(n,
-		// Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
-		logsMaxBufferSize)
+	//
+	// Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
+	buffSize := min(n, logsMaxBufferSize)
 
 	// This buffered channel will be used as a buffer between the network
 	// connection and our logs processing pipeline.

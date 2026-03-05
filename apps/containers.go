@@ -36,15 +36,15 @@ func ContainerTypes(ctx context.Context, app string) error {
 	for _, containerType := range containerTypes {
 		name := containerType.Name
 
-		var nameSb37 strings.Builder
+		var nameHasAutoscaler strings.Builder
 		for _, a := range autoscalers {
 			if a.ContainerType == containerType.Name {
 				hasAutoscaler = true
-				nameSb37.WriteString(" (*)")
+				nameHasAutoscaler.WriteString(" (*)")
 				break
 			}
 		}
-		name += nameSb37.String()
+		name += nameHasAutoscaler.String()
 
 		amount := strconv.Itoa(containerType.Amount)
 		if containerType.Command != "" {

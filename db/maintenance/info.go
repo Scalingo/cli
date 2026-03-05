@@ -54,11 +54,17 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 	tablewriter.WithRowAutoWrap(tw.WrapNone)
-	t.Append([]string{"ID", maintenanceInfo.ID})
-	t.Append([]string{"Type", maintenanceInfo.Type})
-	t.Append([]string{"Started At", startedAtMessage})
-	t.Append([]string{"Ended At", endedAt})
-	t.Append([]string{"Status", fmt.Sprintf("%v", maintenanceInfo.Status)})
+
+	err = t.Bulk([][]string{
+		{"ID", maintenanceInfo.ID},
+		{"Type", maintenanceInfo.Type},
+		{"Started At", startedAtMessage},
+		{"Ended At", endedAt},
+		{"Status", fmt.Sprintf("%v", maintenanceInfo.Status)},
+	})
+	if err != nil {
+		return errors.Wrap(ctx, err, "append rows to maintenance info table")
+	}
 
 	t.Render()
 

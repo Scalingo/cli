@@ -55,7 +55,6 @@ func (r *ReportError) Report() {
 			},
 		})
 	}
-	// rollbar.ErrorWithStack(rollbar.ERR, r.Error, errgorollbar.BuildStack(r.Error), fields...)
 }
 
 func errorQuitWithHelpMessage(ctx context.Context, err error, c *cli.Command, command string) {

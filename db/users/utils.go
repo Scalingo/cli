@@ -17,7 +17,7 @@ import (
 
 var (
 	SupportedAddons                     = []string{"PostgreSQL", "InfluxDB", "MongoDB", "MySQL"}
-	ErrDatabaseNotSupportUserManagement = stderrors.New("Error: Addon does not support user management")
+	ErrDatabaseNotSupportUserManagement = stderrors.New("addon does not support user management")
 )
 
 func doesDatabaseHandleUserManagement(ctx context.Context, app, addonUUID string) (bool, error) {

@@ -26,9 +26,9 @@ type RegionsCache struct {
 	Regions  []scalingo.Region `json:"regions"`
 }
 
-func (c RegionsCache) Default() (scalingo.Region, error) {
+func (c RegionsCache) Default(ctx context.Context) (scalingo.Region, error) {
 	if len(c.Regions) == 0 {
-		return scalingo.Region{}, errors.New("no region found")
+		return scalingo.Region{}, errors.New(ctx, "no region found")
 	}
 
 	for _, r := range c.Regions {
@@ -37,7 +37,7 @@ func (c RegionsCache) Default() (scalingo.Region, error) {
 		}
 	}
 
-	return scalingo.Region{}, errors.New("no default region found")
+	return scalingo.Region{}, errors.New(ctx, "no default region found")
 }
 
 // GetRegionOpts allows the caller to use a custom API token instead of
