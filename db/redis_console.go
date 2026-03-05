@@ -28,7 +28,7 @@ func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 	}
 
 	if redisURL.Scheme == "rediss" {
-		return fmt.Errorf("Redis console is not available when TLS connections are enforced")
+		return errors.New(ctx, "Redis console is not available when TLS connections are enforced")
 	}
 
 	host, port, err := net.SplitHostPort(redisURL.Host)

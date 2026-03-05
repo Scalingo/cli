@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -42,7 +43,7 @@ func ContainerTypes(ctx context.Context, app string) error {
 			}
 		}
 
-		amount := fmt.Sprintf("%d", containerType.Amount)
+		amount := strconv.Itoa(containerType.Amount)
 		if containerType.Command != "" {
 			t.Append([]string{name, amount, containerType.Size, "`" + containerType.Command + "`"})
 		} else {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/mail"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/stvp/rollbar"
@@ -25,14 +26,12 @@ var (
 )
 
 func defaultAction(ctx context.Context, c *cli.Command) error {
-	for i := range os.Args {
-		if os.Args[i] == completionFlag {
-			if len(os.Args) > 2 {
-				autocomplete.FlagsAutoComplete(ctx, os.Args[len(os.Args)-2])
-			}
-
-			return nil
+	if slices.Contains(os.Args, completionFlag) {
+		if len(os.Args) > 2 {
+			autocomplete.FlagsAutoComplete(ctx, os.Args[len(os.Args)-2])
 		}
+
+		return nil
 	}
 
 	err := cmd.HelpCommand.Action(ctx, c)

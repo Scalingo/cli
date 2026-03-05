@@ -2,7 +2,7 @@ package apps
 
 import (
 	"context"
-	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/Scalingo/cli/config"
@@ -15,7 +15,7 @@ func keepUniqueContainersWithType(ctx context.Context, containers []scalingo.Con
 	containersToKill := map[string]scalingo.Container{}
 
 	hasMatched := false
-	prefix := fmt.Sprintf("%s-", typeName)
+	prefix := typeName + "-"
 	for _, container := range containers {
 		if strings.HasPrefix(container.Label, prefix) {
 			containersToKill[container.Label] = container
@@ -45,9 +45,7 @@ func keepUniqueContainersWithNames(ctx context.Context, containers []scalingo.Co
 				continue
 			}
 
-			for k, v := range containersToKillWithType {
-				containersToKill[k] = v
-			}
+			maps.Copy(containersToKill, containersToKillWithType)
 		}
 	}
 

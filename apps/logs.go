@@ -64,8 +64,8 @@ func checkFilter(ctx context.Context, c *scalingo.Client, appName string, filter
 		return errors.Wrapf(ctx, err, "list container types for app %s", appName)
 	}
 
-	filters := strings.Split(filter, "|")
-	for _, f := range filters {
+	filters := strings.SplitSeq(filter, "|")
+	for f := range filters {
 		ctName := ""
 
 		for _, ct := range processes {

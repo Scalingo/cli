@@ -57,10 +57,9 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	// requested.  On medium to good internet connection, we are fetching lines
 	// faster than we can process them.  This buffer is here to get the logs as
 	// fast as possible since the request will time out after 30s.
-	buffSize := n
-	if buffSize > logsMaxBufferSize { // Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
-		buffSize = logsMaxBufferSize
-	}
+	//
+	// Cap the size of the buffer (to prevent high memory allocation when user specify n=1_000_000)
+	buffSize := min(n, logsMaxBufferSize)
 
 	// This buffered channel will be used as a buffer between the network
 	// connection and our logs processing pipeline.
@@ -71,13 +70,11 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 
 	// Start a goroutine that will read from buffered channel and send those
 	// lines to the logs processing pipeline.
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for bline := range buff {
 			colorizeLogs(bline)
 		}
-	}()
+	})
 
 	// Ensure that all lines are printed out before exiting this method.
 	defer wg.Wait()
@@ -131,13 +128,13 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 		logsURL.Scheme = "ws"
 	}
 
-	logsURLString := fmt.Sprintf("%s&stream=true", logsURL.String())
+	logsURLString := logsURL.String() + "&stream=true"
 	if filter != "" {
 		logsURLString = fmt.Sprintf("%s&filter=%s", logsURLString, filter)
 	}
 
 	header := http.Header{}
-	header.Add("Origin", fmt.Sprintf("http://scalingo-cli.local/%s", config.Version))
+	header.Add("Origin", "http://scalingo-cli.local/"+config.Version)
 	conn, resp, err := websocket.DefaultDialer.DialContext(ctx, logsURLString, header)
 	if err != nil {
 		return errors.Wrap(ctx, err, "open logs websocket stream")
@@ -145,7 +142,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	defer resp.Body.Close()
 
 	signals.CatchQuitSignals = false
-	signals := make(chan os.Signal)
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)
 
 	go func() {
@@ -184,7 +181,7 @@ func Stream(ctx context.Context, logsRawURL string, filter string) error {
 	}
 }
 
-type colorFunc func(...interface{}) string
+type colorFunc func(...any) string
 
 func colorizeLogs(logs string) {
 	containerColors := []colorFunc{
@@ -199,9 +196,9 @@ func colorizeLogs(logs string) {
 		color.New(color.FgHiMagenta).SprintFunc(),
 	}
 
-	lines := strings.Split(logs, "\n")
+	lines := strings.SplitSeq(logs, "\n")
 
-	for _, line := range lines {
+	for line := range lines {
 		if line == "" {
 			continue
 		}

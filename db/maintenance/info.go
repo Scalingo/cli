@@ -40,7 +40,7 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 		nextMaintenanceWindowStartingDate, nextMaintenanceWindowEndingDate := getNextLocalMaintenanceWindow(time.Now(), database.MaintenanceWindow, maintenanceInfo.Status)
 
 		now := time.Now()
-		startedAtMessage = fmt.Sprintf("Next Maintenance Window: %s", nextMaintenanceWindowStartingDate.Format(utils.TimeFormat))
+		startedAtMessage = "Next Maintenance Window: " + nextMaintenanceWindowStartingDate.Format(utils.TimeFormat)
 		if nextMaintenanceWindowStartingDate.Before(now) && nextMaintenanceWindowEndingDate.After(now) && maintenanceInfo.Status == scalingo.MaintenanceStatusNotified {
 			startedAtMessage = fmt.Sprintf("Could be executed during current maintenance window:\n %s - %s",
 				nextMaintenanceWindowStartingDate.Format(utils.TimeFormat),
@@ -54,11 +54,17 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 
 	t := tablewriter.NewWriter(os.Stdout)
 	tablewriter.WithRowAutoWrap(tw.WrapNone)
-	t.Append([]string{"ID", fmt.Sprintf("%v", maintenanceInfo.ID)})
-	t.Append([]string{"Type", fmt.Sprintf("%v", maintenanceInfo.Type)})
-	t.Append([]string{"Started At", fmt.Sprintf("%v", startedAtMessage)})
-	t.Append([]string{"Ended At", fmt.Sprintf("%v", endedAt)})
-	t.Append([]string{"Status", fmt.Sprintf("%v", maintenanceInfo.Status)})
+
+	err = t.Bulk([][]string{
+		{"ID", maintenanceInfo.ID},
+		{"Type", maintenanceInfo.Type},
+		{"Started At", startedAtMessage},
+		{"Ended At", endedAt},
+		{"Status", fmt.Sprintf("%v", maintenanceInfo.Status)},
+	})
+	if err != nil {
+		return errors.Wrap(ctx, err, "append rows to maintenance info table")
+	}
 
 	t.Render()
 

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/urfave/cli/v3"
@@ -151,13 +150,13 @@ It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 			opts := deployments.DeployOpts{NoFollow: c.Bool("no-follow")}
 			if c.Bool("war") || strings.HasSuffix(archivePath, ".war") {
-				io.Status(fmt.Sprintf("Deploying WAR archive: %s", archivePath))
+				io.Status("Deploying WAR archive: " + archivePath)
 				err := deployments.DeployWar(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
 			} else {
-				io.Status(fmt.Sprintf("Deploying tarball archive: %s", archivePath))
+				io.Status("Deploying tarball archive: " + archivePath)
 				err := deployments.Deploy(ctx, currentApp, archivePath, gitRef, opts)
 				if err != nil {
 					errorQuit(ctx, err)

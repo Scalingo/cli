@@ -81,9 +81,10 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 		if modificator != 0 {
 			for _, container := range containerTypes {
 				if container.Name == typeName {
-					if modificator == '-' {
+					switch modificator {
+					case '-':
 						newContainerConfig.Amount = container.Amount - int(amount)
-					} else if modificator == '+' {
+					case '+':
 						newContainerConfig.Amount = container.Amount + int(amount)
 					}
 					break
@@ -156,7 +157,7 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 func formatContainerTypesError(ctx context.Context, c *scalingo.Client, app string, requestFailedError *http.RequestFailedError) error {
 	containerTypes, err := c.AppsContainerTypes(ctx, app)
 	if err != nil {
-		debug.Println(fmt.Sprintf("Failed to get container types: %s", err.Error()))
+		debug.Println("Failed to get container types: " + err.Error())
 		return requestFailedError
 	}
 

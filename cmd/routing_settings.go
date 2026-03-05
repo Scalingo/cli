@@ -34,10 +34,7 @@ var (
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			enable := true
-			if c.IsSet("disable") {
-				enable = false
-			}
+			enable := !c.IsSet("disable")
 
 			err := apps.ForceHTTPS(ctx, currentApp, enable)
 			if err != nil {
@@ -73,10 +70,7 @@ var (
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			enable := true
-			if c.IsSet("disable") {
-				enable = false
-			}
+			enable := !c.IsSet("disable")
 
 			err := apps.StickySession(ctx, currentApp, enable)
 			if err != nil {
@@ -112,10 +106,7 @@ var (
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
 
-			enable := false
-			if c.IsSet("enable") {
-				enable = true
-			}
+			enable := c.IsSet("enable")
 
 			err := apps.RouterLogs(ctx, currentApp, enable)
 			if err != nil {

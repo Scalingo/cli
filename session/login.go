@@ -2,7 +2,6 @@ package session
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/Scalingo/cli/config"
@@ -76,7 +75,7 @@ func loginWithSSH(ctx context.Context, identity string) error {
 			return errors.Wrapf(ctx, err, "fail to ensure region cache")
 		}
 
-		defaultRegion, err := regions.Default()
+		defaultRegion, err := regions.Default(ctx)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "fail to find default region")
 		}
@@ -126,7 +125,7 @@ func loginWithSSH(ctx context.Context, identity string) error {
 		return errors.Wrapf(ctx, err, "fail to create an unauthenticated Scalingo client")
 	}
 	token, err := c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
-		Name: fmt.Sprintf("Scalingo CLI - %s", hostname),
+		Name: "Scalingo CLI - " + hostname,
 	}, scalingo.LoginParams{
 		JWT: string(payload),
 	})

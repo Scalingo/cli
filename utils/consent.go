@@ -142,10 +142,7 @@ func askForConsent(override bool) {
 }
 
 func checkAccessContent(t *time.Time) bool {
-	value := false
-	if t != nil && t.After(time.Now()) {
-		value = true
-	}
+	value := t != nil && t.After(time.Now())
 
 	return value
 }

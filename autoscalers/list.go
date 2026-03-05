@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -26,10 +27,10 @@ func List(ctx context.Context, app string) error {
 
 	for _, autoscaler := range autoscalers {
 		t.Append([]string{
-			fmt.Sprint(!autoscaler.Disabled),
+			strconv.FormatBool(!autoscaler.Disabled),
 			autoscaler.ContainerType,
 			autoscaler.Metric, fmt.Sprintf("%.2f", autoscaler.Target),
-			fmt.Sprintf("%d", autoscaler.MinContainers), fmt.Sprintf("%d", autoscaler.MaxContainers),
+			strconv.Itoa(autoscaler.MinContainers), strconv.Itoa(autoscaler.MaxContainers),
 		})
 	}
 	t.Render()

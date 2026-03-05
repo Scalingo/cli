@@ -2,7 +2,6 @@ package notifiers
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -66,7 +65,7 @@ func eventTypesToString(eventTypes []scalingo.EventType, ids []string) string {
 	default:
 		for _, t := range eventTypes {
 			if t.ID == ids[0] {
-				res = fmt.Sprintf("%s, ...", t.Name)
+				res = t.Name + ", ..."
 				break
 			}
 		}

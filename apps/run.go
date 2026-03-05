@@ -103,7 +103,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 		runCtx.stdoutCopyFunc = opts.StdoutCopyFunc
 	}
 
-	env, err := runCtx.buildEnv(opts.CmdEnv)
+	env, err := runCtx.buildEnv(ctx, opts.CmdEnv)
 	if err != nil {
 		return errors.Wrap(ctx, err, "build environment")
 	}
@@ -183,7 +183,8 @@ func Run(ctx context.Context, opts RunOpts) error {
 	}
 
 	if term.IsATTY(os.Stdin) {
-		if err := term.MakeRaw(os.Stdin); err != nil {
+		err := term.MakeRaw(os.Stdin)
+		if err != nil {
 			return errors.Wrap(ctx, err, "make stdin raw")
 		}
 	}
@@ -236,7 +237,8 @@ func Run(ctx context.Context, opts RunOpts) error {
 	stopSignalsMonitoring <- true
 
 	if term.IsATTY(os.Stdin) {
-		if err := term.Restore(os.Stdin); err != nil {
+		err := term.Restore(os.Stdin)
+		if err != nil {
 			return errors.Wrap(ctx, err, "restore stdin")
 		}
 	}
@@ -250,7 +252,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 	return nil
 }
 
-func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
+func (runCtx *runContext) buildEnv(ctx context.Context, cmdEnv []string) (map[string]string, error) {
 	env := map[string]string{
 		"TERM":      os.Getenv("TERM"),
 		"CLIENT_OS": runtime.GOOS,
@@ -259,7 +261,7 @@ func (runCtx *runContext) buildEnv(cmdEnv []string) (map[string]string, error) {
 	for _, cmdVar := range cmdEnv {
 		v := strings.SplitN(cmdVar, "=", 2)
 		if len(v) != 2 || v[0] == "" || v[1] == "" {
-			return nil, fmt.Errorf("Invalid environment, format is '--env VARIABLE=value'")
+			return nil, errors.New(ctx, "Invalid environment, format is '--env VARIABLE=value'")
 		}
 		env[v[0]] = v[1]
 	}
