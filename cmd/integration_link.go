@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	nethttp "net/http"
 	"net/url"
 	"os"
 	"strconv"
@@ -201,7 +202,7 @@ List of available integrations:
 				var scerr *http.RequestFailedError
 				if errors.As(err, &scerr) {
 					switch scerr.Code {
-					case 404:
+					case nethttp.StatusNotFound:
 						io.Error("Fail to create SCM repository integration: the repository has not been found")
 						io.Errorf("Check %v exists and you have the correct permissions\n", integrationURL)
 						switch integrationType {
@@ -210,7 +211,7 @@ List of available integrations:
 						case scalingo.SCMGitlabType, scalingo.SCMGitlabSelfHostedType:
 							io.Error("https://doc.scalingo.com/platform/deployment/deploy-with-gitlab")
 						}
-					case 403:
+					case nethttp.StatusForbidden:
 						io.Error("Fail to create SCM repository integration: the SCM API returned a 401 error.")
 						io.Error("Did you revoked the Scalingo token from your profile? In such situation, you may want to remove and re-create the SCM integration.")
 						io.Error("")

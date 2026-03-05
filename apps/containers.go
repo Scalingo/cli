@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -36,15 +35,13 @@ func ContainerTypes(ctx context.Context, app string) error {
 	for _, containerType := range containerTypes {
 		name := containerType.Name
 
-		var nameHasAutoscaler strings.Builder
 		for _, a := range autoscalers {
 			if a.ContainerType == containerType.Name {
 				hasAutoscaler = true
-				nameHasAutoscaler.WriteString(" (*)")
+				name += " (*)"
 				break
 			}
 		}
-		name += nameHasAutoscaler.String()
 
 		amount := strconv.Itoa(containerType.Amount)
 		if containerType.Command != "" {
