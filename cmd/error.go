@@ -135,6 +135,15 @@ func displayRequestFailedError(requestFailedErr *httpclient.RequestFailedError, 
 			fmt.Println(io.Indent(err.Error(), 7))
 		}
 
+	case http.StatusUnprocessableEntity:
+		unprocessableEntityErr, ok := requestFailedErr.APIError.(httpclient.UnprocessableEntity)
+		if !ok {
+			// If the error returned by the API has not been correctly parsed by go-scalingo
+			displayScalingoError(err)
+		} else {
+			io.Errorf("422 Unprocessable Content\n%v\n", unprocessableEntityErr.Error())
+		}
+
 	default:
 		displayScalingoError(err)
 	}
