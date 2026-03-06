@@ -8,7 +8,11 @@ import (
 
 	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/cmd/autocomplete"
+	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
+	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
+	rendererjson "github.com/Scalingo/cli/internal/boundaries/out/renderer/json"
+	renderertable "github.com/Scalingo/cli/internal/boundaries/out/renderer/table"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-utils/errors/v3"
@@ -19,17 +23,36 @@ var (
 		Name:        "apps",
 		Category:    "Global",
 		Description: "List your apps and give some details about them",
-		Flags:       []cli.Flag{&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter uses the format <ownerUsername>/<projectName>"}},
-		Usage:       "List your apps",
+		Flags: []cli.Flag{
+			&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter uses the format <ownerUsername>/<projectName>"},
+		},
+		Usage: "List your apps",
 		Action: func(ctx context.Context, c *cli.Command) error {
 			projectSlug := c.String("project")
+			format := renderer.Format(c.String("format"))
+
 			if projectSlug != "" {
 				projectSlugSplit := strings.Split(projectSlug, "/")
 				if len(projectSlugSplit) != 2 || (len(projectSlugSplit) == 2 && (projectSlugSplit[0] == "" || projectSlugSplit[1] == "")) {
 					errorQuitWithHelpMessage(ctx, errors.New(ctx, "project filter doesn't respect the expected format"), c, "apps")
 				}
 			}
-			err := apps.List(ctx, projectSlug)
+
+			var appsListRenderer apps.ListRenderer
+			switch format {
+			case renderer.FormatTable:
+				currentUser, err := config.C.CurrentUser(ctx)
+				if err != nil {
+					errorQuit(ctx, errors.Wrap(ctx, err, "get current user"))
+				}
+				appsListRenderer = renderertable.NewAppsList(currentUser)
+			case renderer.FormatJSON:
+				appsListRenderer = rendererjson.NewAppsList()
+			default:
+				errorQuitWithHelpMessage(ctx, errors.Newf(ctx, "invalid format '%v'", format), c, "apps")
+			}
+
+			err := apps.List(ctx, appsListRenderer, projectSlug)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
