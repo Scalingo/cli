@@ -47,7 +47,7 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 	}
 	_, _, err = c.VariableMultipleSet(ctx, app, scalingoVariables)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "set multiple variables")
+		return errors.Wrapf(ctx, err, "set multiple environment variables")
 	}
 
 	for _, variable := range scalingoVariables {
