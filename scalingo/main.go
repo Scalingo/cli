@@ -14,6 +14,7 @@ import (
 	"github.com/Scalingo/cli/cmd"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/update"
 	"github.com/Scalingo/go-scalingo/v10/debug"
@@ -88,6 +89,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{Name: "addon", Value: "<addon_id>", Usage: "ID of the current addon", Sources: cli.EnvVars("SCALINGO_ADDON")},
 		&cli.StringFlag{Name: "app", Aliases: []string{"a"}, Value: "<name>", Usage: "Name of the app", Sources: cli.EnvVars("SCALINGO_APP")},
+		&cli.StringFlag{Name: "format", Value: string(renderer.FormatTable), Usage: "[" + string(renderer.FormatJSON) + "|" + string(renderer.FormatTable) + "]"},
 		&cli.StringFlag{Name: "remote", Aliases: []string{"r"}, Value: "scalingo", Usage: "Name of the remote"},
 		&cli.StringFlag{Name: "region", Value: "", Usage: "Name of the region to use"},
 	}

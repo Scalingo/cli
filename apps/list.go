@@ -2,18 +2,14 @@ package apps
 
 import (
 	"context"
-	"fmt"
-	"os"
-
-	"github.com/olekukonko/tablewriter"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
+	"github.com/Scalingo/go-scalingo/v10"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func List(ctx context.Context, projectSlug string) error {
+func List(ctx context.Context, renderer renderer.Renderer[[]*scalingo.App], projectSlug string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
@@ -24,30 +20,28 @@ func List(ctx context.Context, projectSlug string) error {
 		return errors.Wrap(ctx, err, "list apps")
 	}
 
-	if len(apps) == 0 {
-		fmt.Println(io.Indent("\nYou haven't created any app yet, create your first application using:\n→ scalingo create <app_name>\n", 2))
-		return nil
-	}
+	filteredApps := filterAppsByProject(apps, projectSlug)
+	renderer.SetData(ctx, filteredApps)
 
-	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Role", "Status", "Project"})
-
-	currentUser, err := config.C.CurrentUser(ctx)
+	err = renderer.Render(ctx)
 	if err != nil {
-		return errors.Wrap(ctx, err, "fail to get current user")
+		return errors.Wrap(ctx, err, "render apps list")
 	}
-
-	for _, app := range apps {
-		// If a filter was set but the app is not in the project, skip to the next one.
-		if projectSlug != "" && projectSlug != app.ProjectSlug() {
-			continue
-		}
-
-		role := utils.AppRole(currentUser, app)
-
-		_ = t.Append([]string{app.Name, string(role), string(app.Status), app.ProjectSlug()})
-	}
-	_ = t.Render()
 
 	return nil
+}
+
+func filterAppsByProject(apps []*scalingo.App, projectSlug string) []*scalingo.App {
+	if projectSlug == "" {
+		return apps
+	}
+
+	filteredApps := make([]*scalingo.App, 0, len(apps))
+	for _, app := range apps {
+		if app.ProjectSlug() == projectSlug {
+			filteredApps = append(filteredApps, app)
+		}
+	}
+
+	return filteredApps
 }
