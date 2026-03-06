@@ -4,6 +4,7 @@
 
 * fix(addons): parse `maintenance-window-hour` as an int
 * feat(session): remove region cache on logout
+* feat: add JSON output for the `apps` command
 
 ## 1.44.1
 
