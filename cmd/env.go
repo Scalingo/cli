@@ -99,17 +99,16 @@ var (
 			SeeAlso: []string{"env", "env-get", "env-unset"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentApp := detect.CurrentApp(ctx, c)
-			var err error
-			if c.Args().Len() > 0 || len(c.String("f")) > 0 {
-				err = env.Add(ctx, currentApp, c.Args().Slice(), c.String("f"))
-			} else {
-				_ = cli.ShowCommandHelp(ctx, c, "env-set")
-				return nil
+			if c.Args().Len() == 0 && c.String("f") == "" {
+				return cli.ShowCommandHelp(ctx, c, "env-set")
 			}
+
+			currentApp := detect.CurrentApp(ctx, c)
+			err := env.Add(ctx, currentApp, c.Args().Slice(), c.String("f"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
+
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
