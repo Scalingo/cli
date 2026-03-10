@@ -38,15 +38,11 @@ func (p *PrivateKey) signer(ctx context.Context) (ssh.Signer, error) {
 		return nil, errors.Wrapf(ctx, err, "parse encrypted private key")
 	}
 
-	signer, ok := parsedPrivateKey.(ssh.Signer)
-	if !ok {
-		// ssh.ParseRawPrivateKeyWithPassphrase returns an empty interface for
-		// retro-compatibility reasons, all private key types in the standard library implement
-		// [...] interfaces such as Signer.
-		// Hence this error should never happen.
-		// https://pkg.go.dev/crypto@go1.20.2#PrivateKey
-		return nil, errors.New(ctx, "not a valid signer")
+	signer, err := ssh.NewSignerFromKey(parsedPrivateKey)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "not a valid signer")
 	}
+
 	return signer, nil
 }
 
