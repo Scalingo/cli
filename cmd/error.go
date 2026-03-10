@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-
 	"net/http"
 	"net/url"
 	"os"
@@ -81,14 +80,19 @@ func displayError(ctx context.Context, err error) {
 	newReportError(currentUser, err).Report()
 	rollbar.Wait()
 
-	rootError := rootCause(err)
-	if httpclient.IsRequestFailedError(rootError) {
-		displayRequestFailedError(rootError, currentUser, autherr, err)
-	} else if _, ok := rootError.(config.UnknownRegionError); ok {
-		displayScalingoError(rootError)
-	} else {
-		displayScalingoError(err)
+	var requestFailedErr *httpclient.RequestFailedError
+	if errors.As(err, &requestFailedErr) {
+		displayRequestFailedError(requestFailedErr, currentUser, autherr, err)
+		return
 	}
+
+	var unknownRegionErr config.UnknownRegionError
+	if errors.As(err, &unknownRegionErr) {
+		displayScalingoError(unknownRegionErr)
+		return
+	}
+
+	displayScalingoError(err)
 }
 
 func displayScalingoError(err error) {
@@ -98,25 +102,22 @@ func displayScalingoError(err error) {
 	fmt.Println(io.Indent(message, 7))
 }
 
-func displayRequestFailedError(rootError error, currentUser *scalingo.User, autherr error, err error) {
-	// we can ignore the returned error as it is already checked earlier in the code
-	requestFailedErr, _ := rootError.(*httpclient.RequestFailedError)
-	if requestFailedErr.Code == 400 {
+func displayRequestFailedError(requestFailedErr *httpclient.RequestFailedError, currentUser *scalingo.User, autherr error, err error) {
+	switch requestFailedErr.Code {
+	case http.StatusBadRequest: // 400
 		// In case of bad request error, we only want to display the API error.
 		// The call to strings.ReplaceAll is useful as the API error message may contain a raw \n.
 		io.Errorf("%s\n", strings.ReplaceAll(requestFailedErr.Error(), `\n`, "\n"))
-		return
-	}
-	if requestFailedErr.Code == 401 {
+
+	case http.StatusUnauthorized: // 401
 		if currentUser != nil {
 			io.Errorf("You are currently logged in as %s.\n", currentUser.Username)
 			io.Errorf("Are you sure %s is a collaborator of this app with sufficient privileges?\n", currentUser.Username)
 		} else {
 			io.Errorf("Failed to read credentials for current user: %v", autherr)
 		}
-		return
-	}
-	if requestFailedErr.Code == 404 {
+
+	case http.StatusNotFound: // 404
 		// we can ignore the returned error as it is already checked earlier in the code
 		notFoundErr, _ := requestFailedErr.APIError.(httpclient.NotFoundError)
 		if notFoundErr.Resource == "app" {
@@ -133,9 +134,19 @@ func displayRequestFailedError(rootError error, currentUser *scalingo.User, auth
 			debug.Println(err)
 			fmt.Println(io.Indent(err.Error(), 7))
 		}
-		return
+
+	case http.StatusUnprocessableEntity:
+		unprocessableEntityErr, ok := requestFailedErr.APIError.(httpclient.UnprocessableEntity)
+		if !ok {
+			// If the error returned by the API has not been correctly parsed by go-scalingo
+			displayScalingoError(err)
+		} else {
+			io.Errorf("422 Unprocessable Content\n%v\n", unprocessableEntityErr.Error())
+		}
+
+	default:
+		displayScalingoError(err)
 	}
-	displayScalingoError(err)
 }
 
 func newReportError(currentUser *scalingo.User, err error) *ReportError {
@@ -148,24 +159,12 @@ func newReportError(currentUser *scalingo.User, err error) *ReportError {
 		System:  newSysinfo(),
 	}
 
-	rootError := rootCause(err)
-	if httpclient.IsRequestFailedError(rootError) {
-		r.FailedRequest = rootError.(*httpclient.RequestFailedError).Req.HTTPRequest
+	var requestFailedError *httpclient.RequestFailedError
+	if !errors.As(err, &requestFailedError) {
+		r.FailedRequest = requestFailedError.Req.HTTPRequest
 	}
 
 	return r
-}
-
-func rootCause(err error) error {
-	if err == nil {
-		return nil
-	}
-
-	root := err
-	for next := errors.UnwrapError(root); next != nil; next = errors.UnwrapError(next) {
-		root = next
-	}
-	return root
 }
 
 func newSysinfo() Sysinfo {
