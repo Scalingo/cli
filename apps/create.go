@@ -39,10 +39,12 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 	}
 
 	fmt.Printf("App '%s' has been created\n", app.Name)
-	if _, ok := utils.DetectGit(); ok && utils.AddGitRemote(ctx, app.GitURL, remote) == nil {
-		fmt.Printf("Git repository detected: remote %s added\n→ 'git push %s master' to deploy your app\n", remote, remote)
+	mainBranch := utils.MainBranchName(ctx)
+	_, ok := utils.DetectGit()
+	if ok && utils.AddGitRemote(ctx, app.GitURL, remote) == nil {
+		fmt.Printf("Git repository detected: remote %s added\n→ 'git push %s %s' to deploy your app\n", remote, remote, mainBranch)
 	} else {
-		fmt.Printf("To deploy your application, run these commands in your GIT repository:\n→ git remote add %s %s\n→ git push %s master\n", remote, app.GitURL, remote)
+		fmt.Printf("To deploy your application, run these commands in your Git repository:\n→ git remote add %s %s\n→ git push %s %s\n", remote, app.GitURL, remote, mainBranch)
 	}
 	return nil
 }
