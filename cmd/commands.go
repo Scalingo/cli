@@ -168,6 +168,7 @@ var (
 		&logsCommand,
 		&logsArchivesCommand,
 		&runCommand,
+		&bashCommand,
 		&oneOffStopCommand,
 
 		// Apps Process Actions

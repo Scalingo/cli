@@ -29,7 +29,7 @@ var (
 			&cli.BoolFlag{Name: "silent", Usage: "Do not output anything on stderr"},
 		},
 		Description: `Run command in current app context, a one-off container will be
-   start with your application environment loaded.
+   started with your application environment loaded.
 
    Examples
      scalingo --app rails-app run bundle exec rails console
@@ -80,29 +80,18 @@ var (
    Example
      scalingo run --file mysqldump.sql rails dbconsole < /tmp/uploads/mysqldump.sql`,
 		Action: func(ctx context.Context, c *cli.Command) error {
-			currentResource := detect.GetCurrentResource(ctx, c)
-			isDB, err := utils.IsResourceDatabase(ctx, currentResource)
-			if err != nil && !errors.Is(err, utils.ErrResourceNotFound) {
-				errorQuit(ctx, err)
-			}
-			if isDB {
-				io.Error("It is currently impossible to use `run` on a database.")
-				return nil
-			}
-
-			currentApp := currentResource
-
 			opts := apps.RunOpts{
-				App:      currentApp,
+				App:      detect.GetCurrentResource(ctx, c),
 				Cmd:      c.Args().Slice(),
-				Size:     c.String("s"),
-				Type:     c.String("t"),
-				CmdEnv:   c.StringSlice("e"),
-				Files:    c.StringSlice("f"),
+				Size:     c.String("size"),
+				Type:     c.String("type"),
+				CmdEnv:   c.StringSlice("env"),
+				Files:    c.StringSlice("file"),
 				Silent:   c.Bool("silent"),
 				Detached: c.Bool("detached"),
 			}
-			if (c.Args().Len() == 0 && c.String("t") == "") || (c.Args().Len() > 0 && c.String("t") != "") {
+
+			if (c.Args().Len() == 0 && opts.Type == "") || (c.Args().Len() > 0 && opts.Type != "") {
 				_ = cli.ShowCommandHelp(ctx, c, "run")
 				return nil
 			}
@@ -111,17 +100,59 @@ var (
 				io.Error("It is currently impossible to use detached one-off with an uploaded file. Please either remove the --detached or --file flags.")
 				return nil
 			}
-
-			utils.CheckForConsent(ctx, currentApp)
-
-			err = apps.Run(ctx, opts)
-			if err != nil {
-				errorQuit(ctx, err)
-			}
-			return nil
+			return runOneOffCommand(ctx, opts)
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "run")
 		},
 	}
+	bashCommand = cli.Command{
+		Name:      "bash",
+		Category:  "App Management",
+		Usage:     "Run bash for your app",
+		ArgsUsage: "bash-arguments",
+		Flags: []cli.Flag{&appFlag,
+			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
+			&cli.StringSliceFlag{Name: "env", Aliases: []string{"e"}, Usage: "Environment variables"},
+			&cli.StringSliceFlag{Name: "file", Aliases: []string{"f"}, Usage: "Files to upload"},
+			&cli.BoolFlag{Name: "silent", Usage: "Do not output anything on stderr"},
+		},
+		Description: `Run bash in your current app context, a one-off container will be
+   started with your application environment loaded.
+
+   This command is equivalent to:
+     scalingo run bash`,
+		Action: func(ctx context.Context, c *cli.Command) error {
+			return runOneOffCommand(ctx, apps.RunOpts{
+				App:    detect.GetCurrentResource(ctx, c),
+				Cmd:    append([]string{"bash"}, c.Args().Slice()...),
+				Size:   c.String("size"),
+				CmdEnv: c.StringSlice("env"),
+				Files:  c.StringSlice("file"),
+				Silent: c.Bool("silent"),
+			})
+		},
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "bash")
+		},
+	}
 )
+
+func runOneOffCommand(ctx context.Context, opts apps.RunOpts) error {
+	isDB, err := utils.IsResourceDatabase(ctx, opts.App)
+	if err != nil && !errors.Is(err, utils.ErrResourceNotFound) {
+		errorQuit(ctx, err)
+	}
+	if isDB {
+		io.Error("It is currently impossible to use `" + opts.Cmd[0] + "` on a database.")
+		return nil
+	}
+
+	utils.CheckForConsent(ctx, opts.App)
+
+	err = apps.Run(ctx, opts)
+	if err != nil {
+		errorQuit(ctx, err)
+	}
+	return nil
+}
