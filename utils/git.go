@@ -108,6 +108,23 @@ func MainBranchName(ctx context.Context) string {
 		return "main"
 	}
 
+	// Try to resolve the locally cached `origin/HEAD`
+	localOriginHEAD, err := repo.Reference(plumbing.ReferenceName("refs/remotes/origin/HEAD"), false)
+	if err == nil && localOriginHEAD.Type() == plumbing.SymbolicReference {
+		target := strings.TrimPrefix(localOriginHEAD.Target().Short(), "origin/")
+		if target != "" {
+			return target
+		}
+	}
+
+	// Try the usual main branch names
+	for _, name := range []string{"main", "master"} {
+		_, err := repo.Reference(plumbing.NewBranchReferenceName(name), true)
+		if err == nil {
+			return name
+		}
+	}
+
 	// Try to resolve `origin/HEAD`
 	remoteOrigin, err := repo.Remote("origin")
 	if err == nil {
@@ -118,14 +135,6 @@ func MainBranchName(ctx context.Context) string {
 			if reference.Name() == "HEAD" && reference.Type() == plumbing.SymbolicReference {
 				return reference.Target().Short()
 			}
-		}
-	}
-
-	// Try the usual main branch names
-	for _, name := range []string{"main", "master"} {
-		_, err := repo.Reference(plumbing.NewBranchReferenceName(name), true)
-		if err == nil {
-			return name
 		}
 	}
 
