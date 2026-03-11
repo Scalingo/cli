@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-scalingo/v10/debug"
-	scalingoio "github.com/Scalingo/go-scalingo/v10/io"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
+	scalingoio "github.com/Scalingo/go-scalingo/v11/io"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 

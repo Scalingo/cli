@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v3"
@@ -10,8 +9,8 @@ import (
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/privatenetworks"
-	"github.com/Scalingo/go-utils/errors/v3"
 	"github.com/Scalingo/go-utils/logger"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 const (
@@ -29,14 +28,14 @@ var (
 				Value: outputFormatTable,
 				Usage: "[" + outputFormatJSON + "|" + outputFormatTable + "]",
 			},
-			&cli.StringFlag{
+			&cli.IntFlag{
 				Name:  "page",
-				Value: "1",
+				Value: 1,
 				Usage: "[page]",
 			},
-			&cli.StringFlag{
+			&cli.IntFlag{
 				Name:  "per-page",
-				Value: "20",
+				Value: 20,
 				Usage: "[per-page]",
 			},
 		},
@@ -55,35 +54,18 @@ var (
 				return nil
 			}
 
-			pageStr := c.String("page")
-			perPageStr := c.String("per-page")
+			page := c.Int("page")
+			perPage := c.Int("per-page")
 			formatStr := c.String("format")
 			ctx, _ = logger.WithFieldsToCtx(ctx, logrus.Fields{
-				"page":     pageStr,
-				"per_page": perPageStr,
+				"page":     page,
+				"per_page": perPage,
 				"format":   formatStr,
 			})
 
-			var err error
-			var page int
-			if pageStr != "" {
-				page, err = strconv.Atoi(pageStr)
-				if err != nil || page < 1 {
-					return errors.New(ctx, "invalid page number")
-				}
-			}
-
-			var perPage int
-			if perPageStr != "" {
-				perPage, err = strconv.Atoi(perPageStr)
-				if err != nil || perPage < 1 || perPage > 50 {
-					return errors.New(ctx, "invalid per_page number")
-				}
-			}
-
 			currentApp := detect.CurrentApp(ctx, c)
 
-			err = privatenetworks.List(ctx, currentApp, formatStr, uint(page), uint(perPage))
+			err := privatenetworks.List(ctx, currentApp, formatStr, pagination.NewRequest(page, perPage))
 			if err != nil {
 				errorQuit(ctx, err)
 			}

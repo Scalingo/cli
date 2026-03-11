@@ -26,8 +26,8 @@ import (
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
 	"github.com/Scalingo/cli/term"
-	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -139,7 +139,7 @@ func Run(ctx context.Context, opts RunOpts) error {
 		return nil
 	}
 
-	waiter := NewOperationWaiter(runCtx.waitingTextOutputWriter, opts.App, runRes.OperationURL)
+	waiter := newOperationWaiter(runCtx.waitingTextOutputWriter, opts.App, runRes.OperationURL)
 	waiter.SetPrompt(fmt.Sprintf("-----> Starting container %v   ", runRes.Container.Label))
 	operation, err := waiter.WaitOperation(ctx)
 	if err != nil {

@@ -36,10 +36,7 @@ var (
 			}
 
 			utils.CheckForConsent(ctx, currentResource)
-			err := apps.Events(ctx, currentResource, pagination.Request{
-				Page:    c.Int("page"),
-				PerPage: c.Int("per-page"),
-			})
+			err := apps.Events(ctx, currentResource, pagination.NewRequest(c.Int("page"), c.Int("per-page")))
 			if err != nil {
 				errorQuit(ctx, err)
 			}

@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v11"
 )
 
 var (

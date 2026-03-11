@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* build(deps): update `github.com/Scalingo/go-scalingo` to v10
+* build(deps): update `github.com/Scalingo/go-scalingo` from v9 to v11
 * refactor: replace `errgo` and `pkg/errors` with `github.com/Scalingo/go-utils/errors/v3`
 * refactor: autofix by `go fix` and golangci-lint
 * fix(error): correctly parse in case of `RequestFailedError`
@@ -10,6 +10,8 @@
 * feat(sshkeys): add support for ed25519 keys
 * feat(apps/create): detect Git main branch name
 * fix(databases): `parseScheduleAtFlag` returns a validation error
+* fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument
+* build(deps): update `github.com/Scalingo/go-scalingo` from v10 to v11
 
 ## 1.43.3
 

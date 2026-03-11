@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
