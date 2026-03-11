@@ -1,6 +1,7 @@
 package sshkeys
 
 import (
+	"context"
 	"encoding/pem"
 	"testing"
 
@@ -85,6 +86,76 @@ func TestPrivateKey_IsEncrypted(t *testing.T) {
 			boolean := c.PrivateKey.isEncrypted()
 
 			require.Equal(t, c.ExpectBoolean, boolean)
+		})
+	}
+}
+
+func TestPrivateKey_signer(t *testing.T) {
+	const encryptedFixturePassphrase = "pipomolo"
+	const macOSYosemitePassphrase = "scalingo"
+	const longPassphrase = "TrushorbifbixMytyubDaphnacFoldacdeirnAykEtHyacobuc"
+
+	tests := map[string]struct {
+		block      *pem.Block
+		passphrase string
+		signerType string
+	}{
+		"Encrypted AES RSA Key": {
+			block:      pemDecode(aesRSA),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted AES RSA Key (Mac OS Maverick)": {
+			block:      pemDecode(aesRSAMacOSMaverick),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted AES RSA Key (Mac OS Yosemite)": {
+			block:      pemDecode(aesRSAMacOSYosemite),
+			passphrase: macOSYosemitePassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted DES3 RSA Key": {
+			block:      pemDecode(des3RSA),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted DES3 RSA Key with Long Passphrase": {
+			block:      pemDecode(des3RSALongPassphrase),
+			passphrase: longPassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted OpenSSH RSA Key": {
+			block:      pemDecode(openSSHRSA),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ssh-rsa",
+		},
+		"Encrypted OpenSSH ecdsa Key": {
+			block:      pemDecode(openSSHecdsa),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ecdsa-sha2-nistp256",
+		},
+		"Encrypted OpenSSH ed25519 Key": {
+			block:      pemDecode(openSSHed25519),
+			passphrase: encryptedFixturePassphrase,
+			signerType: "ssh-ed25519",
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			privateKey := &PrivateKey{
+				Path:  "n/a",
+				Block: test.block,
+				PasswordMethod: func(ctx context.Context, prompt string) (string, error) {
+					return test.passphrase, nil
+				},
+			}
+
+			signer, err := privateKey.signer(t.Context())
+			require.NoError(t, err)
+			require.NotNil(t, signer)
+			require.Equal(t, test.signerType, signer.PublicKey().Type())
 		})
 	}
 }
