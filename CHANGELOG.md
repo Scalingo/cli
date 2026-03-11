@@ -9,6 +9,7 @@
 * feat(run): add a `bash` alias for us out there often forgetting the `run` in front
 * feat(sshkeys): add support for ed25519 keys
 * feat(apps/create): detect Git main branch name
+* fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument
 
 ## 1.43.3
 
