@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
+	"github.com/go-git/go-git/v5/plumbing"
 
 	"github.com/Scalingo/go-scalingo/v10/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
@@ -97,4 +98,45 @@ func AddGitRemote(ctx context.Context, url string, name string) error {
 	}
 
 	return nil
+}
+
+// MainBranchName returns the repository main branch name, preferring origin/HEAD,
+// then common local branch names. In case of errors, return `main`.
+func MainBranchName(ctx context.Context) string {
+	repo, err := git.PlainOpen(".")
+	if err != nil {
+		return "main"
+	}
+
+	// Try to resolve the locally cached `origin/HEAD`
+	localOriginHEAD, err := repo.Reference(plumbing.ReferenceName("refs/remotes/origin/HEAD"), false)
+	if err == nil && localOriginHEAD.Type() == plumbing.SymbolicReference {
+		target := strings.TrimPrefix(localOriginHEAD.Target().Short(), "origin/")
+		if target != "" {
+			return target
+		}
+	}
+
+	// Try the usual main branch names
+	for _, name := range []string{"main", "master"} {
+		_, err := repo.Reference(plumbing.NewBranchReferenceName(name), true)
+		if err == nil {
+			return name
+		}
+	}
+
+	// Try to resolve `origin/HEAD`
+	remoteOrigin, err := repo.Remote("origin")
+	if err == nil {
+		references, _ := remoteOrigin.ListContext(ctx, &git.ListOptions{})
+		// Search through the list of references in that remote for a symbolic reference named HEAD;
+		// Its target should be the default branch name.
+		for _, reference := range references {
+			if reference.Name() == "HEAD" && reference.Type() == plumbing.SymbolicReference {
+				return reference.Target().Short()
+			}
+		}
+	}
+
+	return "main"
 }
