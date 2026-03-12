@@ -160,7 +160,7 @@ func newReportError(currentUser *scalingo.User, err error) *ReportError {
 	}
 
 	var requestFailedError *httpclient.RequestFailedError
-	if !errors.As(err, &requestFailedError) {
+	if errors.As(err, &requestFailedError) {
 		r.FailedRequest = requestFailedError.Req.HTTPRequest
 	}
 
