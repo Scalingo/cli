@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument (breaking change)
+
 ## 10.0.0
 
 * chore(databases): refactor constants
