@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -314,9 +315,9 @@ func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
 	scheduleAtTime := s[0]
 	scheduleAtTimezone := s[1]
 
-	// If client writes "4:00", we only want to keep "4" in scheduleAtTime
-	scheduleAtTimeSplit := strings.SplitN(scheduleAtTime, ":", 2)
-	scheduleAtTime = scheduleAtTimeSplit[0]
+	// If client writes "4:00" or "4h00", we only want to keep "4" in scheduleAtTime
+	re := regexp.MustCompile(`([:hH].*)|[0]+`)
+	scheduleAtTime = re.ReplaceAllString(scheduleAtTime, "")
 
 	scheduleAtHour, err = strconv.Atoi(scheduleAtTime)
 	if err != nil {
