@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +15,7 @@ import (
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -42,7 +43,7 @@ var (
 
 			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 			if c.NArg() != 1 {
-				errorQuit(ctx, errors.New("feature argument should be specified"))
+				errorQuit(ctx, errors.New(ctx, "feature argument should be specified"))
 			}
 			feature := c.Args().First()
 			err := db.EnableFeature(ctx, c, currentResource, addonName, feature)
@@ -73,7 +74,7 @@ var (
 
 			addonName := addonUUIDFromFlags(ctx, c, currentResource, true)
 			if c.NArg() != 1 {
-				errorQuit(ctx, errors.New("feature argument should be specified"))
+				errorQuit(ctx, errors.New(ctx, "feature argument should be specified"))
 			}
 			feature := c.Args().First()
 			err := db.DisableFeature(ctx, currentResource, addonName, feature)
@@ -115,13 +116,13 @@ var (
 			scheduleAtFlag := c.String("schedule-at")
 			disable := c.Bool("unschedule")
 			if scheduleAtFlag != "" && disable {
-				errorQuit(ctx, errors.New("you cannot use both --schedule-at and --unschedule at the same time"))
+				errorQuit(ctx, errors.New(ctx, "you cannot use both --schedule-at and --unschedule at the same time"))
 			}
 
 			if disable {
 				continueB := askContinue("Disabling periodic backups will prevent Scalingo from restoring your database in case of data loss or corruption. Backups are a critical safeguard, and we strongly recommend keeping them enabled. Do you want to continue? (yes/no)")
 				if !continueB {
-					errorQuit(ctx, errors.New("periodic backups are still enabled"))
+					errorQuit(ctx, errors.New(ctx, "periodic backups are still enabled"))
 					return nil
 				}
 
@@ -129,11 +130,11 @@ var (
 			}
 			if scheduleAtFlag != "" {
 				params.Enabled = utils.BoolPtr(true)
-				scheduleAt, loc, err := parseScheduleAtFlag(scheduleAtFlag)
+				scheduleAtHour, loc, err := parseScheduleAtFlag(scheduleAtFlag)
 				if err != nil {
 					errorQuit(ctx, err)
 				}
-				localTime := time.Date(1986, 7, 22, scheduleAt, 0, 0, 0, loc)
+				localTime := time.Date(1986, 7, 22, scheduleAtHour, 0, 0, 0, loc)
 				hour := localTime.UTC().Hour()
 				params.ScheduledAt = &hour
 			}
@@ -296,26 +297,39 @@ Only available on ` + fmt.Sprintf("%s", dbUsers.SupportedAddons),
 )
 
 func parseScheduleAtFlag(flag string) (int, *time.Location, error) {
-	scheduleAt, err := strconv.Atoi(flag)
+	scheduleAtHour, err := strconv.Atoi(flag)
 	if err == nil {
 		// In this case, the schedule-at flag equals a single number
-		return scheduleAt, time.Local, nil
+		return scheduleAtHour, time.Local, nil
 	}
+
+	validationError := errors.NewValidationErrorsBuilder()
 
 	// From now on the schedule-at flag is a number and a timezone such as
 	// "3 Europe/Paris"
 	s := strings.Split(flag, " ")
 	if len(s) < 2 {
-		return -1, nil, errors.New("parse the schedule-at value")
+		validationError = validationError.Set("schedule-at", "only contains two space-separated fields")
+		return -1, nil, validationError.Build()
 	}
-	scheduleAt, err = strconv.Atoi(s[0])
+	scheduleAtTime := s[0]
+	scheduleAtTimezone := s[1]
+
+	// If client writes "4:00" or "4h00", we only want to keep "4" in scheduleAtTime
+	re := regexp.MustCompile(`([:hH].*)|[0]+`)
+	scheduleAtTime = re.ReplaceAllString(scheduleAtTime, "")
+
+	scheduleAtHour, err = strconv.Atoi(scheduleAtTime)
 	if err != nil {
-		return -1, nil, errors.New("parse the schedule-at value")
-	}
-	loc, err := time.LoadLocation(s[1])
-	if err != nil {
-		return -1, nil, fmt.Errorf("unknown timezone '%s'", s[1])
+		validationError = validationError.Set("schedule-at", "first field must be a digit representing the hour")
+		return -1, nil, validationError.Build()
 	}
 
-	return scheduleAt, loc, nil
+	loc, err := time.LoadLocation(scheduleAtTimezone)
+	if err != nil {
+		validationError = validationError.Set("schedule-at", "unknown timezone"+s[1])
+		return -1, nil, validationError.Build()
+	}
+
+	return scheduleAtHour, loc, nil
 }
