@@ -38,10 +38,7 @@ var databaseMaintenanceList = cli.Command{
 			addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
 		}
 
-		err := maintenance.List(ctx, currentResource, addonName, pagination.Request{
-			Page:    c.Int("page"),
-			PerPage: c.Int("per-page"),
-		})
+		err := maintenance.List(ctx, currentResource, addonName, pagination.NewRequest(c.Int("page"), c.Int("per-page")))
 		if err != nil {
 			errorQuit(ctx, err)
 		}

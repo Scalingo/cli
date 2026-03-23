@@ -13,8 +13,8 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/session"
-	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
 )
 
 type AppCommands struct {

@@ -12,17 +12,18 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/pagination"
 )
 
 const containerTypeWeb = "web"
 
-func List(ctx context.Context, app string, format string, page uint, perPage uint) error {
+func List(ctx context.Context, app string, format string, paginationReq pagination.Request) error {
 	scalingoClient, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
-	domainNames, err := scalingoClient.PrivateNetworksDomainsList(ctx, app, page, perPage)
+	domainNames, err := scalingoClient.PrivateNetworksDomainsList(ctx, app, paginationReq)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "list private network domains")
 	}

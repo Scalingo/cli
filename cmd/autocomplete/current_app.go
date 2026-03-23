@@ -8,7 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-scalingo/v11/debug"
 )
 
 func CurrentAppCompletion(ctx context.Context, c *cli.Command) string {

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/Scalingo/cli/config/auth"
-	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 

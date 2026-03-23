@@ -2,7 +2,6 @@ package apps
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"strconv"
@@ -11,9 +10,9 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v10"
-	"github.com/Scalingo/go-scalingo/v10/debug"
-	"github.com/Scalingo/go-scalingo/v10/http"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
+	"github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -107,7 +106,7 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 		}
 	}
 
-	res, err := c.AppsScale(ctx, app, scaleParams)
+	resContainerTypes, operationURL, err := c.AppsScale(ctx, app, scaleParams)
 	if err != nil {
 		if !utils.IsPaymentRequiredAndFreeTrialExceededError(err) {
 			var reqestFailedError *http.RequestFailedError
@@ -127,16 +126,9 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 			return Scale(ctx, app, sync, types)
 		})
 	}
-	defer res.Body.Close()
-
-	var scaleRes ScaleRes
-	err = json.NewDecoder(res.Body).Decode(&scaleRes)
-	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to decode API response to scale operation")
-	}
 
 	fmt.Printf("Your application is being scaled to:\n")
-	for _, ct := range scaleRes.Containers {
+	for _, ct := range resContainerTypes {
 		fmt.Println(io.Indent(fmt.Sprintf("%s: %d - %s", ct.Name, ct.Amount, ct.Size), 2))
 	}
 
@@ -144,10 +136,10 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 		return nil
 	}
 
-	waiter := NewOperationWaiterFromHTTPResponse(app, res)
+	waiter := newOperationWaiterFromURL(app, operationURL)
 	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to handle the scale operation")
+		return errors.Wrapf(ctx, err, "wait for the end of the scale operation")
 	}
 
 	fmt.Println("Your application has been scaled.")

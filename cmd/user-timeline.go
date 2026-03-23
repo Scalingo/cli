@@ -27,10 +27,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			var err error
 			if c.Args().Len() == 0 {
-				err = user.Events(ctx, pagination.Request{
-					Page:    c.Int("page"),
-					PerPage: c.Int("per-page"),
-				})
+				err = user.Events(ctx, pagination.NewRequest(c.Int("page"), c.Int("per-page")))
 			} else {
 				_ = cli.ShowCommandHelp(ctx, c, "user-timeline")
 			}

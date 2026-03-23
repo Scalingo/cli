@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/cli/deployments"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v10/io"
+	"github.com/Scalingo/go-scalingo/v11/io"
 	"github.com/Scalingo/go-utils/pagination"
 )
 
@@ -54,10 +54,7 @@ var (
 `,
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(ctx, c)
-			err := deployments.List(ctx, currentApp, pagination.Request{
-				Page:    c.Int("page"),
-				PerPage: c.Int("per-page"),
-			})
+			err := deployments.List(ctx, currentApp, pagination.NewRequest(c.Int("page"), c.Int("per-page")))
 			if err != nil {
 				errorQuit(ctx, err)
 			}

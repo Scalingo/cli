@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -45,7 +45,7 @@ func Add(ctx context.Context, app string, params []string, filePath string) erro
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
-	_, _, err = c.VariableMultipleSet(ctx, app, scalingoVariables)
+	_, err = c.VariableMultipleSet(ctx, app, scalingoVariables)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "set multiple environment variables")
 	}

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/io"
-	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/pagination"
 )
 

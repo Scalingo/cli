@@ -21,7 +21,8 @@ import (
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/signals"
-	"github.com/Scalingo/go-scalingo/v10/debug"
+	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -41,17 +42,15 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	res, err := c.Logs(ctx, logsURL, n, filter)
-	if err != nil {
-		return errors.Wrap(ctx, err, "fetch logs")
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode == 404 || res.StatusCode == 204 {
+	readCloser, err := c.Logs(ctx, logsURL, n, filter)
+	if errors.Is(err, scalingo.ErrNoLogs) {
 		io.Error("There is no log for this application")
 		io.Info("Ensure your application is writing to the standard output")
 		return nil
+	} else if err != nil {
+		return errors.Wrap(ctx, err, "fetch logs")
 	}
+	defer readCloser.Close()
 
 	// Create a buffered channel with a maximum size of the number of log lines
 	// requested.  On medium to good internet connection, we are fetching lines
@@ -88,7 +87,7 @@ func Dump(ctx context.Context, logsURL string, n int, filter string) error {
 	// this internal buffer until it runs out. However if our logs processing
 	// pipeline is slow, it will never query the next 4MB of data. Hence the
 	// buffered channel.
-	sr := bufio.NewReader(res.Body)
+	sr := bufio.NewReader(readCloser)
 
 	for {
 		// Read one line from the response

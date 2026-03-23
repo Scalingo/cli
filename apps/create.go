@@ -6,7 +6,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v10"
+	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -32,7 +32,7 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 
 	if buildpack != "" {
 		fmt.Println("Installing custom buildpack...")
-		_, _, err := c.VariableSet(ctx, app.Name, "BUILDPACK_URL", buildpack)
+		_, err := c.VariableSet(ctx, app.Name, "BUILDPACK_URL", buildpack)
 		if err != nil {
 			fmt.Println("Failed to set custom buildpack. Please add BUILDPACK_URL=" + buildpack + " to your application environment")
 		}
