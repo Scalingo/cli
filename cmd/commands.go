@@ -330,6 +330,12 @@ var (
 		&databaseFirewallRulesAddCommand,
 		&databaseFirewallRulesRemoveCommand,
 		&databaseFirewallManagedRangesCommand,
+
+		// Network
+		&databaseNetPeeringsListCommand,
+		&databaseNetPeeringsAddCommand,
+		&databaseNetPeeringsRemoveCommand,
+		&databaseNetworkConfigurationShowCommand,
 	}
 
 	globalCommands = []*cli.Command{

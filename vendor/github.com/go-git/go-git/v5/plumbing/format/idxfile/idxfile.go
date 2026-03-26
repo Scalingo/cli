@@ -2,7 +2,6 @@ package idxfile
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"sort"
 	"sync"
@@ -127,10 +126,7 @@ func (idx *MemoryIndex) FindOffset(h plumbing.Hash) (int64, error) {
 		return 0, plumbing.ErrObjectNotFound
 	}
 
-	offset, err := idx.getOffset(k, i)
-	if err != nil {
-		return 0, err
-	}
+	offset := idx.getOffset(k, i)
 
 	// Save the offset for reverse lookup
 	idx.mu.Lock()
@@ -145,19 +141,17 @@ func (idx *MemoryIndex) FindOffset(h plumbing.Hash) (int64, error) {
 
 const isO64Mask = uint64(1) << 31
 
-func (idx *MemoryIndex) getOffset(firstLevel, secondLevel int) (uint64, error) {
+func (idx *MemoryIndex) getOffset(firstLevel, secondLevel int) uint64 {
 	offset := secondLevel << 2
 	ofs := encbin.BigEndian.Uint32(idx.Offset32[firstLevel][offset : offset+4])
 
 	if (uint64(ofs) & isO64Mask) != 0 {
 		offset := 8 * (uint64(ofs) & ^isO64Mask)
-		if l := uint64(len(idx.Offset64)); l < 8 || offset > l-8 {
-			return 0, fmt.Errorf("%w: offset64 index out of range", ErrMalformedIdxFile)
-		}
-		return encbin.BigEndian.Uint64(idx.Offset64[offset : offset+8]), nil
+		n := encbin.BigEndian.Uint64(idx.Offset64[offset : offset+8])
+		return n
 	}
 
-	return uint64(ofs), nil
+	return uint64(ofs)
 }
 
 // FindCRC32 implements the Index interface.
@@ -215,11 +209,8 @@ func (idx *MemoryIndex) genOffsetHash() error {
 		mappedFirstLevel := idx.FanoutMapping[firstLevel]
 		for secondLevel := uint32(0); i < fanoutValue; i++ {
 			copy(hash[:], idx.Names[mappedFirstLevel][secondLevel*objectIDLength:])
-			off, err := idx.getOffset(mappedFirstLevel, int(secondLevel))
-			if err != nil {
-				return err
-			}
-			offsetHash[int64(off)] = hash
+			offset := int64(idx.getOffset(mappedFirstLevel, int(secondLevel)))
+			offsetHash[offset] = hash
 			secondLevel++
 		}
 	}
@@ -300,11 +291,7 @@ func (i *idxfileEntryIter) Next() (*Entry, error) {
 		mappedFirstLevel := i.idx.FanoutMapping[i.firstLevel]
 		entry := new(Entry)
 		copy(entry.Hash[:], i.idx.Names[mappedFirstLevel][i.secondLevel*objectIDLength:])
-		var err error
-		entry.Offset, err = i.idx.getOffset(mappedFirstLevel, i.secondLevel)
-		if err != nil {
-			return nil, err
-		}
+		entry.Offset = i.idx.getOffset(mappedFirstLevel, i.secondLevel)
 		entry.CRC32 = i.idx.getCRC32(mappedFirstLevel, i.secondLevel)
 
 		i.secondLevel++

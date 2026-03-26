@@ -26,45 +26,6 @@ var (
 	ErrDeltaNotCached = errors.New("delta could not be found in cache")
 )
 
-// maxObjectPreallocBytes caps the up-front size hint passed to
-// bytes.Buffer.Grow when staging an object's contents, so a malformed length
-// cannot trigger a huge or out-of-range allocation. The buffer still grows
-// dynamically as data is written; this is purely a hint cap.
-const maxObjectPreallocBytes = 1 << 30 // 1 GiB
-
-// maxObjectsPrealloc caps the up-front capacity reserved from the pack's
-// declared object count, so a header advertising an absurd quantity cannot
-// trigger a multi-gigabyte allocation. The slice and maps still grow
-// organically beyond this hint.
-const maxObjectsPrealloc = 1 << 16 // 64 Ki entries
-
-// Match upstream Git's pack depth ceiling: pack-objects.h OE_DEPTH_BITS,
-// enforced in builtin/pack-objects.c as (1 << OE_DEPTH_BITS) - 1.
-const maxDeltaChainDepth = 4095
-
-// growHint returns a non-negative int64 size, clamped to a sane upper bound,
-// suitable for passing to bytes.Buffer.Grow.
-func growHint(n int64) int {
-	switch {
-	case n <= 0:
-		return 0
-	case n > maxObjectPreallocBytes:
-		return maxObjectPreallocBytes
-	default:
-		return int(n)
-	}
-}
-
-// objectsHint returns a non-negative count, clamped to maxObjectsPrealloc,
-// suitable for passing to make() as the capacity hint for slices or maps
-// sized from a pack's declared object count.
-func objectsHint(n uint32) int {
-	if n > maxObjectsPrealloc {
-		return maxObjectsPrealloc
-	}
-	return int(n)
-}
-
 // Observer interface is implemented by index encoders.
 type Observer interface {
 	// OnHeader is called when a new packfile is opened.
@@ -205,10 +166,9 @@ func (p *Parser) init() error {
 	}
 
 	p.count = c
-	hint := objectsHint(p.count)
-	p.oiByHash = make(map[plumbing.Hash]*objectInfo, hint)
-	p.oiByOffset = make(map[int64]*objectInfo, hint)
-	p.oi = make([]*objectInfo, 0, hint)
+	p.oiByHash = make(map[plumbing.Hash]*objectInfo, p.count)
+	p.oiByOffset = make(map[int64]*objectInfo, p.count)
+	p.oi = make([]*objectInfo, p.count)
 
 	return nil
 }
@@ -301,7 +261,7 @@ func (p *Parser) indexObjects() error {
 		}
 		if delta && !p.scanner.IsSeekable {
 			buf.Reset()
-			buf.Grow(growHint(oh.Length))
+			buf.Grow(int(oh.Length))
 			writers = append(writers, buf)
 		}
 
@@ -346,7 +306,7 @@ func (p *Parser) indexObjects() error {
 		}
 
 		p.oiByOffset[oh.Offset] = ota
-		p.oi = append(p.oi, ota)
+		p.oi[i] = ota
 	}
 
 	return nil
@@ -357,12 +317,8 @@ func (p *Parser) resolveDeltas() error {
 	defer sync.PutBytesBuffer(buf)
 
 	for _, obj := range p.oi {
-		if err := checkDeltaChainDepth(obj); err != nil {
-			return err
-		}
-
 		buf.Reset()
-		buf.Grow(growHint(obj.Length))
+		buf.Grow(int(obj.Length))
 		err := p.get(obj, buf)
 		if err != nil {
 			return err
@@ -381,9 +337,6 @@ func (p *Parser) resolveDeltas() error {
 			// create it once and reuse across all children.
 			r := bytes.NewReader(buf.Bytes())
 			for _, child := range obj.Children {
-				if err := checkDeltaChainDepth(child); err != nil {
-					return err
-				}
 				// Even though we are discarding the output, we still need to read it to
 				// so that the scanner can advance to the next object, and the SHA1 can be
 				// calculated.
@@ -400,17 +353,6 @@ func (p *Parser) resolveDeltas() error {
 		}
 	}
 
-	return nil
-}
-
-func checkDeltaChainDepth(o *objectInfo) error {
-	var depth int
-	for current := o; current != nil && current.DiskType.IsDelta(); current = current.Parent {
-		depth++
-		if depth > maxDeltaChainDepth {
-			return fmt.Errorf("%w: delta chain depth exceeds %d", ErrMalformedPackFile, maxDeltaChainDepth)
-		}
-	}
 	return nil
 }
 
@@ -463,7 +405,7 @@ func (p *Parser) get(o *objectInfo, buf *bytes.Buffer) (err error) {
 	if o.DiskType.IsDelta() {
 		b := sync.GetBytesBuffer()
 		defer sync.PutBytesBuffer(b)
-		buf.Grow(growHint(o.Length))
+		buf.Grow(int(o.Length))
 		err := p.get(o.Parent, b)
 		if err != nil {
 			return err
