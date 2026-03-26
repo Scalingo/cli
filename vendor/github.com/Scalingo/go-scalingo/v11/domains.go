@@ -83,7 +83,7 @@ type DomainRes struct {
 
 func (c *Client) DomainsList(ctx context.Context, app string) ([]Domain, error) {
 	var domainRes DomainsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "domains", nil, &domainRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, domainsResource, nil, &domainRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list the domains")
 	}
@@ -100,7 +100,7 @@ type DomainsAddParams struct {
 
 func (c *Client) DomainsAdd(ctx context.Context, app string, params DomainsAddParams) (Domain, error) {
 	var domainRes DomainRes
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "domains", map[string]DomainsAddParams{"domain": params}, &domainRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, domainsResource, map[string]DomainsAddParams{"domain": params}, &domainRes)
 	if err != nil {
 		return Domain{}, errors.Wrap(ctx, err, "add a domain")
 	}
@@ -108,13 +108,13 @@ func (c *Client) DomainsAdd(ctx context.Context, app string, params DomainsAddPa
 }
 
 func (c *Client) DomainsRemove(ctx context.Context, app, id string) error {
-	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "domains", id)
+	return c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, domainsResource, id)
 }
 
 func (c *Client) DomainsShow(ctx context.Context, app, id string) (Domain, error) {
 	var domainRes DomainRes
 
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "domains", id, nil, &domainRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, appsResource, app, domainsResource, id, nil, &domainRes)
 	if err != nil {
 		return Domain{}, errors.Wrap(ctx, err, "show the domain")
 	}
@@ -131,7 +131,7 @@ type DomainsUpdateParams struct {
 
 func (c *Client) DomainsUpdate(ctx context.Context, app, id string, params DomainsUpdateParams) (Domain, error) {
 	var domainRes DomainRes
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "domains", id, map[string]DomainsUpdateParams{"domain": params}, &domainRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, appsResource, app, domainsResource, id, map[string]DomainsUpdateParams{"domain": params}, &domainRes)
 	if err != nil {
 		return Domain{}, errors.Wrap(ctx, err, "update the domain")
 	}

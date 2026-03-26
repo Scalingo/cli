@@ -2,9 +2,10 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -118,11 +119,11 @@ func (c *Client) SCMIntegrationsDelete(ctx context.Context, id string) error {
 func (c *Client) SCMIntegrationsImportKeys(ctx context.Context, id string) ([]Key, error) {
 	var res KeysRes
 
-	var err = c.AuthAPI().DoRequest(ctx, &http.APIRequest{
-		Method:   "POST",
+	var err = c.AuthAPI().DoRequest(ctx, &httpclient.APIRequest{
+		Method:   http.MethodPost,
 		Endpoint: "/scm_integrations/" + id + "/import_keys",
 		Params:   nil,
-		Expected: http.Statuses{201},
+		Expected: httpclient.Statuses{http.StatusCreated},
 	}, &res)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "import ssh keys from this SCM integration")

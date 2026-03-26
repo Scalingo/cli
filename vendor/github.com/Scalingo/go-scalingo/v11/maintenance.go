@@ -63,7 +63,7 @@ type ListMaintenanceResponse struct {
 
 func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error) {
 	var maintenanceRes ListMaintenanceResponse
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "maintenance", paginationReq.ToURLValues(), &maintenanceRes)
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, databasesResource, addonID, maintenanceResource, paginationReq.ToURLValues(), &maintenanceRes)
 	if err != nil {
 		return nil, pagination.Meta{}, errors.Wrapf(ctx, err, "list database '%v' maintenance", addonID)
 	}
@@ -72,7 +72,7 @@ func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID strin
 
 func (c *Client) DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error) {
 	var maintenanceRes Maintenance
-	err := c.DBAPI(app, addonID).SubresourceGet(ctx, "databases", addonID, "maintenance", maintenanceID, nil, &maintenanceRes)
+	err := c.DBAPI(app, addonID).SubresourceGet(ctx, databasesResource, addonID, maintenanceResource, maintenanceID, nil, &maintenanceRes)
 	if err != nil {
 		return maintenanceRes, errors.Wrapf(ctx, err, "get database '%v' maintenance", addonID)
 	}

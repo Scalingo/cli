@@ -167,9 +167,9 @@ func (c *Client) AppsShow(ctx context.Context, appName string) (*App, error) {
 
 func (c *Client) AppsDestroy(ctx context.Context, name string, currentName string) error {
 	req := &httpclient.APIRequest{
-		Method:   "DELETE",
+		Method:   http.MethodDelete,
 		Endpoint: "/apps/" + name,
-		Expected: httpclient.Statuses{204},
+		Expected: httpclient.Statuses{http.StatusNoContent},
 		Params: map[string]any{
 			"current_name": currentName,
 		},
@@ -185,9 +185,9 @@ func (c *Client) AppsDestroy(ctx context.Context, name string, currentName strin
 func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + name + "/rename",
-		Expected: httpclient.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 		Params: map[string]any{
 			"current_name": name,
 			"new_name":     newName,
@@ -204,9 +204,9 @@ func (c *Client) AppsRename(ctx context.Context, name string, newName string) (*
 func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
-		Method:   "PATCH",
+		Method:   http.MethodPatch,
 		Endpoint: "/apps/" + name,
-		Expected: httpclient.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 		Params: map[string]any{
 			"app": map[string]string{
 				"owner": email,
@@ -223,9 +223,9 @@ func (c *Client) AppsTransfer(ctx context.Context, name string, email string) (*
 
 func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (*App, error) {
 	req := &httpclient.APIRequest{
-		Method:   "PATCH",
+		Method:   http.MethodPatch,
 		Endpoint: "/apps/" + app,
-		Expected: httpclient.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 		Params: map[string]any{
 			"app": map[string]string{
 				"stack_id": stackID,
@@ -246,9 +246,9 @@ func (c *Client) AppsSetStack(ctx context.Context, app string, stackID string) (
 // It returns an operation URL to track its progress.
 func (c *Client) AppsRestart(ctx context.Context, app string, scope *AppsRestartParams) (string, error) {
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + app + "/restart",
-		Expected: httpclient.Statuses{202},
+		Expected: httpclient.Statuses{http.StatusAccepted},
 		Params:   scope,
 	}
 
@@ -264,9 +264,9 @@ func (c *Client) AppsRestart(ctx context.Context, app string, scope *AppsRestart
 func (c *Client) AppsCreate(ctx context.Context, opts AppsCreateOpts) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/apps",
-		Expected: httpclient.Statuses{201},
+		Expected: httpclient.Statuses{http.StatusCreated},
 		Params:   map[string]any{"app": opts},
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)
@@ -321,11 +321,11 @@ type ScaleRes struct {
 // AppsScale scales an app and returns the updated containers and the operation URL when scaling is processed asynchronously.
 func (c *Client) AppsScale(ctx context.Context, app string, params *AppsScaleParams) ([]ContainerType, string, error) {
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + app + "/scale",
 		Params:   params,
-		// Return "200 OK" if app is scaled before deployment.
-		// Otherwise async job is triggered, it's "202 Accepted".
+		// Return "http.StatusOK OK" if app is scaled before deployment.
+		// Otherwise async job is triggered, it's "http.StatusAccepted Accepted".
 		Expected: httpclient.Statuses{http.StatusOK, http.StatusAccepted},
 	}
 	res, err := c.ScalingoAPI().Do(ctx, req)
@@ -372,7 +372,7 @@ func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]
 	req := &httpclient.APIRequest{
 		Method:   "PUT",
 		Endpoint: "/apps/" + name,
-		Expected: httpclient.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 		Params:   params,
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appRes)

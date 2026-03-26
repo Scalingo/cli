@@ -2,8 +2,9 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -29,7 +30,7 @@ type SelfResponse struct {
 
 func (c *Client) Self(ctx context.Context) (*User, error) {
 	var selfRes SelfResponse
-	req := &http.APIRequest{
+	req := &httpclient.APIRequest{
 		Endpoint: "/users/self",
 	}
 	err := c.AuthAPI().DoRequest(ctx, req, &selfRes)
@@ -53,13 +54,13 @@ func (c *Client) UpdateUser(ctx context.Context, params UpdateUserParams) (*User
 		return nil, nil
 	}
 
-	req := &http.APIRequest{
-		Method:   "PATCH",
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPatch,
 		Endpoint: "/account/profile",
 		Params: map[string]any{
 			"user": params,
 		},
-		Expected: http.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 	}
 	var updateUserRes UpdateUserResponse
 	err := c.AuthAPI().DoRequest(ctx, req, &updateUserRes)
@@ -71,11 +72,11 @@ func (c *Client) UpdateUser(ctx context.Context, params UpdateUserParams) (*User
 }
 
 func (c *Client) UserStopFreeTrial(ctx context.Context) error {
-	req := &http.APIRequest{
-		Method:   "POST",
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPost,
 		Endpoint: "/users/stop_free_trial",
 		Params:   map[string]any{},
-		Expected: http.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 	}
 
 	err := c.AuthAPI().DoRequest(ctx, req, nil)

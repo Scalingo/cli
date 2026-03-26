@@ -106,9 +106,8 @@ func (ev *EventTransferAppType) String() string {
 }
 
 type EventRestartTypeData struct {
-	Scope     []string               `json:"scope"`
-	AddonName string                 `json:"addon_name"`
-	Reason    ContainerRestartReason `json:"reason"`
+	Scope     []string `json:"scope"`
+	AddonName string   `json:"addon_name"`
 }
 
 type EventRestartType struct {
@@ -117,37 +116,11 @@ type EventRestartType struct {
 	TypeData EventRestartTypeData `json:"type_data"`
 }
 
-// ContainerRestartReason identifies the logical origin of a restart request
-type ContainerRestartReason string
-
-const (
-	ContainerRestartReasonUserRestart          ContainerRestartReason = "user_restart"
-	ContainerRestartReasonUnexpectedFailure    ContainerRestartReason = "unexpected_failure"
-	ContainerRestartReasonRebalancingOperation ContainerRestartReason = "rebalancing_operation"
-	ContainerRestartReasonSecurityMaintenance  ContainerRestartReason = "security_maintenance"
-)
-
 func (ev *EventRestartType) String() string {
-	message := "containers began to restart"
 	if len(ev.TypeData.Scope) != 0 {
-		message = fmt.Sprintf("containers %v began to restart", ev.TypeData.Scope)
+		return fmt.Sprintf("containers %v began to restart", ev.TypeData.Scope)
 	}
-	if ev.TypeData.Reason != "" {
-		reason := ev.TypeData.Reason
-		switch ev.TypeData.Reason {
-		case ContainerRestartReasonUserRestart:
-			reason = "user restart"
-		case ContainerRestartReasonUnexpectedFailure:
-			reason = "unexpected failure"
-		case ContainerRestartReasonRebalancingOperation:
-			reason = "infrastructure rebalancing operation"
-		case ContainerRestartReasonSecurityMaintenance:
-			reason = "scheduled security maintenance"
-		}
-
-		message = fmt.Sprintf("%s (reason: %s)", message, reason)
-	}
-	return message
+	return "containers began to restart"
 }
 
 func (ev *EventRestartType) Who() string {

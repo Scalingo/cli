@@ -159,7 +159,7 @@ func CurrentApp(ctx context.Context, c *cli.Command) string {
 // It returns an empty string and errDatabaseNotFound error if the database name
 // is not provided or resource ID not found.
 func currentDatabaseNameAndUUID(ctx context.Context, c *cli.Command) (string, string, error) {
-	dbName := extractDatabaseNameFromCommandLineOrEnv(c)
+	dbName := ExtractDatabaseNameFromCommandLineOrEnv(c)
 	if dbName == "" {
 		return "", "", errDatabaseNotFound
 	}
@@ -251,7 +251,7 @@ func extractAppName(ctx context.Context, c *cli.Command) string {
 	return appName
 }
 
-func extractDatabaseNameFromCommandLineOrEnv(c *cli.Command) string {
+func ExtractDatabaseNameFromCommandLineOrEnv(c *cli.Command) string {
 	if os.Getenv("SCALINGO_PREVIEW_FEATURES") != "true" {
 		return ""
 	}

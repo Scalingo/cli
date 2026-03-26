@@ -3,9 +3,10 @@ package scalingo
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -41,10 +42,10 @@ type DatabaseTypeVersionShowResponse struct {
 
 func (c Client) DatabaseTypeVersion(ctx context.Context, appID, addonID, versionID string) (DatabaseTypeVersion, error) {
 	var res DatabaseTypeVersionShowResponse
-	err := c.DBAPI(appID, addonID).DoRequest(ctx, &http.APIRequest{
-		Method:   "GET",
+	err := c.DBAPI(appID, addonID).DoRequest(ctx, &httpclient.APIRequest{
+		Method:   http.MethodGet,
 		Endpoint: "/database_type_versions/" + versionID,
-		Expected: http.Statuses{200},
+		Expected: httpclient.Statuses{http.StatusOK},
 	}, &res)
 	if err != nil {
 		return res.DatabaseTypeVersion, errors.Wrapf(ctx, err, "get database type version %v", versionID)

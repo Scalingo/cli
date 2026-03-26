@@ -35,10 +35,10 @@ type Statuses []int
 
 func (c *client) fillDefaultValues(ctx context.Context, req *APIRequest) error {
 	if req.Method == "" {
-		req.Method = "GET"
+		req.Method = http.MethodGet
 	}
 	if len(req.Expected) == 0 {
-		req.Expected = Statuses{200}
+		req.Expected = Statuses{http.StatusOK}
 	}
 	if req.Params == nil {
 		req.Params = make(map[string]any)

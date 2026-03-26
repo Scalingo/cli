@@ -43,7 +43,7 @@ type AlertRes struct {
 
 func (c *Client) AlertsList(ctx context.Context, app string) ([]*Alert, error) {
 	var alertsRes AlertsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "alerts", nil, &alertsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, alertsResource, nil, &alertsRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "query the API to list an alert")
 	}
@@ -77,7 +77,7 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 	if params.DurationBeforeTrigger != nil {
 		a.DurationBeforeTrigger = *params.DurationBeforeTrigger
 	}
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "alerts", AlertRes{
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, alertsResource, AlertRes{
 		Alert: a,
 	}, &alertRes)
 	if err != nil {
@@ -88,7 +88,7 @@ func (c *Client) AlertAdd(ctx context.Context, app string, params AlertAddParams
 
 func (c *Client) AlertShow(ctx context.Context, app, id string) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "alerts", id, nil, &alertRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, appsResource, app, alertsResource, id, nil, &alertRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "query the API to show an alert")
 	}
@@ -108,7 +108,7 @@ type AlertUpdateParams struct {
 
 func (c *Client) AlertUpdate(ctx context.Context, app, id string, params AlertUpdateParams) (*Alert, error) {
 	var alertRes AlertRes
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "alerts", id, params, &alertRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, appsResource, app, alertsResource, id, params, &alertRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "query the API to update an alert")
 	}
@@ -116,7 +116,7 @@ func (c *Client) AlertUpdate(ctx context.Context, app, id string, params AlertUp
 }
 
 func (c *Client) AlertRemove(ctx context.Context, app, id string) error {
-	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "alerts", id)
+	err := c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, alertsResource, id)
 	if err != nil {
 		return errors.Wrap(ctx, err, "query the API to remove an alert")
 	}

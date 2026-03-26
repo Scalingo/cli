@@ -4,9 +4,9 @@ go 1.25.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v11 v11.0.3
+	github.com/Scalingo/go-scalingo/v11 v11.0.1-0.20260513124010-187ac32aa251
 	github.com/Scalingo/go-utils/errors/v3 v3.2.1
-	github.com/Scalingo/go-utils/logger v1.12.2
+	github.com/Scalingo/go-utils/logger v1.12.1
 	github.com/Scalingo/go-utils/pagination v1.2.0
 	github.com/Scalingo/gopassword v1.1.0
 	github.com/briandowns/spinner v1.23.2
@@ -27,7 +27,7 @@ require (
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.50.0
 	golang.org/x/term v0.42.0
-	golang.org/x/text v0.36.0
+	golang.org/x/text v0.37.0
 )
 
 require (
