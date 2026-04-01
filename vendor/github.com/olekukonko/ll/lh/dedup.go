@@ -11,25 +11,28 @@ import (
 	"github.com/olekukonko/ll/lx"
 )
 
+// shardCount determines the number of shards for the dedup handler.
+// Must be a power of 2 for efficient modulo via bitwise AND.
+const shardCount = 32
+
 // Dedup is a log handler that suppresses duplicate entries within a TTL window.
 // It wraps another handler and filters out repeated log entries that match
 // within the deduplication period.
 type Dedup struct {
-	next           lx.Handler
-	ttl            time.Duration
-	cleanupEvery   time.Duration
-	keyFn          lx.Deduper
-	maxKeys        int
-	excludedFields map[string]struct{} // Fields to exclude from default key hash
-	shards         [32]dedupShard      // Shards reduce lock contention
-	done           chan struct{}
-	wg             sync.WaitGroup
-	once           sync.Once
+	next         lx.Handler
+	ttl          time.Duration
+	cleanupEvery time.Duration
+	keyFn        lx.Deduper
+	maxKeys      int
+	shards       [shardCount]dedupShard // value array; take &shards[i] when locking
+	done         chan struct{}
+	wg           sync.WaitGroup
+	once         sync.Once
 }
 
 type dedupShard struct {
 	mu   sync.Mutex
-	seen map[uint64]int64 // key -> expiry timestamp
+	seen map[uint64]int64 // key -> expiry unix-nano timestamp
 }
 
 // DedupOpt configures a Dedup handler.
@@ -92,7 +95,7 @@ func NewDedup(next lx.Handler, ttl time.Duration, opts ...DedupOpt) *Dedup {
 		keyFn:        NewDefaultDedup(),
 		done:         make(chan struct{}),
 	}
-	// Initialize shards with pre-allocated maps
+	// Pre-allocate each shard's map to avoid growth allocations at startup.
 	for i := 0; i < len(d.shards); i++ {
 		d.shards[i].seen = make(map[uint64]int64, 64)
 	}
@@ -106,28 +109,42 @@ func NewDedup(next lx.Handler, ttl time.Duration, opts ...DedupOpt) *Dedup {
 
 // Handle processes a log entry, suppressing duplicates within the TTL window.
 func (d *Dedup) Handle(e *lx.Entry) error {
+	// Guard against nil keyFn — pass through if not configured.
+	if d.keyFn == nil {
+		return d.next.Handle(e)
+	}
+
 	now := time.Now().UnixNano()
 	key := d.keyFn.Calculate(e)
-	shardIdx := key % uint64(len(d.shards))
-	shard := &d.shards[shardIdx]
+
+	// Bitwise AND is safe because shardCount is a power of 2.
+	shard := &d.shards[key&(shardCount-1)]
 
 	shard.mu.Lock()
 	exp, ok := shard.seen[key]
 	if ok && now < exp {
 		shard.mu.Unlock()
-		return nil
+		return nil // duplicate within TTL — suppress
 	}
 
-	// Opportunistic cleanup if shard is getting full
-	limitPerShard := d.maxKeys / len(d.shards)
-	if d.maxKeys > 0 && len(shard.seen) >= limitPerShard {
-		d.cleanupShardLocked(shard, now)
+	// Opportunistic per-shard cleanup when the shard is getting full.
+	if d.maxKeys > 0 {
+		limitPerShard := d.maxKeys / shardCount
+		if limitPerShard > 0 && len(shard.seen) >= limitPerShard {
+			d.cleanupShardLocked(shard, now)
+		}
 	}
 
 	shard.seen[key] = now + d.ttl.Nanoseconds()
 	shard.mu.Unlock()
 
 	return d.next.Handle(e)
+}
+
+// getShardIndex returns the shard index for a given key.
+// Uses bitwise AND since shardCount is a power of 2.
+func (d *Dedup) getShardIndex(key uint64) int {
+	return int(key & (shardCount - 1))
 }
 
 // Close stops the cleanup goroutine and closes the underlying handler.
@@ -152,7 +169,6 @@ func (d *Dedup) cleanupLoop() {
 		select {
 		case <-ticker.C:
 			now := time.Now().UnixNano()
-			// Cleanup all shards sequentially to avoid CPU spike
 			for i := 0; i < len(d.shards); i++ {
 				shard := &d.shards[i]
 				shard.mu.Lock()
@@ -179,25 +195,25 @@ type defaultDedup struct {
 	ignoreFields map[string]struct{}
 }
 
+// NewDefaultDedup creates a new default deduplication key generator.
 func NewDefaultDedup() lx.Deduper {
 	return &defaultDedup{ignoreFields: make(map[string]struct{})}
 }
 
-// Calculate generates a deduplication key from level, message, namespace, and fields.
-// Excludes any fields in ignoreFields. Uses xxhash for fast hashing.
+// Calculate generates a deduplication key from level, message, namespace, and
+// fields.  Fields are sorted before hashing so that identical entries always
+// produce the same key regardless of Go map iteration order.
 func (d *defaultDedup) Calculate(e *lx.Entry) uint64 {
 	h := xxhash.New()
 	zero := []byte{0}
 
-	// Core fields - use Write([]byte) for all data
-	h.WriteString(e.Level.String())
+	h.Write([]byte(e.Level.String()))
 	h.Write(zero)
-	h.WriteString(e.Message)
+	h.Write([]byte(e.Message))
 	h.Write(zero)
-	h.WriteString(e.Namespace)
+	h.Write([]byte(e.Namespace))
 	h.Write(zero)
 
-	// Add fields if present
 	if len(e.Fields) > 0 {
 		m := e.Fields.Map()
 		keys := make([]string, 0, len(m))
@@ -206,9 +222,11 @@ func (d *defaultDedup) Calculate(e *lx.Entry) uint64 {
 				keys = append(keys, k)
 			}
 		}
+		// Sort keys to guarantee a deterministic hash across calls.
+		// Without this, Go's random map iteration order means two identical
+		// entries can hash to different values and bypass deduplication.
 		sort.Strings(keys)
 
-		// Use pooled buffer to avoid allocations
 		buf := dedupBufPool.Get().(*bytes.Buffer)
 		buf.Reset()
 		defer dedupBufPool.Put(buf)
