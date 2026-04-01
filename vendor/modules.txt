@@ -13,7 +13,7 @@ github.com/Microsoft/go-winio/internal/fs
 github.com/Microsoft/go-winio/internal/socket
 github.com/Microsoft/go-winio/internal/stringbuffer
 github.com/Microsoft/go-winio/pkg/guid
-# github.com/ProtonMail/go-crypto v1.4.0
+# github.com/ProtonMail/go-crypto v1.4.1
 ## explicit; go 1.23.0
 github.com/ProtonMail/go-crypto/bitcurves
 github.com/ProtonMail/go-crypto/brainpool
@@ -48,7 +48,7 @@ github.com/Scalingo/go-scalingo/v11/io
 # github.com/Scalingo/go-utils/errors/v3 v3.2.0
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v3
-# github.com/Scalingo/go-utils/logger v1.12.0
+# github.com/Scalingo/go-utils/logger v1.12.1
 ## explicit; go 1.25
 github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/pagination v1.2.0
@@ -108,8 +108,8 @@ github.com/emirpasic/gods/lists/arraylist
 github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
-# github.com/fatih/color v1.18.0
-## explicit; go 1.17
+# github.com/fatih/color v1.19.0
+## explicit; go 1.25.0
 github.com/fatih/color
 # github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376
 ## explicit; go 1.13
@@ -125,7 +125,7 @@ github.com/go-git/go-billy/v5/helper/polyfill
 github.com/go-git/go-billy/v5/memfs
 github.com/go-git/go-billy/v5/osfs
 github.com/go-git/go-billy/v5/util
-# github.com/go-git/go-git/v5 v5.17.1
+# github.com/go-git/go-git/v5 v5.17.2
 ## explicit; go 1.24.0
 github.com/go-git/go-git/v5
 github.com/go-git/go-git/v5/config
@@ -173,7 +173,7 @@ github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
 github.com/go-git/go-git/v5/utils/sync
 github.com/go-git/go-git/v5/utils/trace
-# github.com/goccy/go-json v0.10.5
+# github.com/goccy/go-json v0.10.6
 ## explicit; go 1.19
 github.com/goccy/go-json
 github.com/goccy/go-json/internal/decoder
@@ -223,7 +223,7 @@ github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.20
+# github.com/mattn/go-runewidth v0.0.21
 ## explicit; go 1.20
 github.com/mattn/go-runewidth
 # github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
@@ -235,12 +235,12 @@ github.com/olekukonko/cat
 # github.com/olekukonko/errors v1.2.0
 ## explicit; go 1.21
 github.com/olekukonko/errors
-# github.com/olekukonko/ll v0.1.7
+# github.com/olekukonko/ll v0.1.8
 ## explicit; go 1.21
 github.com/olekukonko/ll
 github.com/olekukonko/ll/lh
 github.com/olekukonko/ll/lx
-# github.com/olekukonko/tablewriter v1.1.3
+# github.com/olekukonko/tablewriter v1.1.4
 ## explicit; go 1.21
 github.com/olekukonko/tablewriter
 github.com/olekukonko/tablewriter/pkg/twcache
@@ -279,7 +279,7 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli/v3 v3.6.2
+# github.com/urfave/cli/v3 v3.8.0
 ## explicit; go 1.22
 github.com/urfave/cli/v3
 # github.com/xanzy/ssh-agent v0.3.3
@@ -288,8 +288,8 @@ github.com/xanzy/ssh-agent
 # go.uber.org/mock v0.6.0
 ## explicit; go 1.23.0
 go.uber.org/mock/gomock
-# golang.org/x/crypto v0.48.0
-## explicit; go 1.24.0
+# golang.org/x/crypto v0.49.0
+## explicit; go 1.25.0
 golang.org/x/crypto/argon2
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
@@ -312,20 +312,20 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.51.0
+# golang.org/x/net v0.52.0
 ## explicit; go 1.25.0
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.41.0
-## explicit; go 1.24.0
+# golang.org/x/sys v0.42.0
+## explicit; go 1.25.0
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.40.0
-## explicit; go 1.24.0
+# golang.org/x/term v0.41.0
+## explicit; go 1.25.0
 golang.org/x/term
 # golang.org/x/text v0.35.0
 ## explicit; go 1.25.0

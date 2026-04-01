@@ -597,6 +597,17 @@ func (l *Logger) FieldOne(key string, value any) *FieldBuilder {
 	return fb
 }
 
+// FieldSet avoids variadic allocation overhead by accepting a slice of strongly typed fields.
+// Ideally, lx.Field is struct{Key string, Value any}
+func (l *Logger) FieldSet(fields []lx.Field) *FieldBuilder {
+	fb := getFieldBuilder(l, len(fields))
+	if l.suspend.Load() {
+		return fb
+	}
+	fb.fields = append(fb.fields, fields...)
+	return fb
+}
+
 // Field starts a fluent chain for adding fields from a map, creating a FieldBuilder
 // for type-safe field addition. It is thread-safe via the FieldBuilderâ   s logger.
 // Example:

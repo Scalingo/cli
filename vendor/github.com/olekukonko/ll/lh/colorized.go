@@ -6,7 +6,6 @@ import (
 	"hash/fnv"
 	"io"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -916,39 +915,32 @@ func computeEnvHash() uint64 {
 // computePaletteFromEnv computes the palette based on current environment variables.
 // This contains the original logic from detectPalette, extracted for caching.
 func (h *ColorizedHandler) computePaletteFromEnv() Palette {
-	// Check NO_COLOR environment variable (standard: https://no-color.org/)
 	if os.Getenv("NO_COLOR") != "" {
 		return noColorPalette
 	}
+
 	term := os.Getenv("TERM")
-	if term == "dumb" || term == "" {
-		if runtime.GOOS == "windows" && !h.isWindowsTerminalAnsiSupported() {
-			return noColorPalette
-		}
+	if term == "dumb" {
+		return noColorPalette
 	}
-	// First, try to detect background color
-	isDarkBackground := true // Default to dark
-	// Check for common dark/light environment variables
-	if style, ok := os.LookupEnv("AppleInterfaceStyle"); ok && strings.EqualFold(style, "dark") {
-		isDarkBackground = true
-	} else if style, ok := os.LookupEnv("APPEARANCE"); ok && strings.EqualFold(style, "light") {
+
+	// Windows is handled via build tag, just check terminal capability
+	if h.isWindowsTerminal() {
+		return h.applyIntensity(darkPalette)
+	}
+
+	// Unix/macOS background detection
+	isDarkBackground := true
+	if style, ok := os.LookupEnv("APPEARANCE"); ok && strings.EqualFold(style, "light") {
 		isDarkBackground = false
-	} else if bg := os.Getenv("TERM_BACKGROUND"); bg != "" {
-		isDarkBackground = strings.ToLower(bg) != "light"
 	} else if fgBg := os.Getenv("COLORFGBG"); fgBg != "" {
-		// COLORFGBG format: "foreground;background" or "foreground;background;unused"
 		parts := strings.Split(fgBg, ";")
 		if len(parts) >= 2 {
-			bg := parts[len(parts)-1]
-			bgInt, err := strconv.Atoi(bg)
-			if err == nil {
-				// According to XTerm documentation:
-				// 0-7: dark colors, 15: white, 8-14: bright colors
-				// Typically, 0=black (dark), 7=light gray (light), 15=white (light)
-				isDarkBackground = (bgInt >= 0 && bgInt <= 6) || (bgInt >= 8 && bgInt <= 14)
-			}
+			bgInt, _ := strconv.Atoi(parts[len(parts)-1])
+			isDarkBackground = (bgInt >= 0 && bgInt <= 6) || (bgInt >= 8 && bgInt <= 14)
 		}
 	}
+
 	if isDarkBackground {
 		return h.applyIntensity(darkPalette)
 	}
@@ -1004,21 +996,4 @@ func (h *ColorizedHandler) applyIntensity(basePalette Palette) Palette {
 	default:
 		return basePalette
 	}
-}
-
-// isWindowsTerminalAnsiSupported checks if the Windows terminal supports ANSI colors
-func (h *ColorizedHandler) isWindowsTerminalAnsiSupported() bool {
-	if runtime.GOOS != "windows" {
-		return true
-	}
-	if os.Getenv("WT_SESSION") != "" {
-		return true
-	}
-	if os.Getenv("ConEmuANSI") == "ON" {
-		return true
-	}
-	if os.Getenv("ANSICON") != "" {
-		return true
-	}
-	return false
 }
