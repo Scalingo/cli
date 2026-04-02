@@ -12,6 +12,7 @@
 * fix(databases): `parseScheduleAtFlag` returns a validation error
 * fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument
 * build(deps): update `github.com/Scalingo/go-scalingo` from v10 to v11
+* feat: add JSON output for the `apps` command
 
 ## 1.43.3
 
