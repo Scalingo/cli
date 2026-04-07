@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* feat(dbdr/net-peering) [STORY-3557] Add commands to configure net peerings of DB-DR
 * build(deps): update `github.com/Scalingo/go-scalingo` from v9 to v11
 * refactor: replace `errgo` and `pkg/errors` with `github.com/Scalingo/go-utils/errors/v3`
 * refactor: autofix by `go fix` and golangci-lint

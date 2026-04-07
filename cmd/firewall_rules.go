@@ -17,7 +17,7 @@ import (
 var (
 	databaseFirewallRulesListCommand = cli.Command{
 		Name:      "database-firewall-rules",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "List firewall rules of a database",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},
@@ -56,7 +56,7 @@ var (
 
 	databaseFirewallRulesAddCommand = cli.Command{
 		Name:      "database-firewall-rules-add",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "Add a firewall rule to a database",
 		ArgsUsage: "database-id",
 		Flags: []cli.Flag{
@@ -133,7 +133,7 @@ var (
 
 	databaseFirewallRulesRemoveCommand = cli.Command{
 		Name:      "database-firewall-rules-remove",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "Remove a firewall rule from a database",
 		ArgsUsage: "database-id rule-id",
 		Flags:     []cli.Flag{databaseFlag()},
@@ -194,7 +194,7 @@ var (
 
 	databaseFirewallManagedRangesCommand = cli.Command{
 		Name:      "database-firewall-managed-ranges",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "List available managed ranges for a database",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},

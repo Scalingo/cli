@@ -135,6 +135,9 @@ func displayRequestFailedError(requestFailedErr *httpclient.RequestFailedError, 
 			fmt.Println(io.Indent(err.Error(), 7))
 		}
 
+	case http.StatusConflict: // 409
+		// In case of conflict error, we only want to display the API error.
+		io.Errorf("%s\n", strings.ReplaceAll(requestFailedErr.Error(), `\n`, "\n"))
 	case http.StatusUnprocessableEntity:
 		unprocessableEntityErr, ok := requestFailedErr.APIError.(httpclient.UnprocessableEntity)
 		if !ok {
