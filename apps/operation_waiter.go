@@ -20,11 +20,14 @@ const (
 )
 
 type OperationWaiter struct {
-	output stdio.Writer
-	prompt string
-	app    string
-	url    string
+	output        stdio.Writer
+	prompt        string
+	app           string
+	url           string
+	showOperation operationShowFunc
 }
+
+type operationShowFunc func(ctx context.Context, app, opID string) (*scalingo.Operation, error)
 
 func newOperationWaiterFromURL(app, url string) *OperationWaiter {
 	return newOperationWaiter(os.Stderr, app, url)
@@ -36,6 +39,13 @@ func newOperationWaiter(output stdio.Writer, app, url string) *OperationWaiter {
 		app:    app,
 		url:    url,
 		prompt: defaultOperationWaiterPrompt,
+		showOperation: func(ctx context.Context, app, opID string) (*scalingo.Operation, error) {
+			c, err := config.ScalingoClient(ctx)
+			if err != nil {
+				return nil, errors.Wrap(ctx, err, "get Scalingo client")
+			}
+			return c.OperationsShow(ctx, app, opID)
+		},
 	}
 }
 
@@ -49,11 +59,6 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 		return nil, errors.Wrap(ctx, err, "parse url of operation")
 	}
 
-	c, err := config.ScalingoClient(ctx)
-	if err != nil {
-		return nil, errors.Wrap(ctx, err, "get Scalingo client")
-	}
-
 	var op *scalingo.Operation
 
 	opID := filepath.Base(opURL.Path)
@@ -62,14 +67,14 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	op, err = c.OperationsShow(ctx, w.app, opID)
+	op, err = w.showOperation(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			op, err = c.OperationsShow(ctx, w.app, opID)
+			op, err = w.showOperation(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
