@@ -74,11 +74,12 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 
 	go func() {
 		for {
-			op, err = w.showOperation(ctx, w.app, opID)
+			nextOp, err := w.showOperation(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
 			}
+			op = nextOp
 
 			if op.Status == "done" || op.Status == "error" {
 				done <- struct{}{}
@@ -96,7 +97,7 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	for {
 		select {
 		case err := <-errs:
-			return op, errors.Wrapf(ctx, err, "get operation %v", op.ID)
+			return op, errors.Wrapf(ctx, err, "get operation %v", opID)
 		case <-done:
 			switch op.Status {
 			case "done":
