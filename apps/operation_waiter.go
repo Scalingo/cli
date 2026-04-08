@@ -39,13 +39,6 @@ func newOperationWaiter(output stdio.Writer, app, url string) *OperationWaiter {
 		app:    app,
 		url:    url,
 		prompt: defaultOperationWaiterPrompt,
-		showOperation: func(ctx context.Context, app, opID string) (*scalingo.Operation, error) {
-			c, err := config.ScalingoClient(ctx)
-			if err != nil {
-				return nil, errors.Wrap(ctx, err, "get Scalingo client")
-			}
-			return c.OperationsShow(ctx, app, opID)
-		},
 	}
 }
 
@@ -67,14 +60,23 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	op, err = w.showOperation(ctx, w.app, opID)
+	showOperation := w.showOperation
+	if showOperation == nil {
+		c, err := config.ScalingoClient(ctx)
+		if err != nil {
+			return nil, errors.Wrap(ctx, err, "get Scalingo client")
+		}
+		showOperation = c.OperationsShow
+	}
+
+	op, err = showOperation(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			nextOp, err := w.showOperation(ctx, w.app, opID)
+			nextOp, err := showOperation(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
