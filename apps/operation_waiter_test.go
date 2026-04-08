@@ -10,6 +10,14 @@ import (
 	"github.com/Scalingo/go-scalingo/v11"
 )
 
+type testOperationsService struct {
+	show func(ctx context.Context, app, opID string) (*scalingo.Operation, error)
+}
+
+func (s testOperationsService) OperationsShow(ctx context.Context, app, opID string) (*scalingo.Operation, error) {
+	return s.show(ctx, app, opID)
+}
+
 func TestWaitOperationReturnsPollingErrorWithoutPanic(t *testing.T) {
 	ctx := t.Context()
 
@@ -21,15 +29,17 @@ func TestWaitOperationReturnsPollingErrorWithoutPanic(t *testing.T) {
 		prompt: defaultOperationWaiterPrompt,
 		app:    "my-app",
 		url:    "https://api.scalingo.test/operations/op-123",
-		showOperation: func(_ context.Context, _ string, _ string) (*scalingo.Operation, error) {
-			callCount++
-			if callCount == 1 {
-				return &scalingo.Operation{
-					ID:     "op-123",
-					Status: scalingo.OperationStatusRunning,
-				}, nil
-			}
-			return nil, expectedErr
+		operationsService: testOperationsService{
+			show: func(_ context.Context, _ string, _ string) (*scalingo.Operation, error) {
+				callCount++
+				if callCount == 1 {
+					return &scalingo.Operation{
+						ID:     "op-123",
+						Status: scalingo.OperationStatusRunning,
+					}, nil
+				}
+				return nil, expectedErr
+			},
 		},
 	}
 

@@ -20,14 +20,12 @@ const (
 )
 
 type OperationWaiter struct {
-	output        stdio.Writer
-	prompt        string
-	app           string
-	url           string
-	showOperation operationShowFunc
+	output            stdio.Writer
+	prompt            string
+	app               string
+	url               string
+	operationsService scalingo.OperationsService
 }
-
-type operationShowFunc func(ctx context.Context, app, opID string) (*scalingo.Operation, error)
 
 func newOperationWaiterFromURL(app, url string) *OperationWaiter {
 	return newOperationWaiter(os.Stderr, app, url)
@@ -60,23 +58,23 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	showOperation := w.showOperation
-	if showOperation == nil {
+	operationsService := w.operationsService
+	if operationsService == nil {
 		c, err := config.ScalingoClient(ctx)
 		if err != nil {
 			return nil, errors.Wrap(ctx, err, "get Scalingo client")
 		}
-		showOperation = c.OperationsShow
+		operationsService = c
 	}
 
-	op, err = showOperation(ctx, w.app, opID)
+	op, err = operationsService.OperationsShow(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			nextOp, err := showOperation(ctx, w.app, opID)
+			nextOp, err := operationsService.OperationsShow(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
