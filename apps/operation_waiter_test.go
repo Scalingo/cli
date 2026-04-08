@@ -21,44 +21,59 @@ func (s testOperationsService) OperationsShow(ctx context.Context, app, opID str
 func TestWaitOperationReturnsPollingErrorWithoutPanic(t *testing.T) {
 	ctx := t.Context()
 
-	expectedErr := stderrors.New("boom")
-	callCount := 0
-
-	waiter := &OperationWaiter{
-		output: &bytes.Buffer{},
-		prompt: defaultOperationWaiterPrompt,
-		app:    "my-app",
-		url:    "https://api.scalingo.test/operations/op-123",
-		operationsService: testOperationsService{
-			show: func(_ context.Context, _ string, _ string) (*scalingo.Operation, error) {
-				callCount++
-				if callCount == 1 {
-					return &scalingo.Operation{
-						ID:     "op-123",
-						Status: scalingo.OperationStatusRunning,
-					}, nil
-				}
-				return nil, expectedErr
+	tests := []struct {
+		name               string
+		expectedErr        error
+		expectedSubstrings []string
+	}{
+		{
+			name:        "return wrapped polling error",
+			expectedErr: stderrors.New("boom"),
+			expectedSubstrings: []string{
+				"get operation op-123",
+				"boom",
 			},
 		},
 	}
 
-	defer func() {
-		if r := recover(); r != nil {
-			t.Fatalf("expected no panic, got %v", r)
-		}
-	}()
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			callCount := 0
+			waiter := &OperationWaiter{
+				output: &bytes.Buffer{},
+				prompt: defaultOperationWaiterPrompt,
+				app:    "my-app",
+				url:    "https://api.scalingo.test/operations/op-123",
+				operationsService: testOperationsService{
+					show: func(_ context.Context, _ string, _ string) (*scalingo.Operation, error) {
+						callCount++
+						if callCount == 1 {
+							return &scalingo.Operation{
+								ID:     "op-123",
+								Status: scalingo.OperationStatusRunning,
+							}, nil
+						}
+						return nil, test.expectedErr
+					},
+				},
+			}
 
-	_, err := waiter.WaitOperation(ctx)
-	if err == nil {
-		t.Fatal("expected polling error")
-	}
+			defer func() {
+				if r := recover(); r != nil {
+					t.Fatalf("expected no panic, got %v", r)
+				}
+			}()
 
-	if !strings.Contains(err.Error(), "get operation op-123") {
-		t.Fatalf("expected operation id in error, got %v", err)
-	}
+			_, err := waiter.WaitOperation(ctx)
+			if err == nil {
+				t.Fatal("expected polling error")
+			}
 
-	if !strings.Contains(err.Error(), expectedErr.Error()) {
-		t.Fatalf("expected wrapped polling error, got %v", err)
+			for _, expectedSubstring := range test.expectedSubstrings {
+				if !strings.Contains(err.Error(), expectedSubstring) {
+					t.Fatalf("expected %q in error, got %v", expectedSubstring, err)
+				}
+			}
+		})
 	}
 }
