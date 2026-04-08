@@ -139,7 +139,10 @@ func Run(ctx context.Context, opts RunOpts) error {
 		return nil
 	}
 
-	waiter := newOperationWaiter(runCtx.waitingTextOutputWriter, opts.App, runRes.OperationURL)
+	waiter, err := newOperationWaiter(ctx, runCtx.waitingTextOutputWriter, opts.App, runRes.OperationURL)
+	if err != nil {
+		return errors.Wrap(ctx, err, "create operation waiter")
+	}
 	waiter.SetPrompt(fmt.Sprintf("-----> Starting container %v   ", runRes.Container.Label))
 	operation, err := waiter.WaitOperation(ctx)
 	if err != nil {

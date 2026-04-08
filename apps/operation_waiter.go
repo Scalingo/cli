@@ -27,17 +27,28 @@ type OperationWaiter struct {
 	operationsService scalingo.OperationsService
 }
 
-func newOperationWaiterFromURL(app, url string) *OperationWaiter {
-	return newOperationWaiter(os.Stderr, app, url)
+func newOperationWaiterFromURL(ctx context.Context, app, url string) (*OperationWaiter, error) {
+	return newOperationWaiter(ctx, os.Stderr, app, url)
 }
 
-func newOperationWaiter(output stdio.Writer, app, url string) *OperationWaiter {
-	return &OperationWaiter{
-		output: output,
-		app:    app,
-		url:    url,
-		prompt: defaultOperationWaiterPrompt,
+func newOperationWaiter(
+	ctx context.Context,
+	output stdio.Writer,
+	app,
+	url string,
+) (*OperationWaiter, error) {
+	c, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "get Scalingo client")
 	}
+
+	return &OperationWaiter{
+		output:            output,
+		app:               app,
+		url:               url,
+		prompt:            defaultOperationWaiterPrompt,
+		operationsService: c,
+	}, nil
 }
 
 func (w *OperationWaiter) SetPrompt(p string) {
@@ -58,23 +69,14 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	operationsService := w.operationsService
-	if operationsService == nil {
-		c, err := config.ScalingoClient(ctx)
-		if err != nil {
-			return nil, errors.Wrap(ctx, err, "get Scalingo client")
-		}
-		operationsService = c
-	}
-
-	op, err = operationsService.OperationsShow(ctx, w.app, opID)
+	op, err = w.operationsService.OperationsShow(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			nextOp, err := operationsService.OperationsShow(ctx, w.app, opID)
+			nextOp, err := w.operationsService.OperationsShow(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break

@@ -27,7 +27,10 @@ func Restart(ctx context.Context, app string, sync bool, args []string) error {
 		return nil
 	}
 
-	waiter := newOperationWaiterFromURL(app, restartOpURL)
+	waiter, err := newOperationWaiterFromURL(ctx, app, restartOpURL)
+	if err != nil {
+		return errors.Wrap(ctx, err, "create operation waiter")
+	}
 	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "wait for restart operation")
