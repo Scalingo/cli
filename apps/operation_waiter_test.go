@@ -44,7 +44,7 @@ func TestWaitOperationReturnsPollingErrorWithoutPanic(t *testing.T) {
 				prompt: defaultOperationWaiterPrompt,
 				app:    "my-app",
 				url:    "https://api.scalingo.test/operations/op-123",
-				operationsService: testOperationsService{
+				client: testOperationsService{
 					show: func(_ context.Context, _ string, _ string) (*scalingo.Operation, error) {
 						callCount++
 						if callCount == 1 {
