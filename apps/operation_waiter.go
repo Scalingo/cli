@@ -9,10 +9,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Scalingo/cli/config"
-	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
+
+	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
 )
 
 const (
@@ -20,11 +21,11 @@ const (
 )
 
 type OperationWaiter struct {
-	output            stdio.Writer
-	prompt            string
-	app               string
-	url               string
-	operationsService scalingo.OperationsService
+	output stdio.Writer
+	prompt string
+	app    string
+	url    string
+	client scalingo.OperationsService
 }
 
 func newOperationWaiterFromURL(ctx context.Context, app, url string) (*OperationWaiter, error) {
@@ -43,11 +44,11 @@ func newOperationWaiter(
 	}
 
 	return &OperationWaiter{
-		output:            output,
-		app:               app,
-		url:               url,
-		prompt:            defaultOperationWaiterPrompt,
-		operationsService: c,
+		output: output,
+		app:    app,
+		url:    url,
+		prompt: defaultOperationWaiterPrompt,
+		client: c,
 	}, nil
 }
 
@@ -69,14 +70,14 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	op, err = w.operationsService.OperationsShow(ctx, w.app, opID)
+	op, err = w.client.OperationsShow(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			nextOp, err := w.operationsService.OperationsShow(ctx, w.app, opID)
+			nextOp, err := w.client.OperationsShow(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
