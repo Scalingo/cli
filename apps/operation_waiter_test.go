@@ -6,9 +6,10 @@ import (
 	"strings"
 	"testing"
 
+	"go.uber.org/mock/gomock"
+
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-scalingo/v11/scalingomock"
-	"go.uber.org/mock/gomock"
 )
 
 func TestWaitOperationReturnsPollingErrorWithoutPanic(t *testing.T) {
