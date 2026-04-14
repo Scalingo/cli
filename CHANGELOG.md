@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.44.0
+
 * build(deps): update `github.com/Scalingo/go-scalingo` from v9 to v11
 * refactor: replace `errgo` and `pkg/errors` with `github.com/Scalingo/go-utils/errors/v3`
 * refactor: autofix by `go fix` and golangci-lint
