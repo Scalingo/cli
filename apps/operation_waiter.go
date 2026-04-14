@@ -20,23 +20,30 @@ const (
 )
 
 type OperationWaiter struct {
-	output stdio.Writer
-	prompt string
-	app    string
-	url    string
+	output            stdio.Writer
+	prompt            string
+	app               string
+	url               string
+	operationsService scalingo.OperationsService
 }
 
-func newOperationWaiterFromURL(app, url string) *OperationWaiter {
-	return newOperationWaiter(os.Stderr, app, url)
+func newOperationWaiterFromURL(ctx context.Context, app, url string) (*OperationWaiter, error) {
+	return newOperationWaiter(ctx, os.Stderr, app, url)
 }
 
-func newOperationWaiter(output stdio.Writer, app, url string) *OperationWaiter {
-	return &OperationWaiter{
-		output: output,
-		app:    app,
-		url:    url,
-		prompt: defaultOperationWaiterPrompt,
+func newOperationWaiter(ctx context.Context, output stdio.Writer, app, url string) (*OperationWaiter, error) {
+	c, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "get Scalingo client")
 	}
+
+	return &OperationWaiter{
+		output:            output,
+		app:               app,
+		url:               url,
+		prompt:            defaultOperationWaiterPrompt,
+		operationsService: c,
+	}, nil
 }
 
 func (w *OperationWaiter) SetPrompt(p string) {
@@ -49,11 +56,6 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 		return nil, errors.Wrap(ctx, err, "parse url of operation")
 	}
 
-	c, err := config.ScalingoClient(ctx)
-	if err != nil {
-		return nil, errors.Wrap(ctx, err, "get Scalingo client")
-	}
-
 	var op *scalingo.Operation
 
 	opID := filepath.Base(opURL.Path)
@@ -62,18 +64,19 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	defer close(done)
 	defer close(errs)
 
-	op, err = c.OperationsShow(ctx, w.app, opID)
+	op, err = w.operationsService.OperationsShow(ctx, w.app, opID)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "get operation %v", opID)
 	}
 
 	go func() {
 		for {
-			op, err = c.OperationsShow(ctx, w.app, opID)
+			reloadedOp, err := w.operationsService.OperationsShow(ctx, w.app, opID)
 			if err != nil {
 				errs <- err
 				break
 			}
+			op = reloadedOp
 
 			if op.Status == "done" || op.Status == "error" {
 				done <- struct{}{}
@@ -91,7 +94,7 @@ func (w *OperationWaiter) WaitOperation(ctx context.Context) (*scalingo.Operatio
 	for {
 		select {
 		case err := <-errs:
-			return op, errors.Wrapf(ctx, err, "get operation %v", op.ID)
+			return op, errors.Wrapf(ctx, err, "get operation %v", opID)
 		case <-done:
 			switch op.Status {
 			case "done":

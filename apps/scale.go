@@ -136,7 +136,10 @@ func Scale(ctx context.Context, app string, sync bool, types []string) error {
 		return nil
 	}
 
-	waiter := newOperationWaiterFromURL(app, operationURL)
+	waiter, err := newOperationWaiterFromURL(ctx, app, operationURL)
+	if err != nil {
+		return errors.Wrap(ctx, err, "create operation waiter")
+	}
 	_, err = waiter.WaitOperation(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "wait for the end of the scale operation")
