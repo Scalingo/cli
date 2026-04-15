@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(run): correctly parse operation URL
+
 ## 1.44.0
 
 * build(deps): update `github.com/Scalingo/go-scalingo` from v9 to v11
@@ -13,7 +15,6 @@
 * feat(apps/create): detect Git main branch name
 * fix(databases): `parseScheduleAtFlag` returns a validation error
 * fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument
-* build(deps): update `github.com/Scalingo/go-scalingo` from v10 to v11
 * fix(run): avoid a panic when polling one-off operations fails
 
 ## 1.43.3

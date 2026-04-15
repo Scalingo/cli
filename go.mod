@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v11 v11.0.0
+	github.com/Scalingo/go-scalingo/v11 v11.0.3
 	github.com/Scalingo/go-utils/errors/v3 v3.2.0
 	github.com/Scalingo/go-utils/logger v1.12.1
 	github.com/Scalingo/go-utils/pagination v1.2.0
@@ -24,6 +24,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/stvp/rollbar v0.5.1
 	github.com/urfave/cli/v3 v3.8.0
+	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.49.0
 	golang.org/x/term v0.41.0
 	golang.org/x/text v0.35.0
@@ -64,7 +65,6 @@ require (
 	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/skeema/knownhosts v1.3.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	go.uber.org/mock v0.6.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 	gopkg.in/errgo.v1 v1.0.1 // indirect
