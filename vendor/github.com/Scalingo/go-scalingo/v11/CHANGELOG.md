@@ -2,6 +2,19 @@
 
 ## To Be Released
 
+## 11.0.3
+
+* fix(run): add JSON tag for `OperationURL`
+
+## 11.0.2
+
+* feat(EventRestart): add `Reason` field
+
+## 11.0.1
+
+* chore(deps): bump `golang.org/x/text` from `0.34.0` to `0.35.0` ([#494](https://github.com/Scalingo/go-scalingo/pull/494))
+* build: align Dockerfile Go version with `go.mod` ([#494](https://github.com/Scalingo/go-scalingo/pull/494))
+
 ## 11.0.0
 
 * fix(privatenetworks): `PrivateNetworksDomainsList` must take a `pagination.Request` in argument (breaking change)
