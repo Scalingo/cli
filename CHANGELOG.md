@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.44.1
+
 * fix(run): correctly parse operation URL
 
 ## 1.44.0
