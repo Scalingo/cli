@@ -13,5 +13,10 @@ func DestroyToken(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(ctx, err, "remove local authentication credentials")
 	}
+
+	err = config.DeleteRegionsCache(ctx, config.C)
+	if err != nil {
+		return errors.Wrap(ctx, err, "remove local regions cache")
+	}
 	return nil
 }

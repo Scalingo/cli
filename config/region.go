@@ -137,3 +137,12 @@ func GetRegion(ctx context.Context, c Config, name string, opts GetRegionOpts) (
 	}
 	return scalingo.Region{}, UnknownRegionError{regionName: name}
 }
+
+func DeleteRegionsCache(ctx context.Context, c Config) error {
+	err := os.Remove(c.RegionsCachePath)
+	if err != nil && !os.IsNotExist(err) {
+		return errors.Wrapf(ctx, err, "remove region cache %s", c.RegionsCachePath)
+	}
+
+	return nil
+}
