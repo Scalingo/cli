@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(session): remove region cache on logout
+
 ## 1.44.1
 
 * fix(run): correctly parse operation URL
