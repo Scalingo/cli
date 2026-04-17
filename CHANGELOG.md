@@ -3,6 +3,7 @@
 ## To Be Released
 
 * fix(addons): parse `maintenance-window-hour` as an int
+* feat(session): remove region cache on logout
 
 ## 1.44.1
 
