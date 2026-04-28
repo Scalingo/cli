@@ -199,21 +199,21 @@ var (
 
 			currentApp := detect.CurrentApp(ctx, c)
 			currentAddon := c.Args().First()
-			config := addons.UpdateAddonConfigOpts{}
+			updateAddonConfig := addons.UpdateAddonConfigOpts{}
 
 			if c.IsSet("maintenance-window-day") {
-				config.MaintenanceWindowDay = utils.StringPtr(c.String("maintenance-window-day"))
+				updateAddonConfig.MaintenanceWindowDay = utils.StringPtr(c.String("maintenance-window-day"))
 			}
 
 			if c.IsSet("maintenance-window-hour") {
-				config.MaintenanceWindowHour = utils.IntPtr(c.Int("maintenance-window-hour"))
+				updateAddonConfig.MaintenanceWindowHour = utils.IntPtr(c.Int("maintenance-window-hour"))
 			}
 
-			if config.MaintenanceWindowHour == nil && config.MaintenanceWindowDay == nil {
+			if updateAddonConfig.MaintenanceWindowHour == nil && updateAddonConfig.MaintenanceWindowDay == nil {
 				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot update your addon without a specified option"), c, "addons-config")
 			}
 
-			err := addons.UpdateConfig(ctx, currentApp, currentAddon, config)
+			err := addons.UpdateConfig(ctx, currentApp, currentAddon, updateAddonConfig)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
