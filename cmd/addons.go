@@ -183,7 +183,7 @@ var (
 		Category: "Addons",
 		Usage:    "Configure an add-on attached to your app",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "maintenance-window-hour", Usage: "Configure add-on maintenance window starting hour (in your local timezone)"},
+			&cli.IntFlag{Name: "maintenance-window-hour", Usage: "Configure add-on maintenance window starting hour (in your local timezone)"},
 			&cli.StringFlag{Name: "maintenance-window-day", Usage: "Configure add-on maintenance window day"},
 		},
 		ArgsUsage: "addon-id",

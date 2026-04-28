@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(addons): parse `maintenance-window-hour` as an int
+
 ## 1.44.1
 
 * fix(run): correctly parse operation URL
