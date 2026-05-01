@@ -46,11 +46,11 @@ github.com/Scalingo/go-scalingo/v11/http
 github.com/Scalingo/go-scalingo/v11/http/httpmock
 github.com/Scalingo/go-scalingo/v11/io
 github.com/Scalingo/go-scalingo/v11/scalingomock
-# github.com/Scalingo/go-utils/errors/v3 v3.2.0
+# github.com/Scalingo/go-utils/errors/v3 v3.2.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v3
-# github.com/Scalingo/go-utils/logger v1.12.1
-## explicit; go 1.25
+# github.com/Scalingo/go-utils/logger v1.12.2
+## explicit; go 1.25.0
 github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/pagination v1.2.0
 ## explicit; go 1.24
@@ -221,10 +221,10 @@ github.com/klauspost/cpuid/v2
 # github.com/mattn/go-colorable v0.1.14
 ## explicit; go 1.18
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.20
-## explicit; go 1.15
+# github.com/mattn/go-isatty v0.0.22
+## explicit; go 1.21
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.21
+# github.com/mattn/go-runewidth v0.0.23
 ## explicit; go 1.20
 github.com/mattn/go-runewidth
 # github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
@@ -233,7 +233,7 @@ github.com/mgutz/ansi
 # github.com/olekukonko/cat v0.0.0-20250911104152-50322a0618f6
 ## explicit; go 1.21
 github.com/olekukonko/cat
-# github.com/olekukonko/errors v1.2.0
+# github.com/olekukonko/errors v1.3.0
 ## explicit; go 1.21
 github.com/olekukonko/errors
 # github.com/olekukonko/ll v0.1.8
@@ -289,7 +289,7 @@ github.com/xanzy/ssh-agent
 # go.uber.org/mock v0.6.0
 ## explicit; go 1.23.0
 go.uber.org/mock/gomock
-# golang.org/x/crypto v0.49.0
+# golang.org/x/crypto v0.50.0
 ## explicit; go 1.25.0
 golang.org/x/crypto/argon2
 golang.org/x/crypto/blake2b
@@ -313,22 +313,22 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.52.0
+# golang.org/x/net v0.53.0
 ## explicit; go 1.25.0
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.42.0
+# golang.org/x/sys v0.43.0
 ## explicit; go 1.25.0
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.41.0
+# golang.org/x/term v0.42.0
 ## explicit; go 1.25.0
 golang.org/x/term
-# golang.org/x/text v0.35.0
+# golang.org/x/text v0.36.0
 ## explicit; go 1.25.0
 golang.org/x/text/cases
 golang.org/x/text/internal

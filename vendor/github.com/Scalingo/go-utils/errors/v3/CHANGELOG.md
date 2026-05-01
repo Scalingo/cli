@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v3.2.1
+
+* chore(deps): bump several dependencies
+
 ## v3.2.0
 
 * feat(errors) Add `Join` wrapping `errors.Join` from standard library
