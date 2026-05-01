@@ -7,7 +7,7 @@ import (
 )
 
 // Is checks if any error of the stack matches the error value expectedError
-// API machting the standard library but allowing to wrap errors with ErrCtx + errgo or pkg/errors
+// API matching the standard library but allowing to wrap errors with ErrCtx + errgo or pkg/errors
 func Is(receivedErr, expectedError error) bool {
 	if errors.Is(receivedErr, expectedError) {
 		return true
@@ -22,7 +22,7 @@ func Is(receivedErr, expectedError error) bool {
 }
 
 // As checks if any error of the stack matches the expectedType
-// API machting the standard library but allowing to wrap errors with ErrCtx + errgo or pkg/errors
+// API matching the standard library but allowing to wrap errors with ErrCtx + errgo or pkg/errors
 func As(receivedErr error, expectedType any) bool {
 	if errors.As(receivedErr, expectedType) {
 		return true
