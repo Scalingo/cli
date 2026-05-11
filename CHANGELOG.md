@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.44.2
+
 * fix(addons): parse `maintenance-window-hour` as an int
 
 ## 1.44.1
