@@ -1,6 +1,5 @@
 # Scalingo-CLI v1.44.2
 
-
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
 This repository contains the command line utility for the public PaaS Scalingo.
@@ -58,7 +57,6 @@ USAGE:
 
 VERSION:
    1.44.2
-
 
 AUTHOR:
    Scalingo Team <hello@scalingo.com>
@@ -279,13 +277,11 @@ the commit for the version bump.
 ```bash
 git checkout <base commit ID>
 git checkout -b v1.44.2
-
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
 git push --set-upstream origin v1.44.2
-
 ```
 
 ### New Version Bump
@@ -330,7 +326,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.44.2
- https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.44.2 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
