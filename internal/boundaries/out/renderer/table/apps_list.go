@@ -27,7 +27,7 @@ func NewAppsList(currentUser *scalingo.User) renderer.Renderer[[]*scalingo.App] 
 
 func (r *appsListRenderer) Render(ctx context.Context) error {
 	if len(r.apps) == 0 {
-		fmt.Println(io.Indent("\nYou haven't created any app yet, create your first application using:\n→ scalingo create <app_name>\n", 2))
+		fmt.Println(io.Indent("\nYou haven't created any app yet in this project, create your first application using:\n→ scalingo create <app_name>\n", 2))
 		return nil
 	}
 
