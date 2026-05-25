@@ -2,8 +2,7 @@
 
 ## To Be Released
 
-## v1.46.0
-
+* chore(deps/go-scalingo) update go-scalingo to add support of continuousbackup events
 * feat(dbdr/net-peering) Add commands to configure net peerings of DB-DR
 * build(deps): update `github.com/google/go-github` from v47 to v88
 

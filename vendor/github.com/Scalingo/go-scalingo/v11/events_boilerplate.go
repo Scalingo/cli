@@ -2,7 +2,6 @@ package scalingo
 
 // Do not edit, generated with 'go generate'
 
-
 func (e *EventNewUserType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
@@ -136,6 +135,18 @@ func (e *EventDatabaseBackupFailedType) TypeDataPtr() interface{} {
 }
 
 func (e *EventDatabaseBackupSucceededType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDatabaseContinuousBackupHealthyType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDatabaseContinuousBackupDelayedType) TypeDataPtr() interface{} {
+	return &e.TypeData
+}
+
+func (e *EventDatabaseContinuousBackupStaleType) TypeDataPtr() interface{} {
 	return &e.TypeData
 }
 

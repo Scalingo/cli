@@ -80,6 +80,12 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventDatabaseBackupFailedType{Event: ev}
 	case EventDatabaseBackupSucceeded:
 		e = &EventDatabaseBackupSucceededType{Event: ev}
+	case EventDatabaseContinuousBackupHealthy:
+		e = &EventDatabaseContinuousBackupHealthyType{Event: ev}
+	case EventDatabaseContinuousBackupDelayed:
+		e = &EventDatabaseContinuousBackupDelayedType{Event: ev}
+	case EventDatabaseContinuousBackupStale:
+		e = &EventDatabaseContinuousBackupStaleType{Event: ev}
 	case EventNewCollaborator:
 		e = &EventNewCollaboratorType{Event: ev}
 	case EventAcceptCollaborator:

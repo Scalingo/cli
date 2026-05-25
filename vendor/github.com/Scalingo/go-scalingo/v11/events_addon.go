@@ -2,6 +2,7 @@ package scalingo
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -135,11 +136,12 @@ type EventDatabaseAddFeatureType struct {
 }
 
 type EventDatabaseAddFeatureTypeData struct {
+	EventSecurityTypeData
+
 	Feature           string `json:"feature"`
 	AddonProviderID   string `json:"addon_provider_id"`
 	AddonProviderName string `json:"addon_provider_name"`
 	AddonUUID         string `json:"addon_uuid"`
-	EventSecurityTypeData
 }
 
 func (ev *EventDatabaseAddFeatureType) String() string {
@@ -156,11 +158,12 @@ type EventDatabaseRemoveFeatureType struct {
 }
 
 type EventDatabaseRemoveFeatureTypeData struct {
+	EventSecurityTypeData
+
 	Feature           string `json:"feature"`
 	AddonProviderID   string `json:"addon_provider_id"`
 	AddonProviderName string `json:"addon_provider_name"`
 	AddonUUID         string `json:"addon_uuid"`
-	EventSecurityTypeData
 }
 
 func (ev *EventDatabaseRemoveFeatureType) String() string {
@@ -201,6 +204,8 @@ func (ev *EventDatabaseBackupSucceededType) String() string {
 }
 
 type EventDatabaseBackupSucceededTypeData struct {
+	EventSecurityTypeData
+
 	AddonUUID    string       `json:"addon_uuid"`
 	AddonName    string       `json:"addon_name"`
 	ResourceID   string       `json:"resource_id"`
@@ -209,7 +214,6 @@ type EventDatabaseBackupSucceededTypeData struct {
 	BackupStatus string       `json:"backup_status"`
 	StartedAt    time.Time    `json:"started_at"`
 	EndedAt      time.Time    `json:"ended_at"`
-	EventSecurityTypeData
 }
 
 type EventDatabaseBackupFailedType struct {
@@ -253,4 +257,112 @@ type EventDatabaseBackupFailedTypeData struct {
 	StartedAt    time.Time    `json:"started_at"`
 	EndedAt      time.Time    `json:"ended_at"`
 	EventSecurityTypeData
+}
+
+type EventDatabaseContinuousBackupTypeData struct {
+	EventSecurityTypeData
+
+	AddonName                    string    `json:"addon_name"`
+	ResourceID                   string    `json:"resource_id"`
+	AddonUUID                    string    `json:"addon_uuid"`
+	Status                       string    `json:"status"`
+	Error                        string    `json:"error"`
+	Recoverable                  bool      `json:"recoverable"`
+	CheckedAt                    time.Time `json:"checked_at"`
+	UnrecoverableDurationSeconds int64     `json:"unrecoverable_duration_seconds"`
+}
+
+type EventDatabaseContinuousBackupHealthyType struct {
+	Event
+
+	TypeData EventDatabaseContinuousBackupHealthyTypeData `json:"type_data"`
+}
+
+func (ev *EventDatabaseContinuousBackupHealthyType) String() string {
+	return formatDatabaseContinuousBackupString(
+		ev.TypeData.EventDatabaseContinuousBackupTypeData,
+		"healthy",
+	)
+}
+
+func (ev *EventDatabaseContinuousBackupHealthyType) Who() string {
+	return ev.Event.Who()
+}
+
+type EventDatabaseContinuousBackupHealthyTypeData struct {
+	EventDatabaseContinuousBackupTypeData
+}
+
+type EventDatabaseContinuousBackupDelayedType struct {
+	Event
+
+	TypeData EventDatabaseContinuousBackupDelayedTypeData `json:"type_data"`
+}
+
+func (ev *EventDatabaseContinuousBackupDelayedType) String() string {
+	return formatDatabaseContinuousBackupString(
+		ev.TypeData.EventDatabaseContinuousBackupTypeData,
+		"delayed",
+	)
+}
+
+func (ev *EventDatabaseContinuousBackupDelayedType) Who() string {
+	return ev.Event.Who()
+}
+
+type EventDatabaseContinuousBackupDelayedTypeData struct {
+	EventDatabaseContinuousBackupTypeData
+}
+
+type EventDatabaseContinuousBackupStaleType struct {
+	Event
+
+	TypeData EventDatabaseContinuousBackupStaleTypeData `json:"type_data"`
+}
+
+func (ev *EventDatabaseContinuousBackupStaleType) String() string {
+	return formatDatabaseContinuousBackupString(
+		ev.TypeData.EventDatabaseContinuousBackupTypeData,
+		"stale",
+	)
+}
+
+func (ev *EventDatabaseContinuousBackupStaleType) Who() string {
+	return ev.Event.Who()
+}
+
+type EventDatabaseContinuousBackupStaleTypeData struct {
+	EventDatabaseContinuousBackupTypeData
+}
+
+func formatDatabaseContinuousBackupString(data EventDatabaseContinuousBackupTypeData, status string) string {
+	message := fmt.Sprintf(
+		"Point-in-time recovery for database '%s' is %s",
+		data.ResourceID, status,
+	)
+	details := []string{}
+	if data.Status != "" && data.Status != "healthy" {
+		details = append(details, "status: "+formatContinuousBackupStatus(data.Status))
+	}
+	if data.Error == "" {
+		if len(details) == 0 {
+			return message
+		}
+
+		return fmt.Sprintf("%s (%s)", message, strings.Join(details, ", "))
+	}
+
+	details = append(details, "error: "+data.Error)
+	return fmt.Sprintf("%s (%s)", message, strings.Join(details, ", "))
+}
+
+func formatContinuousBackupStatus(status string) string {
+	switch status {
+	case "pgbackrest_error":
+		return "pgBackRest error"
+	case "wal_error":
+		return "WAL error"
+	default:
+		return status
+	}
 }
