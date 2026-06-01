@@ -68,7 +68,7 @@ type notifiersRequestRes struct {
 
 func (c *Client) NotifiersList(ctx context.Context, app string) (Notifiers, error) {
 	var notifiersRes notifiersRequestRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "notifiers", nil, &notifiersRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, notifiersResource, nil, &notifiersRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list notifiers")
 	}
@@ -84,7 +84,7 @@ func (c *Client) NotifierProvision(ctx context.Context, app string, params Notif
 	notifier := newOutputNotifier(params)
 	notifierRequestParams := &notifierRequestParams{notifier}
 
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "notifiers", notifierRequestParams, &notifierRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, notifiersResource, notifierRequestParams, &notifierRes)
 
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "provision notifier")
@@ -94,7 +94,7 @@ func (c *Client) NotifierProvision(ctx context.Context, app string, params Notif
 
 func (c *Client) NotifierByID(ctx context.Context, app, ID string) (*Notifier, error) {
 	var notifierRes notifierRequestRes
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "notifiers", ID, nil, &notifierRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, appsResource, app, notifiersResource, ID, nil, &notifierRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "show notifier")
 	}
@@ -109,7 +109,7 @@ func (c *Client) NotifierUpdate(ctx context.Context, app, ID string, params Noti
 
 	debug.Printf("[Notifier params]\n%+v", notifier)
 
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "notifiers", ID, notifierRequestParams, &notifierRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, appsResource, app, notifiersResource, ID, notifierRequestParams, &notifierRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "update notifier")
 	}
@@ -117,5 +117,5 @@ func (c *Client) NotifierUpdate(ctx context.Context, app, ID string, params Noti
 }
 
 func (c *Client) NotifierDestroy(ctx context.Context, app, ID string) error {
-	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "notifiers", ID)
+	return c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, notifiersResource, ID)
 }

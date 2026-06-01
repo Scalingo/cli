@@ -2,8 +2,9 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -52,7 +53,7 @@ func (c *Client) VariablesListWithoutAlias(ctx context.Context, app string) (Var
 
 func (c *Client) variableList(ctx context.Context, app string, aliases bool) (Variables, error) {
 	var variablesRes VariablesRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "variables", map[string]bool{"aliases": aliases}, &variablesRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, variablesResource, map[string]bool{"aliases": aliases}, &variablesRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list app variables")
 	}
@@ -61,8 +62,8 @@ func (c *Client) variableList(ctx context.Context, app string, aliases bool) (Va
 
 func (c *Client) VariableSet(ctx context.Context, app string, name string, value string) (*Variable, error) {
 	var variablesSetRes VariableSetParams
-	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
-		Method:   "POST",
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]any{
 			"variable": map[string]string{
@@ -70,7 +71,7 @@ func (c *Client) VariableSet(ctx context.Context, app string, name string, value
 				"value": value,
 			},
 		},
-		Expected: http.Statuses{200, 201},
+		Expected: httpclient.Statuses{http.StatusOK, http.StatusCreated},
 	}, &variablesSetRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "set app variable")
@@ -81,13 +82,13 @@ func (c *Client) VariableSet(ctx context.Context, app string, name string, value
 
 func (c *Client) VariableMultipleSet(ctx context.Context, app string, variables Variables) (Variables, error) {
 	var variabelsRes VariablesRes
-	req := &http.APIRequest{
+	req := &httpclient.APIRequest{
 		Method:   "PUT",
 		Endpoint: "/apps/" + app + "/variables",
 		Params: map[string]Variables{
 			"variables": variables,
 		},
-		Expected: http.Statuses{200, 201},
+		Expected: httpclient.Statuses{http.StatusOK, http.StatusCreated},
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, &variabelsRes)
 	if err != nil {
@@ -98,5 +99,5 @@ func (c *Client) VariableMultipleSet(ctx context.Context, app string, variables 
 }
 
 func (c *Client) VariableUnset(ctx context.Context, app string, id string) error {
-	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "variables", id)
+	return c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, variablesResource, id)
 }

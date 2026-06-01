@@ -60,7 +60,7 @@ type CollaboratorUpdateParamsPayload struct {
 
 func (c *Client) CollaboratorsList(ctx context.Context, app string) ([]Collaborator, error) {
 	var collaboratorsRes CollaboratorsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "collaborators", nil, &collaboratorsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, collaboratorsResource, nil, &collaboratorsRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list collaborators")
 	}
@@ -69,7 +69,7 @@ func (c *Client) CollaboratorsList(ctx context.Context, app string) ([]Collabora
 
 func (c *Client) CollaboratorAdd(ctx context.Context, app string, params CollaboratorAddParams) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "collaborators", CollaboratorAddParamsPayload{params}, &collaboratorRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, collaboratorsResource, CollaboratorAddParamsPayload{params}, &collaboratorRes)
 	if err != nil {
 		return Collaborator{}, errors.Wrap(ctx, err, "add collaborator")
 	}
@@ -77,7 +77,7 @@ func (c *Client) CollaboratorAdd(ctx context.Context, app string, params Collabo
 }
 
 func (c *Client) CollaboratorRemove(ctx context.Context, app, collaboratorID string) error {
-	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "collaborators", collaboratorID)
+	err := c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, collaboratorsResource, collaboratorID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "remove collaborator")
 	}
@@ -86,7 +86,7 @@ func (c *Client) CollaboratorRemove(ctx context.Context, app, collaboratorID str
 
 func (c *Client) CollaboratorUpdate(ctx context.Context, app, collaboratorID string, params CollaboratorUpdateParams) (Collaborator, error) {
 	var collaboratorRes CollaboratorRes
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "collaborators", collaboratorID, CollaboratorUpdateParamsPayload{params}, &collaboratorRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, appsResource, app, collaboratorsResource, collaboratorID, CollaboratorUpdateParamsPayload{params}, &collaboratorRes)
 	if err != nil {
 		return Collaborator{}, errors.Wrap(ctx, err, "update collaborator")
 	}

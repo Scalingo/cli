@@ -2,12 +2,11 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 
 	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
-
-const firewallRulesResource = "firewall_rules"
 
 type FirewallRuleType string
 
@@ -61,7 +60,7 @@ var _ FirewallRulesService = (*PreviewClient)(nil)
 func (c *PreviewClient) FirewallRulesCreate(ctx context.Context, appID string, addonID string, params FirewallRuleCreateParams) (FirewallRule, error) {
 	var res FirewallRuleResponse
 
-	err := c.parent.DBAPI(appID, addonID).SubresourceAdd(ctx, "databases", addonID, firewallRulesResource, params, &res)
+	err := c.parent.DBAPI(appID, addonID).SubresourceAdd(ctx, databasesResource, addonID, firewallRulesResource, params, &res)
 	if err != nil {
 		return res.FirewallRule, errors.Wrap(ctx, err, "create firewall rule")
 	}
@@ -71,7 +70,7 @@ func (c *PreviewClient) FirewallRulesCreate(ctx context.Context, appID string, a
 func (c *PreviewClient) FirewallRulesList(ctx context.Context, appID string, addonID string) ([]FirewallRule, error) {
 	var res FirewallRulesResponse
 
-	err := c.parent.DBAPI(appID, addonID).SubresourceList(ctx, "databases", addonID, firewallRulesResource, nil, &res)
+	err := c.parent.DBAPI(appID, addonID).SubresourceList(ctx, databasesResource, addonID, firewallRulesResource, nil, &res)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list firewall rules")
 	}
@@ -80,7 +79,7 @@ func (c *PreviewClient) FirewallRulesList(ctx context.Context, appID string, add
 }
 
 func (c *PreviewClient) FirewallRulesDestroy(ctx context.Context, appID string, addonID string, firewallRuleID string) error {
-	err := c.parent.DBAPI(appID, addonID).SubresourceDelete(ctx, "databases", addonID, firewallRulesResource, firewallRuleID)
+	err := c.parent.DBAPI(appID, addonID).SubresourceDelete(ctx, databasesResource, addonID, firewallRulesResource, firewallRuleID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "destroy firewall rule")
 	}
@@ -91,7 +90,7 @@ func (c *PreviewClient) FirewallRulesGetManagedRanges(ctx context.Context, appID
 	var res FirewallManagedRangesResponse
 
 	req := &httpclient.APIRequest{
-		Method:   "GET",
+		Method:   http.MethodGet,
 		Endpoint: "/firewall/managed_ranges",
 	}
 

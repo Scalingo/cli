@@ -3,6 +3,7 @@ package scalingo
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	httpclient "github.com/Scalingo/go-scalingo/v11/http"
@@ -31,9 +32,9 @@ type Container struct {
 
 func (c *Client) ContainersStop(ctx context.Context, appName, containerID string) error {
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: fmt.Sprintf("/apps/%s/containers/%s/stop", appName, containerID),
-		Expected: httpclient.Statuses{202},
+		Expected: httpclient.Statuses{http.StatusAccepted},
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
 	if err != nil {
@@ -45,10 +46,10 @@ func (c *Client) ContainersStop(ctx context.Context, appName, containerID string
 
 func (c *Client) ContainersKill(ctx context.Context, app string, signal string, containerID string) error {
 	req := &httpclient.APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + app + "/containers/" + containerID + "/kill",
 		Params:   map[string]any{"signal": signal},
-		Expected: httpclient.Statuses{204},
+		Expected: httpclient.Statuses{http.StatusNoContent},
 	}
 	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
 	if err != nil {

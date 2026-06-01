@@ -3,9 +3,10 @@ package scalingo
 import (
 	"context"
 	stderrors "errors"
+	"net/http"
 	"sync"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -36,8 +37,8 @@ type regionsRes struct {
 
 func (c *Client) RegionsList(ctx context.Context) ([]Region, error) {
 	var res regionsRes
-	err := c.AuthAPI().DoRequest(ctx, &http.APIRequest{
-		Method:   "GET",
+	err := c.AuthAPI().DoRequest(ctx, &httpclient.APIRequest{
+		Method:   http.MethodGet,
 		Endpoint: "/regions",
 	}, &res)
 	if err != nil {

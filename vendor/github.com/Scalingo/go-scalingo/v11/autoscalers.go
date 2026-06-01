@@ -35,7 +35,7 @@ type AutoscalerRes struct {
 
 func (c *Client) AutoscalersList(ctx context.Context, app string) ([]Autoscaler, error) {
 	var autoscalersRes AutoscalersRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "autoscalers", nil, &autoscalersRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, autoscalersResource, nil, &autoscalersRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list autoscalers")
 	}
@@ -52,7 +52,7 @@ type AutoscalerAddParams struct {
 
 func (c *Client) AutoscalerAdd(ctx context.Context, app string, params AutoscalerAddParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "autoscalers", AutoscalerRes{
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, autoscalersResource, AutoscalerRes{
 		Autoscaler: Autoscaler{
 			ContainerType: params.ContainerType,
 			Metric:        params.Metric,
@@ -69,7 +69,7 @@ func (c *Client) AutoscalerAdd(ctx context.Context, app string, params Autoscale
 
 func (c *Client) AutoscalerShow(ctx context.Context, app, id string) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "autoscalers", id, nil, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, appsResource, app, autoscalersResource, id, nil, &autoscalerRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "show autoscaler")
 	}
@@ -86,7 +86,7 @@ type AutoscalerUpdateParams struct {
 
 func (c *Client) AutoscalerUpdate(ctx context.Context, app, id string, params AutoscalerUpdateParams) (*Autoscaler, error) {
 	var autoscalerRes AutoscalerRes
-	err := c.ScalingoAPI().SubresourceUpdate(ctx, "apps", app, "autoscalers", id, params, &autoscalerRes)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, appsResource, app, autoscalersResource, id, params, &autoscalerRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "update autoscaler")
 	}
@@ -94,7 +94,7 @@ func (c *Client) AutoscalerUpdate(ctx context.Context, app, id string, params Au
 }
 
 func (c *Client) AutoscalerRemove(ctx context.Context, app, id string) error {
-	err := c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "autoscalers", id)
+	err := c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, autoscalersResource, id)
 	if err != nil {
 		return errors.Wrap(ctx, err, "delete autoscaler")
 	}
