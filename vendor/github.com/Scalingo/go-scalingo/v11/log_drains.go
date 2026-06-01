@@ -34,7 +34,7 @@ type LogDrainsRes struct {
 
 func (c *Client) LogDrainsList(ctx context.Context, app string) ([]LogDrain, error) {
 	var logDrainsRes LogDrainsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "log_drains", nil, &logDrainsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, logDrainsResource, nil, &logDrainsRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list the log drains")
 	}
@@ -44,7 +44,7 @@ func (c *Client) LogDrainsList(ctx context.Context, app string) ([]LogDrain, err
 func (c *Client) LogDrainsAddonList(ctx context.Context, app string, addonID string) ([]LogDrain, error) {
 	var logDrainsRes LogDrainsRes
 
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "addons/"+addonID+"/log_drains", nil, &logDrainsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, addonsResource+"/"+addonID+"/"+logDrainsResource, nil, &logDrainsRes)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "list the log drains of the addon %s", addonID)
 	}
@@ -70,7 +70,7 @@ func (c *Client) LogDrainAdd(ctx context.Context, app string, params LogDrainAdd
 		Drain: params,
 	}
 
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "log_drains", payload, &logDrainRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, logDrainsResource, payload, &logDrainRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "add drain")
 	}
@@ -84,7 +84,7 @@ func (c *Client) LogDrainRemove(ctx context.Context, app, URL string) error {
 	}
 
 	req := &httpclient.APIRequest{
-		Method:   "DELETE",
+		Method:   http.MethodDelete,
 		Endpoint: "/apps/" + app + "/log_drains",
 		Expected: httpclient.Statuses{http.StatusNoContent},
 		Params:   payload,
@@ -104,7 +104,7 @@ func (c *Client) LogDrainAddonRemove(ctx context.Context, app, addonID string, U
 	}
 
 	req := &httpclient.APIRequest{
-		Method:   "DELETE",
+		Method:   http.MethodDelete,
 		Endpoint: "/apps/" + app + "/addons/" + addonID + "/log_drains",
 		Expected: httpclient.Statuses{http.StatusNoContent},
 		Params:   payload,
@@ -124,7 +124,7 @@ func (c *Client) LogDrainAddonAdd(ctx context.Context, app string, addonID strin
 		Drain: params,
 	}
 
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "addons/"+addonID+"/log_drains", payload, &logDrainRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, addonsResource+"/"+addonID+"/"+logDrainsResource, payload, &logDrainRes)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "add log drain to the addon %s", addonID)
 	}

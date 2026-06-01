@@ -24,6 +24,7 @@ type Client interface {
 	SubresourceList(ctx context.Context, resource, resourceID, subresource string, payload, data any) error
 	SubresourceAdd(ctx context.Context, resource, resourceID, subresource string, payload, data any) error
 	SubresourceGet(ctx context.Context, resource, resourceID, subresource, id string, payload, data any) error
+	SubresourceGetSingleton(ctx context.Context, resource, resourceID, subresource string, payload, data any) error
 	SubresourceUpdate(ctx context.Context, resource, resourceID, subresource, id string, payload, data any) error
 	SubresourceDelete(ctx context.Context, resource, resourceID, subresource, id string) error
 	DoRequest(ctx context.Context, req *APIRequest, data any) error
@@ -84,7 +85,7 @@ func NewClient(cfg ClientConfig) Client {
 
 func (c *client) ResourceGet(ctx context.Context, resource, resourceID string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "GET",
+		Method:   http.MethodGet,
 		Endpoint: "/" + resource + "/" + resourceID,
 		Params:   payload,
 	}, data)
@@ -92,7 +93,7 @@ func (c *client) ResourceGet(ctx context.Context, resource, resourceID string, p
 
 func (c *client) ResourceList(ctx context.Context, resource string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "GET",
+		Method:   http.MethodGet,
 		Endpoint: "/" + resource,
 		Params:   payload,
 	}, data)
@@ -100,7 +101,7 @@ func (c *client) ResourceList(ctx context.Context, resource string, payload, dat
 
 func (c *client) ResourceAdd(ctx context.Context, resource string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/" + resource,
 		Expected: Statuses{http.StatusCreated},
 		Params:   payload,
@@ -109,7 +110,7 @@ func (c *client) ResourceAdd(ctx context.Context, resource string, payload, data
 
 func (c client) ResourceUpdate(ctx context.Context, resource, resourceID string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "PATCH",
+		Method:   http.MethodPatch,
 		Endpoint: "/" + resource + "/" + resourceID,
 		Params:   payload,
 	}, data)
@@ -117,7 +118,7 @@ func (c client) ResourceUpdate(ctx context.Context, resource, resourceID string,
 
 func (c *client) ResourceDelete(ctx context.Context, resource, resourceID string) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "DELETE",
+		Method:   http.MethodDelete,
 		Endpoint: "/" + resource + "/" + resourceID,
 		Expected: Statuses{http.StatusNoContent},
 	}, nil)
@@ -125,15 +126,23 @@ func (c *client) ResourceDelete(ctx context.Context, resource, resourceID string
 
 func (c *client) SubresourceGet(ctx context.Context, resource, resourceID, subresource, id string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "GET",
+		Method:   http.MethodGet,
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
+		Params:   payload,
+	}, data)
+}
+
+func (c *client) SubresourceGetSingleton(ctx context.Context, resource, resourceID, subresource string, payload, data any) error {
+	return c.DoRequest(ctx, &APIRequest{
+		Method:   http.MethodGet,
+		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource,
 		Params:   payload,
 	}, data)
 }
 
 func (c *client) SubresourceList(ctx context.Context, resource, resourceID, subresource string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "GET",
+		Method:   http.MethodGet,
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource,
 		Params:   payload,
 	}, data)
@@ -141,7 +150,7 @@ func (c *client) SubresourceList(ctx context.Context, resource, resourceID, subr
 
 func (c *client) SubresourceAdd(ctx context.Context, resource, resourceID, subresource string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource,
 		Expected: Statuses{http.StatusCreated},
 		Params:   payload,
@@ -150,7 +159,7 @@ func (c *client) SubresourceAdd(ctx context.Context, resource, resourceID, subre
 
 func (c *client) SubresourceDelete(ctx context.Context, resource, resourceID, subresource, id string) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "DELETE",
+		Method:   http.MethodDelete,
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
 		Expected: Statuses{http.StatusNoContent},
 	}, nil)
@@ -158,7 +167,7 @@ func (c *client) SubresourceDelete(ctx context.Context, resource, resourceID, su
 
 func (c *client) SubresourceUpdate(ctx context.Context, resource, resourceID, subresource, id string, payload, data any) error {
 	return c.DoRequest(ctx, &APIRequest{
-		Method:   "PATCH",
+		Method:   http.MethodPatch,
 		Endpoint: "/" + resource + "/" + resourceID + "/" + subresource + "/" + id,
 		Params:   payload,
 	}, data)

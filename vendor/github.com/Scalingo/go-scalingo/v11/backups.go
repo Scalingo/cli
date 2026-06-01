@@ -2,9 +2,10 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -56,7 +57,7 @@ type DownloadURLRes struct {
 
 func (c *Client) BackupList(ctx context.Context, app string, addonID string) ([]Backup, error) {
 	var backupRes BackupsRes
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, "databases", addonID, "backups", nil, &backupRes)
+	err := c.DBAPI(app, addonID).SubresourceList(ctx, databasesResource, addonID, backupsResource, nil, &backupRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "get backup")
 	}
@@ -65,7 +66,7 @@ func (c *Client) BackupList(ctx context.Context, app string, addonID string) ([]
 
 func (c *Client) BackupCreate(ctx context.Context, app, addonID string) (*Backup, error) {
 	var backupRes BackupRes
-	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, "databases", addonID, "backups", nil, &backupRes)
+	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, databasesResource, addonID, backupsResource, nil, &backupRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "schedule a new backup")
 	}
@@ -83,8 +84,8 @@ func (c *Client) BackupShow(ctx context.Context, app, addonID, backup string) (*
 
 func (c *Client) BackupDownloadURL(ctx context.Context, app, addonID, backupID string) (string, error) {
 	var downloadRes DownloadURLRes
-	req := &http.APIRequest{
-		Method:   "GET",
+	req := &httpclient.APIRequest{
+		Method:   http.MethodGet,
 		Endpoint: "/databases/" + addonID + "/backups/" + backupID + "/archive",
 	}
 	err := c.DBAPI(app, addonID).DoRequest(ctx, req, &downloadRes)

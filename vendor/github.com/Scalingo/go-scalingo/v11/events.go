@@ -29,7 +29,7 @@ type EventsRes struct {
 
 func (c *Client) EventsList(ctx context.Context, app string, paginationReq pagination.Request) (Events, pagination.Meta, error) {
 	var eventsRes EventsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "events", paginationReq.ToURLValues(), &eventsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, eventsResource, paginationReq.ToURLValues(), &eventsRes)
 	if err != nil {
 		return nil, pagination.Meta{}, errors.Wrap(ctx, err, "list app events")
 	}

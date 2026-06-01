@@ -49,6 +49,7 @@ type DatabaseCreateParams struct {
 	PlanID          string `json:"plan_id"`
 	Name            string `json:"name"`
 	ProjectID       string `json:"project_id,omitempty"`
+	IPRange         string `json:"ip_range,omitempty"`
 }
 
 type DatabaseCreateResponse struct {

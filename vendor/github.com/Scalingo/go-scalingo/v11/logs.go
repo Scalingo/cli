@@ -4,6 +4,7 @@ import (
 	"context"
 	stderrors "errors"
 	"io"
+	"net/http"
 	"net/url"
 
 	httpclient "github.com/Scalingo/go-scalingo/v11/http"
@@ -26,7 +27,7 @@ type LogsURLRes struct {
 
 func (c *Client) LogsURL(ctx context.Context, app string) (*LogsURLRes, error) {
 	var logsURLRes LogsURLRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "logs", nil, &logsURLRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, logsResource, nil, &logsURLRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "get app logs URL")
 	}
@@ -43,7 +44,7 @@ func (c *Client) Logs(ctx context.Context, logsURL string, n int, filter string)
 	}
 	req := &httpclient.APIRequest{
 		NoAuth:   true,
-		Expected: httpclient.Statuses{200, 204, 404},
+		Expected: httpclient.Statuses{http.StatusOK, http.StatusNoContent, http.StatusNotFound},
 		URL:      u.Scheme + "://" + u.Host,
 		Endpoint: u.Path,
 		Params: map[string]any{
@@ -58,7 +59,7 @@ func (c *Client) Logs(ctx context.Context, logsURL string, n int, filter string)
 		return nil, errors.Wrap(ctx, err, "request Scalingo API to get the application logs")
 	}
 
-	if res.StatusCode == 404 || res.StatusCode == 204 {
+	if res.StatusCode == http.StatusNotFound || res.StatusCode == http.StatusNoContent {
 		return nil, ErrNoLogs
 	}
 

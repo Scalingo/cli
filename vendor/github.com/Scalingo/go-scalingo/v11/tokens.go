@@ -2,10 +2,11 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -19,13 +20,13 @@ type TokensService interface {
 var _ TokensService = (*Client)(nil)
 
 // Deprecated: use http.ErrOTPRequired instead of this wrapper.
-var ErrOTPRequired = http.ErrOTPRequired
+var ErrOTPRequired = httpclient.ErrOTPRequired
 
 // IsOTPRequired tests if the authentication backend return an OTP Required error
 //
-// Deprecated: use http.IsOTPRequired instead of this wrapper.
+// Deprecated: use httpclient.IsOTPRequired instead of this wrapper.
 func IsOTPRequired(err error) bool {
-	return http.IsOTPRequired(err)
+	return httpclient.IsOTPRequired(err)
 }
 
 type Token struct {
@@ -74,9 +75,9 @@ func (c *Client) TokensList(ctx context.Context) (Tokens, error) {
 
 func (c *Client) TokenExchange(ctx context.Context, token string) (string, error) {
 	var btRes BearerTokenRes
-	req := &http.APIRequest{
+	req := &httpclient.APIRequest{
 		NoAuth:   true,
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/tokens/exchange",
 		Password: token,
 	}
@@ -90,11 +91,11 @@ func (c *Client) TokenExchange(ctx context.Context, token string) (string, error
 }
 
 func (c *Client) TokenCreateWithLogin(ctx context.Context, params TokenCreateParams, login LoginParams) (Token, error) {
-	req := &http.APIRequest{
+	req := &httpclient.APIRequest{
 		NoAuth:   true,
-		Method:   "POST",
+		Method:   http.MethodPost,
 		Endpoint: "/tokens",
-		Expected: http.Statuses{201},
+		Expected: httpclient.Statuses{http.StatusCreated},
 		Username: login.Identifier,
 		Password: login.Password,
 		OTP:      login.OTP,
@@ -105,8 +106,8 @@ func (c *Client) TokenCreateWithLogin(ctx context.Context, params TokenCreatePar
 	var tokenRes TokenRes
 	err := c.AuthAPI().DoRequest(ctx, req, &tokenRes)
 	if err != nil {
-		if http.IsOTPRequired(err) {
-			return Token{}, http.ErrOTPRequired
+		if httpclient.IsOTPRequired(err) {
+			return Token{}, httpclient.ErrOTPRequired
 		}
 		return Token{}, errors.Wrap(ctx, err, "create token with login")
 	}

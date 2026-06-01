@@ -26,7 +26,7 @@ type CronTasks struct {
 
 func (c *Client) CronTasksGet(ctx context.Context, app string) (CronTasks, error) {
 	resp := CronTasks{}
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "cron_tasks", nil, &resp)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, cronTasksResource, nil, &resp)
 	if err != nil {
 		return CronTasks{}, errors.Wrap(ctx, err, "get cron tasks")
 	}

@@ -2,9 +2,10 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"strings"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -31,8 +32,8 @@ type RunRes struct {
 
 func (c *Client) Run(ctx context.Context, opts RunOpts) (*RunRes, error) {
 	var runRes RunRes
-	req := &http.APIRequest{
-		Method:   "POST",
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + opts.App + "/run",
 		Params: map[string]any{
 			"command":     strings.Join(opts.Command, " "),

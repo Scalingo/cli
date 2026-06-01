@@ -33,7 +33,7 @@ func (c *Client) PrivateNetworksDomainsList(ctx context.Context, app string, pag
 
 	var domainRes PrivateNetworkDomainsRes
 	err := c.ScalingoAPI().SubresourceList(ctx,
-		"apps", app, "private_network_domain_names", paginationReq.ToURLValues(),
+		appsResource, app, privateNetworkDomainNamesResource, paginationReq.ToURLValues(),
 		&domainRes,
 	)
 	if err != nil {

@@ -7,8 +7,6 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-const projectResource = "projects"
-
 type ProjectsService interface {
 	ProjectsList(ctx context.Context) ([]Project, error)
 	ProjectAdd(ctx context.Context, params ProjectAddParams) (Project, error)
@@ -118,7 +116,7 @@ func (c *Client) ProjectDelete(ctx context.Context, projectID string) error {
 
 func (c *Client) ProjectPrivateNetworkGet(ctx context.Context, projectID string) (ProjectPrivateNetwork, error) {
 	var privateNetwork ProjectPrivateNetwork
-	err := c.ScalingoAPI().SubresourceList(ctx, projectResource, projectID, "private_network", nil, &privateNetwork)
+	err := c.ScalingoAPI().SubresourceList(ctx, projectResource, projectID, privateNetworkResource, nil, &privateNetwork)
 	if err != nil {
 		return ProjectPrivateNetwork{}, errors.Wrap(ctx, err, "get project private network")
 	}

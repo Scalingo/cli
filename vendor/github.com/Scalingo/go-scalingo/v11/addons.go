@@ -2,10 +2,11 @@ package scalingo
 
 import (
 	"context"
+	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/Scalingo/go-scalingo/v11/http"
+	httpclient "github.com/Scalingo/go-scalingo/v11/http"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -63,7 +64,7 @@ type AddonLogsURLRes struct {
 
 func (c *Client) AddonsList(ctx context.Context, app string) ([]*Addon, error) {
 	var addonsRes AddonsRes
-	err := c.ScalingoAPI().SubresourceList(ctx, "apps", app, "addons", nil, &addonsRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, appsResource, app, addonsResource, nil, &addonsRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list addons")
 	}
@@ -73,7 +74,7 @@ func (c *Client) AddonsList(ctx context.Context, app string) ([]*Addon, error) {
 func (c *Client) AddonShow(ctx context.Context, app, addonID string) (Addon, error) {
 	var addonRes AddonRes
 
-	err := c.ScalingoAPI().SubresourceGet(ctx, "apps", app, "addons", addonID, nil, &addonRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, appsResource, app, addonsResource, addonID, nil, &addonRes)
 	if err != nil {
 		return Addon{}, errors.Wrap(ctx, err, "show addon")
 	}
@@ -94,7 +95,7 @@ type AddonProvisionParamsWrapper struct {
 
 func (c *Client) AddonProvision(ctx context.Context, app string, params AddonProvisionParams) (AddonRes, error) {
 	var addonRes AddonRes
-	err := c.ScalingoAPI().SubresourceAdd(ctx, "apps", app, "addons", AddonProvisionParamsWrapper{params}, &addonRes)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, appsResource, app, addonsResource, AddonProvisionParamsWrapper{params}, &addonRes)
 	if err != nil {
 		return AddonRes{}, errors.Wrap(ctx, err, "provision addon")
 	}
@@ -102,7 +103,7 @@ func (c *Client) AddonProvision(ctx context.Context, app string, params AddonPro
 }
 
 func (c *Client) AddonDestroy(ctx context.Context, app, addonID string) error {
-	return c.ScalingoAPI().SubresourceDelete(ctx, "apps", app, "addons", addonID)
+	return c.ScalingoAPI().SubresourceDelete(ctx, appsResource, app, addonsResource, addonID)
 }
 
 type AddonUpgradeParams struct {
@@ -116,7 +117,7 @@ type AddonUpgradeParamsWrapper struct {
 func (c *Client) AddonUpgrade(ctx context.Context, app, addonID string, params AddonUpgradeParams) (AddonRes, error) {
 	var addonRes AddonRes
 	err := c.ScalingoAPI().SubresourceUpdate(
-		ctx, "apps", app, "addons", addonID,
+		ctx, appsResource, app, addonsResource, addonID,
 		AddonUpgradeParamsWrapper{Addon: params}, &addonRes,
 	)
 	if err != nil {
@@ -127,8 +128,8 @@ func (c *Client) AddonUpgrade(ctx context.Context, app, addonID string, params A
 
 func (c *Client) AddonToken(ctx context.Context, app, addonID string) (string, error) {
 	var res AddonTokenRes
-	err := c.ScalingoAPI().DoRequest(ctx, &http.APIRequest{
-		Method:   "POST",
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
+		Method:   http.MethodPost,
 		Endpoint: "/apps/" + app + "/addons/" + addonID + "/token",
 	}, &res)
 	if err != nil {
@@ -140,7 +141,7 @@ func (c *Client) AddonToken(ctx context.Context, app, addonID string) (string, e
 
 func (c *Client) AddonLogsURL(ctx context.Context, app, addonID string) (string, error) {
 	var urlRes AddonLogsURLRes
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &http.APIRequest{
+	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
 		Endpoint: "/databases/" + addonID + "/logs",
 	}, &urlRes)
 	if err != nil {
@@ -152,7 +153,7 @@ func (c *Client) AddonLogsURL(ctx context.Context, app, addonID string) (string,
 
 func (c *Client) AddonLogsArchives(ctx context.Context, app, addonID string, page int) (*LogsArchivesResponse, error) {
 	var logsRes LogsArchivesResponse
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &http.APIRequest{
+	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
 		Endpoint: "/databases/" + addonID + "/logs_archives",
 		Params: map[string]string{
 			"page": strconv.FormatInt(int64(page), 10),
