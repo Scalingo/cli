@@ -332,6 +332,7 @@ var (
 		&databaseFirewallManagedRangesCommand,
 
 		// Network
+		&databaseEndpointsListCommand,
 		&databaseNetPeeringsListCommand,
 		&databaseNetPeeringsAddCommand,
 		&databaseNetPeeringsRemoveCommand,

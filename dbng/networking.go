@@ -3,6 +3,7 @@ package dbng
 import (
 	"context"
 	"os"
+	"strconv"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -11,6 +12,39 @@ import (
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
+
+func DatabaseEndpointsList(ctx context.Context, databaseID string) error {
+	c, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return errors.Wrap(ctx, err, "get Scalingo client")
+	}
+
+	endpoints, err := c.Preview().DatabaseEndpointsList(ctx, databaseID)
+	if err != nil {
+		return errors.Wrap(ctx, err, "list database endpoints")
+	}
+
+	if len(endpoints) == 0 {
+		io.Status("No endpoint configured for this database.")
+		return nil
+	}
+
+	t := tablewriter.NewWriter(os.Stdout)
+	t.Header([]string{"ID", "Type", "Hostname", "Port"})
+
+	for _, endpoint := range endpoints {
+		_ = t.Append([]string{
+			endpoint.ID,
+			string(endpoint.Type),
+			endpoint.Hostname,
+			strconv.Itoa(endpoint.Port),
+		})
+	}
+
+	_ = t.Render()
+
+	return nil
+}
 
 func DatabaseNetPeeringsList(ctx context.Context, databaseID string) error {
 	c, err := config.ScalingoClient(ctx)

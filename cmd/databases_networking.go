@@ -13,6 +13,40 @@ import (
 )
 
 var (
+	databaseEndpointsListCommand = cli.Command{
+		Name:      "database-endpoints",
+		Category:  "Databases DR",
+		Usage:     "List endpoints of a database",
+		ArgsUsage: "database-id",
+		Flags:     []cli.Flag{databaseFlag()},
+		Description: CommandDescription{
+			Description: "List all endpoints of a database",
+			Examples: []string{
+				"scalingo database-endpoints my-db-id",
+				"scalingo --database my-db database-endpoints",
+			},
+			SeeAlso: []string{"database-net-peerings", "database-network-configuration"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseID == "" {
+				return cli.ShowCommandHelp(ctx, c, "database-endpoints")
+			}
+			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+
+			err := dbng.DatabaseEndpointsList(ctx, databaseID)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+
+			return nil
+		},
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "database-endpoints")
+			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
+		},
+	}
+
 	databaseNetPeeringsListCommand = cli.Command{
 		Name:      "database-net-peerings",
 		Category:  "Databases DR",
@@ -25,7 +59,7 @@ var (
 				"scalingo database-net-peerings my-db-id",
 				"scalingo --database my-db database-net-peerings",
 			},
-			SeeAlso: []string{"database-net-peerings-add", "database-net-peerings-remove", "database-network-configuration"},
+			SeeAlso: []string{"database-endpoints", "database-net-peerings-add", "database-net-peerings-remove", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
@@ -66,7 +100,7 @@ var (
 				"scalingo database-net-peerings-add my-db-id --outscale-net-peering-id pcx-123456789",
 				"scalingo --database my-db database-net-peerings-add --outscale-net-peering-id pcx-123456789",
 			},
-			SeeAlso: []string{"database-net-peerings", "database-net-peerings-remove", "database-network-configuration"},
+			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-remove", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
@@ -112,7 +146,7 @@ var (
 				"scalingo database-net-peerings-remove my-db-id np-id",
 				"scalingo --database my-db database-net-peerings-remove np-id",
 			},
-			SeeAlso: []string{"database-net-peerings", "database-net-peerings-add", "database-network-configuration"},
+			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
@@ -147,7 +181,7 @@ var (
 				"scalingo database-network-configuration my-db-id",
 				"scalingo --database my-db database-network-configuration",
 			},
-			SeeAlso: []string{"database-net-peerings", "database-net-peerings-add", "database-net-peerings-remove"},
+			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-net-peerings-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)

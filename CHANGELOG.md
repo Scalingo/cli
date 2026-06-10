@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* feat(dbdr/net-peering) [STORY-3557] Add commands to configure net peerings of DB-DR
+* feat(dbdr/net-peering) Add commands to configure net peerings of DB-DR
 * fix(addons): parse `maintenance-window-hour` as an int
 * feat(session): remove region cache on logout
 * feat: add JSON output for the `apps` command
