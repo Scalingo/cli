@@ -317,7 +317,7 @@ var (
 	}
 
 	regionalPreviewCommands = []*cli.Command{
-		// Databases next generation
+		// Databases DR (Dedicated Resources)
 		&databasesListCommand,
 		&databaseInfoCommand,
 		&databaseListPlansCommand,
