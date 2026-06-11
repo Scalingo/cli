@@ -14,15 +14,13 @@ import (
 
 var (
 	databaseEndpointsListCommand = cli.Command{
-		Name:      "database-endpoints",
-		Category:  "Databases DR",
-		Usage:     "List endpoints of a database",
-		ArgsUsage: "database-id",
-		Flags:     []cli.Flag{databaseFlag()},
+		Name:     "database-endpoints",
+		Category: "Databases DR",
+		Usage:    "List endpoints of a database",
+		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all endpoints of a database",
 			Examples: []string{
-				"scalingo database-endpoints my-db-id",
 				"scalingo --database my-db database-endpoints",
 			},
 			SeeAlso: []string{"database-net-peerings", "database-network-configuration"},
@@ -48,15 +46,13 @@ var (
 	}
 
 	databaseNetPeeringsListCommand = cli.Command{
-		Name:      "database-net-peerings",
-		Category:  "Databases DR",
-		Usage:     "List net peerings of a database",
-		ArgsUsage: "database-id",
-		Flags:     []cli.Flag{databaseFlag()},
+		Name:     "database-net-peerings",
+		Category: "Databases DR",
+		Usage:    "List net peerings of a database",
+		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all net peerings of a database",
 			Examples: []string{
-				"scalingo database-net-peerings my-db-id",
 				"scalingo --database my-db database-net-peerings",
 			},
 			SeeAlso: []string{"database-endpoints", "database-net-peerings-add", "database-net-peerings-remove", "database-network-configuration"},
@@ -82,10 +78,9 @@ var (
 	}
 
 	databaseNetPeeringsAddCommand = cli.Command{
-		Name:      "database-net-peerings-add",
-		Category:  "Databases DR",
-		Usage:     "Add a net peering to a database",
-		ArgsUsage: "database-id",
+		Name:     "database-net-peerings-add",
+		Category: "Databases DR",
+		Usage:    "Add a net peering to a database",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.StringFlag{
@@ -97,7 +92,6 @@ var (
 		Description: CommandDescription{
 			Description: "Initiate the creation of a net peering for a database",
 			Examples: []string{
-				"scalingo database-net-peerings-add my-db-id --outscale-net-peering-id pcx-123456789",
 				"scalingo --database my-db database-net-peerings-add --outscale-net-peering-id pcx-123456789",
 			},
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-remove", "database-network-configuration"},
@@ -128,10 +122,9 @@ var (
 	}
 
 	databaseNetPeeringsRemoveCommand = cli.Command{
-		Name:      "database-net-peerings-remove",
-		Category:  "Databases DR",
-		Usage:     "Remove a net peering from a database",
-		ArgsUsage: "database-id net-peering-id",
+		Name:     "database-net-peerings-remove",
+		Category: "Databases DR",
+		Usage:    "Remove a net peering from a database",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.StringFlag{
@@ -143,8 +136,7 @@ var (
 		Description: CommandDescription{
 			Description: "Delete an existing net peering from a database",
 			Examples: []string{
-				"scalingo database-net-peerings-remove my-db-id np-id",
-				"scalingo --database my-db database-net-peerings-remove np-id",
+				"scalingo --database my-db database-net-peerings-remove --net-peering np-id",
 			},
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-network-configuration"},
 		}.Render(),
@@ -170,15 +162,13 @@ var (
 	}
 
 	databaseNetworkConfigurationShowCommand = cli.Command{
-		Name:      "database-network-configuration",
-		Category:  "Databases DR",
-		Usage:     "Show network configuration of a database",
-		ArgsUsage: "database-id",
-		Flags:     []cli.Flag{databaseFlag()},
+		Name:     "database-network-configuration",
+		Category: "Databases DR",
+		Usage:    "Show network configuration of a database",
+		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Get network configuration of a database",
 			Examples: []string{
-				"scalingo database-network-configuration my-db-id",
 				"scalingo --database my-db database-network-configuration",
 			},
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-net-peerings-remove"},
