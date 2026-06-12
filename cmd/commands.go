@@ -317,7 +317,7 @@ var (
 	}
 
 	regionalPreviewCommands = []*cli.Command{
-		// Databases next generation
+		// Databases DR (Dedicated Resources)
 		&databasesListCommand,
 		&databaseInfoCommand,
 		&databaseListPlansCommand,
@@ -330,6 +330,13 @@ var (
 		&databaseFirewallRulesAddCommand,
 		&databaseFirewallRulesRemoveCommand,
 		&databaseFirewallManagedRangesCommand,
+
+		// Network
+		&databaseEndpointsListCommand,
+		&databaseNetPeeringsListCommand,
+		&databaseNetPeeringsAddCommand,
+		&databaseNetPeeringsRemoveCommand,
+		&databaseNetworkConfigurationShowCommand,
 	}
 
 	globalCommands = []*cli.Command{

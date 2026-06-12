@@ -17,12 +17,12 @@ import (
 var (
 	databaseFirewallRulesListCommand = cli.Command{
 		Name:      "database-firewall-rules",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "List firewall rules of a database",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "List all firewall rules of a database next generation",
+			Description: "List all firewall rules of a database",
 			Examples: []string{
 				"scalingo database-firewall-rules my-db-id",
 				"scalingo --database my-db database-firewall-rules",
@@ -56,7 +56,7 @@ var (
 
 	databaseFirewallRulesAddCommand = cli.Command{
 		Name:      "database-firewall-rules-add",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "Add a firewall rule to a database",
 		ArgsUsage: "database-id",
 		Flags: []cli.Flag{
@@ -66,7 +66,7 @@ var (
 			&cli.StringFlag{Name: "managed-range", Usage: "Managed range ID"},
 		},
 		Description: CommandDescription{
-			Description: "Add a firewall rule to a database next generation. Either --cidr or --managed-range must be specified, but not both.",
+			Description: "Add a firewall rule to a database. Either --cidr or --managed-range must be specified, but not both.",
 			Examples: []string{
 				"scalingo database-firewall-rules-add my-db-id --cidr 203.0.113.0/24 --label \"Office network\"",
 				"scalingo --database my-db database-firewall-rules-add --managed-range mr-scalingo-osc-fr1",
@@ -133,12 +133,12 @@ var (
 
 	databaseFirewallRulesRemoveCommand = cli.Command{
 		Name:      "database-firewall-rules-remove",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "Remove a firewall rule from a database",
 		ArgsUsage: "database-id rule-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "Remove a firewall rule from a database next generation",
+			Description: "Remove a firewall rule from a database",
 			Examples: []string{
 				"scalingo database-firewall-rules-remove my-db-id rule-id",
 				"scalingo --database my-db database-firewall-rules-remove rule-id",
@@ -194,12 +194,12 @@ var (
 
 	databaseFirewallManagedRangesCommand = cli.Command{
 		Name:      "database-firewall-managed-ranges",
-		Category:  "Databases NG",
+		Category:  "Databases DR",
 		Usage:     "List available managed ranges for a database",
 		ArgsUsage: "database-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "List all available managed ranges for firewall rules of a database next generation",
+			Description: "List all available managed ranges for firewall rules of a database",
 			Examples: []string{
 				"scalingo database-firewall-managed-ranges my-db-id",
 				"scalingo --database my-db database-firewall-managed-ranges",

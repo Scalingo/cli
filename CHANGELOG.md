@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* feat(dbdr/net-peering) Add commands to configure net peerings of DB-DR
 * build(deps): update `github.com/google/go-github` from v47 to v88
 
 ## 1.45.0

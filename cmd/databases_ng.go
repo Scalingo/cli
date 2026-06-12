@@ -117,6 +117,7 @@ var (
 			&cli.StringFlag{Name: "plan", Usage: "Database plan", Required: true},
 			&cli.StringFlag{Name: "project", Usage: "Project ID", Required: false},
 			&cli.BoolFlag{Name: "wait", Usage: "Wait for creation", Required: false},
+			&cli.StringFlag{Name: "ip-range", Usage: "IP Range (min /25) where the database is deployed", Required: false},
 		},
 		Description: CommandDescription{
 			Description: "Create a new database Dedicated Resources",
@@ -129,7 +130,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			appName := c.Args().First()
 			if appName == "" {
-				return cli.ShowCommandHelp(ctx, c, "database-create")
+				return cli.ShowSubcommandHelp(c)
 			}
 
 			params := scalingo.DatabaseCreateParams{
@@ -137,6 +138,7 @@ var (
 				PlanID:          c.String("plan"),
 				ProjectID:       c.String("project"),
 				Name:            appName,
+				IPRange:         c.String("ip-range"),
 			}
 			err := dbng.Create(ctx, params, c.Bool("wait"))
 			if err != nil {
