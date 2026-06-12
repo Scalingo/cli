@@ -20,7 +20,6 @@
 package osfs
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -29,31 +28,6 @@ import (
 	securejoin "github.com/cyphar/filepath-securejoin"
 	"github.com/go-git/go-billy/v5"
 )
-
-var (
-	// ErrBaseDirCannotBeRemoved is returned when removing the BoundOS base dir.
-	ErrBaseDirCannotBeRemoved = errors.New("base dir cannot be removed")
-
-	// ErrBaseDirCannotBeRenamed is returned when renaming the BoundOS base dir.
-	ErrBaseDirCannotBeRenamed = errors.New("base dir cannot be renamed")
-
-	dotPrefixes   = dotPathPrefixes()
-	dotSeparators = dotPathSeparators()
-)
-
-func dotPathPrefixes() []string {
-	if filepath.Separator == '\\' {
-		return []string{"./", ".\\"}
-	}
-	return []string{"./"}
-}
-
-func dotPathSeparators() string {
-	if filepath.Separator == '\\' {
-		return `/\`
-	}
-	return `/`
-}
 
 // BoundOS is a fs implementation based on the OS filesystem which is bound to
 // a base dir.
@@ -80,7 +54,6 @@ func (fs *BoundOS) Create(filename string) (billy.File, error) {
 }
 
 func (fs *BoundOS) OpenFile(filename string, flag int, perm os.FileMode) (billy.File, error) {
-	filename = fs.expandDot(filename)
 	fn, err := fs.abs(filename)
 	if err != nil {
 		return nil, err
@@ -89,7 +62,6 @@ func (fs *BoundOS) OpenFile(filename string, flag int, perm os.FileMode) (billy.
 }
 
 func (fs *BoundOS) ReadDir(path string) ([]os.FileInfo, error) {
-	path = fs.expandDot(path)
 	dir, err := fs.abs(path)
 	if err != nil {
 		return nil, err
@@ -99,12 +71,6 @@ func (fs *BoundOS) ReadDir(path string) ([]os.FileInfo, error) {
 }
 
 func (fs *BoundOS) Rename(from, to string) error {
-	if fs.isBaseDir(from) {
-		return ErrBaseDirCannotBeRenamed
-	}
-	from = fs.expandDot(from)
-	to = fs.expandDot(to)
-
 	f, err := fs.abs(from)
 	if err != nil {
 		return err
@@ -123,7 +89,6 @@ func (fs *BoundOS) Rename(from, to string) error {
 }
 
 func (fs *BoundOS) MkdirAll(path string, perm os.FileMode) error {
-	path = fs.expandDot(path)
 	dir, err := fs.abs(path)
 	if err != nil {
 		return err
@@ -136,7 +101,6 @@ func (fs *BoundOS) Open(filename string) (billy.File, error) {
 }
 
 func (fs *BoundOS) Stat(filename string) (os.FileInfo, error) {
-	filename = fs.expandDot(filename)
 	filename, err := fs.abs(filename)
 	if err != nil {
 		return nil, err
@@ -145,11 +109,6 @@ func (fs *BoundOS) Stat(filename string) (os.FileInfo, error) {
 }
 
 func (fs *BoundOS) Remove(filename string) error {
-	if fs.isBaseDir(filename) {
-		return ErrBaseDirCannotBeRemoved
-	}
-	filename = fs.expandDot(filename)
-
 	fn, err := fs.abs(filename)
 	if err != nil {
 		return err
@@ -163,7 +122,6 @@ func (fs *BoundOS) Remove(filename string) error {
 func (fs *BoundOS) TempFile(dir, prefix string) (billy.File, error) {
 	if dir != "" {
 		var err error
-		dir = fs.expandDot(dir)
 		dir, err = fs.abs(dir)
 		if err != nil {
 			return nil, err
@@ -186,11 +144,6 @@ func (fs *BoundOS) Join(elem ...string) string {
 }
 
 func (fs *BoundOS) RemoveAll(path string) error {
-	if fs.isBaseDir(path) {
-		return ErrBaseDirCannotBeRemoved
-	}
-	path = fs.expandDot(path)
-
 	dir, err := fs.abs(path)
 	if err != nil {
 		return err
@@ -199,7 +152,6 @@ func (fs *BoundOS) RemoveAll(path string) error {
 }
 
 func (fs *BoundOS) Symlink(target, link string) error {
-	link = fs.expandDot(link)
 	ln, err := fs.abs(link)
 	if err != nil {
 		return err
@@ -212,7 +164,6 @@ func (fs *BoundOS) Symlink(target, link string) error {
 }
 
 func (fs *BoundOS) Lstat(filename string) (os.FileInfo, error) {
-	filename = fs.expandDot(filename)
 	filename = filepath.Clean(filename)
 	if !filepath.IsAbs(filename) {
 		filename = filepath.Join(fs.baseDir, filename)
@@ -224,7 +175,6 @@ func (fs *BoundOS) Lstat(filename string) (os.FileInfo, error) {
 }
 
 func (fs *BoundOS) Readlink(link string) (string, error) {
-	link = fs.expandDot(link)
 	if !filepath.IsAbs(link) {
 		link = filepath.Clean(filepath.Join(fs.baseDir, link))
 	}
@@ -235,7 +185,6 @@ func (fs *BoundOS) Readlink(link string) (string, error) {
 }
 
 func (fs *BoundOS) Chmod(path string, mode os.FileMode) error {
-	path = fs.expandDot(path)
 	abspath, err := fs.abs(path)
 	if err != nil {
 		return err
@@ -250,7 +199,7 @@ func (fs *BoundOS) Chroot(path string) (billy.Filesystem, error) {
 	if err != nil {
 		return nil, err
 	}
-	return New(joined, WithBoundOS()), nil
+	return New(joined), nil
 }
 
 // Root returns the current base dir of the billy.Filesystem.
@@ -271,37 +220,6 @@ func (fs *BoundOS) createDir(fullpath string) error {
 	return nil
 }
 
-func (fs *BoundOS) expandDot(path string) string {
-	if path == "." {
-		return fs.baseDir
-	}
-	for _, prefix := range dotPrefixes {
-		if strings.HasPrefix(path, prefix) {
-			path = strings.TrimLeft(strings.TrimPrefix(path, prefix), dotSeparators)
-			if path == "" {
-				return fs.baseDir
-			}
-			return path
-		}
-	}
-	return path
-}
-
-func (fs *BoundOS) isBaseDir(path string) bool {
-	if path == "" || filepath.Clean(path) == "." {
-		return true
-	}
-	path = fs.expandDot(path)
-	if filepath.Clean(path) == filepath.Clean(fs.baseDir) {
-		return true
-	}
-	abspath, err := fs.abs(path)
-	if err != nil {
-		return false
-	}
-	return filepath.Clean(abspath) == filepath.Clean(fs.baseDir)
-}
-
 // abs transforms filename to an absolute path, taking into account the base dir.
 // Relative paths won't be allowed to ascend the base dir, so `../file` will become
 // `/working-dir/file`.
@@ -315,7 +233,7 @@ func (fs *BoundOS) abs(filename string) (string, error) {
 
 	path, err := securejoin.SecureJoin(fs.baseDir, filename)
 	if err != nil {
-		return "", err
+		return "", nil
 	}
 
 	if fs.deduplicatePath {
@@ -328,12 +246,24 @@ func (fs *BoundOS) abs(filename string) (string, error) {
 	return path, nil
 }
 
+// insideBaseDir checks whether filename is located within
+// the fs.baseDir.
+func (fs *BoundOS) insideBaseDir(filename string) (bool, error) {
+	if filename == fs.baseDir {
+		return true, nil
+	}
+	if !strings.HasPrefix(filename, fs.baseDir+string(filepath.Separator)) {
+		return false, fmt.Errorf("path outside base dir")
+	}
+	return true, nil
+}
+
 // insideBaseDirEval checks whether filename is contained within
 // a dir that is within the fs.baseDir, by first evaluating any symlinks
 // that either filename or fs.baseDir may contain.
 func (fs *BoundOS) insideBaseDirEval(filename string) (bool, error) {
 	// "/" contains all others.
-	if fs.baseDir == "/" || fs.baseDir == filename {
+	if fs.baseDir == "/" {
 		return true, nil
 	}
 	dir, err := filepath.EvalSymlinks(filepath.Dir(filename))
