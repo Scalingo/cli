@@ -3,6 +3,10 @@
 ## To Be Released
 
 * feat(dbdr/net-peering) Add commands to configure net peerings of DB-DR
+* build(deps): update `github.com/google/go-github` from v47 to v88
+
+## 1.45.0
+
 * fix(addons): parse `maintenance-window-hour` as an int
 * feat(session): remove region cache on logout
 * feat: add JSON output for the `apps` command
