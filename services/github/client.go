@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v88/github"
 
 	"github.com/Scalingo/go-scalingo/v11/debug"
 	"github.com/Scalingo/go-utils/errors/v3"
@@ -19,12 +19,17 @@ type client struct {
 	githubRepositoriesService *github.RepositoriesService
 }
 
-func NewClient() Client {
-	return client{
-		githubRepositoriesService: github.NewClient(&http.Client{
-			Timeout: 5 * time.Second,
-		}).Repositories,
+func NewClient(ctx context.Context) (Client, error) {
+	githubClient, err := github.NewClient(github.WithHTTPClient(&http.Client{
+		Timeout: 5 * time.Second,
+	}))
+	if err != nil {
+		return nil, errors.Wrapf(ctx, err, "initialize GitHub HTTP client")
 	}
+
+	return client{
+		githubRepositoriesService: githubClient.Repositories,
+	}, nil
 }
 
 func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error) {

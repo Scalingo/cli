@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* build(deps): update `github.com/google/go-github` from v47 to v88
+
 ## 1.45.0
 
 * fix(addons): parse `maintenance-window-hour` as an int
