@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.44.1
+# Scalingo-CLI v1.45.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -50,7 +50,7 @@ DISABLE_UPDATE_CHECKER=true
 
 ```
 NAME:
-   Scalingo Client - Manage your apps and containers
+   scalingo - Manage your apps and containers
 
 USAGE:
    scalingo [global options] command [command options] [arguments...]
@@ -59,7 +59,7 @@ VERSION:
    1.44.1
 
 AUTHOR:
-   Scalingo Team <hello@scalingo.com>
+   {Scalingo Team hello@scalingo.com}
 
 COMMANDS:
      help  Shows a list of commands or help for one command
@@ -105,9 +105,11 @@ COMMANDS:
      apps-info               Display the application information
      open                    Open app on default web browser
      dashboard               Open app dashboard on default web browser
+     project-set             Set the project of an app
      logs, l                 Get the logs of your applications
      logs-archives, la       Get the logs archives of your applications and databases
      run, r                  Run any command for your app
+     bash                    Run bash for your app
      one-off-stop            Stop a running one-off container
      ps                      Display your application containers
      scale, s                Scale your application instantly
@@ -217,14 +219,14 @@ COMMANDS:
      notification-platforms  List all notification platforms
 
    Private Networks:
-     private-networks-domain-names: List the private network domain names of an application
+     private-networks-domain-names  List the private network domain names of an application
 
    Projects:
-     projects         List the projects that you own
-     projects-add     Create a project
-     projects-update  Update a project
-     projects-remove  Remove a project
-     projects-details Get details about a project
+     projects          List the projects that you own
+     projects-add      Create a project
+     projects-update   Update a project
+     projects-remove   Remove a project
+     projects-details  Get details about a project
 
    Public SSH Keys:
      keys         List your SSH public keys
@@ -239,11 +241,12 @@ COMMANDS:
      stacks-set  Set the runtime stack of an app
 
 GLOBAL OPTIONS:
-   --addon value             ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
-   --app value, -a value     Name of the app (default: "<name>") [$SCALINGO_APP]
-   --remote value, -r value  Name of the remote (default: "scalingo")
-   --region value            Name of the region to use
-   --version, -v             print the version
+   --addon string              ID of the current addon (default: "<addon_id>") [$SCALINGO_ADDON]
+   --app string, -a string     Name of the app (default: "<name>") [$SCALINGO_APP]
+   --remote string, -r string  Name of the remote (default: "scalingo")
+   --region string             Name of the region to use
+   --help, -h                  show help
+   --version, -v               print the version
 ```
 
 ## Development Setup
@@ -276,12 +279,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.44.1
+git checkout -b v1.45.0
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.44.1
+git push --set-upstream origin v1.45.0
 ```
 
 ### New Version Bump
@@ -296,11 +299,11 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-version="1.44.1"
+version="1.45.0"
 
 git switch --create release/${version}
 git add .
-git commit -m "Bump version ${version}"
+git commit --message="Bump version ${version}"
 git push --set-upstream origin release/${version}
 gh pr create --reviewer=Scalingo/team-ist --title "$(git log -1 --pretty=%B)" --fill-first --base master
 ```
@@ -326,6 +329,6 @@ It serves as cache between GitHub and our customers for a more efficient check o
 
 You can now update the [changelog](https://doc.scalingo.com/changelog) and tweet about it!
 
-> [Changelog] CLI - Release of version 1.44.1 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
+> [Changelog] CLI - Release of version 1.45.0 https://cli.scalingo.com - More news at https://changelog.scalingo.com #cli #paas #changelog #bugfix
 
 Add in a tweets thread the changelog of this new version.
