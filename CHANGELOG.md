@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## v1.47.0
+
 * chore(deps/go-scalingo): update go-scalingo to add support of continuousbackup events
 
 ## v1.46.0
