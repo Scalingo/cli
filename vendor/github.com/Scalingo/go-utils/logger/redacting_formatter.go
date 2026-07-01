@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"errors"
 	"regexp"
 
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 

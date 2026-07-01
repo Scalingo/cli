@@ -1,4 +1,4 @@
-# Package `logger` v1.12.1
+# Package `logger` v1.12.2
 
 This package will provide you a generic way to handle logging.
 
