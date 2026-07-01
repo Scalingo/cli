@@ -2,6 +2,10 @@
 
 ## To be Released
 
+## v1.12.2
+
+* refactor: replace `github.com/pkg/errors` with `errors`
+
 ## v1.12.1
 
 * chore(deps): bump github.com/Scalingo/logrus-rollbar from 1.4.3 to 1.4.4

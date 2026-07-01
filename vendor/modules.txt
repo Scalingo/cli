@@ -49,8 +49,8 @@ github.com/Scalingo/go-scalingo/v11/scalingomock
 # github.com/Scalingo/go-utils/errors/v3 v3.2.1
 ## explicit; go 1.24
 github.com/Scalingo/go-utils/errors/v3
-# github.com/Scalingo/go-utils/logger v1.12.1
-## explicit; go 1.25
+# github.com/Scalingo/go-utils/logger v1.12.2
+## explicit; go 1.25.0
 github.com/Scalingo/go-utils/logger
 # github.com/Scalingo/go-utils/pagination v1.2.0
 ## explicit; go 1.24
@@ -77,8 +77,8 @@ github.com/clipperhouse/displaywidth
 # github.com/clipperhouse/uax29/v2 v2.7.0
 ## explicit; go 1.18
 github.com/clipperhouse/uax29/v2/graphemes
-# github.com/cloudflare/circl v1.6.3
-## explicit; go 1.22.0
+# github.com/cloudflare/circl v1.6.4
+## explicit; go 1.24.0
 github.com/cloudflare/circl/dh/x25519
 github.com/cloudflare/circl/dh/x448
 github.com/cloudflare/circl/ecc/goldilocks
@@ -91,7 +91,7 @@ github.com/cloudflare/circl/math/mlsbset
 github.com/cloudflare/circl/sign
 github.com/cloudflare/circl/sign/ed25519
 github.com/cloudflare/circl/sign/ed448
-# github.com/cyphar/filepath-securejoin v0.6.1
+# github.com/cyphar/filepath-securejoin v0.7.0
 ## explicit; go 1.18
 github.com/cyphar/filepath-securejoin
 github.com/cyphar/filepath-securejoin/internal/consts
@@ -216,16 +216,16 @@ github.com/kelseyhightower/envconfig
 # github.com/kevinburke/ssh_config v1.6.0
 ## explicit; go 1.18
 github.com/kevinburke/ssh_config
-# github.com/klauspost/cpuid/v2 v2.3.0
-## explicit; go 1.22
+# github.com/klauspost/cpuid/v2 v2.4.0
+## explicit; go 1.24.0
 github.com/klauspost/cpuid/v2
-# github.com/mattn/go-colorable v0.1.14
+# github.com/mattn/go-colorable v0.1.15
 ## explicit; go 1.18
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.22
 ## explicit; go 1.21
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.23
+# github.com/mattn/go-runewidth v0.0.24
 ## explicit; go 1.20
 github.com/mattn/go-runewidth
 # github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
@@ -281,7 +281,7 @@ github.com/stretchr/testify/require
 # github.com/stvp/rollbar v0.5.1
 ## explicit
 github.com/stvp/rollbar
-# github.com/urfave/cli/v3 v3.9.0
+# github.com/urfave/cli/v3 v3.10.1
 ## explicit; go 1.22
 github.com/urfave/cli/v3
 # github.com/xanzy/ssh-agent v0.3.3
