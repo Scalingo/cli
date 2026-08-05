@@ -20,6 +20,7 @@ type DatabasesService interface {
 	DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error)
 	DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error)
 	DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error)
+	DatabasePITRRestore(ctx context.Context, app, addonID string, restoreTime time.Time) (string, error)
 }
 
 // DatabaseStatus is a string representing the status of a database deployment
@@ -333,4 +334,31 @@ func (c *Client) DatabaseUserResetPassword(ctx context.Context, app, addonID, us
 	}
 
 	return res.DatabaseUser, nil
+}
+
+type databasePITRRestorePayload struct {
+	RestoreTime time.Time `json:"restore_time"`
+}
+
+// databasePITRRestoreRes is the response body of database PITR restore.
+type databasePITRRestoreRes struct {
+	OperationID string `json:"operation_id"`
+}
+
+// DatabasePITRRestore asks for a PiTR restore of the given addon/database.
+// It returns the linked operation ID.
+func (c *Client) DatabasePITRRestore(ctx context.Context, app, addonID string, restoreTime time.Time) (string, error) {
+	var res databasePITRRestoreRes
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPost,
+		Endpoint: "/" + databasesResource + "/" + addonID + "/pitr/restore",
+		Expected: httpclient.Statuses{http.StatusCreated},
+		Params:   databasePITRRestorePayload{RestoreTime: restoreTime},
+	}
+	err := c.DBAPI(app, addonID).DoRequest(ctx, req, &res)
+	if err != nil {
+		return "", err
+	}
+
+	return res.OperationID, nil
 }

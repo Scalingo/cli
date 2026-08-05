@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(databases): Add new method to restore PITR
+
 ## 11.1.1
 
 * feat(events): add database continuous backup events

@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(pitr): add command to restore a database to a specific point in time
+
 ## v1.47.0
 
 * chore(deps/go-scalingo): update go-scalingo to add support of continuousbackup events
