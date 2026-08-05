@@ -251,6 +251,7 @@ var (
 		// DB Access
 		&DbTunnelCommand,
 		&RedisConsoleCommand,
+		&valkeyConsoleCommand,
 		&MongoConsoleCommand,
 		&MySQLConsoleCommand,
 		&PgSQLConsoleCommand,
