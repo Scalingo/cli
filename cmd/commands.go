@@ -269,6 +269,9 @@ var (
 		&databaseMaintenanceList,
 		&databaseMaintenanceInfo,
 
+		// PITR
+		&databasePITRRestore,
+
 		// Backups
 		&backupsListCommand,
 		&backupsCreateCommand,
