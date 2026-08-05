@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/Scalingo/go-utils/errors/v3"
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/db/pitr"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var databasePITRRestore = cli.Command{
