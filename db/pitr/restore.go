@@ -20,7 +20,7 @@ func Restore(ctx context.Context, currentResource, addonName string, restoreTime
 		return errors.Wrap(ctx, err, "restore database")
 	}
 
-	io.Statusf("Database restore operation %s has been created", operationID)
+	io.Statusf("Database restore operation %s has been created\n", operationID)
 
 	return nil
 }

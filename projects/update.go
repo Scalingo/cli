@@ -20,7 +20,7 @@ func Update(ctx context.Context, projectID string, params scalingo.ProjectUpdate
 		return errors.Wrap(ctx, err, "update project")
 	}
 
-	io.Status(project.Name, "has been updated")
+	io.Status(project.Name, "has been updated\n")
 
 	return nil
 }

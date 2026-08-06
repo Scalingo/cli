@@ -20,7 +20,7 @@ func Add(ctx context.Context, params scalingo.ProjectAddParams) error {
 		return errors.Wrap(ctx, err, "add project")
 	}
 
-	io.Status(project.Name, "has been created")
+	io.Status(project.Name, "has been created\n")
 
 	return nil
 }
