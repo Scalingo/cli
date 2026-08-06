@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	AddonProvidersPlansCommand = cli.Command{
+	addonProvidersPlansCommand = cli.Command{
 		Name:      "addons-plans",
 		Category:  "Addons - Global",
 		ArgsUsage: "addon-id",

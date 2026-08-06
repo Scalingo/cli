@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	RedisConsoleCommand = cli.Command{
+	redisConsoleCommand = cli.Command{
 		Name:     "redis-console",
 		Category: "Databases",
 		Usage:    "Run an interactive console with your Redis addon",

@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	CreateCommand = cli.Command{
+	createCommand = cli.Command{
 		Name:      "create",
 		Aliases:   []string{"c"},
 		Category:  "Global",
