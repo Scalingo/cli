@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260804160306-6c1691e7ad1f
+	github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260806084722-668209583641
 	github.com/Scalingo/go-utils/errors/v3 v3.2.1
 	github.com/Scalingo/go-utils/logger v1.12.2
 	github.com/Scalingo/go-utils/pagination v1.2.0

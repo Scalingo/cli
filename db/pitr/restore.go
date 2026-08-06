@@ -15,7 +15,7 @@ func Restore(ctx context.Context, currentResource, addonName string, restoreTime
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
-	operationID, err := c.DatabasePITRRestore(ctx, currentResource, addonName, restoreTime)
+	operationID, err := c.DatabaseRestorePITR(ctx, currentResource, addonName, restoreTime)
 	if err != nil {
 		return errors.Wrap(ctx, err, "restore database")
 	}

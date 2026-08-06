@@ -755,19 +755,19 @@ func (mr *MockAPIMockRecorder) DatabaseListMaintenance(ctx, app, addonID, pagina
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseListMaintenance", reflect.TypeOf((*MockAPI)(nil).DatabaseListMaintenance), ctx, app, addonID, paginationReq)
 }
 
-// DatabasePITRRestore mocks base method.
-func (m *MockAPI) DatabasePITRRestore(ctx context.Context, app, addonID string, restoreTime time.Time) (string, error) {
+// DatabaseRestorePITR mocks base method.
+func (m *MockAPI) DatabaseRestorePITR(ctx context.Context, app, addonID string, restoreTime time.Time) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabasePITRRestore", ctx, app, addonID, restoreTime)
+	ret := m.ctrl.Call(m, "DatabaseRestorePITR", ctx, app, addonID, restoreTime)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// DatabasePITRRestore indicates an expected call of DatabasePITRRestore.
-func (mr *MockAPIMockRecorder) DatabasePITRRestore(ctx, app, addonID, restoreTime any) *gomock.Call {
+// DatabaseRestorePITR indicates an expected call of DatabaseRestorePITR.
+func (mr *MockAPIMockRecorder) DatabaseRestorePITR(ctx, app, addonID, restoreTime any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabasePITRRestore", reflect.TypeOf((*MockAPI)(nil).DatabasePITRRestore), ctx, app, addonID, restoreTime)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseRestorePITR", reflect.TypeOf((*MockAPI)(nil).DatabaseRestorePITR), ctx, app, addonID, restoreTime)
 }
 
 // DatabaseShow mocks base method.
