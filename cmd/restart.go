@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	RestartCommand = cli.Command{
+	restartCommand = cli.Command{
 		Name:     "restart",
 		Category: "App Management",
 		Usage:    "Restart processes of your app",

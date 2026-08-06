@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	DomainsListCommand = cli.Command{
+	domainsListCommand = cli.Command{
 		Name:     "domains",
 		Category: "Custom Domains",
 		Flags:    []cli.Flag{&appFlag},
@@ -47,7 +47,7 @@ var (
 		},
 	}
 
-	DomainsAddCommand = cli.Command{
+	domainsAddCommand = cli.Command{
 		Name:      "domains-add",
 		Category:  "Custom Domains",
 		Usage:     "Add a custom domain to an application",
@@ -106,7 +106,7 @@ var (
 		},
 	}
 
-	DomainsRemoveCommand = cli.Command{
+	domainsRemoveCommand = cli.Command{
 		Name:      "domains-remove",
 		Category:  "Custom Domains",
 		Flags:     []cli.Flag{&appFlag},
@@ -140,7 +140,7 @@ var (
 	}
 
 	// TODO: Split the two operations (enable/disable) into two subcommands
-	DomainsSSLCommand = cli.Command{
+	domainsSSLCommand = cli.Command{
 		Name:      "domains-ssl",
 		Category:  "Custom Domains",
 		Usage:     "Enable or disable SSL for your custom domains",
