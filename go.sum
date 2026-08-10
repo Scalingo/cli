@@ -9,8 +9,8 @@ github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2 h1:+vx7roKuyA63n
 github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2/go.mod h1:HBCaDeC1lPdgDeDbhX8XFpy1jqjK0IBG8W5K+xYqA0w=
 github.com/ProtonMail/go-crypto v1.4.1 h1:9RfcZHqEQUvP8RzecWEUafnZVtEvrBVL9BiF67IQOfM=
 github.com/ProtonMail/go-crypto v1.4.1/go.mod h1:e1OaTyu5SYVrO9gKOEhTc+5UcXtTUa+P3uLudwcgPqo=
-github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260806084722-668209583641 h1:HrpskeN9yVkF5Gm5jH2VL0fAvJsZvDZ0zJt7nsrE5Jw=
-github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260806084722-668209583641/go.mod h1:188AcoLrztIhk3BQPaYHKJesSYXxBwWQvKWQoewKww0=
+github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260810154739-f30bd2e7ef2c h1:5Top2k2FhWxdHEjjS8a15Tj1bxdgpgUataENMfCpOgw=
+github.com/Scalingo/go-scalingo/v11 v11.1.2-0.20260810154739-f30bd2e7ef2c/go.mod h1:188AcoLrztIhk3BQPaYHKJesSYXxBwWQvKWQoewKww0=
 github.com/Scalingo/go-utils/errors/v3 v3.2.1 h1:2w3qUz6MxJa3aqx/biz2G3JquSKsFnfz/E7wrNf/LPc=
 github.com/Scalingo/go-utils/errors/v3 v3.2.1/go.mod h1:jVVNoOdYFjuNkR/BeEZWNWJVvu4jmyLY4udlsQQyBss=
 github.com/Scalingo/go-utils/logger v1.12.2 h1:9vm83/gqjCIy5t+OuNYjkVOUrJtdMy78XNIv8E+OCCU=

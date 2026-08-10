@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* fix(databases): Fix PITR restore return
 * feat(databases): Add new method to restore PITR
 
 ## 11.1.1

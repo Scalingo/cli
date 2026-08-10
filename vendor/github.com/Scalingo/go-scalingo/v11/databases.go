@@ -342,7 +342,7 @@ type databaseRestorePITRPayload struct {
 
 // databaseRestorePITRRes is the response body of database PITR restore.
 type databaseRestorePITRRes struct {
-	OperationID string `json:"operation_id"`
+	Operation Operation `json:"operation"`
 }
 
 // DatabaseRestorePITR asks for a PITR restore of the given addon/database.
@@ -360,5 +360,5 @@ func (c *Client) DatabaseRestorePITR(ctx context.Context, app, addonID string, r
 		return "", err
 	}
 
-	return res.OperationID, nil
+	return res.Operation.ID, nil
 }
