@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* task(deps): update go-scalingo to remove support for the db-api
+
 ## v1.47.0
 
 * chore(deps/go-scalingo): update go-scalingo to add support of continuousbackup events
