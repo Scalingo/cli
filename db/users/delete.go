@@ -26,7 +26,7 @@ func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	databaseUsers, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	databaseUsers, err := c.DatabaseListUsers(ctx, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list the database's users")
 	}
@@ -48,7 +48,7 @@ func DeleteUser(ctx context.Context, app, addonUUID, username string) error {
 		return nil
 	}
 
-	err = c.DatabaseDeleteUser(ctx, app, addonUUID, username)
+	err = c.DatabaseDeleteUser(ctx, addonUUID, username)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "delete given user from database %v", username)
 	}

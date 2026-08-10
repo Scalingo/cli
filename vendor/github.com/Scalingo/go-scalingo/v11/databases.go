@@ -13,14 +13,17 @@ import (
 // DatabasesService is the interface gathering all the methods related to
 // database addon configuration updates
 type DatabasesService interface {
-	DatabaseShow(ctx context.Context, app, addonID string) (Database, error)
-	DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error)
-	DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error)
-	DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error)
-	DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error)
-	DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error)
-	DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error)
+	DatabaseShow(ctx context.Context, addonID string) (Database, error)
+	DatabaseEnableFeature(ctx context.Context, addonID, feature string) (DatabaseEnableFeatureResponse, error)
+	DatabaseDisableFeature(ctx context.Context, addonID, feature string) (DatabaseDisableFeatureResponse, error)
+	DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error)
+	DatabaseUpdateMaintenanceWindow(ctx context.Context, addonID string, params MaintenanceWindowParams) (Database, error)
+	DatabaseListMaintenance(ctx context.Context, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error)
+	DatabaseShowMaintenance(ctx context.Context, addonID, maintenanceID string) (Maintenance, error)
+	DatabaseRestorePITR(ctx context.Context, addonID string, restoreTime time.Time) (string, error)
 }
+
+var _ DatabasesService = (*Client)(nil)
 
 // DatabaseStatus is a string representing the status of a database deployment
 type DatabaseStatus string
@@ -135,9 +138,9 @@ type DatabaseRes struct {
 }
 
 // DatabaseShow returns the Database info of the given app/addonID
-func (c *Client) DatabaseShow(ctx context.Context, app, addonID string) (Database, error) {
+func (c *Client) DatabaseShow(ctx context.Context, addonID string) (Database, error) {
 	var res DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceGet(ctx, databasesResource, addonID, nil, &res)
+	err := c.ScalingoAPI().ResourceGet(ctx, databasesResource, addonID, nil, &res)
 	if err != nil {
 		return Database{}, errors.Wrapf(ctx, err, "get the database")
 	}
@@ -153,9 +156,9 @@ type DatabaseUpdatePeriodicBackupsConfigParams struct {
 
 // DatabaseUpdatePeriodicBackupsConfig updates the configuration of periodic
 // backups for a given database addon
-func (c *Client) DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error) {
+func (c *Client) DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, addonID string, params DatabaseUpdatePeriodicBackupsConfigParams) (Database, error) {
 	var dbRes DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, databasesResource, addonID, map[string]DatabaseUpdatePeriodicBackupsConfigParams{
+	err := c.ScalingoAPI().ResourceUpdate(ctx, databasesResource, addonID, map[string]DatabaseUpdatePeriodicBackupsConfigParams{
 		"database": params,
 	}, &dbRes)
 	if err != nil {
@@ -178,7 +181,7 @@ const (
 	DatabaseFeatureStatusActivated DatabaseFeatureStatus = "ACTIVATED"
 	// DatabaseFeatureStatusPending is set when the feature is being enabled
 	DatabaseFeatureStatusPending DatabaseFeatureStatus = "PENDING"
-	// DatabaseFeatureStatusFailed is set when the feature failed to get enabeld
+	// DatabaseFeatureStatusFailed is set when the feature failed to get enabled
 	DatabaseFeatureStatusFailed DatabaseFeatureStatus = "FAILED"
 )
 
@@ -190,7 +193,7 @@ type DatabaseEnableFeatureResponse struct {
 }
 
 // DatabaseEnableFeature enable a feature on a given database addon.
-func (c *Client) DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (DatabaseEnableFeatureResponse, error) {
+func (c *Client) DatabaseEnableFeature(ctx context.Context, addonID, feature string) (DatabaseEnableFeatureResponse, error) {
 	payload := DatabaseEnableFeatureParams{
 		Feature: DatabaseFeature{
 			Name: feature,
@@ -198,7 +201,7 @@ func (c *Client) DatabaseEnableFeature(ctx context.Context, app, addonID, featur
 	}
 
 	res := DatabaseEnableFeatureResponse{}
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
 		Method:   http.MethodPost,
 		Endpoint: "/" + databasesResource + "/" + addonID + "/features",
 		Expected: httpclient.Statuses{http.StatusOK},
@@ -218,9 +221,9 @@ type DatabaseDisableFeatureResponse struct {
 }
 
 // DatabaseDisableFeature disables a feature on a given database addon
-func (c *Client) DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (DatabaseDisableFeatureResponse, error) {
+func (c *Client) DatabaseDisableFeature(ctx context.Context, addonID, feature string) (DatabaseDisableFeatureResponse, error) {
 	res := DatabaseDisableFeatureResponse{}
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
 		Method:   http.MethodDelete,
 		Endpoint: "/" + databasesResource + "/" + addonID + "/features",
 		Expected: httpclient.Statuses{http.StatusOK},
@@ -264,12 +267,12 @@ type DatabaseUserResponse struct {
 }
 
 // DatabaseCreateUser creates an user to the given database addon
-func (c *Client) DatabaseCreateUser(ctx context.Context, app, addonID string, user DatabaseCreateUserParam) (DatabaseUser, error) {
+func (c *Client) DatabaseCreateUser(ctx context.Context, addonID string, user DatabaseCreateUserParam) (DatabaseUser, error) {
 	res := DatabaseUserResponse{}
 	payload := databaseCreateUserPayload{
 		DatabaseUser: user,
 	}
-	err := c.DBAPI(app, addonID).SubresourceAdd(ctx, databasesResource, addonID, usersResource, payload, &res)
+	err := c.ScalingoAPI().SubresourceAdd(ctx, databasesResource, addonID, usersResource, payload, &res)
 	if err != nil {
 		return res.DatabaseUser, errors.Wrapf(ctx, err, "create a user on database %s", addonID)
 	}
@@ -287,12 +290,12 @@ type databaseUpdateUserPayload struct {
 }
 
 // DatabaseUpdateUser updates a user to the given database addon
-func (c *Client) DatabaseUpdateUser(ctx context.Context, app, addonID, username string, databaseUserParams DatabaseUpdateUserParam) (DatabaseUser, error) {
+func (c *Client) DatabaseUpdateUser(ctx context.Context, addonID, username string, databaseUserParams DatabaseUpdateUserParam) (DatabaseUser, error) {
 	res := DatabaseUserResponse{}
 	payload := databaseUpdateUserPayload{
 		DatabaseUser: databaseUserParams,
 	}
-	err := c.DBAPI(app, addonID).SubresourceUpdate(ctx, databasesResource, addonID, usersResource, username, payload, &res)
+	err := c.ScalingoAPI().SubresourceUpdate(ctx, databasesResource, addonID, usersResource, username, payload, &res)
 	if err != nil {
 		return res.DatabaseUser, errors.Wrapf(ctx, err, "update a user on database %s", addonID)
 	}
@@ -305,9 +308,9 @@ type DatabaseUsersResponse struct {
 }
 
 // DatabaseListUsers list the users of the given database addon
-func (c *Client) DatabaseListUsers(ctx context.Context, app, addonID string) ([]DatabaseUser, error) {
+func (c *Client) DatabaseListUsers(ctx context.Context, addonID string) ([]DatabaseUser, error) {
 	res := DatabaseUsersResponse{}
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, databasesResource, addonID, usersResource, nil, &res)
+	err := c.ScalingoAPI().SubresourceList(ctx, databasesResource, addonID, usersResource, nil, &res)
 	if err != nil {
 		return res.DatabaseUsers, errors.Wrap(ctx, err, "get database list of users")
 	}
@@ -315,8 +318,8 @@ func (c *Client) DatabaseListUsers(ctx context.Context, app, addonID string) ([]
 }
 
 // DatabaseDeleteUser delete an user from the given database addon
-func (c *Client) DatabaseDeleteUser(ctx context.Context, app, addonID, userName string) error {
-	return c.DBAPI(app, addonID).SubresourceDelete(ctx, databasesResource, addonID, usersResource, userName)
+func (c *Client) DatabaseDeleteUser(ctx context.Context, addonID, userName string) error {
+	return c.ScalingoAPI().SubresourceDelete(ctx, databasesResource, addonID, usersResource, userName)
 }
 
 // DatabaseUserResetPassword resets the password for a user for given database addon
@@ -327,10 +330,37 @@ func (c *Client) DatabaseUserResetPassword(ctx context.Context, app, addonID, us
 		Endpoint: "/" + databasesResource + "/" + addonID + "/" + usersResource + "/" + username + "/reset_password",
 		Expected: httpclient.Statuses{http.StatusOK},
 	}
-	err := c.DBAPI(app, addonID).DoRequest(ctx, req, &res)
+	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
 	if err != nil {
 		return DatabaseUser{}, err
 	}
 
 	return res.DatabaseUser, nil
+}
+
+type databaseRestorePITRPayload struct {
+	RestoreTime time.Time `json:"restore_time"`
+}
+
+// databaseRestorePITRRes is the response body of database PITR restore.
+type databaseRestorePITRRes struct {
+	OperationID string `json:"operation_id"`
+}
+
+// DatabaseRestorePITR asks for a PITR restore of the given addon/database.
+// It returns the linked operation ID.
+func (c *Client) DatabaseRestorePITR(ctx context.Context, addonID string, restoreTime time.Time) (string, error) {
+	var res databaseRestorePITRRes
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPost,
+		Endpoint: "/" + databasesResource + "/" + addonID + "/pitr/restore",
+		Expected: httpclient.Statuses{http.StatusCreated},
+		Params:   databaseRestorePITRPayload{RestoreTime: restoreTime},
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, &res)
+	if err != nil {
+		return "", err
+	}
+
+	return res.OperationID, nil
 }

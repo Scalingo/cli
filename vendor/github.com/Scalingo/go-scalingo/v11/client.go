@@ -46,7 +46,6 @@ type API interface {
 
 	ScalingoAPI() httpclient.Client
 	AuthAPI() httpclient.Client
-	DBAPI(app, addon string) httpclient.Client
 }
 
 var _ API = (*Client)(nil)
@@ -95,8 +94,6 @@ type ClientConfig struct {
 	APIPrefix              string
 	AuthEndpoint           string
 	AuthPrefix             string
-	DatabaseAPIEndpoint    string
-	DatabaseAPIPrefix      string
 	APIToken               string
 	Region                 string
 	UserAgent              string
@@ -108,9 +105,8 @@ type ClientConfig struct {
 }
 
 type ExtraHeaders struct {
-	API         http.Header
-	DatabaseAPI http.Header
-	Auth        http.Header
+	API  http.Header
+	Auth http.Header
 }
 
 func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
@@ -143,7 +139,6 @@ func New(ctx context.Context, cfg ClientConfig) (*Client, error) {
 	}
 
 	cfg.APIEndpoint = region.API
-	cfg.DatabaseAPIEndpoint = region.DatabaseAPI
 	return &Client{
 		config: cfg,
 	}, nil
@@ -181,26 +176,6 @@ func (c *Client) ScalingoAPI() httpclient.Client {
 	}
 
 	return client
-}
-
-func (c *Client) DBAPI(app, addon string) httpclient.Client {
-	if c.dbClient != nil {
-		return c.dbClient
-	}
-
-	prefix := "/api"
-	if c.config.DatabaseAPIPrefix != "" {
-		prefix = c.config.DatabaseAPIPrefix
-	}
-	return httpclient.NewClient(httpclient.ClientConfig{
-		UserAgent:      c.config.UserAgent,
-		Timeout:        c.config.Timeout,
-		TLSConfig:      c.config.TLSConfig,
-		APIConfig:      httpclient.APIConfig{Prefix: prefix},
-		TokenGenerator: httpclient.NewAddonTokenGenerator(app, addon, c),
-		Endpoint:       c.config.DatabaseAPIEndpoint,
-		ExtraHeaders:   c.config.ExtraHeaders.DatabaseAPI,
-	})
 }
 
 func (c *Client) AuthAPI() httpclient.Client {

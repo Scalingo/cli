@@ -11,7 +11,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func LogsArchives(ctx context.Context, app, addon string, page int) error {
+func LogsArchives(ctx context.Context, addon string, page int) error {
 	if page < 0 {
 		return errors.New(ctx, "Page must be greather than 0.")
 	}
@@ -24,7 +24,7 @@ func LogsArchives(ctx context.Context, app, addon string, page int) error {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	logsRes, err := c.AddonLogsArchives(ctx, app, addon, page)
+	logsRes, err := c.AddonLogsArchives(ctx, addon, page)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get addon logs archives")
 	}

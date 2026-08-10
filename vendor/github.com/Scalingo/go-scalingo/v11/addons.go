@@ -16,8 +16,8 @@ type AddonsService interface {
 	AddonDestroy(ctx context.Context, app, addonID string) error
 	AddonUpgrade(ctx context.Context, app, addonID string, params AddonUpgradeParams) (AddonRes, error)
 	AddonToken(ctx context.Context, app, addonID string) (string, error)
-	AddonLogsURL(ctx context.Context, app, addonID string) (string, error)
-	AddonLogsArchives(ctx context.Context, app, addonID string, page int) (*LogsArchivesResponse, error)
+	AddonLogsURL(ctx context.Context, addonID string) (string, error)
+	AddonLogsArchives(ctx context.Context, addonID string, page int) (*LogsArchivesResponse, error)
 }
 
 var _ AddonsService = (*Client)(nil)
@@ -139,9 +139,9 @@ func (c *Client) AddonToken(ctx context.Context, app, addonID string) (string, e
 	return res.Addon.Token, nil
 }
 
-func (c *Client) AddonLogsURL(ctx context.Context, app, addonID string) (string, error) {
+func (c *Client) AddonLogsURL(ctx context.Context, addonID string) (string, error) {
 	var urlRes AddonLogsURLRes
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
 		Endpoint: "/databases/" + addonID + "/logs",
 	}, &urlRes)
 	if err != nil {
@@ -151,9 +151,9 @@ func (c *Client) AddonLogsURL(ctx context.Context, app, addonID string) (string,
 	return urlRes.URL, nil
 }
 
-func (c *Client) AddonLogsArchives(ctx context.Context, app, addonID string, page int) (*LogsArchivesResponse, error) {
+func (c *Client) AddonLogsArchives(ctx context.Context, addonID string, page int) (*LogsArchivesResponse, error) {
 	var logsRes LogsArchivesResponse
-	err := c.DBAPI(app, addonID).DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
 		Endpoint: "/databases/" + addonID + "/logs_archives",
 		Params: map[string]string{
 			"page": strconv.FormatInt(int64(page), 10),

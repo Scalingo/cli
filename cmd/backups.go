@@ -27,7 +27,7 @@ var (
 			currentApp := detect.CurrentApp(ctx, c)
 			addonName := addonUUIDFromFlags(ctx, c, currentApp, true)
 
-			err := db.ListBackups(ctx, currentApp, addonName)
+			err := db.ListBackups(ctx, addonName)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

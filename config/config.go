@@ -35,7 +35,6 @@ type Config struct {
 	// Override region configuration
 	ScalingoAPIURL  string `envconfig:"SCALINGO_API_URL"`
 	ScalingoAuthURL string `envconfig:"SCALINGO_AUTH_URL"`
-	ScalingoDbURL   string `envconfig:"SCALINGO_DB_URL"`
 	ScalingoRegion  string `envconfig:"SCALINGO_REGION"`
 	ScalingoSSHHost string `envconfig:"SCALINGO_SSH_HOST"`
 
@@ -59,7 +58,6 @@ var (
 	env = map[string]string{
 		"SCALINGO_AUTH_URL":  "https://auth.scalingo.com",
 		"SCALINGO_API_URL":   "",
-		"SCALINGO_DB_URL":    "",
 		"SCALINGO_SSH_HOST":  "",
 		"SCALINGO_REGION":    "",
 		"API_VERSION":        "1",
@@ -165,9 +163,8 @@ func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.Cl
 func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfigOpts) (scalingo.ClientConfig, error) {
 	c := config.scalingoClientBaseConfig(opts)
 	if !opts.AuthOnly {
-		if config.ScalingoAPIURL != "" && config.ScalingoDbURL != "" {
+		if config.ScalingoAPIURL != "" {
 			c.APIEndpoint = config.ScalingoAPIURL
-			c.DatabaseAPIEndpoint = config.ScalingoDbURL
 		} else {
 			region, err := GetRegion(ctx, config, config.ScalingoRegion, GetRegionOpts{
 				Token: opts.APIToken,
@@ -176,7 +173,6 @@ func (config Config) scalingoClientConfig(ctx context.Context, opts ClientConfig
 				return c, errors.Wrapf(ctx, err, "fail to get region '%v' specifications", config.ScalingoRegion)
 			}
 			c.APIEndpoint = region.API
-			c.DatabaseAPIEndpoint = region.DatabaseAPI
 		}
 	}
 	return c, nil

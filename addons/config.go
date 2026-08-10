@@ -43,7 +43,7 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 
 	// fetching the current database maintenance window allows
 	// to only overload the specified options
-	db, err := c.DatabaseShow(ctx, app, addon)
+	db, err := c.DatabaseShow(ctx, addon)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get database information")
 	}
@@ -72,7 +72,7 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 
 	weekdayUTC, startingHourUTC := utils.ConvertDayAndHourToTimezone(weekdayLocal, startingHourLocal, time.Local, time.UTC)
 
-	_, err = c.DatabaseUpdateMaintenanceWindow(ctx, app, addon, scalingo.MaintenanceWindowParams{
+	_, err = c.DatabaseUpdateMaintenanceWindow(ctx, addon, scalingo.MaintenanceWindowParams{
 		WeekdayUTC:      utils.IntPtr(int(weekdayUTC)),
 		StartingHourUTC: utils.IntPtr(startingHourUTC),
 	})

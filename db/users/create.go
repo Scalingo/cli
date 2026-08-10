@@ -31,7 +31,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
-	l, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	l, err := c.DatabaseListUsers(ctx, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list the database's users")
 	}
@@ -68,7 +68,7 @@ func CreateUser(ctx context.Context, app, addonUUID, username string, readonly b
 		PasswordConfirmation: confirmedPassword,
 		ReadOnly:             readonly,
 	}
-	databaseUsers, err := c.DatabaseCreateUser(ctx, app, addonUUID, user)
+	databaseUsers, err := c.DatabaseCreateUser(ctx, addonUUID, user)
 	if err != nil {
 		return errors.Wrap(ctx, err, "create the given database user")
 	}

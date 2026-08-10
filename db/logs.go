@@ -16,13 +16,13 @@ type LogsOpts struct {
 // Logs displays the addon logs.
 // app may be an app UUID or name.
 // addon may be a addon UUID or an addon type (e.g. MongoDB).
-func Logs(ctx context.Context, app, addonUUID string, opts LogsOpts) error {
+func Logs(ctx context.Context, addonUUID string, opts LogsOpts) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	url, err := c.AddonLogsURL(ctx, app, addonUUID)
+	url, err := c.AddonLogsURL(ctx, addonUUID)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get log URL")
 	}

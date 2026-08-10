@@ -15,13 +15,13 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
+func Info(ctx context.Context, addonUUID, maintenanceID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
-	maintenanceInfo, err := c.DatabaseShowMaintenance(ctx, app, addonUUID, maintenanceID)
+	maintenanceInfo, err := c.DatabaseShowMaintenance(ctx, addonUUID, maintenanceID)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get the maintenance")
 	}
@@ -32,7 +32,7 @@ func Info(ctx context.Context, app, addonUUID, maintenanceID string) error {
 	if maintenanceInfo.StartedAt != nil {
 		startedAtMessage = maintenanceInfo.StartedAt.Local().Format(utils.TimeFormat)
 	} else {
-		database, err := c.DatabaseShow(ctx, app, addonUUID)
+		database, err := c.DatabaseShow(ctx, addonUUID)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "get database information")
 		}

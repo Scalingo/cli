@@ -46,7 +46,7 @@ var (
 			} else {
 				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-				err = db.LogsArchives(ctx, currentResource, addonID, c.Int("p"))
+				err = db.LogsArchives(ctx, addonID, c.Int("p"))
 			}
 
 			if err != nil {

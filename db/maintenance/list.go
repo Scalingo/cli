@@ -14,13 +14,13 @@ import (
 	"github.com/Scalingo/go-utils/pagination"
 )
 
-func List(ctx context.Context, app string, addonName string, paginationReq pagination.Request) error {
+func List(ctx context.Context, addonName string, paginationReq pagination.Request) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
-	maintenances, pagination, err := c.DatabaseListMaintenance(ctx, app, addonName, paginationReq)
+	maintenances, pagination, err := c.DatabaseListMaintenance(ctx, addonName, paginationReq)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "list the database maintenance")
 	}

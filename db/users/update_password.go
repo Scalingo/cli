@@ -31,7 +31,7 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	l, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	l, err := c.DatabaseListUsers(ctx, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list the database's users")
 	}
@@ -67,7 +67,7 @@ func UpdateUserPassword(ctx context.Context, app, addonUUID, username string) er
 			Password:             password,
 			PasswordConfirmation: confirmedPassword,
 		}
-		databaseUser, err = c.DatabaseUpdateUser(ctx, app, addonUUID, username, userUpdateParam)
+		databaseUser, err = c.DatabaseUpdateUser(ctx, addonUUID, username, userUpdateParam)
 		if err != nil {
 			return errors.Wrap(ctx, err, "update password of the given database user")
 		}

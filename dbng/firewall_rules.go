@@ -12,13 +12,13 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func FirewallRulesList(ctx context.Context, databaseID, addonID string) error {
+func FirewallRulesList(ctx context.Context, addonID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	rules, err := c.Preview().FirewallRulesList(ctx, databaseID, addonID)
+	rules, err := c.Preview().FirewallRulesList(ctx, addonID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list firewall rules")
 	}
@@ -55,7 +55,7 @@ func FirewallRulesAdd(ctx context.Context, databaseID, addonID string, params sc
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	rule, err := c.Preview().FirewallRulesCreate(ctx, databaseID, addonID, params)
+	rule, err := c.Preview().FirewallRulesCreate(ctx, addonID, params)
 	if err != nil {
 		return errors.Wrap(ctx, err, "add firewall rule")
 	}
@@ -72,7 +72,7 @@ func FirewallRulesRemove(ctx context.Context, databaseID, addonID, ruleID string
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	err = c.Preview().FirewallRulesDestroy(ctx, databaseID, addonID, ruleID)
+	err = c.Preview().FirewallRulesDestroy(ctx, addonID, ruleID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "remove firewall rule")
 	}
@@ -83,13 +83,13 @@ func FirewallRulesRemove(ctx context.Context, databaseID, addonID, ruleID string
 	return nil
 }
 
-func FirewallManagedRangesList(ctx context.Context, databaseID, addonID string) error {
+func FirewallManagedRangesList(ctx context.Context) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	ranges, err := c.Preview().FirewallRulesGetManagedRanges(ctx, databaseID, addonID)
+	ranges, err := c.Preview().FirewallRulesGetManagedRanges(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list managed ranges")
 	}

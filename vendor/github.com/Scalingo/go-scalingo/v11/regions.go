@@ -27,7 +27,6 @@ type Region struct {
 	SSH         string `json:"ssh"`
 	API         string `json:"api"`
 	Dashboard   string `json:"dashboard"`
-	DatabaseAPI string `json:"database_api"`
 	Default     bool   `json:"default"`
 }
 

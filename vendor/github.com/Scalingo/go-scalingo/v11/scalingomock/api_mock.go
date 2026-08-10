@@ -8,6 +8,7 @@ import (
 	context "context"
 	io "io"
 	reflect "reflect"
+	time "time"
 
 	scalingo "github.com/Scalingo/go-scalingo/v11"
 	http "github.com/Scalingo/go-scalingo/v11/http"
@@ -55,33 +56,33 @@ func (mr *MockAPIMockRecorder) AddonDestroy(ctx, app, addonID any) *gomock.Call 
 }
 
 // AddonLogsArchives mocks base method.
-func (m *MockAPI) AddonLogsArchives(ctx context.Context, app, addonID string, page int) (*scalingo.LogsArchivesResponse, error) {
+func (m *MockAPI) AddonLogsArchives(ctx context.Context, addonID string, page int) (*scalingo.LogsArchivesResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddonLogsArchives", ctx, app, addonID, page)
+	ret := m.ctrl.Call(m, "AddonLogsArchives", ctx, addonID, page)
 	ret0, _ := ret[0].(*scalingo.LogsArchivesResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddonLogsArchives indicates an expected call of AddonLogsArchives.
-func (mr *MockAPIMockRecorder) AddonLogsArchives(ctx, app, addonID, page any) *gomock.Call {
+func (mr *MockAPIMockRecorder) AddonLogsArchives(ctx, addonID, page any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddonLogsArchives", reflect.TypeOf((*MockAPI)(nil).AddonLogsArchives), ctx, app, addonID, page)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddonLogsArchives", reflect.TypeOf((*MockAPI)(nil).AddonLogsArchives), ctx, addonID, page)
 }
 
 // AddonLogsURL mocks base method.
-func (m *MockAPI) AddonLogsURL(ctx context.Context, app, addonID string) (string, error) {
+func (m *MockAPI) AddonLogsURL(ctx context.Context, addonID string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddonLogsURL", ctx, app, addonID)
+	ret := m.ctrl.Call(m, "AddonLogsURL", ctx, addonID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddonLogsURL indicates an expected call of AddonLogsURL.
-func (mr *MockAPIMockRecorder) AddonLogsURL(ctx, app, addonID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) AddonLogsURL(ctx, addonID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddonLogsURL", reflect.TypeOf((*MockAPI)(nil).AddonLogsURL), ctx, app, addonID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddonLogsURL", reflect.TypeOf((*MockAPI)(nil).AddonLogsURL), ctx, addonID)
 }
 
 // AddonProviderPlansList mocks base method.
@@ -532,63 +533,63 @@ func (mr *MockAPIMockRecorder) AutoscalersList(ctx, app any) *gomock.Call {
 }
 
 // BackupCreate mocks base method.
-func (m *MockAPI) BackupCreate(ctx context.Context, app, addonID string) (*scalingo.Backup, error) {
+func (m *MockAPI) BackupCreate(ctx context.Context, addonID string) (*scalingo.Backup, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BackupCreate", ctx, app, addonID)
+	ret := m.ctrl.Call(m, "BackupCreate", ctx, addonID)
 	ret0, _ := ret[0].(*scalingo.Backup)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // BackupCreate indicates an expected call of BackupCreate.
-func (mr *MockAPIMockRecorder) BackupCreate(ctx, app, addonID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) BackupCreate(ctx, addonID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupCreate", reflect.TypeOf((*MockAPI)(nil).BackupCreate), ctx, app, addonID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupCreate", reflect.TypeOf((*MockAPI)(nil).BackupCreate), ctx, addonID)
 }
 
 // BackupDownloadURL mocks base method.
-func (m *MockAPI) BackupDownloadURL(ctx context.Context, app, addonID, backupID string) (string, error) {
+func (m *MockAPI) BackupDownloadURL(ctx context.Context, addonID, backupID string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BackupDownloadURL", ctx, app, addonID, backupID)
+	ret := m.ctrl.Call(m, "BackupDownloadURL", ctx, addonID, backupID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // BackupDownloadURL indicates an expected call of BackupDownloadURL.
-func (mr *MockAPIMockRecorder) BackupDownloadURL(ctx, app, addonID, backupID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) BackupDownloadURL(ctx, addonID, backupID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupDownloadURL", reflect.TypeOf((*MockAPI)(nil).BackupDownloadURL), ctx, app, addonID, backupID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupDownloadURL", reflect.TypeOf((*MockAPI)(nil).BackupDownloadURL), ctx, addonID, backupID)
 }
 
 // BackupList mocks base method.
-func (m *MockAPI) BackupList(ctx context.Context, app, addonID string) ([]scalingo.Backup, error) {
+func (m *MockAPI) BackupList(ctx context.Context, addonID string) ([]scalingo.Backup, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BackupList", ctx, app, addonID)
+	ret := m.ctrl.Call(m, "BackupList", ctx, addonID)
 	ret0, _ := ret[0].([]scalingo.Backup)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // BackupList indicates an expected call of BackupList.
-func (mr *MockAPIMockRecorder) BackupList(ctx, app, addonID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) BackupList(ctx, addonID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupList", reflect.TypeOf((*MockAPI)(nil).BackupList), ctx, app, addonID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupList", reflect.TypeOf((*MockAPI)(nil).BackupList), ctx, addonID)
 }
 
 // BackupShow mocks base method.
-func (m *MockAPI) BackupShow(ctx context.Context, app, addonID, backupID string) (*scalingo.Backup, error) {
+func (m *MockAPI) BackupShow(ctx context.Context, backupID string) (*scalingo.Backup, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BackupShow", ctx, app, addonID, backupID)
+	ret := m.ctrl.Call(m, "BackupShow", ctx, backupID)
 	ret0, _ := ret[0].(*scalingo.Backup)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // BackupShow indicates an expected call of BackupShow.
-func (mr *MockAPIMockRecorder) BackupShow(ctx, app, addonID, backupID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) BackupShow(ctx, backupID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupShow", reflect.TypeOf((*MockAPI)(nil).BackupShow), ctx, app, addonID, backupID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BackupShow", reflect.TypeOf((*MockAPI)(nil).BackupShow), ctx, backupID)
 }
 
 // CollaboratorAdd mocks base method.
@@ -694,54 +695,40 @@ func (mr *MockAPIMockRecorder) CronTasksGet(ctx, app any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CronTasksGet", reflect.TypeOf((*MockAPI)(nil).CronTasksGet), ctx, app)
 }
 
-// DBAPI mocks base method.
-func (m *MockAPI) DBAPI(app, addon string) http.Client {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DBAPI", app, addon)
-	ret0, _ := ret[0].(http.Client)
-	return ret0
-}
-
-// DBAPI indicates an expected call of DBAPI.
-func (mr *MockAPIMockRecorder) DBAPI(app, addon any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DBAPI", reflect.TypeOf((*MockAPI)(nil).DBAPI), app, addon)
-}
-
 // DatabaseDisableFeature mocks base method.
-func (m *MockAPI) DatabaseDisableFeature(ctx context.Context, app, addonID, feature string) (scalingo.DatabaseDisableFeatureResponse, error) {
+func (m *MockAPI) DatabaseDisableFeature(ctx context.Context, addonID, feature string) (scalingo.DatabaseDisableFeatureResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseDisableFeature", ctx, app, addonID, feature)
+	ret := m.ctrl.Call(m, "DatabaseDisableFeature", ctx, addonID, feature)
 	ret0, _ := ret[0].(scalingo.DatabaseDisableFeatureResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseDisableFeature indicates an expected call of DatabaseDisableFeature.
-func (mr *MockAPIMockRecorder) DatabaseDisableFeature(ctx, app, addonID, feature any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseDisableFeature(ctx, addonID, feature any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseDisableFeature", reflect.TypeOf((*MockAPI)(nil).DatabaseDisableFeature), ctx, app, addonID, feature)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseDisableFeature", reflect.TypeOf((*MockAPI)(nil).DatabaseDisableFeature), ctx, addonID, feature)
 }
 
 // DatabaseEnableFeature mocks base method.
-func (m *MockAPI) DatabaseEnableFeature(ctx context.Context, app, addonID, feature string) (scalingo.DatabaseEnableFeatureResponse, error) {
+func (m *MockAPI) DatabaseEnableFeature(ctx context.Context, addonID, feature string) (scalingo.DatabaseEnableFeatureResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseEnableFeature", ctx, app, addonID, feature)
+	ret := m.ctrl.Call(m, "DatabaseEnableFeature", ctx, addonID, feature)
 	ret0, _ := ret[0].(scalingo.DatabaseEnableFeatureResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseEnableFeature indicates an expected call of DatabaseEnableFeature.
-func (mr *MockAPIMockRecorder) DatabaseEnableFeature(ctx, app, addonID, feature any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseEnableFeature(ctx, addonID, feature any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseEnableFeature", reflect.TypeOf((*MockAPI)(nil).DatabaseEnableFeature), ctx, app, addonID, feature)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseEnableFeature", reflect.TypeOf((*MockAPI)(nil).DatabaseEnableFeature), ctx, addonID, feature)
 }
 
 // DatabaseListMaintenance mocks base method.
-func (m *MockAPI) DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*scalingo.Maintenance, pagination.Meta, error) {
+func (m *MockAPI) DatabaseListMaintenance(ctx context.Context, addonID string, paginationReq pagination.Request) ([]*scalingo.Maintenance, pagination.Meta, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseListMaintenance", ctx, app, addonID, paginationReq)
+	ret := m.ctrl.Call(m, "DatabaseListMaintenance", ctx, addonID, paginationReq)
 	ret0, _ := ret[0].([]*scalingo.Maintenance)
 	ret1, _ := ret[1].(pagination.Meta)
 	ret2, _ := ret[2].(error)
@@ -749,69 +736,84 @@ func (m *MockAPI) DatabaseListMaintenance(ctx context.Context, app, addonID stri
 }
 
 // DatabaseListMaintenance indicates an expected call of DatabaseListMaintenance.
-func (mr *MockAPIMockRecorder) DatabaseListMaintenance(ctx, app, addonID, paginationReq any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseListMaintenance(ctx, addonID, paginationReq any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseListMaintenance", reflect.TypeOf((*MockAPI)(nil).DatabaseListMaintenance), ctx, app, addonID, paginationReq)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseListMaintenance", reflect.TypeOf((*MockAPI)(nil).DatabaseListMaintenance), ctx, addonID, paginationReq)
+}
+
+// DatabaseRestorePITR mocks base method.
+func (m *MockAPI) DatabaseRestorePITR(ctx context.Context, addonID string, restoreTime time.Time) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DatabaseRestorePITR", ctx, addonID, restoreTime)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DatabaseRestorePITR indicates an expected call of DatabaseRestorePITR.
+func (mr *MockAPIMockRecorder) DatabaseRestorePITR(ctx, addonID, restoreTime any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseRestorePITR", reflect.TypeOf((*MockAPI)(nil).DatabaseRestorePITR), ctx, addonID, restoreTime)
 }
 
 // DatabaseShow mocks base method.
-func (m *MockAPI) DatabaseShow(ctx context.Context, app, addonID string) (scalingo.Database, error) {
+func (m *MockAPI) DatabaseShow(ctx context.Context, addonID string) (scalingo.Database, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseShow", ctx, app, addonID)
+	ret := m.ctrl.Call(m, "DatabaseShow", ctx, addonID)
 	ret0, _ := ret[0].(scalingo.Database)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseShow indicates an expected call of DatabaseShow.
-func (mr *MockAPIMockRecorder) DatabaseShow(ctx, app, addonID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseShow(ctx, addonID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseShow", reflect.TypeOf((*MockAPI)(nil).DatabaseShow), ctx, app, addonID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseShow", reflect.TypeOf((*MockAPI)(nil).DatabaseShow), ctx, addonID)
 }
 
 // DatabaseShowMaintenance mocks base method.
-func (m *MockAPI) DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (scalingo.Maintenance, error) {
+func (m *MockAPI) DatabaseShowMaintenance(ctx context.Context, addonID, maintenanceID string) (scalingo.Maintenance, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseShowMaintenance", ctx, app, addonID, maintenanceID)
+	ret := m.ctrl.Call(m, "DatabaseShowMaintenance", ctx, addonID, maintenanceID)
 	ret0, _ := ret[0].(scalingo.Maintenance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseShowMaintenance indicates an expected call of DatabaseShowMaintenance.
-func (mr *MockAPIMockRecorder) DatabaseShowMaintenance(ctx, app, addonID, maintenanceID any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseShowMaintenance(ctx, addonID, maintenanceID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseShowMaintenance", reflect.TypeOf((*MockAPI)(nil).DatabaseShowMaintenance), ctx, app, addonID, maintenanceID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseShowMaintenance", reflect.TypeOf((*MockAPI)(nil).DatabaseShowMaintenance), ctx, addonID, maintenanceID)
 }
 
 // DatabaseUpdateMaintenanceWindow mocks base method.
-func (m *MockAPI) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params scalingo.MaintenanceWindowParams) (scalingo.Database, error) {
+func (m *MockAPI) DatabaseUpdateMaintenanceWindow(ctx context.Context, addonID string, params scalingo.MaintenanceWindowParams) (scalingo.Database, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseUpdateMaintenanceWindow", ctx, app, addonID, params)
+	ret := m.ctrl.Call(m, "DatabaseUpdateMaintenanceWindow", ctx, addonID, params)
 	ret0, _ := ret[0].(scalingo.Database)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseUpdateMaintenanceWindow indicates an expected call of DatabaseUpdateMaintenanceWindow.
-func (mr *MockAPIMockRecorder) DatabaseUpdateMaintenanceWindow(ctx, app, addonID, params any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseUpdateMaintenanceWindow(ctx, addonID, params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseUpdateMaintenanceWindow", reflect.TypeOf((*MockAPI)(nil).DatabaseUpdateMaintenanceWindow), ctx, app, addonID, params)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseUpdateMaintenanceWindow", reflect.TypeOf((*MockAPI)(nil).DatabaseUpdateMaintenanceWindow), ctx, addonID, params)
 }
 
 // DatabaseUpdatePeriodicBackupsConfig mocks base method.
-func (m *MockAPI) DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, app, addonID string, params scalingo.DatabaseUpdatePeriodicBackupsConfigParams) (scalingo.Database, error) {
+func (m *MockAPI) DatabaseUpdatePeriodicBackupsConfig(ctx context.Context, addonID string, params scalingo.DatabaseUpdatePeriodicBackupsConfigParams) (scalingo.Database, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DatabaseUpdatePeriodicBackupsConfig", ctx, app, addonID, params)
+	ret := m.ctrl.Call(m, "DatabaseUpdatePeriodicBackupsConfig", ctx, addonID, params)
 	ret0, _ := ret[0].(scalingo.Database)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DatabaseUpdatePeriodicBackupsConfig indicates an expected call of DatabaseUpdatePeriodicBackupsConfig.
-func (mr *MockAPIMockRecorder) DatabaseUpdatePeriodicBackupsConfig(ctx, app, addonID, params any) *gomock.Call {
+func (mr *MockAPIMockRecorder) DatabaseUpdatePeriodicBackupsConfig(ctx, addonID, params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseUpdatePeriodicBackupsConfig", reflect.TypeOf((*MockAPI)(nil).DatabaseUpdatePeriodicBackupsConfig), ctx, app, addonID, params)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseUpdatePeriodicBackupsConfig", reflect.TypeOf((*MockAPI)(nil).DatabaseUpdatePeriodicBackupsConfig), ctx, addonID, params)
 }
 
 // Deployment mocks base method.

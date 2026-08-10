@@ -58,7 +58,7 @@ func Info(ctx context.Context, app, addon string) error {
 }
 
 func getDatabaseInfo(ctx context.Context, c *scalingo.Client, app, addon string) ([][]string, error) {
-	dbInfo, err := c.DatabaseShow(ctx, app, addon)
+	dbInfo, err := c.DatabaseShow(ctx, addon)
 	if err != nil {
 		return [][]string{}, errors.Wrap(ctx, err, "get database information")
 	}

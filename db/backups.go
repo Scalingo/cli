@@ -14,12 +14,12 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func ListBackups(ctx context.Context, app, addon string) error {
+func ListBackups(ctx context.Context, addon string) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
-	backups, err := client.BackupList(ctx, app, addon)
+	backups, err := client.BackupList(ctx, addon)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to list backups")
 	}

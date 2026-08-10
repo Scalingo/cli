@@ -52,7 +52,7 @@ var (
 			} else {
 				utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
 
-				err = db.Logs(ctx, currentResource, addonID, db.LogsOpts{
+				err = db.Logs(ctx, addonID, db.LogsOpts{
 					Follow: c.Bool("f"),
 					Count:  c.Int("n"),
 				})

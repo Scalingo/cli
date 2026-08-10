@@ -7,6 +7,7 @@ package scalingomock
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	scalingo "github.com/Scalingo/go-scalingo/v11"
 	pagination "github.com/Scalingo/go-utils/pagination"
@@ -81,6 +82,21 @@ func (m *MockDatabasesService) DatabaseListMaintenance(ctx context.Context, app,
 func (mr *MockDatabasesServiceMockRecorder) DatabaseListMaintenance(ctx, app, addonID, paginationReq any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseListMaintenance", reflect.TypeOf((*MockDatabasesService)(nil).DatabaseListMaintenance), ctx, app, addonID, paginationReq)
+}
+
+// DatabaseRestorePITR mocks base method.
+func (m *MockDatabasesService) DatabaseRestorePITR(ctx context.Context, app, addonID string, restoreTime time.Time) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DatabaseRestorePITR", ctx, app, addonID, restoreTime)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DatabaseRestorePITR indicates an expected call of DatabaseRestorePITR.
+func (mr *MockDatabasesServiceMockRecorder) DatabaseRestorePITR(ctx, app, addonID, restoreTime any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseRestorePITR", reflect.TypeOf((*MockDatabasesService)(nil).DatabaseRestorePITR), ctx, app, addonID, restoreTime)
 }
 
 // DatabaseShow mocks base method.

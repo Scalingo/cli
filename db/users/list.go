@@ -28,7 +28,7 @@ func List(ctx context.Context, app, addonUUID string) error {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	databaseUsers, err := c.DatabaseListUsers(ctx, app, addonUUID)
+	databaseUsers, err := c.DatabaseListUsers(ctx, addonUUID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list the database's users")
 	}

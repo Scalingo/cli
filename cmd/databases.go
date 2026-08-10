@@ -46,7 +46,7 @@ var (
 				errorQuit(ctx, errors.New(ctx, "feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.EnableFeature(ctx, c, currentResource, addonName, feature)
+			err := db.EnableFeature(ctx, c, addonName, feature)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -77,7 +77,7 @@ var (
 				errorQuit(ctx, errors.New(ctx, "feature argument should be specified"))
 			}
 			feature := c.Args().First()
-			err := db.DisableFeature(ctx, currentResource, addonName, feature)
+			err := db.DisableFeature(ctx, addonName, feature)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -140,7 +140,7 @@ var (
 			}
 
 			if disable || scheduleAtFlag != "" {
-				err := db.BackupsConfiguration(ctx, currentResource, addonName, params)
+				err := db.BackupsConfiguration(ctx, addonName, params)
 				if err != nil {
 					errorQuit(ctx, err)
 				}

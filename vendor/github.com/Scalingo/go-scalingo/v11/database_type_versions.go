@@ -40,9 +40,9 @@ type DatabaseTypeVersionShowResponse struct {
 	DatabaseTypeVersion DatabaseTypeVersion `json:"database_type_version"`
 }
 
-func (c Client) DatabaseTypeVersion(ctx context.Context, appID, addonID, versionID string) (DatabaseTypeVersion, error) {
+func (c Client) DatabaseTypeVersion(ctx context.Context, versionID string) (DatabaseTypeVersion, error) {
 	var res DatabaseTypeVersionShowResponse
-	err := c.DBAPI(appID, addonID).DoRequest(ctx, &httpclient.APIRequest{
+	err := c.ScalingoAPI().DoRequest(ctx, &httpclient.APIRequest{
 		Method:   http.MethodGet,
 		Endpoint: "/database_type_versions/" + versionID,
 		Expected: httpclient.Statuses{http.StatusOK},

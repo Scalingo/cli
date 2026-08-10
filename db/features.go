@@ -15,7 +15,7 @@ import (
 
 // EnableFeature is the command handler to enable a database feature on a given
 // database addon, like 'force-ssl' or 'public-availability'
-func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature string) error {
+func EnableFeature(ctx context.Context, c *cli.Command, addon, feature string) error {
 	spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spinner.Suffix = " Enabling database feature"
 	spinner.Start()
@@ -26,7 +26,7 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	res, err := client.DatabaseEnableFeature(ctx, app, addon, feature)
+	res, err := client.DatabaseEnableFeature(ctx, addon, feature)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to enable feature '%v'", feature)
 	}
@@ -45,7 +45,7 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 
 	if res.Status == scalingo.DatabaseFeatureStatusPending && c.Bool("synchronous") {
 		io.Infof("Waiting for operation completion...")
-		err = waitFeatureUntilActivated(ctx, client, app, addon, feature)
+		err = waitFeatureUntilActivated(ctx, client, addon, feature)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "fail to wait for feature '%v' to be enabled", feature)
 		}
@@ -54,11 +54,11 @@ func EnableFeature(ctx context.Context, c *cli.Command, app, addon, feature stri
 	return nil
 }
 
-func waitFeatureUntilActivated(ctx context.Context, client *scalingo.Client, app, addon, feature string) error {
+func waitFeatureUntilActivated(ctx context.Context, client *scalingo.Client, addon, feature string) error {
 	ticker := time.NewTicker(3 * time.Second)
 	defer ticker.Stop()
 	for range ticker.C {
-		db, err := client.DatabaseShow(ctx, app, addon)
+		db, err := client.DatabaseShow(ctx, addon)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "fail to refresh database metadata")
 		}
@@ -80,7 +80,7 @@ func waitFeatureUntilActivated(ctx context.Context, client *scalingo.Client, app
 
 // DisableFeature is the command handler to disable a database feature on a
 // database addon like 'force-ssl' or 'public-availability'
-func DisableFeature(ctx context.Context, app, addon, feature string) error {
+func DisableFeature(ctx context.Context, addon, feature string) error {
 	spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spinner.Suffix = " Disabling database feature"
 	spinner.Start()
@@ -91,7 +91,7 @@ func DisableFeature(ctx context.Context, app, addon, feature string) error {
 		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
 	}
 
-	_, err = client.DatabaseDisableFeature(ctx, app, addon, feature)
+	_, err = client.DatabaseDisableFeature(ctx, addon, feature)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to disable feature '%v'", feature)
 	}

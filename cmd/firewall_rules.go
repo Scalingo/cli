@@ -41,7 +41,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesList(ctx, databaseName, addonID)
+			err = dbng.FirewallRulesList(ctx, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -193,32 +193,18 @@ var (
 	}
 
 	databaseFirewallManagedRangesCommand = cli.Command{
-		Name:      "database-firewall-managed-ranges",
-		Category:  "Databases DR",
-		Usage:     "List available managed ranges for a database",
-		ArgsUsage: "database-id",
-		Flags:     []cli.Flag{databaseFlag()},
+		Name:     "database-firewall-managed-ranges",
+		Category: "Databases DR",
+		Usage:    "List available managed ranges",
 		Description: CommandDescription{
-			Description: "List all available managed ranges for firewall rules of a database",
+			Description: "List all available managed ranges for firewall rules",
 			Examples: []string{
-				"scalingo database-firewall-managed-ranges my-db-id",
-				"scalingo --database my-db database-firewall-managed-ranges",
+				"scalingo database-firewall-managed-ranges",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-rules-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
-			if errors.Is(err, detect.ErrTooManyArguments) {
-				io.Error(err)
-				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
-			}
-			if err != nil {
-				errorQuit(ctx, err)
-			}
-
-			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
-
-			err = dbng.FirewallManagedRangesList(ctx, databaseName, addonID)
+			err := dbng.FirewallManagedRangesList(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

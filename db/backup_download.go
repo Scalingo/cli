@@ -62,7 +62,7 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	}
 
 	if backupID == "" {
-		backups, err := client.BackupList(ctx, app, addonID)
+		backups, err := client.BackupList(ctx, addonID)
 		if err != nil {
 			return errors.Wrap(ctx, err, "list backups")
 		}
@@ -83,7 +83,7 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	spinner.Start()
 
 	// Get backup metadatas
-	backup, err := client.BackupShow(ctx, app, addonID, backupID)
+	backup, err := client.BackupShow(ctx, backupID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get backup")
 	}
@@ -108,7 +108,7 @@ func DownloadBackup(ctx context.Context, app, addonID, backupID string, opts Dow
 	}
 
 	// Get the pre-signed download URL
-	downloadURL, err := client.BackupDownloadURL(ctx, app, addonID, backupID)
+	downloadURL, err := client.BackupDownloadURL(ctx, addonID, backupID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get backup download URL")
 	}

@@ -40,9 +40,9 @@ const (
 	MaintenanceStatusDone      MaintenanceStatus = "done"
 )
 
-func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, app, addonID string, params MaintenanceWindowParams) (Database, error) {
+func (c *Client) DatabaseUpdateMaintenanceWindow(ctx context.Context, addonID string, params MaintenanceWindowParams) (Database, error) {
 	var dbRes DatabaseRes
-	err := c.DBAPI(app, addonID).ResourceUpdate(ctx, "databases", addonID, map[string]any{
+	err := c.ScalingoAPI().ResourceUpdate(ctx, "databases", addonID, map[string]any{
 		"database": map[string]any{
 			"maintenance_window": params,
 		},
@@ -61,18 +61,18 @@ type ListMaintenanceResponse struct {
 	}
 }
 
-func (c *Client) DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error) {
+func (c *Client) DatabaseListMaintenance(ctx context.Context, addonID string, paginationReq pagination.Request) ([]*Maintenance, pagination.Meta, error) {
 	var maintenanceRes ListMaintenanceResponse
-	err := c.DBAPI(app, addonID).SubresourceList(ctx, databasesResource, addonID, maintenanceResource, paginationReq.ToURLValues(), &maintenanceRes)
+	err := c.ScalingoAPI().SubresourceList(ctx, databasesResource, addonID, maintenanceResource, paginationReq.ToURLValues(), &maintenanceRes)
 	if err != nil {
 		return nil, pagination.Meta{}, errors.Wrapf(ctx, err, "list database '%v' maintenance", addonID)
 	}
 	return maintenanceRes.Maintenance, maintenanceRes.Meta.Pagination, nil
 }
 
-func (c *Client) DatabaseShowMaintenance(ctx context.Context, app, addonID, maintenanceID string) (Maintenance, error) {
+func (c *Client) DatabaseShowMaintenance(ctx context.Context, addonID, maintenanceID string) (Maintenance, error) {
 	var maintenanceRes Maintenance
-	err := c.DBAPI(app, addonID).SubresourceGet(ctx, databasesResource, addonID, maintenanceResource, maintenanceID, nil, &maintenanceRes)
+	err := c.ScalingoAPI().SubresourceGet(ctx, databasesResource, addonID, maintenanceResource, maintenanceID, nil, &maintenanceRes)
 	if err != nil {
 		return maintenanceRes, errors.Wrapf(ctx, err, "get database '%v' maintenance", addonID)
 	}

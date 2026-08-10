@@ -160,7 +160,7 @@ func (c *PreviewClient) populateAPIResponse(ctx context.Context, apiResponse Dat
 	}
 	databaseNG.App = *app
 
-	databaseNG.Database, err = c.parent.DatabaseShow(ctx, apiResponse.Name, addons[0].ID)
+	databaseNG.Database, err = c.parent.DatabaseShow(ctx, addons[0].ID)
 	if err != nil {
 		debug.Printf("Addon has been removed from app: %+v\n", databaseNG.Name)
 	}
