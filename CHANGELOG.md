@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* feat(pitr): add command to fetch recovery window of a database
 * feat(pitr): add command to restore a database to a specific point in time
 
 ## v1.47.0

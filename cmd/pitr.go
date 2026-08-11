@@ -49,3 +49,35 @@ var databasePITRRestore = cli.Command{
 		return nil
 	},
 }
+
+var databasePITRRecoveryWindow = cli.Command{
+	Name:     "database-pitr-recovery-window",
+	Category: "PITR management",
+	Usage:    "Show the recovery window for a database",
+	Flags: []cli.Flag{
+		&appFlag,
+		&addonFlag,
+	},
+	Description: CommandDescription{
+		Description: "Show the recovery window for a database",
+		Examples: []string{
+			"scalingo --app my-app --addon my-addon database-pitr-recovery-window",
+		},
+	}.Render(),
+	Action: func(ctx context.Context, c *cli.Command) error {
+		currentResource, currentDatabase := detect.GetCurrentResourceAndDatabase(ctx, c)
+
+		utils.CheckForConsent(ctx, currentResource, utils.ConsentTypeDBs)
+		addonName := currentDatabase
+		if currentDatabase == "" {
+			addonName = addonUUIDFromFlags(ctx, c, currentResource, true)
+		}
+
+		err := pitr.GetRecoveryWindow(ctx, currentResource, addonName)
+		if err != nil {
+			errorQuit(ctx, err)
+		}
+
+		return nil
+	},
+}

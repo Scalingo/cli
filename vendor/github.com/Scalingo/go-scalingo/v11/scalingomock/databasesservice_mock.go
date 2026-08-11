@@ -68,6 +68,21 @@ func (mr *MockDatabasesServiceMockRecorder) DatabaseEnableFeature(ctx, app, addo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseEnableFeature", reflect.TypeOf((*MockDatabasesService)(nil).DatabaseEnableFeature), ctx, app, addonID, feature)
 }
 
+// DatabaseGetPITRRecoveryWindow mocks base method.
+func (m *MockDatabasesService) DatabaseGetPITRRecoveryWindow(ctx context.Context, app, addonID string) (scalingo.DatabasePITRRecoveryWindow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DatabaseGetPITRRecoveryWindow", ctx, app, addonID)
+	ret0, _ := ret[0].(scalingo.DatabasePITRRecoveryWindow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DatabaseGetPITRRecoveryWindow indicates an expected call of DatabaseGetPITRRecoveryWindow.
+func (mr *MockDatabasesServiceMockRecorder) DatabaseGetPITRRecoveryWindow(ctx, app, addonID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabaseGetPITRRecoveryWindow", reflect.TypeOf((*MockDatabasesService)(nil).DatabaseGetPITRRecoveryWindow), ctx, app, addonID)
+}
+
 // DatabaseListMaintenance mocks base method.
 func (m *MockDatabasesService) DatabaseListMaintenance(ctx context.Context, app, addonID string, paginationReq pagination.Request) ([]*scalingo.Maintenance, pagination.Meta, error) {
 	m.ctrl.T.Helper()

@@ -271,6 +271,7 @@ var (
 
 		// PITR
 		&databasePITRRestore,
+		&databasePITRRecoveryWindow,
 
 		// Backups
 		&backupsListCommand,
