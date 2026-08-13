@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 11.3.0
+
 * feat(databases): Add new method to get recovery window for PITR
 
 ## 11.2.0
