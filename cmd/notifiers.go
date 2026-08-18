@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	NotifiersListCommand = cli.Command{
+	notifiersListCommand = cli.Command{
 		Name:     "notifiers",
 		Category: "Notifiers",
 		Usage:    "List your notifiers",
@@ -42,7 +42,7 @@ var (
 		},
 	}
 
-	NotifiersDetailsCommand = cli.Command{
+	notifiersDetailsCommand = cli.Command{
 		Name:      "notifiers-details",
 		Category:  "Notifiers",
 		Usage:     "Show details of a notifier",
@@ -73,7 +73,7 @@ var (
 		},
 	}
 
-	NotifiersAddCommand = cli.Command{
+	notifiersAddCommand = cli.Command{
 		Name:     "notifiers-add",
 		Category: "Notifiers",
 		Flags: []cli.Flag{
@@ -141,7 +141,7 @@ var (
 		},
 	}
 
-	NotifiersUpdateCommand = cli.Command{
+	notifiersUpdateCommand = cli.Command{
 		Name:     "notifiers-update",
 		Category: "Notifiers",
 		Flags: []cli.Flag{
@@ -218,7 +218,7 @@ var (
 		},
 	}
 
-	NotifiersRemoveCommand = cli.Command{
+	notifiersRemoveCommand = cli.Command{
 		Name:      "notifiers-remove",
 		Category:  "Notifiers",
 		Flags:     []cli.Flag{&appFlag},

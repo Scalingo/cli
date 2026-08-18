@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	DbTunnelCommand = cli.Command{
+	dbTunnelCommand = cli.Command{
 		Name:      "db-tunnel",
 		Category:  "App Management",
 		Usage:     "Create an encrypted connection to access your database",

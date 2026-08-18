@@ -12,39 +12,45 @@ import (
 )
 
 var (
-	redisConsoleCommand = cli.Command{
-		Name:     "redis-console",
+	valkeyConsoleCommand = cli.Command{
+		Name:     "valkey-console",
 		Category: "Databases",
-		Usage:    "Run an interactive console with your Redis addon",
+		Usage:    "Run an interactive console with your Valkey addon",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
-			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
+			&cli.StringFlag{
+				Name: "size", Aliases: []string{"s"}, Value: "",
+				Usage: "Size of the container",
+			},
+			&cli.StringFlag{
+				Name: "env", Aliases: []string{"e"}, Value: "",
+				Usage: "Environment variable name to use for the connection to the database",
+			},
 		},
 		Description: CommandDescription{
-			Description: `Run an interactive console with your Redis addon.
+			Description: `Run an interactive console with your Valkey addon.
 
 The --size flag makes it easy to specify the size of the container executing
-the Redis console. Each container size has different price and performance.
+the Valkey console. Each container size has different price and performance.
 You can read more about container sizes here:
 http://doc.scalingo.com/internals/container-sizes.html`,
 			Examples: []string{
-				"scalingo --app my-app redis-console",
-				"scalingo --app my-app redis-console --size L",
-				"scalingo --app my-app redis-console --env MY_REDIS_URL",
+				"scalingo --app my-app valkey-console",
+				"scalingo --app my-app valkey-console --size L",
+				"scalingo --app my-app valkey-console --env MY_VALKEY_URL",
 			},
-			SeeAlso: []string{"mongo-console", "mysql-console"},
+			SeeAlso: []string{"mysql-console", "pgsql-console"},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				_ = cli.ShowCommandHelp(ctx, c, "redis-console")
+				_ = cli.ShowCommandHelp(ctx, c, "valkey-console")
 				return nil
 			}
 			currentApp := detect.CurrentApp(ctx, c)
 
 			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeDBs)
 
-			err := db.RedisConsole(ctx, db.RedisConsoleOpts{
+			err := db.ValkeyConsole(ctx, db.ValkeyConsoleOpts{
 				App:          currentApp,
 				Size:         c.String("s"),
 				VariableName: c.String("e"),
@@ -55,7 +61,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "redis-console")
+			_ = autocomplete.CmdFlagsAutoComplete(c, "valkey-console")
 		},
 	}
 )
