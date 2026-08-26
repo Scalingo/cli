@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/AlecAivazis/survey/v2"
+	"charm.land/huh/v2"
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -250,9 +250,9 @@ Warning: At the moment, only databases addons are able to forward logs to a drai
 
 func askContinue(message string) bool {
 	result := false
-	prompt := &survey.Confirm{
-		Message: message,
-	}
-	_ = survey.AskOne(prompt, &result, nil)
+	_ = huh.NewConfirm().
+		Title(message).
+		Value(&result).
+		Run()
 	return result
 }

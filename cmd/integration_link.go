@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/AlecAivazis/survey/v2"
+	"charm.land/huh/v2"
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -460,82 +460,77 @@ func interactiveCreate(ctx context.Context) (scalingo.SCMRepoLinkCreateParams, e
 	if config.C.DisableInteractive {
 		return params, errors.New(ctx, "need at least one integration link parameter")
 	}
-	qs := []*survey.Question{
-		{
-			Name:   "branch",
-			Prompt: &survey.Input{Message: "Branch to auto-deploy (empty to disable):"},
-		},
-		{
-			Name: "auto-review-apps",
-			Prompt: &survey.Confirm{
-				Message: "Automatically deploy review apps:",
-				Default: false,
-			},
-		},
-	}
-
-	answers := struct {
-		Branch         string
-		AutoReviewApps bool `survey:"auto-review-apps"`
-	}{}
-	err := survey.Ask(qs, &answers)
+	var branch string
+	var autoReviewApps bool
+	err := runPrompt(ctx,
+		huh.NewInput().
+			Title("Branch to auto-deploy (empty to disable):").
+			Value(&branch),
+		huh.NewConfirm().
+			Title("Automatically deploy review apps:").
+			Value(&autoReviewApps),
+	)
 	if err != nil {
 		return params, errors.Wrapf(ctx, err, "error enquiring about branch and automatic review apps deployment")
 	}
 
-	if answers.Branch != "" {
-		params.Branch = &answers.Branch
+	if branch != "" {
+		params.Branch = &branch
 		params.AutoDeployEnabled = utils.BoolPtr(true)
 	}
-	if !answers.AutoReviewApps {
+	if !autoReviewApps {
 		return params, nil
 	}
 
 	params.DeployReviewAppsEnabled = utils.BoolPtr(true)
 
 	destroyOnClose := true
-	err = survey.AskOne(&survey.Confirm{
-		Message: "Automatically destroy review apps when the pull/merge request is closed:",
-		Default: destroyOnClose,
-	}, &destroyOnClose, nil)
+	err = runPrompt(ctx, huh.NewConfirm().
+		Title("Automatically destroy review apps when the pull/merge request is closed:").
+		Value(&destroyOnClose))
 	if err != nil {
 		return params, errors.Wrapf(ctx, err, "error enquiring about destroy on close")
 	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
 		answerHoursBeforeDestroyOnClose := "0"
-		err = survey.AskOne(&survey.Input{
-			Message: "Hours before automatically destroying the review apps:",
-			Default: "0",
-		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete(ctx)))
+		err = runPrompt(ctx, huh.NewInput().
+			Title("Hours before automatically destroying the review apps:").
+			Placeholder("0").
+			Value(&answerHoursBeforeDestroyOnClose).
+			Validate(validateHoursBeforeDelete(ctx)))
 		if err != nil {
 			return params, errors.Wrapf(ctx, err, "error enquiring about review apps destroy delay")
 		}
-		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
-		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
+		hoursBeforeDestroyOnClose, err := parseHoursBeforeDelete(ctx, answerHoursBeforeDestroyOnClose)
+		if err != nil {
+			return params, errors.Wrapf(ctx, err, "error parsing review apps destroy delay")
+		}
 		params.HoursBeforeDeleteOnClose = &hoursBeforeDestroyOnClose
 	}
 
 	destroyOnStale := false
-	err = survey.AskOne(&survey.Confirm{
-		Message: "Automatically destroy review apps after some time without deploy/commits:",
-		Default: destroyOnStale,
-	}, &destroyOnStale, nil)
+	err = runPrompt(ctx, huh.NewConfirm().
+		Title("Automatically destroy review apps after some time without deploy/commits:").
+		Value(&destroyOnStale))
 	if err != nil {
 		return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
 		answerHoursBeforeDestroyOnStale := "0"
-		err = survey.AskOne(&survey.Input{
-			Message: "Hours before automatically destroying the review apps:",
-			Default: "0",
-		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete(ctx)))
+		err = runPrompt(ctx, huh.NewInput().
+			Title("Hours before automatically destroying the review apps:").
+			Placeholder("0").
+			Value(&answerHoursBeforeDestroyOnStale).
+			Validate(validateHoursBeforeDelete(ctx)))
 		if err != nil {
 			return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
 		}
-		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
-		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
+		hoursBeforeDestroyOnStale, err := parseHoursBeforeDelete(ctx, answerHoursBeforeDestroyOnStale)
+		if err != nil {
+			return params, errors.Wrapf(ctx, err, "error parsing stale review apps destroy delay")
+		}
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
 	}
 
@@ -548,21 +543,30 @@ func interactiveCreate(ctx context.Context) (scalingo.SCMRepoLinkCreateParams, e
 	return params, nil
 }
 
-func validateHoursBeforeDelete(ctx context.Context) survey.Validator {
-	return func(ans any) error {
-		str, ok := ans.(string)
-		if !ok {
-			return errors.New(ctx, "must be a string")
-		}
-		i, err := strconv.ParseInt(str, 10, 32)
-		if err != nil {
-			return errors.Wrapf(ctx, err, "error parsing hours")
-		}
-		if i < 0 {
-			return errors.New(ctx, "must be positive")
-		}
-		return nil
+func runPrompt(ctx context.Context, fields ...huh.Field) error {
+	return huh.NewForm(huh.NewGroup(fields...)).RunWithContext(ctx)
+}
+
+func validateHoursBeforeDelete(ctx context.Context) func(string) error {
+	return func(answer string) error {
+		_, err := parseHoursBeforeDelete(ctx, answer)
+		return err
 	}
+}
+
+func parseHoursBeforeDelete(ctx context.Context, answer string) (uint, error) {
+	if answer == "" {
+		return 0, nil
+	}
+
+	hours, err := strconv.ParseInt(answer, 10, 32)
+	if err != nil {
+		return 0, errors.Wrapf(ctx, err, "error parsing hours")
+	}
+	if hours < 0 {
+		return 0, errors.New(ctx, "must be positive")
+	}
+	return uint(hours), nil
 }
 
 func askForConfirmationToAllowReviewAppsFromForks(ctx context.Context, prompt string) (bool, error) {
@@ -572,10 +576,9 @@ func askForConfirmationToAllowReviewAppsFromForks(ctx context.Context, prompt st
 
 	var confirmed bool
 
-	err := survey.AskOne(&survey.Confirm{
-		Message: prompt,
-		Default: false,
-	}, &confirmed, nil)
+	err := runPrompt(ctx, huh.NewConfirm().
+		Title(prompt).
+		Value(&confirmed))
 
 	if err != nil {
 		return false, errors.Wrap(ctx, err, "fail to confirm review apps from forks")

@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* chore(deps): replace the unmaintained Survey prompt library with Huh
+
 ## 1.48.0
 
 * feat(pitr): add command to fetch recovery window of a database
