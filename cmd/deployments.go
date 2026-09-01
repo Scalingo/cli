@@ -125,7 +125,7 @@ The version reference is optional (generated from timestamp if none).
 It is a reference to the code you are deploying, version, commit SHA, etc.`,
 			Examples: []string{
 				"scalingo --app my-app deploy archive.tar.gz v1.0.0",
-				"scalingo --app my-app deploy http://example.com/archive.tar.gz v1.0.0",
+				"scalingo --app my-app deploy https://example.com/archive.tar.gz v1.0.0",
 				"scalingo --app my-app deploy --no-follow archive.tar.gz v1.0.0",
 				"scalingo --app my-app deployment-follow",
 			},

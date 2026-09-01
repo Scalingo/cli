@@ -25,7 +25,7 @@ func PgSQLConsole(ctx context.Context, opts PgSQLConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd: "pgsql-console " + user,
 		App:        opts.App,
-		Cmd:        []string{"dbclient-fetcher", "pgsql", "&&", "psql", "'" + postgreSQLURL.String() + "'"},
+		Cmd:        []string{dbClientFetcher, "pgsql", "&&", "psql", "'" + postgreSQLURL.String() + "'"},
 		Size:       opts.Size,
 	}
 

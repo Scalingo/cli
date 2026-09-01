@@ -15,11 +15,11 @@ var (
 	InfluxDBConsoleCommand = cli.Command{
 		Name:     "influxdb-console",
 		Aliases:  []string{"influx-console"},
-		Category: "Databases",
+		Category: categoryDatabases,
 		Usage:    "Run an interactive console with your InfluxDB addon",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
-			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
+			&cli.StringFlag{Name: flagSizeName, Aliases: []string{"s"}, Value: "", Usage: flagSizeUsage},
+			&cli.StringFlag{Name: flagEnvName, Aliases: []string{"e"}, Value: "", Usage: flagEnvUsage},
 		},
 		Description: CommandDescription{
 			Description: `Run an interactive console with your InfluxDB addon
@@ -27,13 +27,13 @@ var (
 The --size flag makes it easy to specify the size of the container executing
 the InfluxDB console. Each container size has different price and performance.
 You can read more about container sizes here:
-http://doc.scalingo.com/internals/container-sizes.html`,
+https://doc.scalingo.com/platform/internals/container-sizes`,
 			Examples: []string{
 				"scalingo --app my-app influxdb-console",
 				"scalingo --app my-app influxdb-console --size L",
 				"scalingo --app my-app influxdb-console --env MY_INFLUXDB_URL",
 			},
-			SeeAlso: []string{"mongo-console", "mysql-console"},
+			SeeAlso: []string{mongoConsole, mySQLConsole},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {

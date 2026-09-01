@@ -152,12 +152,25 @@ func NewAppCommands() *AppCommands {
 	return &cmds
 }
 
+const (
+	categoryDatabases = "Databases"
+
+	flagSizeName  = "size"
+	flagSizeUsage = "Size of the container"
+	flagEnvName   = "env"
+	flagEnvUsage  = "Environment variable name to use for the connection to the database"
+
+	mySQLConsole = "mysql-console"
+	mongoConsole = "mongo-console"
+	pgSQLConsole = "pgsql-console"
+)
+
 var (
 	regionalCommands = []*cli.Command{
 		// Apps
 		&appsCommand,
-		&CreateCommand,
-		&DestroyCommand,
+		&createCommand,
+		&destroyCommand,
 		&renameCommand,
 		&appsInfoCommand,
 		&openCommand,
@@ -174,7 +187,7 @@ var (
 		// Apps Process Actions
 		&psCommand,
 		&scaleCommand,
-		&RestartCommand,
+		&restartCommand,
 		&sendSignalCommand,
 
 		// Routing Settings
@@ -185,7 +198,7 @@ var (
 		&unsetCanonicalDomainCommand,
 
 		// Events
-		&UserTimelineCommand,
+		&userTimelineCommand,
 		&timelineCommand,
 
 		// Environment
@@ -195,10 +208,10 @@ var (
 		&envUnsetCommand,
 
 		// Domains
-		&DomainsListCommand,
-		&DomainsAddCommand,
-		&DomainsRemoveCommand,
-		&DomainsSSLCommand,
+		&domainsListCommand,
+		&domainsAddCommand,
+		&domainsRemoveCommand,
+		&domainsSSLCommand,
 
 		// Deployments
 		&deploymentsListCommand,
@@ -218,8 +231,8 @@ var (
 		&stacksSetCommand,
 
 		// Addons
-		&AddonProvidersListCommand,
-		&AddonProvidersPlansCommand,
+		&addonProvidersListCommand,
+		&addonProvidersPlansCommand,
 		&addonsListCommand,
 		&addonsAddCommand,
 		&addonsRemoveCommand,
@@ -239,18 +252,19 @@ var (
 		&reviewAppsShowCommand,
 
 		// Notifiers
-		&NotifiersListCommand,
-		&NotifiersDetailsCommand,
-		&NotifiersAddCommand,
-		&NotifiersUpdateCommand,
-		&NotifiersRemoveCommand,
+		&notifiersListCommand,
+		&notifiersDetailsCommand,
+		&notifiersAddCommand,
+		&notifiersUpdateCommand,
+		&notifiersRemoveCommand,
 
 		// Notification platforms
-		&NotificationPlatformListCommand,
+		&notificationPlatformListCommand,
 
 		// DB Access
-		&DbTunnelCommand,
-		&RedisConsoleCommand,
+		&dbTunnelCommand,
+		&redisConsoleCommand,
+		&valkeyConsoleCommand,
 		&MongoConsoleCommand,
 		&MySQLConsoleCommand,
 		&PgSQLConsoleCommand,
@@ -288,7 +302,7 @@ var (
 		&alertsRemoveCommand,
 
 		// Stats
-		&StatsCommand,
+		&statsCommand,
 
 		// Autoscalers
 		&autoscalersListCommand,

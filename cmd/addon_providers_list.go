@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	AddonProvidersListCommand = cli.Command{
+	addonProvidersListCommand = cli.Command{
 		Name:        "addons-list",
 		Category:    "Addons - Global",
 		Description: "List all addons you can add to your app",
