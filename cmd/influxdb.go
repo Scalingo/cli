@@ -27,7 +27,7 @@ var (
 The --size flag makes it easy to specify the size of the container executing
 the InfluxDB console. Each container size has different price and performance.
 You can read more about container sizes here:
-http://doc.scalingo.com/internals/container-sizes.html`,
+https://doc.scalingo.com/platform/internals/container-sizes`,
 			Examples: []string{
 				"scalingo --app my-app influxdb-console",
 				"scalingo --app my-app influxdb-console --size L",

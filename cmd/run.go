@@ -47,7 +47,7 @@ var (
    The --size flag makes it easy to specify the size of the container you want
    to run. Each container size has different price and performance. You can read
    more about container sizes here:
-   http://doc.scalingo.com/internals/container-sizes.html
+   https://doc.scalingo.com/platform/internals/container-sizes
 
    The --silent flag makes that the only output of the command will be the output
    of the one-off container. There won't be any noise from the command tool itself.

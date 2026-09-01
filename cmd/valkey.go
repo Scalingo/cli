@@ -32,7 +32,7 @@ var (
 The --size flag makes it easy to specify the size of the container executing
 the Valkey console. Each container size has different price and performance.
 You can read more about container sizes here:
-http://doc.scalingo.com/internals/container-sizes.html`,
+https://doc.scalingo.com/platform/internals/container-sizes`,
 			Examples: []string{
 				"scalingo --app my-app valkey-console",
 				"scalingo --app my-app valkey-console --size L",
