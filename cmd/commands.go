@@ -152,6 +152,19 @@ func NewAppCommands() *AppCommands {
 	return &cmds
 }
 
+const (
+	categoryDatabases = "Databases"
+
+	flagSizeName  = "size"
+	flagSizeUsage = "Size of the container"
+	flagEnvName   = "env"
+	flagEnvUsage  = "Environment variable name to use for the connection to the database"
+
+	mySQLConsole = "mysql-console"
+	mongoConsole = "mongo-console"
+	pgSQLConsole = "pgsql-console"
+)
+
 var (
 	regionalCommands = []*cli.Command{
 		// Apps

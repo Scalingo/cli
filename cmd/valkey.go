@@ -14,16 +14,16 @@ import (
 var (
 	valkeyConsoleCommand = cli.Command{
 		Name:     "valkey-console",
-		Category: "Databases",
+		Category: categoryDatabases,
 		Usage:    "Run an interactive console with your Valkey addon",
 		Flags: []cli.Flag{&appFlag,
 			&cli.StringFlag{
-				Name: "size", Aliases: []string{"s"}, Value: "",
-				Usage: "Size of the container",
+				Name: flagSizeName, Aliases: []string{"s"}, Value: "",
+				Usage: flagSizeUsage,
 			},
 			&cli.StringFlag{
-				Name: "env", Aliases: []string{"e"}, Value: "",
-				Usage: "Environment variable name to use for the connection to the database",
+				Name: flagEnvName, Aliases: []string{"e"}, Value: "",
+				Usage: flagEnvUsage,
 			},
 		},
 		Description: CommandDescription{
@@ -38,7 +38,7 @@ https://doc.scalingo.com/platform/internals/container-sizes`,
 				"scalingo --app my-app valkey-console --size L",
 				"scalingo --app my-app valkey-console --env MY_VALKEY_URL",
 			},
-			SeeAlso: []string{"mysql-console", "pgsql-console"},
+			SeeAlso: []string{mySQLConsole, pgSQLConsole},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {

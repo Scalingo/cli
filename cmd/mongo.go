@@ -13,13 +13,13 @@ import (
 
 var (
 	MongoConsoleCommand = cli.Command{
-		Name:     "mongo-console",
+		Name:     mongoConsole,
 		Aliases:  []string{"mongodb-console"},
-		Category: "Databases",
+		Category: categoryDatabases,
 		Usage:    "Run an interactive console with your MongoDB addon",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
-			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
+			&cli.StringFlag{Name: flagSizeName, Aliases: []string{"s"}, Value: "", Usage: flagSizeUsage},
+			&cli.StringFlag{Name: flagEnvName, Aliases: []string{"e"}, Value: "", Usage: flagEnvUsage},
 		},
 		Description: CommandDescription{
 			Description: `Run an interactive console with your MongoDB addon
@@ -32,11 +32,11 @@ https://doc.scalingo.com/platform/internals/container-sizes`,
 				"scalingo --app my-app mongo-console --size L",
 				"scalingo --app my-app mongo-console --env MY_MONGO_URL",
 			},
-			SeeAlso: []string{"redis-console", "mysql-console"},
+			SeeAlso: []string{"redis-console", mySQLConsole},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				_ = cli.ShowCommandHelp(ctx, c, "mongo-console")
+				_ = cli.ShowCommandHelp(ctx, c, mongoConsole)
 				return nil
 			}
 
@@ -54,7 +54,7 @@ https://doc.scalingo.com/platform/internals/container-sizes`,
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "mongo-console")
+			_ = autocomplete.CmdFlagsAutoComplete(c, mongoConsole)
 		},
 	}
 )

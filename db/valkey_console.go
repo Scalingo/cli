@@ -39,7 +39,7 @@ func ValkeyConsole(ctx context.Context, opts ValkeyConsoleOpts) error {
 	err = apps.Run(ctx, apps.RunOpts{
 		DisplayCmd:    "valkey-console " + strings.Split(host, ".")[0],
 		App:           opts.App,
-		Cmd:           []string{"dbclient-fetcher", "valkey", "&&", "valkey-cli", "-h", host, "-p", port, "-a", password},
+		Cmd:           []string{dbClientFetcher, "valkey", "&&", "valkey-cli", "-h", host, "-p", port, "-a", password},
 		Size:          opts.Size,
 		StdinCopyFunc: valkeyStdinCopy,
 	})

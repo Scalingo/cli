@@ -29,7 +29,7 @@ func InfluxDBConsole(ctx context.Context, opts InfluxDBConsoleOpts) error {
 		return errors.Newf(ctx, "%v has an invalid host", influxdbURL)
 	}
 
-	cmd := []string{"dbclient-fetcher", "influxdb", "&&", "influx"}
+	cmd := []string{dbClientFetcher, "influxdb", "&&", "influx"}
 
 	if influxdbURL.Scheme == "https" {
 		cmd = append(cmd, "-ssl", "-unsafeSsl")

@@ -14,11 +14,11 @@ import (
 var (
 	redisConsoleCommand = cli.Command{
 		Name:     "redis-console",
-		Category: "Databases",
+		Category: categoryDatabases,
 		Usage:    "Run an interactive console with your Redis addon",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
-			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
+			&cli.StringFlag{Name: flagSizeName, Aliases: []string{"s"}, Value: "", Usage: flagSizeUsage},
+			&cli.StringFlag{Name: flagEnvName, Aliases: []string{"e"}, Value: "", Usage: flagEnvUsage},
 		},
 		Description: CommandDescription{
 			Description: `Run an interactive console with your Redis addon.
@@ -32,7 +32,7 @@ https://doc.scalingo.com/platform/internals/container-sizes`,
 				"scalingo --app my-app redis-console --size L",
 				"scalingo --app my-app redis-console --env MY_REDIS_URL",
 			},
-			SeeAlso: []string{"mongo-console", "mysql-console"},
+			SeeAlso: []string{mongoConsole, mySQLConsole},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {

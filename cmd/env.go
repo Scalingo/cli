@@ -14,7 +14,7 @@ import (
 
 var (
 	envCommand = cli.Command{
-		Name:     "env",
+		Name:     flagEnvName,
 		Category: "Environment",
 		Flags:    []cli.Flag{&appFlag, databaseFlag()},
 		Usage:    "Display the environment variables of your apps",
@@ -28,7 +28,7 @@ var (
 			currentApp := detect.GetCurrentResource(ctx, c)
 			var err error
 			if c.Args().Len() != 0 {
-				_ = cli.ShowCommandHelp(ctx, c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, flagEnvName)
 				return nil
 			}
 
@@ -42,7 +42,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
+			_ = autocomplete.CmdFlagsAutoComplete(c, flagEnvName)
 		},
 	}
 
@@ -55,12 +55,12 @@ var (
 		Description: CommandDescription{
 			Description: "Get the value of a specific environment variable",
 			Examples:    []string{"scalingo --app my-app env-get VAR1"},
-			SeeAlso:     []string{"env", "env-set", "env-unset"},
+			SeeAlso:     []string{flagEnvName, "env-set", "env-unset"},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 1 {
-				_ = cli.ShowCommandHelp(ctx, c, "env")
+				_ = cli.ShowCommandHelp(ctx, c, flagEnvName)
 				return nil
 			}
 
@@ -76,7 +76,7 @@ var (
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "env")
+			_ = autocomplete.CmdFlagsAutoComplete(c, flagEnvName)
 		},
 	}
 
@@ -96,7 +96,7 @@ var (
 				"scalingo --app my-app env-set --file - < .env",
 				"scalingo --app my-app env-set --file .env VAR2=VAL2",
 			},
-			SeeAlso: []string{"env", "env-get", "env-unset"},
+			SeeAlso: []string{flagEnvName, "env-get", "env-unset"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() == 0 && c.String("f") == "" {
@@ -125,7 +125,7 @@ var (
 		Description: CommandDescription{
 			Description: "Unset variables",
 			Examples:    []string{"scalingo --app my-app env-unset VAR1 VAR2"},
-			SeeAlso:     []string{"env", "env-get", "env-set"},
+			SeeAlso:     []string{flagEnvName, "env-get", "env-set"},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
