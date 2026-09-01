@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(cmd): add `valkey-console`
+
 ## 1.48.0
 
 * feat(pitr): add command to fetch recovery window of a database
