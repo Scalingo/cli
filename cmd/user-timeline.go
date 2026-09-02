@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	UserTimelineCommand = cli.Command{
+	userTimelineCommand = cli.Command{
 		Name:     "user-timeline",
 		Category: "Events",
 		Flags: []cli.Flag{

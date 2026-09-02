@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	DestroyCommand = cli.Command{
+	destroyCommand = cli.Command{
 		Name:     "destroy",
 		Category: "App Management",
 		Flags: []cli.Flag{&appFlag,

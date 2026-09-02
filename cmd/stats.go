@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	StatsCommand = cli.Command{
+	statsCommand = cli.Command{
 		Name:     "stats",
 		Category: "Display metrics of the running containers",
 		Usage:    "Display metrics of the currently running containers",

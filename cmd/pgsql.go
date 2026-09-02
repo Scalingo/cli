@@ -13,13 +13,13 @@ import (
 
 var (
 	PgSQLConsoleCommand = cli.Command{
-		Name:     "pgsql-console",
+		Name:     pgSQLConsole,
 		Aliases:  []string{"psql-console", "postgresql-console"},
-		Category: "Databases",
+		Category: categoryDatabases,
 		Usage:    "Run an interactive console with your PostgreSQL addon",
 		Flags: []cli.Flag{&appFlag,
-			&cli.StringFlag{Name: "size", Aliases: []string{"s"}, Value: "", Usage: "Size of the container"},
-			&cli.StringFlag{Name: "env", Aliases: []string{"e"}, Value: "", Usage: "Environment variable name to use for the connection to the database"},
+			&cli.StringFlag{Name: flagSizeName, Aliases: []string{"s"}, Value: "", Usage: flagSizeUsage},
+			&cli.StringFlag{Name: flagEnvName, Aliases: []string{"e"}, Value: "", Usage: flagEnvUsage},
 		},
 		Description: CommandDescription{
 			Description: `Run an interactive console with your PostgreSQL addon
@@ -27,18 +27,18 @@ var (
 The --size flag makes it easy to specify the size of the container executing
 the PostgreSQL console. Each container size has different price and performance.
 You can read more about container sizes here:
-http://doc.scalingo.com/internals/container-sizes.html`,
+https://doc.scalingo.com/platform/internals/container-sizes`,
 			Examples: []string{
 				"scalingo --app my-app pgsql-console",
 				"scalingo --app my-app pgsql-console --size L",
 				"scalingo --app my-app pgsql-console --env MY_PSQL_URL",
 			},
-			SeeAlso: []string{"mongo-console", "mysql-console"},
+			SeeAlso: []string{mongoConsole, mySQLConsole},
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 0 {
-				_ = cli.ShowCommandHelp(ctx, c, "pgsql-console")
+				_ = cli.ShowCommandHelp(ctx, c, pgSQLConsole)
 				return nil
 			}
 
@@ -56,7 +56,7 @@ http://doc.scalingo.com/internals/container-sizes.html`,
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
-			_ = autocomplete.CmdFlagsAutoComplete(c, "pgsql-console")
+			_ = autocomplete.CmdFlagsAutoComplete(c, pgSQLConsole)
 		},
 	}
 )

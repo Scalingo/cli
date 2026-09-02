@@ -32,7 +32,7 @@ func MySQLConsole(ctx context.Context, opts MySQLConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd: "mysql-console " + user,
 		App:        opts.App,
-		Cmd:        []string{"dbclient-fetcher", "mysql", "&&", "mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
+		Cmd:        []string{dbClientFetcher, "mysql", "&&", "mysql", "-h", host, "-P", port, fmt.Sprintf("--password=%v", password), "-u", user, user},
 		Size:       opts.Size,
 	}
 

@@ -1,10 +1,8 @@
 package db
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"strings"
 
@@ -39,9 +37,9 @@ func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 	runOpts := apps.RunOpts{
 		DisplayCmd:    "redis-console " + strings.Split(host, ".")[0],
 		App:           opts.App,
-		Cmd:           []string{"dbclient-fetcher", "redis", "&&", "redis-cli", "-h", host, "-p", port, "-a", password},
+		Cmd:           []string{dbClientFetcher, "redis", "&&", "redis-cli", "-h", host, "-p", port, "-a", password},
 		Size:          opts.Size,
-		StdinCopyFunc: redisStdinCopy,
+		StdinCopyFunc: valkeyStdinCopy,
 	}
 
 	err = apps.Run(ctx, runOpts)
@@ -50,33 +48,4 @@ func RedisConsole(ctx context.Context, opts RedisConsoleOpts) error {
 	}
 
 	return nil
-}
-
-func redisStdinCopy(dst io.Writer, src io.Reader) (int64, error) {
-	var written int64
-	buf := make([]byte, 2*1024)
-	for {
-		nr, er := src.Read(buf)
-		if nr > 0 {
-			toWrite := bytes.ReplaceAll(buf[0:nr], []byte{'\n'}, []byte{'\r', '\n'})
-			nr = len(toWrite)
-			nw, ew := dst.Write(toWrite)
-			if nw > 0 {
-				written += int64(nw)
-			}
-			if ew != nil {
-				return written, ew
-			}
-			if nr != nw {
-				return written, io.ErrShortWrite
-			}
-		}
-		if er == io.EOF {
-			break
-		}
-		if er != nil {
-			return written, er
-		}
-	}
-	return written, nil
 }
