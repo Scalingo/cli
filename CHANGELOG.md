@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* chore(deps): replace the unmaintained Survey prompt library with Huh
 * feat(cmd): add `valkey-console`
 
 ## 1.48.0

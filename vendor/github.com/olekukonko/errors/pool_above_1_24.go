@@ -5,26 +5,20 @@ package errors
 
 import "runtime"
 
-// setupCleanup registers a runtime.AddCleanup callback that returns e to the
-// pool when the GC determines e is unreachable — only when AutoFree is enabled.
-//
-// IMPORTANT: the cleanup argument must be e itself (passed as the third arg),
-// NOT captured in the closure. Capturing e in the closure creates a strong
-// reference from the cleanup to e, which prevents e from ever becoming
-// unreachable and defeats the purpose of the cleanup entirely.
+// setupCleanup configures a cleanup function for an *Error to auto-return it to the pool.
+// Only active for Go 1.24+; uses runtime.AddCleanup when autoFree is set and pooling is enabled.
 func (ep *ErrorPool) setupCleanup(e *Error) {
-	if !currentConfig.autoFree || currentConfig.disablePooling {
-		return
+	if currentConfig.autoFree {
+		runtime.AddCleanup(e, func(_ *struct{}) {
+			if !currentConfig.disablePooling {
+				ep.Put(e) // Return to pool when cleaned up
+			}
+		}, nil) // No additional context needed
 	}
-	runtime.AddCleanup(e, func(target *Error) {
-		if !currentConfig.disablePooling {
-			ep.Put(target)
-		}
-	}, e)
 }
 
-// clearCleanup is a no-op for Go 1.24+.
-// runtime.AddCleanup does not support cancellation; the double-put risk is
-// mitigated by Free() resetting the error before Put, making a second Put
-// of an already-reset error safe (it just returns a clean object to the pool).
-func (ep *ErrorPool) clearCleanup(_ *Error) {}
+// clearCleanup is a no-op for Go 1.24 and above.
+// Cleanup is managed by runtime.AddCleanup; no explicit removal is required.
+func (ep *ErrorPool) clearCleanup(e *Error) {
+	// No-op for Go 1.24+
+}

@@ -210,18 +210,12 @@ func (m *MultiError) Merge(other *MultiError) {
 		return
 	}
 
-	// Snapshot other's errors under its own read lock, then release before
-	// acquiring m's write lock inside Add. This prevents two bugs:
-	// Self-merge deadlock: when m == other, holding other.mu.RLock then
-	//      calling m.Add (which takes m.mu.Lock) deadlocks on the same mutex.
-	// Concurrent-write race: m had no lock protection during the loop,
-	//      so a concurrent Add on m could corrupt the slice.
 	other.mu.RLock()
-	snapshot := make([]error, len(other.errors))
-	copy(snapshot, other.errors)
-	other.mu.RUnlock()
+	defer other.mu.RUnlock()
 
-	m.Add(snapshot...)
+	for _, err := range other.errors {
+		m.Add(err)
+	}
 }
 
 // IsNull checks if the MultiError is empty or contains only null errors.
@@ -330,9 +324,9 @@ func (m *MultiError) MarshalJSON() ([]byte, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	// Get buffer from pool. Do NOT use defer for Put — see errors.go MarshalJSON
-	// for the full explanation. We must copy bytes out before returning the buf.
+	// Get buffer from pool for efficiency
 	buf := jsonBufferPool.Get().(*bytes.Buffer)
+	defer jsonBufferPool.Put(buf)
 	buf.Reset()
 
 	// Create encoder
@@ -366,10 +360,9 @@ func (m *MultiError) MarshalJSON() ([]byte, error) {
 		}
 		// Check if the error implements json.Marshaler
 		if marshaler, ok := err.(json.Marshaler); ok {
-			// Use marshalErr (not err) to avoid shadowing the loop variable.
-			marshaled, marshalErr := marshaler.MarshalJSON()
-			if marshalErr != nil {
-				// Fallback reports the ORIGINAL error message, not the marshal failure.
+			marshaled, err := marshaler.MarshalJSON()
+			if err != nil {
+				// Fallback to string if marshaling fails
 				je.Errors[i] = jsonError{Error: err.Error()}
 			} else {
 				var raw json.RawMessage = marshaled
@@ -386,14 +379,11 @@ func (m *MultiError) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("failed to marshal MultiError: %v", err)
 	}
 
-	// Copy out of buf's backing array before returning buf to pool.
-	raw := buf.Bytes()
-	if len(raw) > 0 && raw[len(raw)-1] == '\n' {
-		raw = raw[:len(raw)-1]
+	// Remove trailing newline
+	result := buf.Bytes()
+	if len(result) > 0 && result[len(result)-1] == '\n' {
+		result = result[:len(result)-1]
 	}
-	result := make([]byte, len(raw))
-	copy(result, raw)
-	jsonBufferPool.Put(buf)
 	return result, nil
 }
 

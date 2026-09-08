@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	nethttp "net/http"
 	"net/url"
 	"os"
 	"strconv"
 
-	"github.com/AlecAivazis/survey/v2"
+	"charm.land/huh/v2"
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
@@ -460,122 +459,107 @@ func interactiveCreate(ctx context.Context) (scalingo.SCMRepoLinkCreateParams, e
 	if config.C.DisableInteractive {
 		return params, errors.New(ctx, "need at least one integration link parameter")
 	}
-	qs := []*survey.Question{
-		{
-			Name:   "branch",
-			Prompt: &survey.Input{Message: "Branch to auto-deploy (empty to disable):"},
-		},
-		{
-			Name: "auto-review-apps",
-			Prompt: &survey.Confirm{
-				Message: "Automatically deploy review apps:",
-				Default: false,
-			},
-		},
-	}
+	var branch string
+	var autoReviewApps bool
+	destroyOnClose := true
+	answerHoursBeforeDestroyOnClose := "0"
+	var hoursBeforeDestroyOnClose uint
+	destroyOnStale := false
+	answerHoursBeforeDestroyOnStale := "0"
+	var hoursBeforeDestroyOnStale uint
+	var forksAllowed bool
 
-	answers := struct {
-		Branch         string
-		AutoReviewApps bool `survey:"auto-review-apps"`
-	}{}
-	err := survey.Ask(qs, &answers)
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewInput().
+				Title("Branch to auto-deploy (empty to disable):").
+				Value(&branch),
+			huh.NewConfirm().
+				Title("Automatically deploy review apps:").
+				Value(&autoReviewApps),
+		),
+		huh.NewGroup(huh.NewConfirm().
+			Title("Automatically destroy review apps when the pull/merge request is closed:").
+			Value(&destroyOnClose)).
+			WithHideFunc(func() bool { return !autoReviewApps }),
+		huh.NewGroup(huh.NewInput().
+			Title("Hours before automatically destroying the review apps:").
+			Placeholder("0").
+			Value(&answerHoursBeforeDestroyOnClose).
+			Validate(hoursBeforeDeleteValidator(ctx, &hoursBeforeDestroyOnClose))).
+			WithHideFunc(func() bool { return !autoReviewApps || !destroyOnClose }),
+		huh.NewGroup(huh.NewConfirm().
+			Title("Automatically destroy review apps after some time without deploy/commits:").
+			Value(&destroyOnStale)).
+			WithHideFunc(func() bool { return !autoReviewApps }),
+		huh.NewGroup(huh.NewInput().
+			Title("Hours before automatically destroying the review apps:").
+			Placeholder("0").
+			Value(&answerHoursBeforeDestroyOnStale).
+			Validate(hoursBeforeDeleteValidator(ctx, &hoursBeforeDestroyOnStale))).
+			WithHideFunc(func() bool { return !autoReviewApps || !destroyOnStale }),
+		huh.NewGroup(huh.NewConfirm().
+			Title("Allow automatic creation of review apps from forks?").
+			Description(reviewAppsFromForksSecurityWarning).
+			Value(&forksAllowed)).
+			WithHideFunc(func() bool { return !autoReviewApps }),
+	).RunWithContext(ctx)
 	if err != nil {
-		return params, errors.Wrapf(ctx, err, "error enquiring about branch and automatic review apps deployment")
+		return params, errors.Wrapf(ctx, err, "error enquiring about integration link parameters")
 	}
 
-	if answers.Branch != "" {
-		params.Branch = &answers.Branch
+	if branch != "" {
+		params.Branch = &branch
 		params.AutoDeployEnabled = utils.BoolPtr(true)
 	}
-	if !answers.AutoReviewApps {
+	if !autoReviewApps {
 		return params, nil
 	}
 
 	params.DeployReviewAppsEnabled = utils.BoolPtr(true)
-
-	destroyOnClose := true
-	err = survey.AskOne(&survey.Confirm{
-		Message: "Automatically destroy review apps when the pull/merge request is closed:",
-		Default: destroyOnClose,
-	}, &destroyOnClose, nil)
-	if err != nil {
-		return params, errors.Wrapf(ctx, err, "error enquiring about destroy on close")
-	}
 	params.DestroyOnCloseEnabled = &destroyOnClose
 	if destroyOnClose {
-		answerHoursBeforeDestroyOnClose := "0"
-		err = survey.AskOne(&survey.Input{
-			Message: "Hours before automatically destroying the review apps:",
-			Default: "0",
-		}, &answerHoursBeforeDestroyOnClose, survey.WithValidator(validateHoursBeforeDelete(ctx)))
-		if err != nil {
-			return params, errors.Wrapf(ctx, err, "error enquiring about review apps destroy delay")
-		}
-		hoursBeforeDestroyOnClose64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnClose, 10, 32)
-		hoursBeforeDestroyOnClose := uint(hoursBeforeDestroyOnClose64)
 		params.HoursBeforeDeleteOnClose = &hoursBeforeDestroyOnClose
-	}
-
-	destroyOnStale := false
-	err = survey.AskOne(&survey.Confirm{
-		Message: "Automatically destroy review apps after some time without deploy/commits:",
-		Default: destroyOnStale,
-	}, &destroyOnStale, nil)
-	if err != nil {
-		return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
 	}
 	params.DestroyStaleEnabled = &destroyOnStale
 	if destroyOnStale {
-		answerHoursBeforeDestroyOnStale := "0"
-		err = survey.AskOne(&survey.Input{
-			Message: "Hours before automatically destroying the review apps:",
-			Default: "0",
-		}, &answerHoursBeforeDestroyOnStale, survey.WithValidator(validateHoursBeforeDelete(ctx)))
-		if err != nil {
-			return params, errors.Wrapf(ctx, err, "error enquiring about stale review apps destroy")
-		}
-		hoursBeforeDestroyOnStale64, _ := strconv.ParseUint(answerHoursBeforeDestroyOnStale, 10, 32)
-		hoursBeforeDestroyOnStale := uint(hoursBeforeDestroyOnStale64)
 		params.HoursBeforeDeleteStale = &hoursBeforeDestroyOnStale
-	}
-
-	forksAllowed, err := askForConfirmationToAllowReviewAppsFromForks(ctx, "Allow automatic creation of review apps from forks?")
-	if err != nil {
-		return params, errors.Wrapf(ctx, err, "error enquiring about automatic review apps creation from forks")
 	}
 	params.AutomaticCreationFromForksAllowed = &forksAllowed
 
 	return params, nil
 }
 
-func validateHoursBeforeDelete(ctx context.Context) survey.Validator {
-	return func(ans any) error {
-		str, ok := ans.(string)
-		if !ok {
-			return errors.New(ctx, "must be a string")
+func hoursBeforeDeleteValidator(ctx context.Context, hoursBeforeDelete *uint) func(string) error {
+	return func(answer string) error {
+		if answer == "" {
+			*hoursBeforeDelete = 0
+			return nil
 		}
-		i, err := strconv.ParseInt(str, 10, 32)
+
+		hours, err := strconv.ParseInt(answer, 10, 32)
 		if err != nil {
 			return errors.Wrapf(ctx, err, "error parsing hours")
 		}
-		if i < 0 {
+		if hours < 0 {
 			return errors.New(ctx, "must be positive")
 		}
+		*hoursBeforeDelete = uint(hours)
 		return nil
 	}
 }
 
 func askForConfirmationToAllowReviewAppsFromForks(ctx context.Context, prompt string) (bool, error) {
-	fmt.Println()
-	io.Warning(reviewAppsFromForksSecurityWarning)
-	fmt.Println()
-
 	var confirmed bool
 
-	err := survey.AskOne(&survey.Confirm{
-		Message: prompt,
-		Default: false,
-	}, &confirmed, nil)
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title(prompt).
+				Description(reviewAppsFromForksSecurityWarning).
+				Value(&confirmed),
+		),
+	).RunWithContext(ctx)
 
 	if err != nil {
 		return false, errors.Wrap(ctx, err, "fail to confirm review apps from forks")

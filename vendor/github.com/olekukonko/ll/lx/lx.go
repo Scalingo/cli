@@ -21,11 +21,6 @@ const (
 // Set to false to prevent logging until explicitly enabled.
 const (
 	DefaultEnabled = true // Default state for new loggers (disabled)
-	True           = true
-	False          = false
-	Active         = 1
-	Inactive       = -1
-	Unknown        = 0
 )
 
 // Log level constants, ordered by increasing severity.
@@ -60,8 +55,6 @@ const (
 	InspectString = "INSPECT"
 	DbgString     = "DBG"
 	TimedString   = "TIMED"
-	StackString   = "STACK"
-	OutputString  = "OUTPUT"
 )
 
 // Log class constants, defining the type of log entry.
@@ -76,8 +69,6 @@ const (
 	ClassInspect                  // Inspect entries for debugging
 	ClassDbg                      // Inspect entries for debugging
 	ClassTimed                    // Inspect entries for debugging
-	ClassStack                    // Inspect entries for debugging
-	ClassOutput                   // Inspect entries for debugging
 	ClassUnknown                  // Unknown output
 )
 

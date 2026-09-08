@@ -120,7 +120,8 @@ var (
 			}
 
 			if disable {
-				continueB := askContinue("Disabling periodic backups will prevent Scalingo from restoring your database in case of data loss or corruption. Backups are a critical safeguard, and we strongly recommend keeping them enabled. Do you want to continue? (yes/no)")
+				description := "Disabling periodic backups will prevent Scalingo from restoring your database in case of data loss or corruption. Backups are a critical safeguard, and we strongly recommend keeping them enabled."
+				continueB := askContinue(ctx, "Do you want to disable the periodic backups?", description)
 				if !continueB {
 					errorQuit(ctx, errors.New(ctx, "periodic backups are still enabled"))
 					return nil
