@@ -29,11 +29,7 @@ func List(ctx context.Context) error {
 	t.Header([]string{"Name", "Default", "ID", "Private Network"})
 
 	for _, project := range projects {
-		hasPrivateNetwork := ""
-		if project.Flags["private-network"] {
-			hasPrivateNetwork = "true"
-		}
-		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID, hasPrivateNetwork})
+		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID, "true"})
 	}
 	_ = t.Render()
 
