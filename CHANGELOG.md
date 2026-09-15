@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.49.0
+
 * chore(deps): update go-scalingo to add support of missed database maintenance events
 * chore(deps): replace the unmaintained Survey prompt library with Huh
 * feat(cmd): add `valkey-console`
