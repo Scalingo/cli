@@ -160,6 +160,7 @@ const (
 	EventPlanDatabaseMaintenance         EventTypeName = "plan_database_maintenance"
 	EventStartDatabaseMaintenance        EventTypeName = "start_database_maintenance"
 	EventCompleteDatabaseMaintenance     EventTypeName = "complete_database_maintenance"
+	EventMissedDatabaseMaintenance       EventTypeName = "missed_database_maintenance"
 
 	// EventLinkGithub and EventUnlinkGithub events are kept for
 	// retro-compatibility. They are replaced by SCM events.
@@ -1032,6 +1033,29 @@ func (ev *EventCompleteDatabaseMaintenanceType) String() string {
 }
 
 func (ev *EventCompleteDatabaseMaintenanceType) Who() string {
+	return ev.Event.Who()
+}
+
+// Database maintenance missed
+type EventMissedDatabaseMaintenanceTypeData struct {
+	AddonName                string    `json:"addon_name"`
+	MaintenanceID            string    `json:"maintenance_id"`
+	MaintenanceWindowInHours int       `json:"maintenance_window_in_hours"`
+	MaintenanceType          string    `json:"maintenance_type"`
+	NextMaintenanceWindow    time.Time `json:"next_maintenance_window"`
+}
+
+type EventMissedDatabaseMaintenanceType struct {
+	Event
+
+	TypeData EventMissedDatabaseMaintenanceTypeData `json:"type_data"`
+}
+
+func (ev *EventMissedDatabaseMaintenanceType) String() string {
+	return fmt.Sprintf("The maintenance (ID: %s) affecting the %s database has been postponed to a later window", ev.TypeData.MaintenanceID, ev.TypeData.AddonName)
+}
+
+func (ev *EventMissedDatabaseMaintenanceType) Who() string {
 	return ev.Event.Who()
 }
 
