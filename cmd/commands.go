@@ -194,6 +194,9 @@ var (
 		&forceHTTPSCommand,
 		&stickySessionCommand,
 		&routerLogsCommand,
+		&appFirewallRulesCommand,
+		&appFirewallRuleAddCommand,
+		&appFirewallRuleRemoveCommand,
 		&setCanonicalDomainCommand,
 		&unsetCanonicalDomainCommand,
 

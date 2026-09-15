@@ -100,27 +100,30 @@ COMMANDS:
      alerts-remove   Remove an alert from an application
 
    App Management:
-     destroy                 Destroy an app /!\
-     rename                  Rename an application
-     apps-info               Display the application information
-     open                    Open app on default web browser
-     dashboard               Open app dashboard on default web browser
-     project-set             Set the project of an app
-     logs, l                 Get the logs of your applications
-     logs-archives, la       Get the logs archives of your applications and databases
-     run, r                  Run any command for your app
-     bash                    Run bash for your app
-     one-off-stop            Stop a running one-off container
-     ps                      Display your application containers
-     scale, s                Scale your application instantly
-     restart                 Restart processes of your app
-     send-signal, kill       Send SIGUSR1 or SIGUSR2 to your application containers
-     force-https             Enable/Disable automatic redirection of traffic to HTTPS for your application
-     sticky-session          Enable/Disable sticky sessions for your application
-     router-logs             Enable/disable router logs for your application
-     set-canonical-domain    Set a canonical domain.
-     unset-canonical-domain  Unset a canonical domain.
-     db-tunnel               Create an encrypted connection to access your database
+     destroy                  Destroy an app /!\
+     rename                   Rename an application
+     apps-info                Display the application information
+     open                     Open app on default web browser
+     dashboard                Open app dashboard on default web browser
+     project-set              Set the project of an app
+     logs, l                  Get the logs of your applications
+     logs-archives, la        Get the logs archives of your applications and databases
+     run, r                   Run any command for your app
+     bash                     Run bash for your app
+     one-off-stop             Stop a running one-off container
+     ps                       Display your application containers
+     scale, s                 Scale your application instantly
+     restart                  Restart processes of your app
+     send-signal, kill        Send SIGUSR1 or SIGUSR2 to your application containers
+     force-https              Enable/Disable automatic redirection of traffic to HTTPS for your application
+     sticky-session           Enable/Disable sticky sessions for your application
+     router-logs              Enable/disable router logs for your application
+     app-firewall-rules       List IPv4 CIDR firewall rules for your application
+     app-firewall-rule-add    Add an IPv4 CIDR firewall rule for your application
+     app-firewall-rule-remove Remove an IPv4 CIDR firewall rule from your application
+     set-canonical-domain     Set a canonical domain.
+     unset-canonical-domain   Unset a canonical domain.
+     db-tunnel                Create an encrypted connection to access your database
 
    Autoscalers:
      autoscalers          List the autoscalers of an application
