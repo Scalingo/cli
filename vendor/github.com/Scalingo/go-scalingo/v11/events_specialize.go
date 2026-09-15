@@ -184,6 +184,8 @@ func (pev *Event) Specialize() DetailedEvent {
 		e = &EventStartDatabaseMaintenanceType{Event: ev}
 	case EventCompleteDatabaseMaintenance:
 		e = &EventCompleteDatabaseMaintenanceType{Event: ev}
+	case EventMissedDatabaseMaintenance:
+		e = &EventMissedDatabaseMaintenanceType{Event: ev}
 	case EventLinkGithub:
 		e = &EventLinkGithubType{Event: ev}
 	case EventUnlinkGithub:

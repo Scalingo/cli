@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 11.4.0
+
+* feat: add `MissedDatabaseMaintenance` event
+
 ## 11.3.0
 
 * feat(databases): Add new method to get recovery window for PITR
