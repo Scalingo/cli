@@ -141,13 +141,13 @@ func AppFirewallRuleRemove(ctx context.Context, appName string, ruleID string) e
 	return nil
 }
 
-func ValidateIPv4CIDR(cidr string) error {
+func validateIPv4CIDR(ctx context.Context, cidr string) error {
 	prefix, err := netip.ParsePrefix(cidr)
 	if err != nil {
-		return errors.Newf(context.Background(), "invalid IPv4 CIDR %q", cidr)
+		return errors.Newf(ctx, "invalid IPv4 CIDR %q", cidr)
 	}
 	if !prefix.Addr().Is4() {
-		return errors.Newf(context.Background(), "invalid IPv4 CIDR %q: IPv6 prefixes are not supported", cidr)
+		return errors.Newf(ctx, "invalid IPv4 CIDR %q: IPv6 prefixes are not supported", cidr)
 	}
 	return nil
 }
