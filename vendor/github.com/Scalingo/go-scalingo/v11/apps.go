@@ -35,6 +35,10 @@ type AppsService interface {
 	AppsContainersPs(ctx context.Context, app string) ([]Container, error)
 	AppsScale(ctx context.Context, app string, params *AppsScaleParams) ([]ContainerType, string, error)
 	AppsForceHTTPS(ctx context.Context, name string, enable bool) (*App, error)
+	AppsFirewallRulesList(ctx context.Context, name string) ([]AppFirewallRule, error)
+	AppsFirewallRuleShow(ctx context.Context, name string, ruleID string) (*AppFirewallRule, error)
+	AppsFirewallRuleCreate(ctx context.Context, name string, params AppFirewallRuleParams) (*AppFirewallRule, error)
+	AppsFirewallRuleDelete(ctx context.Context, name string, ruleID string) error
 	AppsStickySession(ctx context.Context, name string, enable bool) (*App, error)
 	AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error)
 }
@@ -84,8 +88,32 @@ type AppsCreateOpts struct {
 	HDSResource bool   `json:"hds_resource,omitempty"`
 }
 
+type AppFirewallRule struct {
+	ID    string `json:"id"`
+	AppID string `json:"app_id"`
+	CIDR  string `json:"cidr"`
+	Label string `json:"label"`
+}
+
+type AppFirewallRuleParams struct {
+	CIDR  string `json:"cidr,omitempty"`
+	Label string `json:"label"`
+}
+
+type AppFirewallRuleCreateParamsPayload struct {
+	Rule AppFirewallRuleParams `json:"firewall_rule"`
+}
+
 type AppResponse struct {
 	App *App `json:"app"`
+}
+
+type AppFirewallRuleResponse struct {
+	Rule *AppFirewallRule `json:"firewall_rule"`
+}
+
+type AppFirewallRulesResponse struct {
+	Rules []AppFirewallRule `json:"firewall_rules"`
 }
 
 type AppsRestartParams struct {
@@ -349,6 +377,62 @@ func (c *Client) AppsForceHTTPS(ctx context.Context, name string, enable bool) (
 	})
 }
 
+func (c *Client) AppsFirewallRulesList(ctx context.Context, name string) ([]AppFirewallRule, error) {
+	var rulesRes AppFirewallRulesResponse
+	req := &httpclient.APIRequest{
+		Endpoint: "/apps/" + name + "/firewall_rules",
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, &rulesRes)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list app firewall rules")
+	}
+
+	return rulesRes.Rules, nil
+}
+
+func (c *Client) AppsFirewallRuleShow(ctx context.Context, name string, ruleID string) (*AppFirewallRule, error) {
+	var ruleRes AppFirewallRuleResponse
+	req := &httpclient.APIRequest{
+		Endpoint: "/apps/" + name + "/firewall_rules/" + ruleID,
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, &ruleRes)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "show app firewall rule")
+	}
+
+	return ruleRes.Rule, nil
+}
+
+func (c *Client) AppsFirewallRuleCreate(ctx context.Context, name string, params AppFirewallRuleParams) (*AppFirewallRule, error) {
+	var ruleRes AppFirewallRuleResponse
+	req := &httpclient.APIRequest{
+		Method:   http.MethodPost,
+		Endpoint: "/apps/" + name + "/firewall_rules",
+		Expected: httpclient.Statuses{http.StatusCreated, http.StatusOK},
+		Params:   AppFirewallRuleCreateParamsPayload{Rule: params},
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, &ruleRes)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "create app firewall rule")
+	}
+
+	return ruleRes.Rule, nil
+}
+
+func (c *Client) AppsFirewallRuleDelete(ctx context.Context, name string, ruleID string) error {
+	req := &httpclient.APIRequest{
+		Method:   http.MethodDelete,
+		Endpoint: "/apps/" + name + "/firewall_rules/" + ruleID,
+		Expected: httpclient.Statuses{http.StatusNoContent},
+	}
+	err := c.ScalingoAPI().DoRequest(ctx, req, nil)
+	if err != nil {
+		return errors.Wrap(ctx, err, "delete app firewall rule")
+	}
+
+	return nil
+}
+
 func (c *Client) AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error) {
 	return c.appsUpdate(ctx, name, map[string]any{
 		"router_logs": enable,
@@ -370,7 +454,7 @@ func (c *Client) AppsSetProject(ctx context.Context, name string, projectID stri
 func (c *Client) appsUpdate(ctx context.Context, name string, params map[string]any) (*App, error) {
 	var appRes *AppResponse
 	req := &httpclient.APIRequest{
-		Method:   "PUT",
+		Method:   http.MethodPut,
 		Endpoint: "/apps/" + name,
 		Expected: httpclient.Statuses{http.StatusOK},
 		Params:   params,

@@ -77,6 +77,8 @@ const (
 	EventNewUser                         EventTypeName = "new_user"
 	EventNewApp                          EventTypeName = "new_app"
 	EventEditApp                         EventTypeName = "edit_app"
+	EventNewAppFirewallRule              EventTypeName = "new_app_firewall_rule"
+	EventDeleteAppFirewallRule           EventTypeName = "delete_app_firewall_rule"
 	EventDeleteApp                       EventTypeName = "delete_app"
 	EventRenameApp                       EventTypeName = "rename_app"
 	EventUpdateAppProject                EventTypeName = "update_app_project"

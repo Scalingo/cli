@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 11.5.0
+
+* feat(firewall rules) Add application firewall rules
+
 ## 11.4.0
 
 * feat: add `MissedDatabaseMaintenance` event

@@ -41,6 +41,32 @@ func (ev *EventEditAppType) String() string {
 	return base
 }
 
+type EventAppFirewallRuleTypeData struct {
+	RuleID string `json:"rule_id"`
+	CIDR   string `json:"cidr"`
+	Label  string `json:"label"`
+}
+
+type EventNewAppFirewallRuleType struct {
+	Event
+
+	TypeData EventAppFirewallRuleTypeData `json:"type_data"`
+}
+
+func (ev *EventNewAppFirewallRuleType) String() string {
+	return fmt.Sprintf("app firewall rule '%s' has been added", ev.TypeData.CIDR)
+}
+
+type EventDeleteAppFirewallRuleType struct {
+	Event
+
+	TypeData EventAppFirewallRuleTypeData `json:"type_data"`
+}
+
+func (ev *EventDeleteAppFirewallRuleType) String() string {
+	return fmt.Sprintf("app firewall rule '%s' has been deleted", ev.TypeData.CIDR)
+}
+
 type EventDeleteAppType struct {
 	Event
 }
