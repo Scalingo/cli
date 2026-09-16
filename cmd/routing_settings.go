@@ -121,7 +121,7 @@ var (
 	}
 
 	appFirewallRulesCommand = cli.Command{
-		Name:     "app-firewall-rules",
+		Name:     "app-firewall-rules", //nolint: goconst
 		Category: "App Management",
 		Usage:    "List IPv4 CIDR firewall rules for your application",
 		Flags: []cli.Flag{
@@ -132,7 +132,7 @@ var (
 			Examples: []string{
 				"scalingo --app my-app app-firewall-rules",
 			},
-			SeeAlso: []string{"app-firewall-rule-add", "app-firewall-rule-remove"},
+			SeeAlso: []string{"app-firewall-rule-add", "app-firewall-rule-remove"}, //nolint: goconst
 		}.Render(),
 
 		Action: func(ctx context.Context, c *cli.Command) error {
@@ -154,10 +154,9 @@ var (
 	}
 
 	appFirewallRuleAddCommand = cli.Command{
-		Name:      "app-firewall-rule-add",
-		Category:  "App Management",
-		Usage:     "Add an IPv4 CIDR firewall rule for your application",
-		ArgsUsage: "cidr",
+		Name:     "app-firewall-rule-add", //nolint: goconst
+		Category: "App Management",
+		Usage:    "Add an IPv4 CIDR firewall rule for your application",
 		Flags: []cli.Flag{
 			&appFlag,
 			&cli.StringFlag{Name: "cidr", Usage: "IPv4 CIDR to allow", Required: true},
@@ -169,7 +168,7 @@ var (
 				"scalingo --app my-app app-firewall-rule-add 203.0.113.42/32 --label office",
 				"scalingo --app my-app app-firewall-rule-add --cidr 10.0.0.0/24",
 			},
-			SeeAlso: []string{"app-firewall-rules", "app-firewall-rule-remove"},
+			SeeAlso: []string{"app-firewall-rules", "app-firewall-rule-remove"}, //nolint: goconst
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			currentApp := detect.CurrentApp(ctx, c)
