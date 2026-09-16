@@ -160,7 +160,7 @@ var (
 		ArgsUsage: "cidr",
 		Flags: []cli.Flag{
 			&appFlag,
-			&cli.StringFlag{Name: "cidr", Usage: "IPv4 CIDR to allow"},
+			&cli.StringFlag{Name: "cidr", Usage: "IPv4 CIDR to allow", Required: true},
 			&cli.StringFlag{Name: "label", Usage: "Optional label attached to the rule"},
 		},
 		Description: CommandDescription{
