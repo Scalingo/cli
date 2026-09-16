@@ -6,7 +6,7 @@ import (
 
 const (
 	// maxFileLength is the max file length.
-	maxFileLength = 32768
+	maxFileLength = 4096
 	// magic is the file magic for terminfo files.
 	magic = 0o432
 	// magicExtended is the file magic for terminfo files with the extended

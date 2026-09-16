@@ -308,6 +308,65 @@ func (mr *MockAPIMockRecorder) AppsDestroy(ctx, name, currentName any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsDestroy", reflect.TypeOf((*MockAPI)(nil).AppsDestroy), ctx, name, currentName)
 }
 
+// AppsFirewallRuleCreate mocks base method.
+func (m *MockAPI) AppsFirewallRuleCreate(ctx context.Context, name string, params scalingo.AppFirewallRuleParams) (*scalingo.AppFirewallRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsFirewallRuleCreate", ctx, name, params)
+	ret0, _ := ret[0].(*scalingo.AppFirewallRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsFirewallRuleCreate indicates an expected call of AppsFirewallRuleCreate.
+func (mr *MockAPIMockRecorder) AppsFirewallRuleCreate(ctx, name, params any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsFirewallRuleCreate", reflect.TypeOf((*MockAPI)(nil).AppsFirewallRuleCreate), ctx, name, params)
+}
+
+// AppsFirewallRuleDelete mocks base method.
+func (m *MockAPI) AppsFirewallRuleDelete(ctx context.Context, name, ruleID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsFirewallRuleDelete", ctx, name, ruleID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AppsFirewallRuleDelete indicates an expected call of AppsFirewallRuleDelete.
+func (mr *MockAPIMockRecorder) AppsFirewallRuleDelete(ctx, name, ruleID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsFirewallRuleDelete", reflect.TypeOf((*MockAPI)(nil).AppsFirewallRuleDelete), ctx, name, ruleID)
+}
+
+// AppsFirewallRuleShow mocks base method.
+func (m *MockAPI) AppsFirewallRuleShow(ctx context.Context, name, ruleID string) (*scalingo.AppFirewallRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsFirewallRuleShow", ctx, name, ruleID)
+	ret0, _ := ret[0].(*scalingo.AppFirewallRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsFirewallRuleShow indicates an expected call of AppsFirewallRuleShow.
+func (mr *MockAPIMockRecorder) AppsFirewallRuleShow(ctx, name, ruleID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsFirewallRuleShow", reflect.TypeOf((*MockAPI)(nil).AppsFirewallRuleShow), ctx, name, ruleID)
+}
+
+// AppsFirewallRulesList mocks base method.
+func (m *MockAPI) AppsFirewallRulesList(ctx context.Context, name string) ([]scalingo.AppFirewallRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsFirewallRulesList", ctx, name)
+	ret0, _ := ret[0].([]scalingo.AppFirewallRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsFirewallRulesList indicates an expected call of AppsFirewallRulesList.
+func (mr *MockAPIMockRecorder) AppsFirewallRulesList(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsFirewallRulesList", reflect.TypeOf((*MockAPI)(nil).AppsFirewallRulesList), ctx, name)
+}
+
 // AppsForceHTTPS mocks base method.
 func (m *MockAPI) AppsForceHTTPS(ctx context.Context, name string, enable bool) (*scalingo.App, error) {
 	m.ctrl.T.Helper()

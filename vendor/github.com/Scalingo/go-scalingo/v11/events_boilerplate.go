@@ -15,6 +15,14 @@ func (e *EventEditAppType) TypeDataPtr() any {
 	return &e.TypeData
 }
 
+func (e *EventNewAppFirewallRuleType) TypeDataPtr() any {
+	return &e.TypeData
+}
+
+func (e *EventDeleteAppFirewallRuleType) TypeDataPtr() any {
+	return &e.TypeData
+}
+
 func (e *EventDeleteAppType) TypeDataPtr() any {
 	return &e.TypeData
 }

@@ -56,7 +56,7 @@ github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v11 v11.4.0
+# github.com/Scalingo/go-scalingo/v11 v11.5.0
 ## explicit; go 1.25.0
 github.com/Scalingo/go-scalingo/v11
 github.com/Scalingo/go-scalingo/v11/billing
@@ -329,7 +329,7 @@ github.com/urfave/cli/v3
 # github.com/xanzy/ssh-agent v0.3.3
 ## explicit; go 1.16
 github.com/xanzy/ssh-agent
-# github.com/xo/terminfo v1.0.0
+# github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e
 ## explicit; go 1.19
 github.com/xo/terminfo
 # go.uber.org/mock v0.6.0

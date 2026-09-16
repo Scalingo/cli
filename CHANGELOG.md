@@ -12,6 +12,7 @@
 
 * feat(pitr): add command to fetch recovery window of a database
 * feat(pitr): add command to restore a database to a specific point in time
+* feat(app-firewall-rules): Add commands to manage application firewall rules
 
 ## v1.47.0
 
