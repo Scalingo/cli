@@ -118,9 +118,6 @@ COMMANDS:
      force-https              Enable/Disable automatic redirection of traffic to HTTPS for your application
      sticky-session           Enable/Disable sticky sessions for your application
      router-logs              Enable/disable router logs for your application
-     app-firewall-rules       List IPv4 CIDR firewall rules for your application
-     app-firewall-rule-add    Add an IPv4 CIDR firewall rule for your application
-     app-firewall-rule-remove Remove an IPv4 CIDR firewall rule from your application
      set-canonical-domain     Set a canonical domain.
      unset-canonical-domain   Unset a canonical domain.
      db-tunnel                Create an encrypted connection to access your database

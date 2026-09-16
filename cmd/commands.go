@@ -194,9 +194,6 @@ var (
 		&forceHTTPSCommand,
 		&stickySessionCommand,
 		&routerLogsCommand,
-		&appFirewallRulesCommand,
-		&appFirewallRuleAddCommand,
-		&appFirewallRuleRemoveCommand,
 		&setCanonicalDomainCommand,
 		&unsetCanonicalDomainCommand,
 
@@ -358,6 +355,11 @@ var (
 		&databaseNetPeeringsAddCommand,
 		&databaseNetPeeringsRemoveCommand,
 		&databaseNetworkConfigurationShowCommand,
+
+		// App firewall rules
+		&appFirewallRulesCommand,
+		&appFirewallRuleAddCommand,
+		&appFirewallRuleRemoveCommand,
 	}
 
 	globalCommands = []*cli.Command{
