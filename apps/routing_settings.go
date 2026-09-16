@@ -16,12 +16,12 @@ import (
 func ForceHTTPS(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	_, err = c.AppsForceHTTPS(ctx, appName, enable)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to configure force-https feature")
+		return errors.Wrapf(ctx, err, "configure force-https feature")
 	}
 
 	var action string
@@ -38,11 +38,11 @@ func ForceHTTPS(ctx context.Context, appName string, enable bool) error {
 func StickySession(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 	_, err = c.AppsStickySession(ctx, appName, enable)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to configure sticky-session feature")
+		return errors.Wrapf(ctx, err, "configure sticky-session feature")
 	}
 
 	var action string
@@ -59,12 +59,12 @@ func StickySession(ctx context.Context, appName string, enable bool) error {
 func RouterLogs(ctx context.Context, appName string, enable bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	_, err = c.AppsRouterLogs(ctx, appName, enable)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to configure router-logs feature")
+		return errors.Wrapf(ctx, err, "configure router-logs feature")
 	}
 
 	var action string
@@ -81,12 +81,12 @@ func RouterLogs(ctx context.Context, appName string, enable bool) error {
 func AppFirewallRulesList(ctx context.Context, appName string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	rules, err := c.AppsFirewallRulesList(ctx, appName)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to list app firewall rules")
+		return errors.Wrapf(ctx, err, "list app firewall rules")
 	}
 
 	if len(rules) == 0 {
@@ -104,14 +104,14 @@ func AppFirewallRulesList(ctx context.Context, appName string) error {
 }
 
 func AppFirewallRuleAdd(ctx context.Context, appName string, cidr string, label string) error {
-	err := ValidateIPv4CIDR(cidr)
+	err := validateIPv4CIDR(ctx, cidr)
 	if err != nil {
 		return err
 	}
 
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	rule, err := c.AppsFirewallRuleCreate(ctx, appName, scalingo.AppFirewallRuleParams{
@@ -119,7 +119,7 @@ func AppFirewallRuleAdd(ctx context.Context, appName string, cidr string, label 
 		Label: label,
 	})
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to add app firewall rule")
+		return errors.Wrapf(ctx, err, "add app firewall rule")
 	}
 
 	io.Statusf("app firewall rule %s has been added to %s\n", rule.ID, appName)
@@ -129,12 +129,12 @@ func AppFirewallRuleAdd(ctx context.Context, appName string, cidr string, label 
 func AppFirewallRuleRemove(ctx context.Context, appName string, ruleID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrapf(ctx, err, "get Scalingo client")
 	}
 
 	err = c.AppsFirewallRuleDelete(ctx, appName, ruleID)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to remove app firewall rule")
+		return errors.Wrapf(ctx, err, "remove app firewall rule")
 	}
 
 	io.Statusf("app firewall rule %s has been removed from %s\n", ruleID, appName)
