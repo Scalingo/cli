@@ -46,13 +46,11 @@ func Get(ctx context.Context, projectID string) error {
 		_ = t.Append([]string{" - Total number of assignable IPs", strconv.Itoa(privateNetworkInfo.MaxIPsCount)})
 		_ = t.Append([]string{" - Used IPs count", strconv.Itoa(privateNetworkInfo.UsedIPsCount)})
 
-		if len(privateNetworkInfo.UsedIPs) == 0 {
-			_ = t.Append([]string{" - Used IPs", "None"})
-		} else {
+		if len(privateNetworkInfo.UsedIPs) > 0 {
 			_ = t.Append([]string{" - Used IPs", privateNetworkInfo.UsedIPs[0]})
-		}
-		for _, usedIP := range privateNetworkInfo.UsedIPs[1:] {
-			_ = t.Append([]string{"", usedIP})
+			for _, usedIP := range privateNetworkInfo.UsedIPs[1:] {
+				_ = t.Append([]string{"", usedIP})
+			}
 		}
 	}
 
