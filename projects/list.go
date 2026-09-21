@@ -26,10 +26,10 @@ func List(ctx context.Context) error {
 	io.Warning("This command only displays projects where you are the owner")
 
 	t := tablewriter.NewWriter(os.Stdout)
-	t.Header([]string{"Name", "Default", "ID", "Private Network"})
+	t.Header([]string{"Name", "Default", "ID"})
 
 	for _, project := range projects {
-		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID, "true"})
+		_ = t.Append([]string{project.Name, strconv.FormatBool(project.Default), project.ID})
 	}
 	_ = t.Render()
 
