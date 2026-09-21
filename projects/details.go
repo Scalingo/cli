@@ -33,6 +33,7 @@ func Get(ctx context.Context, projectID string) error {
 	_ = t.Append([]string{"Owner", project.Owner.Username})
 
 	_ = t.Append([]string{"", ""})
+	_ = t.Append([]string{"Private Network", ""})
 
 	privateNetworkInfo, err := client.ProjectPrivateNetworkGet(ctx, projectID)
 	if err != nil {
