@@ -31,14 +31,14 @@ var (
 
 func Auth(ctx context.Context) (*scalingo.User, string, error) {
 	var user *scalingo.User
-	var tokens string
+	var apiToken scalingo.Token
 	var err error
 
 	if C.DisableInteractive {
 		err = errors.New(ctx, "Fail to login (interactive mode disabled)")
 	} else {
 		for i := range 3 {
-			user, tokens, err = tryAuth(ctx)
+			user, apiToken, err = tryAuth(ctx)
 			if err == nil {
 				break
 			} else if errors.Is(err, io.EOF) {
@@ -57,15 +57,15 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 
 	fmt.Print("\n")
 	appio.Statusf("Hello %s, nice to see you!\n\n", user.Username)
-	err = SetCurrentUser(ctx, user, tokens)
+	err = SetCurrentUser(ctx, user, auth.UserToken{Token: apiToken.Token, ID: apiToken.ID})
 	if err != nil {
 		return nil, "", errors.Wrapf(ctx, err, "set current user")
 	}
 
-	return user, tokens, nil
+	return user, apiToken.Token, nil
 }
 
-func SetCurrentUser(ctx context.Context, user *scalingo.User, token string) error {
+func SetCurrentUser(ctx context.Context, user *scalingo.User, token auth.UserToken) error {
 	authenticator := &CliAuthenticator{}
 	err := authenticator.StoreAuth(ctx, user, token)
 	if err != nil {
@@ -74,7 +74,7 @@ func SetCurrentUser(ctx context.Context, user *scalingo.User, token string) erro
 	return nil
 }
 
-func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, token string) error {
+func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, token auth.UserToken) error {
 	authConfig, err := existingAuth(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "read existing authentication config")
@@ -93,10 +93,8 @@ func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, t
 	}
 
 	c[authHost] = auth.CredentialsData{
-		Tokens: &auth.UserToken{
-			Token: token,
-		},
-		User: user,
+		Tokens: &token,
+		User:   user,
 	}
 
 	authConfig.LastUpdate = time.Now()
@@ -204,7 +202,7 @@ func (a *CliAuthenticator) authHost(ctx context.Context) (string, error) {
 	return strings.Split(u.Host, ":")[0], nil
 }
 
-func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
+func tryAuth(ctx context.Context) (*scalingo.User, scalingo.Token, error) {
 	var login string
 	var err error
 
@@ -215,14 +213,14 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			if strings.Contains(err.Error(), "unexpected newline") {
 				continue
 			}
-			return nil, "", errors.Wrapf(ctx, err, "read username")
+			return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "read username")
 		}
 		login = strings.TrimRight(login, "\n")
 	}
 
 	password, err := term.Password(ctx, "       Password: ")
 	if err != nil {
-		return nil, "", errors.Wrapf(ctx, err, "read password")
+		return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "read password")
 	}
 	fmt.Printf("\n")
 
@@ -231,7 +229,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 	c, err := ScalingoUnauthenticatedAuthClient(ctx)
 	if err != nil {
-		return nil, "", errors.Wrapf(ctx, err, "fail to create an unauthenticated Scalingo client")
+		return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "fail to create an unauthenticated Scalingo client")
 	}
 
 	loginParams := scalingo.LoginParams{}
@@ -249,7 +247,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 		hostname, err := os.Hostname()
 		if err != nil {
-			return nil, "", errors.Wrapf(ctx, err, "fail to get current hostname")
+			return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "fail to get current hostname")
 		}
 
 		apiToken, err = c.TokenCreateWithLogin(ctx, scalingo.TokenCreateParams{
@@ -259,7 +257,7 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 			if !otpRequired && scalingohttp.IsOTPRequired(err) {
 				otpRequired = true
 			} else {
-				return nil, "", errors.Wrapf(ctx, err, "fail to create API token")
+				return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "fail to create API token")
 			}
 		} else {
 			retryAuth = false
@@ -268,14 +266,14 @@ func tryAuth(ctx context.Context) (*scalingo.User, string, error) {
 
 	client, err := ScalingoAuthClientFromToken(ctx, apiToken.Token)
 	if err != nil {
-		return nil, "", errors.Wrapf(ctx, err, "fail to create an authenticated Scalingo client using the API token")
+		return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "fail to create an authenticated Scalingo client using the API token")
 	}
 	userInformation, err := client.Self(ctx)
 	if err != nil {
-		return nil, "", errors.Wrapf(ctx, err, "fail to get account data")
+		return nil, scalingo.Token{}, errors.Wrapf(ctx, err, "fail to get account data")
 	}
 
-	return userInformation, apiToken.Token, nil
+	return userInformation, apiToken, nil
 }
 
 func writeAuthFile(ctx context.Context, authConfig *auth.ConfigData) error {
