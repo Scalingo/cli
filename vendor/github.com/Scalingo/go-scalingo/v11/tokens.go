@@ -15,6 +15,7 @@ type TokensService interface {
 	TokenCreate(context.Context, TokenCreateParams) (Token, error)
 	TokenExchange(ctx context.Context, token string) (string, error)
 	TokenShow(ctx context.Context, id int) (Token, error)
+	TokenDelete(ctx context.Context, id string) error
 }
 
 var _ TokensService = (*Client)(nil)
@@ -136,6 +137,14 @@ func (c *Client) TokenShow(ctx context.Context, id int) (Token, error) {
 	}
 
 	return tokenRes.Token, nil
+}
+
+func (c *Client) TokenDelete(ctx context.Context, id string) error {
+	err := c.AuthAPI().ResourceDelete(ctx, "tokens", id)
+	if err != nil {
+		return errors.Wrap(ctx, err, "delete token")
+	}
+	return nil
 }
 
 func (c *Client) GetAccessToken(ctx context.Context) (string, error) {

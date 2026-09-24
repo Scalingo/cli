@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 ## 1.49.0
 
 * chore(deps): update go-scalingo to add support of missed database maintenance events

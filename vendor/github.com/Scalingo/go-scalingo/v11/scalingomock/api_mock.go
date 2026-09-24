@@ -1650,6 +1650,20 @@ func (mr *MockAPIMockRecorder) TokenCreate(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TokenCreate", reflect.TypeOf((*MockAPI)(nil).TokenCreate), arg0, arg1)
 }
 
+// TokenDelete mocks base method.
+func (m *MockAPI) TokenDelete(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TokenDelete", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// TokenDelete indicates an expected call of TokenDelete.
+func (mr *MockAPIMockRecorder) TokenDelete(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TokenDelete", reflect.TypeOf((*MockAPI)(nil).TokenDelete), ctx, id)
+}
+
 // TokenExchange mocks base method.
 func (m *MockAPI) TokenExchange(ctx context.Context, token string) (string, error) {
 	m.ctrl.T.Helper()
