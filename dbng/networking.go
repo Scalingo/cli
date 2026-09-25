@@ -19,7 +19,7 @@ func DatabaseEndpointsList(ctx context.Context, databaseID string) error {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	endpoints, err := c.Preview().DatabaseEndpointsList(ctx, databaseID)
+	endpoints, err := c.Preview().DatabaseEndpointsList(ctx, databaseID, scalingo.DatabaseEndpointsListParams{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "list database endpoints")
 	}

@@ -14,12 +14,22 @@ const (
 	DatabaseEndpointTypePrivatePeeringRW DatabaseEndpointType = "private-peering-rw"
 )
 
+type DatabaseEndpointCredentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 type DatabaseEndpoint struct {
-	ID         string               `json:"id"`
-	DatabaseID string               `json:"database_id"`
-	Hostname   string               `json:"hostname"`
-	Port       int                  `json:"port"`
-	Type       DatabaseEndpointType `json:"type"`
+	ID          string                       `json:"id"`
+	DatabaseID  string                       `json:"database_id"`
+	Hostname    string                       `json:"hostname"`
+	Port        int                          `json:"port"`
+	Type        DatabaseEndpointType         `json:"type"`
+	Credentials *DatabaseEndpointCredentials `json:"credentials,omitempty"`
+}
+
+type DatabaseEndpointsListParams struct {
+	IncludeDefaultCredentials bool `json:"include_default_credentials"`
 }
 
 type DatabaseEndpointsResponse struct {
@@ -67,10 +77,12 @@ type DatabaseNetworkConfigurationResponse struct {
 	NetworkConfiguration DatabaseNetworkConfiguration `json:"network_configuration"`
 }
 
-func (c *PreviewClient) DatabaseEndpointsList(ctx context.Context, databaseID string) ([]DatabaseEndpoint, error) {
+func (c *PreviewClient) DatabaseEndpointsList(ctx context.Context, databaseID string, params DatabaseEndpointsListParams) ([]DatabaseEndpoint, error) {
 	var res DatabaseEndpointsResponse
 
-	err := c.parent.ScalingoAPI().SubresourceList(ctx, databasesResource, databaseID, databaseEndpointsResource, nil, &res)
+	err := c.parent.ScalingoAPI().SubresourceList(ctx, databasesResource, databaseID, databaseEndpointsResource, map[string]any{
+		"include_default_credentials": params.IncludeDefaultCredentials,
+	}, &res)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list database endpoints")
 	}

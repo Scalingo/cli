@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/config/auth"
 	"github.com/Scalingo/cli/io"
 	netssh "github.com/Scalingo/cli/net/ssh"
 	"github.com/Scalingo/go-scalingo/v11"
@@ -58,7 +59,8 @@ func loginWithUserAndPassword(ctx context.Context) error {
 }
 
 func loginWithToken(ctx context.Context, token string) error {
-	err := finalizeLogin(ctx, token)
+	// The token has been provided by the user and may be used elsewhere. We don't store its ID so that it is not revoked at logout.
+	err := finalizeLogin(ctx, auth.UserToken{Token: token})
 	if err != nil {
 		return errors.Wrapf(ctx, err, "token invalid")
 	}
@@ -133,15 +135,15 @@ func loginWithSSH(ctx context.Context, identity string) error {
 		return errors.Wrapf(ctx, err, "fail to create API token")
 	}
 
-	err = finalizeLogin(ctx, token.Token)
+	err = finalizeLogin(ctx, auth.UserToken{Token: token.Token, ID: token.ID})
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to finalize login")
 	}
 	return nil
 }
 
-func finalizeLogin(ctx context.Context, token string) error {
-	c, err := config.ScalingoAuthClientFromToken(ctx, token)
+func finalizeLogin(ctx context.Context, token auth.UserToken) error {
+	c, err := config.ScalingoAuthClientFromToken(ctx, token.Token)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "fail to create an authenticated Scalingo client using the API token")
 	}

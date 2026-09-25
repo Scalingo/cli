@@ -33,4 +33,6 @@ type ConfigPerHostV2 map[string]CredentialsData
 
 type UserToken struct {
 	Token string `json:"token"`
+	// ID is only set when the token has been created by the CLI at login. It is used to revoke the token at logout.
+	ID string `json:"id,omitempty"`
 }

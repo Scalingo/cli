@@ -23,14 +23,15 @@ var (
 				errorQuit(ctx, err)
 			}
 			if currentUser == nil {
-				io.Status("You are already logged out.")
+				io.Status("You are already logged out")
 				return nil
 			}
 			err = session.DestroyToken(ctx)
 			if err != nil {
 				panic(err)
 			}
-			io.Status("Scalingo credentials have been deleted.")
+
+			io.Status("You have been logged out")
 			return nil
 		},
 		ShellComplete: func(_ context.Context, c *cli.Command) {
