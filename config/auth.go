@@ -65,50 +65,17 @@ func Auth(ctx context.Context) (*scalingo.User, string, error) {
 	return user, apiToken.Token, nil
 }
 
+// SetCurrentUser stores the authenticated user and token as the current CLI credentials.
 func SetCurrentUser(ctx context.Context, user *scalingo.User, token auth.UserToken) error {
 	authenticator := &CliAuthenticator{}
-	err := authenticator.StoreAuth(ctx, user, token)
+	err := authenticator.storeAuth(ctx, user, token)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "store credentials")
 	}
 	return nil
 }
 
-func (a *CliAuthenticator) StoreAuth(ctx context.Context, user *scalingo.User, token auth.UserToken) error {
-	authConfig, err := existingAuth(ctx)
-	if err != nil {
-		return errors.Wrap(ctx, err, "read existing authentication config")
-	}
-
-	var c auth.ConfigPerHostV2
-	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
-	if err != nil {
-		fmt.Println("Auth: error while reading auth file. Recreating a new one.")
-		c = make(auth.ConfigPerHostV2)
-	}
-
-	authHost, err := a.authHost(ctx)
-	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get authentication service host")
-	}
-
-	c[authHost] = auth.CredentialsData{
-		Tokens: &token,
-		User:   user,
-	}
-
-	authConfig.LastUpdate = time.Now()
-	authConfig.AuthDataVersion = auth.ConfigVersionV21
-
-	buffer, err := json.Marshal(&c)
-	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to marshal the configuration to JSON")
-	}
-
-	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
-	return writeAuthFile(ctx, authConfig)
-}
-
+// LoadAuth loads the authenticated user and token from the authentication file.
 func (a *CliAuthenticator) LoadAuth(ctx context.Context) (*scalingo.User, *auth.UserToken, error) {
 	file, err := os.OpenFile(C.AuthFile, os.O_RDONLY, 0600)
 	if os.IsNotExist(err) {
@@ -166,6 +133,7 @@ func (a *CliAuthenticator) LoadAuth(ctx context.Context) (*scalingo.User, *auth.
 	return creds.User, creds.Tokens, nil
 }
 
+// RemoveAuth removes the current authentication credentials from the authentication file.
 func (a *CliAuthenticator) RemoveAuth(ctx context.Context) error {
 	authConfig, err := existingAuth(ctx)
 	if err != nil {
@@ -188,6 +156,41 @@ func (a *CliAuthenticator) RemoveAuth(ctx context.Context) error {
 	buffer, err := json.Marshal(&c)
 	if err != nil {
 		return errors.Wrapf(ctx, err, "marshal cleaned authentication config")
+	}
+
+	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
+	return writeAuthFile(ctx, authConfig)
+}
+
+func (a *CliAuthenticator) storeAuth(ctx context.Context, user *scalingo.User, token auth.UserToken) error {
+	authConfig, err := existingAuth(ctx)
+	if err != nil {
+		return errors.Wrap(ctx, err, "read existing authentication config")
+	}
+
+	var c auth.ConfigPerHostV2
+	err = json.Unmarshal(authConfig.AuthConfigPerHost, &c)
+	if err != nil {
+		fmt.Println("Auth: error while reading auth file. Recreating a new one.")
+		c = make(auth.ConfigPerHostV2)
+	}
+
+	authHost, err := a.authHost(ctx)
+	if err != nil {
+		return errors.Wrapf(ctx, err, "fail to get authentication service host")
+	}
+
+	c[authHost] = auth.CredentialsData{
+		Tokens: &token,
+		User:   user,
+	}
+
+	authConfig.LastUpdate = time.Now()
+	authConfig.AuthDataVersion = auth.ConfigVersionV21
+
+	buffer, err := json.Marshal(&c)
+	if err != nil {
+		return errors.Wrapf(ctx, err, "fail to marshal the configuration to JSON")
 	}
 
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
