@@ -18,7 +18,8 @@ func DestroyToken(ctx context.Context) error {
 	if err != nil {
 		config.C.Logger.Printf("Fail to revoke the API token: %+v\n", err)
 		io.Warning("Fail to revoke the API token on Scalingo, it may still be active.")
-		io.Warning("You can revoke it manually from the API tokens section of your account on the Scalingo dashboard.")
+		io.Warning("You can revoke it manually from the API tokens section of your account on the Scalingo dashboard:")
+		io.Warning("https://dashboard.scalingo.com/account/tokens")
 	}
 
 	err = authenticator.RemoveAuth(ctx)
