@@ -188,11 +188,7 @@ func (a *CliAuthenticator) storeAuth(ctx context.Context, user *scalingo.User, t
 	authConfig.LastUpdate = time.Now()
 	authConfig.AuthDataVersion = auth.ConfigVersionV21
 
-	buffer, err := json.Marshal(&c)
-	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to marshal the configuration to JSON")
-	}
-
+	buffer, _ := json.Marshal(&c)
 	authConfig.AuthConfigPerHost = json.RawMessage(buffer)
 	return writeAuthFile(ctx, authConfig)
 }
