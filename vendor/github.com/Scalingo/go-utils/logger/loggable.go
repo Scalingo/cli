@@ -18,13 +18,13 @@ type Loggable interface {
 // It returns a logrus.Fields map where the keys are the tag values prefixed
 // with the provided prefix, and the values are the corresponding field values.
 //
-// If the struct implements the Loggable interface. The `log` tags are ignored
-// and the LogFields method is used to extract the fields.
+// If the struct or a pointer to the struct implements the Loggable interface,
+// the `log` tags are ignored and the LogFields method is used to extract the fields.
 //
 // If the struct has no fields with the "log" tag, it checks if the struct
-// implements the fmt.Stringer interface. If it does, it adds a single field
-// with the prefix as the key and the result of the String() method as the value.
-// If the struct does not implement fmt.Stringer, it adds a single field with
+// or a pointer to it implements the fmt.Stringer interface. If it does, it adds
+// a single field with the prefix as the key and the result of the String() method
+// as the value. If neither implements fmt.Stringer, it adds a single field with
 // the prefix as the key and a default error message as the value.
 //
 // The "omitempty" option specifies that the field should be omitted if the field has an empty value, defined as false, 0, a nil pointer, a nil interface value, and any array, slice, map, or string of length zero.
@@ -46,7 +46,11 @@ type Loggable interface {
 func FieldsFor(prefix string, value interface{}) logrus.Fields {
 	fields := logrus.Fields{}
 
-	if loggableValue, ok := value.(Loggable); ok {
+	loggableValue, ok := value.(Loggable)
+	if !ok {
+		loggableValue, ok = pointerTo(value).(Loggable)
+	}
+	if ok {
 		for k, v := range loggableValue.LogFields() {
 			fields[fmt.Sprintf("%s_%s", prefix, k)] = v
 		}
@@ -96,13 +100,29 @@ func FieldsFor(prefix string, value interface{}) logrus.Fields {
 		return fields
 	}
 
-	if valueStr, ok := value.(fmt.Stringer); ok {
+	valueStr, ok := value.(fmt.Stringer)
+	if !ok {
+		// accept both a structure and a pointer to the structure when calling `logger.WithStructToCtx`
+		valueStr, ok = pointerTo(value).(fmt.Stringer)
+	}
+	if ok {
 		fields[prefix] = valueStr.String()
 	} else {
 		fields[prefix] = "failed to use FieldsFor on struct: invalid type"
 	}
 
 	return fields
+}
+
+func pointerTo(value any) any {
+	val := reflect.ValueOf(value)
+	if !val.IsValid() || val.Kind() != reflect.Struct {
+		return nil
+	}
+
+	pointer := reflect.New(val.Type())
+	pointer.Elem().Set(val)
+	return pointer.Interface()
 }
 
 func WithStructToCtx(ctx context.Context, prefix string, value interface{}) (context.Context, logrus.FieldLogger) {
