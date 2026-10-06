@@ -4,6 +4,7 @@
 
 * chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
+* feat(app-firewall-rules): add commands to list, add, and remove application firewall rules: `app-firewall-rules`, `app-firewall-rule-add`, and `app-firewall-rule-remove`
 
 ## 1.49.0
 
@@ -15,7 +16,6 @@
 
 * feat(pitr): add command to fetch recovery window of a database
 * feat(pitr): add command to restore a database to a specific point in time
-* feat(app-firewall-rules): Add commands to manage application firewall rules
 
 ## v1.47.0
 
