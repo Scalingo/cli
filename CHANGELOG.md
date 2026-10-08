@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* fix(mongo_console): call the new tool `mongosh`
 * chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
 
