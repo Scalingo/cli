@@ -24,7 +24,7 @@ var databasePITRRestore = cli.Command{
 	Description: CommandDescription{
 		Description: "Restore a database to a specific point in time",
 		Examples: []string{
-			"scalingo --app my-app --addon my-addon database-pitr-restore 2026-07-18T23:00:00Z",
+			"scalingo --app my-app --addon postgresql database-pitr-restore 2026-07-18T23:00:00Z",
 		},
 	}.Render(),
 	Action: func(ctx context.Context, c *cli.Command) error {
@@ -61,7 +61,7 @@ var databasePITRRecoveryWindow = cli.Command{
 	Description: CommandDescription{
 		Description: "Show the recovery window for a database",
 		Examples: []string{
-			"scalingo --app my-app --addon my-addon database-pitr-recovery-window",
+			"scalingo --app my-app --addon postgresql database-pitr-recovery-window",
 		},
 	}.Render(),
 	Action: func(ctx context.Context, c *cli.Command) error {
