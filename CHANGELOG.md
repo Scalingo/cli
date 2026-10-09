@@ -6,6 +6,7 @@
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
 * fix(flags): `--addon` help message now mentions the accepted addon type (postgresql, redis, ...)
 * fix(flags): `--database` takes a database name, not an ID
+* fix(pitr): use a valid `--addon` value in the examples
 
 ## 1.49.0
 
