@@ -4,6 +4,8 @@
 
 * chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
+* fix(flags): `--addon` help message now mentions the accepted addon type (postgresql, redis, ...)
+* fix(flags): `--database` takes a database name, not an ID
 
 ## 1.49.0
 

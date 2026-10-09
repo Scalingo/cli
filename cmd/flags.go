@@ -22,7 +22,7 @@ var (
 	addonFlag = cli.StringFlag{
 		Name:  "addon",
 		Value: "<addon_id>",
-		Usage: "ID of the current addon",
+		Usage: "ID of the current addon, or its type (postgresql, redis, ...)",
 	}
 )
 
@@ -31,7 +31,7 @@ func databaseFlag() *cli.StringFlag {
 		return &cli.StringFlag{
 			Name:  "database",
 			Value: "<database_name>",
-			Usage: "ID of the current database",
+			Usage: "Name of the current database",
 		}
 	}
 	return &cli.StringFlag{}
