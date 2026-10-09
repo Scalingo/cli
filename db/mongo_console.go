@@ -22,9 +22,9 @@ func MongoConsole(ctx context.Context, opts MongoConsoleOpts) error {
 		return errors.Wrapf(ctx, err, "resolve MongoDB URL from %s", opts.VariableName)
 	}
 
-	command := []string{dbClientFetcher, "mongo", "&&", "mongo"}
+	command := []string{dbClientFetcher, "mongo", "&&", "mongosh"}
 	if mongoURL.Query().Get("ssl") == "true" {
-		command = append(command, "--ssl", "--sslAllowInvalidCertificates")
+		command = append(command, "--tls", "--tlsAllowInvalidCertificates")
 	}
 
 	err = apps.Run(ctx, apps.RunOpts{

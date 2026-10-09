@@ -1,6 +1,6 @@
 module github.com/Scalingo/cli
 
-go 1.26.0
+go 1.26.8
 
 require (
 	charm.land/huh/v2 v2.0.3
