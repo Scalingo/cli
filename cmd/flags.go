@@ -22,7 +22,7 @@ var (
 	addonFlag = cli.StringFlag{
 		Name:  "addon",
 		Value: "<addon_id>",
-		Usage: "ID of the current addon, or its type (postgresql, redis, ...)",
+		Usage: "addon type (postgresql, redis, ...) or its ID",
 	}
 )
 
