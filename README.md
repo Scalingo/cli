@@ -1,4 +1,4 @@
-# Scalingo-CLI v1.49.0
+# Scalingo-CLI v1.50.0
 
 ![publish workflow](https://github.com/Scalingo/cli/actions/workflows/publish.yml/badge.svg)
 
@@ -283,12 +283,12 @@ the commit for the version bump.
 
 ```bash
 git checkout <base commit ID>
-git checkout -b v1.49.0
+git checkout -b v1.50.0
 git cherry-pick -m 1 <commit ID number 1>
 git cherry-pick -m 1 <commit ID number 2>
 ...
 git cherry-pick -m 1 <commit ID number X>
-git push --set-upstream origin v1.49.0
+git push --set-upstream origin v1.50.0
 ```
 
 ### New Version Bump
@@ -303,7 +303,7 @@ Bump new version number in:
 And commit these changes:
 
 ```bash
-version="1.49.0"
+version="1.50.0"
 
 git switch --create release/${version}
 git add CHANGELOG.md README.md VERSION config/version.go
