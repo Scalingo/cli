@@ -10,6 +10,7 @@
 * chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
 * fix(flags): describe the accepted values of `--addon` and `--database`
+* fix(backups): `backups-create` returns an error when the backup fails
 
 ## 1.49.0
 
