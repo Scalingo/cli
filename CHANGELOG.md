@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+ fix(README): missing version bump to 1.50 in the tweet command
+
 ## 1.50.0
 
 * fix(mongo_console): call the new tool `mongosh`
