@@ -2,7 +2,8 @@
 
 ## To Be Released
 
- fix(README): missing version bump to 1.50 in the tweet command
+* fix(README): missing version bump to 1.50 in the tweet command
+* fix(backups-create): returns an error when the backup fails
 
 ## 1.50.0
 
@@ -10,7 +11,6 @@
 * chore(deps): update go-scalingo to v11.7.0 to add support of token deletion
 * feat(logout): revoke the API token created at login on the Scalingo Auth API
 * fix(flags): describe the accepted values of `--addon` and `--database`
-* fix(backups-create): returns an error when the backup fails
 
 ## 1.49.0
 
