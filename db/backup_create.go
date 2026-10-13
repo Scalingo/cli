@@ -21,7 +21,7 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
-		return errors.Wrapf(ctx, err, "fail to get Scalingo client")
+		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 	backup, err := client.BackupCreate(ctx, app, addon)
 	if err != nil {
@@ -42,7 +42,7 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 
 		backup, err = client.BackupShow(ctx, app, addon, backup.ID)
 		if err != nil {
-			return errors.Wrapf(ctx, err, "fail to refresh backup state")
+			return errors.Wrap(ctx, err, "refresh backup status")
 		}
 	}
 	spinner.Stop()
