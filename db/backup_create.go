@@ -48,7 +48,7 @@ func CreateBackup(ctx context.Context, app, addon string) error {
 	spinner.Stop()
 
 	if backup.Status == scalingo.BackupStatusError {
-		return errors.Newf(ctx, "backup %v failed", backup.ID)
+		return errors.New(ctx, "backup failed")
 	}
 
 	io.Status(color.New(color.FgGreen).Sprint("Backup successfully finished"))
