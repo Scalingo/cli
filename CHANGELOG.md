@@ -2,7 +2,8 @@
 
 ## To Be Released
 
- fix(README): missing version bump to 1.50 in the tweet command
+* fix(README): missing version bump to 1.50 in the tweet command
+* fix(backups-create): returns an error when the backup fails
 
 ## 1.50.0
 
