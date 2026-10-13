@@ -2,7 +2,8 @@
 
 ## To Be Released
 
-* fix(README): missing version bump to 1.50 in the tweet command
+* feat(dbdr): add `database-config` command to set maintenance window
+** fix(README): missing version bump to 1.50 in the tweet command
 * fix(backups-create): returns an error when the backup fails
 * fix(dbng): error wrapping for destroy
 

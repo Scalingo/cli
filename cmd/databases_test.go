@@ -6,7 +6,33 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/urfave/cli/v3"
 )
+
+func TestDatabaseConfigIsPreviewOnly(t *testing.T) {
+	findCommand := func(commands []*cli.Command) *cli.Command {
+		for _, command := range commands {
+			if command.Name == "database-config" {
+				return command
+			}
+		}
+		return nil
+	}
+
+	assert.Nil(t, findCommand(regionalCommands))
+	assert.Nil(t, findCommand(globalCommands))
+
+	command := findCommand(regionalPreviewCommands)
+	require.NotNil(t, command)
+	assert.Equal(t, "Databases DR", command.Category)
+
+	var flagNames []string
+	for _, flag := range command.Flags {
+		flagNames = append(flagNames, flag.Names()...)
+	}
+	assert.Contains(t, flagNames, "maintenance-window-day")
+	assert.Contains(t, flagNames, "maintenance-window-hour")
+}
 
 func TestParseScheduleAtFlag(t *testing.T) {
 	tests := map[string]struct {

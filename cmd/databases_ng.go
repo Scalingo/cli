@@ -6,12 +6,14 @@ import (
 
 	"github.com/urfave/cli/v3"
 
+	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/dbng"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -213,6 +215,61 @@ var (
 		},
 		ShellComplete: func(ctx context.Context, c *cli.Command) {
 			_ = autocomplete.CmdFlagsAutoComplete(c, "database-upgrade")
+			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
+		},
+	}
+
+	databaseConfigCommand = cli.Command{
+		Name:      "database-config",
+		Category:  "Databases DR",
+		Usage:     "Configure a database Dedicated Resources",
+		ArgsUsage: "database-id",
+		Flags: []cli.Flag{
+			databaseFlag(),
+			&cli.IntFlag{Name: "maintenance-window-hour", Usage: "Configure database maintenance window starting hour (in your local timezone)"},
+			&cli.StringFlag{Name: "maintenance-window-day", Usage: "Configure database maintenance window day"},
+		},
+		Description: CommandDescription{
+			Description: "Configure a database Dedicated Resources",
+			Examples: []string{
+				"scalingo database-config --maintenance-window-day tuesday --maintenance-window-hour 2 database_id",
+				"scalingo database-config --database database_id --maintenance-window-hour 2",
+			},
+			SeeAlso: []string{"databases", "database-info"},
+		}.Render(),
+		Action: func(ctx context.Context, c *cli.Command) error {
+			if c.Args().Len() > 1 {
+				return cli.ShowCommandHelp(ctx, c, "database-config")
+			}
+			databaseID := c.Args().First()
+			if databaseID == "" {
+				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			}
+			if databaseID == "" {
+				io.Error("Please provide a database ID or use --database flag")
+				return cli.ShowCommandHelp(ctx, c, "database-config")
+			}
+
+			options := addons.UpdateAddonConfigOpts{}
+			if c.IsSet("maintenance-window-day") {
+				options.MaintenanceWindowDay = new(c.String("maintenance-window-day"))
+			}
+			if c.IsSet("maintenance-window-hour") {
+				options.MaintenanceWindowHour = new(c.Int("maintenance-window-hour"))
+			}
+			if options.MaintenanceWindowDay == nil && options.MaintenanceWindowHour == nil {
+				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot update your database without a specified option"), c, "database-config")
+			}
+
+			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			err := dbng.Config(ctx, databaseID, options)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+			return nil
+		},
+		ShellComplete: func(ctx context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "database-config")
 			_ = autocomplete.DatabasesNgListAutoComplete(ctx)
 		},
 	}

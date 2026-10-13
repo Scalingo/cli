@@ -2,7 +2,6 @@ package addons
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
@@ -79,8 +78,6 @@ func UpdateConfig(ctx context.Context, app, addon string, options UpdateAddonCon
 	if err != nil {
 		return errors.Wrapf(ctx, err, "update the database maintenance window")
 	}
-
-	fmt.Println("Addon config updated.")
 
 	return nil
 }
