@@ -4,6 +4,7 @@
 
 * fix(README): missing version bump to 1.50 in the tweet command
 * fix(backups-create): returns an error when the backup fails
+* fix(dbng): error wrapping for destroy
 
 ## 1.50.0
 
