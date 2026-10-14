@@ -17,7 +17,7 @@ func Destroy(ctx context.Context, appID string) error {
 
 	db, err := c.Preview().DatabaseShow(ctx, appID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "delete database")
+		return errors.Wrap(ctx, err, "show database")
 	}
 
 	io.Warningf("You're going to delete database %s ('%s'),\n", db.ID, db.Name)
@@ -38,7 +38,7 @@ func Destroy(ctx context.Context, appID string) error {
 
 	err = c.Preview().DatabaseDestroy(ctx, appID)
 	if err != nil {
-		return errors.Wrap(ctx, err, "delete database")
+		return errors.Wrap(ctx, err, "destroy database")
 	}
 
 	io.Statusf("The database %s has been deleted.", db.ID)
