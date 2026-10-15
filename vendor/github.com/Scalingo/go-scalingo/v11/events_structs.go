@@ -136,6 +136,7 @@ const (
 	EventDeleteAutoscaler                EventTypeName = "delete_autoscaler"
 	EventAddonUpdated                    EventTypeName = "addon_updated"
 	EventStartRegionMigration            EventTypeName = "start_region_migration"
+	EventRedisToValkeyMigrationCompleted EventTypeName = "redis_to_valkey_migration_completed"
 	EventNewLogDrain                     EventTypeName = "new_log_drain"
 	EventDeleteLogDrain                  EventTypeName = "delete_log_drain"
 	EventNewAddonLogDrain                EventTypeName = "new_addon_log_drain"
@@ -727,6 +728,21 @@ type EventStartRegionMigrationType struct {
 
 func (ev *EventStartRegionMigrationType) String() string {
 	return fmt.Sprintf("Application region migration started from %s to %s/%s", ev.TypeData.Source, ev.TypeData.Destination, ev.TypeData.DstAppName)
+}
+
+type EventRedisToValkeyMigrationCompletedTypeData struct {
+	FromPlan string `json:"from_plan"`
+	ToPlan   string `json:"to_plan"`
+}
+
+type EventRedisToValkeyMigrationCompletedType struct {
+	Event
+
+	TypeData EventRedisToValkeyMigrationCompletedTypeData `json:"type_data"`
+}
+
+func (ev *EventRedisToValkeyMigrationCompletedType) String() string {
+	return fmt.Sprintf("Redis to Valkey migration completed from plan %s to %s", ev.TypeData.FromPlan, ev.TypeData.ToPlan)
 }
 
 // New log drain

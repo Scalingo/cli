@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* chore(deps): update go-scalingo to v11.8.0 to display a generic status and error in continuous backup events and support the `redis_to_valkey_migration_completed` event
 * feat(dbdr): add `database-config` command to set maintenance window
 ** fix(README): missing version bump to 1.50 in the tweet command
 * fix(backups-create): returns an error when the backup fails
