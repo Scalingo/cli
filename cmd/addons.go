@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/urfave/cli/v3"
 
@@ -217,6 +218,7 @@ var (
 			if err != nil {
 				errorQuit(ctx, err)
 			}
+			fmt.Println("Addon config updated.")
 
 			return nil
 		},
