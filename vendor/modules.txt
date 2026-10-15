@@ -59,8 +59,8 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 github.com/ProtonMail/go-crypto/openpgp/slhdsa
 github.com/ProtonMail/go-crypto/openpgp/x25519
 github.com/ProtonMail/go-crypto/openpgp/x448
-# github.com/Scalingo/go-scalingo/v11 v11.7.0
-## explicit; go 1.25.0
+# github.com/Scalingo/go-scalingo/v11 v11.8.0
+## explicit; go 1.26.8
 github.com/Scalingo/go-scalingo/v11
 github.com/Scalingo/go-scalingo/v11/billing
 github.com/Scalingo/go-scalingo/v11/debug

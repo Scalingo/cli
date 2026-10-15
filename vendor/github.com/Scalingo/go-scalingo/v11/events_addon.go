@@ -259,17 +259,25 @@ type EventDatabaseBackupFailedTypeData struct {
 	EventSecurityTypeData
 }
 
+// ContinuousBackupStatus is the public status of a database continuous backup
+type ContinuousBackupStatus string
+
+const (
+	ContinuousBackupStatusHealthy   ContinuousBackupStatus = "healthy"
+	ContinuousBackupStatusUnhealthy ContinuousBackupStatus = "unhealthy"
+)
+
 type EventDatabaseContinuousBackupTypeData struct {
 	EventSecurityTypeData
 
-	AddonName                    string    `json:"addon_name"`
-	ResourceID                   string    `json:"resource_id"`
-	AddonUUID                    string    `json:"addon_uuid"`
-	Status                       string    `json:"status"`
-	Error                        string    `json:"error"`
-	Recoverable                  bool      `json:"recoverable"`
-	CheckedAt                    time.Time `json:"checked_at"`
-	UnrecoverableDurationSeconds int64     `json:"unrecoverable_duration_seconds"`
+	AddonName                    string                 `json:"addon_name"`
+	ResourceID                   string                 `json:"resource_id"`
+	AddonUUID                    string                 `json:"addon_uuid"`
+	Status                       ContinuousBackupStatus `json:"status"`
+	Error                        string                 `json:"error"`
+	Recoverable                  bool                   `json:"recoverable"`
+	CheckedAt                    time.Time              `json:"checked_at"`
+	UnrecoverableDurationSeconds int64                  `json:"unrecoverable_duration_seconds"`
 }
 
 type EventDatabaseContinuousBackupHealthyType struct {
@@ -335,34 +343,25 @@ type EventDatabaseContinuousBackupStaleTypeData struct {
 	EventDatabaseContinuousBackupTypeData
 }
 
-func formatDatabaseContinuousBackupString(data EventDatabaseContinuousBackupTypeData, status string) string {
+// formatDatabaseContinuousBackupString builds the text shown for a continuous
+// backup event. The API only returns a generic status and error, so we display
+// them as they are.
+func formatDatabaseContinuousBackupString(data EventDatabaseContinuousBackupTypeData, eventStatus string) string {
 	message := fmt.Sprintf(
 		"Point-in-time recovery for database '%s' is %s",
-		data.ResourceID, status,
+		data.ResourceID, eventStatus,
 	)
+
 	details := []string{}
-	if data.Status != "" && data.Status != "healthy" {
-		details = append(details, "status: "+formatContinuousBackupStatus(data.Status))
+	if data.Status != "" && data.Status != ContinuousBackupStatusHealthy {
+		details = append(details, "status: "+string(data.Status))
 	}
-	if data.Error == "" {
-		if len(details) == 0 {
-			return message
-		}
-
-		return fmt.Sprintf("%s (%s)", message, strings.Join(details, ", "))
+	if data.Error != "" {
+		details = append(details, "error: "+data.Error)
+	}
+	if len(details) == 0 {
+		return message
 	}
 
-	details = append(details, "error: "+data.Error)
 	return fmt.Sprintf("%s (%s)", message, strings.Join(details, ", "))
-}
-
-func formatContinuousBackupStatus(status string) string {
-	switch status {
-	case "pgbackrest_error":
-		return "pgBackRest error"
-	case "wal_error":
-		return "WAL error"
-	default:
-		return status
-	}
 }

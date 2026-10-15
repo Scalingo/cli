@@ -2,6 +2,12 @@
 
 ## To Be Released
 
+## 11.8.0
+
+* fix(events): stop formatting backup tool statuses in continuous backup events, display the status and error returned by the API
+* feat: add `CompleteRedisToValkeyMigrationEvent` event
+* feat: add `RedisToValkeyMigrationCompletedEvent`
+
 ## 11.7.0
 
 * feat(tokens): add `TokenDelete` method
