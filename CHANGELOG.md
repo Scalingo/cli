@@ -3,6 +3,7 @@
 ## To Be Released
 
 * fix(keys-add): return an error when required arguments are missing
+* fix(dbng): bound database readiness polling
 
 ## 1.52.0
 
