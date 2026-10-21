@@ -67,13 +67,20 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 // waitForRunningDatabase waits until the database is running, the context is
 // canceled, or the provisioning timeout is reached.
 func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID string) error {
+	return waitForRunningDatabaseWithTimeout(ctx, client.Preview().DatabaseShow, appID, databaseStatusMaxWait)
+}
+
+func waitForRunningDatabaseWithTimeout(ctx context.Context, show databaseShowFunc, appID string, maxWait time.Duration) error {
+	pollCtx, cancel := context.WithTimeout(ctx, maxWait)
+	defer cancel()
+
 	retryer := retry.New(
 		retry.WithWaitDuration(databaseStatusPollInterval),
-		retry.WithMaxDuration(databaseStatusMaxWait),
+		retry.WithMaxDuration(maxWait),
 		retry.WithoutMaxAttempts(),
 	)
 
-	return waitForRunningDatabaseWithRetry(ctx, client.Preview().DatabaseShow, retryer, appID)
+	return waitForRunningDatabaseWithRetry(pollCtx, show, retryer, appID)
 }
 
 type databaseShowFunc func(context.Context, string) (scalingo.DatabaseNG, error)
