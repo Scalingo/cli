@@ -92,6 +92,22 @@ func TestWaitForRunningDatabaseWithRetry(t *testing.T) {
 	})
 }
 
+func TestWaitForRunningDatabaseWithTimeoutCancelsActiveLookup(t *testing.T) {
+	show := func(ctx context.Context, _ string) (scalingo.DatabaseNG, error) {
+		deadline, ok := ctx.Deadline()
+		require.True(t, ok)
+		assert.WithinDuration(t, time.Now().Add(10*time.Millisecond), deadline, 10*time.Millisecond)
+
+		<-ctx.Done()
+		return scalingo.DatabaseNG{}, ctx.Err()
+	}
+
+	err := waitForRunningDatabaseWithTimeout(t.Context(), show, "db-123", 10*time.Millisecond)
+
+	require.ErrorIs(t, err, context.DeadlineExceeded)
+	require.ErrorContains(t, err, "get database db-123 status")
+}
+
 func databaseWithStatus(status scalingo.DatabaseStatus) scalingo.DatabaseNG {
 	return scalingo.DatabaseNG{Database: scalingo.Database{Status: status}}
 }
