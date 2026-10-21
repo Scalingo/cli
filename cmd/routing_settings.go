@@ -120,6 +120,42 @@ var (
 		},
 	}
 
+	routerMultipartUploadCommand = cli.Command{
+		Name:     "router-multipart-upload",
+		Category: "App Management",
+		Usage:    "Enable/disable multipart upload on the router for your application",
+		Flags: []cli.Flag{
+			&appFlag,
+			&cli.BoolFlag{Name: "enable", Aliases: []string{"e"}, Usage: "Enable router multipart upload (default)"},
+			&cli.BoolFlag{Name: "disable", Aliases: []string{"d"}, Usage: "Disable router multipart upload"},
+		},
+		Description: CommandDescription{
+			Description: "When disabled, the router refuses all requests with a multipart body (403 Forbidden)",
+			Examples:    []string{"scalingo --app my-app router-multipart-upload --disable"},
+		}.Render(),
+
+		Action: func(ctx context.Context, c *cli.Command) error {
+			currentApp := detect.CurrentApp(ctx, c)
+			if c.Args().Len() > 1 {
+				_ = cli.ShowCommandHelp(ctx, c, "router-multipart-upload")
+				return nil
+			}
+
+			utils.CheckForConsent(ctx, currentApp, utils.ConsentTypeContainers)
+
+			enable := !c.IsSet("disable")
+
+			err := apps.RouterMultipartUpload(ctx, currentApp, enable)
+			if err != nil {
+				errorQuit(ctx, err)
+			}
+			return nil
+		},
+		ShellComplete: func(_ context.Context, c *cli.Command) {
+			_ = autocomplete.CmdFlagsAutoComplete(c, "router-multipart-upload")
+		},
+	}
+
 	appFirewallRulesCommand = cli.Command{
 		Name:     "app-firewall-rules", //nolint: goconst
 		Category: "App Management",

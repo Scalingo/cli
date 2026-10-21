@@ -194,6 +194,7 @@ var (
 		&forceHTTPSCommand,
 		&stickySessionCommand,
 		&routerLogsCommand,
+		&routerMultipartUploadCommand,
 		&setCanonicalDomainCommand,
 		&unsetCanonicalDomainCommand,
 

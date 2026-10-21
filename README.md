@@ -118,6 +118,7 @@ COMMANDS:
      force-https              Enable/Disable automatic redirection of traffic to HTTPS for your application
      sticky-session           Enable/Disable sticky sessions for your application
      router-logs              Enable/disable router logs for your application
+     router-multipart-upload  Enable/disable multipart upload on the router for your application
      set-canonical-domain     Set a canonical domain.
      unset-canonical-domain   Unset a canonical domain.
      db-tunnel                Create an encrypted connection to access your database

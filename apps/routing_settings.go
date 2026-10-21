@@ -78,6 +78,28 @@ func RouterLogs(ctx context.Context, appName string, enable bool) error {
 	return nil
 }
 
+func RouterMultipartUpload(ctx context.Context, appName string, enable bool) error {
+	c, err := config.ScalingoClient(ctx)
+	if err != nil {
+		return errors.Wrapf(ctx, err, "get Scalingo client")
+	}
+
+	var action string
+	if enable {
+		action = "enable"
+		_, err = c.AppsRouterEnableMultipartUpload(ctx, appName)
+	} else {
+		action = "disable"
+		_, err = c.AppsRouterDisableMultipartUpload(ctx, appName)
+	}
+	if err != nil {
+		return errors.Wrapf(ctx, err, "configure router-multipart-upload feature")
+	}
+
+	io.Statusf("Router multipart upload has been %sd on %s\n", action, appName)
+	return nil
+}
+
 func AppFirewallRulesList(ctx context.Context, appName string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {

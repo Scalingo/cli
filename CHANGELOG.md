@@ -7,6 +7,8 @@
 ** fix(README): missing version bump to 1.50 in the tweet command
 * fix(backups-create): returns an error when the backup fails
 * fix(dbng): error wrapping for destroy
+* feat(cmd): add `router-multipart-upload` to enable/disable multipart upload on the application router
+* chore(deps): update go-scalingo to add `AppsRouterEnableMultipartUpload` and `AppsRouterDisableMultipartUpload`
 
 ## 1.50.0
 
