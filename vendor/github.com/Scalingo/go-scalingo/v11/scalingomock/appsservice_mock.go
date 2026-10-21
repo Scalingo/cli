@@ -214,6 +214,36 @@ func (mr *MockAppsServiceMockRecorder) AppsRestart(ctx, app, scope any) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsRestart", reflect.TypeOf((*MockAppsService)(nil).AppsRestart), ctx, app, scope)
 }
 
+// AppsRouterDisableMultipartUpload mocks base method.
+func (m *MockAppsService) AppsRouterDisableMultipartUpload(ctx context.Context, name string) (*scalingo.App, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsRouterDisableMultipartUpload", ctx, name)
+	ret0, _ := ret[0].(*scalingo.App)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsRouterDisableMultipartUpload indicates an expected call of AppsRouterDisableMultipartUpload.
+func (mr *MockAppsServiceMockRecorder) AppsRouterDisableMultipartUpload(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsRouterDisableMultipartUpload", reflect.TypeOf((*MockAppsService)(nil).AppsRouterDisableMultipartUpload), ctx, name)
+}
+
+// AppsRouterEnableMultipartUpload mocks base method.
+func (m *MockAppsService) AppsRouterEnableMultipartUpload(ctx context.Context, name string) (*scalingo.App, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsRouterEnableMultipartUpload", ctx, name)
+	ret0, _ := ret[0].(*scalingo.App)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsRouterEnableMultipartUpload indicates an expected call of AppsRouterEnableMultipartUpload.
+func (mr *MockAppsServiceMockRecorder) AppsRouterEnableMultipartUpload(ctx, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsRouterEnableMultipartUpload", reflect.TypeOf((*MockAppsService)(nil).AppsRouterEnableMultipartUpload), ctx, name)
+}
+
 // AppsRouterLogs mocks base method.
 func (m *MockAppsService) AppsRouterLogs(ctx context.Context, name string, enable bool) (*scalingo.App, error) {
 	m.ctrl.T.Helper()

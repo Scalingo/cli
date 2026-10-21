@@ -41,6 +41,8 @@ type AppsService interface {
 	AppsFirewallRuleDelete(ctx context.Context, name string, ruleID string) error
 	AppsStickySession(ctx context.Context, name string, enable bool) (*App, error)
 	AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error)
+	AppsRouterDisableMultipartUpload(ctx context.Context, name string) (*App, error)
+	AppsRouterEnableMultipartUpload(ctx context.Context, name string) (*App, error)
 }
 
 var _ AppsService = (*Client)(nil)
@@ -125,29 +127,30 @@ type AppLinks struct {
 }
 
 type App struct {
-	ID                 string             `json:"id"`
-	Name               string             `json:"name"`
-	Region             string             `json:"region"`
-	Owner              Owner              `json:"owner"`
-	GitURL             string             `json:"git_url"`
-	URL                string             `json:"url"`
-	BaseURL            string             `json:"base_url"`
-	Status             AppStatus          `json:"status"`
-	LastDeployedAt     *time.Time         `json:"last_deployed_at"`
-	LastDeployedBy     string             `json:"last_deployed_by"`
-	CreatedAt          *time.Time         `json:"created_at"`
-	UpdatedAt          *time.Time         `json:"updated_at"`
-	Links              *AppLinks          `json:"links"`
-	StackID            string             `json:"stack_id"`
-	StickySession      bool               `json:"sticky_session"`
-	ForceHTTPS         bool               `json:"force_https"`
-	RouterLogs         bool               `json:"router_logs"`
-	DataAccessConsent  *DataAccessConsent `json:"data_access_consent,omitempty"`
-	Flags              map[string]bool    `json:"flags"`
-	Limits             map[string]any     `json:"limits"`
-	HDSResource        bool               `json:"hds_resource"`
-	PrivateNetworksIDs []string           `json:"private_networks_ids"`
-	Project            appProject         `json:"project"`
+	ID                           string             `json:"id"`
+	Name                         string             `json:"name"`
+	Region                       string             `json:"region"`
+	Owner                        Owner              `json:"owner"`
+	GitURL                       string             `json:"git_url"`
+	URL                          string             `json:"url"`
+	BaseURL                      string             `json:"base_url"`
+	Status                       AppStatus          `json:"status"`
+	LastDeployedAt               *time.Time         `json:"last_deployed_at"`
+	LastDeployedBy               string             `json:"last_deployed_by"`
+	CreatedAt                    *time.Time         `json:"created_at"`
+	UpdatedAt                    *time.Time         `json:"updated_at"`
+	Links                        *AppLinks          `json:"links"`
+	StackID                      string             `json:"stack_id"`
+	StickySession                bool               `json:"sticky_session"`
+	ForceHTTPS                   bool               `json:"force_https"`
+	RouterLogs                   bool               `json:"router_logs"`
+	RouterDisableMultipartUpload bool               `json:"router_disable_multipart_upload"`
+	DataAccessConsent            *DataAccessConsent `json:"data_access_consent,omitempty"`
+	Flags                        map[string]bool    `json:"flags"`
+	Limits                       map[string]any     `json:"limits"`
+	HDSResource                  bool               `json:"hds_resource"`
+	PrivateNetworksIDs           []string           `json:"private_networks_ids"`
+	Project                      appProject         `json:"project"`
 }
 
 // appProject is a partial copy of the type `Project` in `projects.go`
@@ -436,6 +439,20 @@ func (c *Client) AppsFirewallRuleDelete(ctx context.Context, name string, ruleID
 func (c *Client) AppsRouterLogs(ctx context.Context, name string, enable bool) (*App, error) {
 	return c.appsUpdate(ctx, name, map[string]any{
 		"router_logs": enable,
+	})
+}
+
+// AppsRouterDisableMultipartUpload makes the router refuse requests with a multipart body for the given application.
+func (c *Client) AppsRouterDisableMultipartUpload(ctx context.Context, name string) (*App, error) {
+	return c.appsUpdate(ctx, name, map[string]any{
+		"router_disable_multipart_upload": true,
+	})
+}
+
+// AppsRouterEnableMultipartUpload makes the router accept requests with a multipart body for the given application.
+func (c *Client) AppsRouterEnableMultipartUpload(ctx context.Context, name string) (*App, error) {
+	return c.appsUpdate(ctx, name, map[string]any{
+		"router_disable_multipart_upload": false,
 	})
 }
 
