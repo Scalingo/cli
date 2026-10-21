@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(dbng): bound database readiness polling
+
 ## 1.51.0
 
 * chore(deps): update go-scalingo to v11.8.0 to display a generic status and error in continuous backup events and support the `redis_to_valkey_migration_completed` event
