@@ -278,30 +278,31 @@ var (
 		Name:      "database-destroy",
 		Category:  "Databases DR",
 		Usage:     "Delete database Dedicated Resources",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Delete database Dedicated Resources",
 			Examples: []string{
 				"scalingo database-destroy database_id",
-				"scalingo database-destroy --database database_id",
+				"scalingo database-destroy database_name",
+				"scalingo database-destroy --database database_name",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-create", "database-upgrade"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := c.Args().First()
-			if databaseID == "" {
-				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			databaseIdentifier := c.Args().First()
+			if databaseIdentifier == "" {
+				databaseIdentifier, _ = detect.GetCurrentDatabase(ctx, c)
 			}
 
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-destroy")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbng.Destroy(ctx, databaseID)
+			err := dbng.Destroy(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
