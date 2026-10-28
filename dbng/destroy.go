@@ -54,7 +54,13 @@ func Destroy(ctx context.Context, databaseIdentifier string) error {
 
 func findDatabaseByNameOrID(databases []scalingo.DatabaseNG, identifier string) (scalingo.DatabaseNG, bool) {
 	for _, database := range databases {
-		if database.ID == identifier || database.Name == identifier {
+		if database.ID == identifier {
+			return database, true
+		}
+	}
+
+	for _, database := range databases {
+		if database.Name == identifier {
 			return database, true
 		}
 	}

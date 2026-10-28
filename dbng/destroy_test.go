@@ -31,3 +31,16 @@ func TestFindDatabaseByNameOrIDNotFound(t *testing.T) {
 	assert.False(t, found)
 	assert.Empty(t, result)
 }
+
+func TestFindDatabaseByNameOrIDPrioritizesID(t *testing.T) {
+	nameMatch := scalingo.DatabaseNG{ID: "other-id", Name: "shared-identifier"}
+	idMatch := scalingo.DatabaseNG{ID: "shared-identifier", Name: "id-match"}
+
+	result, found := findDatabaseByNameOrID(
+		[]scalingo.DatabaseNG{nameMatch, idMatch},
+		"shared-identifier",
+	)
+
+	require.True(t, found)
+	assert.Equal(t, idMatch, result)
+}
