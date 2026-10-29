@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+## 1.51.1
+
 * chore(go): update Go to 1.27.3
 
 ## 1.51.0
