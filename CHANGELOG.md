@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(orgs): add `orgs` command to list the organizations of the current user and their role
+
 ## 1.51.1
 
 * chore(go): update Go to 1.27.3
