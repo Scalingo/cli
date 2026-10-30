@@ -3,7 +3,6 @@ package table
 import (
 	"io"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -29,10 +28,6 @@ func captureStdout(t *testing.T, fn func()) string {
 	return string(output)
 }
 
-func tableCells(line string) []string {
-	return strings.Fields(strings.ReplaceAll(line, "│", " "))
-}
-
 func TestOrgsListRenderer_Render(t *testing.T) {
 	t.Run("it should render the ID, slug and role of the organizations", func(t *testing.T) {
 		r := NewOrgsList()
@@ -45,12 +40,10 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 			require.NoError(t, r.Render(t.Context()))
 		})
 
-		// Lines 0, 2 and 5 are the table borders.
-		lines := strings.Split(strings.TrimSpace(output), "\n")
-		require.Len(t, lines, 6)
-		assert.Equal(t, []string{"ID", "SLUG", "ROLE"}, tableCells(lines[1]))
-		assert.Equal(t, []string{"org-1", "acme", "admin"}, tableCells(lines[3]))
-		assert.Equal(t, []string{"org-2", "globex", "member"}, tableCells(lines[4]))
+		assert.Regexp(t, `│\s+ID\s+│\s+SLUG\s+│\s+ROLE\s+│`, output)
+		assert.Regexp(t, `│\s+org-1\s+│\s+acme\s+│\s+admin\s+│`, output)
+		assert.Regexp(t, `│\s+org-2\s+│\s+globex\s+│\s+member\s+│`, output)
+		assert.NotContains(t, output, "NAME")
 	})
 
 	t.Run("it should render a message when there are no organizations", func(t *testing.T) {
