@@ -23,6 +23,8 @@ github.com/Scalingo/go-utils/logger v1.13.0 h1:3dW2hDo50Oqvdoi1iEFXX0GRRKLvjJLeV
 github.com/Scalingo/go-utils/logger v1.13.0/go.mod h1:EYTGwK0n5mOtLYLus65qYxoZKkwcaVRhumErnI8mloU=
 github.com/Scalingo/go-utils/pagination v1.2.0 h1:dTvce+thcZXH/S13HF5dxGNPCMdGALNsW6p2EYe2Pno=
 github.com/Scalingo/go-utils/pagination v1.2.0/go.mod h1:MwT1RRecXktFgVNeib+B4dnM4r0cPc93JichOPs5tj0=
+github.com/Scalingo/go-utils/retry v1.4.2 h1:1Mg9aH7/9spI7ZYxB4HtCcv7O58IYm/8nK950uCVVek=
+github.com/Scalingo/go-utils/retry v1.4.2/go.mod h1:0ZCGJRmYuQCCreG28dUDOXONv3PMSuuWuc+B0VBIjeg=
 github.com/Scalingo/gopassword v1.1.1 h1:RMsYJPz/DyfvWicL8RgysncnP6/0CmP3DJx1q+Dg1hU=
 github.com/Scalingo/gopassword v1.1.1/go.mod h1:Fw7SFIydC5aPCLewCKjFVEQ1bPC83VR2yh6t5bofViQ=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
