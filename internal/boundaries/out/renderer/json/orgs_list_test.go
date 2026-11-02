@@ -35,8 +35,8 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 	}{
 		"it should only render the ID, slug and role of the organizations": {
 			organizations: []scalingo.Organization{
-				{ID: "org-1", Slug: "acme", Role: "admin"},
-				{ID: "org-2", Slug: "globex", Role: "member"},
+				{ID: "org-1", Name: "Acme", Slug: "acme", Role: "admin"},
+				{ID: "org-2", Name: "Globex", Slug: "globex", Role: "member"},
 			},
 			expected: `{"organizations":[{"id":"org-1","slug":"acme","role":"admin"},{"id":"org-2","slug":"globex","role":"member"}]}` + "\n",
 		},
@@ -56,6 +56,7 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 			})
 
 			assert.Equal(t, test.expected, output)
+			assert.NotContains(t, output, "name")
 		})
 	}
 }

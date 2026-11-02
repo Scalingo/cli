@@ -32,8 +32,8 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 	t.Run("it should render the ID, slug and role of the organizations", func(t *testing.T) {
 		r := NewOrgsList()
 		r.SetData(t.Context(), []scalingo.Organization{
-			{ID: "org-1", Slug: "acme", Role: "admin"},
-			{ID: "org-2", Slug: "globex", Role: "member"},
+			{ID: "org-1", Name: "Acme", Slug: "acme", Role: "admin"},
+			{ID: "org-2", Name: "Globex", Slug: "globex", Role: "member"},
 		})
 
 		output := captureStdout(t, func() {
@@ -44,6 +44,8 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 		assert.Regexp(t, `│\s+org-1\s+│\s+acme\s+│\s+admin\s+│`, output)
 		assert.Regexp(t, `│\s+org-2\s+│\s+globex\s+│\s+member\s+│`, output)
 		assert.NotContains(t, output, "NAME")
+		assert.NotContains(t, output, "Acme")
+		assert.NotContains(t, output, "Globex")
 	})
 
 	t.Run("it should render a message when there are no organizations", func(t *testing.T) {

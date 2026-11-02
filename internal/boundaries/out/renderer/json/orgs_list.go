@@ -14,8 +14,14 @@ type orgsListRenderer struct {
 	organizations []scalingo.Organization
 }
 
+type organizationOutput struct {
+	ID   string `json:"id"`
+	Slug string `json:"slug"`
+	Role string `json:"role"`
+}
+
 type orgsListResponse struct {
-	Organizations []scalingo.Organization `json:"organizations"`
+	Organizations []organizationOutput `json:"organizations"`
 }
 
 func NewOrgsList() renderer.Renderer[[]scalingo.Organization] {
@@ -23,7 +29,12 @@ func NewOrgsList() renderer.Renderer[[]scalingo.Organization] {
 }
 
 func (r *orgsListRenderer) Render(ctx context.Context) error {
-	err := json.NewEncoder(os.Stdout).Encode(orgsListResponse{Organizations: r.organizations})
+	organizations := make([]organizationOutput, 0, len(r.organizations))
+	for _, organization := range r.organizations {
+		organizations = append(organizations, organizationOutput{ID: organization.ID, Slug: organization.Slug, Role: organization.Role})
+	}
+
+	err := json.NewEncoder(os.Stdout).Encode(orgsListResponse{Organizations: organizations})
 	if err != nil {
 		return errors.Wrap(ctx, err, "encode organizations list to JSON")
 	}
