@@ -2,6 +2,10 @@
 
 ## To Be Released
 
+## 11.9.0
+
+* feat(organizations): add `OrganizationsList` method to list the organizations of the current user
+
 ## 11.8.1
 
 * feat(apps): add `AppsRouterDisableMultipartUpload` and `AppsRouterEnableMultipartUpload` methods and `RouterDisableMultipartUpload` field on `App`

@@ -3,6 +3,7 @@
 ## To Be Released
 
 * feat(orgs): add `orgs` command to list the organizations of the current user and their role
+* chore(deps): update go-scalingo to v11.9.0 to add the `OrganizationsList` method
 
 ## 1.51.1
 

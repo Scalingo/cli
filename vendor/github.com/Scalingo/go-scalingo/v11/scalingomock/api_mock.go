@@ -1547,6 +1547,21 @@ func (mr *MockAPIMockRecorder) OperationsShow(ctx, app, opID any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OperationsShow", reflect.TypeOf((*MockAPI)(nil).OperationsShow), ctx, app, opID)
 }
 
+// OrganizationsList mocks base method.
+func (m *MockAPI) OrganizationsList(ctx context.Context) ([]scalingo.Organization, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrganizationsList", ctx)
+	ret0, _ := ret[0].([]scalingo.Organization)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrganizationsList indicates an expected call of OrganizationsList.
+func (mr *MockAPIMockRecorder) OrganizationsList(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrganizationsList", reflect.TypeOf((*MockAPI)(nil).OrganizationsList), ctx)
+}
+
 // PrivateNetworksDomainsList mocks base method.
 func (m *MockAPI) PrivateNetworksDomainsList(ctx context.Context, app string, paginationReq pagination.Request) (pagination.Paginated[[]scalingo.PrivateNetworkDomain], error) {
 	m.ctrl.T.Helper()

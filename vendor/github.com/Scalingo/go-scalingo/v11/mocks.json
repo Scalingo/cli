@@ -123,6 +123,11 @@
     {
       "src_package": ".",
       "dst_package": "scalingomock",
+      "interface": "OrganizationsService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
       "interface": "RegionsService"
     },
     {
