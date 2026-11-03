@@ -376,7 +376,7 @@ var (
 		&integrationsImportKeysCommand,
 
 		// Organizations
-		&orgsCommand,
+		&organizationsCommand,
 
 		// Sessions
 		&LoginCommand,

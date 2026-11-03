@@ -10,7 +10,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-type orgsListRenderer struct {
+type organizationsListRenderer struct {
 	organizations []scalingo.Organization
 }
 
@@ -20,27 +20,27 @@ type organizationOutput struct {
 	Role string `json:"role"`
 }
 
-type orgsListResponse struct {
+type organizationsListResponse struct {
 	Organizations []organizationOutput `json:"organizations"`
 }
 
-func NewOrgsList() renderer.Renderer[[]scalingo.Organization] {
-	return &orgsListRenderer{}
+func NewOrganizationsList() renderer.Renderer[[]scalingo.Organization] {
+	return &organizationsListRenderer{}
 }
 
-func (r *orgsListRenderer) Render(ctx context.Context) error {
+func (r *organizationsListRenderer) Render(ctx context.Context) error {
 	organizations := make([]organizationOutput, 0, len(r.organizations))
 	for _, organization := range r.organizations {
 		organizations = append(organizations, organizationOutput{ID: organization.ID, Slug: organization.Slug, Role: organization.Role})
 	}
 
-	err := json.NewEncoder(os.Stdout).Encode(orgsListResponse{Organizations: organizations})
+	err := json.NewEncoder(os.Stdout).Encode(organizationsListResponse{Organizations: organizations})
 	if err != nil {
 		return errors.Wrap(ctx, err, "encode organizations list to JSON")
 	}
 	return nil
 }
 
-func (r *orgsListRenderer) SetData(_ context.Context, organizations []scalingo.Organization) {
+func (r *organizationsListRenderer) SetData(_ context.Context, organizations []scalingo.Organization) {
 	r.organizations = organizations
 }

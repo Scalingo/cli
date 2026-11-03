@@ -28,9 +28,9 @@ func captureStdout(t *testing.T, fn func()) string {
 	return string(output)
 }
 
-func TestOrgsListRenderer_Render(t *testing.T) {
+func TestOrganizationsListRenderer_Render(t *testing.T) {
 	t.Run("it should render the ID, slug and role of the organizations", func(t *testing.T) {
-		r := NewOrgsList()
+		r := NewOrganizationsList()
 		r.SetData(t.Context(), []scalingo.Organization{
 			{ID: "org-1", Name: "Acme", Slug: "acme", Role: "admin"},
 			{ID: "org-2", Name: "Globex", Slug: "globex", Role: "member"},
@@ -49,7 +49,7 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 	})
 
 	t.Run("it should render a message when there are no organizations", func(t *testing.T) {
-		r := NewOrgsList()
+		r := NewOrganizationsList()
 		r.SetData(t.Context(), []scalingo.Organization{})
 
 		output := captureStdout(t, func() {

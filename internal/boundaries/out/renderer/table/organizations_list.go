@@ -11,15 +11,15 @@ import (
 	"github.com/Scalingo/go-scalingo/v11"
 )
 
-type orgsListRenderer struct {
+type organizationsListRenderer struct {
 	organizations []scalingo.Organization
 }
 
-func NewOrgsList() renderer.Renderer[[]scalingo.Organization] {
-	return &orgsListRenderer{}
+func NewOrganizationsList() renderer.Renderer[[]scalingo.Organization] {
+	return &organizationsListRenderer{}
 }
 
-func (r *orgsListRenderer) Render(_ context.Context) error {
+func (r *organizationsListRenderer) Render(_ context.Context) error {
 	if len(r.organizations) == 0 {
 		io.Status("You are not a member of any organization.")
 		return nil
@@ -35,6 +35,6 @@ func (r *orgsListRenderer) Render(_ context.Context) error {
 	return t.Render()
 }
 
-func (r *orgsListRenderer) SetData(_ context.Context, organizations []scalingo.Organization) {
+func (r *organizationsListRenderer) SetData(_ context.Context, organizations []scalingo.Organization) {
 	r.organizations = organizations
 }

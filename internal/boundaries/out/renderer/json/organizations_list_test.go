@@ -28,7 +28,7 @@ func captureStdout(t *testing.T, fn func()) string {
 	return string(output)
 }
 
-func TestOrgsListRenderer_Render(t *testing.T) {
+func TestOrganizationsListRenderer_Render(t *testing.T) {
 	tests := map[string]struct {
 		organizations []scalingo.Organization
 		expected      string
@@ -48,7 +48,7 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			r := NewOrgsList()
+			r := NewOrganizationsList()
 			r.SetData(t.Context(), test.organizations)
 
 			output := captureStdout(t, func() {
