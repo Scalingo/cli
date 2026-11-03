@@ -198,6 +198,11 @@ var (
 		&setCanonicalDomainCommand,
 		&unsetCanonicalDomainCommand,
 
+		// App firewall rules
+		&appFirewallRulesCommand,
+		&appFirewallRuleAddCommand,
+		&appFirewallRuleRemoveCommand,
+
 		// Events
 		&userTimelineCommand,
 		&timelineCommand,
@@ -357,11 +362,6 @@ var (
 		&databaseNetPeeringsAddCommand,
 		&databaseNetPeeringsRemoveCommand,
 		&databaseNetworkConfigurationShowCommand,
-
-		// App firewall rules
-		&appFirewallRulesCommand,
-		&appFirewallRuleAddCommand,
-		&appFirewallRuleRemoveCommand,
 	}
 
 	globalCommands = []*cli.Command{
