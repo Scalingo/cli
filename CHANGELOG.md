@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(keys-add): return an error when required arguments are missing
+
 ## 1.51.1
 
 * chore(go): update Go to 1.27.3
