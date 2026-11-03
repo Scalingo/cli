@@ -11,6 +11,12 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/retry"
+)
+
+const (
+	databaseStatusPollInterval = 10 * time.Second
+	databaseStatusMaxWait      = 30 * time.Minute
 )
 
 func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
@@ -58,18 +64,44 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 	return nil
 }
 
-// waitForRunningDatabase is a blocking function waiting for the database to be running.
+// waitForRunningDatabase waits until the database is running, the context is
+// canceled, or the provisioning timeout is reached.
 func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID string) error {
-	for range time.Tick(10 * time.Second) {
-		db, err := client.Preview().DatabaseShow(ctx, appID)
+	return waitForRunningDatabaseWithTimeout(ctx, client.Preview().DatabaseShow, appID, databaseStatusMaxWait)
+}
+
+func waitForRunningDatabaseWithTimeout(ctx context.Context, show databaseShowFunc, appID string, maxWait time.Duration) error {
+	pollCtx, cancel := context.WithTimeout(ctx, maxWait)
+	defer cancel()
+
+	retryer := retry.New(
+		retry.WithWaitDuration(databaseStatusPollInterval),
+		retry.WithMaxDuration(maxWait),
+		retry.WithoutMaxAttempts(),
+	)
+
+	return waitForRunningDatabaseWithRetry(pollCtx, show, retryer, appID)
+}
+
+type databaseShowFunc func(context.Context, string) (scalingo.DatabaseNG, error)
+
+func waitForRunningDatabaseWithRetry(ctx context.Context, show databaseShowFunc, retryer retry.Retry, appID string) error {
+	return retryer.Do(ctx, func(ctx context.Context) error {
+		db, err := show(ctx, appID)
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
-			continue
-		} else if err != nil {
 			return errors.Wrapf(ctx, err, "get database %s status", appID)
 		}
-		if db.Database.Status == scalingo.DatabaseStatusRunning {
-			break
+		if err != nil {
+			return retry.NewRetryCancelError(errors.Wrapf(ctx, err, "get database %s status", appID))
 		}
-	}
-	return nil
+
+		switch db.Database.Status {
+		case scalingo.DatabaseStatusRunning:
+			return nil
+		case scalingo.DatabaseStatusStopped:
+			return retry.NewRetryCancelError(errors.Newf(ctx, "database %s is stopped", appID))
+		default:
+			return errors.Newf(ctx, "database %s status is %s", appID, db.Database.Status)
+		}
+	})
 }
