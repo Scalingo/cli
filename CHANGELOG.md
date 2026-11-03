@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(dbng): allow `database-destroy` to resolve databases by name
+
 ## 1.51.1
 
 * chore(go): update Go to 1.27.3
