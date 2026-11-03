@@ -375,6 +375,9 @@ var (
 		&integrationsDeleteCommand,
 		&integrationsImportKeysCommand,
 
+		// Organizations
+		&organizationsCommand,
+
 		// Sessions
 		&LoginCommand,
 		&LogoutCommand,

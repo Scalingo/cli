@@ -182,13 +182,14 @@ COMMANDS:
      git-show   Display the Git remote URL for this application
 
    Global:
-     apps          List your apps
-     create, c     Create a new app
-     login         Login to Scalingo platform
-     logout        Logout from Scalingo
-     regions       List available regions
-     config        Configure the CLI
-     self, whoami  Get the logged in profile
+     apps                 List your apps
+     create, c            Create a new app
+     organizations, orgs  List your organizations
+     login                Login to Scalingo platform
+     logout               Logout from Scalingo
+     regions              List available regions
+     config               Configure the CLI
+     self, whoami         Get the logged in profile
 
    Integration Link:
      integration-link                    Show integration link of your app
