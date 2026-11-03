@@ -56,6 +56,6 @@ func TestOrgsListRenderer_Render(t *testing.T) {
 			require.NoError(t, r.Render(t.Context()))
 		})
 
-		assert.Equal(t, "You are not a member of any organization.\n", output)
+		assert.Equal(t, "-----> You are not a member of any organization.\n", output)
 	})
 }
