@@ -100,28 +100,31 @@ COMMANDS:
      alerts-remove   Remove an alert from an application
 
    App Management:
-     destroy                  Destroy an app /!\
-     rename                   Rename an application
-     apps-info                Display the application information
-     open                     Open app on default web browser
-     dashboard                Open app dashboard on default web browser
-     project-set              Set the project of an app
-     logs, l                  Get the logs of your applications
-     logs-archives, la        Get the logs archives of your applications and databases
-     run, r                   Run any command for your app
-     bash                     Run bash for your app
-     one-off-stop             Stop a running one-off container
-     ps                       Display your application containers
-     scale, s                 Scale your application instantly
-     restart                  Restart processes of your app
-     send-signal, kill        Send SIGUSR1 or SIGUSR2 to your application containers
-     force-https              Enable/Disable automatic redirection of traffic to HTTPS for your application
-     sticky-session           Enable/Disable sticky sessions for your application
-     router-logs              Enable/disable router logs for your application
-     router-multipart-upload  Enable/disable multipart upload on the router for your application
-     set-canonical-domain     Set a canonical domain.
-     unset-canonical-domain   Unset a canonical domain.
-     db-tunnel                Create an encrypted connection to access your database
+     destroy                   Destroy an app /!\
+     rename                    Rename an application
+     apps-info                 Display the application information
+     open                      Open app on default web browser
+     dashboard                 Open app dashboard on default web browser
+     project-set               Set the project of an app
+     logs, l                   Get the logs of your applications
+     logs-archives, la         Get the logs archives of your applications and databases
+     run, r                    Run any command for your app
+     bash                      Run bash for your app
+     one-off-stop              Stop a running one-off container
+     ps                        Display your application containers
+     scale, s                  Scale your application instantly
+     restart                   Restart processes of your app
+     send-signal, kill         Send SIGUSR1 or SIGUSR2 to your application containers
+     force-https               Enable/Disable automatic redirection of traffic to HTTPS for your application
+     sticky-session            Enable/Disable sticky sessions for your application
+     router-logs               Enable/disable router logs for your application
+     router-multipart-upload   Enable/disable multipart upload on the router for your application
+     set-canonical-domain      Set a canonical domain.
+     unset-canonical-domain    Unset a canonical domain.
+     app-firewall-rules        List IPv4 CIDR firewall rules for your application
+     app-firewall-rule-add     Add an IPv4 CIDR firewall rule for your application
+     app-firewall-rule-remove  Remove an IPv4 CIDR firewall rule from your application
+     db-tunnel                 Create an encrypted connection to access your database
 
    Autoscalers:
      autoscalers          List the autoscalers of an application
@@ -152,6 +155,7 @@ COMMANDS:
 
    Databases:
      redis-console                                    Run an interactive console with your Redis addon
+     valkey-console                                   Run an interactive console with your Valkey addon
      mongo-console, mongodb-console                   Run an interactive console with your MongoDB addon
      mysql-console                                    Run an interactive console with your MySQL addon
      pgsql-console, psql-console, postgresql-console  Run an interactive console with your PostgreSQL addon
@@ -182,13 +186,14 @@ COMMANDS:
      git-show   Display the Git remote URL for this application
 
    Global:
-     apps          List your apps
-     create, c     Create a new app
-     login         Login to Scalingo platform
-     logout        Logout from Scalingo
-     regions       List available regions
-     config        Configure the CLI
-     self, whoami  Get the logged in profile
+     apps                 List your apps
+     create, c            Create a new app
+     organizations, orgs  List your organizations
+     login                Login to Scalingo platform
+     logout               Logout from Scalingo
+     regions              List available regions
+     config               Configure the CLI
+     self, whoami         Get the logged in profile
 
    Integration Link:
      integration-link                    Show integration link of your app
@@ -220,7 +225,8 @@ COMMANDS:
      notification-platforms  List all notification platforms
 
    PITR management:
-     database-pitr-restore  Restore a database to a specific point in time
+     database-pitr-restore          Restore a database to a specific point in time
+     database-pitr-recovery-window  Show the recovery window for a database
 
    Private Networks:
      private-networks-domain-names  List the private network domain names of an application
