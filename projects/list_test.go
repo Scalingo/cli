@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	stderrors "errors"
+	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,6 +22,7 @@ type fakeProjectsService struct {
 	byOrganization        map[string][]scalingo.Project
 	byOrganizationErr     map[string]error
 	requestedOrganization []string
+	mutex                 *sync.Mutex
 }
 
 func (s *fakeProjectsService) ProjectsList(_ context.Context) ([]scalingo.Project, error) {
@@ -27,6 +30,9 @@ func (s *fakeProjectsService) ProjectsList(_ context.Context) ([]scalingo.Projec
 }
 
 func (s *fakeProjectsService) ProjectsListByOrganization(_ context.Context, organizationID string) ([]scalingo.Project, error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	s.requestedOrganization = append(s.requestedOrganization, organizationID)
 	return s.byOrganization[organizationID], s.byOrganizationErr[organizationID]
 }
@@ -39,6 +45,20 @@ func TestListWithOrganizations(t *testing.T) {
 	acmeApp := scalingo.Project{ID: "pr-2", Name: "app", OrganizationID: acme.ID}
 	acmeDB := scalingo.Project{ID: "pr-3", Name: "db", Default: true, OrganizationID: acme.ID}
 	globexApp := scalingo.Project{ID: "pr-4", Name: "api", OrganizationID: globex.ID}
+
+	// More organizations than concurrent requests: the order of the organizations must be kept.
+	var manyOrganizations []scalingo.Organization
+	manyProjects := map[string][]scalingo.Project{}
+	var manyExpected []listedProject
+	var manyRequested []string
+	for i := range 3 * maxConcurrentRequests {
+		organization := scalingo.Organization{ID: fmt.Sprintf("org-%d", i), Slug: fmt.Sprintf("slug-%d", i)}
+		project := scalingo.Project{ID: fmt.Sprintf("pr-%d", i), Name: "app", OrganizationID: organization.ID}
+		manyOrganizations = append(manyOrganizations, organization)
+		manyProjects[organization.ID] = []scalingo.Project{project}
+		manyExpected = append(manyExpected, listedProject{project: project, organizationSlug: organization.Slug})
+		manyRequested = append(manyRequested, organization.ID)
+	}
 
 	tests := map[string]struct {
 		projects          fakeProjectsService
@@ -75,6 +95,12 @@ func TestListWithOrganizations(t *testing.T) {
 				{project: globexApp, organizationSlug: "globex"},
 			},
 			expectedRequested: []string{acme.ID, globex.ID},
+		},
+		"it should keep the order of the organizations when there are more than the concurrent requests": {
+			projects:          fakeProjectsService{byOrganization: manyProjects},
+			organizations:     manyOrganizations,
+			expected:          manyExpected,
+			expectedRequested: manyRequested,
 		},
 		"it should continue with the other organizations when one has no project": {
 			projects: fakeProjectsService{
@@ -121,6 +147,7 @@ func TestListWithOrganizations(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			ctx := t.Context()
+			test.projects.mutex = &sync.Mutex{}
 			organizationsService := scalingomock.NewMockOrganizationsService(gomock.NewController(t))
 			if test.projects.personalErr == nil {
 				organizationsService.EXPECT().OrganizationsList(ctx).Return(test.organizations, test.organizationsErr)
@@ -135,7 +162,7 @@ func TestListWithOrganizations(t *testing.T) {
 				require.NoError(t, err)
 				assert.Equal(t, test.expected, projects)
 			}
-			assert.Equal(t, test.expectedRequested, test.projects.requestedOrganization)
+			assert.ElementsMatch(t, test.expectedRequested, test.projects.requestedOrganization)
 		})
 	}
 }
