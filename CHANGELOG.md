@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* feat(projects): display the organization slug of the projects in `projects`
+
 ## 1.52.0
 
 * feat(app-firewall-rules): add commands to list, add, and remove application firewall rules: `app-firewall-rules`, `app-firewall-rule-add`, and `app-firewall-rule-remove`
