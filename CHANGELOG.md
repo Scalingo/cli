@@ -2,6 +2,8 @@
 
 ## To Be Released
 
+* fix(keys-add): return an error when required arguments are missing
+
 ## 1.52.0
 
 * feat(app-firewall-rules): add commands to list, add, and remove application firewall rules: `app-firewall-rules`, `app-firewall-rule-add`, and `app-firewall-rule-remove`
