@@ -46,13 +46,19 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		db.Name,
 	)
 
+	retryer := retry.New(
+		retry.WithWaitDuration(databaseStatusPollInterval),
+		retry.WithMaxDuration(databaseStatusMaxWait),
+		retry.WithoutMaxAttempts(),
+	)
+
 	if wait {
 		spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		spinner.Suffix = " Waiting for the database to be ready\n"
 		spinner.Start()
 		defer spinner.Stop()
 
-		err := waitForRunningDatabase(ctx, c, db.ID)
+		err := waitForRunningDatabase(ctx, c.Preview(), retryer, db.ID)
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for running database")
 		}
@@ -66,21 +72,9 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 
 // waitForRunningDatabase waits until the database is running, the context is
 // canceled, or the provisioning timeout is reached.
-func waitForRunningDatabase(ctx context.Context, client *scalingo.Client, appID string) error {
-	retryer := retry.New(
-		retry.WithWaitDuration(databaseStatusPollInterval),
-		retry.WithMaxDuration(databaseStatusMaxWait),
-		retry.WithoutMaxAttempts(),
-	)
-
-	return waitForRunningDatabaseWithRetry(ctx, client.Preview().DatabaseShow, retryer, appID)
-}
-
-type databaseShowFunc func(context.Context, string) (scalingo.DatabaseNG, error)
-
-func waitForRunningDatabaseWithRetry(ctx context.Context, show databaseShowFunc, retryer retry.Retry, appID string) error {
-	return retryer.Do(ctx, func(ctx context.Context) error {
-		db, err := show(ctx, appID)
+func waitForRunningDatabase(ctx context.Context, previewClient *scalingo.PreviewClient, retryer retry.Retry, appID string) error {
+	err := retryer.Do(ctx, func(ctx context.Context) error {
+		db, err := previewClient.DatabaseShow(ctx, appID)
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {
 			return errors.Wrapf(ctx, err, "get database %s status", appID)
 		}
@@ -97,4 +91,9 @@ func waitForRunningDatabaseWithRetry(ctx context.Context, show databaseShowFunc,
 			return errors.Newf(ctx, "database %s status is %s", appID, db.Database.Status)
 		}
 	})
+	if err != nil {
+		return errors.Wrap(ctx, err, "wait for running database")
+	}
+
+	return nil
 }
