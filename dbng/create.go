@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	databaseStatusPollInterval = 10 * time.Second
+	databaseStatusPollInterval = 30 * time.Second
 	databaseStatusMaxWait      = 7 * 24 * time.Hour
 )
 
