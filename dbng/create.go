@@ -46,13 +46,13 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		db.Name,
 	)
 
-	retryer := retry.New(
-		retry.WithWaitDuration(databaseStatusPollInterval),
-		retry.WithMaxDuration(databaseStatusMaxWait),
-		retry.WithoutMaxAttempts(),
-	)
-
 	if wait {
+		retryer := retry.New(
+			retry.WithWaitDuration(databaseStatusPollInterval),
+			retry.WithMaxDuration(databaseStatusMaxWait),
+			retry.WithoutMaxAttempts(),
+		)
+
 		spinner := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		spinner.Suffix = " Waiting for the database to be ready\n"
 		spinner.Start()
@@ -72,7 +72,7 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 
 // waitForRunningDatabase waits until the database is running, the context is
 // canceled, or the provisioning timeout is reached.
-func waitForRunningDatabase(ctx context.Context, previewClient *scalingo.PreviewClient, retryer retry.Retry, appID string) error {
+func waitForRunningDatabase(ctx context.Context, previewClient scalingo.DatabasesPreviewService, retryer retry.Retry, appID string) error {
 	err := retryer.Do(ctx, func(ctx context.Context) error {
 		db, err := previewClient.DatabaseShow(ctx, appID)
 		if errors.Is(err, scalingo.ErrDatabaseNotFound) {

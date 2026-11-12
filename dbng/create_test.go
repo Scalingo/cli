@@ -8,104 +8,109 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 
 	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/scalingomock"
 	"github.com/Scalingo/go-utils/retry"
 )
 
-func TestWaitForRunningDatabaseWithRetry(t *testing.T) {
-	t.Run("retries until the database is running", func(t *testing.T) {
-		calls := 0
-		statuses := []scalingo.DatabaseStatus{
-			scalingo.DatabaseStatusCreating,
-			scalingo.DatabaseStatusMigrating,
-			scalingo.DatabaseStatusRunning,
-		}
-		show := func(_ context.Context, appID string) (scalingo.DatabaseNG, error) {
-			assert.Equal(t, "db-123", appID)
-			status := statuses[calls]
-			calls++
-			return databaseWithStatus(status), nil
-		}
+func TestWaitForRunningDatabase(t *testing.T) {
+	apiErr := stderrors.New("API unavailable")
+	tests := map[string]struct {
+		responses   []databaseShowResponse
+		maxAttempts int
+		wantErr     string
+		wantIs      error
+	}{
+		"retries until the database is running": {
+			responses: []databaseShowResponse{
+				{database: databaseWithStatus(scalingo.DatabaseStatusCreating)},
+				{database: databaseWithStatus(scalingo.DatabaseStatusMigrating)},
+				{database: databaseWithStatus(scalingo.DatabaseStatusRunning)},
+			},
+			maxAttempts: 3,
+		},
+		"retries when the database is not visible yet": {
+			responses: []databaseShowResponse{
+				{err: scalingo.ErrDatabaseNotFound},
+				{database: databaseWithStatus(scalingo.DatabaseStatusRunning)},
+			},
+			maxAttempts: 2,
+		},
+		"stops immediately when the database is stopped": {
+			responses: []databaseShowResponse{
+				{database: databaseWithStatus(scalingo.DatabaseStatusStopped)},
+			},
+			maxAttempts: 5,
+			wantErr:     "database db-123 is stopped",
+		},
+		"stops immediately on an API error": {
+			responses: []databaseShowResponse{
+				{err: apiErr},
+			},
+			maxAttempts: 5,
+			wantErr:     "get database db-123 status",
+			wantIs:      apiErr,
+		},
+		"returns after the retry limit": {
+			responses: []databaseShowResponse{
+				{database: databaseWithStatus(scalingo.DatabaseStatusCreating)},
+				{database: databaseWithStatus(scalingo.DatabaseStatusCreating)},
+			},
+			maxAttempts: 2,
+			wantErr:     "database db-123 status is creating",
+		},
+	}
 
-		err := waitForRunningDatabaseWithRetry(t.Context(), show, testRetryer(3), "db-123")
-
-		require.NoError(t, err)
-		assert.Equal(t, 3, calls)
-	})
-
-	t.Run("retries a database that is not visible yet", func(t *testing.T) {
-		calls := 0
-		show := func(_ context.Context, _ string) (scalingo.DatabaseNG, error) {
-			calls++
-			if calls == 1 {
-				return scalingo.DatabaseNG{}, scalingo.ErrDatabaseNotFound
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			previewClient := scalingomock.NewMockDatabasesPreviewService(ctrl)
+			for _, response := range tt.responses {
+				previewClient.EXPECT().DatabaseShow(gomock.Any(), "db-123").Return(response.database, response.err)
 			}
-			return databaseWithStatus(scalingo.DatabaseStatusRunning), nil
-		}
 
-		err := waitForRunningDatabaseWithRetry(t.Context(), show, testRetryer(2), "db-123")
+			err := waitForRunningDatabase(t.Context(), previewClient, testRetryer(tt.maxAttempts), "db-123")
 
-		require.NoError(t, err)
-		assert.Equal(t, 2, calls)
-	})
+			if tt.wantErr == "" {
+				require.NoError(t, err)
+			} else {
+				require.ErrorContains(t, err, tt.wantErr)
+			}
+			if tt.wantIs != nil {
+				require.ErrorIs(t, err, tt.wantIs)
+			}
+		})
+	}
 
-	t.Run("stops immediately when the database is stopped", func(t *testing.T) {
-		calls := 0
-		show := func(_ context.Context, _ string) (scalingo.DatabaseNG, error) {
-			calls++
-			return databaseWithStatus(scalingo.DatabaseStatusStopped), nil
-		}
+	// Ensure cancellation interrupts a status lookup that is still in progress.
+	t.Run("cancels active lookup", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		previewClient := scalingomock.NewMockDatabasesPreviewService(ctrl)
+		previewClient.EXPECT().DatabaseShow(gomock.Any(), "db-123").DoAndReturn(
+			func(ctx context.Context, _ string) (scalingo.DatabaseNG, error) {
+				deadline, ok := ctx.Deadline()
+				require.True(t, ok)
+				assert.WithinDuration(t, time.Now().Add(10*time.Millisecond), deadline, 10*time.Millisecond)
 
-		err := waitForRunningDatabaseWithRetry(t.Context(), show, testRetryer(5), "db-123")
+				<-ctx.Done()
+				return scalingo.DatabaseNG{}, ctx.Err()
+			},
+		)
 
-		require.ErrorContains(t, err, "database db-123 is stopped")
-		assert.Equal(t, 1, calls)
-	})
+		ctx, cancel := context.WithTimeout(t.Context(), 10*time.Millisecond)
+		defer cancel()
+		err := waitForRunningDatabase(ctx, previewClient, retry.New(retry.WithoutMaxAttempts()), "db-123")
 
-	t.Run("stops immediately on an API error", func(t *testing.T) {
-		apiErr := stderrors.New("API unavailable")
-		calls := 0
-		show := func(_ context.Context, _ string) (scalingo.DatabaseNG, error) {
-			calls++
-			return scalingo.DatabaseNG{}, apiErr
-		}
-
-		err := waitForRunningDatabaseWithRetry(t.Context(), show, testRetryer(5), "db-123")
-
-		require.ErrorIs(t, err, apiErr)
+		require.ErrorIs(t, err, context.DeadlineExceeded)
 		require.ErrorContains(t, err, "get database db-123 status")
-		assert.Equal(t, 1, calls)
-	})
-
-	t.Run("returns after the retry limit", func(t *testing.T) {
-		calls := 0
-		show := func(_ context.Context, _ string) (scalingo.DatabaseNG, error) {
-			calls++
-			return databaseWithStatus(scalingo.DatabaseStatusCreating), nil
-		}
-
-		err := waitForRunningDatabaseWithRetry(t.Context(), show, testRetryer(2), "db-123")
-
-		require.ErrorContains(t, err, "database db-123 status is creating")
-		assert.Equal(t, 2, calls)
 	})
 }
 
-func TestWaitForRunningDatabaseWithTimeoutCancelsActiveLookup(t *testing.T) {
-	show := func(ctx context.Context, _ string) (scalingo.DatabaseNG, error) {
-		deadline, ok := ctx.Deadline()
-		require.True(t, ok)
-		assert.WithinDuration(t, time.Now().Add(10*time.Millisecond), deadline, 10*time.Millisecond)
-
-		<-ctx.Done()
-		return scalingo.DatabaseNG{}, ctx.Err()
-	}
-
-	err := waitForRunningDatabaseWithTimeout(t.Context(), show, "db-123", 10*time.Millisecond)
-
-	require.ErrorIs(t, err, context.DeadlineExceeded)
-	require.ErrorContains(t, err, "get database db-123 status")
+type databaseShowResponse struct {
+	database scalingo.DatabaseNG
+	err      error
 }
 
 func databaseWithStatus(status scalingo.DatabaseStatus) scalingo.DatabaseNG {
