@@ -13,13 +13,13 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func Info(ctx context.Context, appID string) error {
+func Info(ctx context.Context, databaseIdentifier string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	db, err := c.Preview().DatabaseShow(ctx, appID)
+	db, err := databaseByNameOrID(ctx, c, databaseIdentifier)
 	if err != nil {
 		return errors.Wrap(ctx, err, "show database")
 	}

@@ -5,6 +5,7 @@
 * fix(keys-add): return an error when required arguments are missing
 * fix(dbng): bound database readiness polling
 * refactor(dbng): rename package to `dbdr`
+* fix(dbdr): allow database commands to resolve databases by name or ID
 
 ## 1.52.0
 

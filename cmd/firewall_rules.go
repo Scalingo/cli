@@ -19,29 +19,30 @@ var (
 		Name:      "database-firewall-rules",
 		Category:  "Databases DR",
 		Usage:     "List firewall rules of a database",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all firewall rules of a database",
 			Examples: []string{
-				"scalingo database-firewall-rules my-db-id",
+				"scalingo database-firewall-rules database_id_or_name",
 				"scalingo --database my-db database-firewall-rules",
 			},
 			SeeAlso: []string{"database-firewall-rules-add", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			databaseIdentifier, err := databaseIdentifierFromArgs(c)
 			if errors.Is(err, detect.ErrTooManyArguments) {
 				io.Error(err)
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
 			}
-			if err != nil {
-				errorQuit(ctx, err)
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules")
 			}
 
-			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err = dbdr.FirewallRulesList(ctx, databaseName, addonID)
+			err = dbdr.FirewallRulesList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -58,7 +59,7 @@ var (
 		Name:      "database-firewall-rules-add",
 		Category:  "Databases DR",
 		Usage:     "Add a firewall rule to a database",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.StringFlag{Name: "cidr", Usage: "CIDR range (e.g., 203.0.113.0/24)"},
@@ -68,19 +69,20 @@ var (
 		Description: CommandDescription{
 			Description: "Add a firewall rule to a database. Either --cidr or --managed-range must be specified, but not both.",
 			Examples: []string{
-				"scalingo database-firewall-rules-add my-db-id --cidr 203.0.113.0/24 --label \"Office network\"",
+				"scalingo database-firewall-rules-add database_id_or_name --cidr 203.0.113.0/24 --label \"Office network\"",
 				"scalingo --database my-db database-firewall-rules-add --managed-range mr-scalingo-osc-fr1",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-remove", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			databaseIdentifier, err := databaseIdentifierFromArgs(c)
 			if errors.Is(err, detect.ErrTooManyArguments) {
 				io.Error(err)
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
-			if err != nil {
-				errorQuit(ctx, err)
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
 			cidr := c.String("cidr")
@@ -102,7 +104,7 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-add")
 			}
 
-			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
 			var params scalingo.FirewallRuleCreateParams
 			if cidr != "" {
@@ -118,7 +120,7 @@ var (
 				}
 			}
 
-			err = dbdr.FirewallRulesAdd(ctx, databaseName, addonID, params)
+			err = dbdr.FirewallRulesAdd(ctx, databaseIdentifier, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -135,19 +137,18 @@ var (
 		Name:      "database-firewall-rules-remove",
 		Category:  "Databases DR",
 		Usage:     "Remove a firewall rule from a database",
-		ArgsUsage: "database-id rule-id",
+		ArgsUsage: "database-id-or-name rule-id",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "Remove a firewall rule from a database",
 			Examples: []string{
-				"scalingo database-firewall-rules-remove my-db-id rule-id",
+				"scalingo database-firewall-rules-remove database_id_or_name rule_id",
 				"scalingo --database my-db database-firewall-rules-remove rule-id",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-managed-ranges"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			var databaseName, addonID, ruleID string
-			var err error
+			var databaseIdentifier, ruleID string
 
 			args := c.Args().Slice()
 			switch len(args) {
@@ -157,29 +158,25 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			case 1:
 				// Only rule-id provided, database from --database flag
-				databaseName, addonID = detect.GetCurrentDatabase(ctx, c)
+				databaseIdentifier = detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
 				ruleID = args[0]
 			case 2:
-				// Both database-name and rule-id provided as positional args
-				databaseName = args[0]
+				// Both database identifier and rule ID provided as positional args
+				databaseIdentifier = args[0]
 				ruleID = args[1]
-				addonID, err = detect.GetAddonIDFromDatabase(ctx, databaseName)
-				if err != nil {
-					errorQuit(ctx, err)
-				}
 			default:
 				io.Error("Invalid number of arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
-			if databaseName == "" {
-				io.Error("Please provide a database name or use --database flag")
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-rules-remove")
 			}
 
-			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err = dbdr.FirewallRulesRemove(ctx, databaseName, addonID, ruleID)
+			err := dbdr.FirewallRulesRemove(ctx, databaseIdentifier, ruleID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -196,29 +193,30 @@ var (
 		Name:      "database-firewall-managed-ranges",
 		Category:  "Databases DR",
 		Usage:     "List available managed ranges for a database",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List all available managed ranges for firewall rules of a database",
 			Examples: []string{
-				"scalingo database-firewall-managed-ranges my-db-id",
+				"scalingo database-firewall-managed-ranges database_id_or_name",
 				"scalingo --database my-db database-firewall-managed-ranges",
 			},
 			SeeAlso: []string{"database-firewall-rules", "database-firewall-rules-add", "database-firewall-rules-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseName, addonID, err := detect.GetDatabaseFromArgs(ctx, c)
+			databaseIdentifier, err := databaseIdentifierFromArgs(c)
 			if errors.Is(err, detect.ErrTooManyArguments) {
 				io.Error(err)
 				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
 			}
-			if err != nil {
-				errorQuit(ctx, err)
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
+				return cli.ShowCommandHelp(ctx, c, "database-firewall-managed-ranges")
 			}
 
-			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err = dbdr.FirewallManagedRangesList(ctx, databaseName, addonID)
+			err = dbdr.FirewallManagedRangesList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -231,3 +229,14 @@ var (
 		},
 	}
 )
+
+func databaseIdentifierFromArgs(c *cli.Command) (string, error) {
+	switch c.Args().Len() {
+	case 0:
+		return detect.ExtractDatabaseNameFromCommandLineOrEnv(c), nil
+	case 1:
+		return c.Args().First(), nil
+	default:
+		return "", detect.ErrTooManyArguments
+	}
+}
