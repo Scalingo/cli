@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,7 +27,7 @@ func TestAddSSHKeyCommand(t *testing.T) {
 				ErrWriter: &output,
 			}
 
-			err := app.Run(context.Background(), append([]string{"scalingo", "keys-add"}, args...))
+			err := app.Run(t.Context(), append([]string{"scalingo", "keys-add"}, args...))
 
 			require.EqualError(t, err, "keys-add expects exactly 2 arguments: key-name path-to-key")
 			assert.Contains(t, output.String(), "USAGE:")
