@@ -68,6 +68,11 @@
     {
       "src_package": ".",
       "dst_package": "scalingomock",
+      "interface": "DatabasesPreviewService"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
       "interface": "DeploymentsService"
     },
     {
@@ -164,6 +169,11 @@
       "src_package": ".",
       "dst_package": "scalingomock",
       "interface": "API"
+    },
+    {
+      "src_package": ".",
+      "dst_package": "scalingomock",
+      "interface": "PreviewAPI"
     }
   ]
 }
