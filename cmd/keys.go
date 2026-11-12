@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -46,7 +46,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
 				_ = cli.ShowSubcommandHelp(c)
-				return fmt.Errorf("keys-add expects exactly 2 arguments: key-name path-to-key")
+				return errors.New(ctx, "keys-add expects exactly 2 arguments: key-name path-to-key")
 			}
 			err := keys.Add(ctx, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {
