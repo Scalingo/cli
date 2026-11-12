@@ -8,7 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/addons"
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/dbng"
+	"github.com/Scalingo/cli/dbdr"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
@@ -27,7 +27,7 @@ var (
 			SeeAlso:     []string{"database-info", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
-			err := dbng.List(ctx)
+			err := dbdr.List(ctx)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -66,7 +66,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.Info(ctx, databaseID)
+			err := dbdr.Info(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -97,7 +97,7 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-list-plans")
 			}
 
-			err := dbng.ListPlans(ctx, technology)
+			err := dbdr.ListPlans(ctx, technology)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -142,7 +142,7 @@ var (
 				Name:            appName,
 				IPRange:         c.String("ip-range"),
 			}
-			err := dbng.Create(ctx, params, c.Bool("wait"))
+			err := dbdr.Create(ctx, params, c.Bool("wait"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -206,7 +206,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.Upgrade(ctx, databaseID, plan, c.Bool("wait"))
+			err := dbdr.Upgrade(ctx, databaseID, plan, c.Bool("wait"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -262,7 +262,7 @@ var (
 			}
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
-			err := dbng.Config(ctx, databaseID, options)
+			err := dbdr.Config(ctx, databaseID, options)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -301,7 +301,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.Destroy(ctx, databaseID)
+			err := dbdr.Destroy(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
