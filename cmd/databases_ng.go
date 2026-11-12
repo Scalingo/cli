@@ -43,30 +43,30 @@ var (
 		Name:      "database-info",
 		Category:  "Databases DR",
 		Usage:     "View database Dedicated Resources",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags:     []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "View database Dedicated Resources detailed information",
 			Examples: []string{
-				"scalingo database-info database_id",
-				"scalingo database-info --database database_id",
+				"scalingo database-info database_id_or_name",
+				"scalingo database-info --database database_id_or_name",
 			},
 			SeeAlso: []string{"databases", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := c.Args().First()
-			if databaseID == "" {
-				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			databaseIdentifier := c.Args().First()
+			if databaseIdentifier == "" {
+				databaseIdentifier = detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
 			}
 
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-info")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbng.Info(ctx, databaseID)
+			err := dbng.Info(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -158,7 +158,7 @@ var (
 		Name:      "database-upgrade",
 		Category:  "Databases DR",
 		Usage:     "Upgrade database Dedicated Resources plan",
-		ArgsUsage: "database-id plan",
+		ArgsUsage: "database-id-or-name plan",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.BoolFlag{Name: "wait", Usage: "Wait for plan change", Required: false},
@@ -166,14 +166,14 @@ var (
 		Description: CommandDescription{
 			Description: "Upgrade a database Dedicated Resources plan",
 			Examples: []string{
-				"scalingo database-upgrade database_id postgresql-dr-enterprise-8192",
-				"scalingo database-upgrade --database database_id --wait postgresql-dr-enterprise-8192",
+				"scalingo database-upgrade database_id_or_name postgresql-dr-enterprise-8192",
+				"scalingo database-upgrade --database database_id_or_name --wait postgresql-dr-enterprise-8192",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-create", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
 			args := c.Args().Slice()
-			var databaseID string
+			var databaseIdentifier string
 			var plan string
 
 			switch len(args) {
@@ -181,22 +181,22 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 			case 1:
 				if databaseNameFromFlags(c) != "" || os.Getenv("SCALINGO_DATABASE") != "" {
-					databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+					databaseIdentifier = detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
 					plan = args[0]
 				} else {
 					io.Error("Missing required argument: plan")
 					return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 				}
 			case 2:
-				databaseID = args[0]
+				databaseIdentifier = args[0]
 				plan = args[1]
 			default:
 				io.Error("Invalid number of arguments")
 				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 			}
 
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 			}
 			if plan == "" {
@@ -204,9 +204,9 @@ var (
 				return cli.ShowCommandHelp(ctx, c, "database-upgrade")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbng.Upgrade(ctx, databaseID, plan, c.Bool("wait"))
+			err := dbng.Upgrade(ctx, databaseIdentifier, plan, c.Bool("wait"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -223,7 +223,7 @@ var (
 		Name:      "database-config",
 		Category:  "Databases DR",
 		Usage:     "Configure a database Dedicated Resources",
-		ArgsUsage: "database-id",
+		ArgsUsage: "database-id-or-name",
 		Flags: []cli.Flag{
 			databaseFlag(),
 			&cli.IntFlag{Name: "maintenance-window-hour", Usage: "Configure database maintenance window starting hour (in your local timezone)"},
@@ -232,8 +232,8 @@ var (
 		Description: CommandDescription{
 			Description: "Configure a database Dedicated Resources",
 			Examples: []string{
-				"scalingo database-config --maintenance-window-day tuesday --maintenance-window-hour 2 database_id",
-				"scalingo database-config --database database_id --maintenance-window-hour 2",
+				"scalingo database-config --maintenance-window-day tuesday --maintenance-window-hour 2 database_id_or_name",
+				"scalingo database-config --database database_id_or_name --maintenance-window-hour 2",
 			},
 			SeeAlso: []string{"databases", "database-info"},
 		}.Render(),
@@ -241,12 +241,12 @@ var (
 			if c.Args().Len() > 1 {
 				return cli.ShowCommandHelp(ctx, c, "database-config")
 			}
-			databaseID := c.Args().First()
-			if databaseID == "" {
-				databaseID, _ = detect.GetCurrentDatabase(ctx, c)
+			databaseIdentifier := c.Args().First()
+			if databaseIdentifier == "" {
+				databaseIdentifier = detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
 			}
-			if databaseID == "" {
-				io.Error("Please provide a database ID or use --database flag")
+			if databaseIdentifier == "" {
+				io.Error("Please provide a database ID or name, or use --database flag")
 				return cli.ShowCommandHelp(ctx, c, "database-config")
 			}
 
@@ -261,8 +261,8 @@ var (
 				errorQuitWithHelpMessage(ctx, errors.New(ctx, "cannot update your database without a specified option"), c, "database-config")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
-			err := dbng.Config(ctx, databaseID, options)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
+			err := dbng.Config(ctx, databaseIdentifier, options)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -292,7 +292,7 @@ var (
 		Action: func(ctx context.Context, c *cli.Command) error {
 			databaseIdentifier := c.Args().First()
 			if databaseIdentifier == "" {
-				databaseIdentifier, _ = detect.GetCurrentDatabase(ctx, c)
+				databaseIdentifier = detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
 			}
 
 			if databaseIdentifier == "" {

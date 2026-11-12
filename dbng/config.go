@@ -9,13 +9,13 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func Config(ctx context.Context, databaseID string, options addons.UpdateAddonConfigOpts) error {
+func Config(ctx context.Context, databaseIdentifier string, options addons.UpdateAddonConfigOpts) error {
 	client, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	database, err := client.Preview().DatabaseShow(ctx, databaseID)
+	database, err := databaseByNameOrID(ctx, client, databaseIdentifier)
 	if err != nil {
 		return errors.Wrap(ctx, err, "show database")
 	}
@@ -25,21 +25,12 @@ func Config(ctx context.Context, databaseID string, options addons.UpdateAddonCo
 		return errors.Wrap(ctx, err, "list database addons")
 	}
 
-	var addonID string
-	for _, addon := range linkedAddons {
-		if addon.ResourceID == database.Database.ResourceID {
-			addonID = addon.ID
-			break
-		}
-	}
-	if addonID == "" && len(linkedAddons) == 1 {
-		addonID = linkedAddons[0].ID
-	}
-	if addonID == "" {
+	addon, found := databaseAddon(database, linkedAddons)
+	if !found {
 		return errors.New(ctx, "no addon found for database")
 	}
 
-	err = addons.UpdateConfig(ctx, database.App.ID, addonID, options)
+	err = addons.UpdateConfig(ctx, database.App.ID, addon.ID, options)
 	if err != nil {
 		return errors.Wrap(ctx, err, "update database config")
 	}

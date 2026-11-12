@@ -13,13 +13,18 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func DatabaseEndpointsList(ctx context.Context, databaseID string) error {
+func DatabaseEndpointsList(ctx context.Context, databaseIdentifier string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	endpoints, err := c.Preview().DatabaseEndpointsList(ctx, databaseID, scalingo.DatabaseEndpointsListParams{})
+	database, err := databaseByNameOrID(ctx, c, databaseIdentifier)
+	if err != nil {
+		return errors.Wrap(ctx, err, "show database")
+	}
+
+	endpoints, err := c.Preview().DatabaseEndpointsList(ctx, database.ID, scalingo.DatabaseEndpointsListParams{})
 	if err != nil {
 		return errors.Wrap(ctx, err, "list database endpoints")
 	}
@@ -46,13 +51,18 @@ func DatabaseEndpointsList(ctx context.Context, databaseID string) error {
 	return nil
 }
 
-func DatabaseNetPeeringsList(ctx context.Context, databaseID string) error {
+func DatabaseNetPeeringsList(ctx context.Context, databaseIdentifier string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	netPeerings, err := c.Preview().DatabaseNetPeeringsList(ctx, databaseID)
+	database, err := databaseByNameOrID(ctx, c, databaseIdentifier)
+	if err != nil {
+		return errors.Wrap(ctx, err, "show database")
+	}
+
+	netPeerings, err := c.Preview().DatabaseNetPeeringsList(ctx, database.ID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list database net peerings")
 	}
@@ -81,47 +91,62 @@ func DatabaseNetPeeringsList(ctx context.Context, databaseID string) error {
 	return nil
 }
 
-func DatabaseNetPeeringsAdd(ctx context.Context, databaseID string, params scalingo.DatabaseNetPeeringCreateParams) error {
+func DatabaseNetPeeringsAdd(ctx context.Context, databaseIdentifier string, params scalingo.DatabaseNetPeeringCreateParams) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	netPeering, err := c.Preview().DatabaseNetPeeringCreate(ctx, databaseID, params)
+	database, err := databaseByNameOrID(ctx, c, databaseIdentifier)
+	if err != nil {
+		return errors.Wrap(ctx, err, "show database")
+	}
+
+	netPeering, err := c.Preview().DatabaseNetPeeringCreate(ctx, database.ID, params)
 	if err != nil {
 		return errors.Wrap(ctx, err, "add database net peering")
 	}
 
-	io.Statusf("Net peering '%s' creation has been initiated for database '%s'.\n", netPeering.ID, databaseID)
+	io.Statusf("Net peering '%s' creation has been initiated for database '%s'.\n", netPeering.ID, database.ID)
 	io.Warning("Expect some delay for the net peering to be applied.")
 
 	return nil
 }
 
-func DatabaseNetPeeringsRemove(ctx context.Context, databaseID, netPeeringID string) error {
+func DatabaseNetPeeringsRemove(ctx context.Context, databaseIdentifier, netPeeringID string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	err = c.Preview().DatabaseNetPeeringDestroy(ctx, databaseID, netPeeringID)
+	database, err := databaseByNameOrID(ctx, c, databaseIdentifier)
+	if err != nil {
+		return errors.Wrap(ctx, err, "show database")
+	}
+
+	err = c.Preview().DatabaseNetPeeringDestroy(ctx, database.ID, netPeeringID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "remove database net peering")
 	}
 
-	io.Statusf("Net peering '%s' has been removed from database '%s'.\n", netPeeringID, databaseID)
+	io.Statusf("Net peering '%s' has been removed from database '%s'.\n", netPeeringID, database.ID)
 	io.Warning("Expect some delay for the net peering removal to be applied.")
 
 	return nil
 }
 
-func DatabaseNetworkConfigurationShow(ctx context.Context, databaseID string) error {
+func DatabaseNetworkConfigurationShow(ctx context.Context, databaseIdentifier string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	networkConfiguration, err := c.Preview().DatabaseNetworkConfigurationShow(ctx, databaseID)
+	database, err := databaseByNameOrID(ctx, c, databaseIdentifier)
+	if err != nil {
+		return errors.Wrap(ctx, err, "show database")
+	}
+
+	networkConfiguration, err := c.Preview().DatabaseNetworkConfigurationShow(ctx, database.ID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "show database network configuration")
 	}

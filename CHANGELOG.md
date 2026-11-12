@@ -5,7 +5,7 @@
 * feat(app-firewall-rules): add commands to list, add, and remove application firewall rules: `app-firewall-rules`, `app-firewall-rule-add`, and `app-firewall-rule-remove`
 * feat(orgs): add `organizations` command (alias `orgs`) to list the organizations of the current user and their role
 * chore(deps): update go-scalingo to v11.9.0 to add the `OrganizationsList` method
-* fix(dbng): allow `database-destroy` to resolve databases by name
+* fix(dbng): allow database commands to resolve databases by name or ID
 
 ## 1.51.1
 

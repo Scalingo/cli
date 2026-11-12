@@ -45,3 +45,35 @@ func TestFindDatabaseByNameOrIDPrioritizesID(t *testing.T) {
 	require.True(t, found)
 	assert.Equal(t, idMatch, result)
 }
+
+func TestDatabaseAddon(t *testing.T) {
+	database := scalingo.DatabaseNG{Database: scalingo.Database{ResourceID: "database-resource-id"}}
+	matchingAddon := &scalingo.Addon{ID: "database-addon-id", ResourceID: "database-resource-id"}
+
+	t.Run("uses the only linked addon", func(t *testing.T) {
+		result, found := databaseAddon(database, []*scalingo.Addon{matchingAddon})
+
+		require.True(t, found)
+		assert.Equal(t, matchingAddon, result)
+	})
+
+	t.Run("matches the database resource among multiple addons", func(t *testing.T) {
+		result, found := databaseAddon(database, []*scalingo.Addon{
+			{ID: "other-addon-id", ResourceID: "other-resource-id"},
+			matchingAddon,
+		})
+
+		require.True(t, found)
+		assert.Equal(t, matchingAddon, result)
+	})
+
+	t.Run("reports no matching addon", func(t *testing.T) {
+		result, found := databaseAddon(database, []*scalingo.Addon{
+			{ID: "other-addon-id", ResourceID: "other-resource-id"},
+			{ID: "another-addon-id", ResourceID: "another-resource-id"},
+		})
+
+		assert.False(t, found)
+		assert.Nil(t, result)
+	})
+}
