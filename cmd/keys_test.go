@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-func TestAddSSHKeyCommandRejectsInvalidArgumentCounts(t *testing.T) {
+func TestAddSSHKeyCommand(t *testing.T) {
 	tests := map[string][]string{
 		"missing both arguments": nil,
 		"missing key path":       {"key-name"},
