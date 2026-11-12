@@ -3,9 +3,10 @@ package dbng
 import (
 	"testing"
 
-	scalingo "github.com/Scalingo/go-scalingo/v11"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	scalingo "github.com/Scalingo/go-scalingo/v11"
 )
 
 func TestFindDatabaseByNameOrID(t *testing.T) {
