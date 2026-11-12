@@ -16,7 +16,7 @@ import (
 
 const (
 	databaseStatusPollInterval = 10 * time.Second
-	databaseStatusMaxWait      = 30 * time.Minute
+	databaseStatusMaxWait      = 7 * 24 * time.Hour
 )
 
 func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool) error {
