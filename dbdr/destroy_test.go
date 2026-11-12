@@ -1,4 +1,4 @@
-package dbng
+package dbdr
 
 import (
 	"testing"

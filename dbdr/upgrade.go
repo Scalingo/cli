@@ -1,4 +1,4 @@
-package dbng
+package dbdr
 
 import (
 	"context"
@@ -11,6 +11,7 @@ import (
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
+	"github.com/Scalingo/go-utils/retry"
 )
 
 func Upgrade(ctx context.Context, databaseIdentifier, plan string, wait bool) error {
@@ -66,7 +67,7 @@ func Upgrade(ctx context.Context, databaseIdentifier, plan string, wait bool) er
 		spin.Start()
 		defer spin.Stop()
 
-		err = waitForDatabasePlanChange(ctx, c, db.ID)
+		err := waitForDatabasePlanChange(ctx, c, db.ID)
 		if err != nil {
 			return errors.Wrap(ctx, err, "wait for database plan change")
 		}
@@ -92,7 +93,12 @@ func waitForDatabasePlanChange(ctx context.Context, client *scalingo.Client, dat
 		}
 	}
 
-	return waitForRunningDatabase(ctx, client, databaseID)
+	retryer := retry.New(
+		retry.WithWaitDuration(databaseStatusPollInterval),
+		retry.WithMaxDuration(databaseStatusMaxWait),
+		retry.WithoutMaxAttempts(),
+	)
+	return waitForRunningDatabase(ctx, client.Preview(), retryer, databaseID)
 }
 
 func waitForDatabaseStatus(ctx context.Context, client *scalingo.Client, databaseID string, check func(scalingo.DatabaseStatus) bool) error {

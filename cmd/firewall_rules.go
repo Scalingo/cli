@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/dbng"
+	"github.com/Scalingo/cli/dbdr"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
@@ -42,7 +42,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesList(ctx, databaseIdentifier)
+			err = dbdr.FirewallRulesList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -120,7 +120,7 @@ var (
 				}
 			}
 
-			err = dbng.FirewallRulesAdd(ctx, databaseIdentifier, params)
+			err = dbdr.FirewallRulesAdd(ctx, databaseIdentifier, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -176,7 +176,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbng.FirewallRulesRemove(ctx, databaseIdentifier, ruleID)
+			err := dbdr.FirewallRulesRemove(ctx, databaseIdentifier, ruleID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -216,7 +216,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallManagedRangesList(ctx, databaseIdentifier)
+			err = dbdr.FirewallManagedRangesList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
