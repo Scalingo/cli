@@ -6,7 +6,7 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/dbng"
+	"github.com/Scalingo/cli/dbdr"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
@@ -32,7 +32,7 @@ var (
 			}
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.DatabaseEndpointsList(ctx, databaseID)
+			err := dbdr.DatabaseEndpointsList(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -64,7 +64,7 @@ var (
 			}
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.DatabaseNetPeeringsList(ctx, databaseID)
+			err := dbdr.DatabaseNetPeeringsList(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -108,7 +108,7 @@ var (
 				OutscaleNetPeeringID: c.String("outscale-net-peering-id"),
 			}
 
-			err := dbng.DatabaseNetPeeringsAdd(ctx, databaseID, params)
+			err := dbdr.DatabaseNetPeeringsAdd(ctx, databaseID, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -148,7 +148,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.DatabaseNetPeeringsRemove(ctx, databaseID, c.String("net-peering"))
+			err := dbdr.DatabaseNetPeeringsRemove(ctx, databaseID, c.String("net-peering"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -181,7 +181,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
 
-			err := dbng.DatabaseNetworkConfigurationShow(ctx, databaseID)
+			err := dbdr.DatabaseNetworkConfigurationShow(ctx, databaseID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}

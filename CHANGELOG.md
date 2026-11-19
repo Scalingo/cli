@@ -4,6 +4,9 @@
 
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.0 to add the `ProjectsListByOrganization` method
+* fix(keys-add): return an error when required arguments are missing
+* fix(dbng): bound database readiness polling
+* refactor(dbng): rename package to `dbdr`
 
 ## 1.52.0
 

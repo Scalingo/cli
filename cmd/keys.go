@@ -7,6 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
 	"github.com/Scalingo/cli/keys"
+	"github.com/Scalingo/go-utils/errors/v3"
 )
 
 var (
@@ -44,8 +45,8 @@ var (
 
 		Action: func(ctx context.Context, c *cli.Command) error {
 			if c.Args().Len() != 2 {
-				_ = cli.ShowCommandHelp(ctx, c, "keys-add")
-				return nil
+				_ = cli.ShowSubcommandHelp(c)
+				return errors.New(ctx, "keys-add expects exactly 2 arguments: key-name path-to-key")
 			}
 			err := keys.Add(ctx, c.Args().First(), c.Args().Slice()[1])
 			if err != nil {

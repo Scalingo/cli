@@ -8,6 +8,7 @@ require (
 	github.com/Scalingo/go-utils/errors/v3 v3.2.1
 	github.com/Scalingo/go-utils/logger v1.13.0
 	github.com/Scalingo/go-utils/pagination v1.2.0
+	github.com/Scalingo/go-utils/retry v1.4.2
 	github.com/Scalingo/gopassword v1.1.1
 	github.com/briandowns/spinner v1.23.2
 	github.com/cheggaaa/pb/v3 v3.2.1

@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/Scalingo/cli/cmd/autocomplete"
-	"github.com/Scalingo/cli/dbng"
+	"github.com/Scalingo/cli/dbdr"
 	"github.com/Scalingo/cli/detect"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
@@ -41,7 +41,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesList(ctx, databaseName, addonID)
+			err = dbdr.FirewallRulesList(ctx, databaseName, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -118,7 +118,7 @@ var (
 				}
 			}
 
-			err = dbng.FirewallRulesAdd(ctx, databaseName, addonID, params)
+			err = dbdr.FirewallRulesAdd(ctx, databaseName, addonID, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -179,7 +179,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallRulesRemove(ctx, databaseName, addonID, ruleID)
+			err = dbdr.FirewallRulesRemove(ctx, databaseName, addonID, ruleID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -218,7 +218,7 @@ var (
 
 			utils.CheckForConsent(ctx, databaseName, utils.ConsentTypeDBs)
 
-			err = dbng.FirewallManagedRangesList(ctx, databaseName, addonID)
+			err = dbdr.FirewallManagedRangesList(ctx, databaseName, addonID)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
