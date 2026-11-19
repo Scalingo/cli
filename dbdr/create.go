@@ -43,7 +43,7 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 		return errors.Wrap(ctx, err, "create database")
 	}
 	// The project of the created database is the one returned by the API, whether or not a project was requested.
-	projectSlug := projects.CreatedProjectSlug(ctx, db.ProjectID)
+	projectSlug := projects.OrganizationProjectSlug(ctx, c, c, db.ProjectID)
 	if projectSlug != "" {
 		io.Statusf("Your %s database %s ('%s') is being provisioned in %s…\n\n",
 			db.Technology,

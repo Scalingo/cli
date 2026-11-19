@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/stvp/rollbar"
@@ -151,8 +150,6 @@ type ClientConfigOpts struct {
 	Region   string
 	APIToken string
 	AuthOnly bool
-	// Timeout bounds each HTTP request of the client. The SDK default applies when it is zero.
-	Timeout time.Duration
 }
 
 func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.ClientConfig {
@@ -161,7 +158,6 @@ func (config Config) scalingoClientBaseConfig(opts ClientConfigOpts) scalingo.Cl
 		Region:       opts.Region,
 		AuthEndpoint: config.ScalingoAuthURL,
 		APIToken:     opts.APIToken,
-		Timeout:      opts.Timeout,
 		UserAgent:    "Scalingo CLI v" + Version,
 	}
 }
@@ -211,18 +207,12 @@ func ScalingoAuthClient(ctx context.Context) (*scalingo.Client, error) {
 }
 
 func ScalingoClient(ctx context.Context) (*scalingo.Client, error) {
-	return ScalingoClientWithTimeout(ctx, 0)
-}
-
-// ScalingoClientWithTimeout returns the same client as ScalingoClient with a custom timeout for each of its HTTP
-// requests, including the exchange of the API token. The context cannot bound them with the current SDK.
-func ScalingoClientWithTimeout(ctx context.Context, timeout time.Duration) (*scalingo.Client, error) {
 	authenticator := &CliAuthenticator{}
 	_, token, err := authenticator.LoadAuth(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "fail to load credentials")
 	}
-	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token.Token, Timeout: timeout})
+	config, err := C.scalingoClientConfig(ctx, ClientConfigOpts{APIToken: token.Token})
 	if err != nil {
 		return nil, errors.Wrapf(ctx, err, "fail to create Scalingo client")
 	}
