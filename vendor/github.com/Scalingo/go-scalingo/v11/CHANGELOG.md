@@ -2,6 +2,14 @@
 
 ## To Be Released
 
+## 11.10.0
+
+* feat(projects): add `OrganizationID` field to `Project` and `ProjectsListByOrganization` method to list the projects of an organization
+
+## 11.9.1
+
+* build(mocks): add preview interfaces mocks
+
 ## 11.9.0
 
 * feat(organizations): add `OrganizationsList` method to list the organizations of the current user

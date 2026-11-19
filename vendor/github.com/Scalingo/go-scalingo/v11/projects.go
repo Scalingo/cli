@@ -9,6 +9,7 @@ import (
 
 type ProjectsService interface {
 	ProjectsList(ctx context.Context) ([]Project, error)
+	ProjectsListByOrganization(ctx context.Context, organizationID string) ([]Project, error)
 	ProjectAdd(ctx context.Context, params ProjectAddParams) (Project, error)
 	ProjectUpdate(ctx context.Context, projectID string, params ProjectUpdateParams) (Project, error)
 	ProjectGet(ctx context.Context, projectID string) (Project, error)
@@ -19,13 +20,14 @@ type ProjectsService interface {
 var _ ProjectsService = (*Client)(nil)
 
 type Project struct {
-	ID        string          `json:"id"`
-	Name      string          `json:"name"`
-	Default   bool            `json:"default"`
-	Flags     map[string]bool `json:"flags"`
-	CreatedAt time.Time       `json:"created_at"`
-	UpdatedAt time.Time       `json:"updated_at"`
-	Owner     Owner           `json:"owner"`
+	ID             string          `json:"id"`
+	Name           string          `json:"name"`
+	Default        bool            `json:"default"`
+	Flags          map[string]bool `json:"flags"`
+	CreatedAt      time.Time       `json:"created_at"`
+	UpdatedAt      time.Time       `json:"updated_at"`
+	Owner          Owner           `json:"owner"`
+	OrganizationID string          `json:"organization_id"`
 }
 
 type ProjectPrivateNetwork struct {
@@ -66,8 +68,19 @@ type projectUpdateParamsPayload struct {
 }
 
 func (c *Client) ProjectsList(ctx context.Context) ([]Project, error) {
+	return c.projectsList(ctx, nil)
+}
+
+// ProjectsListByOrganization lists the projects of the organization identified by its UUID.
+// ProjectsList only returns the projects of the user's personal scope.
+func (c *Client) ProjectsListByOrganization(ctx context.Context, organizationID string) ([]Project, error) {
+	params := map[string]string{"organization_id": organizationID}
+	return c.projectsList(ctx, params)
+}
+
+func (c *Client) projectsList(ctx context.Context, params any) ([]Project, error) {
 	var projectsRes ProjectsRes
-	err := c.ScalingoAPI().ResourceList(ctx, projectResource, nil, &projectsRes)
+	err := c.ScalingoAPI().ResourceList(ctx, projectResource, params, &projectsRes)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list projects")
 	}
