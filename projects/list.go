@@ -14,8 +14,6 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-const personalProjectLabel = "personal"
-
 type projectsLister interface {
 	ProjectsList(ctx context.Context) ([]scalingo.Project, error)
 	ProjectsListByOrganization(ctx context.Context, organizationID string) ([]scalingo.Project, error)
@@ -86,11 +84,7 @@ func render(w stdio.Writer, projects []listedProject) error {
 
 	for _, listed := range projects {
 		project := listed.project
-		organization := listed.organizationSlug
-		if organization == "" {
-			organization = personalProjectLabel
-		}
-		_ = t.Append([]string{project.Name, organization, strconv.FormatBool(project.Default), project.ID})
+		_ = t.Append([]string{project.Name, listed.organizationSlug, strconv.FormatBool(project.Default), project.ID})
 	}
 
 	return t.Render()

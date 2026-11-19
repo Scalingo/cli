@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* feat(organizations): display the organization slug of the projects in `projects` (and `personal` for personal projects)
+* feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.0 to add the `ProjectsListByOrganization` method
 
 ## 1.52.0

@@ -151,7 +151,7 @@ func TestRender(t *testing.T) {
 
 		require.NoError(t, err)
 		assert.Regexp(t, `│\s+NAME\s+│\s+ORGANIZATION\s+│\s+DEFAULT\s+│\s+ID\s+│`, output.String())
-		assert.Regexp(t, `│\s+app\s+│\s+personal\s+│\s+true\s+│\s+pr-1\s+│`, output.String())
+		assert.Regexp(t, `│\s+app\s+│\s+│\s+true\s+│\s+pr-1\s+│`, output.String())
 		assert.Regexp(t, `│\s+app\s+│\s+acme\s+│\s+false\s+│\s+pr-2\s+│`, output.String())
 		assert.NotContains(t, output.String(), "org-uuid-1")
 	})
