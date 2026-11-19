@@ -41,7 +41,7 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 	}
 
 	// The project of the created application is the one returned by the API, whether or not a project was requested.
-	projectSlug := projects.OrganizationProjectSlug(ctx, c, c, app.Project.ID)
+	projectSlug := projects.CreatedProjectSlug(ctx, app.Project.ID)
 	if projectSlug != "" {
 		io.Statusf("%s application has been created in %s\n", app.Name, projectSlug)
 	} else {
