@@ -8,6 +8,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/projects"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
@@ -41,11 +42,22 @@ func Create(ctx context.Context, params scalingo.DatabaseCreateParams, wait bool
 	if err != nil {
 		return errors.Wrap(ctx, err, "create database")
 	}
-	io.Statusf("Your %s database %s ('%s') is being provisioned…\n\n",
-		db.Technology,
-		db.ID,
-		db.Name,
-	)
+	// The project of the created database is the one returned by the API, whether or not a project was requested.
+	projectSlug := projects.OrganizationProjectSlug(ctx, c, c, db.ProjectID)
+	if projectSlug != "" {
+		io.Statusf("Your %s database %s ('%s') is being provisioned in %s…\n\n",
+			db.Technology,
+			db.ID,
+			db.Name,
+			projectSlug,
+		)
+	} else {
+		io.Statusf("Your %s database %s ('%s') is being provisioned…\n\n",
+			db.Technology,
+			db.ID,
+			db.Name,
+		)
+	}
 
 	if wait {
 		retryer := retry.New(
