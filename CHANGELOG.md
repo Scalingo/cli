@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* feat(projects): display the organization slug of the projects in `projects`
+* feat(organizations): display the organization slug of the projects in `projects` (and `personal` for personal projects)
 
 ## 1.52.0
 

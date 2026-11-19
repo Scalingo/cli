@@ -5,7 +5,6 @@ import (
 	stdio "io"
 	"os"
 	"strconv"
-	"sync"
 
 	"github.com/olekukonko/tablewriter"
 
@@ -15,7 +14,7 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-const maxConcurrentRequests = 5
+const personalProjectLabel = "personal"
 
 type projectsLister interface {
 	ProjectsList(ctx context.Context) ([]scalingo.Project, error)
@@ -62,48 +61,19 @@ func listWithOrganizations(ctx context.Context, projectsService projectsLister, 
 	}
 
 	// The authentication service can return the same organization several times.
-	uniqueOrganizations := make([]scalingo.Organization, 0, len(organizations))
 	listedOrganizations := make(map[string]bool, len(organizations))
 	for _, organization := range organizations {
-		if !listedOrganizations[organization.ID] {
-			listedOrganizations[organization.ID] = true
-			uniqueOrganizations = append(uniqueOrganizations, organization)
+		if listedOrganizations[organization.ID] {
+			continue
 		}
-	}
+		listedOrganizations[organization.ID] = true
 
-	organizationsProjects, err := listProjectsOfOrganizations(ctx, projectsService, uniqueOrganizations)
-	if err != nil {
-		return nil, err
-	}
-	for i, organizationProjects := range organizationsProjects {
-		for _, project := range organizationProjects {
-			projects = append(projects, listedProject{project: project, organizationSlug: uniqueOrganizations[i].Slug})
-		}
-	}
-
-	return projects, nil
-}
-
-// listProjectsOfOrganizations requests the projects of the organizations concurrently and returns them in the order of the organizations.
-// The SDK client is only safe for concurrent use once it has completed a first request (its token and HTTP client are cached then).
-func listProjectsOfOrganizations(ctx context.Context, service projectsLister, organizations []scalingo.Organization) ([][]scalingo.Project, error) {
-	projects := make([][]scalingo.Project, len(organizations))
-	errs := make([]error, len(organizations))
-	slots := make(chan struct{}, maxConcurrentRequests)
-
-	var wg sync.WaitGroup
-	for i, organization := range organizations {
-		wg.Go(func() {
-			slots <- struct{}{}
-			defer func() { <-slots }()
-			projects[i], errs[i] = service.ProjectsListByOrganization(ctx, organization.ID)
-		})
-	}
-	wg.Wait()
-
-	for i, err := range errs {
+		organizationProjects, err := projectsService.ProjectsListByOrganization(ctx, organization.ID)
 		if err != nil {
-			return nil, errors.Wrapf(ctx, err, "list projects of organization %s", organizations[i].Slug)
+			return nil, errors.Wrapf(ctx, err, "list projects of organization %s", organization.Slug)
+		}
+		for _, project := range organizationProjects {
+			projects = append(projects, listedProject{project: project, organizationSlug: organization.Slug})
 		}
 	}
 
@@ -116,7 +86,11 @@ func render(w stdio.Writer, projects []listedProject) error {
 
 	for _, listed := range projects {
 		project := listed.project
-		_ = t.Append([]string{project.Name, listed.organizationSlug, strconv.FormatBool(project.Default), project.ID})
+		organization := listed.organizationSlug
+		if organization == "" {
+			organization = personalProjectLabel
+		}
+		_ = t.Append([]string{project.Name, organization, strconv.FormatBool(project.Default), project.ID})
 	}
 
 	return t.Render()
