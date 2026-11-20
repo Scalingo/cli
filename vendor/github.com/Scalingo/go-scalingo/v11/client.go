@@ -35,6 +35,7 @@ type API interface {
 	OperationsService
 	OrganizationsService
 	PrivateNetworksService
+	ProjectsService
 	RegionsService
 	RunsService
 	SignUpService

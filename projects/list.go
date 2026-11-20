@@ -14,11 +14,6 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-type projectsLister interface {
-	ProjectsList(ctx context.Context) ([]scalingo.Project, error)
-	ProjectsListByOrganization(ctx context.Context, organizationID string) ([]scalingo.Project, error)
-}
-
 // listedProject is a project with the slug of its organization, empty for a personal project.
 type listedProject struct {
 	project          scalingo.Project
@@ -31,7 +26,7 @@ func List(ctx context.Context) error {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	projects, err := listWithOrganizations(ctx, c, c)
+	projects, err := listWithOrganizations(ctx, c)
 	if err != nil {
 		return errors.Wrap(ctx, err, "list projects with organizations")
 	}
@@ -47,13 +42,13 @@ func List(ctx context.Context) error {
 }
 
 // listWithOrganizations returns the personal projects followed by the projects of each organization of the user.
-func listWithOrganizations(ctx context.Context, projectsService projectsLister, organizationsService scalingo.OrganizationsService) ([]listedProject, error) {
-	personalProjects, err := projectsService.ProjectsList(ctx)
+func listWithOrganizations(ctx context.Context, client scalingo.API) ([]listedProject, error) {
+	personalProjects, err := client.ProjectsList(ctx)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list projects")
 	}
 
-	organizations, err := organizationsService.OrganizationsList(ctx)
+	organizations, err := client.OrganizationsList(ctx)
 	if err != nil {
 		return nil, errors.Wrap(ctx, err, "list organizations")
 	}
@@ -64,7 +59,7 @@ func listWithOrganizations(ctx context.Context, projectsService projectsLister, 
 	}
 
 	for _, organization := range organizations {
-		organizationProjects, err := projectsService.ProjectsListByOrganization(ctx, organization.ID)
+		organizationProjects, err := client.ProjectsListByOrganization(ctx, organization.ID)
 		if err != nil {
 			return nil, errors.Wrap(ctx, err, "list organization projects")
 		}
