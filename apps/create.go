@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Scalingo/cli/config"
+	"github.com/Scalingo/cli/io"
+	"github.com/Scalingo/cli/projects"
 	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
@@ -38,7 +40,13 @@ func Create(ctx context.Context, appName, remote, buildpack, projectID string, h
 		}
 	}
 
-	fmt.Printf("App '%s' has been created\n", app.Name)
+	// The project of the created application is the one returned by the API, whether or not a project was requested.
+	projectSlug := projects.OrganizationProjectSlug(ctx, c, app.Project.ID)
+	if projectSlug != "" {
+		io.Statusf("%s application has been created in %s\n", app.Name, projectSlug)
+	} else {
+		fmt.Printf("App '%s' has been created\n", app.Name)
+	}
 	mainBranch := utils.MainBranchName(ctx)
 	_, ok := utils.DetectGit()
 	if ok && utils.AddGitRemote(ctx, app.GitURL, remote) == nil {
