@@ -38,7 +38,7 @@ var (
 		ArgsUsage: "project-name",
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "org", Usage: "Organization slug in which to create the project"},
-			&cli.BoolFlag{Name: "default", Value: false, Usage: "Set to true if this personal project should be the new default project. It cannot be used with --org"},
+			&cli.BoolFlag{Name: "default", Value: false, Usage: "Set to true if this personal project should be the new default project"},
 		},
 		Description: CommandDescription{
 			Description: "Create a new project, with the capability to make it the default one or to create it in an organization",
