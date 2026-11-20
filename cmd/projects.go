@@ -37,17 +37,28 @@ var (
 		Usage:     "Create a project",
 		ArgsUsage: "project-name",
 		Flags: []cli.Flag{
-			&cli.BoolFlag{Name: "default", Value: false, Usage: "Set to true if this should be the new default project"},
+			&cli.StringFlag{Name: "org", Usage: "Organization slug in which to create the project"},
+			&cli.BoolFlag{Name: "default", Value: false, Usage: "Set to true if this personal project should be the new default project. It cannot be used with --org"},
 		},
 		Description: CommandDescription{
-			Description: "Create a new project, with the capability to make it the default one",
+			Description: "Create a new project, with the capability to make it the default one or to create it in an organization",
 			Examples: []string{
-				"scalingo projects-add my-awesome-project           # Create a new project",
-				"scalingo projects-add --default my-awesome-project # Create a new project that is the default one",
+				"scalingo projects-add my-awesome-project           # Create a new personal project",
+				"scalingo projects-add --default my-awesome-project # Create a new personal project that is the default one",
+				"scalingo projects-add --org my-org-1 my-project    # Create a new project in the organization with the slug my-org-1",
 			},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			err := projects.Add(ctx, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")})
+			organizationSlug := c.String("org")
+			if c.IsSet("org") && organizationSlug == "" {
+				_ = cli.ShowSubcommandHelp(c)
+				return errors.New(ctx, "--org expects an organization slug")
+			}
+			if organizationSlug != "" && c.Bool("default") {
+				return errors.New(ctx, "--default can only be used when creating a personal project")
+			}
+
+			err := projects.Add(ctx, scalingo.ProjectAddParams{Name: c.Args().First(), Default: c.Bool("default")}, organizationSlug)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
