@@ -84,14 +84,6 @@ func TestListWithOrganizations(t *testing.T) {
 			expected:          []listedProject{{project: globexApp, organizationSlug: "globex"}},
 			expectedRequested: []string{acme.ID, globex.ID},
 		},
-		"it should request the projects of an organization only once when it is listed twice": {
-			projects: fakeProjectsService{
-				byOrganization: map[string][]scalingo.Project{acme.ID: {acmeApp}},
-			},
-			organizations:     []scalingo.Organization{acme, acme},
-			expected:          []listedProject{{project: acmeApp, organizationSlug: "acme"}},
-			expectedRequested: []string{acme.ID},
-		},
 		"it should return no project when there is nothing to list": {
 			organizations:     []scalingo.Organization{acme},
 			expected:          []listedProject{},
@@ -106,14 +98,14 @@ func TestListWithOrganizations(t *testing.T) {
 			organizationsErr: stderrors.New("boom"),
 			expectedError:    "list organizations",
 		},
-		"it should return an error naming the organization when its projects cannot be listed": {
+		"it should return an error when the projects of an organization cannot be listed": {
 			projects: fakeProjectsService{
 				personal:          []scalingo.Project{personalApp},
 				byOrganization:    map[string][]scalingo.Project{acme.ID: {acmeApp}},
 				byOrganizationErr: map[string]error{globex.ID: stderrors.New("forbidden")},
 			},
 			organizations:     []scalingo.Organization{acme, globex},
-			expectedError:     "list projects of organization globex",
+			expectedError:     "list organization projects",
 			expectedRequested: []string{acme.ID, globex.ID},
 		},
 	}

@@ -33,12 +33,17 @@ func List(ctx context.Context) error {
 
 	projects, err := listWithOrganizations(ctx, c, c)
 	if err != nil {
-		return err
+		return errors.Wrap(ctx, err, "list projects with organizations")
 	}
 
 	io.Warning("This command only displays projects where you are the owner")
 
-	return render(os.Stdout, projects)
+	err = render(os.Stdout, projects)
+	if err != nil {
+		return errors.Wrap(ctx, err, "render listed projects")
+	}
+
+	return nil
 }
 
 // listWithOrganizations returns the personal projects followed by the projects of each organization of the user.
@@ -58,17 +63,10 @@ func listWithOrganizations(ctx context.Context, projectsService projectsLister, 
 		projects = append(projects, listedProject{project: project})
 	}
 
-	// The authentication service can return the same organization several times.
-	listedOrganizations := make(map[string]bool, len(organizations))
 	for _, organization := range organizations {
-		if listedOrganizations[organization.ID] {
-			continue
-		}
-		listedOrganizations[organization.ID] = true
-
 		organizationProjects, err := projectsService.ProjectsListByOrganization(ctx, organization.ID)
 		if err != nil {
-			return nil, errors.Wrapf(ctx, err, "list projects of organization %s", organization.Slug)
+			return nil, errors.Wrap(ctx, err, "list organization projects")
 		}
 		for _, project := range organizationProjects {
 			projects = append(projects, listedProject{project: project, organizationSlug: organization.Slug})
