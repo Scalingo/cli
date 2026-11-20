@@ -13,6 +13,7 @@ import (
 
 type Client interface {
 	GetLatestRelease(ctx context.Context) (*github.RepositoryRelease, error)
+	ListReleases(ctx context.Context) ([]*github.RepositoryRelease, error)
 }
 
 type client struct {
@@ -45,4 +46,20 @@ func (c client) GetLatestRelease(ctx context.Context) (*github.RepositoryRelease
 	}
 
 	return latestRelease, nil
+}
+
+// ListReleases returns the last 100 releases of the CLI, newest first
+func (c client) ListReleases(ctx context.Context) ([]*github.RepositoryRelease, error) {
+	releases, githubResponse, err := c.githubRepositoriesService.ListReleases(ctx, "Scalingo", "cli", &github.ListOptions{PerPage: 100})
+	if githubResponse != nil && githubResponse.Body != nil {
+		defer githubResponse.Body.Close()
+	}
+
+	debug.Printf("GitHub response: %#v\n", githubResponse)
+
+	if err != nil {
+		return nil, errors.Wrapf(ctx, err, "fail to list the releases of the Scalingo/cli repository")
+	}
+
+	return releases, nil
 }

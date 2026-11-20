@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* feat(changelog): add `--since` to show the changelog of every version released after the given one, and use it in the install script so an upgrade shows all the versions since the installed one
 * fix(keys-add): return an error when required arguments are missing
 * fix(dbng): bound database readiness polling
 * refactor(dbng): rename package to `dbdr`
