@@ -9,13 +9,13 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func Destroy(ctx context.Context, appID string) error {
+func Destroy(ctx context.Context, databaseIdentifier string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	db, err := c.Preview().DatabaseShow(ctx, appID)
+	db, err := databaseByNameOrID(ctx, c, databaseIdentifier)
 	if err != nil {
 		return errors.Wrap(ctx, err, "show database")
 	}
@@ -36,7 +36,7 @@ func Destroy(ctx context.Context, appID string) error {
 		return errors.Newf(ctx, "'%s' is not the ID or the name of the database, aborting…\n", validationID)
 	}
 
-	err = c.Preview().DatabaseDestroy(ctx, appID)
+	err = c.Preview().DatabaseDestroy(ctx, db.ID)
 	if err != nil {
 		return errors.Wrap(ctx, err, "destroy database")
 	}
