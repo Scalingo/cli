@@ -175,6 +175,7 @@ main() {
   target_dir="${target_dir:-$default_target_dir}"
   target="$target_dir/scalingo"
 
+  old_version=""
   if [ -x "$target" ] && [ -z "$yes_to_overwrite" ] ; then
     export DISABLE_UPDATE_CHECKER=true
     # Use cut's short parameter to be compatible with MacOS: https://ss64.com/osx/cut.html
@@ -209,7 +210,11 @@ main() {
     error "Fail to install Scalingo client (return $rc)\n"
   else
     status "Installation completed, the command 'scalingo' is available.\n"
-    status "Here's what's new in this version:\n\n$(scalingo changelog)\n"
+    if [ -n "$old_version" ] ; then
+      status "Here's what's new since version ${old_version}:\n\n$(scalingo changelog --since "$old_version")\n"
+    else
+      status "Here's what's new in this version:\n\n$(scalingo changelog)\n"
+    fi
   fi
 }
 
