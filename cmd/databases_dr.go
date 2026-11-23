@@ -23,7 +23,7 @@ var (
 		Usage:    "List the databases Dedicated Resources that you own or collaborate on",
 		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "List all the databases Dedicated Resources of which you are an owner or a collaborator",
+			Description: "List all the databases Dedicated Resources of which you are an owner or a collaborator, in your personal scope and in your organizations",
 			SeeAlso:     []string{"database-info", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {

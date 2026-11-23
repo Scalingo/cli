@@ -32,6 +32,11 @@ func (r *appsListRenderer) Render(ctx context.Context) error {
 }
 
 func (r *appsListRenderer) SetData(ctx context.Context, listedApps []apps.ListedApp) {
+	if listedApps == nil {
+		r.apps = nil
+		return
+	}
+
 	r.apps = make([]*scalingo.App, 0, len(listedApps))
 	for _, listed := range listedApps {
 		r.apps = append(r.apps, listed.App)

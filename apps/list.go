@@ -2,6 +2,8 @@ package apps
 
 import (
 	"context"
+	"slices"
+	"strings"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
@@ -23,18 +25,12 @@ func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectS
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	personalApps, err := c.AppsList(ctx)
+	apps, err := listApps(ctx, c, projectSlug)
 	if err != nil {
-		return errors.Wrap(ctx, err, "list apps")
+		return errors.Wrap(ctx, err, "prepare apps list")
 	}
 
-	apps := make([]ListedApp, 0, len(personalApps))
-	for _, app := range personalApps {
-		apps = append(apps, ListedApp{App: app})
-	}
-
-	filteredApps := filterAppsByProject(apps, projectSlug)
-	renderer.SetData(ctx, filteredApps)
+	renderer.SetData(ctx, apps)
 
 	err = renderer.Render(ctx)
 	if err != nil {
@@ -42,6 +38,55 @@ func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectS
 	}
 
 	return nil
+}
+
+// listApps returns the apps of all the scopes of the user matching projectSlug, sorted by name.
+func listApps(ctx context.Context, client scalingo.API, projectSlug string) ([]ListedApp, error) {
+	apps, err := listWithOrganizations(ctx, client)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list apps with organizations")
+	}
+
+	filteredApps := filterAppsByProject(apps, projectSlug)
+	slices.SortStableFunc(filteredApps, func(a, b ListedApp) int {
+		return strings.Compare(a.App.Name, b.App.Name)
+	})
+
+	return filteredApps, nil
+}
+
+// listWithOrganizations returns the personal apps followed by the apps of each organization of the user.
+func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedApp, error) {
+	personalApps, err := client.AppsList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list apps")
+	}
+
+	organizations, err := client.OrganizationsList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list organizations")
+	}
+
+	// A nil personal list stays nil when no organization app is added, to keep the historical {"apps":null} JSON output.
+	var apps []ListedApp
+	if personalApps != nil {
+		apps = make([]ListedApp, 0, len(personalApps))
+	}
+	for _, app := range personalApps {
+		apps = append(apps, ListedApp{App: app})
+	}
+
+	for _, organization := range organizations {
+		organizationApps, err := client.AppsListByOrganization(ctx, organization.ID)
+		if err != nil {
+			return nil, errors.Wrapf(ctx, err, "list apps of organization %s", organization.Slug)
+		}
+		for _, app := range organizationApps {
+			apps = append(apps, ListedApp{App: app, OrganizationID: organization.ID, OrganizationSlug: organization.Slug})
+		}
+	}
+
+	return apps, nil
 }
 
 // filterAppsByProject keeps the apps whose project slug, under the format <ownerUsername>/<projectName>, matches projectSlug.

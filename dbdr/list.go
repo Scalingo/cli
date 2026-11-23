@@ -26,14 +26,9 @@ func List(ctx context.Context) error {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	personalDatabases, err := c.Preview().DatabasesList(ctx)
+	databases, err := listWithOrganizations(ctx, c, c.Preview())
 	if err != nil {
-		return errors.Wrap(ctx, err, "list databases")
-	}
-
-	databases := make([]listedDatabase, 0, len(personalDatabases))
-	for _, database := range personalDatabases {
-		databases = append(databases, listedDatabase{database: database})
+		return errors.Wrap(ctx, err, "list databases with organizations")
 	}
 
 	io.Warning("This command only displays the databases with dedicated resources (DR) you own or collaborate on.")
@@ -52,6 +47,36 @@ func List(ctx context.Context) error {
 	io.Info("Example: scalingo --app my-app addons")
 
 	return nil
+}
+
+// listWithOrganizations returns the personal databases followed by the databases of each organization of the user.
+func listWithOrganizations(ctx context.Context, organizationsService scalingo.OrganizationsService, databasesService scalingo.DatabasesPreviewService) ([]listedDatabase, error) {
+	personalDatabases, err := databasesService.DatabasesList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list databases")
+	}
+
+	organizations, err := organizationsService.OrganizationsList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list organizations")
+	}
+
+	databases := make([]listedDatabase, 0, len(personalDatabases))
+	for _, database := range personalDatabases {
+		databases = append(databases, listedDatabase{database: database})
+	}
+
+	for _, organization := range organizations {
+		organizationDatabases, err := databasesService.DatabasesListByOrganization(ctx, organization.ID)
+		if err != nil {
+			return nil, errors.Wrapf(ctx, err, "list databases of organization %s", organization.Slug)
+		}
+		for _, database := range organizationDatabases {
+			databases = append(databases, listedDatabase{database: database, organizationSlug: organization.Slug})
+		}
+	}
+
+	return databases, nil
 }
 
 func render(w stdio.Writer, currentUser *scalingo.User, databases []listedDatabase) error {

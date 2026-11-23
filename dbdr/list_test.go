@@ -2,13 +2,104 @@ package dbdr
 
 import (
 	"bytes"
+	"context"
+	stderrors "errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 
 	"github.com/Scalingo/go-scalingo/v11"
+	"github.com/Scalingo/go-scalingo/v11/scalingomock"
 )
+
+func TestListWithOrganizations(t *testing.T) {
+	acme := scalingo.Organization{ID: "org-acme", Slug: "acme", Name: "Acme Corp", Role: "admin"}
+	globex := scalingo.Organization{ID: "org-globex", Slug: "globex", Name: "Globex Inc", Role: "member"}
+
+	personalDB := scalingo.DatabaseNG{ID: "db-1", Name: "personal-db"}
+	acmeDB := scalingo.DatabaseNG{ID: "db-2", Name: "acme-db"}
+	globexDB := scalingo.DatabaseNG{ID: "db-3", Name: "globex-db"}
+
+	tests := map[string]struct {
+		expectations  func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService)
+		expected      []listedDatabase
+		expectedError string
+	}{
+		"it should only list the personal databases of a user without organization": {
+			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
+				organizations.EXPECT().OrganizationsList(ctx).Return(nil, nil)
+			},
+			expected: []listedDatabase{{database: personalDB}},
+		},
+		"it should add the databases of each organization after the personal databases": {
+			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
+				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, acme.ID).Return([]scalingo.DatabaseNG{acmeDB}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return([]scalingo.DatabaseNG{globexDB}, nil)
+			},
+			expected: []listedDatabase{
+				{database: personalDB},
+				{database: acmeDB, organizationSlug: acme.Slug},
+				{database: globexDB, organizationSlug: globex.Slug},
+			},
+		},
+		"it should still query an organization without database": {
+			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return(nil, nil)
+				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, acme.ID).Return([]scalingo.DatabaseNG{}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return([]scalingo.DatabaseNG{globexDB}, nil)
+			},
+			expected: []listedDatabase{{database: globexDB, organizationSlug: globex.Slug}},
+		},
+		"it should return an error when the personal databases cannot be listed": {
+			expectations: func(ctx context.Context, _ *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return(nil, stderrors.New("boom"))
+			},
+			expectedError: "list databases",
+		},
+		"it should return an error when the organizations cannot be listed": {
+			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
+				organizations.EXPECT().OrganizationsList(ctx).Return(nil, stderrors.New("boom"))
+			},
+			expectedError: "list organizations",
+		},
+		"it should return an error naming the organization whose databases cannot be listed": {
+			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
+				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
+				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, acme.ID).Return([]scalingo.DatabaseNG{acmeDB}, nil)
+				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return(nil, stderrors.New("forbidden"))
+			},
+			expectedError: "list databases of organization " + globex.Slug,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			ctx := t.Context()
+			ctrl := gomock.NewController(t)
+			organizations := scalingomock.NewMockOrganizationsService(ctrl)
+			databases := scalingomock.NewMockDatabasesPreviewService(ctrl)
+			test.expectations(ctx, organizations, databases)
+
+			listed, err := listWithOrganizations(ctx, organizations, databases)
+
+			if test.expectedError != "" {
+				require.ErrorContains(t, err, test.expectedError)
+				assert.Nil(t, listed)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, test.expected, listed)
+			}
+		})
+	}
+}
 
 func TestRender(t *testing.T) {
 	const organizationSlug = "acme"

@@ -26,12 +26,13 @@ func TestAppsListRenderer_Render(t *testing.T) {
 			},
 			expected: `{"apps":[` + mustMarshal(t, personalApp) + `,` + mustMarshal(t, organizationApp) + `]}` + "\n",
 		},
-		"it should render an empty list": {
+		"it should render an empty list for an empty list of apps": {
 			listedApps: []apps.ListedApp{},
 			expected:   `{"apps":[]}` + "\n",
 		},
-		"it should render an empty list when there is no data": {
-			expected: `{"apps":[]}` + "\n",
+		"it should render a null list for a nil list of apps": {
+			listedApps: nil,
+			expected:   `{"apps":null}` + "\n",
 		},
 	}
 

@@ -24,7 +24,7 @@ var (
 		Category:    "Global",
 		Description: "List your apps and give some details about them",
 		Flags: []cli.Flag{
-			&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter uses the format <ownerUsername>/<projectName>"},
+			&cli.StringFlag{Name: "project", Usage: "Filter apps by project. The filter always uses the format <ownerUsername>/<projectName>, even for an app of an organization whose PROJECT column displays <organizationSlug>/<projectName>"},
 		},
 		Usage: "List your apps",
 		Action: func(ctx context.Context, c *cli.Command) error {
