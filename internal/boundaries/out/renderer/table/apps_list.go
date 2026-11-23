@@ -7,6 +7,7 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
+	"github.com/Scalingo/cli/apps"
 	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
@@ -16,17 +17,17 @@ import (
 
 type appsListRenderer struct {
 	currentUser *scalingo.User
-	apps        []*scalingo.App
+	listedApps  []apps.ListedApp
 }
 
-func NewAppsList(currentUser *scalingo.User) renderer.Renderer[[]*scalingo.App] {
+func NewAppsList(currentUser *scalingo.User) renderer.Renderer[[]apps.ListedApp] {
 	return &appsListRenderer{
 		currentUser: currentUser,
 	}
 }
 
 func (r *appsListRenderer) Render(ctx context.Context) error {
-	if len(r.apps) == 0 {
+	if len(r.listedApps) == 0 {
 		fmt.Println(io.Indent("\nYou haven't created any app yet in this project, create your first application using:\n→ scalingo create <app_name>\n", 2))
 		return nil
 	}
@@ -34,9 +35,10 @@ func (r *appsListRenderer) Render(ctx context.Context) error {
 	t := tablewriter.NewWriter(os.Stdout)
 	t.Header([]string{"Name", "Role", "Status", "Project"})
 
-	for _, app := range r.apps {
+	for _, listed := range r.listedApps {
+		app := listed.App
 		role := utils.AppRole(r.currentUser, app)
-		err := t.Append([]string{app.Name, string(role), string(app.Status), app.ProjectSlug()})
+		err := t.Append([]string{app.Name, string(role), string(app.Status), appProject(listed)})
 		if err != nil {
 			return errors.Wrap(ctx, err, "append app to table")
 		}
@@ -45,6 +47,14 @@ func (r *appsListRenderer) Render(ctx context.Context) error {
 	return t.Render()
 }
 
-func (r *appsListRenderer) SetData(ctx context.Context, apps []*scalingo.App) {
-	r.apps = apps
+func (r *appsListRenderer) SetData(ctx context.Context, listedApps []apps.ListedApp) {
+	r.listedApps = listedApps
+}
+
+// appProject returns <ownerUsername>/<projectName> for a personal app and <organizationSlug>/<projectName> for an app of an organization.
+func appProject(listed apps.ListedApp) string {
+	if listed.OrganizationID == "" {
+		return listed.App.ProjectSlug()
+	}
+	return utils.OrganizationProjectLabel(listed.OrganizationSlug, listed.App.Project.Name)
 }

@@ -2,6 +2,7 @@
 
 ## To Be Released
 
+* fix(databases): mention the databases you collaborate on in the `databases` command help and warning
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.1 to add the `ProjectsListByOrganization` method and the `ProjectsService` mocks
 * fix(keys-add): return an error when required arguments are missing
