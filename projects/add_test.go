@@ -15,7 +15,7 @@ import (
 	"github.com/Scalingo/go-scalingo/v11/scalingomock"
 )
 
-func TestAdd(t *testing.T) {
+func TestCreateProject(t *testing.T) {
 	other := scalingo.Organization{ID: "org-other", Slug: "other-org", Name: "Other", Role: "owner"}
 	myOrg := scalingo.Organization{ID: "org-11111111-2222-4333-8444-555555555555", Slug: "my-org-1", Name: "My Org", Role: "admin"}
 
@@ -105,7 +105,7 @@ func TestAdd(t *testing.T) {
 			client := scalingomock.NewMockAPI(gomock.NewController(t))
 			test.expectations(ctx, client)
 
-			project, err := add(ctx, client, test.params, test.organizationSlug)
+			project, err := createProject(ctx, client, test.params, test.organizationSlug)
 
 			if test.expectedError != "" {
 				require.ErrorContains(t, err, test.expectedError)

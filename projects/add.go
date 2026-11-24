@@ -16,7 +16,7 @@ func Add(ctx context.Context, params scalingo.ProjectAddParams, organizationSlug
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	project, err := add(ctx, c, params, organizationSlug)
+	project, err := createProject(ctx, c, params, organizationSlug)
 	if err != nil {
 		return err
 	}
@@ -31,8 +31,8 @@ func Add(ctx context.Context, params scalingo.ProjectAddParams, organizationSlug
 	return nil
 }
 
-// add resolves the organization slug to its ID with a single organizations read, then creates the project.
-func add(ctx context.Context, client scalingo.API, params scalingo.ProjectAddParams, organizationSlug string) (scalingo.Project, error) {
+// createProject resolves the organization slug to its ID with a single organizations read, then creates the project.
+func createProject(ctx context.Context, client scalingo.API, params scalingo.ProjectAddParams, organizationSlug string) (scalingo.Project, error) {
 	if organizationSlug != "" {
 		organizations, err := client.OrganizationsList(ctx)
 		if err != nil {
