@@ -15,16 +15,16 @@ func TestProjectsAddCommand(t *testing.T) {
 		expectedError string
 		expectedHelp  bool
 	}{
-		"it should refuse an empty organization slug": {
+		"it rejects an empty organization slug": {
 			args:          []string{"--org=", "my-project"},
 			expectedError: "--org expects an organization slug",
 			expectedHelp:  true,
 		},
-		"it should refuse --default with --org": {
+		"it rejects --default with --org": {
 			args:          []string{"--org", "my-org-1", "--default", "my-project"},
 			expectedError: "--default can only be used when creating a personal project",
 		},
-		"it should refuse --default=true with --org": {
+		"it rejects --default=true with --org": {
 			args:          []string{"--org", "my-org-1", "--default=true", "my-project"},
 			expectedError: "--default can only be used when creating a personal project",
 		},

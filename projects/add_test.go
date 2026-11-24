@@ -33,7 +33,7 @@ func TestAdd(t *testing.T) {
 		expectedError      string
 		expectedErrorCause error
 	}{
-		"it should create the project in the organization matching the slug": {
+		"it creates the project in the organization matching the slug": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: myOrg.Slug,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -45,7 +45,7 @@ func TestAdd(t *testing.T) {
 			},
 			expected: scalingo.Project{ID: "prj-1", Name: "my-project-from-api", OrganizationID: myOrg.ID},
 		},
-		"it should create a personal project without listing the organizations": {
+		"it creates a personal project without listing the organizations": {
 			params: scalingo.ProjectAddParams{Name: "my-project", Default: true},
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().ProjectAdd(ctx, scalingo.ProjectAddParams{Name: "my-project", Default: true}).
@@ -53,7 +53,7 @@ func TestAdd(t *testing.T) {
 			},
 			expected: scalingo.Project{ID: "prj-2", Name: "my-project", Default: true},
 		},
-		"it should not create the project when no organization matches the slug": {
+		"it does not create the project when no organization matches the slug": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: "unknown-org",
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -61,7 +61,7 @@ func TestAdd(t *testing.T) {
 			},
 			expectedError: `organization "unknown-org" not found`,
 		},
-		"it should not match an organization by its ID": {
+		"it does not match an organization by its ID": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: myOrg.ID,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -69,7 +69,7 @@ func TestAdd(t *testing.T) {
 			},
 			expectedError: `organization "` + myOrg.ID + `" not found`,
 		},
-		"it should not create the project when the matching organization has no ID": {
+		"it does not create the project when the matching organization has no ID": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: myOrg.Slug,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -77,7 +77,7 @@ func TestAdd(t *testing.T) {
 			},
 			expectedError: `organization "my-org-1" not found`,
 		},
-		"it should not create the project when the organizations cannot be listed": {
+		"it does not create the project when the organizations cannot be listed": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: myOrg.Slug,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -86,7 +86,7 @@ func TestAdd(t *testing.T) {
 			expectedError:      "list organizations",
 			expectedErrorCause: authErr,
 		},
-		"it should return the API refusal without retrying": {
+		"it returns the API error without retrying": {
 			params:           scalingo.ProjectAddParams{Name: "my-project"},
 			organizationSlug: myOrg.Slug,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
