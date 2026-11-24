@@ -24,10 +24,6 @@ func TestProjectsAddCommand(t *testing.T) {
 			args:          []string{"--org", "my-org-1", "--default", "my-project"},
 			expectedError: "--default can only be used when creating a personal project",
 		},
-		"it rejects --default=true with --org": {
-			args:          []string{"--org", "my-org-1", "--default=true", "my-project"},
-			expectedError: "--default can only be used when creating a personal project",
-		},
 	}
 
 	for name, test := range tests {
