@@ -3,6 +3,7 @@
 ## To Be Released
 
 * feat(organizations): add the `--org` flag to create a project in an organization from its slug
+* chore(deps): update go-scalingo to v11.11.0 to add the `OrganizationID` field to `ProjectAddParams` and the `AppsListByOrganization` and `DatabasesListByOrganization` methods
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.1 to add the `ProjectsListByOrganization` method and the `ProjectsService` mocks
 * fix(keys-add): return an error when required arguments are missing
