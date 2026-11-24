@@ -4,6 +4,7 @@
 
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.1 to add the `ProjectsListByOrganization` method and the `ProjectsService` mocks
+* feat(organizations): display the organization slug and project name in the confirmation of `create` and `database-create` when the project belongs to an organization
 * fix(keys-add): return an error when required arguments are missing
 * fix(dbng): bound database readiness polling
 * refactor(dbng): rename package to `dbdr`
