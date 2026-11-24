@@ -31,7 +31,7 @@ func List(ctx context.Context) error {
 		return errors.Wrap(ctx, err, "list databases with organizations")
 	}
 
-	io.Warning("This command only displays the databases with dedicated resources (DR) you own or collaborate on.")
+	io.Warning("This command only displays databases with dedicated resources (DR).")
 
 	currentUser, err := config.C.CurrentUser(ctx)
 	if err != nil {

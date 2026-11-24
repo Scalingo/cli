@@ -2,12 +2,9 @@ package apps
 
 import (
 	"context"
-	"slices"
-	"strings"
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
-	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
@@ -26,12 +23,13 @@ func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectS
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	apps, err := listApps(ctx, c, projectSlug)
+	apps, err := listWithOrganizations(ctx, c)
 	if err != nil {
-		return errors.Wrap(ctx, err, "prepare apps list")
+		return errors.Wrap(ctx, err, "list apps with organizations")
 	}
 
-	renderer.SetData(ctx, apps)
+	filteredApps := filterAppsByProject(apps, projectSlug)
+	renderer.SetData(ctx, filteredApps)
 
 	err = renderer.Render(ctx)
 	if err != nil {
@@ -39,21 +37,6 @@ func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectS
 	}
 
 	return nil
-}
-
-// listApps returns the apps of all the scopes of the user matching projectSlug, sorted by name.
-func listApps(ctx context.Context, client scalingo.API, projectSlug string) ([]ListedApp, error) {
-	apps, err := listWithOrganizations(ctx, client)
-	if err != nil {
-		return nil, errors.Wrap(ctx, err, "list apps with organizations")
-	}
-
-	filteredApps := filterAppsByProject(apps, projectSlug)
-	slices.SortStableFunc(filteredApps, func(a, b ListedApp) int {
-		return strings.Compare(a.App.Name, b.App.Name)
-	})
-
-	return filteredApps, nil
 }
 
 // listWithOrganizations returns the personal apps followed by the apps of each organization of the user.
@@ -90,8 +73,7 @@ func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedAp
 	return apps, nil
 }
 
-// filterAppsByProject keeps the apps whose project matches projectSlug, either with the historical <ownerUsername>/<projectName>
-// format or, for an app of an organization, with the <organizationSlug>/<projectName> label displayed in the PROJECT column.
+// filterAppsByProject keeps the apps whose project slug, under the format <ownerUsername>/<projectName>, matches projectSlug.
 func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 	if projectSlug == "" {
 		return apps
@@ -99,17 +81,10 @@ func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 
 	filteredApps := make([]ListedApp, 0, len(apps))
 	for _, listed := range apps {
-		if listed.App.ProjectSlug() == projectSlug || matchesOrganizationProject(listed, projectSlug) {
+		if listed.App.ProjectSlug() == projectSlug {
 			filteredApps = append(filteredApps, listed)
 		}
 	}
 
 	return filteredApps
-}
-
-func matchesOrganizationProject(listed ListedApp, projectSlug string) bool {
-	if listed.OrganizationSlug == "" {
-		return false
-	}
-	return utils.OrganizationProjectLabel(listed.OrganizationSlug, listed.App.Project.Name) == projectSlug
 }
