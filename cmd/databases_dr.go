@@ -20,7 +20,7 @@ var (
 	databasesListCommand = cli.Command{
 		Name:     "databases",
 		Category: "Databases DR",
-		Usage:    "Usage: List databases Dedicated Resources you own or collaborate on",
+		Usage:    "List databases Dedicated Resources you own or collaborate on",
 		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
 			Description: "List databases Dedicated Resources across your personal space and organizations. For organization databases, the PROJECT column shows <organizationSlug>/<projectName>.",
