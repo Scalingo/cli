@@ -4,6 +4,7 @@
 
 * feat(organizations): list the apps and the databases of your organizations in the `apps` and `databases` commands, with their project displayed as `<organizationSlug>/<projectName>`
 * fix(databases): mention the databases you collaborate on in the `databases` command help and warning
+* chore(deps): update go-scalingo to v11.11.0 to add the `OrganizationID` field to `ProjectAddParams` and the `AppsListByOrganization` and `DatabasesListByOrganization` methods
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.1 to add the `ProjectsListByOrganization` method and the `ProjectsService` mocks
 * fix(keys-add): return an error when required arguments are missing
