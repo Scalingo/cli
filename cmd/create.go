@@ -22,6 +22,7 @@ var (
 			Examples: []string{
 				"scalingo create mynewapp",
 				"scalingo --remote \"staging\" create mynewapp",
+				"scalingo create --project-id <project-id> mynewapp",
 			},
 		}.Render(),
 		Flags: []cli.Flag{

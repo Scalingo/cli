@@ -3,9 +3,11 @@
 ## To Be Released
 
 * feat(organizations): list the apps and the databases of your organizations in the `apps` and `databases` commands, with their project displayed as `<organizationSlug>/<projectName>`
+* feat(organizations): add the `--org` flag to create a project in an organization from its slug
 * chore(deps): update go-scalingo to v11.11.0 to add the `OrganizationID` field to `ProjectAddParams` and the `AppsListByOrganization` and `DatabasesListByOrganization` methods
 * feat(organizations): display organization slugs in the `projects` command
 * chore(deps): update go-scalingo to v11.10.1 to add the `ProjectsListByOrganization` method and the `ProjectsService` mocks
+* feat(organizations): display the organization slug and project name in the confirmation of `create` and `database-create` when the project belongs to an organization
 * fix(keys-add): return an error when required arguments are missing
 * fix(dbng): bound database readiness polling
 * refactor(dbng): rename package to `dbdr`

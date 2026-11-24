@@ -126,6 +126,7 @@ var (
 			Examples: []string{
 				"scalingo database-create --type postgresql-ng --plan postgresql-dr-enterprise-4096 my_super_database",
 				"scalingo database-create --type postgresql-ng --plan postgresql-dr-enterprise-4096 --wait my_super_database",
+				"scalingo database-create --type postgresql-ng --plan postgresql-dr-enterprise-4096 --project <project-id> my_super_database",
 			},
 			SeeAlso: []string{"databases", "database-info", "database-upgrade", "database-destroy"},
 		}.Render(),
