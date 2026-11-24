@@ -2,6 +2,11 @@
 
 ## To Be Released
 
+## 11.11.0
+
+* feat(organizations): add `AppsListByOrganization` and `DatabasesListByOrganization` method to list the resources of an organization
+* feat(organizations): add `OrganizationID` field to `ProjectAddParams` to allow creating a project in an organization
+
 ## 11.10.1
 
 * build(mocks): add ProjectsService mocks and include ProjectsService in the API interface

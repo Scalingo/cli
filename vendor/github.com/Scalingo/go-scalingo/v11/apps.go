@@ -23,6 +23,7 @@ const (
 
 type AppsService interface {
 	AppsList(ctx context.Context) ([]*App, error)
+	AppsListByOrganization(ctx context.Context, organizationID string) ([]*App, error)
 	AppsShow(ctx context.Context, appName string) (*App, error)
 	AppsDestroy(ctx context.Context, name string, currentName string) error
 	AppsRename(ctx context.Context, name string, newName string) (*App, error)
@@ -169,11 +170,23 @@ func (app App) String() string {
 	return app.Name
 }
 
+// AppsList lists the apps of the user's personal scope.
 func (c *Client) AppsList(ctx context.Context) ([]*App, error) {
+	return c.appsList(ctx, nil)
+}
+
+// AppsListByOrganization lists the apps of the organization identified by its UUID.
+func (c *Client) AppsListByOrganization(ctx context.Context, organizationID string) ([]*App, error) {
+	params := map[string]string{"organization_id": organizationID}
+	return c.appsList(ctx, params)
+}
+
+func (c *Client) appsList(ctx context.Context, params any) ([]*App, error) {
 	appsMap := map[string][]*App{}
 
 	req := &httpclient.APIRequest{
 		Endpoint: "/apps",
+		Params:   params,
 	}
 
 	err := c.ScalingoAPI().DoRequest(ctx, req, &appsMap)

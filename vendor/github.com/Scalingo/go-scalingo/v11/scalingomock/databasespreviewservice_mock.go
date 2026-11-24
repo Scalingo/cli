@@ -94,3 +94,18 @@ func (mr *MockDatabasesPreviewServiceMockRecorder) DatabasesList(ctx any) *gomoc
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabasesList", reflect.TypeOf((*MockDatabasesPreviewService)(nil).DatabasesList), ctx)
 }
+
+// DatabasesListByOrganization mocks base method.
+func (m *MockDatabasesPreviewService) DatabasesListByOrganization(ctx context.Context, organizationID string) ([]scalingo.DatabaseNG, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DatabasesListByOrganization", ctx, organizationID)
+	ret0, _ := ret[0].([]scalingo.DatabaseNG)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DatabasesListByOrganization indicates an expected call of DatabasesListByOrganization.
+func (mr *MockDatabasesPreviewServiceMockRecorder) DatabasesListByOrganization(ctx, organizationID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DatabasesListByOrganization", reflect.TypeOf((*MockDatabasesPreviewService)(nil).DatabasesListByOrganization), ctx, organizationID)
+}

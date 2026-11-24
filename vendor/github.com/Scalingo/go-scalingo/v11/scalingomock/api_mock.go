@@ -397,6 +397,21 @@ func (mr *MockAPIMockRecorder) AppsList(ctx any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsList", reflect.TypeOf((*MockAPI)(nil).AppsList), ctx)
 }
 
+// AppsListByOrganization mocks base method.
+func (m *MockAPI) AppsListByOrganization(ctx context.Context, organizationID string) ([]*scalingo.App, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AppsListByOrganization", ctx, organizationID)
+	ret0, _ := ret[0].([]*scalingo.App)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AppsListByOrganization indicates an expected call of AppsListByOrganization.
+func (mr *MockAPIMockRecorder) AppsListByOrganization(ctx, organizationID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppsListByOrganization", reflect.TypeOf((*MockAPI)(nil).AppsListByOrganization), ctx, organizationID)
+}
+
 // AppsRename mocks base method.
 func (m *MockAPI) AppsRename(ctx context.Context, name, newName string) (*scalingo.App, error) {
 	m.ctrl.T.Helper()

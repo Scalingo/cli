@@ -48,8 +48,9 @@ type ProjectRes struct {
 }
 
 type ProjectAddParams struct {
-	Name    string `json:"name"`
-	Default bool   `json:"default"`
+	Name           string `json:"name"`
+	Default        bool   `json:"default"`
+	OrganizationID string `json:"organization_id,omitempty"`
 }
 
 type projectAddParamsPayload struct {
