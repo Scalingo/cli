@@ -69,7 +69,7 @@ func listWithOrganizations(ctx context.Context, organizationsService scalingo.Or
 	for _, organization := range organizations {
 		organizationDatabases, err := databasesService.DatabasesListByOrganization(ctx, organization.ID)
 		if err != nil {
-			return nil, errors.Wrapf(ctx, err, "list databases of organization %s", organization.Slug)
+			return nil, errors.Wrap(ctx, err, "list organization databases")
 		}
 		for _, database := range organizationDatabases {
 			databases = append(databases, listedDatabase{database: database, organizationSlug: organization.Slug})

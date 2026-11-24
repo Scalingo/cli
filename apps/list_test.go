@@ -14,6 +14,7 @@ import (
 )
 
 func TestListApps(t *testing.T) {
+	errForbidden := stderrors.New("forbidden")
 	acme := scalingo.Organization{ID: "org-acme", Slug: "acme", Name: "Acme Corp", Role: "admin"}
 	globex := scalingo.Organization{ID: "org-globex", Slug: "globex", Name: "Globex Inc", Role: "member"}
 
@@ -34,15 +35,16 @@ func TestListApps(t *testing.T) {
 		expectations  func(ctx context.Context, client *scalingomock.MockAPI)
 		expected      []ListedApp
 		expectedError string
+		expectedCause error
 	}{
-		"it should only list the personal apps of a user without organization": {
+		"it lists only the personal apps of a user without organization": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
 				client.EXPECT().OrganizationsList(ctx).Return(nil, nil)
 			},
 			expected: []ListedApp{{App: personalWeb}},
 		},
-		"it should sort the apps of all the scopes by name": {
+		"it sorts the apps of all the scopes by name": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
 				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
@@ -56,7 +58,7 @@ func TestListApps(t *testing.T) {
 				{App: acmeZoo, OrganizationID: acme.ID, OrganizationSlug: acme.Slug},
 			},
 		},
-		"it should continue with the other organizations when one has no app": {
+		"it continues with the other organizations when one has no app": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return(nil, nil)
 				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
@@ -65,7 +67,7 @@ func TestListApps(t *testing.T) {
 			},
 			expected: []ListedApp{{App: globexAdmin, OrganizationID: globex.ID, OrganizationSlug: globex.Slug}},
 		},
-		"it should filter the apps of all the scopes with the <ownerUsername>/<projectName> format": {
+		"it filters the apps of all the scopes with the <ownerUsername>/<projectName> format": {
 			projectSlug: owner.Username + "/" + projectName,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
@@ -77,16 +79,17 @@ func TestListApps(t *testing.T) {
 				{App: personalWeb},
 			},
 		},
-		"it should not filter with the organization slug displayed in the table": {
+		"it filters the apps of an organization with the <organizationSlug>/<projectName> label displayed in the table": {
 			projectSlug: acme.Slug + "/" + projectName,
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
-				client.EXPECT().AppsList(ctx).Return(nil, nil)
-				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme}, nil)
-				client.EXPECT().AppsListByOrganization(ctx, acme.ID).Return([]*scalingo.App{acmeAPI}, nil)
+				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
+				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
+				client.EXPECT().AppsListByOrganization(ctx, acme.ID).Return([]*scalingo.App{acmeAPI, acmeZoo}, nil)
+				client.EXPECT().AppsListByOrganization(ctx, globex.ID).Return([]*scalingo.App{globexAdmin}, nil)
 			},
-			expected: []ListedApp{},
+			expected: []ListedApp{{App: acmeAPI, OrganizationID: acme.ID, OrganizationSlug: acme.Slug}},
 		},
-		"it should keep a nil list when no scope returns any app": {
+		"it keeps a nil list when no scope returns any app": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return(nil, nil)
 				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme}, nil)
@@ -94,14 +97,14 @@ func TestListApps(t *testing.T) {
 			},
 			expected: nil,
 		},
-		"it should keep an empty list when the personal list is empty": {
+		"it keeps an empty list when the personal list is empty": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{}, nil)
 				client.EXPECT().OrganizationsList(ctx).Return(nil, nil)
 			},
 			expected: []ListedApp{},
 		},
-		"it should return an empty list when the filter matches no app": {
+		"it returns an empty list when the filter matches no app": {
 			projectSlug: owner.Username + "/unknown",
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return(nil, nil)
@@ -109,27 +112,28 @@ func TestListApps(t *testing.T) {
 			},
 			expected: []ListedApp{},
 		},
-		"it should return an error when the personal apps cannot be listed": {
+		"it returns an error when the personal apps cannot be listed": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return(nil, stderrors.New("boom"))
 			},
 			expectedError: "list apps",
 		},
-		"it should return an error when the organizations cannot be listed": {
+		"it returns an error when the organizations cannot be listed": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
 				client.EXPECT().OrganizationsList(ctx).Return(nil, stderrors.New("boom"))
 			},
 			expectedError: "list organizations",
 		},
-		"it should return an error naming the organization whose apps cannot be listed": {
+		"it returns an error when organization apps cannot be listed": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
 				client.EXPECT().AppsList(ctx).Return([]*scalingo.App{personalWeb}, nil)
 				client.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
 				client.EXPECT().AppsListByOrganization(ctx, acme.ID).Return([]*scalingo.App{acmeAPI}, nil)
-				client.EXPECT().AppsListByOrganization(ctx, globex.ID).Return(nil, stderrors.New("forbidden"))
+				client.EXPECT().AppsListByOrganization(ctx, globex.ID).Return(nil, errForbidden)
 			},
-			expectedError: "list apps of organization " + globex.Slug,
+			expectedError: "list organization apps",
+			expectedCause: errForbidden,
 		},
 	}
 
@@ -143,6 +147,9 @@ func TestListApps(t *testing.T) {
 
 			if test.expectedError != "" {
 				require.ErrorContains(t, err, test.expectedError)
+				if test.expectedCause != nil {
+					require.ErrorIs(t, err, test.expectedCause)
+				}
 				assert.Nil(t, apps)
 			} else {
 				require.NoError(t, err)
@@ -176,16 +183,16 @@ func TestFilterAppsByProject(t *testing.T) {
 		projectSlug string
 		expected    []ListedApp
 	}{
-		"it should keep all the apps without filter": {
+		"it keeps all the apps without filter": {
 			expected: apps,
 		},
-		"it should filter the apps of all the scopes with the <ownerUsername>/<projectName> format": {
+		"it filters the apps of all the scopes with the <ownerUsername>/<projectName> format": {
 			projectSlug: owner.Username + "/" + projectName,
 			expected:    []ListedApp{apps[0], apps[1]},
 		},
-		"it should not filter with the organization slug displayed in the table": {
+		"it filters an app of an organization with its <organizationSlug>/<projectName> label": {
 			projectSlug: organizationSlug + "/" + projectName,
-			expected:    []ListedApp{},
+			expected:    []ListedApp{apps[1]},
 		},
 	}
 

@@ -19,18 +19,18 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		listedApps []apps.ListedApp
 		expected   string
 	}{
-		"it should render the apps of all the scopes in the apps envelope": {
+		"it renders the apps of all the scopes in the apps envelope": {
 			listedApps: []apps.ListedApp{
 				{App: personalApp},
 				{App: organizationApp, OrganizationID: "org-acme", OrganizationSlug: "acme"},
 			},
 			expected: `{"apps":[` + mustMarshal(t, personalApp) + `,` + mustMarshal(t, organizationApp) + `]}` + "\n",
 		},
-		"it should render an empty list for an empty list of apps": {
+		"it renders an empty list for an empty list of apps": {
 			listedApps: []apps.ListedApp{},
 			expected:   `{"apps":[]}` + "\n",
 		},
-		"it should render a null list for a nil list of apps": {
+		"it renders a null list for a nil list of apps": {
 			listedApps: nil,
 			expected:   `{"apps":null}` + "\n",
 		},

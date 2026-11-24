@@ -2,7 +2,7 @@
 
 ## To Be Released
 
-* feat(organizations): list the apps and the databases of your organizations in the `apps` and `databases` commands, with their project displayed as `<organizationSlug>/<projectName>`
+* feat(organizations): list the apps and the databases of your organizations in the `apps` and `databases` commands, with their project displayed as `<organizationSlug>/<projectName>`, a format also accepted by `apps --project`
 * fix(databases): mention the databases you collaborate on in the `databases` command help and warning
 * chore(deps): update go-scalingo to v11.11.0 to add the `OrganizationID` field to `ProjectAddParams` and the `AppsListByOrganization` and `DatabasesListByOrganization` methods
 * feat(organizations): display organization slugs in the `projects` command

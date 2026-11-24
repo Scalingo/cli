@@ -15,6 +15,7 @@ import (
 )
 
 func TestListWithOrganizations(t *testing.T) {
+	errForbidden := stderrors.New("forbidden")
 	acme := scalingo.Organization{ID: "org-acme", Slug: "acme", Name: "Acme Corp", Role: "admin"}
 	globex := scalingo.Organization{ID: "org-globex", Slug: "globex", Name: "Globex Inc", Role: "member"}
 
@@ -26,15 +27,16 @@ func TestListWithOrganizations(t *testing.T) {
 		expectations  func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService)
 		expected      []listedDatabase
 		expectedError string
+		expectedCause error
 	}{
-		"it should only list the personal databases of a user without organization": {
+		"it lists only the personal databases of a user without organization": {
 			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
 				organizations.EXPECT().OrganizationsList(ctx).Return(nil, nil)
 			},
 			expected: []listedDatabase{{database: personalDB}},
 		},
-		"it should add the databases of each organization after the personal databases": {
+		"it adds the databases of each organization after the personal databases": {
 			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
 				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
@@ -47,7 +49,7 @@ func TestListWithOrganizations(t *testing.T) {
 				{database: globexDB, organizationSlug: globex.Slug},
 			},
 		},
-		"it should still query an organization without database": {
+		"it still queries an organization without database": {
 			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return(nil, nil)
 				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
@@ -56,27 +58,28 @@ func TestListWithOrganizations(t *testing.T) {
 			},
 			expected: []listedDatabase{{database: globexDB, organizationSlug: globex.Slug}},
 		},
-		"it should return an error when the personal databases cannot be listed": {
+		"it returns an error when the personal databases cannot be listed": {
 			expectations: func(ctx context.Context, _ *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return(nil, stderrors.New("boom"))
 			},
 			expectedError: "list databases",
 		},
-		"it should return an error when the organizations cannot be listed": {
+		"it returns an error when the organizations cannot be listed": {
 			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
 				organizations.EXPECT().OrganizationsList(ctx).Return(nil, stderrors.New("boom"))
 			},
 			expectedError: "list organizations",
 		},
-		"it should return an error naming the organization whose databases cannot be listed": {
+		"it returns an error when organization databases cannot be listed": {
 			expectations: func(ctx context.Context, organizations *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
 				databases.EXPECT().DatabasesList(ctx).Return([]scalingo.DatabaseNG{personalDB}, nil)
 				organizations.EXPECT().OrganizationsList(ctx).Return([]scalingo.Organization{acme, globex}, nil)
 				databases.EXPECT().DatabasesListByOrganization(ctx, acme.ID).Return([]scalingo.DatabaseNG{acmeDB}, nil)
-				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return(nil, stderrors.New("forbidden"))
+				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return(nil, errForbidden)
 			},
-			expectedError: "list databases of organization " + globex.Slug,
+			expectedError: "list organization databases",
+			expectedCause: errForbidden,
 		},
 	}
 
@@ -92,6 +95,9 @@ func TestListWithOrganizations(t *testing.T) {
 
 			if test.expectedError != "" {
 				require.ErrorContains(t, err, test.expectedError)
+				if test.expectedCause != nil {
+					require.ErrorIs(t, err, test.expectedCause)
+				}
 				assert.Nil(t, listed)
 			} else {
 				require.NoError(t, err)
@@ -117,7 +123,7 @@ func TestRender(t *testing.T) {
 		return database
 	}
 
-	t.Run("it should distinguish projects with the same name in the personal scope and in an organization", func(t *testing.T) {
+	t.Run("it distinguishes projects with the same name in the personal scope and in an organization", func(t *testing.T) {
 		output := &bytes.Buffer{}
 
 		err := render(output, currentUser, []listedDatabase{
@@ -131,7 +137,7 @@ func TestRender(t *testing.T) {
 		assert.Regexp(t, `│\s+db-2\s+│\s+db-2-name\s+│\s+postgresql\s+│\s+postgresql-dr-starter-4096\s+│\s+collaborator\s+│\s+running\s+│\s+acme/default\s+│`, output.String())
 	})
 
-	t.Run("it should render an empty project cell when the project name is unknown", func(t *testing.T) {
+	t.Run("it renders an empty project cell when the project name is unknown", func(t *testing.T) {
 		output := &bytes.Buffer{}
 
 		err := render(output, currentUser, []listedDatabase{
@@ -143,7 +149,7 @@ func TestRender(t *testing.T) {
 		assert.NotContains(t, output.String(), organizationSlug)
 	})
 
-	t.Run("it should only render the headers when there is no database", func(t *testing.T) {
+	t.Run("it renders only the headers when there is no database", func(t *testing.T) {
 		output := &bytes.Buffer{}
 
 		err := render(output, currentUser, nil)

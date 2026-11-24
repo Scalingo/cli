@@ -24,7 +24,7 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		return app
 	}
 
-	t.Run("it should distinguish projects with the same name in the personal scope and in an organization", func(t *testing.T) {
+	t.Run("it distinguishes projects with the same name in the personal scope and in an organization", func(t *testing.T) {
 		r := NewAppsList(currentUser)
 		r.SetData(t.Context(), []apps.ListedApp{
 			{App: newApp("personal-web", projectName, scalingo.AppStatusRunning, owner)},
@@ -45,7 +45,7 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		assert.NotContains(t, output, organizationID)
 	})
 
-	t.Run("it should only display the project name when the organization slug is unknown", func(t *testing.T) {
+	t.Run("it displays only the project name when the organization slug is unknown", func(t *testing.T) {
 		r := NewAppsList(currentUser)
 		r.SetData(t.Context(), []apps.ListedApp{
 			{App: newApp("no-slug", projectName, scalingo.AppStatusRunning, owner), OrganizationID: organizationID},
@@ -62,7 +62,7 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		assert.NotContains(t, output, "acme/")
 	})
 
-	t.Run("it should display a message when there is no app", func(t *testing.T) {
+	t.Run("it displays a message when there is no app", func(t *testing.T) {
 		r := NewAppsList(currentUser)
 		r.SetData(t.Context(), []apps.ListedApp{})
 

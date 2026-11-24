@@ -7,6 +7,7 @@ import (
 
 	"github.com/Scalingo/cli/config"
 	"github.com/Scalingo/cli/internal/boundaries/out/renderer"
+	"github.com/Scalingo/cli/utils"
 	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
@@ -79,7 +80,7 @@ func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedAp
 	for _, organization := range organizations {
 		organizationApps, err := client.AppsListByOrganization(ctx, organization.ID)
 		if err != nil {
-			return nil, errors.Wrapf(ctx, err, "list apps of organization %s", organization.Slug)
+			return nil, errors.Wrap(ctx, err, "list organization apps")
 		}
 		for _, app := range organizationApps {
 			apps = append(apps, ListedApp{App: app, OrganizationID: organization.ID, OrganizationSlug: organization.Slug})
@@ -89,7 +90,8 @@ func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedAp
 	return apps, nil
 }
 
-// filterAppsByProject keeps the apps whose project slug, under the format <ownerUsername>/<projectName>, matches projectSlug.
+// filterAppsByProject keeps the apps whose project matches projectSlug, either with the historical <ownerUsername>/<projectName>
+// format or, for an app of an organization, with the <organizationSlug>/<projectName> label displayed in the PROJECT column.
 func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 	if projectSlug == "" {
 		return apps
@@ -97,10 +99,17 @@ func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 
 	filteredApps := make([]ListedApp, 0, len(apps))
 	for _, listed := range apps {
-		if listed.App.ProjectSlug() == projectSlug {
+		if listed.App.ProjectSlug() == projectSlug || matchesOrganizationProject(listed, projectSlug) {
 			filteredApps = append(filteredApps, listed)
 		}
 	}
 
 	return filteredApps
+}
+
+func matchesOrganizationProject(listed ListedApp, projectSlug string) bool {
+	if listed.OrganizationSlug == "" {
+		return false
+	}
+	return utils.OrganizationProjectLabel(listed.OrganizationSlug, listed.App.Project.Name) == projectSlug
 }
