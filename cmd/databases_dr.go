@@ -20,10 +20,10 @@ var (
 	databasesListCommand = cli.Command{
 		Name:     "databases",
 		Category: "Databases DR",
-		Usage:    "List dedicated databases in your personal space and organizations",
+		Usage:    "Usage: List databases Dedicated Resources you own or collaborate on",
 		Flags:    []cli.Flag{databaseFlag()},
 		Description: CommandDescription{
-			Description: "For organization databases, PROJECT shows <organizationSlug>/<projectName>.",
+			Description: "List databases Dedicated Resources across your personal space and organizations. For organization databases, the PROJECT column shows <organizationSlug>/<projectName>.",
 			SeeAlso:     []string{"database-info", "database-create", "database-upgrade", "database-destroy"},
 		}.Render(),
 		Action: func(ctx context.Context, _ *cli.Command) error {
