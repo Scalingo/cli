@@ -15,7 +15,6 @@ import (
 	renderertable "github.com/Scalingo/cli/internal/boundaries/out/renderer/table"
 	"github.com/Scalingo/cli/io"
 	"github.com/Scalingo/cli/utils"
-	"github.com/Scalingo/go-scalingo/v11"
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
@@ -39,7 +38,7 @@ var (
 				}
 			}
 
-			var appsRenderer renderer.Renderer[[]*scalingo.App]
+			var appsRenderer renderer.Renderer[[]apps.ListedApp]
 			switch format {
 			case renderer.FormatTable:
 				currentUser, err := config.C.CurrentUser(ctx)

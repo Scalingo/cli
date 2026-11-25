@@ -9,15 +9,22 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-func List(ctx context.Context, renderer renderer.Renderer[[]*scalingo.App], projectSlug string) error {
+// ListedApp is an app with the organization in which it has been listed.
+// Organization is nil for an app of the personal scope.
+type ListedApp struct {
+	App          *scalingo.App
+	Organization *scalingo.Organization
+}
+
+func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectSlug string) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	apps, err := c.AppsList(ctx)
+	apps, err := listWithOrganizations(ctx, c)
 	if err != nil {
-		return errors.Wrap(ctx, err, "list apps")
+		return errors.Wrap(ctx, err, "list apps with organizations")
 	}
 
 	filteredApps := filterAppsByProject(apps, projectSlug)
@@ -31,15 +38,51 @@ func List(ctx context.Context, renderer renderer.Renderer[[]*scalingo.App], proj
 	return nil
 }
 
-func filterAppsByProject(apps []*scalingo.App, projectSlug string) []*scalingo.App {
+// listWithOrganizations returns the personal apps followed by the apps of each organization of the user.
+func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedApp, error) {
+	personalApps, err := client.AppsList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list apps")
+	}
+
+	organizations, err := client.OrganizationsList(ctx)
+	if err != nil {
+		return nil, errors.Wrap(ctx, err, "list organizations")
+	}
+
+	// A nil personal list stays nil when no organization app is added, to keep the historical {"apps":null} JSON output.
+	var apps []ListedApp
+	if personalApps != nil {
+		apps = make([]ListedApp, 0, len(personalApps))
+	}
+	for _, app := range personalApps {
+		apps = append(apps, ListedApp{App: app})
+	}
+
+	for i := range organizations {
+		organization := &organizations[i]
+		organizationApps, err := client.AppsListByOrganization(ctx, organization.ID)
+		if err != nil {
+			return nil, errors.Wrap(ctx, err, "list organization apps")
+		}
+		for _, app := range organizationApps {
+			apps = append(apps, ListedApp{App: app, Organization: organization})
+		}
+	}
+
+	return apps, nil
+}
+
+// filterAppsByProject keeps the apps whose project slug, under the format <ownerUsername>/<projectName>, matches projectSlug.
+func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 	if projectSlug == "" {
 		return apps
 	}
 
-	filteredApps := make([]*scalingo.App, 0, len(apps))
-	for _, app := range apps {
-		if app.ProjectSlug() == projectSlug {
-			filteredApps = append(filteredApps, app)
+	filteredApps := make([]ListedApp, 0, len(apps))
+	for _, listedApp := range apps {
+		if listedApp.App.ProjectSlug() == projectSlug {
+			filteredApps = append(filteredApps, listedApp)
 		}
 	}
 
