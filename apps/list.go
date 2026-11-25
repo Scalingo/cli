@@ -80,9 +80,9 @@ func filterAppsByProject(apps []ListedApp, projectSlug string) []ListedApp {
 	}
 
 	filteredApps := make([]ListedApp, 0, len(apps))
-	for _, listed := range apps {
-		if listed.App.ProjectSlug() == projectSlug {
-			filteredApps = append(filteredApps, listed)
+	for _, listedApp := range apps {
+		if listedApp.App.ProjectSlug() == projectSlug {
+			filteredApps = append(filteredApps, listedApp)
 		}
 	}
 
