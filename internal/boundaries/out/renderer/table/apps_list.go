@@ -53,8 +53,8 @@ func (r *appsListRenderer) SetData(ctx context.Context, listedApps []apps.Listed
 
 // appProject returns <ownerUsername>/<projectName> for a personal app and <organizationSlug>/<projectName> for an app of an organization.
 func appProject(listed apps.ListedApp) string {
-	if listed.OrganizationID == "" {
+	if listed.Organization == nil {
 		return listed.App.ProjectSlug()
 	}
-	return utils.OrganizationProjectLabel(listed.OrganizationSlug, listed.App.Project.Name)
+	return utils.OrganizationProjectLabel(listed.Organization.Slug, listed.App.Project.Name)
 }

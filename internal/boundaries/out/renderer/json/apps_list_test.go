@@ -22,7 +22,7 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		"it renders the apps of all the scopes in the apps envelope": {
 			listedApps: []apps.ListedApp{
 				{App: personalApp},
-				{App: organizationApp, OrganizationID: "org-acme", OrganizationSlug: "acme"},
+				{App: organizationApp, Organization: &scalingo.Organization{ID: "org-acme", Slug: "acme"}},
 			},
 			expected: `{"apps":[` + mustMarshal(t, personalApp) + `,` + mustMarshal(t, organizationApp) + `]}` + "\n",
 		},

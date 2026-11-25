@@ -12,10 +12,10 @@ import (
 
 func TestAppsListRenderer_Render(t *testing.T) {
 	const (
-		organizationID   = "org-acme"
-		organizationSlug = "acme"
-		projectName      = "app"
+		organizationID = "org-acme"
+		projectName    = "app"
 	)
+	acme := &scalingo.Organization{ID: organizationID, Slug: "acme"}
 	currentUser := &scalingo.User{Email: "john@example.com"}
 	owner := scalingo.Owner{Username: "john", Email: currentUser.Email}
 	newApp := func(name, projectName string, status scalingo.AppStatus, owner scalingo.Owner) *scalingo.App {
@@ -29,9 +29,8 @@ func TestAppsListRenderer_Render(t *testing.T) {
 		r.SetData(t.Context(), []apps.ListedApp{
 			{App: newApp("personal-web", projectName, scalingo.AppStatusRunning, owner)},
 			{
-				App:              newApp("acme-web", projectName, scalingo.AppStatusStopped, scalingo.Owner{Username: "jane", Email: "jane@example.com"}),
-				OrganizationID:   organizationID,
-				OrganizationSlug: organizationSlug,
+				App:          newApp("acme-web", projectName, scalingo.AppStatusStopped, scalingo.Owner{Username: "jane", Email: "jane@example.com"}),
+				Organization: acme,
 			},
 		})
 
@@ -48,8 +47,8 @@ func TestAppsListRenderer_Render(t *testing.T) {
 	t.Run("it displays only the project name when the organization slug is unknown", func(t *testing.T) {
 		r := NewAppsList(currentUser)
 		r.SetData(t.Context(), []apps.ListedApp{
-			{App: newApp("no-slug", projectName, scalingo.AppStatusRunning, owner), OrganizationID: organizationID},
-			{App: newApp("no-project", "", scalingo.AppStatusRunning, owner), OrganizationID: organizationID, OrganizationSlug: organizationSlug},
+			{App: newApp("no-slug", projectName, scalingo.AppStatusRunning, owner), Organization: &scalingo.Organization{ID: organizationID}},
+			{App: newApp("no-project", "", scalingo.AppStatusRunning, owner), Organization: acme},
 		})
 
 		output := captureStdout(t, func() {

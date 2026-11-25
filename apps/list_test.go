@@ -52,9 +52,9 @@ func TestListWithOrganizations(t *testing.T) {
 			},
 			expected: []ListedApp{
 				{App: personalWeb},
-				{App: acmeAPI, OrganizationID: acme.ID, OrganizationSlug: acme.Slug},
-				{App: acmeZoo, OrganizationID: acme.ID, OrganizationSlug: acme.Slug},
-				{App: globexAdmin, OrganizationID: globex.ID, OrganizationSlug: globex.Slug},
+				{App: acmeAPI, Organization: &acme},
+				{App: acmeZoo, Organization: &acme},
+				{App: globexAdmin, Organization: &globex},
 			},
 		},
 		"it continues with the other organizations when one has no app": {
@@ -64,7 +64,7 @@ func TestListWithOrganizations(t *testing.T) {
 				client.EXPECT().AppsListByOrganization(ctx, acme.ID).Return([]*scalingo.App{}, nil)
 				client.EXPECT().AppsListByOrganization(ctx, globex.ID).Return([]*scalingo.App{globexAdmin}, nil)
 			},
-			expected: []ListedApp{{App: globexAdmin, OrganizationID: globex.ID, OrganizationSlug: globex.Slug}},
+			expected: []ListedApp{{App: globexAdmin, Organization: &globex}},
 		},
 		"it keeps a nil list when no scope returns any app": {
 			expectations: func(ctx context.Context, client *scalingomock.MockAPI) {
@@ -129,11 +129,8 @@ func TestListWithOrganizations(t *testing.T) {
 }
 
 func TestFilterAppsByProject(t *testing.T) {
-	const (
-		organizationID   = "org-acme"
-		organizationSlug = "acme"
-		projectName      = "app"
-	)
+	const projectName = "app"
+	organization := &scalingo.Organization{ID: "org-acme", Slug: "acme"}
 	owner := scalingo.Owner{Username: "john"}
 	personalApp := &scalingo.App{Name: "personal-web", Owner: owner}
 	personalApp.Project.Name = projectName
@@ -144,8 +141,8 @@ func TestFilterAppsByProject(t *testing.T) {
 
 	apps := []ListedApp{
 		{App: personalApp},
-		{App: organizationApp, OrganizationID: organizationID, OrganizationSlug: organizationSlug},
-		{App: otherProjectApp, OrganizationID: organizationID, OrganizationSlug: organizationSlug},
+		{App: organizationApp, Organization: organization},
+		{App: otherProjectApp, Organization: organization},
 	}
 
 	tests := map[string]struct {

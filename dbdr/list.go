@@ -14,10 +14,10 @@ import (
 	"github.com/Scalingo/go-utils/errors/v3"
 )
 
-// listedDatabase is a database with the slug of the organization in which it has been listed, empty for the personal scope.
+// listedDatabase is a database with the organization in which it has been listed, nil for the personal scope.
 type listedDatabase struct {
-	database         scalingo.DatabaseNG
-	organizationSlug string
+	database     scalingo.DatabaseNG
+	organization *scalingo.Organization
 }
 
 func List(ctx context.Context) error {
@@ -66,13 +66,14 @@ func listWithOrganizations(ctx context.Context, organizationsService scalingo.Or
 		databases = append(databases, listedDatabase{database: database})
 	}
 
-	for _, organization := range organizations {
+	for i := range organizations {
+		organization := &organizations[i]
 		organizationDatabases, err := databasesService.DatabasesListByOrganization(ctx, organization.ID)
 		if err != nil {
 			return nil, errors.Wrap(ctx, err, "list organization databases")
 		}
 		for _, database := range organizationDatabases {
-			databases = append(databases, listedDatabase{database: database, organizationSlug: organization.Slug})
+			databases = append(databases, listedDatabase{database: database, organization: organization})
 		}
 	}
 
@@ -86,6 +87,10 @@ func render(w stdio.Writer, currentUser *scalingo.User, databases []listedDataba
 	for _, listed := range databases {
 		db := listed.database
 		role := utils.AppRole(currentUser, &db.App)
+		organizationSlug := ""
+		if listed.organization != nil {
+			organizationSlug = listed.organization.Slug
+		}
 
 		_ = t.Append([]string{
 			db.ID,
@@ -94,7 +99,7 @@ func render(w stdio.Writer, currentUser *scalingo.User, databases []listedDataba
 			db.Plan,
 			string(role),
 			string(db.Database.Status),
-			utils.OrganizationProjectLabel(listed.organizationSlug, db.App.Project.Name),
+			utils.OrganizationProjectLabel(organizationSlug, db.App.Project.Name),
 		})
 	}
 

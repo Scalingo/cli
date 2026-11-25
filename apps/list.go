@@ -10,11 +10,10 @@ import (
 )
 
 // ListedApp is an app with the organization in which it has been listed.
-// OrganizationID and OrganizationSlug are empty for an app of the personal scope.
+// Organization is nil for an app of the personal scope.
 type ListedApp struct {
-	App              *scalingo.App
-	OrganizationID   string
-	OrganizationSlug string
+	App          *scalingo.App
+	Organization *scalingo.Organization
 }
 
 func List(ctx context.Context, renderer renderer.Renderer[[]ListedApp], projectSlug string) error {
@@ -60,13 +59,14 @@ func listWithOrganizations(ctx context.Context, client scalingo.API) ([]ListedAp
 		apps = append(apps, ListedApp{App: app})
 	}
 
-	for _, organization := range organizations {
+	for i := range organizations {
+		organization := &organizations[i]
 		organizationApps, err := client.AppsListByOrganization(ctx, organization.ID)
 		if err != nil {
 			return nil, errors.Wrap(ctx, err, "list organization apps")
 		}
 		for _, app := range organizationApps {
-			apps = append(apps, ListedApp{App: app, OrganizationID: organization.ID, OrganizationSlug: organization.Slug})
+			apps = append(apps, ListedApp{App: app, Organization: organization})
 		}
 	}
 

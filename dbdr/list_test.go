@@ -45,8 +45,8 @@ func TestListWithOrganizations(t *testing.T) {
 			},
 			expected: []listedDatabase{
 				{database: personalDB},
-				{database: acmeDB, organizationSlug: acme.Slug},
-				{database: globexDB, organizationSlug: globex.Slug},
+				{database: acmeDB, organization: &acme},
+				{database: globexDB, organization: &globex},
 			},
 		},
 		"it still queries an organization without database": {
@@ -56,7 +56,7 @@ func TestListWithOrganizations(t *testing.T) {
 				databases.EXPECT().DatabasesListByOrganization(ctx, acme.ID).Return([]scalingo.DatabaseNG{}, nil)
 				databases.EXPECT().DatabasesListByOrganization(ctx, globex.ID).Return([]scalingo.DatabaseNG{globexDB}, nil)
 			},
-			expected: []listedDatabase{{database: globexDB, organizationSlug: globex.Slug}},
+			expected: []listedDatabase{{database: globexDB, organization: &globex}},
 		},
 		"it returns an error when the personal databases cannot be listed": {
 			expectations: func(ctx context.Context, _ *scalingomock.MockOrganizationsService, databases *scalingomock.MockDatabasesPreviewService) {
@@ -108,7 +108,7 @@ func TestListWithOrganizations(t *testing.T) {
 }
 
 func TestRender(t *testing.T) {
-	const organizationSlug = "acme"
+	acme := &scalingo.Organization{ID: "org-acme", Slug: "acme"}
 	currentUser := &scalingo.User{Email: "john@example.com"}
 	newDatabase := func(id, projectName, ownerEmail string) scalingo.DatabaseNG {
 		database := scalingo.DatabaseNG{
@@ -128,7 +128,7 @@ func TestRender(t *testing.T) {
 
 		err := render(output, currentUser, []listedDatabase{
 			{database: newDatabase("db-1", "default", currentUser.Email)},
-			{database: newDatabase("db-2", "default", "jane@example.com"), organizationSlug: organizationSlug},
+			{database: newDatabase("db-2", "default", "jane@example.com"), organization: acme},
 		})
 
 		require.NoError(t, err)
@@ -141,12 +141,12 @@ func TestRender(t *testing.T) {
 		output := &bytes.Buffer{}
 
 		err := render(output, currentUser, []listedDatabase{
-			{database: newDatabase("db-1", "", currentUser.Email), organizationSlug: organizationSlug},
+			{database: newDatabase("db-1", "", currentUser.Email), organization: acme},
 		})
 
 		require.NoError(t, err)
 		assert.Regexp(t, `│\s+running\s+│\s+│`, output.String())
-		assert.NotContains(t, output.String(), organizationSlug)
+		assert.NotContains(t, output.String(), acme.Slug)
 	})
 
 	t.Run("it renders only the headers when there is no database", func(t *testing.T) {
