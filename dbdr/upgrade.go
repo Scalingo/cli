@@ -14,13 +14,13 @@ import (
 	"github.com/Scalingo/go-utils/retry"
 )
 
-func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
+func Upgrade(ctx context.Context, databaseIdentifier, plan string, wait bool) error {
 	c, err := config.ScalingoClient(ctx)
 	if err != nil {
 		return errors.Wrap(ctx, err, "get Scalingo client")
 	}
 
-	db, err := c.Preview().DatabaseShow(ctx, databaseID)
+	db, err := databaseByNameOrID(ctx, c, databaseIdentifier)
 	if err != nil {
 		return errors.Wrap(ctx, err, "show database")
 	}
@@ -43,18 +43,8 @@ func Upgrade(ctx context.Context, databaseID, plan string, wait bool) error {
 		return errors.Newf(ctx, "no addons found for database application %s", db.App.ID)
 	}
 
-	var dbAddon *scalingo.Addon
-	if len(addons) == 1 {
-		dbAddon = addons[0]
-	} else if db.Database.ResourceID != "" {
-		for _, addon := range addons {
-			if addon.ResourceID == db.Database.ResourceID {
-				dbAddon = addon
-				break
-			}
-		}
-	}
-	if dbAddon == nil {
+	dbAddon, found := databaseAddon(db, addons)
+	if !found {
 		return errors.Newf(ctx, "no addon matching database %s (%s) found for application %s", db.Name, db.ID, db.App.ID)
 	}
 

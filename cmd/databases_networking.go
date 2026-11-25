@@ -26,13 +26,13 @@ var (
 			SeeAlso: []string{"database-net-peerings", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
-			if databaseID == "" {
+			databaseIdentifier := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseIdentifier == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-endpoints")
 			}
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbdr.DatabaseEndpointsList(ctx, databaseID)
+			err := dbdr.DatabaseEndpointsList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -58,13 +58,13 @@ var (
 			SeeAlso: []string{"database-endpoints", "database-net-peerings-add", "database-net-peerings-remove", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
-			if databaseID == "" {
+			databaseIdentifier := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseIdentifier == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-net-peerings")
 			}
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbdr.DatabaseNetPeeringsList(ctx, databaseID)
+			err := dbdr.DatabaseNetPeeringsList(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -97,18 +97,18 @@ var (
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-remove", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
-			if databaseID == "" {
+			databaseIdentifier := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseIdentifier == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-net-peerings-add")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
 			params := scalingo.DatabaseNetPeeringCreateParams{
 				OutscaleNetPeeringID: c.String("outscale-net-peering-id"),
 			}
 
-			err := dbdr.DatabaseNetPeeringsAdd(ctx, databaseID, params)
+			err := dbdr.DatabaseNetPeeringsAdd(ctx, databaseIdentifier, params)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -141,14 +141,14 @@ var (
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-network-configuration"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
-			if databaseID == "" {
+			databaseIdentifier := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseIdentifier == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-net-peerings-remove")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbdr.DatabaseNetPeeringsRemove(ctx, databaseID, c.String("net-peering"))
+			err := dbdr.DatabaseNetPeeringsRemove(ctx, databaseIdentifier, c.String("net-peering"))
 			if err != nil {
 				errorQuit(ctx, err)
 			}
@@ -174,14 +174,14 @@ var (
 			SeeAlso: []string{"database-endpoints", "database-net-peerings", "database-net-peerings-add", "database-net-peerings-remove"},
 		}.Render(),
 		Action: func(ctx context.Context, c *cli.Command) error {
-			databaseID := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
-			if databaseID == "" {
+			databaseIdentifier := detect.ExtractDatabaseNameFromCommandLineOrEnv(c)
+			if databaseIdentifier == "" {
 				return cli.ShowCommandHelp(ctx, c, "database-network-configuration")
 			}
 
-			utils.CheckForConsent(ctx, databaseID, utils.ConsentTypeDBs)
+			utils.CheckForConsent(ctx, databaseIdentifier, utils.ConsentTypeDBs)
 
-			err := dbdr.DatabaseNetworkConfigurationShow(ctx, databaseID)
+			err := dbdr.DatabaseNetworkConfigurationShow(ctx, databaseIdentifier)
 			if err != nil {
 				errorQuit(ctx, err)
 			}
